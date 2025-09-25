@@ -12,6 +12,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class ATrumpet;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -38,10 +39,9 @@ protected:
 	void Interaction();
 
 	UFUNCTION(Server, Reliable)
-	void Server_Interaction(class ATrumpet* TrumpetToGrab);
+	void Server_Interaction(ATrumpet* TrumpetToGrab);
 
 	void Tackle();
-
 	UFUNCTION(Server, Reliable)
 	void Server_Tackle();
 
@@ -61,22 +61,22 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
-	USpringArmComponent* CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
-	UCameraComponent* FollowCamera;
+	TObjectPtr<UCameraComponent> FollowCamera;
 	
 	UPROPERTY(EditAnywhere, Category = Input)
-	UInputMappingContext* DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	UInputAction* JumpAction;
+	TObjectPtr<UInputAction> JumpAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	UInputAction* MoveAction;
+	TObjectPtr<UInputAction> MoveAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	UInputAction* LookAction;
+	TObjectPtr<UInputAction> LookAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> GrabAction;

@@ -134,7 +134,6 @@ void ATromboneRumbleCharacter::Interaction()
 void ATromboneRumbleCharacter::Tackle()
 {
 	if (HeldTrumpet) return;
-
 	Server_Tackle();
 }
 
@@ -161,7 +160,7 @@ void ATromboneRumbleCharacter::Server_Drop_Implementation()
 
 void ATromboneRumbleCharacter::Server_Tackle_Implementation()
 {
-	if (bIsTackling) return;
+	if (HeldTrumpet || bIsTackling) return;
 
 	bIsTackling = true;
 
