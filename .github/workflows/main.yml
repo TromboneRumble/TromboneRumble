@@ -33,6 +33,6 @@ jobs:
       # 3. Windows 폴더 압축
       - name: Compress Windows Folder
         run: |
-          cd "DD:\UnrealProjects"
+          cd "D:\UnrealProjects"
           if (Test-Path "Windows.zip") { Remove-Item "Windows.zip" } # 기존 zip 파일 삭제
           Compress-Archive -Path Windows -DestinationPath Windows.zip # Windows 폴더 압축
