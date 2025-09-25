@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "InGamePlayerController.generated.h"
+#include "PT_PlayerController.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API AInGamePlayerController : public APlayerController
+class TROMBONERUMBLE_API APT_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	AInGamePlayerController();
+	APT_PlayerController();
 	void ShowInteractionUI(bool bShow) const;
 
 protected:
@@ -21,5 +21,5 @@ protected:
 	TSubclassOf<UUserWidget> UIInGameClass;
 
 	UPROPERTY()
-	TObjectPtr<class UUIInGame> UIInGame;
+	TObjectPtr<class UPT_UIInGame> UIInGame;
 };

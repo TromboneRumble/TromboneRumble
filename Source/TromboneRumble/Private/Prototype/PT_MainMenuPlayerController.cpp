@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ProtoType/MainMenuPlayerController.h"
+#include "ProtoType/PT_MainMenuPlayerController.h"
 #include "Blueprint/UserWidget.h"
 
-AMainMenuPlayerController::AMainMenuPlayerController()
+APT_MainMenuPlayerController::APT_MainMenuPlayerController()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> MainMenuWidgetClassFinder(TEXT("/Game/Blueprints/WBP_Main.WBP_Main_C"));
 	if (MainMenuWidgetClassFinder.Succeeded())
@@ -12,7 +12,7 @@ AMainMenuPlayerController::AMainMenuPlayerController()
 	}
 }
 
-void AMainMenuPlayerController::BeginPlay()
+void APT_MainMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -33,7 +33,7 @@ void AMainMenuPlayerController::BeginPlay()
 	}
 }
 
-void AMainMenuPlayerController::Server_RequestStartGame_Implementation()
+void APT_MainMenuPlayerController::Server_RequestStartGame_Implementation()
 {
 	bool isSuccess = GetWorld()->ServerTravel("/Game/Levels/ThirdPersonMap?listen");
 	if (GEngine)

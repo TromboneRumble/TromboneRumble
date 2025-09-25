@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
-#include "TromboneRumbleCharacter.generated.h"
+#include "PT_TromboneRumbleCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -17,12 +17,12 @@ class ATrumpet;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class ATromboneRumbleCharacter : public ACharacter
+class APT_TromboneRumbleCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	ATromboneRumbleCharacter();
+	APT_TromboneRumbleCharacter();
 	
 	void Drop();
 
@@ -39,7 +39,7 @@ protected:
 	void Interaction();
 
 	UFUNCTION(Server, Reliable)
-	void Server_Interaction(ATrumpet* TrumpetToGrab);
+	void Server_Interaction(APT_Trumpet* TrumpetToGrab);
 
 	void Tackle();
 	UFUNCTION(Server, Reliable)
@@ -87,10 +87,10 @@ private:
 	float InteractionDistance = 2000.0f;
 	
 	UPROPERTY()
-	TObjectPtr<class ATrumpet> FocusedTrumpet = nullptr;
+	TObjectPtr<class APT_Trumpet> FocusedTrumpet = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<class ATrumpet> HeldTrumpet = nullptr;
+	TObjectPtr<class APT_Trumpet> HeldTrumpet = nullptr;
 
 	float TackleAnimationDuration = 1.0f;
 };

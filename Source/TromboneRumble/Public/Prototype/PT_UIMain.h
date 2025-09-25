@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UIMain.generated.h"
+#include "PT_UIMain.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API UUIMain : public UUserWidget
+class TROMBONERUMBLE_API UPT_UIMain : public UUserWidget
 {
 	GENERATED_BODY()
 	

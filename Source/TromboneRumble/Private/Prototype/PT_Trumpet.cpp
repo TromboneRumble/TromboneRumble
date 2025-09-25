@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ProtoType/Trumpet.h"
+#include "ProtoType/PT_Trumpet.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
-ATrumpet::ATrumpet()
+APT_Trumpet::APT_Trumpet()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
@@ -43,15 +43,15 @@ ATrumpet::ATrumpet()
 	}
 }
 
-void ATrumpet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void APT_Trumpet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ATrumpet, bIsGrabbed);
-	DOREPLIFETIME(ATrumpet, LastOwningCharacter);
+	DOREPLIFETIME(APT_Trumpet, bIsGrabbed);
+	DOREPLIFETIME(APT_Trumpet, LastOwningCharacter);
 }
 
-void ATrumpet::OnGrab(bool isGrabbed, ACharacter* Parent)
+void APT_Trumpet::OnGrab(bool isGrabbed, ACharacter* Parent)
 {
 	if (HasAuthority())
 	{
@@ -61,7 +61,7 @@ void ATrumpet::OnGrab(bool isGrabbed, ACharacter* Parent)
 	}
 }
 
-void ATrumpet::OnRep_Grabbed()
+void APT_Trumpet::OnRep_Grabbed()
 {
 	if (bIsGrabbed)
 	{
@@ -83,14 +83,14 @@ void ATrumpet::OnRep_Grabbed()
 	}
 }
 
-void ATrumpet::PlaySound() const
+void APT_Trumpet::PlaySound() const
 {
 	if (!AudioComponent) return;
 
 	AudioComponent->Play();
 }
 
-void ATrumpet::StopSound() const
+void APT_Trumpet::StopSound() const
 {
 	if (!AudioComponent) return;
 

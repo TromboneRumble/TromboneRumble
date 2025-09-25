@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Trumpet.generated.h"
+#include "PT_Trumpet.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API ATrumpet : public AActor
+class TROMBONERUMBLE_API APT_Trumpet : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	ATrumpet();
+	APT_Trumpet();
 	void OnGrab(bool isGrabbed, ACharacter* Parent);
 	bool CanInteract() const { return !bIsGrabbed; }
 

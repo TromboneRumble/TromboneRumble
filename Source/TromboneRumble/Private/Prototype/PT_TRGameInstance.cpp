@@ -1,12 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ProtoType/TRGameInstance.h"
+#include "ProtoType/PT_TRGameInstance.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
 #include "Online/OnlineSessionNames.h"
+#include "Utilities/DebugHelper.h"
 
-void UTRGameInstance::Init()
+void UPT_TRGameInstance::Init()
 {
     Super::Init();
     
@@ -21,13 +22,13 @@ void UTRGameInstance::Init()
     SessionInterface = OnlineSubsystemInterface->GetSessionInterface();
     if (SessionInterface.IsValid())
     {
-       SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UTRGameInstance::OnCreateSessionComplete);
-       SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UTRGameInstance::OnFindSessionComplete);
-       SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UTRGameInstance::OnJoinSessionComplete);
+       SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPT_TRGameInstance::OnCreateSessionComplete);
+       SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPT_TRGameInstance::OnFindSessionComplete);
+       SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPT_TRGameInstance::OnJoinSessionComplete);
     }
 }
 
-FString UTRGameInstance::GenerateRandomCode(int32 Length)
+FString UPT_TRGameInstance::GenerateRandomCode(int32 Length)
 {
     const FString Chars = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
     FString RandomCode;
@@ -38,9 +39,13 @@ FString UTRGameInstance::GenerateRandomCode(int32 Length)
     return RandomCode;
 }
 
-void UTRGameInstance::HostSessionWithCode()
+void UPT_TRGameInstance::HostSessionWithCode()
 {
-   if (!SessionInterface.IsValid()) return;
+   if (!SessionInterface.IsValid())
+   {
+       Debug::Print(TEXT("SessionInterface not Valid"));
+       return;
+   }
 
    CurrentLobbyCode = GenerateRandomCode(5);
 
@@ -65,9 +70,13 @@ void UTRGameInstance::HostSessionWithCode()
       if (GEngine)
          GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, TEXT("Create Session Success"));
    }
+   else
+   {
+       Debug::Print("HostSessionWithCode.CreateSession Failed");
+   }
 }
 
-void UTRGameInstance::FindAndJoinSessionByCode(const FString& SessionCode)
+void UPT_TRGameInstance::FindAndJoinSessionByCode(const FString& SessionCode)
 {
     if (!SessionInterface.IsValid() || SessionCode.IsEmpty()) return;
 
@@ -85,7 +94,7 @@ void UTRGameInstance::FindAndJoinSessionByCode(const FString& SessionCode)
        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Searching for lobby with code: %s"), *SessionCode));
 }
 
-void UTRGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+void UPT_TRGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
    if (bWasSuccessful)
    {
@@ -101,7 +110,7 @@ void UTRGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSucces
    }
 }
 
-void UTRGameInstance::OnFindSessionComplete(const bool bWasSuccessful)
+void UPT_TRGameInstance::OnFindSessionComplete(const bool bWasSuccessful)
 {
     if (bWasSuccessful && SessionSearch.IsValid() && SessionSearch->SearchResults.Num() > 0)
     {
@@ -121,7 +130,7 @@ void UTRGameInstance::OnFindSessionComplete(const bool bWasSuccessful)
     }
 }
 
-void UTRGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+void UPT_TRGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
    if (Result == EOnJoinSessionCompleteResult::Success)
    {

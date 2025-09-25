@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "ProtoType/TromboneRumbleCharacter.h"
+#include "ProtoType/PT_TromboneRumbleCharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -13,15 +13,15 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
-#include "ProtoType/Trumpet.h"
-#include "ProtoType/InGamePlayerController.h"
+#include "ProtoType/PT_Trumpet.h"
+#include "ProtoType/PT_PlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // ATromboneRumbleCharacter
 
-ATromboneRumbleCharacter::ATromboneRumbleCharacter()
+APT_TromboneRumbleCharacter::APT_TromboneRumbleCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -62,7 +62,7 @@ ATromboneRumbleCharacter::ATromboneRumbleCharacter()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ATromboneRumbleCharacter::Tick(float DeltaTime)
+void APT_TromboneRumbleCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -70,7 +70,7 @@ void ATromboneRumbleCharacter::Tick(float DeltaTime)
 		CheckForInteraction();
 }
 
-void ATromboneRumbleCharacter::NotifyControllerChanged()
+void APT_TromboneRumbleCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
 
@@ -84,20 +84,20 @@ void ATromboneRumbleCharacter::NotifyControllerChanged()
 	}
 }
 
-void ATromboneRumbleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APT_TromboneRumbleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATromboneRumbleCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATromboneRumbleCharacter::Look);
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ATromboneRumbleCharacter::Interaction);
-		EnhancedInputComponent->BindAction(TackleAction, ETriggerEvent::Started, this, &ATromboneRumbleCharacter::Tackle);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APT_TromboneRumbleCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APT_TromboneRumbleCharacter::Look);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &APT_TromboneRumbleCharacter::Interaction);
+		EnhancedInputComponent->BindAction(TackleAction, ETriggerEvent::Started, this, &APT_TromboneRumbleCharacter::Tackle);
 	}
 }
 
-void ATromboneRumbleCharacter::Move(const FInputActionValue& Value)
+void APT_TromboneRumbleCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -113,7 +113,7 @@ void ATromboneRumbleCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ATromboneRumbleCharacter::Look(const FInputActionValue& Value)
+void APT_TromboneRumbleCharacter::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -124,32 +124,32 @@ void ATromboneRumbleCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ATromboneRumbleCharacter::Interaction()
+void APT_TromboneRumbleCharacter::Interaction()
 {
 	if (!FocusedTrumpet) return;
 
 	Server_Interaction(FocusedTrumpet);
 }
 
-void ATromboneRumbleCharacter::Tackle()
+void APT_TromboneRumbleCharacter::Tackle()
 {
 	if (HeldTrumpet) return;
 	Server_Tackle();
 }
 
-void ATromboneRumbleCharacter::Drop()
+void APT_TromboneRumbleCharacter::Drop()
 {
 	Server_Drop();
 }
 
-void ATromboneRumbleCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void APT_TromboneRumbleCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ATromboneRumbleCharacter, bIsTackling);
+	DOREPLIFETIME(APT_TromboneRumbleCharacter, bIsTackling);
 }
 
-void ATromboneRumbleCharacter::Server_Drop_Implementation()
+void APT_TromboneRumbleCharacter::Server_Drop_Implementation()
 {
 	if (!HeldTrumpet) return;
 
@@ -158,14 +158,14 @@ void ATromboneRumbleCharacter::Server_Drop_Implementation()
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 }
 
-void ATromboneRumbleCharacter::Server_Tackle_Implementation()
+void APT_TromboneRumbleCharacter::Server_Tackle_Implementation()
 {
 	if (HeldTrumpet || bIsTackling) return;
 
 	bIsTackling = true;
 
     FTimerHandle TimerHandle_TackleEnd;
-	GetWorldTimerManager().SetTimer(TimerHandle_TackleEnd, this, &ATromboneRumbleCharacter::EndTackleAnimation, TackleAnimationDuration, false);
+	GetWorldTimerManager().SetTimer(TimerHandle_TackleEnd, this, &APT_TromboneRumbleCharacter::EndTackleAnimation, TackleAnimationDuration, false);
 	
 	const FVector Start = GetActorLocation();
 	const FVector End = Start + (GetActorForwardVector() * 200.0f);
@@ -189,14 +189,14 @@ void ATromboneRumbleCharacter::Server_Tackle_Implementation()
 
 	if (!bHit) return;
 	
-	ATromboneRumbleCharacter* HitCharacter = Cast<ATromboneRumbleCharacter>(HitResult.GetActor());
+	APT_TromboneRumbleCharacter* HitCharacter = Cast<APT_TromboneRumbleCharacter>(HitResult.GetActor());
 	if (HitCharacter && HitCharacter->HeldTrumpet)
 	{
 		HitCharacter->Drop();
 	}
 }
 
-void ATromboneRumbleCharacter::Server_Interaction_Implementation(ATrumpet* TrumpetToGrab)
+void APT_TromboneRumbleCharacter::Server_Interaction_Implementation(APT_Trumpet* TrumpetToGrab)
 {
 	if (!TrumpetToGrab || !TrumpetToGrab->CanInteract()) return;
 
@@ -205,9 +205,9 @@ void ATromboneRumbleCharacter::Server_Interaction_Implementation(ATrumpet* Trump
 	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 }
 
-void ATromboneRumbleCharacter::CheckForInteraction()
+void APT_TromboneRumbleCharacter::CheckForInteraction()
 {
-	const AInGamePlayerController* PC = Cast<AInGamePlayerController>(GetController());
+	const APT_PlayerController* PC = Cast<APT_PlayerController>(GetController());
 	if (!PC) return;
 	
 	int32 ViewportSizeX, ViewportSizeY;
@@ -226,7 +226,7 @@ void ATromboneRumbleCharacter::CheckForInteraction()
 
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
 	{
-		if (ATrumpet* HitTrumpet = Cast<ATrumpet>(HitResult.GetActor()))
+		if (APT_Trumpet* HitTrumpet = Cast<APT_Trumpet>(HitResult.GetActor()))
 		{
 			if (!HitTrumpet->CanInteract()) return;
 			
@@ -243,7 +243,7 @@ void ATromboneRumbleCharacter::CheckForInteraction()
 	}
 }
 
-void ATromboneRumbleCharacter::EndTackleAnimation()
+void APT_TromboneRumbleCharacter::EndTackleAnimation()
 {
 	if (HasAuthority())
 	{

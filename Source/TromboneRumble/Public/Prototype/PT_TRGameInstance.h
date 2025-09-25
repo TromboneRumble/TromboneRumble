@@ -5,14 +5,14 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "TRGameInstance.generated.h"
+#include "PT_TRGameInstance.generated.h"
 
 #define CURRENT_CONTEXT *FString(__FUNCTION__)
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionJoined, const FString&, LobbyCode);
 
 UCLASS()
-class TROMBONERUMBLE_API UTRGameInstance : public UGameInstance
+class TROMBONERUMBLE_API UPT_TRGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:

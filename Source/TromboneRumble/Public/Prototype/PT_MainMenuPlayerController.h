@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "MainMenuPlayerController.generated.h"
+#include "PT_MainMenuPlayerController.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API AMainMenuPlayerController : public APlayerController
+class TROMBONERUMBLE_API APT_MainMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
 public:
-	AMainMenuPlayerController();
+	APT_MainMenuPlayerController();
 	
 	UFUNCTION(Server, Reliable)
 	void Server_RequestStartGame();

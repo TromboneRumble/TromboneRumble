@@ -1,25 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ProtoType/UIMain.h"
+#include "ProtoType/PT_UIMain.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
 #include "Components/TextBlock.h"
 
-#include "ProtoType/TRGameInstance.h"
-#include "ProtoType/MainMenuPlayerController.h"
-void UUIMain::NativeConstruct()
+#include "ProtoType/PT_TRGameInstance.h"
+#include "ProtoType/PT_MainMenuPlayerController.h"
+#include "Utilities/DebugHelper.h"
+void UPT_UIMain::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	HostGameButton->OnClicked.AddDynamic(this, &UUIMain::OnClickHostGame);
-	JoinGameButton->OnClicked.AddDynamic(this, &UUIMain::OnClickJoinGame);
-	StartButton->OnClicked.AddDynamic(this, &UUIMain::OnClickStartGame);
+	HostGameButton->OnClicked.AddDynamic(this, &UPT_UIMain::OnClickHostGame);
+	JoinGameButton->OnClicked.AddDynamic(this, &UPT_UIMain::OnClickJoinGame);
+	StartButton->OnClicked.AddDynamic(this, &UPT_UIMain::OnClickStartGame);
 	StartButton->SetVisibility(ESlateVisibility::Collapsed);
 
-	UTRGameInstance* GI = GetGameInstance<UTRGameInstance>();
+	UPT_TRGameInstance* GI = GetGameInstance<UPT_TRGameInstance>();
 	if (GI)
 	{
-		GI->OnSessionJoined.AddDynamic(this, &UUIMain::HandleSessionJoined);
+		GI->OnSessionJoined.AddDynamic(this, &UPT_UIMain::HandleSessionJoined);
 	}
 
 	const APlayerController* PC = GetOwningPlayer();
@@ -27,7 +28,7 @@ void UUIMain::NativeConstruct()
 	AuthText->SetText(FText::FromString(FString::Printf(TEXT("%s"), bIsHost ? TEXT("Host") : TEXT("Client"))));
 }
 
-void UUIMain::HandleSessionJoined(const FString& LobbyCode)
+void UPT_UIMain::HandleSessionJoined(const FString& LobbyCode)
 {
 	if (!LobbyCodeText) return;
 	
@@ -40,32 +41,36 @@ void UUIMain::HandleSessionJoined(const FString& LobbyCode)
 	}
 }
 
-void UUIMain::OnClickStartGame()
+void UPT_UIMain::OnClickStartGame()
 {
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Start Game Clicked")));
 
-	if (AMainMenuPlayerController* PC = GetOwningPlayer<AMainMenuPlayerController>())
+	if (APT_MainMenuPlayerController* PC = GetOwningPlayer<APT_MainMenuPlayerController>())
 	{
 		PC->Server_RequestStartGame();
 	}
 }
 
-void UUIMain::OnClickHostGame()
+void UPT_UIMain::OnClickHostGame()
 {
-	if (UTRGameInstance* GI = GetGameInstance<UTRGameInstance>())
+	if (UPT_TRGameInstance* GI = GetGameInstance<UPT_TRGameInstance>())
 	{
 		GI->HostSessionWithCode();
 	}
+	else
+	{
+		Debug::Print(TEXT("No UPT_TRGameInstance "));
+	}
 }
 
-void UUIMain::OnClickJoinGame()
+void UPT_UIMain::OnClickJoinGame()
 {
 	if (LobbyCodeInput == nullptr) return;
 
 	const FString LobbyCode = LobbyCodeInput->GetText().ToString();
 
-	if (UTRGameInstance* GI = GetGameInstance<UTRGameInstance>())
+	if (UPT_TRGameInstance* GI = GetGameInstance<UPT_TRGameInstance>())
 	{
 		if (LobbyCode.IsEmpty()) return;
 		

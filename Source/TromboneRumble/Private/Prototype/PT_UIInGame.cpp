@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ProtoType/UIInGame.h"
+#include "ProtoType/PT_UIInGame.h"
 #include "Components/HorizontalBox.h"
 
-void UUIInGame::ShowInteractionHint(const bool bShow) const
+void UPT_UIInGame::ShowInteractionHint(const bool bShow) const
 {
 	if (!InteractionHint) return;
 
@@ -11,7 +11,7 @@ void UUIInGame::ShowInteractionHint(const bool bShow) const
 	InteractionHint->SetVisibility(IsVisible);
 }
 
-void UUIInGame::NativeConstruct()
+void UPT_UIInGame::NativeConstruct()
 {
 	Super::NativeConstruct();
 

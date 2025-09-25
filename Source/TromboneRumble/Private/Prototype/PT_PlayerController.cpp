@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "ProtoType/InGamePlayerController.h"
-#include "ProtoType/UIInGame.h"
+#include "ProtoType/PT_PlayerController.h"
+#include "ProtoType/PT_UIInGame.h"
 #include "Blueprint/UserWidget.h"
 
-AInGamePlayerController::AInGamePlayerController()
+APT_PlayerController::APT_PlayerController()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> InGameWidgetClassFinder(TEXT("/Game/Blueprints/WBP_InGame.WBP_InGame_C"));
 	if (InGameWidgetClassFinder.Succeeded())
@@ -13,20 +13,20 @@ AInGamePlayerController::AInGamePlayerController()
 	}
 }
 
-void AInGamePlayerController::ShowInteractionUI(const bool bShow) const
+void APT_PlayerController::ShowInteractionUI(const bool bShow) const
 {
 	if (!UIInGame) return;
 
 	UIInGame->ShowInteractionHint(bShow);
 }
 
-void AInGamePlayerController::BeginPlay()
+void APT_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (UIInGameClass)
 	{
-		UIInGame = CreateWidget<UUIInGame>(GetWorld(), UIInGameClass);
+		UIInGame = CreateWidget<UPT_UIInGame>(GetWorld(), UIInGameClass);
 		if (UIInGame)
 		{
 			UIInGame->AddToViewport();
