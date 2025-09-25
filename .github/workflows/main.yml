@@ -24,7 +24,7 @@ jobs:
       - name: Package Project
         env: 
           UE_PATH: 'D:\UE_5.5' # Path to your Unreal Engine installation
-          PROJECT_PATH: 'D:\UnrealProjects\Outbreak\Outbreak.uproject' # Path to your Unreal project file
+          PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble\TromboneRumble.uproject' # Path to your Unreal project file
           OUTPUT_PATH: 'D:\UnrealProjects' # Path to where you want to store the packaged game
         run: |
           # Try to run empty UAT to check for correct path
