@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UIMain.h"
-#include "TRGameInstance.h"
-#include "MainMenuPlayerController.h"
+#include "ProtoType/UIMain.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
 #include "Components/TextBlock.h"
 
+#include "ProtoType/TRGameInstance.h"
+#include "ProtoType/MainMenuPlayerController.h"
 void UUIMain::NativeConstruct()
 {
 	Super::NativeConstruct();

@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UIInGame.h"
+#include "ProtoType/UIInGame.h"
 #include "Components/HorizontalBox.h"
 
 void UUIInGame::ShowInteractionHint(const bool bShow) const

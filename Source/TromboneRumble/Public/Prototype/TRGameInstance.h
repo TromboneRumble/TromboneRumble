@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "TRGameInstance.generated.h"
+
 #define CURRENT_CONTEXT *FString(__FUNCTION__)
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionJoined, const FString&, LobbyCode);
@@ -18,6 +19,9 @@ public:
 	void HostSessionWithCode();
 	void FindAndJoinSessionByCode(const FString& SessionCode);
 
+	UPROPERTY()
+	FOnSessionJoined OnSessionJoined;
+
 protected:
 	virtual void Init() override;
 
@@ -27,12 +31,7 @@ private:
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnFindSessionComplete(bool bWasSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-	
-public:
-	UPROPERTY()
-	FOnSessionJoined OnSessionJoined;
 
-private:
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 	FString CurrentLobbyCode;

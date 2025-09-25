@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "MainMenuGameMode.h"
-#include "MainMenuPlayerController.h"
+#include "ProtoType/MainMenuGameMode.h"
+#include "ProtoType/MainMenuPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 AMainMenuGameMode::AMainMenuGameMode()

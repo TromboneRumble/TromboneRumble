@@ -18,7 +18,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-protected:
 	TSubclassOf<UUserWidget> UIInGameClass;
 
 	UPROPERTY()

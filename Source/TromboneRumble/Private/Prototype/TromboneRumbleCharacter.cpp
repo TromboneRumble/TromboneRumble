@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "TromboneRumbleCharacter.h"
+#include "ProtoType/TromboneRumbleCharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -9,11 +9,12 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "InGamePlayerController.h"
 #include "InputActionValue.h"
-#include "Trumpet.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
+
+#include "ProtoType/Trumpet.h"
+#include "ProtoType/InGamePlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 

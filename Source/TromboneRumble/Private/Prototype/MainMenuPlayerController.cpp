@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MainMenuPlayerController.h"
+#include "ProtoType/MainMenuPlayerController.h"
 #include "Blueprint/UserWidget.h"
 
 AMainMenuPlayerController::AMainMenuPlayerController()

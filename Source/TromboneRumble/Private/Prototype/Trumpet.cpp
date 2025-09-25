@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Trumpet.h"
+#include "ProtoType/Trumpet.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
