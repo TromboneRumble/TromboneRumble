@@ -6,7 +6,7 @@
 
 APT_PlayerController::APT_PlayerController()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> InGameWidgetClassFinder(TEXT("/Game/Blueprints/WBP_InGame.WBP_InGame_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> InGameWidgetClassFinder(TEXT("/Game/Blueprints/Prototype/WBP_PT_InGame.WBP_PT_InGame_C"));
 	if (InGameWidgetClassFinder.Succeeded())
 	{
 		UIInGameClass = InGameWidgetClassFinder.Class;

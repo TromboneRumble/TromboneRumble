@@ -5,7 +5,7 @@
 
 APT_MainMenuPlayerController::APT_MainMenuPlayerController()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> MainMenuWidgetClassFinder(TEXT("/Game/Blueprints/WBP_Main.WBP_Main_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> MainMenuWidgetClassFinder(TEXT("/Game/Blueprints/Prototype/WBP_PT_Main.WBP_PT_Main_C"));
 	if (MainMenuWidgetClassFinder.Succeeded())
 	{
 		UIMainClass = MainMenuWidgetClassFinder.Class;
