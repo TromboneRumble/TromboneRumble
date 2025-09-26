@@ -12,6 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionCreated, const FString&, L
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionJoinURLReady, const FString&, TravelURL);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionSearchFinished, bool, bFoundAny);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionError, const FString&, Reason);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLobbyCodeUpdated, const FString&, LobbyCode);
 
 /**
  * 
@@ -46,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Session")
 	FORCEINLINE FString GetCurrentLobbyCode() const { return CurrentLobbyCode; }
+
+	UFUNCTION(BlueprintPure, Category = "Session")
+	bool TryGetLobbyCode(FString& OutLobbyCode) const;
 public:
 	//----------------------------------------Public Variables--------------------------------------------//
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
@@ -59,6 +63,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
 	FOnSessionError OnSessionError;
+
+	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
+	FOnLobbyCodeUpdated OnLobbyCodeUpdated;
 
 private:
 	void CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections);

@@ -162,6 +162,29 @@ void USessionSubsystem::LeaveOrDestroySession()
 	}
 }
 
+bool USessionSubsystem::TryGetLobbyCode(FString& OutLobbyCode) const
+{
+	if (!CurrentLobbyCode.IsEmpty())
+	{
+		OutLobbyCode = CurrentLobbyCode;
+		return true;
+	}
+
+	if (IOnlineSessionPtr SI = GetSession(); SI.IsValid())
+	{
+		if (const FNamedOnlineSession* Named = SI->GetNamedSession(SessionName))
+		{
+			FString Found;
+			if (Named->SessionSettings.Get(KEY_LOBBY_CODE, Found))
+			{
+				OutLobbyCode = Found;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void USessionSubsystem::CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections)
 {
 	IOnlineSessionPtr SI = GetSession();
@@ -336,6 +359,7 @@ void USessionSubsystem::HandleCreateSessionComplete(FName InSessionName, bool bW
 	}
 
 	OnSessionCreated.Broadcast(CurrentLobbyCode);
+	OnLobbyCodeUpdated.Broadcast(CurrentLobbyCode);
 }
 
 void USessionSubsystem::HandleFindSessionsComplete(bool bWasSuccessful)
@@ -376,6 +400,20 @@ void USessionSubsystem::HandleJoinSessionComplete(FName InSessionName, EOnJoinSe
 	{
 		OnSessionError.Broadcast(FString::Printf(TEXT("SessionSubsystem Error : JoinSession failed. Result=%d from [HandleJoinSessionComplete]"), (int32)Result));
 		return;
+	}
+
+	// 세션 설정에서 로비 코드 읽어 캐싱
+	if (IOnlineSessionPtr SI = GetSession(); SI.IsValid())
+	{
+		if (FNamedOnlineSession* Named = SI->GetNamedSession(SessionName))
+		{
+			FString Found;
+			if (Named->SessionSettings.Get(KEY_LOBBY_CODE, Found))
+			{
+				CurrentLobbyCode = Found;
+				OnLobbyCodeUpdated.Broadcast(CurrentLobbyCode); // UI에 갱신 알림
+			}
+		}
 	}
 
 	FString URL;
