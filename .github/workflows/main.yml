@@ -39,8 +39,8 @@ jobs:
 
       # 4. Google Drive에 업로드
       - name: Upload to Google Drive
-        uses: adityak74/google-drive-upload@v1.2.1
+        uses: willo32/google-drive-upload-action@v1
         with:
+          target: 'D:\UnrealProjects\Windows.zip' # Path to your packaged game 
           credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
-          path: 'D:\UnrealProjects\Windows.zip'
-          folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          parent_folder_id: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
