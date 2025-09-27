@@ -3,13 +3,13 @@ name: Package Unreal Engine Project
 on:
   push:
     branches:
-      - CICD
+      - main
     paths-ignore:
       - 'Windows/**' # windows 폴더 내 모든 파일 제외
       - 'Build/**'
   pull_request:
     branches:
-      - CICD
+      - main
 
 jobs:
   build:
