@@ -36,3 +36,11 @@ jobs:
           cd "D:\UnrealProjects"
           if (Test-Path "Windows.zip") { Remove-Item "Windows.zip" } # 기존 zip 파일 삭제
           Compress-Archive -Path Windows -DestinationPath Windows.zip # Windows 폴더 압축
+
+      # 4. Google Drive에 업로드
+      - name: Upload to Google Drive
+        uses: adityak74/google-drive-upload@v1.2.1
+        with:
+          credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
+          path: 'D:\UnrealProjects\Windows.zip'
+          folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
