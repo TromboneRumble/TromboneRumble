@@ -21,3 +21,22 @@ FName UTromboneFunctionLibrary::GetMapPackageNameByTag(FGameplayTag InMapTag)
     const FString Path = GetMapPathByTag(InMapTag);
     return FName(*Path);
 }
+
+void UTromboneFunctionLibrary::PrintDebug(const FString& Msg, int32 InKey, FLinearColor Color, float Duration,
+	bool bRandomColor, bool bLog)
+{
+#if !UE_BUILD_SHIPPING
+	FColor FinalColor = bRandomColor ? FColor::MakeRandomColor() : Color.ToFColor(true);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(InKey, Duration, FinalColor, Msg);
+	}
+
+	// 로그 출력
+	if (bLog)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
+	}
+#endif
+}

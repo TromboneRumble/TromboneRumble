@@ -4,443 +4,511 @@
 #include "Subsystems/SessionSubsystem.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
-#include "GameFramework/PlayerController.h"
 #include "Online/OnlineSessionNames.h"
-#include "Kismet/GameplayStatics.h"
-#include "Engine/World.h"
-#include "UObject/SoftObjectPath.h"
-#include "UObject/Package.h"
-#include "Characters/DefaultCharacterController.h"
-#include "ProtoType/PT_MainMenuPlayerController.h"
-
 #include "Utilities/DebugHelper.h"
 
-const FName USessionSubsystem::SessionName(TEXT("GameSession"));
 const FName USessionSubsystem::KEY_LOBBY_CODE(TEXT("LOBBY_CODE"));
+
+USessionSubsystem::USessionSubsystem():
+	CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleCreateSessionComplete)),
+	FindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::HandleFindSessionsComplete)),
+	JoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleJoinSessionComplete)),
+	DestroySessionCompleteDelegate(FOnDestroySessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleDestroySessionComplete)),
+	StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleStartSessionComplete))
+{
+}
 
 void USessionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	// 엔진 전역에서 안전하게 세션 인터페이스 획득
-	if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
-	{
-		IOnlineSessionPtr Strong = OSS->GetSessionInterface();
-		if (Strong.IsValid())
-		{
-			// 약참조로만 보관
-			SessionInterfaceWeak = Strong;
-		}
-	}
 
-	if (!SessionInterfaceWeak.IsValid())
+	if (GEngine)
 	{
-		OnSessionError.Broadcast(TEXT("SessionInterface is invalid. Check OnlineSubsystem config."));
-		return;
+		GEngine->OnNetworkFailure().AddUObject(this, &ThisClass::HandleNetworkFailure);
+		GEngine->OnTravelFailure().AddUObject(this, &ThisClass::HandleTravelFailure);
 	}
-
-	BindDelegates();
 }
 
 void USessionSubsystem::Deinitialize()
 {
 	// 자식에서 먼저 정리 시도 -> 부모 정리
-	UnbindDelegates();
 	SessionInterfaceWeak.Reset();
 	Super::Deinitialize();
 }
 
-void USessionSubsystem::HostSessionWithRandomCode(int32 CodeLength, int32 PublicConnections)
+void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString& LobbyCode)
 {
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
+	if (!IsValidSessionInterface())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [HostSessionWithRandomCode]"));
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [CreateSession]"));
 		return;
 	}
-	CreateSession_Internal(GenerateRandomCode(FMath::Max(2, CodeLength)), PublicConnections);
+	if (LobbyCode.IsEmpty())
+	{
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : LobbyCode is empty from [CreateSession]"));
+		return;
+	}
+
+	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+
+	// 기존 세션 있으면 먼저 삭제
+	auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
+	if (ExistingSession != nullptr)
+	{
+		//세션 종료시 재생성 플래그 설정
+		bCreateSessionOnDestroy = true;
+		LastNumPublicConnections = NumPublicConnections;
+		LastLobbyCode = LobbyCode;
+
+		DestroySession();
+	}
+	const bool bLAN = IsLanEnvironment();
+
+	// Store the delegate in a FDelegateHandle so we can later remove it from the delegate list
+	CreateSessionCompleteDelegateHandle = SessionInterface->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
+
+	LastSessionSettings = MakeShareable(new FOnlineSessionSettings());
+	LastSessionSettings->bIsLANMatch = bLAN;
+	LastSessionSettings->NumPublicConnections = NumPublicConnections;
+	LastSessionSettings->bAllowJoinInProgress = true;
+	LastSessionSettings->bAllowJoinViaPresence = true;
+	LastSessionSettings->bShouldAdvertise = true;
+	LastSessionSettings->bUsesPresence = !bLAN; //LAN 모드에서는 false
+	LastSessionSettings->bUseLobbiesIfAvailable = !bLAN; //LAN 모드에서는 false
+
+	/*맵 코드 광고시 주석 해제
+	 FString MapName = GetWorld()->GetMapName();
+	 MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+	 Settings.Set(SETTING_MAPNAME, MapName, EOnlineDataAdvertisementType::ViaOnlineService);
+	 */
+	LastSessionSettings->Set(KEY_LOBBY_CODE, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	//LastSessionSettings->BuildUniqueId = 1;
+
+	bool bStarted = false;
+
+	if (bLAN)
+	{
+		// LAN(NULL) 모드: NetId 없이 LocalUserNum 경로
+		const int32 LocalUserNum = 0;
+		bStarted = SessionInterface->CreateSession(LocalUserNum, NAME_GameSession, *LastSessionSettings);
+	}
+	else
+	{
+		const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+		if (!LocalPlayer || !LocalPlayer->GetPreferredUniqueNetId().IsValid())
+		{
+			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No valid LocalPlayer/UniqueNetId for online host from [CreateSession_Internal]"));
+			return;
+		}
+		const FUniqueNetIdRepl NetId = LocalPlayer->GetPreferredUniqueNetId();
+		bStarted = SessionInterface->CreateSession(*NetId, NAME_GameSession, *LastSessionSettings);
+	}
+	if (!bStarted)
+	{
+		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
+		OnSessionCreateComplete.Broadcast(false);
+		OnSessionError.Broadcast(TEXT("CreateSession failed to start from [CreateSession_Internal]"));
+	}
+	
 }
 
-void USessionSubsystem::HostSessionWithCode(const FString& InLobbyCode, int32 PublicConnections)
+void USessionSubsystem::FindSessions(int32 MaxSearchResults, const FString& InLobbyCode)
 {
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
+	if (!IsValidSessionInterface())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [HostSessionWithCode]"));
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [FindSessions]"));
 		return;
 	}
-	if (InLobbyCode.IsEmpty())
+	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+
+	FindSessionsCompleteDelegateHandle = SessionInterface->AddOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegate);
+
+	const bool bLan = IsLanEnvironment();
+
+	LastSessionSearch = MakeShareable(new FOnlineSessionSearch());
+	LastSessionSearch->MaxSearchResults = MaxSearchResults;
+	LastSessionSearch->bIsLanQuery = bLan;	
+	LastSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, !bLan, EOnlineComparisonOp::Equals);
+	
+	if (!InLobbyCode.IsEmpty())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : Lobby code is empty from [HostSessionWithCode]"));
-		return;
+		LastSessionSearch->QuerySettings.Set(KEY_LOBBY_CODE, InLobbyCode, EOnlineComparisonOp::Equals);
 	}
-	CreateSession_Internal(InLobbyCode, PublicConnections);
+
+	if (bLan)
+	{
+		const int32 LocalUserNum = 0;
+		if (!SessionInterface->FindSessions(LocalUserNum, LastSessionSearch.ToSharedRef()))
+		{
+			SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegateHandle);
+			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : FindSessions failed from [FindSessions]"));
+			OnSessionSearchFinished.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
+		}
+	}
+	else
+	{
+		const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+		if (!SessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), LastSessionSearch.ToSharedRef()))
+		{
+			SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegateHandle);
+			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : FindSessions failed from [FindSessions]"));
+			OnSessionSearchFinished.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
+		}
+	}
+
+	
 }
 
-void USessionSubsystem::FindAndJoinByCode(const FString& InLobbyCode)
+void USessionSubsystem::JoinSession(const FOnlineSessionSearchResult& SessionResult)
 {
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
+	if (!IsValidSessionInterface())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [FindAndJoinByCode]"));
+		OnSessionJoinComplete.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [CreateSession]"));
 		return;
 	}
+	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+	JoinSessionCompleteDelegateHandle = SessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 
-	SessionSearch = MakeShared<FOnlineSessionSearch>();
-	SessionSearch->MaxSearchResults = 50; // 여유 있게 검색
-	SessionSearch->bIsLanQuery = false;
-	//TODO : Presence is deprecated. 대안 찾아야함.
-	//SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-	SessionSearch->QuerySettings.Set(KEY_LOBBY_CODE, InLobbyCode, EOnlineComparisonOp::Equals);
+	const bool bLAN = IsLanEnvironment();
 
-	const int32 LocalUserNum = 0;
-	if (!SI->FindSessions(LocalUserNum, SessionSearch.ToSharedRef()))
+	if (bLAN)
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : FindSessions failed to start from [FindAndJoinByCode]"));
+		int32 LocalUserNum = 0;
+		if (!SessionInterface->JoinSession(LocalUserNum, NAME_GameSession, SessionResult))
+		{
+			SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
+			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : JoinSession failed to start from [HandleFindSessionsComplete]"));
+			OnSessionJoinComplete.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
+		}
+	}
+	else
+	{
+		const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+		if (!SessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionResult))
+		{
+			SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
+			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : JoinSession failed to start from [HandleFindSessionsComplete]"));
+			OnSessionJoinComplete.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
+		}
 	}
 }
 
+void USessionSubsystem::DestroySession()
+{
+	if (!IsValidSessionInterface())
+	{
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [DestroySession]"));
+		OnSessionDestroyComplete.Broadcast(false);
+		return;
+	}
+	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+
+
+	DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
+
+	if (!SessionInterface->DestroySession(NAME_GameSession))
+	{
+		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : DestroySession failed from [DestroySession]"));
+		OnSessionDestroyComplete.Broadcast(false);
+	}
+}
+
+void USessionSubsystem::StartSession()
+{
+}
 void USessionSubsystem::StartGameByPath(const FString& InMapPath)
 {
-	UWorld* World = GetWorld();
-	if (!World)
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : World is null from [StartGameByPath]"));
-		return;
-	}
+	
 
-	// 전달받은 문자열이 "오브젝트 경로(/A/B.Map.Map)"면 패키지 경로("/A/B.Map")로 정규화
-	FString PackagePath = InMapPath;
-	if (PackagePath.Contains(TEXT(".")))
-	{
-		PackagePath = FSoftObjectPath(InMapPath).GetLongPackageName();
-	}
-
-	//호스트면 직접 ServerTravel
-	if (World->GetAuthGameMode() != nullptr) // 권한이 서버
-	{
-		const bool bOK = World->ServerTravel(PackagePath + TEXT("?listen"));
-		if (!bOK)
-		{ 
-			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : ServerTravel failed from [StartGameByPath]"));
-		}
-		return;
-	}
-
-	//클라면 PlayerController의 서버 RPC로 요청(얇은 포워더)
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
-	{
-		// 당신 프로젝트의 PC 클래스로 캐스팅
-		if (auto* MPC = Cast<ADefaultCharacterController>(PC))
-		{
-			//MPC->Server_RequestStartGameByPath(PackagePath); // 아래 2) 참고
-			//return;
-		}
-	}
-	OnSessionError.Broadcast(TEXT("StartGame: No valid PlayerController"));
 }
 
-void USessionSubsystem::LeaveOrDestroySession()
+bool USessionSubsystem::TryGetLobbyCode(FString& OutLobbyCode)
 {
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [LeaveOrDestroySession]"));
-		return;
-	}
 
-	FNamedOnlineSession* Existing = SI->GetNamedSession(SessionName);
-	if (!Existing)
+	//세션 설정에서 재조회
+	if (IsValidSessionInterface())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No existing session from [LeaveOrDestroySession]"));
-		return;
-	}
-
-	if (!SI->DestroySession(SessionName))
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : DestroySession failed to start from [LeaveOrDestroySession]"));
-		Debug::Print(TEXT("DestroySession failed to start."));
-	}
-}
-
-bool USessionSubsystem::TryGetLobbyCode(FString& OutLobbyCode) const
-{
-	if (!CurrentLobbyCode.IsEmpty())
-	{
-		OutLobbyCode = CurrentLobbyCode;
-		return true;
-	}
-
-	if (IOnlineSessionPtr SI = GetSession(); SI.IsValid())
-	{
-		if (const FNamedOnlineSession* Named = SI->GetNamedSession(SessionName))
+		IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
+		if (const FNamedOnlineSession* Named = SI->GetNamedSession(NAME_GameSession))
 		{
 			FString Found;
-			if (Named->SessionSettings.Get(KEY_LOBBY_CODE, Found))
+			if (Named->SessionSettings.Get(KEY_LOBBY_CODE, Found) && !Found.IsEmpty())
 			{
 				OutLobbyCode = Found;
 				return true;
 			}
 		}
 	}
+
+	OutLobbyCode.Reset();
 	return false;
 }
 
-void USessionSubsystem::CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections)
+bool USessionSubsystem::IsLocalHost() const
 {
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
+	if (const UWorld* World = GetWorld())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [CreateSession_Internal]"));
-		return;
+		const ENetMode NM = World->GetNetMode();
+		// 리슨 서버(호스트) 또는 전용 서버일 때 true
+		return (NM == NM_ListenServer || NM == NM_DedicatedServer);
 	}
-
-	// LocalPlayer / NetId (스팀이면 NetId 사용, 아니면 LocalUserNum=0 사용)
-	const ULocalPlayer* LP = GetGameInstance()->GetFirstGamePlayer();
-	const bool bHasValidNetId = (LP && LP->GetPreferredUniqueNetId().IsValid());
-	if (!bHasValidNetId)
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No valid LocalPlayer/UniqueNetID from [CreateSession_Internal]"));
-		return;
-	}
-
-
-	// 기존 세션 있으면 먼저 삭제후 재시도
-	
-	if (SI->GetNamedSession(SessionName))
-	{
-		auto DestroyHandleRef = MakeShared<FDelegateHandle>();
-		*DestroyHandleRef =
-			SI->AddOnDestroySessionCompleteDelegate_Handle(
-				FOnDestroySessionCompleteDelegate::CreateLambda(
-					[this, DestroyHandleRef, InLobbyCode, PublicConnections](FName InSessionName_, bool bWasSuccessful)
-					{
-						// DestroyHandleRef 해제 후 CreateSession_Internal 재호출
-						if (IOnlineSessionPtr S = GetSession(); S.IsValid())
-						{
-							S->ClearOnDestroySessionCompleteDelegate_Handle(*DestroyHandleRef);
-						}
-
-						CreateSession_Internal(InLobbyCode, PublicConnections);
-					})
-			);
-
-		if (!SI->DestroySession(SessionName))
-		{
-			// DestroySession 호출조차 실패하면 Delegate 바로 해제
-			SI->ClearOnDestroySessionCompleteDelegate_Handle(*DestroyHandleRef);
-			OnSessionError.Broadcast(TEXT("DestroySession failed to start."));
-		}
-		return;
-	}
-
-	CurrentLobbyCode = InLobbyCode;
-
-	FOnlineSessionSettings Settings;
-
-	// 플랫폼에 따라 LAN 여부
-	if (bForceLANForTesting)
-	{
-		Settings.bIsLANMatch = true;
-	}
-	else if (const IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
-	{
-		Settings.bIsLANMatch = (OSS->GetSubsystemName() == "NULL");
-	}
-	else
-	{
-		Settings.bIsLANMatch = true; // 안전 기본값
-	}
-
-	Settings.bIsDedicated = false;                 // 리슨 서버
-	Settings.bAllowJoinViaPresence = true;
-	Settings.bShouldAdvertise = true;
-	Settings.NumPublicConnections = FMath::Max(1, PublicConnections);
-	Settings.bUsesPresence = true;
-	Settings.bUseLobbiesIfAvailable = true;
-	Settings.bAllowJoinInProgress = true;
-	
-
-	// (선택) 맵 이름 광고
-	FString MapName = GetWorld()->GetMapName();
-	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
-	Settings.Set(SETTING_MAPNAME, MapName, EOnlineDataAdvertisementType::ViaOnlineService);
-
-	// 로비 코드 광고 (검색과 동일 키/타입)
-	Settings.Set(KEY_LOBBY_CODE, CurrentLobbyCode, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-
-	// 세션 생성 완료시점에 호출될 람다 등록
-	auto CreateHandleRef = MakeShared<FDelegateHandle>();
-	*CreateHandleRef = SI->AddOnCreateSessionCompleteDelegate_Handle(
-		FOnCreateSessionCompleteDelegate::CreateLambda(
-			[this, CreateHandleRef](FName InSessionName, bool bWasSuccessful)
-			{
-				// 콜백 도착시점에 자기자신 해제
-				if (IOnlineSessionPtr S = GetSession(); S.IsValid())
-					S->ClearOnCreateSessionCompleteDelegate_Handle(*CreateHandleRef);
-
-				if (!bWasSuccessful)
-				{
-					OnSessionError.Broadcast(TEXT("CreateSession failed."));
-					return;
-				}
-
-				// UI가 이 이벤트를 받아 "방 코드 표시/대기"만 수행
-				OnSessionCreated.Broadcast(CurrentLobbyCode);
-			})
-	);
-
-	bool bStarted = false;
-	if (LP->GetPreferredUniqueNetId().IsValid()) // 스팀/EOS 등
-	{
-		const FUniqueNetIdRepl NetId = LP->GetPreferredUniqueNetId();
-		bStarted = SI->CreateSession(*NetId, SessionName, Settings);
-	}
-	else // 에디터/Standalone/LAN 테스트
-	{
-		const int32 LocalUserNum = 0;
-		bStarted = SI->CreateSession(LocalUserNum, SessionName, Settings);
-	}
-	//세션 생성 시작 실패
-	if (!bStarted) // 시작 실패 → 콜백 안 옴, 직접 해제
-	{
-		SI->ClearOnCreateSessionCompleteDelegate_Handle(*CreateHandleRef);
-		OnSessionError.Broadcast(TEXT("CreateSession failed to start from [CreateSession_Internal]"));
-	}
+	return false;
 }
 
-void USessionSubsystem::BindDelegates()
-{
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error :IOnlineSessionPtr not valid from [BindDelegates]"));
-		return;
-	}
 
-	CreateCompleteHandle = SI->AddOnCreateSessionCompleteDelegate_Handle(
-		FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleCreateSessionComplete));
 
-	FindCompleteHandle = SI->AddOnFindSessionsCompleteDelegate_Handle(
-		FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::HandleFindSessionsComplete));
+//void USessionSubsystem::CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections)
+//{
+//	IOnlineSessionPtr SI = GetSession();
+//	if (!SI.IsValid())
+//	{
+//		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [CreateSession_Internal]"));
+//		return;
+//	}
+//
+//	const bool bLAN = IsLanEnvironment();
+//
+//	/// OSS 확인: LAN이면 NULL 허용, Online이면 Steam 요구
+//	if (const IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+//	{
+//		const bool bIsNull = (OSS->GetSubsystemName() == "NULL");
+//		if (!bLAN && bIsNull)
+//		{
+//			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : Online host requires Steam, but OSS is NULL from [CreateSession_Internal]"));
+//			return;
+//		}
+//		// bLAN && bIsNull 은 정상 (디버그용)
+//	}
+//	else
+//	{
+//		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No OnlineSubsystem for [CreateSession_Internal]"));
+//		return;
+//	}
+//
+//
+//
+//	// 기존 세션 있으면 먼저 삭제후 재시도
+//	if (SI->GetNamedSession(SessionName))
+//	{
+//		auto DestroyHandleRef = MakeShared<FDelegateHandle>();
+//		*DestroyHandleRef =
+//			SI->AddOnDestroySessionCompleteDelegate_Handle(
+//				FOnDestroySessionCompleteDelegate::CreateLambda(
+//					[this, DestroyHandleRef, InLobbyCode, PublicConnections](FName, bool)
+//					{
+//						if (IOnlineSessionPtr S = GetSession(); S.IsValid())
+//						{
+//							S->ClearOnDestroySessionCompleteDelegate_Handle(*DestroyHandleRef);
+//						}
+//						CreateSession_Internal(InLobbyCode, PublicConnections);
+//					})
+//			);
+//
+//		if (!SI->DestroySession(SessionName))
+//		{
+//			// DestroySession 호출조차 실패하면 Delegate 바로 해제
+//			SI->ClearOnDestroySessionCompleteDelegate_Handle(*DestroyHandleRef);
+//			OnSessionError.Broadcast(TEXT("DestroySession failed to start."));
+//		}
+//		return;
+//	}
+//
+//	CurrentLobbyCode = InLobbyCode;
+//
+//	FOnlineSessionSettings Settings;
+//	Settings.bIsLANMatch = bLAN;
+//	Settings.bIsDedicated = false;                 // 리슨 서버
+//	Settings.bAllowJoinViaPresence = true;
+//	Settings.bShouldAdvertise = true;
+//	Settings.NumPublicConnections = FMath::Max(1, PublicConnections);
+//	Settings.bUsesPresence = true;
+//	Settings.bUseLobbiesIfAvailable = true;
+//	Settings.bAllowJoinInProgress = true;
+//	
+//
+//	// 키워드/로비코드 광고
+//	FString MapName = GetWorld()->GetMapName();
+//	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+//	Settings.Set(SETTING_MAPNAME, MapName, EOnlineDataAdvertisementType::ViaOnlineService);
+//	//Settings.Set(SEARCH_KEYWORDS, FString(TEXT("TRMB1")), EOnlineDataAdvertisementType::ViaOnlineService);
+//
+//	// 로비 코드 광고 (검색과 동일 키/타입)
+//	Settings.Set(KEY_LOBBY_CODE, CurrentLobbyCode, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+//
+//	bool bStarted = false;
+//
+//	if (bLAN)
+//	{
+//		// LAN(NULL) 모드: NetId 없이 LocalUserNum 경로
+//		const int32 LocalUserNum = 0;
+//		bStarted = SI->CreateSession(LocalUserNum, SessionName, Settings);
+//	}
+//	else
+//	{
+//		// Online(Steam) 모드: NetId 필수
+//		const ULocalPlayer* LP = GetGameInstance()->GetFirstGamePlayer();
+//		if (!LP || !LP->GetPreferredUniqueNetId().IsValid())
+//		{
+//			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No valid LocalPlayer/UniqueNetId for online host from [CreateSession_Internal]"));
+//			return;
+//		}
+//		const FUniqueNetIdRepl NetId = LP->GetPreferredUniqueNetId();
+//		bStarted = SI->CreateSession(*NetId, SessionName, Settings);
+//	}
+//
+//	if (!bStarted)
+//	{
+//		OnSessionError.Broadcast(TEXT("CreateSession failed to start from [CreateSession_Internal]"));
+//	}
+//}
 
-	JoinCompleteHandle = SI->AddOnJoinSessionCompleteDelegate_Handle(
-		FOnJoinSessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleJoinSessionComplete));
-
-	DestroyCompleteHandle = SI->AddOnDestroySessionCompleteDelegate_Handle(
-		FOnDestroySessionCompleteDelegate::CreateUObject(this, &ThisClass::HandleDestroySessionComplete));
-}
-
-void USessionSubsystem::UnbindDelegates()
-{
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [UnbindDelegates]"));
-		return;
-	}
-
-	SI->ClearOnCreateSessionCompleteDelegate_Handle(CreateCompleteHandle);
-	SI->ClearOnFindSessionsCompleteDelegate_Handle(FindCompleteHandle);
-	SI->ClearOnJoinSessionCompleteDelegate_Handle(JoinCompleteHandle);
-	SI->ClearOnDestroySessionCompleteDelegate_Handle(DestroyCompleteHandle);
-
-	CreateCompleteHandle.Reset();
-	FindCompleteHandle.Reset();
-	JoinCompleteHandle.Reset();
-	DestroyCompleteHandle.Reset();
-}
 
 void USessionSubsystem::HandleCreateSessionComplete(FName InSessionName, bool bWasSuccessful)
 {
-	if (!bWasSuccessful)
+	if (IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : CreateSession failed from [HandleCreateSessionComplete]"));
-		return;
+		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
 	}
 
-	OnSessionCreated.Broadcast(CurrentLobbyCode);
-	OnLobbyCodeUpdated.Broadcast(CurrentLobbyCode);
+	OnSessionCreateComplete.Broadcast(bWasSuccessful);
 }
 
 void USessionSubsystem::HandleFindSessionsComplete(bool bWasSuccessful)
 {
-	bool bFoundAny = bWasSuccessful && SessionSearch.IsValid() && SessionSearch->SearchResults.Num() > 0;
-	OnSessionSearchFinished.Broadcast(bFoundAny);
-	if (!bFoundAny) return;
-
-	const FOnlineSessionSearchParam* Param = SessionSearch->QuerySettings.SearchParams.Find(KEY_LOBBY_CODE);
-	if (!Param)
+	if (IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : Missing KEY_LOBBY_CODE in QuerySettings from [HandleFindSessionsComplete]"));
-		return;
+		SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegateHandle);
 	}
-	const FString CodeParam = Param->Data.ToString();
 
-	FOnlineSessionSearchResult Chosen;
-	if (!TryChooseResultByCode(CodeParam, Chosen))
-		return;
+	const bool bSearchValid = LastSessionSearch.IsValid();
+	const int32 NumResults = bSearchValid ? LastSessionSearch->SearchResults.Num() : 0;
+	const bool bFoundAny = bWasSuccessful && bSearchValid && NumResults > 0;
 
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid())
+	if (!bWasSuccessful)
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [HandleFindSessionsComplete]"));
+		OnSessionSearchFinished.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : FindSessions finished with failure from [HandleFindSessionsComplete]"));
 		return;
 	}
 
-	const int32 LocalUserNum = 0;
-	if (!SI->JoinSession(LocalUserNum, SessionName, Chosen))
+	if (!bSearchValid)
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : JoinSession failed to start from [HandleFindSessionsComplete]"));
+		OnSessionSearchFinished.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
+		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : SessionSearch invalid from [HandleFindSessionsComplete]"));
+		return;
 	}
+	if (NumResults <= 0)
+	{
+		OnSessionSearchFinished.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
+		const FString Reason = FString::Printf(
+			TEXT("SessionSubsystem Error : No sessions found (bIsLanQuery=%d) from [HandleFindSessionsComplete]"),
+			(int32)LastSessionSearch->bIsLanQuery);
+		OnSessionError.Broadcast(Reason);
+		return;
+	}
+
+	OnSessionSearchFinished.Broadcast(LastSessionSearch->SearchResults, bWasSuccessful);
+
+	//// 로비 코드를 입력해서 찾은 경우
+	//const FOnlineSessionSearchParam* Param = LastSessionSearch->QuerySettings.SearchParams.Find(KEY_LOBBY_CODE);
+	//if (!Param)
+	//{
+	//	OnSessionError.Broadcast(TEXT("SessionSubsystem Error : Missing KEY_LOBBY_CODE in QuerySettings from [HandleFindSessionsComplete]"));
+	//	return;
+	//}
+	//const FString CodeParam = Param->Data.ToString();
+	//if (CodeParam.IsEmpty())
+	//{
+	//	OnSessionError.Broadcast(TEXT("SessionSubsystem Error : Empty KEY_LOBBY_CODE value from [HandleFindSessionsComplete]"));
+	//	return;
+	//}
+
+	//// 찾은 Param에서 LobbyCode가 있는지 확인 
+	//FOnlineSessionSearchResult Chosen;
+	//if (!TryChooseResultByCode(CodeParam, Chosen))
+	//{
+	//	OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No result matched LobbyCode from [HandleFindSessionsComplete]"));
+	//	return;
+	//}
 }
 
 void USessionSubsystem::HandleJoinSessionComplete(FName InSessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	if (Result != EOnJoinSessionCompleteResult::Success)
+	if (IsValidSessionInterface())
 	{
-		OnSessionError.Broadcast(FString::Printf(TEXT("SessionSubsystem Error : JoinSession failed. Result=%d from [HandleJoinSessionComplete]"), (int32)Result));
-		return;
+		IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
 	}
+	OnSessionJoinComplete.Broadcast(Result);
 
-	// 세션 설정에서 로비 코드 읽어 캐싱
-	if (IOnlineSessionPtr SI = GetSession(); SI.IsValid())
-	{
-		if (FNamedOnlineSession* Named = SI->GetNamedSession(SessionName))
-		{
-			FString Found;
-			if (Named->SessionSettings.Get(KEY_LOBBY_CODE, Found))
-			{
-				CurrentLobbyCode = Found;
-				OnLobbyCodeUpdated.Broadcast(CurrentLobbyCode); // UI에 갱신 알림
-			}
-		}
-	}
-
-	FString URL;
-	if (TryGetResolvedConnectString(URL))
-	{
-		OnSessionJoinURLReady.Broadcast(URL);
-	}
-	else
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : Failed to resolve connect string from [HandleJoinSessionComplete]"));
-	}
 }
 
 void USessionSubsystem::HandleDestroySessionComplete(FName InSessionName, bool bWasSuccessful)
 {
-	if (!bWasSuccessful)
+	if (IsValidSessionInterface())
 	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : DestroySession failed from [HandleDestroySessionComplete]"));
+		IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
 	}
-	CurrentLobbyCode.Reset();
+	// 세션 생성 시 기존 세션 있었을 경우 재생성
+	if (bWasSuccessful && bCreateSessionOnDestroy)
+	{
+		bCreateSessionOnDestroy = false;
+		CreateSession(LastNumPublicConnections, LastLobbyCode);
+	}
+	OnSessionDestroyComplete.Broadcast(bWasSuccessful);
 }
+
+void USessionSubsystem::HandleStartSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+}
+
+void USessionSubsystem::HandleNetworkFailure(UWorld* InWorld, UNetDriver* InNetDriver,
+                                             ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	const FString Msg = FString::Printf(TEXT("NetworkFailure: %d %s"), (int32)FailureType, *ErrorString);
+	OnSessionError.Broadcast(Msg);
+}
+
+void USessionSubsystem::HandleTravelFailure(UWorld* InWorld, ETravelFailure::Type FailureType,
+	const FString& ErrorString)
+{
+	const FString Msg = FString::Printf(TEXT("TravelFailure: %d %s"), (int32)FailureType, *ErrorString);
+	OnSessionError.Broadcast(Msg);
+}
+
+bool USessionSubsystem::IsValidSessionInterface()
+{
+
+	IOnlineSessionPtr SessionInterface = nullptr;
+	if (!SessionInterfaceWeak.IsValid())
+	{
+		if (IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get())
+		{
+			SessionInterface = Subsystem->GetSessionInterface();
+			if (SessionInterface)
+			{
+				SessionInterfaceWeak = SessionInterface;
+			}
+			
+			SessionInterface = Subsystem->GetSessionInterface();
+		}
+	}
+	else
+	{
+		SessionInterface = SessionInterfaceWeak.Pin();
+	}
+	return SessionInterface.IsValid();
+}
+
 
 bool USessionSubsystem::TryChooseResultByCode(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const
 {
-	if (!SessionSearch.IsValid()) return false;
+	if (!LastSessionSearch.IsValid()) return false;
 
-	for (const auto& R : SessionSearch->SearchResults)
+	for (const auto& R : LastSessionSearch->SearchResults)
 	{
 		FString FoundCode;
 		if (R.Session.SessionSettings.Get(KEY_LOBBY_CODE, FoundCode))
@@ -455,38 +523,15 @@ bool USessionSubsystem::TryChooseResultByCode(const FString& InLobbyCode, FOnlin
 	return false;
 }
 
-bool USessionSubsystem::TryGetResolvedConnectString(FString& OutURL) const
-{
-	IOnlineSessionPtr SI = GetSession();
-	if (!SI.IsValid()) return false;
-
-	return SI->GetResolvedConnectString(SessionName, OutURL);
-}
-
 bool USessionSubsystem::IsLanEnvironment() const
 {
-	if (bForceLANForTesting)
+#if WITH_EDITOR
+	if (FParse::Param(FCommandLine::Get(), TEXT("nosteam")) ||
+		FParse::Param(FCommandLine::Get(), TEXT("tr_lan")))
+	{
 		return true;
-
-
-	if (const IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
-	{
-		return (OSS->GetSubsystemName() == "NULL"); // NULL 서브시스템이면 LAN
 	}
-	return true; // 안전 기본값: LAN
-}
-
-FString USessionSubsystem::GenerateRandomCode(int32 Length)
-{
-	static const TCHAR* Alphabet = TEXT("ABCDEFGHJKLMNPQRSTUVWXYZ23456789"); // O,0,I,1 제외
-	const int32 N = FCString::Strlen(Alphabet);
-
-	FString Result;
-	Result.Reserve(Length);
-	for (int32 i = 0; i < Length; ++i)
-	{
-		const int32 Index = FMath::RandRange(0, N - 1);
-		Result.AppendChar(Alphabet[Index]);
-	}
-	return Result;
+#endif
+	// 기본은 Online(= Steam)
+	return IOnlineSubsystem::Get()->GetSubsystemName() == "NULL" ? true : false;
 }

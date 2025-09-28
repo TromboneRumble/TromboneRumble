@@ -8,12 +8,12 @@
 #include "SessionSubsystem.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionCreated, const FString&, LobbyCode);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionJoinURLReady, const FString&, TravelURL);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionSearchFinished, bool, bFoundAny);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionCreateComplete, bool, bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSessionsFindComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSessionJoinComplete, EOnJoinSessionCompleteResult::Type Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionDestroyComplete, bool, bWasSuccessful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionError, const FString&, Reason);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLobbyCodeUpdated, const FString&, LobbyCode);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionStartComplete, bool, bWasSuccessful);
 /**
  * 
  */
@@ -23,89 +23,84 @@ class TROMBONERUMBLE_API USessionSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+	USessionSubsystem();
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
-	UFUNCTION(BlueprintCallable, Category = "Session")
-	void HostSessionWithRandomCode(int32 CodeLength = 6, int32 PublicConnections = 4);
-
-	UFUNCTION(BlueprintCallable, Category = "Session")
-	void HostSessionWithCode(const FString& InLobbyCode, int32 PublicConnections = 4);
-
-	UFUNCTION(BlueprintCallable, Category = "Session")
-	void FindAndJoinByCode(const FString& InLobbyCode);
+	void CreateSession(int32 NumPublicConnections, const FString& LobbyCode);
+	void FindSessions(int32 MaxSearchResults, const FString& InLobbyCode = FString(TEXT("")));
+	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
+	void DestroySession();
+	void StartSession();
 
 	UFUNCTION(BlueprintCallable, Category = "Session")
 	void StartGameByPath(const FString& InMapPath);
 
-	UFUNCTION(BlueprintCallable, Category = "Session")
-	void LeaveOrDestroySession();
-
-	// 테스트 시 강제로 LAN 전환(에디터 / Standalone용)
-	UFUNCTION(BlueprintCallable, Category = "Session|Test")
-	FORCEINLINE void SetForceLANForTesting(bool bEnable) { bForceLANForTesting = bEnable; }
+	bool TryGetLobbyCode(FString& OutLobbyCode);
 
 	UFUNCTION(BlueprintPure, Category = "Session")
-	FORCEINLINE FString GetCurrentLobbyCode() const { return CurrentLobbyCode; }
+	bool IsLocalHost() const;
 
-	UFUNCTION(BlueprintPure, Category = "Session")
-	bool TryGetLobbyCode(FString& OutLobbyCode) const;
+	bool IsLanEnvironment() const;
+
 public:
 	//----------------------------------------Public Variables--------------------------------------------//
+
+	// 외부 UI에서 바인딩할 델리게이트
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
-	FOnSessionCreated OnSessionCreated;
+	FOnSessionCreateComplete OnSessionCreateComplete;
+
+	FOnSessionsFindComplete OnSessionSearchFinished;
+
+	FOnSessionJoinComplete OnSessionJoinComplete;
 
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
-	FOnSessionJoinURLReady OnSessionJoinURLReady;
-
-	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
-	FOnSessionSearchFinished OnSessionSearchFinished;
+	FOnSessionDestroyComplete OnSessionDestroyComplete;
 
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
 	FOnSessionError OnSessionError;
 
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
-	FOnLobbyCodeUpdated OnLobbyCodeUpdated;
-
-private:
-	void CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections);
-	void BindDelegates();
-	void UnbindDelegates();
-
-	void HandleCreateSessionComplete(FName InSessionName, bool bWasSuccessful);
-	void HandleFindSessionsComplete(bool bWasSuccessful);
-	void HandleJoinSessionComplete(FName InSessionName, EOnJoinSessionCompleteResult::Type Result);
-	void HandleDestroySessionComplete(FName InSessionName, bool bWasSuccessful);
-
-	// 검색 결과 중 코드 일치 항목을 선택
-	bool TryChooseResultByCode(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
-
-	// TravelURL 계산(조인 후)
-	bool TryGetResolvedConnectString(FString& OutURL) const;
-
-	bool IsLanEnvironment() const;
-	static FString GenerateRandomCode(int32 Length);
-	IOnlineSessionPtr GetSession() const { return SessionInterfaceWeak.Pin(); }
-private:
-	//----------------------------------------Private Variables--------------------------------------------//
-	// Online Subsystem 세션 핸들
-	TWeakPtr<IOnlineSession, ESPMode::ThreadSafe> SessionInterfaceWeak;
-	// 검색/상태
-	TSharedPtr<FOnlineSessionSearch> SessionSearch;
-
-	FDelegateHandle CreateCompleteHandle;
-	FDelegateHandle FindCompleteHandle;
-	FDelegateHandle JoinCompleteHandle;
-	FDelegateHandle DestroyCompleteHandle;
-
-	FString CurrentLobbyCode;
-
-	// 공통 사용하는 세션명
-	static const FName SessionName;
+	FOnSessionStartComplete OnSessionStart;
 
 	// 커스텀 검색/광고 키 (양쪽 동일키 사용)
 	static const FName KEY_LOBBY_CODE;
 
+private:
+	//void CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections);
+	void HandleCreateSessionComplete(FName InSessionName, bool bWasSuccessful);
+	void HandleFindSessionsComplete(bool bWasSuccessful);
+	void HandleJoinSessionComplete(FName InSessionName, EOnJoinSessionCompleteResult::Type Result);
+	void HandleDestroySessionComplete(FName InSessionName, bool bWasSuccessful);
+	void HandleStartSessionComplete(FName SessionName, bool bWasSuccessful);
+	void HandleNetworkFailure(UWorld* InWorld, UNetDriver* InNetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
+	void HandleTravelFailure(UWorld* InWorld, ETravelFailure::Type FailureType, const FString& ErrorString);
+
+	bool IsValidSessionInterface();
+
+	// 검색 결과 중 코드 일치 항목을 선택
+	bool TryChooseResultByCode(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
+private:
+	//----------------------------------------Private Variables--------------------------------------------//
+	// Online Subsystem 세션 핸들
+	TWeakPtr<IOnlineSession, ESPMode::ThreadSafe> SessionInterfaceWeak;
+	TSharedPtr<FOnlineSessionSettings> LastSessionSettings;
+	TSharedPtr<FOnlineSessionSearch> LastSessionSearch;
+
+	// Online Subsystem delegate 핸들
+	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate;
+	FDelegateHandle CreateSessionCompleteDelegateHandle;
+	FOnFindSessionsCompleteDelegate FindSessionsCompleteDelegate;
+	FDelegateHandle FindSessionsCompleteDelegateHandle;
+	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate;
+	FDelegateHandle JoinSessionCompleteDelegateHandle;
+	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate;
+	FDelegateHandle DestroySessionCompleteDelegateHandle;
+	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
+	FDelegateHandle StartSessionCompleteDelegateHandle;
+
+	bool bCreateSessionOnDestroy{ false };
 	UPROPERTY(Transient)
-	bool bForceLANForTesting = false;
+	int32 LastNumPublicConnections;
+	FString LastLobbyCode;
 };
