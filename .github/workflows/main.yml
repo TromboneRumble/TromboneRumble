@@ -1,0 +1,38 @@
+name: Package Unreal Engine Project
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'Windows/**' # windows 폴더 내 모든 파일 제외
+      - 'Build/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+    name: Package Unreal Engine Game
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Unreal Engine 프로젝트 패키징
+      - name: Package Project
+        env: 
+          UE_PATH: 'D:\UE_5.5' # Path to your Unreal Engine installation
+          PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble\TromboneRumble.uproject' # Path to your Unreal project file
+          OUTPUT_PATH: 'D:\UnrealProjects' # Path to where you want to store the packaged game
+        run: |
+          # Try to run empty UAT to check for correct path
+          & $env:UE_PATH\Engine\Build\BatchFiles\RunUAT.bat BuildCookRun -project="$env:PROJECT_PATH" -noP4 -platform=Win64 -clientconfig=Development -serverconfig=Development -cook -allmaps -build -stage -pak -archive -archivedirectory="$env:OUTPUT_PATH"
+        
+      # 3. Windows 폴더 압축
+      - name: Compress Windows Folder
+        run: |
+          cd "D:\UnrealProjects"
+          if (Test-Path "Windows.zip") { Remove-Item "Windows.zip" } # 기존 zip 파일 삭제
+          Compress-Archive -Path Windows -DestinationPath Windows.zip # Windows 폴더 압축
