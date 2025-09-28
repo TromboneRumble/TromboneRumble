@@ -69,6 +69,7 @@ void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString&
 
 	LastSessionSettings = MakeShareable(new FOnlineSessionSettings());
 	LastSessionSettings->bIsLANMatch = bLAN;
+	LastSessionSettings->bIsDedicated = false;
 	LastSessionSettings->NumPublicConnections = NumPublicConnections;
 	LastSessionSettings->bAllowJoinInProgress = true;
 	LastSessionSettings->bAllowJoinViaPresence = true;
@@ -441,6 +442,36 @@ void USessionSubsystem::HandleJoinSessionComplete(FName InSessionName, EOnJoinSe
 		IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
 	}
+	IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
+	FString ConnectString;
+	const bool bGot = SI.IsValid() ? SI->GetResolvedConnectString(InSessionName, ConnectString) : false;
+	Debug::Print(FString::Printf(TEXT("GetResolvedConnectString=%s, URL=%s"),
+		bGot ? TEXT("true") : TEXT("false"),
+		*ConnectString));
+	if (Result == EOnJoinSessionCompleteResult::Success && bGot)
+	{
+	}
+	else
+	{
+		// CouldNotRetrieveAddress로 매핑 안 되는 경우가 있어 수동 메시지
+		FString ResultText;
+		switch (Result)
+		{
+		case EOnJoinSessionCompleteResult::Success:                 ResultText = TEXT("Success"); break;
+		case EOnJoinSessionCompleteResult::SessionIsFull:           ResultText = TEXT("SessionIsFull"); break;
+		case EOnJoinSessionCompleteResult::SessionDoesNotExist:     ResultText = TEXT("SessionDoesNotExist"); break;
+		case EOnJoinSessionCompleteResult::CouldNotRetrieveAddress: ResultText = TEXT("CouldNotRetrieveAddress"); break;
+		case EOnJoinSessionCompleteResult::AlreadyInSession:        ResultText = TEXT("AlreadyInSession"); break;
+		default:                                                    ResultText = TEXT("Unknown"); break;
+		}
+
+		FString Reason = FString::Printf(TEXT("Join failed (%s). ResolvedURL ok? %d"),
+			*ResultText, static_cast<int32>(bGot));
+		OnSessionError.Broadcast(Reason);
+	}
+
+
+
 	OnSessionJoinComplete.Broadcast(Result);
 
 }

@@ -175,6 +175,8 @@ void UMainMenuWidget::OnFindSession(const TArray<FOnlineSessionSearchResult>& Se
 		Result.Session.SessionSettings.Get(SessionsSubsystem->KEY_LOBBY_CODE, SettingsValue);
 		if (SettingsValue == LobbyCode)
 		{
+			Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
+			Result.Session.SessionSettings.bUsesPresence = true;
 			SessionsSubsystem->JoinSession(Result);
 			return;
 		}
@@ -184,6 +186,9 @@ void UMainMenuWidget::OnFindSession(const TArray<FOnlineSessionSearchResult>& Se
 
 void UMainMenuWidget::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 {
+	HostButton->SetIsEnabled(true);
+	JoinButton->SetIsEnabled(true);
+
 	// Join실패일 경우에는 이유 설명하고 리턴
 	if (Result != EOnJoinSessionCompleteResult::Success)
 	{
