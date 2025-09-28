@@ -4,7 +4,6 @@
 #include "UI/UserWidgets/MainMenuWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
-
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
@@ -12,7 +11,6 @@
 #include "TromboneGamePlayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
-#include "UObject/Package.h"
 
 
 void UMainMenuWidget::InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const MatchState InState)
@@ -112,7 +110,7 @@ void UMainMenuWidget::RemoveSubsystemCallbacks()
 		SessionsSubsystem->OnSessionDestroyComplete.RemoveDynamic(this, &ThisClass::OnDestroySession);
 		SessionsSubsystem->OnSessionError.RemoveDynamic(this, &ThisClass::OnSessionError);
 		SessionsSubsystem->OnSessionStart.RemoveDynamic(this, &ThisClass::OnStartSession);
-		SessionsSubsystem->OnSessionSearchFinished.RemoveAll(this); // AddUObject는 RemoveAll/Handle 필요
+		SessionsSubsystem->OnSessionSearchFinished.RemoveAll(this);
 		SessionsSubsystem->OnSessionJoinComplete.RemoveAll(this);
 	}
 }
@@ -127,7 +125,6 @@ void UMainMenuWidget::OnCreateSession(bool bWasSuccessful)
 			const FString URL = LobbyPkg + TEXT("?listen");
 			Debug::Print(URL);
 			UGameplayStatics::OpenLevel(this, FName(*URL), true);
-			//World->ServerTravel(CachedLobbyMapPath);
 		}
 	}
 	else

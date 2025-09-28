@@ -59,7 +59,7 @@ void ULobbyWidget::NativeConstruct()
 	}
 
 	FString LobbyCode;
-	if (SessionsSubsystem->TryGetLobbyCode(LobbyCode))
+	if (SessionsSubsystem->TryGetCurrentLobbyCode(LobbyCode))
 	{
 		LobbyText->SetText(FText::FromString(LobbyCode));
 	}

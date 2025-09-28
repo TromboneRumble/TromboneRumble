@@ -4,7 +4,6 @@
 
 namespace TromboneGamePlayTags
 {
-	// FRONTENDUI_API : 이 변수를 모듈 밖에서도 사용할 수 있도록 export/import 처리 (다른 모듈에서 접근 가능)
 	// UE_DECLARE_GAMEPLAY_TAG_EXTERN : 전역 GameplayTag 변수 선언 (extern과 동일, 정의는 .cpp에서 UE_DEFINE_GAMEPLAY_TAG로)
 
 	//TromboneMaps

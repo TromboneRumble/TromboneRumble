@@ -64,7 +64,6 @@ private:
 	void JoinButtonClicked();
 	// ~ Button Callbacks
 
-
 	FString GenerateRandomLobbyCode(int32 Length);
 	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
 

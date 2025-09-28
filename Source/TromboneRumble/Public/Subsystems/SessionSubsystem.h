@@ -31,17 +31,16 @@ public:
 	void FindSessions(int32 MaxSearchResults, const FString& InLobbyCode = FString(TEXT("")));
 	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
 	void DestroySession();
-	void StartSession();
 
-	UFUNCTION(BlueprintCallable, Category = "Session")
-	void StartGameByPath(const FString& InMapPath);
-
-	bool TryGetLobbyCode(FString& OutLobbyCode);
+	bool TryGetCurrentLobbyCode(FString& OutLobbyCode);
 
 	UFUNCTION(BlueprintPure, Category = "Session")
 	bool IsLocalHost() const;
 
 	bool IsLanEnvironment() const;
+
+	// 검색한 세션 중 로비 코드와 일치하는 세션을 찾아 반환
+	bool FindMatchingLobbyInResult(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
 
 public:
 	//----------------------------------------Public Variables--------------------------------------------//
@@ -67,7 +66,6 @@ public:
 	static const FName KEY_LOBBY_CODE;
 
 private:
-	//void CreateSession_Internal(const FString& InLobbyCode, int32 PublicConnections);
 	void HandleCreateSessionComplete(FName InSessionName, bool bWasSuccessful);
 	void HandleFindSessionsComplete(bool bWasSuccessful);
 	void HandleJoinSessionComplete(FName InSessionName, EOnJoinSessionCompleteResult::Type Result);
@@ -78,8 +76,6 @@ private:
 
 	bool IsValidSessionInterface();
 
-	// 검색 결과 중 코드 일치 항목을 선택
-	bool TryChooseResultByCode(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
 private:
 	//----------------------------------------Private Variables--------------------------------------------//
 	// Online Subsystem 세션 핸들
@@ -102,5 +98,6 @@ private:
 	bool bCreateSessionOnDestroy{ false };
 	UPROPERTY(Transient)
 	int32 LastNumPublicConnections;
+	UPROPERTY(Transient)
 	FString LastLobbyCode;
 };
