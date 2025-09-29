@@ -20,5 +20,16 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	void InitCharacter() const;
+	void SetupCapsuleComponent() const;
+	void SetupSkeletalMeshComponent() const;
+	void SetupMovementComponent() const;
+	
+	void StartRagdoll();
+	void StopRagdoll();
 
+private:
+	FTimerHandle RagdollTimerHandle;
+	float RagdollDuration = 3.0f;
+	bool bIsRagdoll = false;
 };
