@@ -2,4 +2,9 @@
 
 
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Characters/DefaultCharacterController.h"
 
+void ADefaultTromboneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
