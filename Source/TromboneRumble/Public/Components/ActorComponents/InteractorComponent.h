@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "InteractorComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractableAvailable, bool, bAvailable);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBestCandidateChanged, AActor*, NewTarget);
+
 /// <summary>
 /// IInteractable이 있는 액터와 상호작용할수 있는 컴포넌트
 /// IInteractable이 구현되어있는 액터는 InteractionTriggerComponent가 있어야함
@@ -18,31 +21,29 @@ class TROMBONERUMBLE_API UInteractorComponent : public UActorComponent
 public:
 	UInteractorComponent();
 
-    /// <summary>
-    /// 명시적으로 지정된 대상 또는 기본 대상과 상호작용을 시도
-    /// </summary>
-    /// <param name="ExplicitTarget">상호작용을 시도할 명시적인 대상 액터. nullptr이면 기본 대상과 상호작용</param>
     UFUNCTION(BlueprintCallable, Category = "Interact")
     void TryInteract(AActor* ExplicitTarget = nullptr);
 
-    // UInteractionTriggerComponent
-    void RegisterCandidate(AActor* Candidate);
-    void UnregisterCandidate(AActor* Candidate);
-    // ~UInteractionTriggerComponent
+    void RegisterCandidate(AActor* InCandidate);
+    void UnregisterCandidate(AActor* InCandidate);
 
-    FORCEINLINE const TArray<TWeakObjectPtr<AActor>>& GetCandidates() { return Candidates; }
+    UPROPERTY(BlueprintAssignable, Category = "Interact")
+    FOnInteractableAvailable OnInteractableAvailable;
 
-    // TODO : 후보 선정 정책(거리/정면각/라인오브사이트 등) 나중에 확장
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact")
-    bool bPreferLastEntered = true;
-private:
-    AActor* GetBestCandidate() const;
-
+    UPROPERTY(BlueprintAssignable, Category = "Interact")
+    FOnBestCandidateChanged OnBestCandidateChanged;
+protected:
     UFUNCTION(Server, Reliable)
     void Server_TryInteract(AActor* Target);
+private:
+    AActor* GetBestCandidate() const;
+    void CleanupCandidates();
 
     UPROPERTY()
     TArray<TWeakObjectPtr<AActor>> Candidates;
+
+    UPROPERTY()
+    TWeakObjectPtr<AActor> BestCandidateCached;
 
     
 		

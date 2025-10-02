@@ -2,6 +2,10 @@
 
 
 #include "Characters/DefaultCharacterController.h"
+#include "Characters/DefaultTromboneCharacter.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputActionValue.h"
 #include "ProtoType/PT_UIInGame.h"
 #include "Blueprint/UserWidget.h"
 
@@ -45,9 +49,70 @@ void ADefaultCharacterController::BeginPlay()
 void ADefaultCharacterController::OnPossess(APawn* APawn)
 {
 	Super::OnPossess(APawn);
+	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(APawn);
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			if (DefaultMappingContext)
+			{
+				Subsystem->AddMappingContext(DefaultMappingContext,0);
+			}
+		}
+	}
 }
 
 void ADefaultCharacterController::OnUnPossess()
 {
 	Super::OnUnPossess();
+	CachedOwnerCharacter = nullptr;
+}
+
+void ADefaultCharacterController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		if (MoveAction)    EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Move);
+		if (LookAction)    EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Look);
+		if (InteractAction)EIC->BindAction(InteractAction, ETriggerEvent::Started, this, &ThisClass::Handle_Interact);
+		if (TackleAction)  EIC->BindAction(TackleAction, ETriggerEvent::Started, this, &ThisClass::Handle_Tackle);
+		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Handle_JumpPressed);
+		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::Handle_JumpReleased);
+	}
+}
+
+void ADefaultCharacterController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
+void ADefaultCharacterController::Handle_Move(const struct FInputActionValue& Value)
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Move(Value);
+}
+
+void ADefaultCharacterController::Handle_Look(const struct FInputActionValue& Value)
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Look(Value);
+}
+
+void ADefaultCharacterController::Handle_JumpPressed()
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Jump();
+}
+
+void ADefaultCharacterController::Handle_JumpReleased()
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->StopJumping();
+}
+
+void ADefaultCharacterController::Handle_Interact()
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Interact();
+}
+
+void ADefaultCharacterController::Handle_Tackle()
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Tackle();
 }

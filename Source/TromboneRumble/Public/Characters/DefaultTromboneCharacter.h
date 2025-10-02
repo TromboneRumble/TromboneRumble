@@ -9,9 +9,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
-class UInputMappingContext;
-class UInputAction;
-struct FInputActionValue;
+class UInteractorComponent;
 class ATrumpet;
 
 /**
@@ -23,39 +21,42 @@ class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBa
 	GENERATED_BODY()
 
 public:
+	ADefaultTromboneCharacter();
 
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	void Move(const struct FInputActionValue& Value);
+	void Look(const struct FInputActionValue& Value);
+	void Interact();
+	void Tackle();
+protected:
+
+	// Server RPCs
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(Server, Reliable)
+	void Server_Interaction(AActor* Interactable);
+	UFUNCTION(Server, Reliable)
+	void Server_Tackle();
+	// ~Server RPCs
+
+	FORCEINLINE bool IsTackling() const { return bIsTackling; }
 private:
+	void EndTackleAnimation();
+
+	// Components
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-
-
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> JumpAction;
-
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> MoveAction;
-
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> LookAction;
-
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> GrabAction;
-
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> TackleAction;
-
-	float InteractionDistance = 2000.0f;
-
 	UPROPERTY()
-	TObjectPtr<class APT_Trumpet> FocusedTrumpet = nullptr;
+	TObjectPtr<UInteractorComponent> InteractorComponent;
+	// ~Components
 
-	UPROPERTY()
-	TObjectPtr<class APT_Trumpet> HeldTrumpet = nullptr;
+	UPROPERTY(Replicated)
+	bool bIsTackling = false;
 
+	UPROPERTY(Replicated)
+	bool bHasTempTrumpet = false;
 	float TackleAnimationDuration = 1.0f;
 };

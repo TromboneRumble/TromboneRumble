@@ -2,7 +2,6 @@
 
 
 #include "Components/ActorComponents/InteractorComponent.h"
-
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Interfaces/Interactable.h"
 
@@ -17,32 +16,89 @@ void UInteractorComponent::TryInteract(AActor* ExplicitTarget)
     AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
     if (!Target) return;
 
-    Server_TryInteract(Target);
+    if (GetOwnerRole() == ROLE_Authority)
+    {
+        if (UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>())
+        {
+            Trigger->Server_TryInteractAndConsume(GetOwner());
+        }
+    }
+    else
+    {
+        Server_TryInteract(Target);
+    }
 }
 
-void UInteractorComponent::RegisterCandidate(AActor* Candidate)
+void UInteractorComponent::RegisterCandidate(AActor* InCandidate)
 {
-    if (Candidate) Candidates.AddUnique(Candidate);
+    if (!IsValid(InCandidate)) return;
+
+    for (auto& Candidate : Candidates)
+    {
+        if (Candidate.Get() == InCandidate) return;
+    }
+    Candidates.Add(InCandidate);
+
+    AActor* NewBest = GetBestCandidate();
+    if (NewBest != BestCandidateCached.Get())
+    {
+        BestCandidateCached = NewBest;
+        OnBestCandidateChanged.Broadcast(NewBest);
+    }
 }
 
-void UInteractorComponent::UnregisterCandidate(AActor* Candidate)
+void UInteractorComponent::UnregisterCandidate(AActor* InCandidate)
 {
-    Candidates.Remove(Candidate);
+    bool bRemoved = false;
+    for (int32 i = Candidates.Num() - 1; i >= 0; --i)
+    {
+        if (Candidates[i].Get() == InCandidate)
+        {
+            Candidates.RemoveAt(i);
+            bRemoved = true;
+        }
+        else if (!Candidates[i].IsValid())
+        {
+            Candidates.RemoveAt(i);
+        }
+    }
+
+    const bool bAny = Candidates.Num() > 0;
+    OnInteractableAvailable.Broadcast(bAny);
+
+    AActor* NewBest = GetBestCandidate();
+    if (NewBest != BestCandidateCached.Get())
+    {
+        BestCandidateCached = NewBest;
+        OnBestCandidateChanged.Broadcast(NewBest);
+    }
 }
 
 AActor* UInteractorComponent::GetBestCandidate() const
 {
     // 마지막으로 들어온 후보를 최우선
-    if (bPreferLastEntered)
+    for (int32 i = Candidates.Num() - 1; i >= 0; --i)
     {
-        for (int32 i = Candidates.Num() - 1; i >= 0; --i)
+        if (AActor* A = Candidates[i].Get())
         {
-            if (Candidates[i].IsValid()) return Candidates[i].Get();
+            if (A->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+            {
+                return A;
+            }
         }
-        return nullptr;
     }
-    //TODO : Interact가능한 개체중 Trumpet이 있는지 체크
     return nullptr;
+}
+
+void UInteractorComponent::CleanupCandidates()
+{
+    for (int32 i = Candidates.Num() - 1; i >= 0; --i)
+    {
+        if (!Candidates[i].IsValid())
+        {
+            Candidates.RemoveAt(i);
+        }
+    }
 }
 
 void UInteractorComponent::Server_TryInteract_Implementation(AActor* Target)

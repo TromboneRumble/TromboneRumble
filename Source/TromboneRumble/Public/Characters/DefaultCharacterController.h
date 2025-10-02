@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "DefaultCharacterController.generated.h"
 
-
+class UInteractorComponent;
 class UPT_UIInGame;
 class UInputMappingContext;
 class UInputAction;
@@ -46,20 +46,19 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
-	void TraceForInteractable();
 
 	// Input handlers
 	void Handle_Move(const struct FInputActionValue& Value);
 	void Handle_Look(const struct FInputActionValue& Value);
+	void Handle_JumpPressed();
+	void Handle_JumpReleased();
 	void Handle_Interact();
 	void Handle_Tackle();
-	void Handle_Drop();
 	// ~Input handlers
+
 
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
-	UPROPERTY(Transient)
-	TObjectPtr<AActor> CachedFocusedACtor = nullptr;
 
 	TSubclassOf<UUserWidget> UIInGameClass;
 
