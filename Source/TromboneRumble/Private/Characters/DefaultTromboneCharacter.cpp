@@ -11,6 +11,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Utilities/DebugHelper.h"
 
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -79,18 +80,20 @@ void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
 
 void ADefaultTromboneCharacter::Interact()
 {
-	if (InteractorComponent)
+	Debug::Print(TEXT("Interact Clicked"));
+	/*if (InteractorComponent)
 	{
 		InteractorComponent->TryInteract();
-	}
+	}*/
 }
 
 void ADefaultTromboneCharacter::Tackle()
 {
-	if (!IsTackling())
-	{
-		Server_Tackle();
-	}
+	Debug::Print(TEXT("Tackle Clicked"));
+	//if (!IsTackling())
+	//{
+	//	Server_Tackle();
+	//}
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

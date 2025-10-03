@@ -22,7 +22,7 @@ bool ULobbyWidget::Initialize()
 		return false;
 	}
 
-	const FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_ProtoTypeInGameMap);
+	const FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);
 	checkf(!InGameMapPath.IsEmpty(), TEXT("InGameMapPath map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedInGameMapPath = InGameMapPath;
 
