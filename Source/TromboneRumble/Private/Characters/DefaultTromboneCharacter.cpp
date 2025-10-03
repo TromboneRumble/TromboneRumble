@@ -81,10 +81,10 @@ void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
 void ADefaultTromboneCharacter::Interact()
 {
 	Debug::Print(TEXT("Interact Clicked"));
-	/*if (InteractorComponent)
+	if (InteractorComponent)
 	{
 		InteractorComponent->TryInteract();
-	}*/
+	}
 }
 
 void ADefaultTromboneCharacter::Tackle()
@@ -94,6 +94,20 @@ void ADefaultTromboneCharacter::Tackle()
 	//{
 	//	Server_Tackle();
 	//}
+}
+
+void ADefaultTromboneCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	CachedCharacterController = Cast<ADefaultCharacterController>(GetController());
+	checkf(InteractorComponent, TEXT("InteractorComponent is missing on %s."), *GetName());
+
+	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+}
+void ADefaultTromboneCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -108,6 +122,14 @@ void ADefaultTromboneCharacter::EndTackleAnimation()
 	if (HasAuthority())
 	{
 		bIsTackling = false;
+	}
+}
+
+void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
+{
+	if (ADefaultCharacterController* PC = CachedCharacterController.Get())
+	{
+		PC->ShowInteractionUI(bAvailable);
 	}
 }
 

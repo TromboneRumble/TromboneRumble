@@ -7,6 +7,7 @@
 #include "DefaultTromboneCharacter.generated.h"
 
 
+class ADefaultCharacterController;
 class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
@@ -28,10 +29,11 @@ public:
 	void Interact();
 	void Tackle();
 protected:
-
-	// Server RPCs
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
+	
+	// Server RPCs
 	UFUNCTION(Server, Reliable)
 	void Server_Interaction(AActor* Interactable);
 	UFUNCTION(Server, Reliable)
@@ -42,6 +44,9 @@ protected:
 private:
 	void EndTackleAnimation();
 
+	UFUNCTION()
+	void HandleInteractableAvailableChanged(bool bAvailable);
+
 	// Components
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -51,6 +56,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UInteractorComponent> InteractorComponent;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ADefaultCharacterController> CachedCharacterController;
 	// ~Components
 
 	UPROPERTY(Replicated)

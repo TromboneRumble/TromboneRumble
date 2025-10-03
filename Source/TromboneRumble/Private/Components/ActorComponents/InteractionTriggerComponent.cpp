@@ -2,16 +2,22 @@
 
 
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
-#include "Components/ShapeComponent.h"
 #include "Components/SphereComponent.h"
-#include "Components/BoxComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Utilities/DebugHelper.h"
 
 UInteractionTriggerComponent::UInteractionTriggerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	SetIsReplicatedByDefault(true);
+
+	TriggerVolume = CreateDefaultSubobject<USphereComponent>(TEXT("InteractTrigger"));
+	TriggerVolume->InitSphereRadius(120.f);
+	TriggerVolume->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	TriggerVolume->SetCollisionObjectType(ECC_WorldDynamic);
+	TriggerVolume->SetGenerateOverlapEvents(true);
+	TriggerVolume->SetSimulatePhysics(false);
 }
 
 void UInteractionTriggerComponent::Server_TryInteractAndConsume_Implementation(AActor* InstigatorActor)
@@ -52,34 +58,16 @@ void UInteractionTriggerComponent::OnDroppedToWorld_Implementation()
 void UInteractionTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	if (Trigger)
+	AActor* Owner = GetOwner();
+	USceneComponent* RootComp = Owner->GetRootComponent();
+	if (TriggerVolume)
 	{
-		Trigger->OnComponentBeginOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleBeginOverlap);
-		Trigger->OnComponentEndOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleEndOverlap);
+		TriggerVolume->AttachToComponent(RootComp, FAttachmentTransformRules::KeepRelativeTransform);
+		TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleBeginOverlap);
+		TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleEndOverlap);
 		SetCollisionEnabled(bTriggerActive);
 	}
 
-}
-void UInteractionTriggerComponent::OnRegister()
-{
-	Super::OnRegister();
-	// Trigger 컴포넌트가 없으면 임의로 생성
-	if (!Trigger && TriggerClass)
-	{
-		Trigger = NewObject<UShapeComponent>(GetOwner(), TriggerClass, TEXT("InteractTrigger"));
-		Trigger->RegisterComponent();
-		Trigger->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-		SetupCollision(Trigger);
-	}
-	else if (!Trigger)
-	{
-		USphereComponent* Sphere = NewObject<USphereComponent>(GetOwner(), TEXT("InteractSphere"));
-		Sphere->InitSphereRadius(120.f);
-		Sphere->RegisterComponent();
-		Sphere->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-		Trigger = Sphere;
-		SetupCollision(Trigger);
-	}
 }
 
 void UInteractionTriggerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -92,12 +80,21 @@ void UInteractionTriggerComponent::GetLifetimeReplicatedProps(TArray<FLifetimePr
 void UInteractionTriggerComponent::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!bTriggerActive || !OtherActor) return;
+	if (!bTriggerActive || !OtherActor)
+	{
+		Debug::Print(TEXT("TriggerNotActive or OtherActor is None"));
+		return;
+	}
 
 	if (UInteractorComponent* Interactor = OtherActor->FindComponentByClass<UInteractorComponent>())
 	{
 		OverlappingInteractors.Add(Interactor);
 		Interactor->RegisterCandidate(GetOwner());
+		Debug::Print(FString::Printf(TEXT("Registered Candidate: %s"), *Interactor->GetOwner()->GetName()));
+	}
+	else
+	{
+		Debug::Print(TEXT("No UInteractorComponent Found"));
 	}
 }
 
@@ -110,6 +107,7 @@ void UInteractionTriggerComponent::HandleEndOverlap(UPrimitiveComponent* Overlap
 	{
 		OverlappingInteractors.Remove(Interactor);
 		Interactor->UnregisterCandidate(GetOwner());
+		Debug::Print(FString::Printf(TEXT("UnRegistered Candidate: %s"), *Interactor->GetOwner()->GetName()));
 	}
 }
 
@@ -145,9 +143,9 @@ void UInteractionTriggerComponent::SetupCollision(UShapeComponent* Shape)
 
 void UInteractionTriggerComponent::SetCollisionEnabled(bool bEnable)
 {
-	if (!Trigger) return;
-	Trigger->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	Trigger->SetGenerateOverlapEvents(bEnable);
+	if (!TriggerVolume) return;
+	TriggerVolume->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	TriggerVolume->SetGenerateOverlapEvents(bEnable);
 }
 
 void UInteractionTriggerComponent::ForceRemoveThisFromAllInteractors()

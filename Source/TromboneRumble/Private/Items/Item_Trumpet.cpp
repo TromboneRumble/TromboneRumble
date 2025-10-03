@@ -18,7 +18,7 @@ AItem_Trumpet::AItem_Trumpet()
     TrumpetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrumpetMesh"));
     SetRootComponent(TrumpetMesh);
     TrumpetMesh->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
-    TrumpetMesh->SetSimulatePhysics(true);
+    TrumpetMesh->SetSimulatePhysics(false);
 
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
     CapsuleComponent->SetupAttachment(RootComponent);
@@ -49,13 +49,13 @@ AItem_Trumpet::AItem_Trumpet()
 
 bool AItem_Trumpet::CanInteract_Implementation(AActor* InstigatorActor) const
 {
+    // 이미 누군가 장착 중이면 못 줍기
     return !bIsEquipped;
 }
 
 void AItem_Trumpet::Interact_Implementation(AActor* InstigatorActor)
 {
     if (!HasAuthority()) return;
-    if (!Execute_CanInteract(this, InstigatorActor)) return;
 
     IEquipable::Execute_Equip(this, InstigatorActor);
 }
@@ -139,7 +139,7 @@ void AItem_Trumpet::SetPickupTriggerEnabled_Server(bool bEnable)
     }
     else
     {
-        InteractTrigger->ActivateTrigger(false); // 후보 제거
+        //InteractTrigger->ActivateTrigger(false); // 후보 제거
     }
 }
 

@@ -29,6 +29,7 @@ public:
 	// ~Interfaces
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+   
 
 private:
     // Components
@@ -60,7 +61,7 @@ private:
     void SetPickupTriggerEnabled_Server(bool bEnable);
     void ReEnableTriggerAfterDrop_Server();
 
-    // Drop 튕김 연출
+    // Drop Values
     UPROPERTY(EditDefaultsOnly, Category = "Trumpet|Drop")
     float ForwardImpulse = 500.f;
 

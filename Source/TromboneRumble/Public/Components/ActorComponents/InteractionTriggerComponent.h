@@ -7,7 +7,7 @@
 #include "Interfaces/Interactable.h"
 #include "InteractionTriggerComponent.generated.h"
 
-class UShapeComponent;
+class USphereComponent;
 class UInteractorComponent;
 
 /// <summary>
@@ -33,7 +33,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnRegister() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
@@ -57,12 +56,9 @@ private:
 
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UShapeComponent> Trigger;
+	TObjectPtr<USphereComponent> TriggerVolume = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact", meta = (AllowPrivateAccess = true))
-	TSubclassOf<UShapeComponent> TriggerClass = nullptr;
-
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleAnywhere, Category = "Interact", meta = (AllowPrivateAccess = true))
 	TSet<TWeakObjectPtr<UInteractorComponent>> OverlappingInteractors;
 
 	UPROPERTY(ReplicatedUsing = OnRep_TriggerActive)

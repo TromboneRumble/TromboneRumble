@@ -56,12 +56,11 @@ private:
 	void Handle_Tackle();
 	// ~Input handlers
 
-
-	UPROPERTY(Transient)
-	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
-
 	TSubclassOf<UUserWidget> UIInGameClass;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UPT_UIInGame> UIInGame;
+
+	UPROPERTY(Transient)
+	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
 };

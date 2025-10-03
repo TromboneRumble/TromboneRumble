@@ -40,6 +40,14 @@ void UInteractorComponent::RegisterCandidate(AActor* InCandidate)
     Candidates.Add(InCandidate);
 
     AActor* NewBest = GetBestCandidate();
+    if (NewBest)
+    {
+        OnInteractableAvailable.Broadcast(true);
+    }
+    else
+    {
+        OnInteractableAvailable.Broadcast(false);
+    }
     if (NewBest != BestCandidateCached.Get())
     {
         BestCandidateCached = NewBest;
