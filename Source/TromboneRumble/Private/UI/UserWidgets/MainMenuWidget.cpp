@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/UserWidgets/MainMenuWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
@@ -12,8 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
-
-void UMainMenuWidget::InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const MatchState InState)
+void UMainMenuWidget::InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const EMatchState InState)
 {
 	LobbyCodeText->SetText(FText::GetEmpty());
 	NumPublicConnections = InNumPublicConnections;
@@ -43,9 +41,7 @@ bool UMainMenuWidget::Initialize()
 		return false;
 	}
 	
-
 	return true;
-
 }
 
 void UMainMenuWidget::NativePreConstruct()

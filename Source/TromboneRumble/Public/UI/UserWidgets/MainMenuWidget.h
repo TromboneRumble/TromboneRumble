@@ -5,25 +5,13 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Utilities/Defines.h"
 #include "MainMenuWidget.generated.h"
-
 
 class UButton;
 class USessionSubsystem;
 class UEditableText;
 
-// TODO : 추후 팀전 고려.
-UENUM(BlueprintType)
-enum class MatchState : uint8
-{
-	FreeForAll,
-	TwoTeams,
-	Invalid UMETA(Hidden)
-};
-
-/**
- * 
- */
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UUserWidget
 {
@@ -31,7 +19,7 @@ class TROMBONERUMBLE_API UMainMenuWidget : public UUserWidget
 public:
 	// Blueprint PreConstruct에서 호출됨.
 	UFUNCTION(BlueprintCallable, Category = "Session")
-	void InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const MatchState InState);
+	void InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const EMatchState InState);
 
 protected:
 	virtual bool Initialize() override;
@@ -79,7 +67,7 @@ private:
 
 	int32 NumPublicConnections{ 4 };
 	int32 MaxLobbyCodeLength{ 5 };
-	MatchState State{ MatchState::Invalid };
+	EMatchState State{ EMatchState::Invalid };
 
 	UPROPERTY(Transient)
 	TObjectPtr<USessionSubsystem> SessionsSubsystem;
