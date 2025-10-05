@@ -19,24 +19,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Sync Workflow Directory to latest Main Branch
+        shell: powershell
+        run: |
+          $workflowPath = "D:\UnrealProjects\TromboneRumble_for_workflow"
+          cd $workflowPath
+          git reset --hard HEAD
+          git pull origin main
+          git log -1
+
       - name: Clean Build Directory
         shell: powershell
         run: |
           $buildPath = "D:\UnrealProjects\Build"
-          Write-Host "Cleaning up previous build artifacts in '$buildPath'..."
           if (Test-Path $buildPath) {
             Get-ChildItem -Path $buildPath | Remove-Item -Recurse -Force
-            Write-Host "Cleanup complete."
-          } else {
-            Write-Host "Build directory not found, skipping cleanup."
           }
-          
-          Write-Host "Cleanup complete."
 
       - name: Package Project
         env: 
           UE_PATH: 'D:\UE_5.5'
-          PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble\TromboneRumble.uproject'
+          PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble_for_workflow\TromboneRumble.uproject'
           OUTPUT_PATH: 'D:\UnrealProjects\Build'
         shell: powershell
         run: |
@@ -55,9 +58,5 @@ jobs:
           $dateTime = Get-Date -Format "yyyyMMdd_HHmm"
           $zipFileName = "${dateTime}_${{ github.event.repository.name }}.zip"
           $destinationZipPath = Join-Path $buildPath $zipFileName
-          
-          Write-Host "Compressing '$sourceFolder' to '$destinationZipPath'..."
-          
+
           Compress-Archive -Path $sourceFolder -DestinationPath $destinationZipPath -Force
-          
-          Write-Host "Compression complete."
