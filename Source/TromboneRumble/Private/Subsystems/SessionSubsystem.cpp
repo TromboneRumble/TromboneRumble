@@ -54,10 +54,7 @@ void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString&
 	const auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
 	if (ExistingSession != nullptr)
 	{
-		//세션 종료시 재생성 플래그 설정
-		bCreateSessionOnDestroy = true;
-		LastNumPublicConnections = NumPublicConnections;
-		LastLobbyCode = LobbyCode;
+		RecreateSessionRequest.Emplace(NumPublicConnections, LobbyCode);
 
 		DestroySession();
 	}
@@ -344,11 +341,12 @@ void USessionSubsystem::HandleDestroySessionComplete(FName InSessionName, bool b
 		const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
 	}
-	// 세션 생성 시 기존 세션 있었을 경우 재생성
-	if (bWasSuccessful && bCreateSessionOnDestroy)
+	
+	if (bWasSuccessful && RecreateSessionRequest.IsSet())
 	{
-		bCreateSessionOnDestroy = false;
-		CreateSession(LastNumPublicConnections, LastLobbyCode);
+		const FRecreateSessionRequest Request = RecreateSessionRequest.GetValue();
+		CreateSession(Request.NumPublicConnections, Request.LobbyCode);
+		RecreateSessionRequest.Reset();
 	}
 	OnSessionDestroyComplete.Broadcast(bWasSuccessful);
 }

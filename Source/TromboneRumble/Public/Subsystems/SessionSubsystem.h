@@ -7,16 +7,21 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "SessionSubsystem.generated.h"
 
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionCreateComplete, bool, bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSessionsFindComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSessionJoinComplete, EOnJoinSessionCompleteResult::Type Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionDestroyComplete, bool, bWasSuccessful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionError, const FString&, Reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionStartComplete, bool, bWasSuccessful);
-/**
- * 
- */
+
+struct FRecreateSessionRequest
+{
+	int32 NumPublicConnections;
+	FString LobbyCode;
+	
+	FRecreateSessionRequest(const int32 InNumPublicConnections, const FString& InLobbyCode) : NumPublicConnections(InNumPublicConnections), LobbyCode(InLobbyCode) { }
+};
+
 UCLASS()
 class TROMBONERUMBLE_API USessionSubsystem : public UGameInstanceSubsystem
 {
@@ -95,9 +100,5 @@ private:
 	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 
-	bool bCreateSessionOnDestroy{ false };
-	UPROPERTY(Transient)
-	int32 LastNumPublicConnections;
-	UPROPERTY(Transient)
-	FString LastLobbyCode;
+	TOptional<FRecreateSessionRequest> RecreateSessionRequest;
 };
