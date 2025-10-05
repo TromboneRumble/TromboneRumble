@@ -14,29 +14,50 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    name: Package Unreal Engine Game
+    name: Package Unreal Engine Project
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Clean Build Directory
+        shell: powershell
+        run: |
+          $buildPath = "D:\UnrealProjects\Build"
+          Write-Host "Cleaning up previous build artifacts in '$buildPath'..."
+          if (Test-Path $buildPath) {
+            Get-ChildItem -Path $buildPath | Remove-Item -Recurse -Force
+            Write-Host "Cleanup complete."
+          } else {
+            Write-Host "Build directory not found, skipping cleanup."
+          }
+          
+          Write-Host "Cleanup complete."
 
       - name: Package Project
         env: 
           UE_PATH: 'D:\UE_5.5'
           PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble\TromboneRumble.uproject'
           OUTPUT_PATH: 'D:\UnrealProjects\Build'
+        shell: powershell
         run: |
           & $env:UE_PATH\Engine\Build\BatchFiles\RunUAT.bat BuildCookRun -project="$env:PROJECT_PATH" -noP4 -platform=Win64 -clientconfig=Development -serverconfig=Development -cook -allmaps -build -stage -pak -archive -archivedirectory="$env:OUTPUT_PATH" -buildargs="-NoLiveCoding"
       
-      - name: Rename Packaged Folder
+      - name: Compress Packaged Folder with Date-Time
         run: |
-          Rename-Item -Path "D:\UnrealProjects\Build\Windows" -NewName "${{ github.event.repository.name }}" -Force
-        
-      - name: Compress Renamed Folder with Date-Time
-        run: |
-          cd "D:\UnrealProjects\Build"
+          $buildPath = "D:\UnrealProjects\Build"
+          $sourceFolder = Join-Path $buildPath "Windows"
+          
+          if (-not (Test-Path $sourceFolder)) {
+              Write-Error "Packaged folder '$sourceFolder' not found. Aborting compression."
+              exit 1
+          }
+
           $dateTime = Get-Date -Format "yyyyMMdd_HHmm"
           $zipFileName = "${dateTime}_${{ github.event.repository.name }}.zip"
+          $destinationZipPath = Join-Path $buildPath $zipFileName
           
-          if (Test-Path $zipFileName) { Remove-Item $zipFileName }
+          Write-Host "Compressing '$sourceFolder' to '$destinationZipPath'..."
           
-          Compress-Archive -Path "${{ github.event.repository.name }}" -DestinationPath $zipFileName
+          Compress-Archive -Path $sourceFolder -DestinationPath $destinationZipPath -Force
+          
+          Write-Host "Compression complete."
