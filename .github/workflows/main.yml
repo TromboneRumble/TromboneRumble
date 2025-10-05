@@ -25,7 +25,7 @@ jobs:
           PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble\TromboneRumble.uproject'
           OUTPUT_PATH: 'D:\UnrealProjects'
         run: |
-          & $env:UE_PATH\Engine\Build\BatchFiles\RunUAT.bat BuildCookRun -project="$env:PROJECT_PATH" -noP4 -platform=Win64 -clientconfig=Development -serverconfig=Development -cook -allmaps -build -stage -pak -archive -archivedirectory="$env:OUTPUT_PATH" -NoLiveCoding
+          & $env:UE_PATH\Engine\Build\BatchFiles\RunUAT.bat BuildCookRun -project="$env:PROJECT_PATH" -noP4 -platform=Win64 -clientconfig=Development -serverconfig=Development -cook -allmaps -build -stage -pak -archive -archivedirectory="$env:OUTPUT_PATH" -buildargs="-NoLiveCoding"
       - name: Rename Packaged Folder
         run: |
           Rename-Item -Path "D:\UnrealProjects\Windows" -NewName "${{ github.event.repository.name }}" -Force
