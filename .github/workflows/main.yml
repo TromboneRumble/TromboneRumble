@@ -18,16 +18,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-
-      - name: Sync Workflow Directory to latest Main Branch
-        shell: powershell
-        run: |
-          git config --global --add safe.directory "D:/UnrealProjects/TromboneRumble_for_workflow"
-          $workflowPath = "D:\UnrealProjects\TromboneRumble_for_workflow"
-          cd $workflowPath
-          git reset --hard HEAD
-          git pull origin main
-          git log -1
+        with:
+          token: ${{ secrets.GH_PAT }}
+          path: 'D:\UnrealProjects\TromboneRumble_for_workflow'
 
       - name: Clean Build Directory
         shell: powershell
