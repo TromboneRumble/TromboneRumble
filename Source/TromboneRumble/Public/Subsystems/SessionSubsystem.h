@@ -13,6 +13,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnSessionJoinComplete, EOnJoinSessionComple
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionDestroyComplete, bool, bWasSuccessful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionError, const FString&, Reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionStartComplete, bool, bWasSuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListUpdated, const TArray<FString>&, PlayerNames);
 
 struct FRecreateSessionRequest
 {
@@ -44,7 +45,6 @@ public:
 
 	bool IsLanEnvironment() const;
 
-	// 검색한 세션 중 로비 코드와 일치하는 세션을 찾아 반환
 	bool FindMatchingLobbyInResult(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
 
 public:
@@ -66,6 +66,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
 	FOnSessionStartComplete OnSessionStart;
+
+	UPROPERTY()
+	FOnPlayerListUpdated OnPlayerListUpdated;
 
 	// 커스텀 검색/광고 키 (양쪽 동일키 사용)
 	static const FName KEY_LOBBY_CODE;

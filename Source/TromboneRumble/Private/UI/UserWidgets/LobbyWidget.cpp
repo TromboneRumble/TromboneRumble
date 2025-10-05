@@ -2,11 +2,10 @@
 
 
 #include "UI/UserWidgets/LobbyWidget.h"
+#include "LobbyGameState.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-
 #include "OnlineSessionSettings.h"
-#include "OnlineSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
@@ -48,7 +47,11 @@ bool ULobbyWidget::Initialize()
 void ULobbyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
+	if (!GetWorld()) return;
+	
 	checkf(SessionsSubsystem, TEXT("SessionsSubsystem is null from [NativeConstruct]"));
+	
 	if (!SessionsSubsystem->IsLocalHost())
 	{
 		StartGameButton->SetVisibility(ESlateVisibility::Hidden);
@@ -78,6 +81,10 @@ void ULobbyWidget::NativeConstruct()
 		IsHostText->SetText(FText::FromString(TEXT("Client")));
 	}
 
+	if (const ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
+	{
+		LobbyGameState->OnRep_SessionPlayerList(); 
+	}
 }
 
 void ULobbyWidget::NativeDestruct()
@@ -100,6 +107,7 @@ void ULobbyWidget::BindSubsystemCallbacks()
 		SessionsSubsystem->OnSessionDestroyComplete.AddDynamic(this, &ThisClass::OnDestroySession);
 		SessionsSubsystem->OnSessionError.AddDynamic(this, &ThisClass::OnSessionError);
 		SessionsSubsystem->OnSessionStart.AddDynamic(this, &ThisClass::OnStartSession);
+		SessionsSubsystem->OnPlayerListUpdated.AddDynamic(this, &ThisClass::OnPlayerListUpdated);
 	}
 }
 
@@ -114,6 +122,7 @@ void ULobbyWidget::RemoveSubsystemCallbacks()
 		SessionsSubsystem->OnSessionStart.RemoveDynamic(this, &ThisClass::OnStartSession);
 		SessionsSubsystem->OnSessionSearchFinished.RemoveAll(this); // AddUObject는 RemoveAll/Handle 필요
 		SessionsSubsystem->OnSessionJoinComplete.RemoveAll(this);
+		SessionsSubsystem->OnPlayerListUpdated.RemoveDynamic(this, &ThisClass::OnPlayerListUpdated);
 	}
 }
 
@@ -152,6 +161,20 @@ void ULobbyWidget::OnSessionError(const FString& Reason)
 
 void ULobbyWidget::OnStartSession(bool bWasSuccessful)
 {
+}
+
+void ULobbyWidget::OnPlayerListUpdated(const TArray<FString>& PlayerNames)
+{
+	if (!PlayerListText) return;
+
+	FString FormattedPlayerList = TEXT("Players:\n");
+
+	for (int32 i = 0; i < PlayerNames.Num(); ++i)
+	{
+		FormattedPlayerList.Append(FString::Printf(TEXT("%d. %s\n"), i + 1, *PlayerNames[i]));
+	}
+	
+	PlayerListText->SetText(FText::FromString(FormattedPlayerList));
 }
 
 void ULobbyWidget::StartGameButtonClicked()
