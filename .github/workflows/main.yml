@@ -22,6 +22,7 @@ jobs:
       - name: Sync Workflow Directory to latest Main Branch
         shell: powershell
         run: |
+          git config --global --add safe.directory "D:/UnrealProjects/TromboneRumble_for_workflow"
           $workflowPath = "D:\UnrealProjects\TromboneRumble_for_workflow"
           cd $workflowPath
           git reset --hard HEAD
