@@ -23,16 +23,17 @@ jobs:
         env: 
           UE_PATH: 'D:\UE_5.5'
           PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble\TromboneRumble.uproject'
-          OUTPUT_PATH: 'D:\UnrealProjects'
+          OUTPUT_PATH: 'D:\UnrealProjects\Build'
         run: |
           & $env:UE_PATH\Engine\Build\BatchFiles\RunUAT.bat BuildCookRun -project="$env:PROJECT_PATH" -noP4 -platform=Win64 -clientconfig=Development -serverconfig=Development -cook -allmaps -build -stage -pak -archive -archivedirectory="$env:OUTPUT_PATH" -buildargs="-NoLiveCoding"
+      
       - name: Rename Packaged Folder
         run: |
-          Rename-Item -Path "D:\UnrealProjects\Windows" -NewName "${{ github.event.repository.name }}" -Force
+          Rename-Item -Path "D:\UnrealProjects\Build\Windows" -NewName "${{ github.event.repository.name }}" -Force
         
       - name: Compress Renamed Folder with Date-Time
         run: |
-          cd "D:\UnrealProjects"
+          cd "D:\UnrealProjects\Build"
           $dateTime = Get-Date -Format "yyyyMMdd_HHmm"
           $zipFileName = "${dateTime}_${{ github.event.repository.name }}.zip"
           
