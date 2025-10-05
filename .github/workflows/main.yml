@@ -17,7 +17,7 @@ jobs:
     name: Package Unreal Engine Game
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Package Project
         env: 
