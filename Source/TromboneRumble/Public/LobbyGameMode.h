@@ -13,9 +13,4 @@ class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase
 	
 public:
 	ALobbyGameMode();
-	virtual void PostLogin(APlayerController* NewPlayer) override;
-	virtual void Logout(AController* Exiting) override;
-
-private:
-	void UpdatePlayerList() const;
 };

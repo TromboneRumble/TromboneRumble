@@ -80,11 +80,6 @@ void ULobbyWidget::NativeConstruct()
 	{
 		IsHostText->SetText(FText::FromString(TEXT("Client")));
 	}
-
-	if (const ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
-	{
-		LobbyGameState->OnRep_SessionPlayerList(); 
-	}
 }
 
 void ULobbyWidget::NativeDestruct()
