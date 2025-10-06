@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "LobbyPlayerState.h"
-#include "LobbyGameState.h"
+#include "Framework/LobbyPlayerState.h"
+#include "Framework/LobbyGameState.h"
+
+class ALobbyGameState;
 
 void ALobbyPlayerState::OnRep_PlayerName()
 {

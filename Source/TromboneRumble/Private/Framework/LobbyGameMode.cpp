@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "LobbyGameMode.h"
-#include "LobbyGameState.h"
-#include "LobbyPlayerState.h"
+#include "Framework/LobbyGameMode.h"
+#include "Framework/LobbyGameState.h"
+#include "Framework/LobbyPlayerState.h"
 #include "GameFramework/GameStateBase.h"
 
 ALobbyGameMode::ALobbyGameMode()
