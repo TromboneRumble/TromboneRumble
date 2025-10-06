@@ -7,16 +7,22 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "SessionSubsystem.generated.h"
 
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionCreateComplete, bool, bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSessionsFindComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSessionJoinComplete, EOnJoinSessionCompleteResult::Type Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionDestroyComplete, bool, bWasSuccessful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionError, const FString&, Reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionStartComplete, bool, bWasSuccessful);
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListUpdated, const TArray<FString>&, PlayerNames);
+
+struct FRecreateSessionRequest
+{
+	int32 NumPublicConnections;
+	FString LobbyCode;
+	
+	FRecreateSessionRequest(const int32 InNumPublicConnections, const FString& InLobbyCode) : NumPublicConnections(InNumPublicConnections), LobbyCode(InLobbyCode) { }
+};
+
 UCLASS()
 class TROMBONERUMBLE_API USessionSubsystem : public UGameInstanceSubsystem
 {
@@ -39,7 +45,6 @@ public:
 
 	bool IsLanEnvironment() const;
 
-	// 검색한 세션 중 로비 코드와 일치하는 세션을 찾아 반환
 	bool FindMatchingLobbyInResult(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
 
 public:
@@ -61,6 +66,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Session|Event")
 	FOnSessionStartComplete OnSessionStart;
+
+	UPROPERTY()
+	FOnPlayerListUpdated OnPlayerListUpdated;
 
 	// 커스텀 검색/광고 키 (양쪽 동일키 사용)
 	static const FName KEY_LOBBY_CODE;
@@ -95,9 +103,5 @@ private:
 	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 
-	bool bCreateSessionOnDestroy{ false };
-	UPROPERTY(Transient)
-	int32 LastNumPublicConnections;
-	UPROPERTY(Transient)
-	FString LastLobbyCode;
+	TOptional<FRecreateSessionRequest> RecreateSessionRequest;
 };

@@ -11,9 +11,6 @@ class UButton;
 class USessionSubsystem;
 class UTextBlock;
 
-/**
- * 
- */
 UCLASS()
 class TROMBONERUMBLE_API ULobbyWidget : public UUserWidget
 {
@@ -40,6 +37,8 @@ private:
 	void OnSessionError(const FString& Reason);
 	UFUNCTION()
 	void OnStartSession(bool bWasSuccessful);
+	UFUNCTION()
+	void OnPlayerListUpdated(const TArray<FString>& PlayerNames);
 	// ~ SessionSubsystem Callbacks
 
 	// Button Callbacks
@@ -62,6 +61,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> IsHostText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> PlayerListText;
 
 	UPROPERTY(Transient)
 	TObjectPtr<USessionSubsystem> SessionsSubsystem;

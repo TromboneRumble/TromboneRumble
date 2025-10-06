@@ -31,8 +31,8 @@ void USessionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void USessionSubsystem::Deinitialize()
 {
-	// 자식에서 먼저 정리 시도 -> 부모 정리
 	SessionInterfaceWeak.Reset();
+	
 	Super::Deinitialize();
 }
 
@@ -49,16 +49,12 @@ void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString&
 		return;
 	}
 
-	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+	const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 
-	// 기존 세션 있으면 먼저 삭제
-	auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
+	const auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
 	if (ExistingSession != nullptr)
 	{
-		//세션 종료시 재생성 플래그 설정
-		bCreateSessionOnDestroy = true;
-		LastNumPublicConnections = NumPublicConnections;
-		LastLobbyCode = LobbyCode;
+		RecreateSessionRequest.Emplace(NumPublicConnections, LobbyCode);
 
 		DestroySession();
 	}
@@ -120,7 +116,7 @@ void USessionSubsystem::FindSessions(int32 MaxSearchResults, const FString& InLo
 		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [FindSessions]"));
 		return;
 	}
-	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+	const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 
 	FindSessionsCompleteDelegateHandle = SessionInterface->AddOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegate);
 
@@ -168,14 +164,14 @@ void USessionSubsystem::JoinSession(const FOnlineSessionSearchResult& SessionRes
 		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [CreateSession]"));
 		return;
 	}
-	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+	const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 	JoinSessionCompleteDelegateHandle = SessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 
 	const bool bLAN = IsLanEnvironment();
 
 	if (bLAN)
 	{
-		int32 LocalUserNum = 0;
+		const int32 LocalUserNum = 0;
 		if (!SessionInterface->JoinSession(LocalUserNum, NAME_GameSession, SessionResult))
 		{
 			SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
@@ -203,7 +199,7 @@ void USessionSubsystem::DestroySession()
 		OnSessionDestroyComplete.Broadcast(false);
 		return;
 	}
-	IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+	const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 
 
 	DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
@@ -222,7 +218,7 @@ bool USessionSubsystem::TryGetCurrentLobbyCode(FString& OutLobbyCode)
 	//세션 설정에서 재조회
 	if (IsValidSessionInterface())
 	{
-		IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
+		const IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
 		if (const FNamedOnlineSession* Named = SI->GetNamedSession(NAME_GameSession))
 		{
 			FString Found;
@@ -252,7 +248,7 @@ bool USessionSubsystem::IsLocalHost() const
 
 void USessionSubsystem::HandleCreateSessionComplete(FName InSessionName, bool bWasSuccessful)
 {
-	if (IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin())
+	if (const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin())
 	{
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
 	}
@@ -262,7 +258,7 @@ void USessionSubsystem::HandleCreateSessionComplete(FName InSessionName, bool bW
 
 void USessionSubsystem::HandleFindSessionsComplete(bool bWasSuccessful)
 {
-	if (IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin())
+	if (const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin())
 	{
 		SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegateHandle);
 	}
@@ -301,10 +297,10 @@ void USessionSubsystem::HandleJoinSessionComplete(FName InSessionName, EOnJoinSe
 {
 	if (IsValidSessionInterface())
 	{
-		IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+		const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
 	}
-	IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
+	const IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
 	FString ConnectString;
 	const bool bGot = SI.IsValid() ? SI->GetResolvedConnectString(InSessionName, ConnectString) : false;
 	Debug::Print(FString::Printf(TEXT("GetResolvedConnectString=%s, URL=%s"),
@@ -327,7 +323,7 @@ void USessionSubsystem::HandleJoinSessionComplete(FName InSessionName, EOnJoinSe
 		default:                                                    ResultText = TEXT("Unknown"); break;
 		}
 
-		FString Reason = FString::Printf(TEXT("Join failed (%s). ResolvedURL ok? %d"),
+		const FString Reason = FString::Printf(TEXT("Join failed (%s). ResolvedURL ok? %d"),
 			*ResultText, static_cast<int32>(bGot));
 		OnSessionError.Broadcast(Reason);
 	}
@@ -342,14 +338,15 @@ void USessionSubsystem::HandleDestroySessionComplete(FName InSessionName, bool b
 {
 	if (IsValidSessionInterface())
 	{
-		IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
+		const IOnlineSessionPtr SessionInterface = SessionInterfaceWeak.Pin();
 		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
 	}
-	// 세션 생성 시 기존 세션 있었을 경우 재생성
-	if (bWasSuccessful && bCreateSessionOnDestroy)
+	
+	if (bWasSuccessful && RecreateSessionRequest.IsSet())
 	{
-		bCreateSessionOnDestroy = false;
-		CreateSession(LastNumPublicConnections, LastLobbyCode);
+		const FRecreateSessionRequest Request = RecreateSessionRequest.GetValue();
+		CreateSession(Request.NumPublicConnections, Request.LobbyCode);
+		RecreateSessionRequest.Reset();
 	}
 	OnSessionDestroyComplete.Broadcast(bWasSuccessful);
 }
@@ -378,7 +375,7 @@ bool USessionSubsystem::IsValidSessionInterface()
 	IOnlineSessionPtr SessionInterface = nullptr;
 	if (!SessionInterfaceWeak.IsValid())
 	{
-		if (IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get())
+		if (const IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get())
 		{
 			SessionInterface = Subsystem->GetSessionInterface();
 			if (SessionInterface)
