@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "Engine/CollisionProfile.h"
 #include "Net/UnrealNetwork.h"
+#include "UObject/ConstructorHelpers.h"
 
 AItem_Trumpet::AItem_Trumpet()
 {
@@ -57,17 +58,18 @@ void AItem_Trumpet::Interact_Implementation(AActor* InstigatorActor)
 {
     if (!HasAuthority()) return;
 
-    IEquipable::Execute_Equip(this, InstigatorActor);
+    Execute_Equip(this, InstigatorActor);
 }
 
 void AItem_Trumpet::Equip_Implementation(AActor* OwnerActor)
 {
-    if (!HasAuthority() || bIsEquipped) return;
+    if (!HasAuthority() || bIsEquipped || !OwnerActor) return;
+    SetOwner(OwnerActor);
     CurrentOwner = OwnerActor;
     bIsEquipped = true;
-    OnRep_Equipped();
+    SetPhysicsEnabled(false);
 
-    SetPickupTriggerEnabled_Server(false);
+    if (InteractTrigger) InteractTrigger->SetTriggerActive(false);
 
     if (ACharacter* OwnerChar = Cast<ACharacter>(OwnerActor))
     {
@@ -80,11 +82,24 @@ void AItem_Trumpet::Equip_Implementation(AActor* OwnerActor)
     {
         AttachToActor(OwnerActor, FAttachmentTransformRules::KeepWorldTransform);
     }
+    
+    PlaySound();
 }
 
 void AItem_Trumpet::Unequip_Implementation(AActor* OwnerActor)
 {
-	IEquipable::Unequip_Implementation(OwnerActor);
+    if (!HasAuthority() || !bIsEquipped) return;
+
+    bIsEquipped = false;
+    DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+    if (InteractTrigger) InteractTrigger->SetTriggerActive(true);
+    SetPhysicsEnabled(true);
+
+    const FVector vForwardImpulse = CurrentOwner->GetActorForwardVector() * ForwardImpulse;
+    const FVector vUpwardImpulse = FVector::UpVector * UpwardImpulse;
+    if (TrumpetMesh) TrumpetMesh->AddImpulse(vForwardImpulse + vUpwardImpulse);
+    StopSound();
+    CurrentOwner = nullptr;
 }
 
 void AItem_Trumpet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -98,8 +113,23 @@ void AItem_Trumpet::OnRep_Equipped()
 {
     if (bIsEquipped)
     {
+       
+        if (CurrentOwner)
+        {
+            if (ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
+            {
+                TrumpetMesh->AttachToComponent(
+                    OwnerChar->GetMesh(),
+                    FAttachmentTransformRules::SnapToTargetIncludingScale,
+                    AttachSocketName);
+            }
+            else
+            {
+                AttachToActor(CurrentOwner, FAttachmentTransformRules::KeepWorldTransform);
+            }
+        }
         PlaySound();
-        SetPhysicsEnabled(false);
+       
     }
     else
     {
@@ -129,23 +159,3 @@ void AItem_Trumpet::SetPhysicsEnabled(bool bEnable) const
         CapsuleComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
     }
 }
-
-void AItem_Trumpet::SetPickupTriggerEnabled_Server(bool bEnable)
-{
-    if (!HasAuthority() || !InteractTrigger) return;
-    if (bEnable)
-    {
-        InteractTrigger->OnDroppedToWorld();    // 후보 재등록
-    }
-    else
-    {
-        //InteractTrigger->ActivateTrigger(false); // 후보 제거
-    }
-}
-
-void AItem_Trumpet::ReEnableTriggerAfterDrop_Server()
-{
-    if (!HasAuthority() || !InteractTrigger) return;
-    InteractTrigger->OnDroppedToWorld();
-}
-
