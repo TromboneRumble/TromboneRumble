@@ -68,6 +68,22 @@ void ADefaultCharacterController::OnUnPossess()
 	CachedOwnerCharacter = nullptr;
 }
 
+void ADefaultCharacterController::AcknowledgePossession(APawn* InPawn)
+{
+	Super::AcknowledgePossession(InPawn);
+	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(InPawn);
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (auto* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			if (DefaultMappingContext)
+			{
+				Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			}
+		}
+	}
+}
+
 void ADefaultCharacterController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
