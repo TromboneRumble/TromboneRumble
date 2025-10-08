@@ -40,8 +40,11 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->SetUsingAbsoluteRotation(true);
+	CameraBoom->TargetArmLength = 640.f;
+	CameraBoom->SetRelativeRotation(FRotator(-42.f, 0.f, 0.f));
+	CameraBoom->bDoCollisionTest = false;
+	CameraBoom->bUsePawnControlRotation = false;
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -114,7 +117,7 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsTackling);
-	DOREPLIFETIME(ADefaultTromboneCharacter, bHasTempTrumpet);
+	DOREPLIFETIME(ADefaultTromboneCharacter, bIsEquipped);
 }
 
 void ADefaultTromboneCharacter::EndTackleAnimation()

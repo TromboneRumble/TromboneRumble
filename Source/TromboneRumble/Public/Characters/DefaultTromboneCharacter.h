@@ -40,18 +40,14 @@ protected:
 	void Server_Tackle();
 	// ~Server RPCs
 
+	FORCEINLINE bool IsEquipped() const { return bIsEquipped; }
 	FORCEINLINE bool IsTackling() const { return bIsTackling; }
-private:
-	void EndTackleAnimation();
-
-	UFUNCTION()
-	void HandleInteractableAvailableChanged(bool bAvailable);
 
 	// Components
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY()
@@ -60,11 +56,17 @@ private:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultCharacterController> CachedCharacterController;
 	// ~Components
+private:
+	void EndTackleAnimation();
+
+	UFUNCTION()
+	void HandleInteractableAvailableChanged(bool bAvailable);
 
 	UPROPERTY(Replicated)
-	bool bIsTackling = false;
+	uint8 bIsTackling : 1 = 0;
 
 	UPROPERTY(Replicated)
-	bool bHasTempTrumpet = false;
+	uint8 bIsEquipped : 1 = 0;
+
 	float TackleAnimationDuration = 1.0f;
 };

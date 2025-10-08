@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TromboneFunctionLibrary.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "DeveloperSettings/GameMapDeveloperSettings.h"
+#include "GameFramework/Actor.h"
 
 FString UTromboneFunctionLibrary::GetMapPathByTag(FGameplayTag InMapTag)
 {
