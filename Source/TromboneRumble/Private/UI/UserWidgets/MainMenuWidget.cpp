@@ -6,7 +6,7 @@
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
-#include "TromboneFunctionLibrary.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
@@ -26,7 +26,6 @@ void UMainMenuWidget::InitSettings(const int32 InNumPublicConnections, const int
 		if (APlayerController* PlayerController = World->GetFirstPlayerController())
 		{
 			FInputModeUIOnly InputModeData;
-			InputModeData.SetWidgetToFocus(TakeWidget());
 			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 			PlayerController->SetInputMode(InputModeData);
 			PlayerController->SetShowMouseCursor(true);
