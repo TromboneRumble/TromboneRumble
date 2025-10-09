@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/TrombonePlayerController.h"
-#include "Framework/InGameState.h"
+// #include "Framework/InGameState.h"
 #include "Framework/LobbyGameMode.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
@@ -40,8 +40,8 @@ EGameState ATrombonePlayerController::GetGameState() const
 	
 	if (CurrentGameState->IsA(ALobbyGameState::StaticClass()))
 		return EGameState::Lobby;
-	if (CurrentGameState->IsA(AInGameState::StaticClass()))
-		return EGameState::InGame;
+	// if (CurrentGameState->IsA(AInGameState::StaticClass()))
+		// return EGameState::InGame;
 	return EGameState::Invalid;
 }
 
