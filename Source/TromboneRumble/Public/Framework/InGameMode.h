@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "LobbyGameMode.generated.h"
+#include "InGameMode.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase
+class TROMBONERUMBLE_API AInGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
 public:
-	ALobbyGameMode();
+	AInGameMode();
+	
 };

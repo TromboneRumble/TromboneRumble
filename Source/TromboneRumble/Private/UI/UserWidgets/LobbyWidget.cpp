@@ -2,16 +2,16 @@
 
 
 #include "UI/UserWidgets/LobbyWidget.h"
-#include "LobbyGameState.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "OnlineSessionSettings.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
+#include "Framework/LobbyGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
-
+#include "Utilities/Defines.h"
 
 
 bool ULobbyWidget::Initialize()
@@ -39,6 +39,11 @@ bool ULobbyWidget::Initialize()
 	{
 		BackToMainMenuButton->OnClicked.AddDynamic(this, &ThisClass::BackToMainMenuButtonClicked);
 	}
+	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
+	{
+		LobbyGameState->OnLobbyStateChanged.AddDynamic(this, &ThisClass::OnLobbyStateUpdated);
+		OnPlayerListUpdated(LobbyGameState->GetPlayerList());
+	}
 
 
 	
@@ -62,6 +67,10 @@ void ULobbyWidget::NativeConstruct()
 	else
 	{
 		StartGameButton->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (CountdownText)
+	{
+		CountdownText->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	FString LobbyCode;
@@ -232,4 +241,36 @@ void ULobbyWidget::StartGameButtonClicked()
 void ULobbyWidget::BackToMainMenuButtonClicked()
 {
 	SessionsSubsystem->DestroySession();
+}
+
+void ULobbyWidget::OnLobbyStateUpdated(const ELobbyState NewState)
+{
+	if (!CountdownText) return;
+	
+	if (NewState == ELobbyState::CountdownToScramble || NewState == ELobbyState::CountdownToTravel)
+	{
+		CountdownSeconds = 5; // TODO : delete magic number
+		CountdownText->SetText(FText::AsNumber(CountdownSeconds));
+		CountdownText->SetVisibility(ESlateVisibility::Visible);
+		GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ULobbyWidget::UpdateCountdown, 1.0f, true);
+	}
+	else
+	{
+		CountdownText->SetVisibility(ESlateVisibility::Hidden);
+		GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
+	}
+}
+
+void ULobbyWidget::UpdateCountdown()
+{
+	if (!CountdownText) return;
+
+	CountdownSeconds--;
+	CountdownText->SetText(FText::AsNumber(CountdownSeconds));
+
+	if (CountdownSeconds <= 0)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
+		CountdownText->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

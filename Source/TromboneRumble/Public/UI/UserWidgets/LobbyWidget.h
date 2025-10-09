@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "LobbyWidget.generated.h"
 
+enum class ELobbyState : uint8;
 class UButton;
 class USessionSubsystem;
 class UTextBlock;
@@ -49,6 +50,11 @@ private:
 	void BackToMainMenuButtonClicked();
 	// ~ Button Callbacks
 
+	UFUNCTION()
+	void OnLobbyStateUpdated(ELobbyState NewState);
+
+	void UpdateCountdown();
+
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> StartGameButton;
@@ -65,6 +71,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> PlayerListText;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> CountdownText;
+
 	UPROPERTY(Transient)
 	TObjectPtr<USessionSubsystem> SessionsSubsystem;
 
@@ -73,4 +82,7 @@ private:
 
 	UPROPERTY(Transient)
 	FString CachedInGameMapPath{ TEXT("") };
+
+	FTimerHandle CountdownTimerHandle;
+	int32 CountdownSeconds = 5;
 };

@@ -1,9 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "LobbyGameState.h"
+#include "Framework/LobbyGameState.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/SessionSubsystem.h"
+#include "Utilities/Defines.h"
+
+void ALobbyGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentLobbyState = ELobbyState::WaitingForPlayers;
+}
 
 void ALobbyGameState::RemovePlayerState(APlayerState* PlayerState)
 {
@@ -17,17 +25,7 @@ void ALobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ALobbyGameState, PlayerList);
-}
-
-void ALobbyGameState::OnRep_SessionPlayerList() const
-{
-	if (const UGameInstance* GameInstance = GetGameInstance())
-	{
-		if (const USessionSubsystem* SessionSubsystem = GameInstance->GetSubsystem<USessionSubsystem>())
-		{
-			SessionSubsystem->OnPlayerListUpdated.Broadcast(PlayerList);
-		}
-	}
+	DOREPLIFETIME(ALobbyGameState, CurrentLobbyState);
 }
 
 void ALobbyGameState::UpdatePlayerList()
@@ -49,4 +47,28 @@ void ALobbyGameState::UpdatePlayerList()
 	{
 		OnRep_SessionPlayerList();
 	}
+}
+
+void ALobbyGameState::SetLobbyState(const ELobbyState NewState)
+{
+	if (!HasAuthority() || CurrentLobbyState == NewState) return;
+
+	CurrentLobbyState = NewState;
+	OnRep_LobbyState();
+}
+
+void ALobbyGameState::OnRep_SessionPlayerList() const
+{
+	if (const UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (const USessionSubsystem* SessionSubsystem = GameInstance->GetSubsystem<USessionSubsystem>())
+		{
+			SessionSubsystem->OnPlayerListUpdated.Broadcast(PlayerList);
+		}
+	}
+}
+
+void ALobbyGameState::OnRep_LobbyState()
+{
+	OnLobbyStateChanged.Broadcast(CurrentLobbyState);
 }

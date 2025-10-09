@@ -12,5 +12,17 @@ class TROMBONERUMBLE_API ALobbyPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
+	ALobbyPlayerState();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_PlayerName() override;
+
+	void SetIsReady(bool bReady);
+	FORCEINLINE bool IsReady() const { return bIsReady; }
+
+private:
+	UFUNCTION()
+	void OnRep_IsReady();
+
+	UPROPERTY(ReplicatedUsing = OnRep_IsReady)
+	bool bIsReady = false;
 };
