@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UInputComponent;
+
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter
 {
@@ -14,7 +16,7 @@ class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter
 public:
 	ATromboneCharacterBase();
 	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 
 protected:
 	virtual void BeginPlay() override;

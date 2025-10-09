@@ -77,3 +77,30 @@ DerivedDataCache/*
 # User Defined
 Plugins/Developer/RiderLink/*
 .idea/*
+
+# Wwise
+Wwise/AkWwiseProjectData.asset
+Wwise/IncrementalSoundBankData.xml
+Wwise/**/GeneratedSoundBanks/
+Wwise/Deployment/
+Wwise/Logs/
+Wwise/.cache/
+Wwise/.backup/
+Wwise/.wwiseplugininfo
+Wwise/.vs/
+Wwise/*.akd
+Wwise/*.akpk
+Wwise/*.log
+Wwise/*.prof
+Wwise/*.validationcache
+Wwise/*.wsettings
+
+# Wwise/IDE-specific
+Wwise/*.user
+Wwise/*.suo
+Wwise/*.sdf
+Wwise/*.opensdf
+Wwise/*.db
+# temp/backup
+*.bak
+*.tmp

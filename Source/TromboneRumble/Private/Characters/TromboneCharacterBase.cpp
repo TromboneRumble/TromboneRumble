@@ -23,11 +23,7 @@ void ATromboneCharacterBase::Tick(float DeltaTime)
 
 }
 
-void ATromboneCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-}
 
 void ATromboneCharacterBase::InitCharacter() const
 {
