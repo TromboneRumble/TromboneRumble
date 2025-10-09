@@ -77,11 +77,21 @@ DerivedDataCache/*
 # User Defined
 Plugins/Developer/RiderLink/*
 .idea/*
+*pdb
+*pidb
+*.iobj
+*.ilk
 
 # Wwise
+# Wwise Plugin은 개인이 설치하는것으로
+Plugins/Wwise
+Plugins/WwiseNiagara
+# Wwise Projects
+Wwise/GeneratedSoundBanks/*
+!Wwise/GeneratedSoundBanks/.gitkeep
+
 Wwise/AkWwiseProjectData.asset
 Wwise/IncrementalSoundBankData.xml
-Wwise/**/GeneratedSoundBanks/
 Wwise/Deployment/
 Wwise/Logs/
 Wwise/.cache/
@@ -101,6 +111,3 @@ Wwise/*.suo
 Wwise/*.sdf
 Wwise/*.opensdf
 Wwise/*.db
-# temp/backup
-*.bak
-*.tmp
