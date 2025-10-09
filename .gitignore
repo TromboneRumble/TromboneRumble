@@ -86,9 +86,8 @@ Plugins/Developer/RiderLink/*
 # Wwise Plugin은 개인이 설치하는것으로
 Plugins/Wwise
 Plugins/WwiseNiagara
+
 # Wwise Projects
-Wwise/GeneratedSoundBanks/*
-!Wwise/GeneratedSoundBanks/.gitkeep
 
 Wwise/AkWwiseProjectData.asset
 Wwise/IncrementalSoundBankData.xml
