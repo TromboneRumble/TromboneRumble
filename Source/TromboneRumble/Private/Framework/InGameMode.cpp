@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/InGameMode.h"
-#include "ProtoType/PT_PlayerController.h"
+#include "Framework/TrombonePlayerController.h"
 
 AInGameMode::AInGameMode()
 {
@@ -10,5 +10,5 @@ AInGameMode::AInGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-	PlayerControllerClass = APT_PlayerController::StaticClass();
+	PlayerControllerClass = ATrombonePlayerController::StaticClass();
 }
