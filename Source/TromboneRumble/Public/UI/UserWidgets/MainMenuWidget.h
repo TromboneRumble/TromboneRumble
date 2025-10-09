@@ -16,18 +16,13 @@ UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
-public:
-	// Blueprint PreConstruct에서 호출됨.
-	UFUNCTION(BlueprintCallable, Category = "Session")
-	void InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const EMatchState InState);
-
+	
 protected:
 	virtual bool Initialize() override;
 	virtual void NativePreConstruct() override;
 	virtual void NativeDestruct() override;
 
 private:
-
 	// SessionSubsystem Callbacks
 	void BindSubsystemCallbacks();
 	void RemoveSubsystemCallbacks();

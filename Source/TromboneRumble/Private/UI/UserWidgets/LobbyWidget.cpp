@@ -92,31 +92,12 @@ void ULobbyWidget::NativeConstruct()
 	{
 		IsHostText->SetText(FText::FromString(TEXT("Client")));
 	}
-
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeUIOnly InputModeData;
-			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(true);
-		}
-	}
 }
 
 void ULobbyWidget::NativeDestruct()
 {
 	RemoveSubsystemCallbacks();
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeGameOnly InputModeData;
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(false);
-		}
-	}
+
 	Super::NativeDestruct();
 }
 

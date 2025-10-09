@@ -1,14 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/InGameMode.h"
-#include "Framework/TrombonePlayerController.h"
+#include "Characters/DefaultPlayerController.h"
+#include "Utilities/DebugHelper.h"
 
 AInGameMode::AInGameMode()
 {
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Arts/BP_Character.BP_Character_C"));
+	// TODO : delete hard ref
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/InGame/BP_DefaultCharacter.BP_DefaultCharacter_C"));
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-	PlayerControllerClass = ATrombonePlayerController::StaticClass();
+	static ConstructorHelpers::FClassFinder<ADefaultPlayerController> PlayerControllerBPClass(TEXT("/Game/Blueprints/Characters/InGame/BP_DefaultPlayerController1.BP_DefaultPlayerController1_C"));
+	if (PlayerControllerBPClass.Class != nullptr)
+	{
+		PlayerControllerClass = PlayerControllerBPClass.Class;
+	}
 }

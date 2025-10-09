@@ -6,8 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
-
-class ADefaultCharacterController;
+class ADefaultPlayerController;
 class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
@@ -54,7 +53,7 @@ protected:
 	TObjectPtr<UInteractorComponent> InteractorComponent;
 
 	UPROPERTY(Transient)
-	TWeakObjectPtr<ADefaultCharacterController> CachedCharacterController;
+	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
 	// ~Components
 private:
 	void EndTackleAnimation();

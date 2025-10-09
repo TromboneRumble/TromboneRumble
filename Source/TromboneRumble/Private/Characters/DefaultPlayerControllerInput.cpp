@@ -1,52 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "Characters/DefaultCharacterController.h"
+#include "Characters/DefaultPlayerController.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "InputActionValue.h"
-#include "ProtoType/PT_UIInGame.h"
-#include "Blueprint/UserWidget.h"
 
-ADefaultCharacterController::ADefaultCharacterController()
-{
-	//TODO : 하드 레퍼런싱에서 datatable로 변경
-	static ConstructorHelpers::FClassFinder<UUserWidget> InGameWidgetClassFinder(TEXT("/Game/Blueprints/Prototype/WBP_PT_InGame.WBP_PT_InGame_C"));
-	if (InGameWidgetClassFinder.Succeeded())
-	{
-		UIInGameClass = InGameWidgetClassFinder.Class;
-	}
-}
-
-void ADefaultCharacterController::ShowInteractionUI(bool bShow) const
-{
-	if (!UIInGame) return;
-
-	UIInGame->ShowInteractionHint(bShow);
-}
-
-void ADefaultCharacterController::BeginPlay()
-{
-	Super::BeginPlay();
-	if (UIInGameClass)
-	{
-		UIInGame = CreateWidget<UPT_UIInGame>(GetWorld(), UIInGameClass);
-		if (UIInGame)
-		{
-			UIInGame->AddToViewport();
-			const FInputModeGameOnly InputModeData;
-			SetInputMode(InputModeData);
-			bShowMouseCursor = false;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to create UIInGame"));
-		}
-	}
-}
-
-void ADefaultCharacterController::OnPossess(APawn* APawn)
+void ADefaultPlayerController::OnPossess(APawn* APawn)
 {
 	Super::OnPossess(APawn);
 	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(APawn);
@@ -62,13 +21,13 @@ void ADefaultCharacterController::OnPossess(APawn* APawn)
 	}
 }
 
-void ADefaultCharacterController::OnUnPossess()
+void ADefaultPlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
 	CachedOwnerCharacter = nullptr;
 }
 
-void ADefaultCharacterController::AcknowledgePossession(APawn* InPawn)
+void ADefaultPlayerController::AcknowledgePossession(APawn* InPawn)
 {
 	Super::AcknowledgePossession(InPawn);
 	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(InPawn);
@@ -84,7 +43,7 @@ void ADefaultCharacterController::AcknowledgePossession(APawn* InPawn)
 	}
 }
 
-void ADefaultCharacterController::SetupInputComponent()
+void ADefaultPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
@@ -98,37 +57,37 @@ void ADefaultCharacterController::SetupInputComponent()
 	}
 }
 
-void ADefaultCharacterController::Tick(float DeltaSeconds)
+void ADefaultPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
 
-void ADefaultCharacterController::Handle_Move(const struct FInputActionValue& Value)
+void ADefaultPlayerController::Handle_Move(const struct FInputActionValue& Value)
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Move(Value);
 }
 
-void ADefaultCharacterController::Handle_Look(const struct FInputActionValue& Value)
+void ADefaultPlayerController::Handle_Look(const struct FInputActionValue& Value)
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Look(Value);
 }
 
-void ADefaultCharacterController::Handle_JumpPressed()
+void ADefaultPlayerController::Handle_JumpPressed()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Jump();
 }
 
-void ADefaultCharacterController::Handle_JumpReleased()
+void ADefaultPlayerController::Handle_JumpReleased()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->StopJumping();
 }
 
-void ADefaultCharacterController::Handle_Interact()
+void ADefaultPlayerController::Handle_Interact()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Interact();
 }
 
-void ADefaultCharacterController::Handle_Tackle()
+void ADefaultPlayerController::Handle_Tackle()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Tackle();
 }

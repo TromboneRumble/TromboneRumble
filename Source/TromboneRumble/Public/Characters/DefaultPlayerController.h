@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "DefaultCharacterController.generated.h"
+#include "Utilities/Defines.h"
+#include "DefaultPlayerController.generated.h"
 
 class UInteractorComponent;
 class UPT_UIInGame;
@@ -12,15 +13,12 @@ class UInputMappingContext;
 class UInputAction;
 class ADefaultTromboneCharacter;
 
-/**
- * 
- */
 UCLASS()
-class TROMBONERUMBLE_API ADefaultCharacterController : public APlayerController
+class TROMBONERUMBLE_API ADefaultPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	ADefaultCharacterController();
+	ADefaultPlayerController();
 	void ShowInteractionUI(bool bShow) const;
 
 	// InputActions
@@ -57,10 +55,21 @@ private:
 	void Handle_Tackle();
 	// ~Input handlers
 
-	TSubclassOf<UUserWidget> UIInGameClass;
+	EGameState GetGameState() const;
+
+	// UI
+	void InitializeUI();
+	void InitializeLobbyUI();
+	void InitializeInGameUI();
+	// ~UI
+
+	UFUNCTION(Server, Reliable)
+	void Server_NotifyClientReady();
+
+	TSubclassOf<UUserWidget> InGameUIClass;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UPT_UIInGame> UIInGame;
+	TObjectPtr<UPT_UIInGame> InGameUI;
 
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;

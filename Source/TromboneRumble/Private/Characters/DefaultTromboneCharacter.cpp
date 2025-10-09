@@ -2,7 +2,7 @@
 
 
 #include "Characters/DefaultTromboneCharacter.h"
-#include "Characters/DefaultCharacterController.h"
+#include "Characters/DefaultPlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -102,7 +102,7 @@ void ADefaultTromboneCharacter::Tackle()
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	CachedCharacterController = Cast<ADefaultCharacterController>(GetController());
+	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
 	checkf(InteractorComponent, TEXT("InteractorComponent is missing on %s."), *GetName());
 
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
@@ -130,7 +130,7 @@ void ADefaultTromboneCharacter::EndTackleAnimation()
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
 {
-	if (ADefaultCharacterController* PC = CachedCharacterController.Get())
+	if (ADefaultPlayerController* PC = CachedCharacterController.Get())
 	{
 		PC->ShowInteractionUI(bAvailable);
 	}

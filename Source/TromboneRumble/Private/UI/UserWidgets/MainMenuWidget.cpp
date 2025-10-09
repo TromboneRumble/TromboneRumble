@@ -11,28 +11,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
-void UMainMenuWidget::InitSettings(const int32 InNumPublicConnections, const int32 InMaxLobbyCodeLength, const EMatchState InState)
-{
-	LobbyCodeText->SetText(FText::GetEmpty());
-	NumPublicConnections = InNumPublicConnections;
-	MaxLobbyCodeLength = InMaxLobbyCodeLength;
-	State = InState;
-	AddToViewport();
-	SetVisibility(ESlateVisibility::Visible);
-	SetIsFocusable(true);
-
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeUIOnly InputModeData;
-			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(true);
-		}
-	}
-}
-
 bool UMainMenuWidget::Initialize()
 {
 	if (!Super::Initialize())
@@ -61,6 +39,23 @@ void UMainMenuWidget::NativePreConstruct()
 		JoinButton->OnClicked.AddDynamic(this, &ThisClass::JoinButtonClicked);
 	}
 
+	if (LobbyCodeText)
+	{
+		LobbyCodeText->SetText(FText::GetEmpty());
+	}
+	SetVisibility(ESlateVisibility::Visible);
+	SetIsFocusable(true);
+
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PlayerController = World->GetFirstPlayerController())
+		{
+			FInputModeUIOnly InputModeData;
+			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			PlayerController->SetInputMode(InputModeData);
+			PlayerController->SetShowMouseCursor(true);
+		}
+	}
 }
 
 void UMainMenuWidget::NativeDestruct()

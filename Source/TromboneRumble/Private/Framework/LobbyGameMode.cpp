@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/LobbyGameMode.h"
-#include "TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
-#include "Framework/TrombonePlayerController.h"
 #include "GameFramework/GameStateBase.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
@@ -14,12 +14,16 @@ ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Arts/BP_Character.BP_Character_C"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/InGame/BP_DefaultCharacter.BP_DefaultCharacter_C"));
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-	PlayerControllerClass = ATrombonePlayerController::StaticClass();
+	static ConstructorHelpers::FClassFinder<ADefaultPlayerController> PlayerControllerBPClass(TEXT("/Game/Blueprints/Characters/InGame/BP_DefaultPlayerController1.BP_DefaultPlayerController1_C"));
+	if (PlayerControllerBPClass.Class != nullptr)
+	{
+		PlayerControllerClass = PlayerControllerBPClass.Class;
+	}
 	GameStateClass = ALobbyGameState::StaticClass();
 	PlayerStateClass = ALobbyPlayerState::StaticClass();
 }

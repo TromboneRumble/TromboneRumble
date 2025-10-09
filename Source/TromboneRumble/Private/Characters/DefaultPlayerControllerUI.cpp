@@ -1,15 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Framework/TrombonePlayerController.h"
-// #include "Framework/InGameState.h"
+#include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameMode.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
 #include "Prototype/PT_UIInGame.h"
-#include "Utilities/DebugHelper.h"
 
-ATrombonePlayerController::ATrombonePlayerController()
+ADefaultPlayerController::ADefaultPlayerController()
 {
+	//TODO : 하드 레퍼런싱에서 BP로 변경
 	static ConstructorHelpers::FClassFinder<UUserWidget> InGameWidgetClassFinder(TEXT("/Game/Blueprints/Prototype/WBP_PT_InGame.WBP_PT_InGame_C"));
 	if (InGameWidgetClassFinder.Succeeded())
 	{
@@ -17,14 +16,14 @@ ATrombonePlayerController::ATrombonePlayerController()
 	}
 }
 
-void ATrombonePlayerController::ShowInteractionUI(bool bShow) const
+void ADefaultPlayerController::ShowInteractionUI(bool bShow) const
 {
 	if (!InGameUI) return;
 
 	InGameUI->ShowInteractionHint(bShow);
 }
 
-void ATrombonePlayerController::BeginPlay()
+void ADefaultPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -34,7 +33,7 @@ void ATrombonePlayerController::BeginPlay()
 	Server_NotifyClientReady();
 }
 
-EGameState ATrombonePlayerController::GetGameState() const
+EGameState ADefaultPlayerController::GetGameState() const
 {
 	const AGameStateBase* CurrentGameState = GetWorld()->GetGameState();
 	
@@ -45,7 +44,7 @@ EGameState ATrombonePlayerController::GetGameState() const
 	return EGameState::Invalid;
 }
 
-void ATrombonePlayerController::InitializeUI()
+void ADefaultPlayerController::InitializeUI()
 {
 	switch (GetGameState())
 	{
@@ -62,12 +61,12 @@ void ATrombonePlayerController::InitializeUI()
 	}
 }
 
-void ATrombonePlayerController::InitializeLobbyUI()
+void ADefaultPlayerController::InitializeLobbyUI()
 {
 	// TODO : Lobby UI Load
 }
 
-void ATrombonePlayerController::InitializeInGameUI()
+void ADefaultPlayerController::InitializeInGameUI()
 {
 	if (!InGameUIClass) return;
 	
@@ -82,7 +81,7 @@ void ATrombonePlayerController::InitializeInGameUI()
 	// TODO : Set InGamePlayerState Ready
 }
 
-void ATrombonePlayerController::Server_NotifyClientReady_Implementation()
+void ADefaultPlayerController::Server_NotifyClientReady_Implementation()
 {
 	ALobbyPlayerState* LobbyPlayerState = GetPlayerState<ALobbyPlayerState>();
 	if (!LobbyPlayerState) return;

@@ -10,7 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "Framework/TrombonePlayerController.h"
+#include "Characters/DefaultPlayerController.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
@@ -208,7 +208,7 @@ void APT_TromboneRumbleCharacter::Server_Interaction_Implementation(APT_Trumpet*
 
 void APT_TromboneRumbleCharacter::CheckForInteraction()
 {
-	const ATrombonePlayerController* PC = Cast<ATrombonePlayerController>(GetController());
+	const ADefaultPlayerController* PC = Cast<ADefaultPlayerController>(GetController());
 	if (!PC) return;
 	
 	int32 ViewportSizeX, ViewportSizeY;
