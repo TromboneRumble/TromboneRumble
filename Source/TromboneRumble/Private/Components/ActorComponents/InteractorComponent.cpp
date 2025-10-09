@@ -16,13 +16,15 @@ void UInteractorComponent::TryInteract(AActor* ExplicitTarget)
     AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
     if (!Target) return;
 
+    // 서버면 바로 실행
     if (GetOwnerRole() == ROLE_Authority)
     {
         if (UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>())
         {
-            Trigger->Server_TryInteractAndConsume(GetOwner());
+            Trigger->Server_TryInteract(GetOwner());
         }
     }
+    // 클라이언트면 서버에 요청
     else
     {
         Server_TryInteract(Target);
@@ -114,7 +116,7 @@ void UInteractorComponent::Server_TryInteract_Implementation(AActor* Target)
     if (!Target) return;
     if (UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>())
     {
-        Trigger->Server_TryInteractAndConsume(GetOwner());
+        Trigger->Server_TryInteract(GetOwner());
     }
 }
 

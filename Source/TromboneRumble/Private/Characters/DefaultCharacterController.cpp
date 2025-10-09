@@ -90,7 +90,7 @@ void ADefaultCharacterController::SetupInputComponent()
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		if (MoveAction)    EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Move);
-		if (LookAction)    EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Look);
+		//if (LookAction)    EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Look);
 		if (InteractAction)EIC->BindAction(InteractAction, ETriggerEvent::Started, this, &ThisClass::Handle_Interact);
 		if (TackleAction)  EIC->BindAction(TackleAction, ETriggerEvent::Started, this, &ThisClass::Handle_Tackle);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Handle_JumpPressed);

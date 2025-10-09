@@ -20,7 +20,7 @@ UInteractionTriggerComponent::UInteractionTriggerComponent()
 	TriggerVolume->SetSimulatePhysics(false);
 }
 
-void UInteractionTriggerComponent::Server_TryInteractAndConsume_Implementation(AActor* InstigatorActor)
+void UInteractionTriggerComponent::Server_TryInteract_Implementation(AActor* InstigatorActor)
 {
 	if (!GetOwner() || !GetOwner()->HasAuthority() || !bTriggerActive) return;
 
@@ -36,22 +36,22 @@ void UInteractionTriggerComponent::Server_TryInteractAndConsume_Implementation(A
 		if (bCan)
 		{
 			IInteractable::Execute_Interact(TargetActor, InstigatorActor);
-			// 성공으로 간주하고 Trigger비활성화
-			ActivateTrigger(false);
 		}
 	}
-	
 
 	// 락 해제 (소비했든 안 했든)
 	GetOwner()->Tags.Remove(GateTag);
 }
 
 
-void UInteractionTriggerComponent::OnDroppedToWorld_Implementation()
+void UInteractionTriggerComponent::SetTriggerActive_Implementation(bool bActivate)
 {
-	if (!GetOwner() || !GetOwner()->HasAuthority()) return;
-	bTriggerActive = true;
+	if (!GetOwner() || bTriggerActive == bActivate) return; // 상태 변화 없음
+
+	bTriggerActive = bActivate;
+	//Trigger상태에 따른 충돌 설정
 	OnRep_TriggerActive();
+
 	ForceRemoveThisFromAllInteractors();
 }
 
@@ -108,22 +108,6 @@ void UInteractionTriggerComponent::HandleEndOverlap(UPrimitiveComponent* Overlap
 		OverlappingInteractors.Remove(Interactor);
 		Interactor->UnregisterCandidate(GetOwner());
 		Debug::Print(FString::Printf(TEXT("UnRegistered Candidate: %s"), *Interactor->GetOwner()->GetName()));
-	}
-}
-
-
-void UInteractionTriggerComponent::ActivateTrigger(bool bActivate)
-{
-	if (!GetOwner() || !GetOwner()->HasAuthority()) return; //서버에서만 작동
-	if (bTriggerActive == bActivate) return; // 상태 변화 없음
-
-	bTriggerActive = bActivate;
-	OnRep_TriggerActive();
-
-	if (!bTriggerActive)
-	{
-		// 즉시 모든 Interactor 후보에서 제거
-		ForceRemoveThisFromAllInteractors();
 	}
 }
 

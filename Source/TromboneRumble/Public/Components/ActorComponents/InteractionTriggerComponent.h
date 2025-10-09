@@ -21,16 +21,17 @@ class TROMBONERUMBLE_API UInteractionTriggerComponent : public UActorComponent
 public:	
 	UInteractionTriggerComponent();
 
-	// InteractComponent에서만 호출
+	// InteractComponent를 통해 호출
 	// 상호작용 성공 시(서버에서만 호출): 트리거를 소비(비활성화)하고 모든 후보에서 제거
 	UFUNCTION(Server, Reliable)
-	void Server_TryInteractAndConsume(AActor* InstigatorActor);
+	void Server_TryInteract(AActor* InstigatorActor);
 	// ~InteractComponent
 
-	// 아이템이 월드로 드롭되었을 때 서버에서만 호출
 	UFUNCTION(Server, Reliable)
-	void OnDroppedToWorld();
+	void SetTriggerActive(bool bActivate);
 
+
+	FORCEINLINE bool IsTriggerActive() const { return bTriggerActive; }
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -43,8 +44,7 @@ private:
 	UFUNCTION()
 	void HandleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UFUNCTION(BlueprintCallable, Category = "Interact")
-	void ActivateTrigger(bool bActivate);
+	
 
 	// 트리거 활성화 상태가 바뀌었을 때 클라이언트끼리 자동으로 동기화
 	UFUNCTION()

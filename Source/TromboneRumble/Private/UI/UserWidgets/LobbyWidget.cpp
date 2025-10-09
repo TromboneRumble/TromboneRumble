@@ -7,7 +7,7 @@
 #include "Components/TextBlock.h"
 #include "OnlineSessionSettings.h"
 #include "Subsystems/SessionSubsystem.h"
-#include "TromboneFunctionLibrary.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
@@ -39,6 +39,9 @@ bool ULobbyWidget::Initialize()
 	{
 		BackToMainMenuButton->OnClicked.AddDynamic(this, &ThisClass::BackToMainMenuButtonClicked);
 	}
+
+
+	
 
 	return true;
 }
@@ -80,11 +83,31 @@ void ULobbyWidget::NativeConstruct()
 	{
 		IsHostText->SetText(FText::FromString(TEXT("Client")));
 	}
+
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PlayerController = World->GetFirstPlayerController())
+		{
+			FInputModeUIOnly InputModeData;
+			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			PlayerController->SetInputMode(InputModeData);
+			PlayerController->SetShowMouseCursor(true);
+		}
+	}
 }
 
 void ULobbyWidget::NativeDestruct()
 {
 	RemoveSubsystemCallbacks();
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PlayerController = World->GetFirstPlayerController())
+		{
+			FInputModeGameOnly InputModeData;
+			PlayerController->SetInputMode(InputModeData);
+			PlayerController->SetShowMouseCursor(false);
+		}
+	}
 	Super::NativeDestruct();
 }
 

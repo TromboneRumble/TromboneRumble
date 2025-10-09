@@ -54,12 +54,9 @@ private:
     UFUNCTION()
     void OnRep_Equipped();
 
-    // Helpers
     void PlaySound() const;
     void StopSound() const;
     void SetPhysicsEnabled(bool bEnable) const;
-    void SetPickupTriggerEnabled_Server(bool bEnable);
-    void ReEnableTriggerAfterDrop_Server();
 
     // Drop Values
     UPROPERTY(EditDefaultsOnly, Category = "Trumpet|Drop")
