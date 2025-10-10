@@ -16,6 +16,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
 
+      - name: Restore Local Plugins
+        shell: powershell
+        run: |
+          $localPluginZipPath = "D:\UnrealProjects\TromboneRumble-Dependencies\Plugins.zip"
+          $destinationPath = "${{ github.workspace }}"
+
+          if (-not (Test-Path $localPluginZipPath)) {
+            Write-Error "Local plugin cache file not found at '$localPluginZipPath'. Aborting."
+            exit 1
+          }
+
+          Expand-Archive -Path $localPluginZipPath -DestinationPath $destinationPath -Force
+
       - name: Package Project
         env: 
           UE_PATH: 'D:\UE_5.5'
