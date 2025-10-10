@@ -15,7 +15,7 @@ ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	CurrentEquippedInstruments = 0;
-	MaxPlayers = 2; // TODO : delete magic number
+	MaxPlayers = 3; // TODO : delete magic number
 	Timer = 5.0f; // TODO : delete magic number
 	CachedInGameMapPath = TEXT("");
 }
@@ -35,6 +35,7 @@ void ALobbyGameMode::BeginPlay()
 	}
 	
 	InitializeMapPath();
+	InitializeInstruments();
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
@@ -97,6 +98,26 @@ void ALobbyGameMode::InitializeMapPath()
 	
 	CachedInGameMapPath = InGameMapPath;
 	CachedLobbyMapPath = LobbyMapPath;
+}
+
+void ALobbyGameMode::InitializeInstruments() const
+{
+	if (!InstrumentToSpawn) return;
+	
+	TArray<AActor*> SpawnPointActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
+
+	if (SpawnPointActors.Num() > 0)
+	{
+		const AActor* SpawnPoint = SpawnPointActors[0];
+		const FVector SpawnLocation = SpawnPoint->GetActorLocation();
+		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
+		
+		for (int32 i = 0; i < MaxPlayers - 1; ++i)
+		{
+			GetWorld()->SpawnActor<AActor>(InstrumentToSpawn, SpawnLocation, SpawnRotation);
+		}
+	}
 }
 
 bool ALobbyGameMode::CheckAllClientsReady()

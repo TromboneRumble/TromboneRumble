@@ -19,7 +19,7 @@ AItem_Trumpet::AItem_Trumpet()
     TrumpetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrumpetMesh"));
     SetRootComponent(TrumpetMesh);
     TrumpetMesh->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
-    TrumpetMesh->SetSimulatePhysics(false);
+    TrumpetMesh->SetSimulatePhysics(true);
 
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
     CapsuleComponent->SetupAttachment(RootComponent);

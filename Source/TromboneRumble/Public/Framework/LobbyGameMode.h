@@ -33,6 +33,7 @@ public:
 
 private:
 	void InitializeMapPath();
+	void InitializeInstruments() const;
 	bool CheckAllClientsReady();
 	void SetLobbyState(ELobbyState NewState);
 	void RequestServerTravel(const FString& MapPath) const;
@@ -53,6 +54,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Instrument")
+	TSubclassOf<AActor> InstrumentToSpawn;
+	
 	FTimerHandle LobbyTimerHandle;
 	int32 MaxPlayers;
 	int32 CurrentEquippedInstruments;
