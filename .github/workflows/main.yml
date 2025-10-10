@@ -13,32 +13,23 @@ jobs:
     runs-on: self-hosted
     name: Package Unreal Engine Project
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v5
-
-      - name: Sync Workflow Directory to latest Main Branch
-        shell: powershell
-        run: |
-          git config --global --add safe.directory "D:/UnrealProjects/TromboneRumble_for_workflow"
-          $workflowPath = "D:\UnrealProjects\TromboneRumble_for_workflow"
-          cd $workflowPath
-          git reset --hard HEAD
-          git pull https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }} main
-          git log -1
 
       - name: Package Project
         env: 
           UE_PATH: 'D:\UE_5.5'
-          PROJECT_PATH: 'D:\UnrealProjects\TromboneRumble_for_workflow\TromboneRumble.uproject'
-          OUTPUT_PATH: 'D:\TromboneRumbleDrive\Build'
+          PROJECT_PATH: '${{ github.workspace }}\TromboneRumble.uproject'
+          OUTPUT_PATH: '${{ github.workspace }}\BuildOutput'
         shell: powershell
         run: |
           & $env:UE_PATH\Engine\Build\BatchFiles\RunUAT.bat BuildCookRun -project="$env:PROJECT_PATH" -noP4 -platform=Win64 -clientconfig=Development -serverconfig=Development -cook -allmaps -build -stage -pak -archive -archivedirectory="$env:OUTPUT_PATH" -buildargs="-NoLiveCoding"
       
       - name: Compress Packaged Folder with Date-Time
         run: |
-          $buildPath = "D:\TromboneRumbleDrive\Build"
-          $sourceFolder = Join-Path $buildPath "Windows"
+          $compressPath = "D:\TromboneRumbleDrive\Build"
+          $buildOutputPath = "${{ github.workspace }}\BuildOutput"
+          $sourceFolder = Join-Path $buildOutputPath "Windows"
           
           if (-not (Test-Path $sourceFolder)) {
               Write-Error "Packaged folder '$sourceFolder' not found. Aborting compression."
@@ -47,6 +38,6 @@ jobs:
 
           $dateTime = Get-Date -Format "yyyyMMdd_HHmm"
           $zipFileName = "${dateTime}_${{ github.event.repository.name }}.zip"
-          $destinationZipPath = Join-Path $buildPath $zipFileName
+          $destinationZipPath = Join-Path $compressPath $zipFileName
 
           Compress-Archive -Path $sourceFolder -DestinationPath $destinationZipPath -Force
