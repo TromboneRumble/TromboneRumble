@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Items/Item_Trumpet.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -64,47 +63,36 @@ void AItem_Trumpet::Interact_Implementation(AActor* InstigatorActor)
 void AItem_Trumpet::Equip_Implementation(AActor* OwnerActor)
 {
     if (!HasAuthority() || bIsEquipped || !OwnerActor) return;
+    
     SetOwner(OwnerActor);
     CurrentOwner = OwnerActor;
     bIsEquipped = true;
-    SetPhysicsEnabled(false);
+
+    OnRep_Equipped();
 
     if (InteractTrigger) InteractTrigger->SetTriggerActive(false);
-
-    if (ACharacter* OwnerChar = Cast<ACharacter>(OwnerActor))
-    {
-        TrumpetMesh->AttachToComponent(
-            OwnerChar->GetMesh(),
-            FAttachmentTransformRules::SnapToTargetIncludingScale,
-            AttachSocketName);
-    }
-    else
-    {
-        AttachToActor(OwnerActor, FAttachmentTransformRules::KeepWorldTransform);
-    }
-    
-    PlaySound();
 }
 
 void AItem_Trumpet::Unequip_Implementation(AActor* OwnerActor)
 {
     if (!HasAuthority() || !bIsEquipped) return;
 
-    bIsEquipped = false;
-    DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-    if (InteractTrigger) InteractTrigger->SetTriggerActive(true);
-    SetPhysicsEnabled(true);
-
     const FVector vForwardImpulse = CurrentOwner->GetActorForwardVector() * ForwardImpulse;
     const FVector vUpwardImpulse = FVector::UpVector * UpwardImpulse;
-    if (TrumpetMesh) TrumpetMesh->AddImpulse(vForwardImpulse + vUpwardImpulse);
-    StopSound();
+    
     CurrentOwner = nullptr;
+    bIsEquipped = false;
+
+    OnRep_Equipped();
+    
+    if (InteractTrigger) InteractTrigger->SetTriggerActive(true);
+    if (TrumpetMesh) TrumpetMesh->AddImpulse(vForwardImpulse + vUpwardImpulse);
 }
 
 void AItem_Trumpet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    
     DOREPLIFETIME(AItem_Trumpet, bIsEquipped);
     DOREPLIFETIME(AItem_Trumpet, CurrentOwner);
 }
@@ -113,7 +101,6 @@ void AItem_Trumpet::OnRep_Equipped()
 {
     if (bIsEquipped)
     {
-       
         if (CurrentOwner)
         {
             if (ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
@@ -128,13 +115,14 @@ void AItem_Trumpet::OnRep_Equipped()
                 AttachToActor(CurrentOwner, FAttachmentTransformRules::KeepWorldTransform);
             }
         }
+        SetPhysicsEnabled(false);
         PlaySound();
-       
     }
     else
     {
-        StopSound();
+        DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
         SetPhysicsEnabled(true);
+        StopSound();
     }
 }
 
