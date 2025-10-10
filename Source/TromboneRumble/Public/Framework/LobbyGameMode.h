@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
 class ALobbyPlayerState;
 class ALobbyGameState;
-enum class ELobbyState : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClientReadySignature, APlayerController*, ReadyPlayer);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentEquippedSignature, APlayerController*, EqippedPlayer);
@@ -22,7 +22,8 @@ public:
 	ALobbyGameMode();
 	virtual void BeginPlay() override;
 	virtual void Logout(AController* ExitedPlayer) override;
-
+	void RequestServerTravel(EGameState InGameState);
+	
 	FORCEINLINE void OnClientReady(APlayerController* ReadyPlayer) const { OnClientReadyDelegate.Broadcast(ReadyPlayer); }
 	FORCEINLINE void OnInstrumentEquipped(APlayerController* EquippedPlayerState) const { OnInstrumentEquippedDelegate.Broadcast(EquippedPlayerState); }
 	

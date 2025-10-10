@@ -57,6 +57,25 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	}
 }
 
+void ALobbyGameMode::RequestServerTravel(const EGameState InGameState)
+{
+	switch (InGameState)
+	{
+		case EGameState::MainMenu:
+			PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
+			break;
+		case EGameState::InGame:
+			RequestServerTravel(CachedInGameMapPath);
+			break;
+		case EGameState::Lobby:
+			RequestServerTravel(CachedLobbyMapPath);
+			break;
+		default:
+			PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
+			break;
+	}
+}
+
 void ALobbyGameMode::InitializeMapPath()
 {
 	FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);
