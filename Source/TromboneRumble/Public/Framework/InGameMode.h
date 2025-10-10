@@ -10,8 +10,4 @@ UCLASS()
 class TROMBONERUMBLE_API AInGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
-public:
-	AInGameMode();
-	
 };

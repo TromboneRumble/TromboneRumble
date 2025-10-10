@@ -3,7 +3,6 @@
 #include "Framework/LobbyGameMode.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
 #include "GameFramework/GameStateBase.h"
@@ -12,27 +11,14 @@
 
 ALobbyGameMode::ALobbyGameMode()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/InGame/BP_DefaultCharacter.BP_DefaultCharacter_C"));
-	if (PlayerPawnBPClass.Class != nullptr)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
-	static ConstructorHelpers::FClassFinder<ADefaultPlayerController> PlayerControllerBPClass(TEXT("/Game/Blueprints/Characters/InGame/BP_DefaultPlayerController1.BP_DefaultPlayerController1_C"));
-	if (PlayerControllerBPClass.Class != nullptr)
-	{
-		PlayerControllerClass = PlayerControllerBPClass.Class;
-	}
-	GameStateClass = ALobbyGameState::StaticClass();
-	PlayerStateClass = ALobbyPlayerState::StaticClass();
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_ProtoTypeInGameMap);
+	const FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);
 	checkf(!InGameMapPath.IsEmpty(), TEXT("InGameMapPath map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedInGameMapPath = InGameMapPath;
 
