@@ -48,7 +48,7 @@ jobs:
       
       - name: Compress Packaged Folder with Date-Time
         run: |
-          $buildPath = "D:\UnrealProjects\Build"
+          $buildPath = "G:\내 드라이브\트럼본 럼블\빌드 파일"
           $sourceFolder = Join-Path $buildPath "Windows"
           
           if (-not (Test-Path $sourceFolder)) {
