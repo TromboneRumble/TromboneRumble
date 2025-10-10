@@ -90,6 +90,6 @@ void ADefaultPlayerController::Server_NotifyClientReady_Implementation()
 	
 	if (ALobbyGameMode* LobbyGameMode = GetWorld()->GetAuthGameMode<ALobbyGameMode>())
 	{
-		LobbyGameMode->OnClientIsReady(this);
+		LobbyGameMode->OnClientReady(this);
 	}
 }

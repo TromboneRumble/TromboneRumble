@@ -20,11 +20,16 @@ public:
 	virtual void RemovePlayerState(APlayerState* PlayerState) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	TArray<FString> GetPlayerList() const { return PlayerList; }
 	void UpdatePlayerList();
-	
-	FORCEINLINE ELobbyState GetLobbyState() const { return CurrentLobbyState; }
 	void SetLobbyState(ELobbyState NewState);
+	
+	FORCEINLINE TArray<FString> GetPlayerList() const { return PlayerList; }
+	FORCEINLINE ELobbyState GetCurrentLobbyState() const { return CurrentLobbyState; }
+	FORCEINLINE ELobbyState GetPreviousLobbyState() const { return PreviousLobbyState; }
+	FORCEINLINE bool IsInState(const ELobbyState State) const { return CurrentLobbyState == State; }
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_RemoveWall();
 
 public:
 	FOnLobbyStateChangedSignature OnLobbyStateChanged;
@@ -34,7 +39,7 @@ private:
 	void OnRep_SessionPlayerList() const;
 
 	UFUNCTION()
-	void OnRep_LobbyState();
+	void OnRep_LobbyState() const;
 	
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_SessionPlayerList)
@@ -42,4 +47,5 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_LobbyState)
 	ELobbyState CurrentLobbyState;
+	ELobbyState PreviousLobbyState;
 };

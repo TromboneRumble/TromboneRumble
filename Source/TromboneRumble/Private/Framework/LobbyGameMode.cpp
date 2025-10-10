@@ -3,30 +3,38 @@
 #include "Framework/LobbyGameMode.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "Engine/StaticMeshActor.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
 #include "GameFramework/GameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	CurrentEquippedInstruments = 0;
+	MaxPlayers = 2; // TODO : delete magic number
+	Timer = 5.0f; // TODO : delete magic number
+	CachedInGameMapPath = TEXT("");
 }
 
 void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	const FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);
-	checkf(!InGameMapPath.IsEmpty(), TEXT("InGameMapPath map path not found. Please set it in GameMapDeveloperSettings."));
-	CachedInGameMapPath = InGameMapPath;
-
+	
+	OnClientReadyDelegate.AddDynamic(this, &ALobbyGameMode::HandleClientReady);
+	OnInstrumentEquippedDelegate.AddDynamic(this, &ALobbyGameMode::HandleInstrumentEquipped);
+	
 	LobbyGameState = GetGameState<ALobbyGameState>();
 	if (!LobbyGameState)
 	{
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("LobbyGameState is null"));
+		return;
 	}
+	
+	InitializeMapPath();
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
@@ -42,39 +50,46 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 
 	if (CurrentPlayers >= MaxPlayers) return;
 
-	const ELobbyState CurrentLobbyState = LobbyGameState->GetLobbyState();
+	const ELobbyState CurrentLobbyState = LobbyGameState->GetCurrentLobbyState();
 	if (CurrentLobbyState == ELobbyState::CountdownToScramble || CurrentLobbyState == ELobbyState::InstrumentScramble)
 	{
 		SetLobbyState(ELobbyState::WaitingForPlayers);
 	}
 }
 
-void ALobbyGameMode::OnClientIsReady(const APlayerController* ReadyPlayer)
+void ALobbyGameMode::InitializeMapPath()
 {
-	if (!ReadyPlayer) return;
-
-	const FString PlayerName = ReadyPlayer->PlayerState->GetPlayerName();
-	PRINT_WITH_CURRENT_CONTEXT(TEXT("Player is Ready: ") + PlayerName);
-
-	if (CheckAllClientsReady())
+	FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);
+	FString LobbyMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap);
+	
+	if (InGameMapPath.IsEmpty() || LobbyMapPath.IsEmpty())
 	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("All Clients Ready"));
-		SetLobbyState(ELobbyState::CountdownToScramble);
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("MapPath is empty. Please set it in GameMaps Location in Project Settings."));
 	}
+	
+	if (InGameMapPath.Contains(TEXT("."))) // 전달받은 문자열이 "오브젝트 경로(/A/B.Map.Map)"면 패키지 경로("/A/B.Map")로 정규화
+	{
+		InGameMapPath = FSoftObjectPath(CachedInGameMapPath).GetLongPackageName();
+	}
+	if (LobbyMapPath.Contains(TEXT(".")))
+	{
+		LobbyMapPath = FSoftObjectPath(CachedLobbyMapPath).GetLongPackageName();
+	}
+	
+	CachedInGameMapPath = InGameMapPath;
+	CachedLobbyMapPath = LobbyMapPath;
 }
 
 bool ALobbyGameMode::CheckAllClientsReady()
 {
-	const int32 CurrentPlayers = GetNumPlayers();
-	if (CurrentPlayers == 0 || CurrentPlayers < MaxPlayers) return false;
+	if (GetNumPlayers() < MaxPlayers) return false;
 	
-	for (APlayerState* PS : GetGameState<AGameStateBase>()->PlayerArray)
+	for (APlayerState* PlayerState : GetGameState<AGameStateBase>()->PlayerArray)
 	{
-		if (PS)
-		{
-			const ALobbyPlayerState* LobbyPlayerState = Cast<ALobbyPlayerState>(PS);
-			if (!LobbyPlayerState || !LobbyPlayerState->IsReady()) return false;
-		}
+		if (!PlayerState) return false;
+		
+		const ALobbyPlayerState* LobbyPlayerState = Cast<ALobbyPlayerState>(PlayerState);
+		if (!LobbyPlayerState || !LobbyPlayerState->IsReady()) return false;
 	}
 
 	return true;
@@ -82,76 +97,77 @@ bool ALobbyGameMode::CheckAllClientsReady()
 
 void ALobbyGameMode::SetLobbyState(const ELobbyState NewState)
 {
-	const ELobbyState CurrentLobbyState = LobbyGameState->GetLobbyState();
-	if (CurrentLobbyState == NewState) return;
+	if (LobbyGameState->GetCurrentLobbyState() == NewState) return;
 
-	PRINT_WITH_CURRENT_CONTEXT(UEnum::GetValueAsString(NewState));
 	LobbyGameState->SetLobbyState(NewState);
 	
 	switch (NewState)
 	{
 		case ELobbyState::WaitingForPlayers:
+			
 			if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
 			{
 				GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 			}
-			// TODO: 만약 벽이 제거되었다면 다시 생성
+			RequestServerTravel(CachedLobbyMapPath);
 			break;
 	            
 		case ELobbyState::CountdownToScramble:
-			StartTimer([this]() { SetLobbyState(ELobbyState::InstrumentScramble); });
+			RequestSetTimer([this]() { SetLobbyState(ELobbyState::InstrumentScramble); });
 			break;
 	            
 		case ELobbyState::InstrumentScramble:
-			// TODO : 벽 제거 및 악기 모두 소유했는지 확인 후 다음 상태로
-			// StartTimer([this]() { ServerTravelToInGame(); });
-			ServerTravelToInGame();
+			LobbyGameState->Multicast_RemoveWall();
 			break;
 	            
 		case ELobbyState::CountdownToTravel:
-			StartTimer([this]() { ServerTravelToInGame(); });
+			RequestSetTimer([this]() { RequestServerTravel(CachedInGameMapPath); });
 			break;
 			
 		default: ;
 	}
 }
 
-void ALobbyGameMode::ServerTravelToInGame() const
+void ALobbyGameMode::RequestServerTravel(const FString& MapPath) const
 {
 	UWorld* World = GetWorld();
-	if (!World)
+	if (!World || World->GetAuthGameMode() == nullptr || MapPath.IsEmpty()) return;
+	
+	if (!World->ServerTravel(MapPath))
 	{
-		Debug::Print(TEXT("World is null from [StartGameButtonClicked]"));
-		return;
-	}
-
-	// 전달받은 문자열이 "오브젝트 경로(/A/B.Map.Map)"면 패키지 경로("/A/B.Map")로 정규화
-	FString PackagePath = CachedInGameMapPath;
-	if (PackagePath.Contains(TEXT(".")))
-	{
-		PackagePath = FSoftObjectPath(CachedInGameMapPath).GetLongPackageName();
-		if (PackagePath.IsEmpty())
-		{
-			Debug::Print(TEXT("Invalid MapPath from [StartGameButtonClicked]"));
-			return;
-		}
-	}
-
-	//호스트(리스닝 서버)라면 연결 중인 모든 클라와 함께 이동
-	if (World->GetAuthGameMode() == nullptr)
-	{
-		Debug::Print(TEXT("StartGame can be called only on host from [StartGameButtonClicked]"));
-		return;
-	}
-
-	if (!World->ServerTravel(PackagePath))
-	{
-		Debug::Print(TEXT("ServerTravel failed from [StartGameButtonClicked]"));
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("ServerTravel failed"));
 	}
 }
 
-void ALobbyGameMode::StartTimer(TFunction<void()> OnTimerFinished)
+void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
 {
 	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),Timer, false);
+}
+
+void ALobbyGameMode::HandleClientReady(APlayerController* ReadyPlayer)
+{
+	if (!ReadyPlayer) return;
+
+	const FString PlayerName = ReadyPlayer->PlayerState->GetPlayerName();
+	const FString DebugMsg = FString::Printf(TEXT("Player Ready: %s"), *PlayerName);
+	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
+
+	if (CheckAllClientsReady())
+	{
+		SetLobbyState(ELobbyState::CountdownToScramble);
+	}
+}
+
+void ALobbyGameMode::HandleInstrumentEquipped(APlayerController* EquippedPlayer)
+{
+	if (!EquippedPlayer) return;
+
+	const FString DebugMsg = FString::Printf(TEXT("Instrument Equipped by %s"), *EquippedPlayer->PlayerState->GetPlayerName());
+	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
+
+	if (++CurrentEquippedInstruments >= MaxPlayers - 1)
+	{
+		SetLobbyState(ELobbyState::CountdownToTravel);
+	}
 }

@@ -1,9 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/LobbyGameState.h"
+
+#include "Engine/StaticMeshActor.h"
 #include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/SessionSubsystem.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 void ALobbyGameState::BeginPlay()
@@ -11,6 +15,7 @@ void ALobbyGameState::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentLobbyState = ELobbyState::WaitingForPlayers;
+	PreviousLobbyState = ELobbyState::Invalid;
 }
 
 void ALobbyGameState::RemovePlayerState(APlayerState* PlayerState)
@@ -53,8 +58,23 @@ void ALobbyGameState::SetLobbyState(const ELobbyState NewState)
 {
 	if (!HasAuthority() || CurrentLobbyState == NewState) return;
 
+	PreviousLobbyState = CurrentLobbyState;
 	CurrentLobbyState = NewState;
 	OnRep_LobbyState();
+}
+
+void ALobbyGameState::Multicast_RemoveWall_Implementation()
+{
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Wall"), FoundActors);
+
+	if (FoundActors.Num() > 0)
+	{
+		if (AActor* Wall = Cast<AStaticMeshActor>(FoundActors[0]))
+		{
+			Wall->Destroy();
+		}
+	}
 }
 
 void ALobbyGameState::OnRep_SessionPlayerList() const
@@ -68,7 +88,7 @@ void ALobbyGameState::OnRep_SessionPlayerList() const
 	}
 }
 
-void ALobbyGameState::OnRep_LobbyState()
+void ALobbyGameState::OnRep_LobbyState() const
 {
 	OnLobbyStateChanged.Broadcast(CurrentLobbyState);
 }
