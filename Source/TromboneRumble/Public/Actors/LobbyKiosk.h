@@ -20,20 +20,14 @@ public:
 	virtual bool CanInteract_Implementation(AActor* InstigatorActor) const override;
 	virtual void Interact_Implementation(AActor* InstigatorActor) override;
 
-protected:
-	virtual void BeginPlay() override;
-
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_RequestTravel();
 
 private:
-	UPROPERTY()
-	UStaticMeshComponent* KioskMeshComp;
-
 	UPROPERTY(EditAnywhere)
-	UStaticMesh* KioskMesh;
-
+	UStaticMeshComponent* KioskMeshComp;
+	
 	UPROPERTY()
 	TObjectPtr<UInteractionTriggerComponent> InteractTrigger = nullptr;
 

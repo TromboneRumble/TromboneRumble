@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Actors/LobbyKiosk.h"
-
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Framework/LobbyGameMode.h"
@@ -35,13 +34,6 @@ void ALobbyKiosk::Interact_Implementation(AActor* InstigatorActor)
 
 	Server_RequestTravel();
 	bIsUsed = true;
-}
-
-void ALobbyKiosk::BeginPlay()
-{
-	Super::BeginPlay();
-
-	KioskMeshComp->SetStaticMesh(KioskMesh);
 }
 
 void ALobbyKiosk::Server_RequestTravel_Implementation()
