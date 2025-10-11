@@ -83,16 +83,13 @@ Plugins/Developer/RiderLink/*
 *.ilk
 
 # Wwise
-# Wwise Plugin은 개인이 설치하는것으로
 Plugins/Wwise
 Plugins/WwiseNiagara
 
 # Wwise Projects
-
-Wwise/AkWwiseProjectData.asset
-Wwise/IncrementalSoundBankData.xml
 Wwise/Deployment/
 Wwise/Logs/
+Wwise/Originals/SFX/
 Wwise/.cache/
 Wwise/.backup/
 Wwise/.wwiseplugininfo
