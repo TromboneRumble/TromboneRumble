@@ -125,6 +125,7 @@ void AItem_Trumpet::OnRep_Equipped()
 {
     if (bIsEquipped)
     {
+        SetPhysicsEnabled(false);
         if (CurrentOwner)
         {
             if (ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
@@ -139,7 +140,6 @@ void AItem_Trumpet::OnRep_Equipped()
                 AttachToActor(CurrentOwner, FAttachmentTransformRules::KeepWorldTransform);
             }
         }
-        SetPhysicsEnabled(false);
         PlaySound();
     }
     else
