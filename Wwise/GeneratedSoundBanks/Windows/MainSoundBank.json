@@ -1,0 +1,55 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "534561221",
+    "Type": "User",
+    "GUID": "{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}",
+    "Language": "SFX",
+    "Hash": "{C3C29873-363E-E1E1-AC15-118D256686BC}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\MainSoundBank",
+    "ShortName": "MainSoundBank",
+    "Path": "MainSoundBank.bnk",
+    "Media": [
+     {
+      "Id": "759138717",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Trumbone Main Theme_4.wav",
+      "CachePath": "SFX/Trumbone Main Theme_4_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3666185889",
+      "Name": "Play_Lobby_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Lobby_BGM",
+      "GUID": "{94227083-3159-4322-BF3A-0D7AB2913647}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "759138717"
+       }
+      ]
+     },
+     {
+      "Id": "3948599171",
+      "Name": "Stop_Lobby_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Lobby_BGM",
+      "GUID": "{A593B12B-6676-4295-9E55-E2E6FC49D923}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{1B05EB13-1633-58A6-DFF4-7DEEB7F5B698}"
+ }
+}

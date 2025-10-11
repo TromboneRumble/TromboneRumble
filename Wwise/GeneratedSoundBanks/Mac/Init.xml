@@ -1,34 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
-	<RootPaths>
-		<ProjectRoot>../..</ProjectRoot>
-		<SourceFilesRoot>../../.cache/Windows</SourceFilesRoot>
-		<SoundBanksRoot>.</SoundBanksRoot>
-		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>.</ExternalSourcesOutputRoot>
-	</RootPaths>
-	<DialogueEvents/>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{C3C29873-363E-E1E1-AC15-118D256686BC}">
-			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
-			<ShortName>MainSoundBank</ShortName>
-			<Path>MainSoundBank.bnk</Path>
-			<Media>
-				<File Id="759138717" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>Trumbone Main Theme_4.wav</ShortName>
-					<CachePath>SFX/Trumbone Main Theme_4_FBC78EF0.wem</CachePath>
-				</File>
-			</Media>
-			<Events>
-				<Event Id="3666185889" Name="Play_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Play_Lobby_BGM" GUID="{94227083-3159-4322-BF3A-0D7AB2913647}" DurationType="Infinite">
-					<MediaRefs>
-						<MediaRef Id="759138717"/>
-					</MediaRefs>
-				</Event>
-				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
-			</Events>
-		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{80AA3125-B4C7-2DBE-1BF1-31EE7B72A930}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{B1D74519-8308-847E-F4A8-593DF9FE51F5}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -171,5 +144,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{BFD53791-8F4D-3510-ECA6-165C78616390}</FileHash>
+	<FileHash>{C15493B9-E8F2-8333-A831-AF6745EBA468}</FileHash>
 </SoundBanksInfo>

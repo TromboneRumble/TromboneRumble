@@ -1,68 +1,16 @@
 {
  "SoundBanksInfo": {
-  "Platform": "Windows",
-  "BasePlatform": "Windows",
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
   "SchemaVersion": "16",
   "SoundBankVersion": "150",
-  "RootPaths": {
-   "ProjectRoot": "../..",
-   "SourceFilesRoot": "../../.cache/Windows",
-   "SoundBanksRoot": ".",
-   "ExternalSourcesInputFile": "",
-   "ExternalSourcesOutputRoot": "."
-  },
-  "DialogueEvents": [],
   "SoundBanks": [
-   {
-    "Id": "534561221",
-    "Type": "User",
-    "GUID": "{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}",
-    "Language": "SFX",
-    "Hash": "{C3C29873-363E-E1E1-AC15-118D256686BC}",
-    "ObjectPath": "\\SoundBanks\\Default Work Unit\\MainSoundBank",
-    "ShortName": "MainSoundBank",
-    "Path": "MainSoundBank.bnk",
-    "Media": [
-     {
-      "Id": "759138717",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "Trumbone Main Theme_4.wav",
-      "CachePath": "SFX/Trumbone Main Theme_4_FBC78EF0.wem"
-     }
-    ],
-    "Events": [
-     {
-      "Id": "3666185889",
-      "Name": "Play_Lobby_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Lobby_BGM",
-      "GUID": "{94227083-3159-4322-BF3A-0D7AB2913647}",
-      "DurationType": "Infinite",
-      "MediaRefs": [
-       {
-        "Id": "759138717"
-       }
-      ]
-     },
-     {
-      "Id": "3948599171",
-      "Name": "Stop_Lobby_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Lobby_BGM",
-      "GUID": "{A593B12B-6676-4295-9E55-E2E6FC49D923}",
-      "MaxAttenuation": "0",
-      "DurationType": "OneShot",
-      "DurationMin": "0",
-      "DurationMax": "0"
-     }
-    ]
-   },
    {
     "Id": "1355168291",
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{80AA3125-B4C7-2DBE-1BF1-31EE7B72A930}",
+    "Hash": "{B1D74519-8308-847E-F4A8-593DF9FE51F5}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -560,6 +508,6 @@
     ]
    }
   ],
-  "FileHash": "{79E0CDFA-C1AE-980F-255F-699F81A17F68}"
+  "FileHash": "{20D5F50C-EDE0-5440-1BA4-0C94DC61DB47}"
  }
 }
