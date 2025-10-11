@@ -77,6 +77,16 @@ void ALobbyGameMode::RequestServerTravel(const EGameState InGameState)
 	}
 }
 
+void ALobbyGameMode::NotifyInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument)
+{
+	OnInstrumentEquipped(EquippedPlayer);
+}
+
+void ALobbyGameMode::NotifyInstrumentUnequipped(APlayerController* UnequippedPlayer, AActor* UnequippedInstrument)
+{
+	IInstrumentEventHandler::NotifyInstrumentUnequipped(UnequippedPlayer, UnequippedInstrument);
+}
+
 void ALobbyGameMode::InitializeMapPath()
 {
 	FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);

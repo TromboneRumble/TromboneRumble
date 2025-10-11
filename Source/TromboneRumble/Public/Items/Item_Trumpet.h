@@ -8,6 +8,7 @@
 #include "Interfaces/Equipable.h"
 #include "Item_Trumpet.generated.h"
 
+class IInstrumentEventHandler;
 class UAudioComponent;
 class USkeletalMeshComponent;
 class UCapsuleComponent;
@@ -57,6 +58,8 @@ private:
     void PlaySound() const;
     void StopSound() const;
     void SetPhysicsEnabled(bool bEnable) const;
+
+	IInstrumentEventHandler* GetInstrumentEventHandler() const;
 
     // Drop Values
     UPROPERTY(EditDefaultsOnly, Category = "Trumpet|Drop")
