@@ -68,7 +68,7 @@ private:
 	TSubclassOf<AActor> InstrumentToSpawn;
 	
 	FTimerHandle LobbyTimerHandle;
-	int32 MaxPlayers;
+	int32 NumPublicConnections;
 	int32 CurrentEquippedInstruments;
 	float Timer;
 };

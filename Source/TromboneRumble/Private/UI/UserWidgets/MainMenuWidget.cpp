@@ -8,6 +8,8 @@
 #include "Subsystems/SessionSubsystem.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
+#include "Components/Slider.h"
+#include "Components/SpinBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
@@ -55,6 +57,13 @@ void UMainMenuWidget::NativePreConstruct()
 			PlayerController->SetInputMode(InputModeData);
 			PlayerController->SetShowMouseCursor(true);
 		}
+	}
+
+	if (MaxPlayerSlider && MaxPlayerSpinBox)
+	{
+		MaxPlayerSlider->OnValueChanged.AddDynamic(this, &ThisClass::OnMaxPlayerSliderChanged);
+		MaxPlayerSpinBox->OnValueChanged.AddDynamic(this, &ThisClass::OnMaxPlayerSpinBoxChanged);
+		MaxPlayerSpinBox->SetValue(MaxPlayerSlider->GetValue());
 	}
 }
 
@@ -230,9 +239,27 @@ void UMainMenuWidget::OnStartSession(bool bWasSuccessful)
 {
 }
 
+void UMainMenuWidget::OnMaxPlayerSliderChanged(const float Value)
+{
+	if (MaxPlayerSpinBox)
+	{
+		MaxPlayerSpinBox->SetValue(FMath::RoundToInt(Value));
+	}
+}
+
+void UMainMenuWidget::OnMaxPlayerSpinBoxChanged(const float Value)
+{
+	if (MaxPlayerSlider)
+	{
+		MaxPlayerSlider->SetValue(Value);
+	}
+}
+
 
 void UMainMenuWidget::HostButtonClicked()
 {
+	NumPublicConnections = FMath::RoundToInt(MaxPlayerSlider->GetValue());
+	
 	FString LobbyCode;
 	if (LobbyCodeText->GetText().IsEmpty())
 	{

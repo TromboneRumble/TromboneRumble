@@ -1,13 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/LobbyGameMode.h"
+#include "OnlineSessionSettings.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Engine/StaticMeshActor.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/SessionSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -15,7 +16,6 @@ ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	CurrentEquippedInstruments = 0;
-	MaxPlayers = 3; // TODO : delete magic number
 	Timer = 5.0f; // TODO : delete magic number
 	CachedInGameMapPath = TEXT("");
 }
@@ -33,6 +33,17 @@ void ALobbyGameMode::BeginPlay()
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("LobbyGameState is null"));
 		return;
 	}
+
+	const UWorld* World = GetWorld();
+	if (!World) return;
+	
+	const UGameInstance* GameInstance = World->GetGameInstance();
+	if (!GameInstance) return;
+	
+	const USessionSubsystem* SessionSubsystem = GameInstance->GetSubsystem<USessionSubsystem>();
+	if (!SessionSubsystem) return;
+	
+	NumPublicConnections = SessionSubsystem ? SessionSubsystem->GetLastSessionSettings()->NumPublicConnections : 4;
 	
 	InitializeMapPath();
 	InitializeInstruments();
@@ -49,7 +60,7 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	const FString DebugMsg = FString::Printf(TEXT("Player Left: %s, Total Players: %d"), *DebugPlayerName, CurrentPlayers);
 	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 
-	if (CurrentPlayers >= MaxPlayers) return;
+	if (CurrentPlayers >= NumPublicConnections) return;
 
 	const ELobbyState CurrentLobbyState = LobbyGameState->GetCurrentLobbyState();
 	if (CurrentLobbyState == ELobbyState::CountdownToScramble || CurrentLobbyState == ELobbyState::InstrumentScramble)
@@ -123,7 +134,7 @@ void ALobbyGameMode::InitializeInstruments() const
 		const FVector SpawnLocation = SpawnPoint->GetActorLocation();
 		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 		
-		for (int32 i = 0; i < MaxPlayers - 1; ++i)
+		for (int32 i = 0; i < NumPublicConnections - 1; ++i)
 		{
 			GetWorld()->SpawnActor<AActor>(InstrumentToSpawn, SpawnLocation, SpawnRotation);
 		}
@@ -132,7 +143,7 @@ void ALobbyGameMode::InitializeInstruments() const
 
 bool ALobbyGameMode::CheckAllClientsReady()
 {
-	if (GetNumPlayers() < MaxPlayers) return false;
+	if (GetNumPlayers() < NumPublicConnections) return false;
 	
 	for (APlayerState* PlayerState : GetGameState<AGameStateBase>()->PlayerArray)
 	{
@@ -216,7 +227,7 @@ void ALobbyGameMode::HandleInstrumentEquipped(APlayerController* EquippedPlayer)
 	const FString DebugMsg = FString::Printf(TEXT("Instrument Equipped by %s"), *EquippedPlayer->PlayerState->GetPlayerName());
 	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 
-	if (++CurrentEquippedInstruments >= MaxPlayers - 1)
+	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
 	{
 		SetLobbyState(ELobbyState::CountdownToTravel);
 	}

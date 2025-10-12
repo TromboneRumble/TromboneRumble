@@ -47,6 +47,8 @@ public:
 
 	bool FindMatchingLobbyInResult(const FString& InLobbyCode, FOnlineSessionSearchResult& OutResult) const;
 
+	FORCEINLINE TSharedPtr<FOnlineSessionSettings> GetLastSessionSettings() const { return LastSessionSettings; }
+
 public:
 	//----------------------------------------Public Variables--------------------------------------------//
 

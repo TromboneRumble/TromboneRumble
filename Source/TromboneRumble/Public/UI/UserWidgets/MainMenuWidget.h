@@ -8,6 +8,8 @@
 #include "Utilities/Defines.h"
 #include "MainMenuWidget.generated.h"
 
+class USpinBox;
+class USlider;
 class UButton;
 class USessionSubsystem;
 class UEditableText;
@@ -38,6 +40,12 @@ private:
 	UFUNCTION()
 	void OnStartSession(bool bWasSuccessful);
 	// ~ SessionSubsystem Callbacks
+	
+	UFUNCTION()
+	void OnMaxPlayerSliderChanged(float Value);
+	
+	UFUNCTION()
+	void OnMaxPlayerSpinBoxChanged(float Value);
 
 	// Button Callbacks
 	UFUNCTION()
@@ -59,8 +67,13 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UEditableText> LobbyCodeText;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> MaxPlayerSlider;
 
-	int32 NumPublicConnections{ 4 };
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USpinBox> MaxPlayerSpinBox;
+	
+	int32 NumPublicConnections = 4;
 	int32 MaxLobbyCodeLength{ 5 };
 	EMatchState State{ EMatchState::Invalid };
 
