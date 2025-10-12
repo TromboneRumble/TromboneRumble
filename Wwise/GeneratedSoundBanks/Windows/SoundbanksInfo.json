@@ -14,6 +14,50 @@
   "DialogueEvents": [],
   "SoundBanks": [
    {
+    "Id": "534561221",
+    "Type": "User",
+    "GUID": "{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}",
+    "Language": "SFX",
+    "Hash": "{E52AB43F-D331-6CC3-B4C2-D7465D04F86E}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\MainSoundBank",
+    "ShortName": "MainSoundBank",
+    "Path": "MainSoundBank.bnk",
+    "Media": [
+     {
+      "Id": "86163561",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Trumbone Main Theme_4.wav",
+      "CachePath": "SFX/Trumbone Main Theme_4_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2705295169",
+      "Name": "Play_Lobby_BGM2",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Lobby_BGM2",
+      "GUID": "{3A3D1125-5D51-42D8-95F1-FC2EE870FEE1}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "86163561"
+       }
+      ]
+     },
+     {
+      "Id": "50414347",
+      "Name": "Stop_Lobby_BGM2",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Lobby_BGM2",
+      "GUID": "{25F789E4-FC71-44BB-9115-F955C06212C7}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ]
+   },
+   {
     "Id": "1355168291",
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
@@ -516,6 +560,6 @@
     ]
    }
   ],
-  "FileHash": "{02EE9BB3-4FB0-0DD0-F46A-2B86AB3D8D4E}"
+  "FileHash": "{1A0BB676-BDA4-66B7-E0D8-672A6E658ECA}"
  }
 }

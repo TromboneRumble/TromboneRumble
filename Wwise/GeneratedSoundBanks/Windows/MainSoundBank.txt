@@ -1,0 +1,7 @@
+Event	ID	Name			Wwise Object Path	Notes
+	50414347	Stop_Lobby_BGM2			\Default Work Unit\Stop_Lobby_BGM2	
+	2705295169	Play_Lobby_BGM2			\Default Work Unit\Play_Lobby_BGM2	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	86163561	Trumbone Main Theme_4	Y:\RiderProjects\TromboneRumble\Wwise\.cache\Windows\SFX\Trumbone Main Theme_4_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\Test_BGM\Trumbone Main Theme_4\Trumbone Main Theme_4		19968096
+
