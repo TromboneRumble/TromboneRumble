@@ -24,7 +24,7 @@ public:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
-	void Tackle();
+	void Headbutt();
 	FORCEINLINE void Sprint() { Server_StartSprint(); }
 	FORCEINLINE void StopSprint() { Server_StopSprint(); }
 

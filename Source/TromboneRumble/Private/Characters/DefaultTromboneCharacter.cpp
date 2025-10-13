@@ -89,9 +89,9 @@ void ADefaultTromboneCharacter::Interact()
 	}
 }
 
-void ADefaultTromboneCharacter::Tackle()
+void ADefaultTromboneCharacter::Headbutt()
 {
-	Debug::Print(TEXT("Tackle Clicked"));
+	Debug::Print(TEXT("Headbutt Clicked"));
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
