@@ -3,6 +3,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
@@ -11,19 +12,23 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	InitCharacter();
 }
 
-void ATromboneCharacterBase::BeginPlay()
+void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 {
-	Super::BeginPlay();
+	if (!HasAuthority()) return;
+
+	if (HitData.HitType == EHitType::Headbutt)
+	{
+	}
+	else if (HitData.HitType == EHitType::Instrument)
+	{
+	}
+	else
+	{
+	}
 	
+	
+	StartRagdoll();
 }
-
-void ATromboneCharacterBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-
 
 void ATromboneCharacterBase::InitCharacter() const
 {

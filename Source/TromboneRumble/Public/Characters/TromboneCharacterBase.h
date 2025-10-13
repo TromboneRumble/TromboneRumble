@@ -4,23 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
 class UInputComponent;
 
 UCLASS()
-class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter
+class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
 {
 	GENERATED_BODY()
 
 public:
 	ATromboneCharacterBase();
-	virtual void Tick(float DeltaTime) override;
+	virtual void OnHitReceived(const FHitData& HitData) override;
 	
-
-protected:
-	virtual void BeginPlay() override;
-
 private:
 	void InitCharacter() const;
 	void SetupCapsuleComponent() const;

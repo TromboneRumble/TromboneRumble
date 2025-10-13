@@ -30,3 +30,11 @@ enum class ELobbyState : uint8
 	CountdownToTravel,
 	Invalid UMETA(Hidden)
 };
+
+UENUM()
+enum class EHitType : uint8
+{
+	Headbutt,
+	Instrument,
+	Invalid UMETA(Hidden)
+};
