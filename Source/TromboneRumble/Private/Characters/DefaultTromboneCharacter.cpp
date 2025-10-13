@@ -8,7 +8,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Utilities/DebugHelper.h"
@@ -93,10 +92,6 @@ void ADefaultTromboneCharacter::Interact()
 void ADefaultTromboneCharacter::Tackle()
 {
 	Debug::Print(TEXT("Tackle Clicked"));
-	//if (!IsTackling())
-	//{
-	//	Server_Tackle();
-	//}
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
@@ -118,7 +113,6 @@ void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ADefaultTromboneCharacter, bIsTackling);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsEquipped);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsSprinting);
 }
@@ -151,14 +145,6 @@ void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSecond
 	}
 }
 
-void ADefaultTromboneCharacter::EndTackleAnimation()
-{
-	if (HasAuthority())
-	{
-		bIsTackling = false;
-	}
-}
-
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
 {
 	if (ADefaultPlayerController* PC = CachedCharacterController.Get())
@@ -169,43 +155,4 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 
 void ADefaultTromboneCharacter::Server_Interaction_Implementation(AActor* Interactable)
 {
-}
-
-void ADefaultTromboneCharacter::Server_Tackle_Implementation()
-{
-	if (bIsTackling) return;
-
-	bIsTackling = true;
-
-	FTimerHandle TimerHandle_TackleEnd;
-	GetWorldTimerManager().SetTimer(TimerHandle_TackleEnd, this, &ThisClass::EndTackleAnimation, TackleAnimationDuration, false);
-
-	const FVector Start = GetActorLocation();
-	const FVector End = Start + (GetActorForwardVector() * 200.0f);
-
-	FHitResult HitResult;
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(this);
-
-	const bool bHit = UKismetSystemLibrary::SphereTraceSingle(
-		this,
-		Start,
-		End,
-		50.0f,
-		UEngineTypes::ConvertToTraceType(ECC_Pawn),
-		false,
-		ActorsToIgnore,
-		EDrawDebugTrace::None,
-		HitResult,
-		true
-	);
-
-	if (!bHit) return;
-	// TODO(next): if (HitActor implements UHitReactInterface) { IHitReactInterface::Execute_OnTackled(HitActor, this); }
-	//ADefaultTromboneCharacter* HitCharacter = Cast<ADefaultTromboneCharacter>(HitResult.GetActor());
-	//if (HitCharacter && HitCharacter->HeldTrumpet)
-	//{
-	//	HitCharacter->Drop();
-	//}
-	
 }

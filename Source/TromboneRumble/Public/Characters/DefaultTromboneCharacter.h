@@ -37,15 +37,12 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Server_Interaction(AActor* Interactable);
 	UFUNCTION(Server, Reliable)
-	void Server_Tackle();
-	UFUNCTION(Server, Reliable)
 	void Server_StartSprint();
 	UFUNCTION(Server, Reliable)
 	void Server_StopSprint();
 	// ~Server RPCs
 
 	FORCEINLINE bool IsEquipped() const { return bIsEquipped; }
-	FORCEINLINE bool IsTackling() const { return bIsTackling; }
 
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
@@ -62,13 +59,9 @@ protected:
 	// ~Components
 private:
 	void InterpolateMovementSpeed(float DeltaSeconds) const;
-	void EndTackleAnimation();
 
 	UFUNCTION()
 	void HandleInteractableAvailableChanged(bool bAvailable);
-
-	UPROPERTY(Replicated)
-	uint8 bIsTackling : 1 = 0;
 
 	UPROPERTY(Replicated)
 	uint8 bIsEquipped : 1 = 0;
@@ -84,6 +77,4 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Config|Movement")
 	float SprintInterpSpeed = 10.0f;
-
-	float TackleAnimationDuration = 1.0f;
 };
