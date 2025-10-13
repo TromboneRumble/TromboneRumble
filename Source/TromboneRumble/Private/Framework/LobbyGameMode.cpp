@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/LobbyGameMode.h"
+
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Engine/StaticMeshActor.h"
@@ -37,6 +40,12 @@ void ALobbyGameMode::BeginPlay()
 	InitializeMapPath();
 	InitializeInstruments();
 	SetLobbyState(ELobbyState::WaitingForPlayers);
+
+	if (TestSoundEvent)
+	{
+		FOnAkPostEventCallback OnCallback;
+		UAkGameplayStatics::PostEvent(TestSoundEvent, this, AK_EndOfEvent, OnCallback);
+	}
 }
 
 void ALobbyGameMode::Logout(AController* ExitedPlayer)
