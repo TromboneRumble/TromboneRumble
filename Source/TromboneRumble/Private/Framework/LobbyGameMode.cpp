@@ -3,10 +3,8 @@
 #include "Framework/LobbyGameMode.h"
 
 #include "AkGameplayStatics.h"
-#include "AkGameplayTypes.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Engine/StaticMeshActor.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/LobbyPlayerState.h"
 #include "GameFramework/GameStateBase.h"
@@ -40,12 +38,6 @@ void ALobbyGameMode::BeginPlay()
 	InitializeMapPath();
 	InitializeInstruments();
 	SetLobbyState(ELobbyState::WaitingForPlayers);
-
-	if (TestSoundEvent)
-	{
-		FOnAkPostEventCallback OnCallback;
-		UAkGameplayStatics::PostEvent(TestSoundEvent, this, AK_EndOfEvent, OnCallback);
-	}
 }
 
 void ALobbyGameMode::Logout(AController* ExitedPlayer)

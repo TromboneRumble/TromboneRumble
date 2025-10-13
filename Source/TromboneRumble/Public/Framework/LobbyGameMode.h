@@ -8,7 +8,6 @@
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
-class UAkAudioEvent;
 class ALobbyPlayerState;
 class ALobbyGameState;
 
@@ -72,7 +71,4 @@ private:
 	int32 MaxPlayers;
 	int32 CurrentEquippedInstruments;
 	float Timer;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAkAudioEvent> TestSoundEvent;
 };
