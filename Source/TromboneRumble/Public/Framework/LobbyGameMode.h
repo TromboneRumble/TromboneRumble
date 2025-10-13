@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Interfaces/InstrumentEventHandler.h"
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
@@ -12,9 +13,10 @@ class ALobbyGameState;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClientReadySignature, APlayerController*, ReadyPlayer);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentEquippedSignature, APlayerController*, EqippedPlayer);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentUnequippedSignature, APlayerController*, UnequippedPlayer);
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase
+class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IInstrumentEventHandler
 {
 	GENERATED_BODY()
 	
@@ -22,14 +24,22 @@ public:
 	ALobbyGameMode();
 	virtual void BeginPlay() override;
 	virtual void Logout(AController* ExitedPlayer) override;
+
+	// IInstrumentEventHandler interface
+	virtual void NotifyInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument) override;
+	virtual void NotifyInstrumentUnequipped(APlayerController* UnequippedPlayer, AActor* UnequippedInstrument) override;
+	// ~ IInstrumentEventHandler interface
+	
 	void RequestServerTravel(EGameState InGameState);
 	
 	FORCEINLINE void OnClientReady(APlayerController* ReadyPlayer) const { OnClientReadyDelegate.Broadcast(ReadyPlayer); }
-	FORCEINLINE void OnInstrumentEquipped(APlayerController* EquippedPlayerState) const { OnInstrumentEquippedDelegate.Broadcast(EquippedPlayerState); }
+	FORCEINLINE void OnInstrumentEquipped(APlayerController* EquippedPlayer) const { OnInstrumentEquippedDelegate.Broadcast(EquippedPlayer); }
+	FORCEINLINE void OnInstrumentUnequipped(APlayerController* UnequippedPlayer) const { OnInstrumentUnequippedDelegate.Broadcast(UnequippedPlayer); }
 	
 public:
 	FOnClientReadySignature OnClientReadyDelegate;
 	FOnInstrumentEquippedSignature OnInstrumentEquippedDelegate;
+	FOnInstrumentUnequippedSignature OnInstrumentUnequippedDelegate;
 
 private:
 	void InitializeMapPath();

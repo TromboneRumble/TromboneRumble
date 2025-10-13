@@ -30,8 +30,6 @@ bool ALobbyKiosk::CanInteract_Implementation(AActor* InstigatorActor) const
 
 void ALobbyKiosk::Interact_Implementation(AActor* InstigatorActor)
 {
-	IInteractable::Interact_Implementation(InstigatorActor);
-
 	Server_RequestTravel();
 	bIsUsed = true;
 }

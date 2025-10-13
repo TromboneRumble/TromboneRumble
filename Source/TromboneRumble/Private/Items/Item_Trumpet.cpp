@@ -7,6 +7,8 @@
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/CollisionProfile.h"
+#include "GameFramework/GameModeBase.h"
+#include "Interfaces/InstrumentEventHandler.h"
 #include "Net/UnrealNetwork.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -71,6 +73,17 @@ void AItem_Trumpet::Equip_Implementation(AActor* OwnerActor)
     OnRep_Equipped();
 
     if (InteractTrigger) InteractTrigger->SetTriggerActive(false);
+    
+    if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
+    {
+        if (const APawn* OwnerPawn = Cast<APawn>(OwnerActor))
+        {
+            if (APlayerController* PlayerController = OwnerPawn->GetController<APlayerController>())
+            {
+                EventHandler->NotifyInstrumentEquipped(PlayerController, this);
+            }
+        }
+    }
 }
 
 void AItem_Trumpet::Unequip_Implementation(AActor* OwnerActor)
@@ -87,6 +100,17 @@ void AItem_Trumpet::Unequip_Implementation(AActor* OwnerActor)
     
     if (InteractTrigger) InteractTrigger->SetTriggerActive(true);
     if (TrumpetMesh) TrumpetMesh->AddImpulse(vForwardImpulse + vUpwardImpulse);
+
+    if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
+    {
+        if (const APawn* OwnerPawn = Cast<APawn>(OwnerActor))
+        {
+            if (APlayerController* PlayerController = OwnerPawn->GetController<APlayerController>())
+            {
+                EventHandler->NotifyInstrumentUnequipped(PlayerController, this);
+            }
+        }
+    }
 }
 
 void AItem_Trumpet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -101,6 +125,7 @@ void AItem_Trumpet::OnRep_Equipped()
 {
     if (bIsEquipped)
     {
+        SetPhysicsEnabled(false);
         if (CurrentOwner)
         {
             if (ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
@@ -115,7 +140,6 @@ void AItem_Trumpet::OnRep_Equipped()
                 AttachToActor(CurrentOwner, FAttachmentTransformRules::KeepWorldTransform);
             }
         }
-        SetPhysicsEnabled(false);
         PlaySound();
     }
     else
@@ -146,4 +170,14 @@ void AItem_Trumpet::SetPhysicsEnabled(bool bEnable) const
     {
         CapsuleComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
     }
+}
+
+IInstrumentEventHandler* AItem_Trumpet::GetInstrumentEventHandler() const
+{
+    AGameModeBase* const CurrentGameMode = GetWorld()->GetAuthGameMode();
+    if (CurrentGameMode && CurrentGameMode->Implements<UInstrumentEventHandler>())
+    {
+        return Cast<IInstrumentEventHandler>(CurrentGameMode);
+    }
+    return nullptr;
 }
