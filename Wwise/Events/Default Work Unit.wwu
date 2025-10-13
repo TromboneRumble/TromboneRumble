@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{329CE279-FBEF-4A13-B273-541F279B81E0}" SchemaVersion="119">
+<WwiseDocument Type="WorkUnit" ID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}" SchemaVersion="119">
 	<Events>
-		<WorkUnit Name="Default Work Unit" ID="{329CE279-FBEF-4A13-B273-541F279B81E0}" PersistMode="Standalone">
-			<ChildrenList>
-				<Event Name="Play_Lobby_BGM2" ID="{3A3D1125-5D51-42D8-95F1-FC2EE870FEE1}">
-					<ChildrenList>
-						<Action Name="" ID="{3DB71298-D515-4C20-9102-3644A5970A94}" ShortID="918979153">
-							<PropertyList>
-								<Property Name="ActionType" Type="int16" Value="2"/>
-							</PropertyList>
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="Test_BGM" ID="{1E99FD29-C735-475F-923A-23ABADD97986}" WorkUnitID="{396A3E38-2C5F-4CE2-A459-424C3A3E0C9C}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-						<Action Name="" ID="{16B291CA-E376-42F5-8343-98B088B3389F}" ShortID="364192227">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="Test_BGM" ID="{1E99FD29-C735-475F-923A-23ABADD97986}" WorkUnitID="{396A3E38-2C5F-4CE2-A459-424C3A3E0C9C}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
-				<Event Name="Stop_Lobby_BGM2" ID="{25F789E4-FC71-44BB-9115-F955C06212C7}">
-					<ChildrenList>
-						<Action Name="" ID="{A48B20CB-20B5-46B2-9B09-CFE269688856}" ShortID="189242350">
-							<PropertyList>
-								<Property Name="ActionType" Type="int16" Value="2"/>
-							</PropertyList>
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="Test_BGM" ID="{1E99FD29-C735-475F-923A-23ABADD97986}" WorkUnitID="{396A3E38-2C5F-4CE2-A459-424C3A3E0C9C}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
-			</ChildrenList>
-		</WorkUnit>
+		<WorkUnit Name="Default Work Unit" ID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}" PersistMode="Standalone"/>
 	</Events>
 </WwiseDocument>
