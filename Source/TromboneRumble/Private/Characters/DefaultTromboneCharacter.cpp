@@ -108,9 +108,11 @@ void ADefaultTromboneCharacter::BeginPlay()
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 }
-void ADefaultTromboneCharacter::Tick(float DeltaSeconds)
+void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	InterpolateMovementSpeed(DeltaSeconds);
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -118,6 +120,35 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsTackling);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsEquipped);
+	DOREPLIFETIME(ADefaultTromboneCharacter, bIsSprinting);
+}
+
+void ADefaultTromboneCharacter::Server_StartSprint_Implementation()
+{
+	bIsSprinting = true;
+}
+
+void ADefaultTromboneCharacter::Server_StopSprint_Implementation()
+{
+	bIsSprinting = false;
+}
+
+void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
+{
+	if (auto* MovementComponent = GetCharacterMovement())
+	{
+		const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
+
+		if (MovementComponent->MaxWalkSpeed != TargetSpeed)
+		{
+			MovementComponent->MaxWalkSpeed = FMath::FInterpTo(
+				MovementComponent->MaxWalkSpeed,
+				TargetSpeed,
+				DeltaSeconds,
+				SprintInterpSpeed
+			);
+		}
+	}
 }
 
 void ADefaultTromboneCharacter::EndTackleAnimation()

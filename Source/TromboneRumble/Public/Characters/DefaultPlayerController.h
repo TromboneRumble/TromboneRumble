@@ -34,6 +34,8 @@ public:
 	TObjectPtr<UInputAction> InteractAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> TackleAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> SprintAction;
 	// ~InputActions
 
 protected:
@@ -53,6 +55,8 @@ private:
 	void Handle_JumpReleased();
 	void Handle_Interact();
 	void Handle_Tackle();
+	void Handle_SprintPressed();
+	void Handle_SprintReleased();
 	// ~Input handlers
 
 	EGameState GetGameState() const;

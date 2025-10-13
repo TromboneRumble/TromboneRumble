@@ -54,6 +54,8 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (TackleAction)  EIC->BindAction(TackleAction, ETriggerEvent::Started, this, &ThisClass::Handle_Tackle);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Handle_JumpPressed);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::Handle_JumpReleased);
+		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::Handle_SprintPressed);
+		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::Handle_SprintReleased);
 	}
 }
 
@@ -90,4 +92,14 @@ void ADefaultPlayerController::Handle_Interact()
 void ADefaultPlayerController::Handle_Tackle()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Tackle();
+}
+
+void ADefaultPlayerController::Handle_SprintPressed()
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Sprint();
+}
+
+void ADefaultPlayerController::Handle_SprintReleased()
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->StopSprint();
 }
