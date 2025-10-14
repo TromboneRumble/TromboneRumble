@@ -19,10 +19,12 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Server_ExecuteAttack();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayAttackEffects(const FVector& TraceStart, const FVector& TraceEnd, const bool bHit);
+
 	UPROPERTY(EditAnywhere, Category = "Headbutt")
 	float AttackRadius = 50.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Headbutt")
-	float AttackDistance = 150.0f;
-		
+	float AttackDistance = 100.0f;
 };

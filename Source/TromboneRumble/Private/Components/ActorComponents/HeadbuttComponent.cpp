@@ -37,10 +37,12 @@ void UHeadbuttComponent::Server_ExecuteAttack_Implementation()
 		"Pawn",
 		false,
 		{},
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		HitResults,
 		true
 	);
+
+	Multicast_PlayAttackEffects(Start, End, bHit);
 
 	if (!bHit) return;
 	
@@ -60,4 +62,9 @@ void UHeadbuttComponent::Server_ExecuteAttack_Implementation()
 			}
 		}
 	}
+}
+
+void UHeadbuttComponent::Multicast_PlayAttackEffects_Implementation(const FVector& TraceStart, const FVector& TraceEnd, const bool bHit)
+{
+	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 2.0f);
 }
