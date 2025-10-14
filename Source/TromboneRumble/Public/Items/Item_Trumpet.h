@@ -35,7 +35,7 @@ protected:
 private:
     // Components
     UPROPERTY(VisibleAnywhere, Category = "Trumpet")
-    TObjectPtr<USkeletalMeshComponent> TrumpetMesh = nullptr;
+    TObjectPtr<USkeletalMeshComponent> TrumpetMeshComponent = nullptr;
 
     UPROPERTY(VisibleAnywhere, Category = "Trumpet")
     TObjectPtr<UCapsuleComponent> CapsuleComponent = nullptr;
@@ -45,7 +45,8 @@ private:
 
     UPROPERTY(VisibleAnywhere, Category = "Interact")
     TObjectPtr<UInteractionTriggerComponent> InteractTrigger = nullptr;
-
+    // ~Components
+	
     UPROPERTY(ReplicatedUsing = OnRep_Equipped)
     uint8 bIsEquipped : 1 = 0;
 

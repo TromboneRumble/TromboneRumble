@@ -17,10 +17,10 @@ AItem_Trumpet::AItem_Trumpet()
     PrimaryActorTick.bCanEverTick = false;
     bReplicates = true;
 
-    TrumpetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrumpetMesh"));
-    SetRootComponent(TrumpetMesh);
-    TrumpetMesh->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
-    TrumpetMesh->SetSimulatePhysics(true);
+    TrumpetMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrumpetMesh"));
+    SetRootComponent(TrumpetMeshComponent);
+    TrumpetMeshComponent->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
+    TrumpetMeshComponent->SetSimulatePhysics(true);
 
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
     CapsuleComponent->SetupAttachment(RootComponent);
@@ -35,12 +35,6 @@ AItem_Trumpet::AItem_Trumpet()
     AudioComponent->bOverrideAttenuation = true;
 
     InteractTrigger = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTrigger"));
-
-    static ConstructorHelpers::FObjectFinder<USkeletalMesh> TrumpetMeshFinder(TEXT("/Game/Arts/Trumpet/SKM_Trumpet.SKM_Trumpet"));
-    if (TrumpetMeshFinder.Succeeded())
-    {
-        TrumpetMesh->SetSkeletalMesh(TrumpetMeshFinder.Object);
-    }
 
     static ConstructorHelpers::FObjectFinder<USoundBase> TrumpetSoundFinder(TEXT("/Game/Sounds/Trumpet.Trumpet"));
     if (TrumpetSoundFinder.Succeeded())
@@ -99,7 +93,7 @@ void AItem_Trumpet::Unequip_Implementation(AActor* OwnerActor)
     OnRep_Equipped();
     
     if (InteractTrigger) InteractTrigger->SetTriggerActive(true);
-    if (TrumpetMesh) TrumpetMesh->AddImpulse(vForwardImpulse + vUpwardImpulse);
+    if (TrumpetMeshComponent) TrumpetMeshComponent->AddImpulse(vForwardImpulse + vUpwardImpulse);
 
     if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
     {
@@ -130,7 +124,7 @@ void AItem_Trumpet::OnRep_Equipped()
         {
             if (ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
             {
-                TrumpetMesh->AttachToComponent(
+                TrumpetMeshComponent->AttachToComponent(
                     OwnerChar->GetMesh(),
                     FAttachmentTransformRules::SnapToTargetIncludingScale,
                     AttachSocketName);
@@ -162,9 +156,9 @@ void AItem_Trumpet::StopSound() const
 
 void AItem_Trumpet::SetPhysicsEnabled(bool bEnable) const
 {
-    if (!TrumpetMesh) return;
-    TrumpetMesh->SetSimulatePhysics(bEnable);
-    TrumpetMesh->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+    if (!TrumpetMeshComponent) return;
+    TrumpetMeshComponent->SetSimulatePhysics(bEnable);
+    TrumpetMeshComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
 
     if (CapsuleComponent)
     {
