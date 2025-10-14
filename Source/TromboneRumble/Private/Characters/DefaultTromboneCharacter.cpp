@@ -53,6 +53,23 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
 }
 
+void ADefaultTromboneCharacter::Jump()
+{
+	if (bIsSprinting)
+	{
+		Headbutt();
+	}
+	else
+	{
+		Super::Jump();
+	}
+}
+
+void ADefaultTromboneCharacter::StopJumping()
+{
+	Super::StopJumping();
+}
+
 void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();

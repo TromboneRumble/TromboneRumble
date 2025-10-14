@@ -21,6 +21,8 @@ class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBa
 public:
 	ADefaultTromboneCharacter();
 
+	virtual void Jump() override;
+	virtual void StopJumping() override;
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();

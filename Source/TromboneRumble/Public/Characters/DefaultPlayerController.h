@@ -33,8 +33,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> InteractAction;
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> HeadbuttAction;
-	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> SprintAction;
 	// ~InputActions
 
@@ -54,7 +52,6 @@ private:
 	void Handle_JumpPressed();
 	void Handle_JumpReleased();
 	void Handle_Interact();
-	void Handle_Headbutt();
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
 	// ~Input handlers
@@ -77,4 +74,6 @@ private:
 
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
+
+	bool bIsSprinting = false;
 };

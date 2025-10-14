@@ -51,7 +51,6 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (MoveAction)    EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Move);
 		//if (LookAction)    EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Look);
 		if (InteractAction)EIC->BindAction(InteractAction, ETriggerEvent::Started, this, &ThisClass::Handle_Interact);
-		if (HeadbuttAction)  EIC->BindAction(HeadbuttAction, ETriggerEvent::Started, this, &ThisClass::Handle_Headbutt);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Handle_JumpPressed);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::Handle_JumpReleased);
 		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::Handle_SprintPressed);
@@ -87,11 +86,6 @@ void ADefaultPlayerController::Handle_JumpReleased()
 void ADefaultPlayerController::Handle_Interact()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Interact();
-}
-
-void ADefaultPlayerController::Handle_Headbutt()
-{
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Headbutt();
 }
 
 void ADefaultPlayerController::Handle_SprintPressed()
