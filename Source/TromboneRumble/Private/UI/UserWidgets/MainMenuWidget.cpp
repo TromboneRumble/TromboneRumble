@@ -177,6 +177,10 @@ void UMainMenuWidget::OnFindSession(const TArray<FOnlineSessionSearchResult>& Se
 			return;
 		}
 	}
+	Debug::Print(FString::Printf(TEXT("No matched lobby code among results (wanted=%s)"), *LobbyCode));
+	HostButton->SetIsEnabled(true);
+	JoinButton->SetIsEnabled(true);
+	
 }
 
 
@@ -290,7 +294,7 @@ void UMainMenuWidget::JoinButtonClicked()
 	JoinButton->SetIsEnabled(false);
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->FindSessions(10000, LobbyCodeText->GetText().ToString());
+		SessionsSubsystem->FindSessions(10000, LobbyCodeText->GetText().ToString().ToUpper());
 	}
 }
 

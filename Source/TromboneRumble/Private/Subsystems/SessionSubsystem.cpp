@@ -55,8 +55,8 @@ void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString&
 	if (ExistingSession != nullptr)
 	{
 		RecreateSessionRequest.Emplace(NumPublicConnections, LobbyCode);
-
 		DestroySession();
+		return;
 	}
 	const bool bLAN = IsLanEnvironment();
 
