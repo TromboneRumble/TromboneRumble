@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
+#include "Components/ActorComponents/HeadbuttComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Utilities/DebugHelper.h"
@@ -51,6 +52,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
+	HeadbuttComponent = CreateDefaultSubobject<UHeadbuttComponent>(TEXT("HeadbuttComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()
@@ -99,16 +101,12 @@ void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
 
 void ADefaultTromboneCharacter::Interact()
 {
-	Debug::Print(TEXT("Interact Clicked"));
-	if (InteractorComponent)
-	{
-		InteractorComponent->TryInteract();
-	}
+	if (InteractorComponent) InteractorComponent->TryInteract();
 }
 
 void ADefaultTromboneCharacter::Headbutt()
 {
-	Debug::Print(TEXT("Headbutt Clicked"));
+	if (HeadbuttComponent) HeadbuttComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
@@ -119,6 +117,8 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+
+	HeadbuttComponent->SetOwner(this);
 }
 void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
 {
@@ -130,6 +130,7 @@ void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsEquipped);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsSprinting);
 }

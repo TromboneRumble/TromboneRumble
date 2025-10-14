@@ -3,6 +3,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
@@ -18,14 +19,16 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 
 	if (HitData.HitType == EHitType::Headbutt)
 	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Headbutt"));
 	}
 	else if (HitData.HitType == EHitType::Instrument)
 	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Instrument"));
 	}
 	else
 	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Default"));
 	}
-	
 	
 	StartRagdoll();
 }

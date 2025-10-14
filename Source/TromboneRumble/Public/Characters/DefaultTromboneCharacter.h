@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UHeadbuttComponent;
 struct FInputActionValue;
 class ADefaultPlayerController;
 class USpringArmComponent;
@@ -56,9 +57,13 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UInteractorComponent> InteractorComponent;
 
+	UPROPERTY()
+	TObjectPtr<UHeadbuttComponent> HeadbuttComponent;
+	// ~Components
+	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
-	// ~Components
+
 private:
 	void InterpolateMovementSpeed(float DeltaSeconds) const;
 
