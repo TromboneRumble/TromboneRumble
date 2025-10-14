@@ -3,6 +3,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -11,6 +12,13 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	InitCharacter();
+}
+
+void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ATromboneCharacterBase, bIsRagdoll);
 }
 
 void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
@@ -30,7 +38,19 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Default"));
 	}
 	
-	StartRagdoll();
+	bIsRagdoll = true;
+
+	OnRep_IsRagdoll();
+
+	GetWorld()->GetTimerManager().SetTimer(RagdollTimerHandle, [this]()
+		{
+			if (HasAuthority())
+			{
+				bIsRagdoll = false;
+				OnRep_IsRagdoll();
+			}
+		}, 
+		RagdollDuration, false);
 }
 
 void ATromboneCharacterBase::InitCharacter() const
@@ -60,13 +80,16 @@ void ATromboneCharacterBase::SetupMovementComponent() const
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
-void ATromboneCharacterBase::StartRagdoll()
+void ATromboneCharacterBase::ApplyRagdoll()
 {
-	if (bIsRagdoll) return;
+	if (GetMesh()->IsSimulatingPhysics()) return;
 	
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		DisableInput(PlayerController);
+		if (IsLocallyControlled())
+		{
+			DisableInput(PlayerController);
+		}
 	}
 	
 	const FVector LastVelocity = GetCharacterMovement()->Velocity;
@@ -77,15 +100,12 @@ void ATromboneCharacterBase::StartRagdoll()
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	GetMesh()->AddImpulse(LastVelocity, NAME_None, true);
-
-	if (!GetWorld()) return;
-	bIsRagdoll = true;
-	GetWorld()->GetTimerManager().SetTimer(RagdollTimerHandle, this, &ATromboneCharacterBase::StopRagdoll, RagdollDuration, false);
 }
 
-void ATromboneCharacterBase::StopRagdoll()
+void ATromboneCharacterBase::UnapplyRagdoll()
 {
-	bIsRagdoll = false;
+	if (!GetMesh()->IsSimulatingPhysics()) return;
+
 	GetMesh()->SetSimulatePhysics(false);
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetMesh()->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
@@ -97,6 +117,21 @@ void ATromboneCharacterBase::StopRagdoll()
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		EnableInput(PlayerController);
+		if (IsLocallyControlled())
+		{
+			EnableInput(PlayerController);
+		}
+	}
+}
+
+void ATromboneCharacterBase::OnRep_IsRagdoll()
+{
+	if (bIsRagdoll)
+	{
+		ApplyRagdoll();
+	}
+	else
+	{
+		UnapplyRagdoll();
 	}
 }

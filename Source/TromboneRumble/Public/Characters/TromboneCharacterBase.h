@@ -16,6 +16,7 @@ class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICom
 
 public:
 	ATromboneCharacterBase();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnHitReceived(const FHitData& HitData) override;
 	
 private:
@@ -24,11 +25,16 @@ private:
 	void SetupSkeletalMeshComponent() const;
 	void SetupMovementComponent() const;
 	
-	void StartRagdoll();
-	void StopRagdoll();
+	void ApplyRagdoll();
+	void UnapplyRagdoll();
+
+	UFUNCTION()
+	void OnRep_IsRagdoll();
 
 private:
 	FTimerHandle RagdollTimerHandle;
 	float RagdollDuration = 3.0f;
+	
+	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
 };
