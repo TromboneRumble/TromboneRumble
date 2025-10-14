@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Utilities/Defines.h"
 #include "CombatReceiver.generated.h"
-
-enum class EHitType;
 
 USTRUCT()
 struct FHitData
@@ -20,7 +19,7 @@ struct FHitData
 	TWeakObjectPtr<ACharacter> Initiator = nullptr;
 
 	UPROPERTY()
-	EHitType HitType;
+	EHitType HitType = EHitType::Invalid;
 };
 
 // This class does not need to be modified.
@@ -31,7 +30,7 @@ class UCombatReceiver : public UInterface
 };
 
 class TROMBONERUMBLE_API ICombatReceiver
-{3
+{
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
