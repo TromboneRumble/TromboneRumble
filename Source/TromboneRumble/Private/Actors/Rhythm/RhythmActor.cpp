@@ -38,42 +38,119 @@ void ARhythmActor::Tick(float DeltaTime)
 
 void ARhythmActor::DetectNotes()
 {
+	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
+	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
+	if (!BestNote) return;
+	if (BestNote->IsLongNote() && !BestNote->IsLongNoteEnd())
+	{
+		//TODO : 롱노트 세부판정
+		IsSensingLongNote = true;
+		Debug::Print(TEXT("Long Note Sense Start"));
+	}
+	else
+	{
+		ReturnNoteResult(BestNote, NoteToHitComps);
+	}
+}
+
+void ARhythmActor::DetectLongNoteEnd()
+{
+	if (!IsSensingLongNote) return;
+	Debug::Print(TEXT("Long Note Sense End"));
+	IsSensingLongNote = false;
+	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
+	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
+	if (!BestNote) return;
+	if (BestNote->IsLongNote() && BestNote->IsLongNoteEnd())
+	{
+		ReturnNoteResult(BestNote, NoteToHitComps);
+	}
+	
+}
+
+
+void ARhythmActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+
+FRhythmTraceResult ARhythmActor::ReturnNoteResult(ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps)
+{
+
+	FRhythmTraceResult RhythmResult;
+	if (InNote == nullptr)
+	{
+		return RhythmResult;
+	}
+	const int32 HitCount = InNoteToHitComps.FindChecked(InNote).Num();
+	RhythmResult.NoteActor = InNote;
+
+	if (HitCount == 1)
+	{
+		RhythmResult.Judge = ENoteResult::Good;
+	}
+	else if (HitCount == 2)
+	{
+		RhythmResult.Judge = ENoteResult::Great;
+	}
+	else if (HitCount >= 3)
+	{
+		RhythmResult.Judge = ENoteResult::Excellent; // 또는 Perfect
+	}
+	else
+	{
+		RhythmResult.Judge = ENoteResult::Bad;
+	}
+
+	Debug::Print(FString::Printf(TEXT("Note Detected: %s, HitCount=%d, Judge=%d"),
+		*InNote->GetName(), HitCount, static_cast<uint8>(RhythmResult.Judge)));
+
+	return RhythmResult;
+}
+
+
+
+ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InOutNoteToHitComps)
+{
+	ARhythmNote* Result = nullptr;
+
 	UWorld* World = GetWorld();
-	if (!World) return;
+	if (!World) return Result;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(this);
-	
-	TArray<FHitResult> OutHits;
-	const bool bHit = World->LineTraceMultiByChannel(OutHits,
+
+	TArray<FHitResult> HitResults;
+	const bool bHit = World->LineTraceMultiByChannel(HitResults,
 		TraceStartPoint->GetComponentLocation(),
 		TraceEndPoint->GetComponentLocation(),
 		ECollisionChannel::ECC_GameTraceChannel2,
 		params);
-	Debug::Print(FString::Printf(TEXT("Hit Detected: %d"), OutHits.Num()));
+	Debug::Print(FString::Printf(TEXT("Hit Detected: %d"), HitResults.Num()));
 
-	if (OutHits.Num() == 0) return;
+	if (HitResults.Num() == 0) return Result;
 
+
+	//노트별로 히트된 컴포넌트 수 집계
 	
-
-	//노트별로 히트된 컴포넌트 수
-	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
-	for (const FHitResult& H : OutHits)
+	for (const FHitResult& H : HitResults)
 	{
 		if (ARhythmNote* Note = Cast<ARhythmNote>(H.GetActor()))
 		{
 			if (UPrimitiveComponent* HitComp = H.GetComponent())
 			{
-				NoteToHitComps.FindOrAdd(Note).Add(HitComp);
+				InOutNoteToHitComps.FindOrAdd(Note).Add(HitComp);
 			}
 		}
 	}
-	if (NoteToHitComps.Num() == 0) return;
+	if (InOutNoteToHitComps.Num() == 0) return Result;
 
 	//가장 먼저 나온 노드 찾기
 	ARhythmNote* BestNote = nullptr;
 	double BestTime = -DBL_MAX;
 
-	for (const auto& Pair : NoteToHitComps)
+	for (const auto& Pair : InOutNoteToHitComps)
 	{
 		if (const ARhythmNote* Note = Pair.Key)
 		{
@@ -81,44 +158,12 @@ void ARhythmActor::DetectNotes()
 			if (T > BestTime) // 가장 큰 시간 = 가장 먼저 나온 노트
 			{
 				BestTime = T;
-				BestNote = const_cast<ARhythmNote*>(Note);
+				Result = const_cast<ARhythmNote*>(Note);
 			}
 		}
 	}
-
-	FRhythmTraceResult RhythmResult;
-	if (BestNote)
-	{
-		const int32 HitCount = NoteToHitComps.FindChecked(BestNote).Num();
-		RhythmResult.NoteActor = BestNote;
-
-		if (HitCount == 1)
-		{
-			RhythmResult.Judge = ENoteResult::Good;
-		}
-		else if (HitCount == 2)
-		{
-			RhythmResult.Judge = ENoteResult::Great;
-		}
-		else if (HitCount >= 3)
-		{
-			RhythmResult.Judge = ENoteResult::Excellent; // 또는 Perfect
-		}
-		else
-		{
-			RhythmResult.Judge = ENoteResult::Bad;
-		}
-
-		Debug::Print(FString::Printf(TEXT("Note Detected: %s, HitCount=%d, Judge=%d"),
-			*BestNote->GetName(), HitCount, static_cast<uint8>(RhythmResult.Judge)));
-	}
-}
-
-
-
-void ARhythmActor::BeginPlay()
-{
-	Super::BeginPlay();
+	return Result;
 	
 }
+
 

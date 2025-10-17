@@ -27,6 +27,19 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float NoteTimeSec = 0.f;
 
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsLongNote(bool IsEnd) { bIsLongNote = IsEnd; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsLongNoteEnd(bool IsEnd) { bIsLongNoteEnd = IsEnd; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsLongNote() const { return bIsLongNote; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsLongNoteEnd() const { return bIsLongNoteEnd; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -49,4 +62,8 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<USplineComponent> CachedSplineComponent;
+
+	bool bIsLongNote = false;
+
+	bool bIsLongNoteEnd = false;
 };

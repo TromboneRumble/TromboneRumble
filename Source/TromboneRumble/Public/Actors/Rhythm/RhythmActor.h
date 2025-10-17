@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Utilities/Defines.h"
 #include "RhythmActor.generated.h"
 
+class ARhythmNote;
 class ARhythmNoteSpawner;
 class UBoxComponent;
 
@@ -29,10 +31,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DetectNotes();
 
+	UFUNCTION(BlueprintCallable)
+	void DetectLongNoteEnd();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	FRhythmTraceResult ReturnNoteResult(ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps);
+	ARhythmNote* GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InOutNoteToHitComps);
+
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> TraceStartPoint = nullptr;
 
@@ -44,5 +53,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UChildActorComponent> RhythmNoteSpawner = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool IsSensingLongNote = false;
 
 };
