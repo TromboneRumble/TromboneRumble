@@ -38,3 +38,33 @@ enum class EHitType : uint8
 	Instrument,
 	Invalid UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum class ENoteResult : uint8
+{
+	None        UMETA(DisplayName = "None"),
+	Bad         UMETA(DisplayName = "Bad"),
+	Good        UMETA(DisplayName = "Good"),
+	Great       UMETA(DisplayName = "Great"),
+	Excellent   UMETA(DisplayName = "Excellent"),
+	Invalid     UMETA(Hidden)
+};
+
+USTRUCT(BlueprintType)
+struct FRhythmTraceResult
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadOnly	, VisibleAnywhere, Category = "Result")
+	TWeakObjectPtr<class ARhythmNote> NoteActor = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Result")
+	ENoteResult Judge = ENoteResult::None;
+
+	FRhythmTraceResult() {}
+	FRhythmTraceResult(ARhythmNote* InNote, ENoteResult InJudge)
+		: NoteActor(InNote), Judge(InJudge)
+	{
+	}
+};
