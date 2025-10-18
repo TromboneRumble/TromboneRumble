@@ -170,6 +170,37 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{BA4442CF-329E-8816-D3A4-6F7765E2FB69}">
+			<ObjectPath>Play_MapA_BGM</ObjectPath>
+			<ShortName>Play_MapA_BGM</ShortName>
+			<Path>Event/Play_MapA_BGM.bnk</Path>
+			<Media>
+				<File Id="805553432" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>T_MIDI.mid</ShortName>
+					<Path>Media/805553432.wem</Path>
+					<CachePath>SFX/T_MIDI_3D614B45.wem</CachePath>
+				</File>
+				<File Id="883810986" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Studio Trombone 3.wav</ShortName>
+					<Path>Media/883810986.wem</Path>
+					<CachePath>SFX/Studio Trombone 3_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1044981583" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>rhythm game.wav</ShortName>
+					<Path>Media/1044981583.wem</Path>
+					<CachePath>SFX/rhythm game_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2075445586" Name="Play_MapA_BGM" ObjectPath="\Events\Default Work Unit\Play_MapA_BGM" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" DurationType="OneShot" DurationMin="429.5" DurationMax="429.5">
+					<MediaRefs>
+						<MediaRef Id="805553432"/>
+						<MediaRef Id="883810986"/>
+						<MediaRef Id="1044981583"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 	</SoundBanks>
-	<FileHash>{B35FB204-0484-5C61-AAA7-8320ABFE5004}</FileHash>
+	<FileHash>{2B23801B-BFC5-9831-9345-9165ECFF4BB8}</FileHash>
 </SoundBanksInfo>

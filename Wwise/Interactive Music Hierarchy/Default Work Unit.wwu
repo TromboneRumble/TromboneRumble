@@ -143,6 +143,211 @@
 						</MusicSegment>
 					</ChildrenList>
 				</MusicPlaylistContainer>
+				<MusicSegment Name="Test_Rhythm" ID="{A7252FE0-4A6F-4958-8053-A6591FAB49BE}" ShortID="689795495">
+					<PropertyList>
+						<Property Name="EndPosition" Type="Real64" Value="429500"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicTrack Name="rhythm game" ID="{877CE909-2B60-4EEF-9560-CE7A2DF6BA8E}" ShortID="426485948">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-12</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{61D9751B-5300-4B0A-8F97-BC58714935CE}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="rhythm game" ID="{81619C9C-71F0-44CD-A158-01DA06D7EAC7}">
+									<Language>SFX</Language>
+									<AudioFile>rhythm game.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1044981583"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{F04AA07D-2CFD-446D-A775-4FFF7E99305C}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClip Name="rhythm game" ID="{CCA0E644-2A78-4188-BC0B-8DB3FE60F460}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="429500"/>
+																		<Property Name="FadeInMode" Type="int16" Value="0"/>
+																		<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																	</PropertyList>
+																	<AudioSourceRef Name="rhythm game" ID="{81619C9C-71F0-44CD-A158-01DA06D7EAC7}"/>
+																</MusicClip>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+						<MusicTrack Name="T_MIDI" ID="{D1815439-F213-477E-B6F5-329286B92411}" ShortID="967152933">
+							<PropertyList>
+								<Property Name="OverrideMidiTarget" Type="bool" Value="True"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{C875AB17-92E9-4DD8-81DD-BD0929164369}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MidiFileSource Name="T_MIDI" ID="{224DA80E-0774-493F-9593-4AFCF2291C3B}" ShortID="805553432">
+									<Language>SFX</Language>
+									<MidiFile>T_MIDI.mid</MidiFile>
+									<MediaIDList>
+										<MediaID ID="805553432"/>
+									</MediaIDList>
+								</MidiFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{6BAF380E-A0C5-4387-8747-B6855EC6A1A1}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClipMidi Name="T_MIDI" ID="{B286E94F-80C9-4725-A2AC-5B58D377FC68}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="80000"/>
+																	</PropertyList>
+																	<MidiSourceRef Name="T_MIDI" ID="{224DA80E-0774-493F-9593-4AFCF2291C3B}"/>
+																</MusicClipMidi>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+						<MusicTrack Name="Studio Trombone 3" ID="{623CAC7D-E2A3-4623-96C3-32EEE86A7C82}" ShortID="793494927">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-7</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{C72198B5-50EE-4446-8E63-198DEC5E8516}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Studio Trombone 3" ID="{D50E1474-399A-4FDE-B1E1-F776A650D172}">
+									<Language>SFX</Language>
+									<AudioFile>Studio Trombone 3.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="883810986"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{2FA74E8F-CECE-4267-A28B-539838348323}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClip Name="Studio Trombone 3" ID="{FC1A4C18-9A90-47AD-8524-9D8542C649FE}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="80000"/>
+																		<Property Name="FadeInMode" Type="int16" Value="0"/>
+																		<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																	</PropertyList>
+																	<AudioSourceRef Name="Studio Trombone 3" ID="{D50E1474-399A-4FDE-B1E1-F776A650D172}"/>
+																</MusicClip>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Cues">
+							<Reference>
+								<Local>
+									<MusicCue Name="Entry Cue" ID="{37FB73F7-51A7-49BA-B61C-80F055C6C502}"/>
+								</Local>
+							</Reference>
+							<Reference>
+								<Local>
+									<MusicCue Name="Exit Cue" ID="{EFBD6F92-B1F2-481C-94EA-9F5FFF934430}">
+										<PropertyList>
+											<Property Name="CueType" Type="int16" Value="1"/>
+											<Property Name="TimeMs" Type="Real64" Value="1000"/>
+										</PropertyList>
+									</MusicCue>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
+				</MusicSegment>
 			</ChildrenList>
 		</WorkUnit>
 	</InteractiveMusic>

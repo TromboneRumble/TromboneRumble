@@ -28,6 +28,17 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_MapA_BGM" ID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}">
+					<ChildrenList>
+						<Action Name="" ID="{3508F6D8-A2D6-463E-96FD-B4B0A02B02F4}" ShortID="433881866">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Test_Rhythm" ID="{A7252FE0-4A6F-4958-8053-A6591FAB49BE}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
