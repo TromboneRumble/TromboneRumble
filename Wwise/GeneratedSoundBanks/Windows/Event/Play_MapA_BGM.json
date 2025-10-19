@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{BA4442CF-329E-8816-D3A4-6F7765E2FB69}",
+    "Hash": "{DB79926C-A431-8AD4-BD64-9B6439D50D0A}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -43,6 +43,18 @@
       "CachePath": "SFX/rhythm game_FBC78EF0.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "695307032",
+       "Name": "SQUARE",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Factory Synth One\\Instruments\\SQUARE\\SQUARE",
+       "GUID": "{84B06421-5236-4190-A21F-B7E9D37BD774}",
+       "LibName": "Wwise Synth One",
+       "LibId": "9699330"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "2075445586",
@@ -62,11 +74,19 @@
        {
         "Id": "1044981583"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "695307032"
+        }
+       ]
+      }
      }
-    ]
+    ],
+    "GameParameters": []
    }
   ],
-  "FileHash": "{156ED9BA-E83F-A087-BBC0-303E6FA2B809}"
+  "FileHash": "{7A903FF6-AFC5-0070-61CD-FA0D0581B5CB}"
  }
 }

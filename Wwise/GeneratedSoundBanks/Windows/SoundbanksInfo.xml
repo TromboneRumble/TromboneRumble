@@ -28,7 +28,7 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{80AA3125-B4C7-2DBE-1BF1-31EE7B72A930}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{205001A4-6ADB-BC6D-29B3-318B8C917BC1}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -170,7 +170,7 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{BA4442CF-329E-8816-D3A4-6F7765E2FB69}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{DB79926C-A431-8AD4-BD64-9B6439D50D0A}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -191,6 +191,11 @@
 					<CachePath>SFX/rhythm game_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="695307032" Name="SQUARE" ObjectPath="\Actor-Mixer Hierarchy\Factory Synth One\Instruments\SQUARE\SQUARE" GUID="{84B06421-5236-4190-A21F-B7E9D37BD774}" LibName="Wwise Synth One" LibId="9699330"/>
+				</Custom>
+			</Plugins>
 			<Events>
 				<Event Id="2075445586" Name="Play_MapA_BGM" ObjectPath="\Events\Default Work Unit\Play_MapA_BGM" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" DurationType="OneShot" DurationMin="429.5" DurationMax="429.5">
 					<MediaRefs>
@@ -198,9 +203,15 @@
 						<MediaRef Id="883810986"/>
 						<MediaRef Id="1044981583"/>
 					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="695307032"/>
+						</Custom>
+					</PluginRefs>
 				</Event>
 			</Events>
+			<GameParameters/>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{EA0158A0-C7A1-7DD1-8B49-E09F617A1523}</FileHash>
+	<FileHash>{73A08F1D-0F46-4E0F-5D32-9C9D116B7A79}</FileHash>
 </SoundBanksInfo>

@@ -146,6 +146,11 @@
 				<MusicSegment Name="Test_Rhythm" ID="{A7252FE0-4A6F-4958-8053-A6591FAB49BE}" ShortID="689795495">
 					<PropertyList>
 						<Property Name="EndPosition" Type="Real64" Value="429500"/>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-4</Value>
+							</ValueList>
+						</Property>
 					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
@@ -218,8 +223,16 @@
 						<MusicTrack Name="T_MIDI" ID="{D1815439-F213-477E-B6F5-329286B92411}" ShortID="967152933">
 							<PropertyList>
 								<Property Name="OverrideMidiTarget" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-96</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="MidiTarget">
+									<ObjectRef Name="SQUARE" ID="{74D118B2-BB0B-4BDB-AB24-CD44306F2FC4}" WorkUnitID="{D9329DB3-E4D7-45AA-BD40-6EB28C6C4D39}"/>
+								</Reference>
 								<Reference Name="OutputBus">
 									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 								</Reference>
