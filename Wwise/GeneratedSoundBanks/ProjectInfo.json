@@ -8,6 +8,13 @@
   "CacheRoot": "../.cache",
   "Platforms": [
    {
+    "Name": "Mac",
+    "GUID": "{950DE1A6-1149-4051-9FCE-8BDE1C56CB2D}",
+    "BasePlatform": "Mac",
+    "BasePlatformGUID": "{9C6217D5-DD11-4795-87C1-6CE02853C540}",
+    "Path": "Mac"
+   },
+   {
     "Name": "Windows",
     "GUID": "{2265AE0A-E3CB-47FF-A5B5-6EE599321F9C}",
     "BasePlatform": "Windows",
@@ -24,6 +31,6 @@
     "UseAsStandIn": "true"
    }
   ],
-  "FileHash": "{8DD84648-5B75-F50C-7FCB-80AA1F9805E5}"
+  "FileHash": "{FD350CA4-89D5-1432-3189-6DD1FD28E260}"
  }
 }

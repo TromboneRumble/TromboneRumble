@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{C3C29873-363E-E1E1-AC15-118D256686BC}">
+			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
+			<ShortName>MainSoundBank</ShortName>
+			<Path>MainSoundBank.bnk</Path>
+			<Media>
+				<File Id="759138717" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>Trumbone Main Theme_4.wav</ShortName>
+					<CachePath>SFX/Trumbone Main Theme_4_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3666185889" Name="Play_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Play_Lobby_BGM" GUID="{94227083-3159-4322-BF3A-0D7AB2913647}" DurationType="Infinite">
+					<MediaRefs>
+						<MediaRef Id="759138717"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{8E64A9B0-8CC3-504A-41B6-0A36FFFF476D}</FileHash>
+</SoundBanksInfo>

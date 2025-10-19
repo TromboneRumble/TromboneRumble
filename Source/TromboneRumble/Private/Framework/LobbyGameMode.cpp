@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/LobbyGameMode.h"
+
+#include "AkGameplayStatics.h"
 #include "OnlineSessionSettings.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"

@@ -7,6 +7,7 @@
 #include "Utilities/Defines.h"
 #include "DefaultPlayerController.generated.h"
 
+class UAkAudioEvent;
 class UInteractorComponent;
 class UPT_UIInGame;
 class UInputMappingContext;
@@ -74,6 +75,9 @@ private:
 
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAkAudioEvent> TestSoundEvent;
 
 	bool bIsSprinting = false;
 };

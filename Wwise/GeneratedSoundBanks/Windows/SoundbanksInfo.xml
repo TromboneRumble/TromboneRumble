@@ -9,6 +9,25 @@
 	</RootPaths>
 	<DialogueEvents/>
 	<SoundBanks>
+		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{C3C29873-363E-E1E1-AC15-118D256686BC}">
+			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
+			<ShortName>MainSoundBank</ShortName>
+			<Path>MainSoundBank.bnk</Path>
+			<Media>
+				<File Id="759138717" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>Trumbone Main Theme_4.wav</ShortName>
+					<CachePath>SFX/Trumbone Main Theme_4_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3666185889" Name="Play_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Play_Lobby_BGM" GUID="{94227083-3159-4322-BF3A-0D7AB2913647}" DurationType="Infinite">
+					<MediaRefs>
+						<MediaRef Id="759138717"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{80AA3125-B4C7-2DBE-1BF1-31EE7B72A930}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
@@ -151,6 +170,37 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{BA4442CF-329E-8816-D3A4-6F7765E2FB69}">
+			<ObjectPath>Play_MapA_BGM</ObjectPath>
+			<ShortName>Play_MapA_BGM</ShortName>
+			<Path>Event/Play_MapA_BGM.bnk</Path>
+			<Media>
+				<File Id="805553432" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>T_MIDI.mid</ShortName>
+					<Path>Media/805553432.wem</Path>
+					<CachePath>SFX/T_MIDI_3D614B45.wem</CachePath>
+				</File>
+				<File Id="883810986" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Studio Trombone 3.wav</ShortName>
+					<Path>Media/883810986.wem</Path>
+					<CachePath>SFX/Studio Trombone 3_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1044981583" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>rhythm game.wav</ShortName>
+					<Path>Media/1044981583.wem</Path>
+					<CachePath>SFX/rhythm game_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2075445586" Name="Play_MapA_BGM" ObjectPath="\Events\Default Work Unit\Play_MapA_BGM" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" DurationType="OneShot" DurationMin="429.5" DurationMax="429.5">
+					<MediaRefs>
+						<MediaRef Id="805553432"/>
+						<MediaRef Id="883810986"/>
+						<MediaRef Id="1044981583"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 	</SoundBanks>
-	<FileHash>{96629BD3-4B11-A9CB-DBB8-A4E6DF325EF7}</FileHash>
+	<FileHash>{EA0158A0-C7A1-7DD1-8B49-E09F617A1523}</FileHash>
 </SoundBanksInfo>

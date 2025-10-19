@@ -63,8 +63,5 @@ public:
 	ENoteResult Judge = ENoteResult::None;
 
 	FRhythmTraceResult() {}
-	FRhythmTraceResult(ARhythmNote* InNote, ENoteResult InJudge)
-		: NoteActor(InNote), Judge(InJudge)
-	{
-	}
 };
+
