@@ -1,6 +1,9 @@
 Event	ID	Name			Wwise Object Path	Notes
 	2075445586	Play_MapA_BGM			\Default Work Unit\Play_MapA_BGM	
 
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	836717429	RTPC_BPM_Test			\Default Work Unit\RTPC_BPM_Test	
+
 Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
 	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	
 

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{9560A9AC-684D-3343-9D19-5F1B779AFA0A}",
+    "Hash": "{0AC39A69-5EC3-CDBB-7032-C51C66638CBC}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -83,9 +83,17 @@
        ]
       }
      }
+    ],
+    "GameParameters": [
+     {
+      "Id": "836717429",
+      "Name": "RTPC_BPM_Test",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BPM_Test",
+      "GUID": "{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"
+     }
     ]
    }
   ],
-  "FileHash": "{B79428AA-E947-BF6F-BF9F-0671443B5FE0}"
+  "FileHash": "{23D258F0-5B84-B152-77B3-DBFBA6A6FB5D}"
  }
 }

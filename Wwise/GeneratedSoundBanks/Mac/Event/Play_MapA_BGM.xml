@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{9560A9AC-684D-3343-9D19-5F1B779AFA0A}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{0AC39A69-5EC3-CDBB-7032-C51C66638CBC}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -41,7 +41,10 @@
 					</PluginRefs>
 				</Event>
 			</Events>
+			<GameParameters>
+				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
+			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{852AB0A4-81C4-006F-7BC0-343A67C76D94}</FileHash>
+	<FileHash>{9A959A99-8808-5D2C-0D3B-8EE50DD564C1}</FileHash>
 </SoundBanksInfo>
