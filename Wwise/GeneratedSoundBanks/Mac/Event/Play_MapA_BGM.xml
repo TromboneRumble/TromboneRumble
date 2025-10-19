@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{DB79926C-A431-8AD4-BD64-9B6439D50D0A}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{9560A9AC-684D-3343-9D19-5F1B779AFA0A}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -24,7 +24,7 @@
 			</Media>
 			<Plugins>
 				<Custom>
-					<Plugin Id="695307032" Name="SQUARE" ObjectPath="\Actor-Mixer Hierarchy\Factory Synth One\Instruments\SQUARE\SQUARE" GUID="{84B06421-5236-4190-A21F-B7E9D37BD774}" LibName="Wwise Synth One" LibId="9699330"/>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
 				</Custom>
 			</Plugins>
 			<Events>
@@ -36,13 +36,12 @@
 					</MediaRefs>
 					<PluginRefs>
 						<Custom>
-							<PluginRef Id="695307032"/>
+							<PluginRef Id="559532962"/>
 						</Custom>
 					</PluginRefs>
 				</Event>
 			</Events>
-			<GameParameters/>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{44E4D84D-1749-4FBF-E7D9-F02C35EFD76D}</FileHash>
+	<FileHash>{852AB0A4-81C4-006F-7BC0-343A67C76D94}</FileHash>
 </SoundBanksInfo>

@@ -62,7 +62,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{205001A4-6ADB-BC6D-29B3-318B8C917BC1}",
+    "Hash": "{2F0F7102-A729-075B-6B6A-677704ABE944}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -564,7 +564,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{DB79926C-A431-8AD4-BD64-9B6439D50D0A}",
+    "Hash": "{9560A9AC-684D-3343-9D19-5F1B779AFA0A}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -600,12 +600,12 @@
     "Plugins": {
      "Custom": [
       {
-       "Id": "695307032",
-       "Name": "SQUARE",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Factory Synth One\\Instruments\\SQUARE\\SQUARE",
-       "GUID": "{84B06421-5236-4190-A21F-B7E9D37BD774}",
-       "LibName": "Wwise Synth One",
-       "LibId": "9699330"
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
       }
      ]
     },
@@ -632,15 +632,14 @@
       "PluginRefs": {
        "Custom": [
         {
-         "Id": "695307032"
+         "Id": "559532962"
         }
        ]
       }
      }
-    ],
-    "GameParameters": []
+    ]
    }
   ],
-  "FileHash": "{77CB32F1-7CD4-C1D7-83F9-FC661B07AFF5}"
+  "FileHash": "{97695C39-CCEA-93E9-3C2B-B5C89F58DE80}"
  }
 }

@@ -145,7 +145,7 @@
 				</MusicPlaylistContainer>
 				<MusicSegment Name="Test_Rhythm" ID="{A7252FE0-4A6F-4958-8053-A6591FAB49BE}" ShortID="689795495">
 					<PropertyList>
-						<Property Name="EndPosition" Type="Real64" Value="429500"/>
+						<Property Name="EndPosition" Type="Real64" Value="478500"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
 								<Value>-4</Value>
@@ -231,7 +231,7 @@
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="MidiTarget">
-									<ObjectRef Name="SQUARE" ID="{74D118B2-BB0B-4BDB-AB24-CD44306F2FC4}" WorkUnitID="{D9329DB3-E4D7-45AA-BD40-6EB28C6C4D39}"/>
+									<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 								</Reference>
 								<Reference Name="OutputBus">
 									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
@@ -353,7 +353,7 @@
 									<MusicCue Name="Exit Cue" ID="{EFBD6F92-B1F2-481C-94EA-9F5FFF934430}">
 										<PropertyList>
 											<Property Name="CueType" Type="int16" Value="1"/>
-											<Property Name="TimeMs" Type="Real64" Value="1000"/>
+											<Property Name="TimeMs" Type="Real64" Value="429500"/>
 										</PropertyList>
 									</MusicCue>
 								</Local>

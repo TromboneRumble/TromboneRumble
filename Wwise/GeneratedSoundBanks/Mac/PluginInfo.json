@@ -4,11 +4,11 @@
   "BasePlatform": "Mac",
   "PluginLibs": [
    {
-    "LibName": "Wwise Synth One",
-    "LibId": "9699330",
+    "LibName": "Wwise Silence",
+    "LibId": "6619138",
     "Type": "Source",
-    "DLL": "AkSynthOne",
-    "StaticLib": "AkSynthOneSource"
+    "DLL": "AkSilenceGenerator",
+    "StaticLib": "AkSilenceSource"
    },
    {
     "LibName": "System",
@@ -21,6 +21,6 @@
     "Type": "AudioDevice"
    }
   ],
-  "FileHash": "{B7EAFA57-0FB2-3BBA-DE64-160C3BC4E25B}"
+  "FileHash": "{681535D2-67FE-E891-A63A-077406C5D5B9}"
  }
 }
