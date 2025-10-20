@@ -21,7 +21,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
-	void SpawnRhythmNote();
+	void SpawnRhythmNote(float TimeToComplete = 5.f);
 
 	UFUNCTION(BlueprintCallable, Category = "Component")
 	FORCEINLINE USplineComponent* GetSplineComponent() const { return SplineComponent; }

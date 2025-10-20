@@ -24,9 +24,10 @@ public:
 	void MoveNotes();
 	void MoveNotes_Implementation();
 
-	UPROPERTY(BlueprintReadOnly)
-	float NoteTimeSec = 0.f;
+	float NoteLifeTime;
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetTimeToComplete(float InTime) { TimeToComplete = FMath::Max(0.f, InTime); }
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetIsLongNote(bool IsEnd) { bIsLongNote = IsEnd; }
@@ -55,7 +56,7 @@ private:
 	TObjectPtr<USphereComponent> InnerSphere = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	float TimeToComplete = 3.f;
+	float TimeToComplete = 5.f;
 
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<ARhythmNoteSpawner> CachedSpawner;

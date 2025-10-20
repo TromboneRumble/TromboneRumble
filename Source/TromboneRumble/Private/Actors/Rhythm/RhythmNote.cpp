@@ -23,7 +23,7 @@ ARhythmNote::ARhythmNote()
 void ARhythmNote::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	NoteTimeSec += DeltaTime;
+	NoteLifeTime += DeltaTime;;
 }
 
 

@@ -45,7 +45,7 @@ void ARhythmNoteSpawner::Tick(float DeltaTime)
 
 }
 
-void ARhythmNoteSpawner::SpawnRhythmNote()
+void ARhythmNoteSpawner::SpawnRhythmNote(float TimeToComplete)
 {
 	if (RhythmNoteClass)
 	{
@@ -62,6 +62,10 @@ void ARhythmNoteSpawner::SpawnRhythmNote()
 			RhythmNoteClass,
 			SpawnTransform,
 			params);
+		if (Note)
+		{
+			Note->SetTimeToComplete(TimeToComplete);
+		}
 	}
 }
 

@@ -40,7 +40,13 @@ void ARhythmActor::DetectNotes()
 {
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
-	if (!BestNote) return;
+	if (!BestNote)
+	{
+		FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(ENoteResult::Bad));
+		Debug::Print(EnumName);
+		return;
+	}
+
 	if (BestNote->IsLongNote() && !BestNote->IsLongNoteEnd())
 	{
 		//TODO : 롱노트 세부판정
@@ -49,7 +55,12 @@ void ARhythmActor::DetectNotes()
 	}
 	else
 	{
-		ReturnNoteResult(BestNote, NoteToHitComps);
+		FRhythmTraceResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
+		if (Result.NoteActor.Get())
+		{
+			FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result.Judge));
+			Debug::Print(EnumName);
+		}
 	}
 }
 
@@ -104,8 +115,8 @@ FRhythmTraceResult ARhythmActor::ReturnNoteResult(ARhythmNote* InNote, const TMa
 		RhythmResult.Judge = ENoteResult::Bad;
 	}
 
-	Debug::Print(FString::Printf(TEXT("Note Detected: %s, HitCount=%d, Judge=%d"),
-		*InNote->GetName(), HitCount, static_cast<uint8>(RhythmResult.Judge)));
+	/*Debug::Print(FString::Printf(TEXT("Note Detected: %s, HitCount=%d, Judge=%d"),
+		*InNote->GetName(), HitCount, static_cast<uint8>(RhythmResult.Judge)));*/
 
 	return RhythmResult;
 }
@@ -127,7 +138,6 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 		TraceEndPoint->GetComponentLocation(),
 		ECollisionChannel::ECC_GameTraceChannel2,
 		params);
-	Debug::Print(FString::Printf(TEXT("Hit Detected: %d"), HitResults.Num()));
 
 	if (HitResults.Num() == 0) return Result;
 
@@ -154,7 +164,7 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 	{
 		if (const ARhythmNote* Note = Pair.Key)
 		{
-			const double T = Note->NoteTimeSec;
+			const double T = Note->NoteLifeTime;
 			if (T > BestTime) // 가장 큰 시간 = 가장 먼저 나온 노트
 			{
 				BestTime = T;
