@@ -217,6 +217,41 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
+		<SoundBank Id="3717157269" Type="Event" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" Language="SFX" Hash="{4FFE4577-E22B-819B-F03A-F806883D1F43}">
+			<ObjectPath>Play_Click_Test</ObjectPath>
+			<ShortName>Play_Click_Test</ShortName>
+			<Path>Event/Play_Click_Test.bnk</Path>
+			<Media>
+				<File Id="548170872" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_60.mid</ShortName>
+					<Path>Media/548170872.wem</Path>
+					<CachePath>SFX/Piano_60_AA5B3FA5.wem</CachePath>
+				</File>
+				<File Id="686333610" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Claick Test_allTrack.wav</ShortName>
+					<Path>Media/686333610.wem</Path>
+					<CachePath>SFX/Claick Test_allTrack_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3717157269" Name="Play_Click_Test" ObjectPath="\Events\Default Work Unit\Play_Click_Test" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" DurationType="OneShot" DurationMin="56" DurationMax="56">
+					<MediaRefs>
+						<MediaRef Id="548170872"/>
+						<MediaRef Id="686333610"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 	</SoundBanks>
-	<FileHash>{9F9D80CF-2C67-65E6-407A-CDFDA6DC743B}</FileHash>
+	<FileHash>{C05FE41D-B8AD-4BCF-418E-2B9E4CE87E7E}</FileHash>
 </SoundBanksInfo>

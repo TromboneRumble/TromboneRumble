@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3717157269" Type="Event" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" Language="SFX" Hash="{4FFE4577-E22B-819B-F03A-F806883D1F43}">
+			<ObjectPath>Play_Click_Test</ObjectPath>
+			<ShortName>Play_Click_Test</ShortName>
+			<Path>Event/Play_Click_Test.bnk</Path>
+			<Media>
+				<File Id="548170872" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_60.mid</ShortName>
+					<Path>Media/548170872.wem</Path>
+					<CachePath>SFX/Piano_60_AA5B3FA5.wem</CachePath>
+				</File>
+				<File Id="686333610" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Claick Test_allTrack.wav</ShortName>
+					<Path>Media/686333610.wem</Path>
+					<CachePath>SFX/Claick Test_allTrack_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3717157269" Name="Play_Click_Test" ObjectPath="\Events\Default Work Unit\Play_Click_Test" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" DurationType="OneShot" DurationMin="56" DurationMax="56">
+					<MediaRefs>
+						<MediaRef Id="548170872"/>
+						<MediaRef Id="686333610"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{18E3F131-C234-9AFD-A224-5D52B78D170E}</FileHash>
+</SoundBanksInfo>

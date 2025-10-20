@@ -39,6 +39,17 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_Click_Test" ID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}">
+					<ChildrenList>
+						<Action Name="" ID="{0A835E10-3A98-427A-9761-ABFD34EADDE1}" ShortID="1072918217">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Test_Click_BPM" ID="{2E3C6B26-4877-4A17-920D-85F2223CD4A2}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
