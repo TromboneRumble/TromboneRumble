@@ -12,7 +12,6 @@ class ADefaultPlayerController;
 class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
-class ATrumpet;
 
 UCLASS()
 class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase
