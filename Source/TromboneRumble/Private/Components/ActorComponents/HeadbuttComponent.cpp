@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/ActorComponents/HeadbuttComponent.h"
-
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -67,4 +66,8 @@ void UHeadbuttComponent::Server_ExecuteAttack_Implementation()
 void UHeadbuttComponent::Multicast_PlayAttackEffects_Implementation(const FVector& TraceStart, const FVector& TraceEnd, const bool bHit)
 {
 	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 2.0f);
+	if (HeadbuttAnimMontage && OwnerCharacter)
+	{
+		OwnerCharacter->PlayAnimMontage(HeadbuttAnimMontage);
+	}
 }

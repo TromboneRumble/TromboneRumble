@@ -57,7 +57,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UInteractorComponent> InteractorComponent;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UHeadbuttComponent> HeadbuttComponent;
 	// ~Components
 	
