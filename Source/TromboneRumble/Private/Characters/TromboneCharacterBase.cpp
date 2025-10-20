@@ -129,6 +129,7 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	if (bIsRagdoll)
 	{
 		ApplyRagdoll();
+		OnRagdollDelegate.Broadcast();
 	}
 	else
 	{

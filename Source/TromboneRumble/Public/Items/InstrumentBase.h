@@ -44,6 +44,8 @@ protected:
 	TObjectPtr<USoundBase> InstrumentSound = nullptr;
 
 private:
+	UFUNCTION()
+	void HandleUnequip();
 	void SetPhysicsEnabled(bool bEnable) const;
 	
 	UPROPERTY(EditAnywhere, Category="Config")

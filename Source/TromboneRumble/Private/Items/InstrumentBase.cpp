@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Items/InstrumentBase.h"
+
+#include "Characters/TromboneCharacterBase.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
@@ -47,6 +49,11 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 	CurrentOwner = OwnerActor;
 	bIsEquipped = true;
 
+	if (ATromboneCharacterBase* OwnerCharacter = Cast<ATromboneCharacterBase>(OwnerActor))
+	{
+		OwnerCharacter->OnRagdollDelegate.AddDynamic(this, &AInstrumentBase::HandleUnequip);
+	}
+
 	OnRep_Equipped();
 
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
@@ -72,6 +79,11 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
     
 	CurrentOwner = nullptr;
 	bIsEquipped = false;
+
+	if (ATromboneCharacterBase* OwnerCharacter = Cast<ATromboneCharacterBase>(OwnerActor))
+	{
+		OwnerCharacter->OnRagdollDelegate.RemoveDynamic(this, &AInstrumentBase::HandleUnequip);
+	}
 
 	OnRep_Equipped();
     
@@ -144,6 +156,11 @@ void AInstrumentBase::OnRep_Equipped()
 		SetPhysicsEnabled(true);
 		StopSound();
 	}
+}
+
+void AInstrumentBase::HandleUnequip()
+{
+	Execute_Unequip(this, CurrentOwner);
 }
 
 void AInstrumentBase::SetPhysicsEnabled(const bool bEnable) const
