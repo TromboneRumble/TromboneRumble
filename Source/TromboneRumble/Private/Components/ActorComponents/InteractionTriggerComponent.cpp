@@ -90,7 +90,6 @@ void UInteractionTriggerComponent::HandleBeginOverlap(UPrimitiveComponent* Overl
 	{
 		OverlappingInteractors.Add(Interactor);
 		Interactor->RegisterCandidate(GetOwner());
-		Debug::Print(FString::Printf(TEXT("Registered Candidate: %s"), *Interactor->GetOwner()->GetName()));
 	}
 	else
 	{
@@ -107,7 +106,6 @@ void UInteractionTriggerComponent::HandleEndOverlap(UPrimitiveComponent* Overlap
 	{
 		OverlappingInteractors.Remove(Interactor);
 		Interactor->UnregisterCandidate(GetOwner());
-		Debug::Print(FString::Printf(TEXT("UnRegistered Candidate: %s"), *Interactor->GetOwner()->GetName()));
 	}
 }
 
