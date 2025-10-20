@@ -14,7 +14,7 @@ class TROMBONERUMBLE_API UAttackComponent : public UActorComponent
 public:	
 	UAttackComponent();
 	virtual void Attack() PURE_VIRTUAL(UAttackComponent::Attack, );
-	virtual void SetOwner(ACharacter* InOwner);
+	virtual void SetOwnerCharacter(ACharacter* InOwner);
 
 protected:
 	UPROPERTY()

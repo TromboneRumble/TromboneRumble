@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Items/InstrumentBase.h"
-
-#include "Characters/TromboneCharacterBase.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
@@ -49,8 +48,9 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 	CurrentOwner = OwnerActor;
 	bIsEquipped = true;
 
-	if (ATromboneCharacterBase* OwnerCharacter = Cast<ATromboneCharacterBase>(OwnerActor))
+	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
 	{
+		OwnerCharacter->SetInstrumentMeshReference(ItemMeshComponent);
 		OwnerCharacter->OnRagdollDelegate.AddDynamic(this, &AInstrumentBase::HandleUnequip);
 	}
 
@@ -80,7 +80,7 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
 	CurrentOwner = nullptr;
 	bIsEquipped = false;
 
-	if (ATromboneCharacterBase* OwnerCharacter = Cast<ATromboneCharacterBase>(OwnerActor))
+	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
 	{
 		OwnerCharacter->OnRagdollDelegate.RemoveDynamic(this, &AInstrumentBase::HandleUnequip);
 	}

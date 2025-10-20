@@ -54,5 +54,5 @@ private:
 	UPROPERTY(EditAnywhere, Category="Config")
 	float UpwardImpulse = 300.0f;
 	
-	FName AttachSocketName = TEXT("TrumpetSocket");
+	FName AttachSocketName = TEXT("hand_r");
 };

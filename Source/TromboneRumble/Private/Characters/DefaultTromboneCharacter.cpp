@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/DefaultPlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -9,10 +8,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponents/HeadbuttComponent.h"
+#include "Components/ActorComponents/InstrumentAttackComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
-#include "Utilities/DebugHelper.h"
-
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -52,7 +50,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
+	
 	HeadbuttComponent = CreateDefaultSubobject<UHeadbuttComponent>(TEXT("HeadbuttComponent"));
+	InstrumentAttackComponent = CreateDefaultSubobject<UInstrumentAttackComponent>(TEXT("InstrumentAttackComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()
@@ -109,17 +109,30 @@ void ADefaultTromboneCharacter::Headbutt()
 	if (HeadbuttComponent) HeadbuttComponent->Attack();
 }
 
+void ADefaultTromboneCharacter::Attack()
+{
+	if (InstrumentAttackComponent) InstrumentAttackComponent->Attack();
+}
+
+void ADefaultTromboneCharacter::SetInstrumentMeshReference(UPrimitiveComponent* InMesh)
+{
+	if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentMesh(InMesh);
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
 	checkf(InteractorComponent, TEXT("InteractorComponent is missing on %s."), *GetName());
 
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 
-	HeadbuttComponent->SetOwner(this);
+	HeadbuttComponent->SetOwnerCharacter(this);
+	InstrumentAttackComponent->SetOwnerCharacter(this);
 }
+
 void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
