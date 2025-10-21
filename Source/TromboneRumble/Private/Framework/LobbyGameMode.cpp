@@ -44,8 +44,20 @@ void ALobbyGameMode::BeginPlay()
 	
 	const USessionSubsystem* SessionSubsystem = GameInstance->GetSubsystem<USessionSubsystem>();
 	if (!SessionSubsystem) return;
-	
-	NumPublicConnections = SessionSubsystem ? SessionSubsystem->GetLastSessionSettings()->NumPublicConnections : 4;
+
+	if (SessionSubsystem)
+	{
+		TSharedPtr<FOnlineSessionSettings> LastSetting = SessionSubsystem->GetLastSessionSettings();
+		if (LastSetting.IsValid())
+		{
+			NumPublicConnections = LastSetting->NumPublicConnections;
+		}
+		else NumPublicConnections = 4;
+	}
+	else
+	{
+		NumPublicConnections = 4;
+	}
 	
 	InitializeMapPath();
 	InitializeInstruments();
