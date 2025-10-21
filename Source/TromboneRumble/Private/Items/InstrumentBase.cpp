@@ -56,7 +56,6 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 
 	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
 	{
-		OwnerCharacter->SetInstrumentCollisionReference(CapsuleComponent);
 		OwnerCharacter->OnRagdollDelegate.AddDynamic(this, &AInstrumentBase::HandleUnequip);
 	}
 
@@ -139,6 +138,11 @@ void AInstrumentBase::OnRep_Equipped()
 {
 	if (bIsEquipped)
 	{
+		if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
+		{
+			OwnerCharacter->SetInstrumentCollisionReference(CapsuleComponent);
+		}
+		
 		SetPhysicsEnabled(false);
 		if (CurrentOwner)
 		{
