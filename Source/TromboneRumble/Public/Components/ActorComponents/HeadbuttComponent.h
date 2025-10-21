@@ -22,6 +22,9 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayAttackEffects(const FVector& TraceStart, const FVector& TraceEnd, const bool bHit);
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> HeadbuttAnimMontage;
+
 	UPROPERTY(EditAnywhere, Category = "Headbutt")
 	float AttackRadius = 50.0f;
 

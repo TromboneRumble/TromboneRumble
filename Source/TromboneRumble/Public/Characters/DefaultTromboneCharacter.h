@@ -6,13 +6,13 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UInstrumentAttackComponent;
 class UHeadbuttComponent;
 struct FInputActionValue;
 class ADefaultPlayerController;
 class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
-class ATrumpet;
 
 UCLASS()
 class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase
@@ -28,8 +28,11 @@ public:
 	void Look(const FInputActionValue& Value);
 	void Interact();
 	void Headbutt();
+	void Attack();
 	FORCEINLINE void Sprint() { Server_StartSprint(); }
 	FORCEINLINE void StopSprint() { Server_StopSprint(); }
+
+	void SetInstrumentCollisionReference(UPrimitiveComponent* InCollision);
 
 protected:
 	virtual void BeginPlay() override;
@@ -57,8 +60,11 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UInteractorComponent> InteractorComponent;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UHeadbuttComponent> HeadbuttComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInstrumentAttackComponent> InstrumentAttackComponent;
 	// ~Components
 	
 	UPROPERTY(Transient)

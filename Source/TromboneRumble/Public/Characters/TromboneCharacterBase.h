@@ -9,6 +9,8 @@
 
 class UInputComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
+
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
 {
@@ -18,6 +20,9 @@ public:
 	ATromboneCharacterBase();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnHitReceived(const FHitData& HitData) override;
+
+public:
+	FOnRagdollSignature OnRagdollDelegate;
 	
 private:
 	void InitCharacter() const;
