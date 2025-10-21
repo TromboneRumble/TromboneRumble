@@ -63,7 +63,8 @@ void ATromboneCharacterBase::InitCharacter() const
 void ATromboneCharacterBase::SetupCapsuleComponent() const
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void ATromboneCharacterBase::SetupSkeletalMeshComponent() const

@@ -14,14 +14,12 @@ AItemBase::AItemBase()
 	ItemMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
 	SetRootComponent(ItemMeshComponent);
 	ItemMeshComponent->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
+	ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	ItemMeshComponent->SetSimulatePhysics(true);
 
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	CapsuleComponent->SetupAttachment(RootComponent);
-	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CapsuleComponent->SetSimulatePhysics(false);
-
+	
 	InteractTriggerComponent = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTriggerComponent"));
 }
 
@@ -55,4 +53,13 @@ void AItemBase::OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	
+}
+
+void AItemBase::SetPhysicsEnabled(bool bEnable) const
+{
+	if (ItemMeshComponent)
+	{
+		ItemMeshComponent->SetSimulatePhysics(bEnable);
+		ItemMeshComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::PhysicsOnly : ECollisionEnabled::NoCollision);
+	}
 }

@@ -114,9 +114,9 @@ void ADefaultTromboneCharacter::Attack()
 	if (InstrumentAttackComponent) InstrumentAttackComponent->Attack();
 }
 
-void ADefaultTromboneCharacter::SetInstrumentMeshReference(UPrimitiveComponent* InMesh)
+void ADefaultTromboneCharacter::SetInstrumentCollisionReference(UPrimitiveComponent* InCollision)
 {
-	if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentMesh(InMesh);
+	if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentCollision(InCollision);
 }
 
 void ADefaultTromboneCharacter::BeginPlay()

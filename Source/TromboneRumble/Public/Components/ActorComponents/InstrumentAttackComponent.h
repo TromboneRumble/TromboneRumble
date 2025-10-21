@@ -16,7 +16,7 @@ public:
 	virtual void Attack() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void SetInstrumentMesh(const TObjectPtr<UPrimitiveComponent> InMesh) { InstrumentMesh = InMesh; }
+	void SetInstrumentCollision(const TObjectPtr<UPrimitiveComponent> InCollision) { InstrumentCollisionComponent = InCollision; }
 
 protected:
 	UFUNCTION(Server, Reliable)
@@ -27,6 +27,9 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayAttackEffects();
+
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> InstrumentAttackAnimMontage = nullptr;
@@ -35,7 +38,7 @@ protected:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	
 	UPROPERTY()
-	TObjectPtr<UPrimitiveComponent> InstrumentMesh = nullptr;
+	TObjectPtr<UPrimitiveComponent> InstrumentCollisionComponent = nullptr;
 	
 	bool bIsAttacking = false;
 	FTransform PreviousFrameTransform;

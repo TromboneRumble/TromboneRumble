@@ -32,7 +32,7 @@ public:
 	FORCEINLINE void Sprint() { Server_StartSprint(); }
 	FORCEINLINE void StopSprint() { Server_StopSprint(); }
 
-	void SetInstrumentMeshReference(UPrimitiveComponent* InMesh);
+	void SetInstrumentCollisionReference(UPrimitiveComponent* InCollision);
 
 protected:
 	virtual void BeginPlay() override;

@@ -46,7 +46,6 @@ protected:
 private:
 	UFUNCTION()
 	void HandleUnequip();
-	void SetPhysicsEnabled(bool bEnable) const;
 	
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
@@ -54,5 +53,5 @@ private:
 	UPROPERTY(EditAnywhere, Category="Config")
 	float UpwardImpulse = 300.0f;
 	
-	FName AttachSocketName = TEXT("hand_r");
+	FName AttachSocketName = TEXT("socket_hand_r");
 };

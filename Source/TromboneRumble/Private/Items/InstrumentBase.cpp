@@ -26,6 +26,12 @@ AInstrumentBase::AInstrumentBase()
 			AudioComponent->SetSound(SoundFinder.Object);
 		}
 	}
+	
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
+	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	CapsuleComponent->SetSimulatePhysics(false);
 }
 
 bool AInstrumentBase::CanInteract_Implementation(AActor* InstigatorActor) const
@@ -50,7 +56,7 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 
 	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
 	{
-		OwnerCharacter->SetInstrumentMeshReference(ItemMeshComponent);
+		OwnerCharacter->SetInstrumentCollisionReference(CapsuleComponent);
 		OwnerCharacter->OnRagdollDelegate.AddDynamic(this, &AInstrumentBase::HandleUnequip);
 	}
 
@@ -161,18 +167,4 @@ void AInstrumentBase::OnRep_Equipped()
 void AInstrumentBase::HandleUnequip()
 {
 	Execute_Unequip(this, CurrentOwner);
-}
-
-void AInstrumentBase::SetPhysicsEnabled(const bool bEnable) const
-{
-	if (ItemMeshComponent)
-	{
-		ItemMeshComponent->SetSimulatePhysics(bEnable);
-		ItemMeshComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
-	}
-
-	if (CapsuleComponent)
-	{
-		CapsuleComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	}
 }

@@ -39,6 +39,8 @@ protected:
 	// ~Overlap Events
 
 protected:
+	void SetPhysicsEnabled(bool bEnable) const;
+	
 	// Components
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> ItemMeshComponent = nullptr;
