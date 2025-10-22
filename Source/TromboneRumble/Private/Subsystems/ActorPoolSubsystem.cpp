@@ -32,6 +32,23 @@ void UActorPoolSubsystem::Prewarm(TSubclassOf<AActor> ActorClass, int32 Count, c
 	}
 }
 
+void UActorPoolSubsystem::DestroyPool(TSubclassOf<AActor> ActorClass)
+{
+	if (!ActorClass) return;
+	if (FActorPool* Pool = Pools.Find(ActorClass))
+	{
+		for (AActor* A : Pool->Active)
+		{
+			if (IsValid(A)) A->Destroy();
+		}
+		for (AActor* A : Pool->Inactive)
+		{
+			if (IsValid(A)) A->Destroy();
+		}
+		Pools.Remove(ActorClass);
+	}
+}
+
 AActor* UActorPoolSubsystem::Acquire(TSubclassOf<AActor> ActorClass, const FTransform& SpawnTransform)
 {
 	if (!ActorClass) return nullptr;
@@ -104,6 +121,20 @@ void UActorPoolSubsystem::Shrink(TSubclassOf<AActor> ActorClass, int32 MaxInacti
 	}
 }
 
+void UActorPoolSubsystem::ReleaseAllActorOfClass(TSubclassOf<AActor> ActorClass)
+{
+	if (!ActorClass) return;
+	if (FActorPool* Pool = Pools.Find(ActorClass))
+	{
+		for (AActor* A : Pool->Active)
+		{
+			if (IsValid(A)) DeactivateForPool(A);
+		}
+		Pool->Inactive.Append(Pool->Active.Array());
+		Pool->Active.Reset();
+	}
+}
+
 void UActorPoolSubsystem::ReleaseAll()
 {
 	for (auto& KV : Pools)
@@ -116,6 +147,28 @@ void UActorPoolSubsystem::ReleaseAll()
 		Pool.Inactive.Append(Pool.Active.Array());
 		Pool.Active.Reset();
 	}
+}
+
+bool UActorPoolSubsystem::IsActorActive(const AActor* Actor) const
+{
+	if (!IsValid(Actor)) return false;
+	const TSubclassOf<AActor> KeyClass = Actor->GetClass();
+	if (const FActorPool* Pool = Pools.Find(KeyClass))
+	{
+		return Pool->Active.Contains(Actor);
+	}
+	return false;
+}
+
+bool UActorPoolSubsystem::IsActorInactive(const AActor* Actor) const
+{
+	if (!IsValid(Actor)) return false;
+	const TSubclassOf<AActor> KeyClass = Actor->GetClass();
+	if (const FActorPool* Pool = Pools.Find(KeyClass))
+	{
+		return Pool->Inactive.Contains(Actor);
+	}
+	return false;
 }
 
 void UActorPoolSubsystem::Deinitialize()

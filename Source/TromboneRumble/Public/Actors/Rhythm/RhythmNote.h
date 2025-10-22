@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/Poolable.h"
 #include "RhythmNote.generated.h"
 
 class USplineComponent;
@@ -12,7 +13,7 @@ class UTimelineComponent;
 class ARhythmNoteSpawner;
 
 UCLASS(Abstract)
-class TROMBONERUMBLE_API ARhythmNote : public AActor
+class TROMBONERUMBLE_API ARhythmNote : public AActor, public IPoolable
 {
 	GENERATED_BODY()
 	
@@ -20,27 +21,20 @@ public:
 	ARhythmNote();
 	virtual void Tick(float DeltaTime) override;
 
+	// IPoolable interface
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnTakenFromPool();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnReturnToPool();
+	// End of IPoolable interface
+
+	void InitNote(ARhythmNoteSpawner* InSpawner, float InTimeToComplete = 5.f);
+
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category = "Rhythm")
 	void MoveNotes();
 	void MoveNotes_Implementation();
 
 	float NoteLifeTime;
-
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetTimeToComplete(float InTime) { TimeToComplete = FMath::Max(0.f, InTime); }
-
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetIsLongNote(bool IsEnd) { bIsLongNote = IsEnd; }
-
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetIsLongNoteEnd(bool IsEnd) { bIsLongNoteEnd = IsEnd; }
-
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsLongNote() const { return bIsLongNote; }
-
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsLongNoteEnd() const { return bIsLongNoteEnd; }
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -67,4 +61,22 @@ private:
 	bool bIsLongNote = false;
 
 	bool bIsLongNoteEnd = false;
+
+public:
+	// Getter Setter
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetTimeToComplete(float InTime) { TimeToComplete = FMath::Max(0.f, InTime); }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsLongNote(bool IsEnd) { bIsLongNote = IsEnd; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsLongNoteEnd(bool IsEnd) { bIsLongNoteEnd = IsEnd; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsLongNote() const { return bIsLongNote; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsLongNoteEnd() const { return bIsLongNoteEnd; }
+	// ~Getter Setter
 };

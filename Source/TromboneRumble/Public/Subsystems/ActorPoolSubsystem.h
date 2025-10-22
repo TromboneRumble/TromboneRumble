@@ -24,15 +24,15 @@ class TROMBONERUMBLE_API UActorPoolSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 public:
-	// 사전 생성(프리웜)
 	UFUNCTION(BlueprintCallable, Category = "Pool")
 	void Prewarm(TSubclassOf<AActor> ActorClass, int32 Count, const FTransform& SpawnTransform);
 
-	// 꺼내기
+	UFUNCTION(BlueprintCallable, Category = "Pool")
+	void DestroyPool(TSubclassOf<AActor> ActorClass);
+
 	UFUNCTION(BlueprintCallable, Category = "Pool")
 	AActor* Acquire(TSubclassOf<AActor> ActorClass, const FTransform& SpawnTransform);
 
-	// 반납
 	UFUNCTION(BlueprintCallable, Category = "Pool")
 	void Release(AActor* Actor);
 
@@ -42,7 +42,17 @@ public:
 
 	// 전부 반납/정리
 	UFUNCTION(BlueprintCallable, Category = "Pool")
+	void ReleaseAllActorOfClass(TSubclassOf<AActor> ActorClass);
+
+	// 전부 반납/정리
+	UFUNCTION(BlueprintCallable, Category = "Pool")
 	void ReleaseAll();
+
+	UFUNCTION(BlueprintCallable, Category = "Pool")
+	bool IsActorActive(const AActor* Actor) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Pool")
+	bool IsActorInactive(const AActor* Actor) const;
 
 protected:
 	virtual void Deinitialize() override;
