@@ -28,7 +28,7 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1069471245" Type="Event" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" Language="SFX" Hash="{6B457268-028C-7DD8-00D9-99E472316AF4}">
+		<SoundBank Id="1069471245" Type="Event" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" Language="SFX" Hash="{93B3DAF7-90BC-8A38-5F09-E1635E13515B}">
 			<ObjectPath>Play_Note_Length</ObjectPath>
 			<ShortName>Play_Note_Length</ShortName>
 			<Path>Event/Play_Note_Length.bnk</Path>
@@ -288,5 +288,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{3B258613-43E3-BAC5-E3D2-1E7ED1DE9348}</FileHash>
+	<FileHash>{E56E8081-5593-8426-4271-4CA323B26E54}</FileHash>
 </SoundBanksInfo>

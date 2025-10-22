@@ -1110,6 +1110,158 @@
 						</MusicSegment>
 					</ChildrenList>
 				</MusicPlaylistContainer>
+				<MusicSegment Name="Test_Note_Length" ID="{789004DA-5327-41E9-A05E-BCF899398AE4}" ShortID="278008493">
+					<PropertyList>
+						<Property Name="EndPosition" Type="Real64" Value="224597.333333333"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicTrack Name="Piano_C_F_3_Audio" ID="{D7F9C043-BFAB-4AC8-ACA4-69C00CEA2549}" ShortID="150832449">
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{9A2CA999-E734-48A0-A6CF-01F4578DBFF1}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Piano_C_F_3_Audio" ID="{01400E49-86D0-4DF1-B0F7-BEF0D386E72D}">
+									<Language>SFX</Language>
+									<AudioFile>Piano_C_F_3_Audio.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="234801056"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{413934AC-18C8-4CD2-BB76-B0D6C386C77C}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClip Name="Piano_C_F_3_Audio" ID="{552E2C3D-3D7D-42CE-BA0F-57B59A9BB6B1}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="224000"/>
+																		<Property Name="FadeInMode" Type="int16" Value="0"/>
+																		<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																	</PropertyList>
+																	<AudioSourceRef Name="Piano_C_F_3_Audio" ID="{01400E49-86D0-4DF1-B0F7-BEF0D386E72D}"/>
+																</MusicClip>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+						<MusicTrack Name="Piano_C_F_3_MIDI" ID="{79D56B05-D87C-42B9-B556-3655540E3680}" ShortID="879903869">
+							<PropertyList>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="OverrideMidiTarget" Type="bool" Value="True"/>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="MidiTarget">
+									<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{5C994190-C677-4C39-8041-5DD5A656BC97}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MidiFileSource Name="Piano_C_F_3_MIDI" ID="{3E015CFB-7FE5-48AA-AB38-BCE3A49280A3}" ShortID="957044437">
+									<Language>SFX</Language>
+									<MidiFile>Piano_C_F_3_MIDI.mid</MidiFile>
+									<MediaIDList>
+										<MediaID ID="957044437"/>
+									</MediaIDList>
+								</MidiFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{72C40F46-0192-4C91-B3C3-15046D2FACD9}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClipMidi Name="Piano_C_F_3_MIDI" ID="{C8E4E9BC-4436-4CD4-8D0A-5CB9F5195A7F}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="223000"/>
+																	</PropertyList>
+																	<MidiSourceRef Name="Piano_C_F_3_MIDI" ID="{3E015CFB-7FE5-48AA-AB38-BCE3A49280A3}"/>
+																</MusicClipMidi>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Cues">
+							<Reference>
+								<Local>
+									<MusicCue Name="Entry Cue" ID="{33F18D12-68A0-483C-89F8-A28D95262EA7}"/>
+								</Local>
+							</Reference>
+							<Reference>
+								<Local>
+									<MusicCue Name="Exit Cue" ID="{83CFE7E9-40C3-4F41-9896-7028F763CD03}">
+										<PropertyList>
+											<Property Name="CueType" Type="int16" Value="1"/>
+											<Property Name="TimeMs" Type="Real64" Value="1000"/>
+										</PropertyList>
+									</MusicCue>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
+				</MusicSegment>
 			</ChildrenList>
 		</WorkUnit>
 	</InteractiveMusic>
