@@ -208,7 +208,7 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{0AC39A69-5EC3-CDBB-7032-C51C66638CBC}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{870381E9-5136-B7C8-5BAC-E9926B61E5C9}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -287,6 +287,47 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{F35A7878-670B-EC47-EE0E-797BD6A60760}">
+			<ObjectPath>Play_Long_Short</ObjectPath>
+			<ShortName>Play_Long_Short</ShortName>
+			<Path>Event/Play_Long_Short.bnk</Path>
+			<Media>
+				<File Id="373625262" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Short.mid</ShortName>
+					<Path>Media/373625262.wem</Path>
+					<CachePath>SFX/Short_CB4DD1B5.wem</CachePath>
+				</File>
+				<File Id="655394048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_Short_Long.wav</ShortName>
+					<Path>Media/655394048.wem</Path>
+					<CachePath>SFX/Piano_Short_Long_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="760131378" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Long.mid</ShortName>
+					<Path>Media/760131378.wem</Path>
+					<CachePath>SFX/Long_0D3FE42B.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
+					<MediaRefs>
+						<MediaRef Id="373625262"/>
+						<MediaRef Id="655394048"/>
+						<MediaRef Id="760131378"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E56E8081-5593-8426-4271-4CA323B26E54}</FileHash>
+	<FileHash>{9F8ED4D4-CE95-A313-320F-240D8EBFF91B}</FileHash>
 </SoundBanksInfo>
