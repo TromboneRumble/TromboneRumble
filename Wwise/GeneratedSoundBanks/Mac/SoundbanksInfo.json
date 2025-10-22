@@ -796,7 +796,7 @@
     "Type": "Event",
     "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
     "Language": "SFX",
-    "Hash": "{F35A7878-670B-EC47-EE0E-797BD6A60760}",
+    "Hash": "{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}",
     "ObjectPath": "Play_Long_Short",
     "ShortName": "Play_Long_Short",
     "Path": "Event/Play_Long_Short.bnk",
@@ -872,6 +872,6 @@
     ]
    }
   ],
-  "FileHash": "{0182FAB4-4A96-D0F3-44D5-FD6F94659FC0}"
+  "FileHash": "{15131380-72EB-6C3B-1247-246028876201}"
  }
 }

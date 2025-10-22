@@ -287,7 +287,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{F35A7878-670B-EC47-EE0E-797BD6A60760}">
+		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}">
 			<ObjectPath>Play_Long_Short</ObjectPath>
 			<ShortName>Play_Long_Short</ShortName>
 			<Path>Event/Play_Long_Short.bnk</Path>
@@ -329,5 +329,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5104311A-ACDE-763C-F253-4B98FE8A58D0}</FileHash>
+	<FileHash>{E91070AA-A196-A326-43D5-45E532899B42}</FileHash>
 </SoundBanksInfo>
