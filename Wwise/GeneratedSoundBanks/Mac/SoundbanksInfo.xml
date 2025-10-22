@@ -28,6 +28,41 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="1069471245" Type="Event" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" Language="SFX" Hash="{6B457268-028C-7DD8-00D9-99E472316AF4}">
+			<ObjectPath>Play_Note_Length</ObjectPath>
+			<ShortName>Play_Note_Length</ShortName>
+			<Path>Event/Play_Note_Length.bnk</Path>
+			<Media>
+				<File Id="234801056" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_C_F_3_Audio.wav</ShortName>
+					<Path>Media/234801056.wem</Path>
+					<CachePath>SFX/Piano_C_F_3_Audio_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="957044437" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_C_F_3_MIDI.mid</ShortName>
+					<Path>Media/957044437.wem</Path>
+					<CachePath>SFX/Piano_C_F_3_MIDI_5DB24424.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1069471245" Name="Play_Note_Length" ObjectPath="\Events\Default Work Unit\Play_Note_Length" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" DurationType="OneShot" DurationMin="224" DurationMax="224">
+					<MediaRefs>
+						<MediaRef Id="234801056"/>
+						<MediaRef Id="957044437"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{027A0577-DE47-A163-7628-00084A3F297B}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
@@ -217,7 +252,7 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="3717157269" Type="Event" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" Language="SFX" Hash="{4FFE4577-E22B-819B-F03A-F806883D1F43}">
+		<SoundBank Id="3717157269" Type="Event" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" Language="SFX" Hash="{9CEBD3C5-3F4E-066B-0AE5-E6E1AD5F870C}">
 			<ObjectPath>Play_Click_Test</ObjectPath>
 			<ShortName>Play_Click_Test</ShortName>
 			<Path>Event/Play_Click_Test.bnk</Path>
@@ -253,5 +288,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{C05FE41D-B8AD-4BCF-418E-2B9E4CE87E7E}</FileHash>
+	<FileHash>{3B258613-43E3-BAC5-E3D2-1E7ED1DE9348}</FileHash>
 </SoundBanksInfo>

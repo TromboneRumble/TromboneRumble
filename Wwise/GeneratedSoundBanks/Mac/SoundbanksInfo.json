@@ -58,6 +58,74 @@
     ]
    },
    {
+    "Id": "1069471245",
+    "Type": "Event",
+    "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
+    "Language": "SFX",
+    "Hash": "{6B457268-028C-7DD8-00D9-99E472316AF4}",
+    "ObjectPath": "Play_Note_Length",
+    "ShortName": "Play_Note_Length",
+    "Path": "Event/Play_Note_Length.bnk",
+    "Media": [
+     {
+      "Id": "234801056",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_C_F_3_Audio.wav",
+      "Path": "Media/234801056.wem",
+      "CachePath": "SFX/Piano_C_F_3_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "957044437",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_C_F_3_MIDI.mid",
+      "Path": "Media/957044437.wem",
+      "CachePath": "SFX/Piano_C_F_3_MIDI_5DB24424.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1069471245",
+      "Name": "Play_Note_Length",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Note_Length",
+      "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
+      "DurationType": "OneShot",
+      "DurationMin": "224",
+      "DurationMax": "224",
+      "MediaRefs": [
+       {
+        "Id": "234801056"
+       },
+       {
+        "Id": "957044437"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "1355168291",
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
@@ -660,7 +728,7 @@
     "Type": "Event",
     "GUID": "{0FC8390B-5986-401E-A87F-7C9BD71357DB}",
     "Language": "SFX",
-    "Hash": "{4FFE4577-E22B-819B-F03A-F806883D1F43}",
+    "Hash": "{9CEBD3C5-3F4E-066B-0AE5-E6E1AD5F870C}",
     "ObjectPath": "Play_Click_Test",
     "ShortName": "Play_Click_Test",
     "Path": "Event/Play_Click_Test.bnk",
@@ -724,6 +792,6 @@
     ]
    }
   ],
-  "FileHash": "{08DF8D76-E352-9F65-AB48-4B49F60A80E1}"
+  "FileHash": "{4DFE1F57-4128-D658-ED1C-8EA9980DF3F0}"
  }
 }
