@@ -14,6 +14,46 @@
   "DialogueEvents": [],
   "SoundBanks": [
    {
+    "Id": "227036395",
+    "Type": "Event",
+    "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+    "Language": "SFX",
+    "Hash": "{BB322BBF-ED93-A0B3-5AC5-7162F979D879}",
+    "ObjectPath": "Note_Long_Start",
+    "ShortName": "Note_Long_Start",
+    "Path": "Event/Note_Long_Start.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "227036395",
+      "Name": "Note_Long_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_Start",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "534561221",
     "Type": "User",
     "GUID": "{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}",
@@ -113,6 +153,118 @@
        },
        {
         "Id": "957044437"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1081190771",
+    "Type": "Event",
+    "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
+    "Language": "SFX",
+    "Hash": "{1D3B4B04-A4AF-DC48-86E6-7A29B2C7745F}",
+    "ObjectPath": "Play_User_Custom",
+    "ShortName": "Play_User_Custom",
+    "Path": "Event/Play_User_Custom.bnk",
+    "Media": [
+     {
+      "Id": "373625262",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Short.mid",
+      "Path": "Media/373625262.wem",
+      "CachePath": "SFX/Short_CB4DD1B5.wem"
+     },
+     {
+      "Id": "655394048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_Short_Long.wav",
+      "Path": "Media/655394048.wem",
+      "CachePath": "SFX/Piano_Short_Long_FBC78EF0.wem"
+     },
+     {
+      "Id": "760131378",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Long.mid",
+      "Path": "Media/760131378.wem",
+      "CachePath": "SFX/Long_0D3FE42B.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "227036395",
+      "Name": "Note_Long_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_Start",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "1081190771",
+      "Name": "Play_User_Custom",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_User_Custom",
+      "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
+      "DurationType": "OneShot",
+      "DurationMin": "160",
+      "DurationMax": "160",
+      "MediaRefs": [
+       {
+        "Id": "373625262"
+       },
+       {
+        "Id": "655394048"
+       },
+       {
+        "Id": "760131378"
        }
       ],
       "PluginRefs": {
@@ -636,6 +788,46 @@
     ]
    },
    {
+    "Id": "1795670352",
+    "Type": "Event",
+    "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+    "Language": "SFX",
+    "Hash": "{9398B9C5-03CC-C7AC-24E3-E74527502B00}",
+    "ObjectPath": "Note_Long_End",
+    "ShortName": "Note_Long_End",
+    "Path": "Event/Note_Long_End.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2075445586",
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
@@ -724,6 +916,46 @@
     ]
    },
    {
+    "Id": "3199326751",
+    "Type": "Event",
+    "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+    "Language": "SFX",
+    "Hash": "{EF29FA3D-F47E-87CF-5166-D2812EAA2E89}",
+    "ObjectPath": "Note_Short_Start",
+    "ShortName": "Note_Short_Start",
+    "Path": "Event/Note_Short_Start.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3199326751",
+      "Name": "Note_Short_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Short_Start",
+      "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "3717157269",
     "Type": "Event",
     "GUID": "{0FC8390B-5986-401E-A87F-7C9BD71357DB}",
@@ -792,11 +1024,51 @@
     ]
    },
    {
+    "Id": "3781478780",
+    "Type": "Event",
+    "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
+    "Language": "SFX",
+    "Hash": "{A145A1D4-5983-E8B4-F857-EA34E9AA99F1}",
+    "ObjectPath": "Note_Short_End",
+    "ShortName": "Note_Short_End",
+    "Path": "Event/Note_Short_End.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3781478780",
+      "Name": "Note_Short_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Short_End",
+      "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "4133920287",
     "Type": "Event",
     "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
     "Language": "SFX",
-    "Hash": "{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}",
+    "Hash": "{56C95FCE-EFE0-3A0E-B090-A22B65F68AE2}",
     "ObjectPath": "Play_Long_Short",
     "ShortName": "Play_Long_Short",
     "Path": "Event/Play_Long_Short.bnk",
@@ -872,6 +1144,6 @@
     ]
    }
   ],
-  "FileHash": "{15131380-72EB-6C3B-1247-246028876201}"
+  "FileHash": "{E6DC7F69-4F7D-CE56-BB96-4ADD679F36C4}"
  }
 }

@@ -1,19 +1,19 @@
 {
  "SoundBanksInfo": {
-  "Platform": "Windows",
-  "BasePlatform": "Windows",
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
   "SchemaVersion": "16",
   "SoundBankVersion": "150",
   "SoundBanks": [
    {
-    "Id": "4133920287",
+    "Id": "1081190771",
     "Type": "Event",
-    "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
+    "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
     "Language": "SFX",
-    "Hash": "{56C95FCE-EFE0-3A0E-B090-A22B65F68AE2}",
-    "ObjectPath": "Play_Long_Short",
-    "ShortName": "Play_Long_Short",
-    "Path": "Event/Play_Long_Short.bnk",
+    "Hash": "{1D3B4B04-A4AF-DC48-86E6-7A29B2C7745F}",
+    "ObjectPath": "Play_User_Custom",
+    "ShortName": "Play_User_Custom",
+    "Path": "Event/Play_User_Custom.bnk",
     "Media": [
      {
       "Id": "373625262",
@@ -57,10 +57,42 @@
     },
     "Events": [
      {
-      "Id": "4133920287",
-      "Name": "Play_Long_Short",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Long_Short",
-      "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "227036395",
+      "Name": "Note_Long_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_Start",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "1081190771",
+      "Name": "Play_User_Custom",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_User_Custom",
+      "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
       "DurationType": "OneShot",
       "DurationMin": "160",
       "DurationMax": "160",
@@ -86,6 +118,6 @@
     ]
    }
   ],
-  "FileHash": "{83A3B261-B235-EE53-361A-90DD405D5108}"
+  "FileHash": "{B89CB39A-3A64-B8D2-77DA-BB37969D787A}"
  }
 }

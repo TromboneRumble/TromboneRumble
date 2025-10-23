@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="227036395" Type="Event" GUID="{6732E650-3454-485A-A78F-562325A063B8}" Language="SFX" Hash="{BB322BBF-ED93-A0B3-5AC5-7162F979D879}">
+			<ObjectPath>Note_Long_Start</ObjectPath>
+			<ShortName>Note_Long_Start</ShortName>
+			<Path>Event/Note_Long_Start.bnk</Path>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="227036395" Name="Note_Long_Start" ObjectPath="\Events\Default Work Unit\Note_Length\Note_Long_Start" GUID="{6732E650-3454-485A-A78F-562325A063B8}" DurationType="OneShot" DurationMin="1" DurationMax="1">
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C3C1737B-E922-F2C3-99DD-EC64951C1FB0}</FileHash>
+</SoundBanksInfo>

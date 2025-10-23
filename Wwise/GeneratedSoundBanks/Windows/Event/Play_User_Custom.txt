@@ -1,0 +1,8 @@
+Event	ID	Name			Wwise Object Path	Notes
+	227036395	Note_Long_Start			\Default Work Unit\Note_Length\Note_Long_Start	
+	1081190771	Play_User_Custom			\Default Work Unit\Play_User_Custom	
+	1795670352	Note_Long_End			\Default Work Unit\Note_Length\Note_Long_End	
+
+Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
+	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	
+

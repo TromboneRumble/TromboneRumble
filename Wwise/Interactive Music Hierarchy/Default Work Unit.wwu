@@ -1696,12 +1696,751 @@
 									</MusicCue>
 								</Local>
 							</Reference>
+						</ObjectList>
+					</ObjectLists>
+				</MusicSegment>
+				<MusicSegment Name="Test_User_Custom" ID="{053D62E4-8344-4770-8A71-AE3F9F76434A}" ShortID="832452937">
+					<PropertyList>
+						<Property Name="EndPosition" Type="Real64" Value="172500"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+						</Reference>
+						<Reference Name="MidiTarget">
+							<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicTrack Name="Long" ID="{921F8740-C696-4E81-A767-EF75779BEC8E}" ShortID="309858358">
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{865BB42E-C15A-417A-BCAD-137CCFE50BC2}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MidiFileSource Name="Long" ID="{72CDECC9-04BA-43DF-AE93-9AF4270B9463}" ShortID="860555088">
+									<Language>SFX</Language>
+									<MidiFile>Long.mid</MidiFile>
+									<MediaIDList>
+										<MediaID ID="760131378"/>
+									</MediaIDList>
+								</MidiFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{9FB56505-2A03-4207-87E6-F422AD59A5E8}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClipMidi Name="Long" ID="{27B2465A-96B8-4E41-B2D5-D5E080F5A1EC}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="160000"/>
+																	</PropertyList>
+																	<MidiSourceRef Name="Long" ID="{72CDECC9-04BA-43DF-AE93-9AF4270B9463}"/>
+																</MusicClipMidi>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{B3133853-FD26-4C63-A4AC-23B26D45B44C}" ShortID="604184341">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="2033.49372392367"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{8528F407-61CF-4499-8D99-C577ACA9CCF7}" ShortID="124326201">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="6000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{00380899-9043-460F-9FE4-EDD2DEB64B7E}" ShortID="863889299">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="10000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{8F3BB40F-0C22-4692-B18E-5AF23213F24C}" ShortID="654141023">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="14000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{7FFE90D1-8E76-4112-98EA-18BD69CBFE0A}" ShortID="576883421">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="18000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{064A6D33-1245-4ACB-AFDD-44958DDEF980}" ShortID="710152814">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="22000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{2200B16D-2FAB-4A35-AE54-E25106C68BD7}" ShortID="573226550">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="26000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{BC629B27-68A1-44BB-8427-27C6E973B17A}" ShortID="222521115">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="30000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{83F39CB5-2694-47F1-92F8-F6943A75F91B}" ShortID="548569266">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="34000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{9C497CBE-5D19-4198-844E-122198D341AD}" ShortID="557375998">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="38000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{351CACA4-06E4-48D7-AD84-03EF67676428}" ShortID="376792498">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="42000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{29450E2E-238E-427E-981F-5E1BF3785BE1}" ShortID="937521826">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="46000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{FF2A4A38-CE1E-4909-8188-44E0B5C05AEF}" ShortID="134109784">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="50000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{2205DAA0-3860-4D77-9C1A-D1CD1BCB26B1}" ShortID="157558283">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="54000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{41769CFD-2AAC-43DF-8473-827FB030603E}" ShortID="747878700">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="58000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{D34C8F8F-7656-4EBA-AFA2-832CFE1B15AF}" ShortID="175458296">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="62000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{07FA2F6D-C1B3-4658-9463-DD40ACB9158E}" ShortID="746284699">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="66000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{0E13DF34-66A3-49D9-BB80-AF3CF22EB820}" ShortID="350494502">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="70000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{6B596C44-88E0-46EC-8C46-902EB15A6C42}" ShortID="144094187">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="74000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{3BBE4707-AD3B-45F4-BEDE-1C74CF76956D}" ShortID="960407871">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="78000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{AC4A9D14-65E8-4CFB-AA76-85A4974CF92A}" ShortID="550881948">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="82000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{682A2F4A-FEFD-4A2D-98DB-D9C9FC294E85}" ShortID="576043305">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="86000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{AED66648-D3E2-40B9-B56C-1C61895D8EEA}" ShortID="714506678">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="90000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{11A0DD34-D8BD-41C7-9743-ED9FB748BE78}" ShortID="17908445">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="94000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{43EA1FE5-9F11-4292-811C-92B290090ADD}" ShortID="120684343">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="3974.35900429553"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{544AA2BC-8D49-472C-9F0E-778736418E16}" ShortID="1013931865">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="8000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{2A947852-2F3F-4B86-8F13-17644365D4F2}" ShortID="863627711">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="12000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{B14F86C7-50D0-4129-8E63-909486597337}" ShortID="672241522">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="16000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{1A3A8B42-9AEF-4D0F-B58E-7323FDFD391C}" ShortID="1032480422">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="20000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{CF89087C-75E0-4212-91E7-7BA54226D0CF}" ShortID="141832623">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="24000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{5B66E131-1CEE-4E9B-912D-86F11EC36640}" ShortID="1024498217">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="28000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{A3B3EBFE-7E8C-422B-9B7C-BC9CC240960C}" ShortID="5633408">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="32000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{7FC94443-CAEB-4296-AE70-932B8CE55AEE}" ShortID="958315205">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="36000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{30F2DC11-F4BE-48D3-8496-DE871A815019}" ShortID="601768061">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="40000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{1BE263EF-B03D-4287-9EBE-5306B3850E5B}" ShortID="22779321">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="44000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{438B4B4B-8B22-4F68-8AEA-97DBAAC3744F}" ShortID="505113941">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="48000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{89B57907-E173-44A4-8BC8-AE34FF72D3FF}" ShortID="636348033">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="52000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{E69345B9-AB00-4C9A-8631-B2A27ADEBA0E}" ShortID="949937648">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="56000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{FBD2C218-D5F2-4FF5-B1CF-7AC3E18406A4}" ShortID="371511780">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="60000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+														<Reference>
+															<Local>
+																<MusicEventCue Name="" ID="{DF4CFACA-A7F0-49C9-BEB1-4D937CB40366}" ShortID="779905994">
+																	<PropertyList>
+																		<Property Name="PlayAt" Type="Real64" Value="64000"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="PostEventTarget">
+																			<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																		</Reference>
+																	</ReferenceList>
+																</MusicEventCue>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+						<MusicTrack Name="Short" ID="{83E518E4-3285-435C-B852-B1557AF61525}" ShortID="960525880">
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{59FEE1AA-FC38-4C82-9794-49A309EA49BB}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MidiFileSource Name="Short" ID="{49BC80D4-0FBF-4E37-A63E-D9424C5A0059}" ShortID="434978619">
+									<Language>SFX</Language>
+									<MidiFile>Short.mid</MidiFile>
+									<MediaIDList>
+										<MediaID ID="373625262"/>
+									</MediaIDList>
+								</MidiFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{F30F9A10-097C-4BDF-89C7-C4C12D0ADD87}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClipMidi Name="Short" ID="{726389CA-DF1A-42E4-B8F7-DDA5AA2FAC3B}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="156500"/>
+																	</PropertyList>
+																	<MidiSourceRef Name="Short" ID="{49BC80D4-0FBF-4E37-A63E-D9424C5A0059}"/>
+																</MusicClipMidi>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+						<MusicTrack Name="Piano_Short_Long" ID="{051E9556-F109-4582-9C7F-21AF4331D599}" ShortID="232449238">
+							<ReferenceList>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{93D01CFA-D761-4799-9AD6-E53C6CC61547}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Piano_Short_Long" ID="{41974115-7F06-492D-BE1B-5B4FA5E80D0B}">
+									<Language>SFX</Language>
+									<AudioFile>Piano_Short_Long.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="655394048"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Sequences">
+									<Reference>
+										<Local>
+											<MusicTrackSequence Name="" ID="{3D721E63-272E-4372-9E77-BD516B5FA58F}">
+												<ObjectLists>
+													<ObjectList Name="Clips">
+														<Reference>
+															<Local>
+																<MusicClip Name="Piano_Short_Long" ID="{AFA9860F-3FE6-46F5-88E2-AB742FDC8B62}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="160000"/>
+																		<Property Name="FadeInMode" Type="int16" Value="0"/>
+																		<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																	</PropertyList>
+																	<AudioSourceRef Name="Piano_Short_Long" ID="{41974115-7F06-492D-BE1B-5B4FA5E80D0B}"/>
+																</MusicClip>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</MusicTrackSequence>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicTrack>
+					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Cues">
 							<Reference>
 								<Local>
-									<MusicCue Name="" ID="{555100E7-B059-4427-86C3-89EA0DF305E5}">
+									<MusicCue Name="Entry Cue" ID="{FA505F4C-062D-4A90-9C96-9B56E0A26FE1}"/>
+								</Local>
+							</Reference>
+							<Reference>
+								<Local>
+									<MusicCue Name="Exit Cue" ID="{9100087D-E4E2-438A-B854-77B73034AA35}">
 										<PropertyList>
-											<Property Name="CueType" Type="int16" Value="2"/>
-											<Property Name="TimeMs" Type="Real64" Value="2000"/>
+											<Property Name="CueType" Type="int16" Value="1"/>
+											<Property Name="TimeMs" Type="Real64" Value="160000"/>
 										</PropertyList>
 									</MusicCue>
 								</Local>

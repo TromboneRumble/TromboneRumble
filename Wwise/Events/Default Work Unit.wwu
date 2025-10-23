@@ -72,6 +72,65 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Folder Name="Note_Length" ID="{61CD63F1-2CCD-4287-93AC-5BC712883DE2}" ShortID="708662418">
+					<ChildrenList>
+						<Event Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}">
+							<ChildrenList>
+								<Action Name="" ID="{231E33F5-66DE-4563-9F57-1A2238257789}" ShortID="719840779">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Note_Short_Start" ID="{DF985246-51D9-4DD1-9857-56FF4A036F78}">
+							<ChildrenList>
+								<Action Name="" ID="{0E737CF8-50FE-4DF9-B9C4-4AF2CA900BBD}" ShortID="578877203">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}">
+							<ChildrenList>
+								<Action Name="" ID="{E9C641B4-B445-403A-8AAA-7751185A75D7}" ShortID="742963467">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Note_Short_End" ID="{09A96721-DA11-4DF2-9A0A-E504F8BB3044}">
+							<ChildrenList>
+								<Action Name="" ID="{7A91396B-7840-4CCD-85E4-7C347734B236}" ShortID="1070736405">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Event Name="Play_User_Custom" ID="{A273AAA2-055F-49A7-9408-1319E08B5D90}">
+					<ChildrenList>
+						<Action Name="" ID="{73A32770-EED1-421E-BC4A-76B9B5E58F72}" ShortID="337739095">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Test_User_Custom" ID="{053D62E4-8344-4770-8A71-AE3F9F76434A}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
