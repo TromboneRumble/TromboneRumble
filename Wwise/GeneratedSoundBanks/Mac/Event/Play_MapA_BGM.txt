@@ -1,5 +1,5 @@
 Event	ID	Name			Wwise Object Path	Notes
-	2075445586	Play_MapA_BGM			\Default Work Unit\Play_MapA_BGM	
+	2075445586	Play_MapA_BGM			\Default Work Unit\Test\Play_MapA_BGM	
 
 Game Parameter	ID	Name			Wwise Object Path	Notes
 	836717429	RTPC_BPM_Test			\Default Work Unit\RTPC_BPM_Test	

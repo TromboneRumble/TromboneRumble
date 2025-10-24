@@ -59,7 +59,7 @@
      {
       "Id": "4133920287",
       "Name": "Play_Long_Short",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Long_Short",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Long_Short",
       "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
       "DurationType": "OneShot",
       "DurationMin": "160",
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{83A3B261-B235-EE53-361A-90DD405D5108}"
+  "FileHash": "{EC131C2B-2E47-F297-3BDD-54900BEED2FE}"
  }
 }

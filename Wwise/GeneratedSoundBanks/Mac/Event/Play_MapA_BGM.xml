@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{870381E9-5136-B7C8-5BAC-E9926B61E5C9}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{DCEB420A-613B-4E8F-6C9E-7AEDE6B4C49D}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -28,7 +28,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="2075445586" Name="Play_MapA_BGM" ObjectPath="\Events\Default Work Unit\Play_MapA_BGM" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" DurationType="OneShot" DurationMin="429.5" DurationMax="429.5">
+				<Event Id="2075445586" Name="Play_MapA_BGM" ObjectPath="\Events\Default Work Unit\Test\Play_MapA_BGM" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" DurationType="OneShot" DurationMin="429.5" DurationMax="429.5">
 					<MediaRefs>
 						<MediaRef Id="805553432"/>
 						<MediaRef Id="883810986"/>
@@ -46,5 +46,5 @@
 			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{A7770A73-6FE9-82CD-1586-4E12FE93FF33}</FileHash>
+	<FileHash>{E58AF7F7-78A1-5D9A-D820-E77FB9C1785F}</FileHash>
 </SoundBanksInfo>

@@ -11,7 +11,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="3199326751" Name="Note_Short_Start" ObjectPath="\Events\Default Work Unit\Note_Length\Note_Short_Start" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" DurationType="OneShot" DurationMin="1" DurationMax="1">
+				<Event Id="3199326751" Name="Note_Short_Start" ObjectPath="\Events\Default Work Unit\Test\Note_Length\Note_Short_Start" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" DurationType="OneShot" DurationMin="1" DurationMax="1">
 					<PluginRefs>
 						<Custom>
 							<PluginRef Id="559532962"/>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{229F5128-A4D8-FFBF-4FD4-8D83939D9A48}</FileHash>
+	<FileHash>{5FBAE548-2F3D-CD1B-246F-F4DD34AD52DE}</FileHash>
 </SoundBanksInfo>

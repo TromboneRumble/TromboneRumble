@@ -1,0 +1,200 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2848553920",
+    "Type": "Event",
+    "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
+    "Language": "SFX",
+    "Hash": "{0DA77742-B6F2-8B67-B0DB-16C7248F2557}",
+    "ObjectPath": "Play_RhythmGame_Main",
+    "ShortName": "Play_RhythmGame_Main",
+    "Path": "Event/Play_RhythmGame_Main.bnk",
+    "Media": [
+     {
+      "Id": "489694630",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Violin_BBIK.wav",
+      "Path": "Media/489694630.wem",
+      "CachePath": "SFX/Violin_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "750942268",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Cymbal_BBIK.wav",
+      "Path": "Media/750942268.wem",
+      "CachePath": "SFX/Cymbal_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "807859594",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Cymbal_Audio.wav",
+      "Path": "Media/807859594.wem",
+      "CachePath": "SFX/Cymbal_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "851934626",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_BBIK.wav",
+      "Path": "Media/851934626.wem",
+      "CachePath": "SFX/Trombone_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "911794588",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Violin_Audio.wav",
+      "Path": "Media/911794588.wem",
+      "CachePath": "SFX/Violin_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "976228796",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_Audio.wav",
+      "Path": "Media/976228796.wem",
+      "CachePath": "SFX/Trombone_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "1069913665",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Airplane.wav",
+      "Path": "Media/1069913665.wem",
+      "CachePath": "SFX/Airplane_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2848553920",
+      "Name": "Play_RhythmGame_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\Play_RhythmGame_Main",
+      "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
+      "DurationType": "OneShot",
+      "DurationMin": "80",
+      "DurationMax": "80",
+      "MediaRefs": [
+       {
+        "Id": "489694630"
+       },
+       {
+        "Id": "750942268"
+       },
+       {
+        "Id": "807859594"
+       },
+       {
+        "Id": "851934626"
+       },
+       {
+        "Id": "911794588"
+       },
+       {
+        "Id": "976228796"
+       },
+       {
+        "Id": "1069913665"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "237689789",
+      "Name": "Trombone",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Trombone",
+      "GUID": "{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}",
+      "Switches": [
+       {
+        "Id": "670040001",
+        "Name": "SW_T_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Fail",
+        "GUID": "{82F8905C-547A-4053-9811-13FD3E245CAA}"
+       },
+       {
+        "Id": "1966965440",
+        "Name": "SW_T_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
+        "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
+       },
+       {
+        "Id": "2382423597",
+        "Name": "SW_T_Pickup",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Pickup",
+        "GUID": "{8751CA16-BCA2-4044-8F89-D69DC4485E1E}"
+       }
+      ]
+     },
+     {
+      "Id": "761516531",
+      "Name": "Cymbal",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
+      "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
+      "Switches": [
+       {
+        "Id": "192528360",
+        "Name": "SW_C_Pickup",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Pickup",
+        "GUID": "{7D5053AB-5891-4256-82B9-886685C7A42A}"
+       },
+       {
+        "Id": "899946472",
+        "Name": "SW_C_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Fail",
+        "GUID": "{243DD8E3-EBC4-4362-882F-A03AEB562222}"
+       },
+       {
+        "Id": "4034377147",
+        "Name": "SW_C_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Perfect",
+        "GUID": "{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"
+       }
+      ]
+     },
+     {
+      "Id": "3063529226",
+      "Name": "Violin",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
+      "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
+      "Switches": [
+       {
+        "Id": "1553653851",
+        "Name": "SW_V_Pickup",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Pickup",
+        "GUID": "{202BEC27-490A-418C-9F62-2AF8E611670F}"
+       },
+       {
+        "Id": "1638842395",
+        "Name": "SW_V_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Fail",
+        "GUID": "{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"
+       },
+       {
+        "Id": "2890494766",
+        "Name": "SW_V_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Perfect",
+        "GUID": "{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{F82FFFE9-A61E-50C9-F898-58D35E550566}"
+ }
+}

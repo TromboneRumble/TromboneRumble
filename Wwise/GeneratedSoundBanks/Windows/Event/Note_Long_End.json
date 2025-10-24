@@ -30,7 +30,7 @@
      {
       "Id": "1795670352",
       "Name": "Note_Long_End",
-      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
       "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
       "DurationType": "OneShot",
       "DurationMin": "1",
@@ -46,6 +46,6 @@
     ]
    }
   ],
-  "FileHash": "{FE97BF09-AE2F-F4D0-66E6-54BC12253976}"
+  "FileHash": "{45DCCE7A-A198-E649-B8AB-D99BF62287C7}"
  }
 }

@@ -11,7 +11,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="1795670352" Name="Note_Long_End" ObjectPath="\Events\Default Work Unit\Note_Length\Note_Long_End" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" DurationType="OneShot" DurationMin="1" DurationMax="1">
+				<Event Id="1795670352" Name="Note_Long_End" ObjectPath="\Events\Default Work Unit\Test\Note_Length\Note_Long_End" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" DurationType="OneShot" DurationMin="1" DurationMax="1">
 					<PluginRefs>
 						<Custom>
 							<PluginRef Id="559532962"/>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{979EE380-7B48-3AB6-A61B-87411D6B7F62}</FileHash>
+	<FileHash>{0BF55E57-4934-F45D-5D17-6CC1A654F108}</FileHash>
 </SoundBanksInfo>

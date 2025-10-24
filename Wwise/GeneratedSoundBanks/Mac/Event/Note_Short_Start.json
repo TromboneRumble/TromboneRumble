@@ -30,7 +30,7 @@
      {
       "Id": "3199326751",
       "Name": "Note_Short_Start",
-      "ObjectPath": "\\Events\\Default Work Unit\\Note_Length\\Note_Short_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Short_Start",
       "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
       "DurationType": "OneShot",
       "DurationMin": "1",
@@ -46,6 +46,6 @@
     ]
    }
   ],
-  "FileHash": "{A5E38925-0C41-36FB-A713-61B8E1D74C6E}"
+  "FileHash": "{A8D15A36-D781-2AAF-1A3C-151182438DA7}"
  }
 }

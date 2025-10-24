@@ -28,7 +28,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
+				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Test\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
 					<MediaRefs>
 						<MediaRef Id="373625262"/>
 						<MediaRef Id="655394048"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{FB779342-39B7-E3B0-6DE0-A1EA2931751B}</FileHash>
+	<FileHash>{3F718C53-05A3-F9D5-DA43-33F0F10A67B5}</FileHash>
 </SoundBanksInfo>

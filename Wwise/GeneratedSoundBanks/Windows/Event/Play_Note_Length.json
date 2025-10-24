@@ -50,7 +50,7 @@
      {
       "Id": "1069471245",
       "Name": "Play_Note_Length",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Note_Length",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Note_Length",
       "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
       "DurationType": "OneShot",
       "DurationMin": "224",
@@ -74,6 +74,6 @@
     ]
    }
   ],
-  "FileHash": "{BDAEA599-D78C-551F-7BE3-1C1C954B9749}"
+  "FileHash": "{D8E3BDF7-6871-1A7D-03BB-A3B59C38AA96}"
  }
 }
