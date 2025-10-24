@@ -23,7 +23,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="3717157269" Name="Play_Click_Test" ObjectPath="\Events\Default Work Unit\Play_Click_Test" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" DurationType="OneShot" DurationMin="56" DurationMax="56">
+				<Event Id="3717157269" Name="Play_Click_Test" ObjectPath="\Events\Default Work Unit\Test\Play_Click_Test" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" DurationType="OneShot" DurationMin="56" DurationMax="56">
 					<MediaRefs>
 						<MediaRef Id="548170872"/>
 						<MediaRef Id="686333610"/>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{176B762A-0AEC-7B28-EBB0-752C138CEA16}</FileHash>
+	<FileHash>{C0AF0B3C-25F1-05DE-80C3-C74556EE82D2}</FileHash>
 </SoundBanksInfo>

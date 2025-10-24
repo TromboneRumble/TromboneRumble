@@ -23,7 +23,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="1069471245" Name="Play_Note_Length" ObjectPath="\Events\Default Work Unit\Play_Note_Length" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" DurationType="OneShot" DurationMin="224" DurationMax="224">
+				<Event Id="1069471245" Name="Play_Note_Length" ObjectPath="\Events\Default Work Unit\Test\Play_Note_Length" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" DurationType="OneShot" DurationMin="224" DurationMax="224">
 					<MediaRefs>
 						<MediaRef Id="234801056"/>
 						<MediaRef Id="957044437"/>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{55D8F285-1DF5-6346-3815-B1D1089CE707}</FileHash>
+	<FileHash>{DAE0FEEE-0736-31F9-AE9F-7EFF85212DB3}</FileHash>
 </SoundBanksInfo>

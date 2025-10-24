@@ -1,0 +1,51 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3199326751",
+    "Type": "Event",
+    "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+    "Language": "SFX",
+    "Hash": "{EF29FA3D-F47E-87CF-5166-D2812EAA2E89}",
+    "ObjectPath": "Note_Short_Start",
+    "ShortName": "Note_Short_Start",
+    "Path": "Event/Note_Short_Start.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3199326751",
+      "Name": "Note_Short_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Short_Start",
+      "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{A8D15A36-D781-2AAF-1A3C-151182438DA7}"
+ }
+}

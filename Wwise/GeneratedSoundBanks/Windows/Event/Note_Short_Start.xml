@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3199326751" Type="Event" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" Language="SFX" Hash="{EF29FA3D-F47E-87CF-5166-D2812EAA2E89}">
+			<ObjectPath>Note_Short_Start</ObjectPath>
+			<ShortName>Note_Short_Start</ShortName>
+			<Path>Event/Note_Short_Start.bnk</Path>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3199326751" Name="Note_Short_Start" ObjectPath="\Events\Default Work Unit\Test\Note_Length\Note_Short_Start" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" DurationType="OneShot" DurationMin="1" DurationMax="1">
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{5FBAE548-2F3D-CD1B-246F-F4DD34AD52DE}</FileHash>
+</SoundBanksInfo>

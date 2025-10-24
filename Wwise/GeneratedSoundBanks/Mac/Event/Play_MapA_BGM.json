@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{870381E9-5136-B7C8-5BAC-E9926B61E5C9}",
+    "Hash": "{DCEB420A-613B-4E8F-6C9E-7AEDE6B4C49D}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -59,7 +59,7 @@
      {
       "Id": "2075445586",
       "Name": "Play_MapA_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_MapA_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_MapA_BGM",
       "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
       "DurationType": "OneShot",
       "DurationMin": "429.5",
@@ -94,6 +94,6 @@
     ]
    }
   ],
-  "FileHash": "{87CB741F-E24C-991F-D205-482E78BBD9D9}"
+  "FileHash": "{A294D00F-AD3B-9CBE-1FB7-EFA859F2FD9E}"
  }
 }

@@ -28,7 +28,7 @@
      {
       "Id": "3666185889",
       "Name": "Play_Lobby_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Lobby_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Lobby_BGM",
       "GUID": "{94227083-3159-4322-BF3A-0D7AB2913647}",
       "DurationType": "Infinite",
       "MediaRefs": [
@@ -40,7 +40,7 @@
      {
       "Id": "3948599171",
       "Name": "Stop_Lobby_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Lobby_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Stop_Lobby_BGM",
       "GUID": "{A593B12B-6676-4295-9E55-E2E6FC49D923}",
       "MaxAttenuation": "0",
       "DurationType": "OneShot",
@@ -50,6 +50,6 @@
     ]
    }
   ],
-  "FileHash": "{1B05EB13-1633-58A6-DFF4-7DEEB7F5B698}"
+  "FileHash": "{285928EB-C047-6D1C-542B-B156B798C808}"
  }
 }

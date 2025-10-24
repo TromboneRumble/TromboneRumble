@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}" SchemaVersion="119">
 	<Switches>
-		<WorkUnit Name="Default Work Unit" ID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}" PersistMode="Standalone">
+			<ChildrenList>
+				<SwitchGroup Name="Violin" ID="{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}">
+					<ChildrenList>
+						<Switch Name="SW_V_Perfect" ID="{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"/>
+						<Switch Name="SW_V_Pickup" ID="{202BEC27-490A-418C-9F62-2AF8E611670F}"/>
+						<Switch Name="SW_V_Fail" ID="{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"/>
+					</ChildrenList>
+				</SwitchGroup>
+				<SwitchGroup Name="Trombone" ID="{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}">
+					<ChildrenList>
+						<Switch Name="SW_T_Perfect" ID="{16031BE8-9736-456D-8EC9-6AA8BC731B76}"/>
+						<Switch Name="SW_T_Fail" ID="{82F8905C-547A-4053-9811-13FD3E245CAA}"/>
+						<Switch Name="SW_T_Pickup" ID="{8751CA16-BCA2-4044-8F89-D69DC4485E1E}"/>
+					</ChildrenList>
+				</SwitchGroup>
+				<SwitchGroup Name="Cymbal" ID="{ADACA603-67EC-4D63-BB90-B1751EAECC13}">
+					<ChildrenList>
+						<Switch Name="SW_C_Fail" ID="{243DD8E3-EBC4-4362-882F-A03AEB562222}"/>
+						<Switch Name="SW_C_Perfect" ID="{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"/>
+						<Switch Name="SW_C_Pickup" ID="{7D5053AB-5891-4256-82B9-886685C7A42A}"/>
+					</ChildrenList>
+				</SwitchGroup>
+			</ChildrenList>
+		</WorkUnit>
 	</Switches>
 </WwiseDocument>

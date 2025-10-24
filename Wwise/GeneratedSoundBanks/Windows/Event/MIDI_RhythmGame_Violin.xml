@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{69A0A907-3A9C-B446-9177-6A9FACE8ED91}">
+			<ObjectPath>MIDI_RhythmGame_Violin</ObjectPath>
+			<ShortName>MIDI_RhythmGame_Violin</ShortName>
+			<Path>Event/MIDI_RhythmGame_Violin.bnk</Path>
+			<Media>
+				<File Id="203878078" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Violin_MIDI.mid</ShortName>
+					<Path>Media/203878078.wem</Path>
+					<CachePath>SFX/Violin_MIDI_2686306C.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="387421697" Name="MIDI_RhythmGame_Violin" ObjectPath="\Events\Default Work Unit\Test_Rhythm_Game\MIDI_RhythmGame_Violin" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" DurationType="OneShot" DurationMin="80" DurationMax="80">
+					<MediaRefs>
+						<MediaRef Id="203878078"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C1BF2B17-B732-50F5-E2BB-A4AC7AFE7713}</FileHash>
+</SoundBanksInfo>
