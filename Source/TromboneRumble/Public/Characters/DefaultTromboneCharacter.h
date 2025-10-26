@@ -75,10 +75,7 @@ private:
 	UFUNCTION()
 	void HandleOnRagdoll();
 	// ~Delegate Callback Handlers
-
-	UPROPERTY()
-	TObjectPtr<AInstrumentBase> EquippedInstrument = nullptr;
-
+	
 	FInteractionContext CurrentInteractionContext;
 	
 	UPROPERTY(Replicated)

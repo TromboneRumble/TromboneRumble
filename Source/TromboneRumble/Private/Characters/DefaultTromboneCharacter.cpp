@@ -180,7 +180,6 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 {
 	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
 	{
-		EquippedInstrument = Instrument;
 		CurrentInteractionContext.bIsEquipped = true;
 		UPrimitiveComponent* Collision = Instrument->GetCapsuleComponent();
 		UAttackDataAsset* Data = Instrument->GetAttackData();
@@ -194,7 +193,6 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	EquippedInstrument = nullptr;
 	CurrentInteractionContext.bIsEquipped = false;
 	if (AttackComponent) 
 	{

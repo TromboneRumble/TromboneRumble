@@ -18,6 +18,7 @@ void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ATromboneCharacterBase, bIsRagdoll);
+	DOREPLIFETIME(ATromboneCharacterBase, bIsStun);
 }
 
 void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
@@ -27,16 +28,37 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 	switch (HitData.HitType)
 	{
 		case EHitType::Headbutt:
+			OnRagdoll();
+			break;
 		case EHitType::Instrument:
 		case EHitType::Trombone:
 		case EHitType::Cymbals:
 		case EHitType::Violin:
-			OnRagdoll();
+			OnStun();
 			break;
 		case EHitType::Audience:
 			break;
 		default:
 			break;
+	}
+}
+
+void ATromboneCharacterBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// TODO : Remove debug drawing
+	if (bIsStun)
+	{
+		DrawDebugString(
+			GetWorld(),
+			GetActorLocation() + FVector(0, 0, 100.0f),
+			TEXT("STUNNED"),
+			nullptr,
+			FColor::Red,
+			0.0f,
+			true
+		);
 	}
 }
 
@@ -76,19 +98,90 @@ void ATromboneCharacterBase::SetupMovementComponent() const
 
 void ATromboneCharacterBase::OnRagdoll()
 {
+	if (!HasAuthority()) return;
+
+	if (bIsStun)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
+		bIsStun = false;
+		OnRep_IsStun();
+	}
+	
 	bIsRagdoll = true;
-
 	OnRep_IsRagdoll();
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		OnHitTimerHandle, 
+		this, 
+		&ThisClass::EndRagdoll, 
+		RagdollDuration, 
+		false
+	);
+}
 
-	GetWorld()->GetTimerManager().SetTimer(RagdollTimerHandle, [this]()
+void ATromboneCharacterBase::EndRagdoll()
+{
+	if (!HasAuthority()) return;
+
+	bIsRagdoll = false;
+	OnRep_IsRagdoll();
+}
+
+void ATromboneCharacterBase::OnStun()
+{
+	if (!HasAuthority()) return;
+    
+	if (bIsRagdoll || bIsStun) return;
+
+	bIsStun = true;
+	OnRep_IsStun();
+
+	GetWorld()->GetTimerManager().SetTimer(
+		OnHitTimerHandle, 
+		this, 
+		&ThisClass::EndStun, 
+		StunDuration, 
+		false
+	);
+}
+
+void ATromboneCharacterBase::EndStun()
+{
+	if (!HasAuthority()) return;
+
+	bIsStun = false;
+	OnRep_IsStun();
+}
+
+void ATromboneCharacterBase::ApplyStun()
+{
+	StopAnimMontage();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (IsLocallyControlled())
 		{
-			if (HasAuthority())
-			{
-				bIsRagdoll = false;
-				OnRep_IsRagdoll();
-			}
-		}, 
-		RagdollDuration, false);
+			DisableInput(PlayerController);
+		}
+	}
+    
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+}
+
+void ATromboneCharacterBase::UnapplyStun()
+{
+	if (bIsRagdoll) return;
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (IsLocallyControlled())
+		{
+			EnableInput(PlayerController);
+		}
+	}
 }
 
 void ATromboneCharacterBase::ApplyRagdoll()
@@ -145,5 +238,18 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	else
 	{
 		UnapplyRagdoll();
+	}
+}
+
+void ATromboneCharacterBase::OnRep_IsStun()
+{
+	if (bIsStun)
+	{
+		ApplyStun();
+		OnStunDelegate.Broadcast();
+	}
+	else
+	{
+		UnapplyStun();
 	}
 }
