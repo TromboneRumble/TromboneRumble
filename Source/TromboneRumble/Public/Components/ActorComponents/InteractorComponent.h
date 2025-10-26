@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "InteractorComponent.generated.h"
 
+struct FInteractionContext;
 class UInteractionTriggerComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractSuccessSignature, AActor*, InteractedActor);
@@ -24,7 +25,7 @@ class TROMBONERUMBLE_API UInteractorComponent : public UActorComponent
 public:
 	UInteractorComponent();
 
-    void TryInteract(AActor* ExplicitTarget = nullptr);
+    void TryInteract(FInteractionContext Context, const AActor* ExplicitTarget = nullptr);
     void RegisterCandidate(AActor* InCandidate);
     void UnregisterCandidate(AActor* InCandidate);
 

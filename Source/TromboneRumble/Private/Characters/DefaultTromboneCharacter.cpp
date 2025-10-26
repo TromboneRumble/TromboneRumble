@@ -11,6 +11,7 @@
 #include "Components/ActorComponents/InstrumentAttackComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Items/InstrumentBase.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -102,7 +103,7 @@ void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
 
 void ADefaultTromboneCharacter::Interact()
 {
-	if (InteractorComponent) InteractorComponent->TryInteract();
+	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
 }
 
 void ADefaultTromboneCharacter::Headbutt()
@@ -145,7 +146,6 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	DOREPLIFETIME(ADefaultTromboneCharacter, bIsEquipped);
 	DOREPLIFETIME(ADefaultTromboneCharacter, bIsSprinting);
 }
 
@@ -188,6 +188,12 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 {
 	PRINT_WITH_CURRENT_CONTEXT("Interaction Succeeded with " + (InteractedActor ? InteractedActor->GetName() : TEXT("None")));
+	
+	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
+	{
+		EquippedInstrument = Instrument;
+		CurrentInteractionContext.bIsEquipped = true;
+	}
 }
 
 void ADefaultTromboneCharacter::Server_Interaction_Implementation(AActor* Interactable)

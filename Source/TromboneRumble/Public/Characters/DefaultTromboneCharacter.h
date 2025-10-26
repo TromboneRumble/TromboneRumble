@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class AInstrumentBase;
 class UInstrumentAttackComponent;
 class UHeadbuttComponent;
 struct FInputActionValue;
@@ -48,8 +49,6 @@ protected:
 	void Server_StopSprint();
 	// ~Server RPCs
 
-	FORCEINLINE bool IsEquipped() const { return bIsEquipped; }
-
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -80,9 +79,11 @@ private:
 	void HandleInteractSuccess(AActor* InteractedActor);
 	// ~Delegate Callback Handlers
 
-	UPROPERTY(Replicated)
-	uint8 bIsEquipped : 1 = 0;
+	UPROPERTY()
+	TObjectPtr<AInstrumentBase> EquippedInstrument = nullptr;
 
+	FInteractionContext CurrentInteractionContext;
+	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
 	

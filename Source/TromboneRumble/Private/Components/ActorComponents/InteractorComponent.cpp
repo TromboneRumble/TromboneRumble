@@ -3,6 +3,8 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Interfaces/Interactable.h"
+#include "Items/InstrumentBase.h"
+#include "Utilities/Defines.h"
 
 UInteractorComponent::UInteractorComponent()
 {
@@ -10,15 +12,17 @@ UInteractorComponent::UInteractorComponent()
     SetIsReplicatedByDefault(true);
 }
 
-void UInteractorComponent::TryInteract(AActor* ExplicitTarget)
+void UInteractorComponent::TryInteract(const FInteractionContext Context, const AActor* ExplicitTarget)
 {
-    AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
+    const AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
     if (!Target) return;
 
     UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>();
     if (!Trigger) return;
 
     if (GetOwnerRole() != ROLE_Authority && !Trigger->IsTriggerActive()) return;
+
+    if (Target->IsA(AInstrumentBase::StaticClass()) && Context.bIsEquipped) return;
 
     Server_TryInteract(Trigger);
 }
