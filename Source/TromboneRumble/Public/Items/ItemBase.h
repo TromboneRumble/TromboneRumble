@@ -19,7 +19,7 @@ class TROMBONERUMBLE_API AItemBase : public AActor, public IInteractable
 public:
 	AItemBase();
 	
-	TObjectPtr<UCapsuleComponent> GetCapsuleComponent() const { return CapsuleComponent; }
+	FORCEINLINE TObjectPtr<UCapsuleComponent> GetCapsuleComponent() const { return CapsuleComponent; }
 
 protected:
 	virtual void BeginPlay() override;

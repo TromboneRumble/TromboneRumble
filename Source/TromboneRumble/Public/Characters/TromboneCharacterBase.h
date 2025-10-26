@@ -23,12 +23,18 @@ public:
 
 public:
 	FOnRagdollSignature OnRagdollDelegate;
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCapsuleComponent> HeadbuttCapsuleComponent;
 	
 private:
-	void InitCharacter() const;
-	void SetupCapsuleComponent() const;
+	void InitCharacter();
+	void SetupCapsuleComponent();
 	void SetupSkeletalMeshComponent() const;
 	void SetupMovementComponent() const;
+
+	void OnRagdoll();
 	
 	void ApplyRagdoll();
 	void UnapplyRagdoll();

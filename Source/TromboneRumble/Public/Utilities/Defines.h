@@ -47,6 +47,10 @@ enum class EHitType : uint8
 {
 	Headbutt,
 	Instrument,
+	Trombone,
+	Cymbals,
+	Violin,
+	Audience,
 	Invalid UMETA(Hidden)
 };
 

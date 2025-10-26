@@ -7,8 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
-#include "Components/ActorComponents/HeadbuttComponent.h"
-#include "Components/ActorComponents/InstrumentAttackComponent.h"
+#include "Components/ActorComponents/AttackComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Items/InstrumentBase.h"
@@ -51,16 +50,14 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
-	
-	HeadbuttComponent = CreateDefaultSubobject<UHeadbuttComponent>(TEXT("HeadbuttComponent"));
-	InstrumentAttackComponent = CreateDefaultSubobject<UInstrumentAttackComponent>(TEXT("InstrumentAttackComponent"));
+	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()
 {
 	if (bIsSprinting)
 	{
-		Headbutt();
+		Attack();
 	}
 	else
 	{
@@ -105,14 +102,9 @@ void ADefaultTromboneCharacter::Interact()
 	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
 }
 
-void ADefaultTromboneCharacter::Headbutt()
-{
-	if (HeadbuttComponent) HeadbuttComponent->Attack();
-}
-
 void ADefaultTromboneCharacter::Attack()
 {
-	if (InstrumentAttackComponent && CurrentInteractionContext.bIsEquipped) InstrumentAttackComponent->Attack();
+	if (AttackComponent) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
@@ -126,8 +118,12 @@ void ADefaultTromboneCharacter::BeginPlay()
 	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
-	HeadbuttComponent->SetOwnerCharacter(this);
-	InstrumentAttackComponent->SetOwnerCharacter(this);
+	if (AttackComponent && HeadbuttAttackData)
+	{
+		AttackComponent->SetOwnerCharacter(this);
+		AttackComponent->SetAttackData(HeadbuttAttackData);
+		AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
+	}
 }
 
 void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
@@ -187,7 +183,12 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 		EquippedInstrument = Instrument;
 		CurrentInteractionContext.bIsEquipped = true;
 		UPrimitiveComponent* Collision = Instrument->GetCapsuleComponent();
-		if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentCollision(Collision);
+		UAttackDataAsset* Data = Instrument->GetAttackData();
+		if (AttackComponent)
+		{
+			AttackComponent->SetCollisionComponent(Collision);
+			AttackComponent->SetAttackData(Data);
+		}
 	}
 }
 
@@ -195,4 +196,8 @@ void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
 	EquippedInstrument = nullptr;
 	CurrentInteractionContext.bIsEquipped = false;
-}
+	if (AttackComponent) 
+	{
+		AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
+		AttackComponent->SetAttackData(HeadbuttAttackData);
+	}}

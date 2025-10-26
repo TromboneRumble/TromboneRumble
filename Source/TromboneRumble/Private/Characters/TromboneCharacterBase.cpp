@@ -4,7 +4,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
@@ -25,43 +24,36 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 {
 	if (!HasAuthority()) return;
 
-	if (HitData.HitType == EHitType::Headbutt)
+	switch (HitData.HitType)
 	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Headbutt"));
+		case EHitType::Headbutt:
+		case EHitType::Instrument:
+		case EHitType::Trombone:
+		case EHitType::Cymbals:
+		case EHitType::Violin:
+			OnRagdoll();
+			break;
+		case EHitType::Audience:
+			break;
+		default:
+			break;
 	}
-	else if (HitData.HitType == EHitType::Instrument)
-	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Instrument"));
-	}
-	else
-	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("Hit by Default"));
-	}
-	
-	bIsRagdoll = true;
-
-	OnRep_IsRagdoll();
-
-	GetWorld()->GetTimerManager().SetTimer(RagdollTimerHandle, [this]()
-		{
-			if (HasAuthority())
-			{
-				bIsRagdoll = false;
-				OnRep_IsRagdoll();
-			}
-		}, 
-		RagdollDuration, false);
 }
 
-void ATromboneCharacterBase::InitCharacter() const
+void ATromboneCharacterBase::InitCharacter()
 {
 	SetupCapsuleComponent();
 	SetupSkeletalMeshComponent();
 	SetupMovementComponent();
 }
 
-void ATromboneCharacterBase::SetupCapsuleComponent() const
+void ATromboneCharacterBase::SetupCapsuleComponent()
 {
+	HeadbuttCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadbuttCapsuleComponent"));
+	HeadbuttCapsuleComponent->SetupAttachment(RootComponent);
+	HeadbuttCapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1) ; // Object Channel 1 : Weapon
+	HeadbuttCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -80,6 +72,23 @@ void ATromboneCharacterBase::SetupMovementComponent() const
 {
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+}
+
+void ATromboneCharacterBase::OnRagdoll()
+{
+	bIsRagdoll = true;
+
+	OnRep_IsRagdoll();
+
+	GetWorld()->GetTimerManager().SetTimer(RagdollTimerHandle, [this]()
+		{
+			if (HasAuthority())
+			{
+				bIsRagdoll = false;
+				OnRep_IsRagdoll();
+			}
+		}, 
+		RagdollDuration, false);
 }
 
 void ATromboneCharacterBase::ApplyRagdoll()

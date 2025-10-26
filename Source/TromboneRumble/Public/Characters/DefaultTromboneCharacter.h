@@ -6,9 +6,9 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UAttackDataAsset;
 class AInstrumentBase;
-class UInstrumentAttackComponent;
-class UHeadbuttComponent;
+class UAttackComponent;
 struct FInputActionValue;
 class ADefaultPlayerController;
 class USpringArmComponent;
@@ -28,7 +28,6 @@ public:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
-	void Headbutt();
 	void Attack();
 	FORCEINLINE void Sprint() { Server_StartSprint(); }
 	FORCEINLINE void StopSprint() { Server_StopSprint(); }
@@ -56,11 +55,11 @@ protected:
 	TObjectPtr<UInteractorComponent> InteractorComponent;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UHeadbuttComponent> HeadbuttComponent;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UInstrumentAttackComponent> InstrumentAttackComponent;
+	TObjectPtr<UAttackComponent> AttackComponent;
 	// ~Components
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAttackDataAsset> HeadbuttAttackData;
 	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;

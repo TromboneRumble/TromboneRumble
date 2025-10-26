@@ -112,7 +112,7 @@ void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void AInstrumentBase::PlaySound() const
 {
-	if (AudioComponent) AudioComponent->Play();
+	// if (AudioComponent) AudioComponent->Play();
 }
 
 void AInstrumentBase::StopSound() const
