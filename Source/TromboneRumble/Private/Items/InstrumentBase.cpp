@@ -134,11 +134,6 @@ void AInstrumentBase::OnRep_Equipped()
 {
 	if (bIsEquipped)
 	{
-		if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
-		{
-			OwnerCharacter->SetInstrumentCollisionReference(CapsuleComponent);
-		}
-		
 		SetPhysicsEnabled(false);
 		if (CurrentOwner)
 		{

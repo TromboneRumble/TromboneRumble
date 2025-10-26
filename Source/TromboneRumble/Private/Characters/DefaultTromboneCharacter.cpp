@@ -12,7 +12,6 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Items/InstrumentBase.h"
-#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -116,11 +115,6 @@ void ADefaultTromboneCharacter::Attack()
 	if (InstrumentAttackComponent && CurrentInteractionContext.bIsEquipped) InstrumentAttackComponent->Attack();
 }
 
-void ADefaultTromboneCharacter::SetInstrumentCollisionReference(UPrimitiveComponent* InCollision)
-{
-	if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentCollision(InCollision);
-}
-
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -192,6 +186,8 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 	{
 		EquippedInstrument = Instrument;
 		CurrentInteractionContext.bIsEquipped = true;
+		UPrimitiveComponent* Collision = Instrument->GetCapsuleComponent();
+		if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentCollision(Collision);
 	}
 }
 

@@ -33,8 +33,6 @@ public:
 	FORCEINLINE void Sprint() { Server_StartSprint(); }
 	FORCEINLINE void StopSprint() { Server_StopSprint(); }
 
-	void SetInstrumentCollisionReference(UPrimitiveComponent* InCollision);
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
