@@ -4,7 +4,7 @@
 
 UAttackComponent::UAttackComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UAttackComponent::SetOwnerCharacter(ACharacter* InOwner)

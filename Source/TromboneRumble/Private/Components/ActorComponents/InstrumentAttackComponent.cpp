@@ -5,10 +5,11 @@
 #include "Interfaces/CombatReceiver.h"
 #include "DrawDebugHelpers.h"
 #include "Components/CapsuleComponent.h"
+#include "Utilities/DebugHelper.h"
 
 UInstrumentAttackComponent::UInstrumentAttackComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	
 }
 
 void UInstrumentAttackComponent::Attack()
@@ -39,9 +40,20 @@ void UInstrumentAttackComponent::TickComponent(float DeltaTime, enum ELevelTick 
     
 	TArray<FHitResult> HitResults;
 	FComponentQueryParams Params;
-	Params.AddIgnoredActor(OwnerCharacter);
+	Params.AddIgnoredActor(GetOwner());
+	Params.AddIgnoredActor(InstrumentCollisionComponent->GetOwner());
 	
-	const bool bHit = GetWorld()->ComponentSweepMulti(HitResults, InstrumentCollisionComponent, Start, End, Rotation, Params);
+	const FCollisionShape CapsuleShape = InstrumentCollisionComponent->GetCollisionShape();
+	
+	const bool bHit = GetWorld()->SweepMultiByChannel(
+		HitResults,
+		Start,
+		End,
+		Rotation.Quaternion(),
+		ECC_GameTraceChannel1,
+		CapsuleShape,
+		Params
+	);
 
 	// TODO : Remove debug drawing
 	if (const UCapsuleComponent* CapsuleComp = Cast<UCapsuleComponent>(InstrumentCollisionComponent))
@@ -61,6 +73,7 @@ void UInstrumentAttackComponent::TickComponent(float DeltaTime, enum ELevelTick 
 		{
 			if (ICombatReceiver* CombatReceiver = Cast<ICombatReceiver>(HitActor))
 			{
+				PRINT_WITH_CURRENT_CONTEXT("Instrument hit actor: " + (HitActor ? HitActor->GetName() : TEXT("None")));
 				AlreadyHitActors.Add(HitActor);
 
 				FHitData HitData;

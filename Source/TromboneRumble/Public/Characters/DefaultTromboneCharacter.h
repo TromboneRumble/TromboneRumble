@@ -73,8 +73,12 @@ protected:
 private:
 	void InterpolateMovementSpeed(float DeltaSeconds) const;
 
+	// Delegate Callback Handlers
 	UFUNCTION()
 	void HandleInteractableAvailableChanged(bool bAvailable);
+	UFUNCTION()
+	void HandleInteractSuccess(AActor* InteractedActor);
+	// ~Delegate Callback Handlers
 
 	UPROPERTY(Replicated)
 	uint8 bIsEquipped : 1 = 0;

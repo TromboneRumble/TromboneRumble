@@ -11,6 +11,7 @@
 #include "Components/ActorComponents/InstrumentAttackComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -124,10 +125,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-	checkf(InteractorComponent, TEXT("InteractorComponent is missing on %s."), *GetName());
 
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 
 	HeadbuttComponent->SetOwnerCharacter(this);
 	InstrumentAttackComponent->SetOwnerCharacter(this);
@@ -182,6 +183,11 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 	{
 		PC->ShowInteractionUI(bAvailable);
 	}
+}
+
+void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
+{
+	PRINT_WITH_CURRENT_CONTEXT("Interaction Succeeded with " + (InteractedActor ? InteractedActor->GetName() : TEXT("None")));
 }
 
 void ADefaultTromboneCharacter::Server_Interaction_Implementation(AActor* Interactable)
