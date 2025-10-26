@@ -55,7 +55,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 void ADefaultTromboneCharacter::Jump()
 {
-	if (bIsSprinting)
+	if (bIsSprinting && !EquippedInstrument)
 	{
 		Attack();
 	}
@@ -118,11 +118,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
-	if (AttackComponent && HeadbuttAttackData)
+	if (AttackComponent)
 	{
 		AttackComponent->SetOwnerCharacter(this);
-		AttackComponent->SetAttackData(HeadbuttAttackData);
-		AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
+		UpdateAttackComponentState();
 	}
 }
 
@@ -137,7 +136,8 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	DOREPLIFETIME(ADefaultTromboneCharacter, bIsSprinting);
+	DOREPLIFETIME(ThisClass, bIsSprinting);
+	DOREPLIFETIME(ThisClass, EquippedInstrument);
 }
 
 void ADefaultTromboneCharacter::Server_StartSprint_Implementation()
@@ -148,6 +148,68 @@ void ADefaultTromboneCharacter::Server_StartSprint_Implementation()
 void ADefaultTromboneCharacter::Server_StopSprint_Implementation()
 {
 	bIsSprinting = false;
+}
+
+void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* InteractedActor)
+{
+	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
+	{
+		EquippedInstrument = Instrument;
+		CurrentInteractionContext.bIsEquipped = true;
+		UpdateAttackComponentState();
+	}
+}
+
+
+void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
+{
+	if (ADefaultPlayerController* PC = CachedCharacterController.Get())
+	{
+		PC->ShowInteractionUI(bAvailable);
+	}
+}
+
+void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
+{
+	if (IsValid(InteractedActor) && InteractedActor->IsA<AInstrumentBase>())
+	{
+		Server_Interact(InteractedActor);
+	}
+}
+
+void ADefaultTromboneCharacter::HandleOnRagdoll()
+{
+	if (HasAuthority())
+	{
+		EquippedInstrument = nullptr;
+	}
+	
+	CurrentInteractionContext.bIsEquipped = false;
+	UpdateAttackComponentState();
+}
+
+void ADefaultTromboneCharacter::OnRep_EquippedInstrument()
+{
+	UpdateAttackComponentState();
+}
+
+void ADefaultTromboneCharacter::UpdateAttackComponentState()
+{
+	if (!AttackComponent) return;
+
+	if (EquippedInstrument)
+	{
+		UPrimitiveComponent* Collision = EquippedInstrument->GetCapsuleComponent();
+		UAttackDataAsset* Data = EquippedInstrument->GetAttackData();
+       
+		AttackComponent->SetCollisionComponent(Collision);
+		AttackComponent->SetAttackData(Data);
+	}
+	else
+	{
+		AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
+		AttackComponent->SetAttackData(HeadbuttAttackData);
+	}
 }
 
 void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
@@ -167,35 +229,3 @@ void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSecond
 		}
 	}
 }
-
-void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
-{
-	if (ADefaultPlayerController* PC = CachedCharacterController.Get())
-	{
-		PC->ShowInteractionUI(bAvailable);
-	}
-}
-
-void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
-{
-	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
-	{
-		CurrentInteractionContext.bIsEquipped = true;
-		UPrimitiveComponent* Collision = Instrument->GetCapsuleComponent();
-		UAttackDataAsset* Data = Instrument->GetAttackData();
-		if (AttackComponent)
-		{
-			AttackComponent->SetCollisionComponent(Collision);
-			AttackComponent->SetAttackData(Data);
-		}
-	}
-}
-
-void ADefaultTromboneCharacter::HandleOnRagdoll()
-{
-	CurrentInteractionContext.bIsEquipped = false;
-	if (AttackComponent) 
-	{
-		AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
-		AttackComponent->SetAttackData(HeadbuttAttackData);
-	}}

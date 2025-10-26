@@ -37,13 +37,6 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	// Server RPCs
-	UFUNCTION(Server, Reliable)
-	void Server_StartSprint();
-	UFUNCTION(Server, Reliable)
-	void Server_StopSprint();
-	// ~Server RPCs
-
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -64,9 +57,19 @@ protected:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
 
-private:
-	void InterpolateMovementSpeed(float DeltaSeconds) const;
+	UPROPERTY(Transient, ReplicatedUsing = OnRep_EquippedInstrument)
+	TObjectPtr<AInstrumentBase> EquippedInstrument = nullptr;
 
+private:
+	// Server RPCs
+	UFUNCTION(Server, Reliable)
+	void Server_StartSprint();
+	UFUNCTION(Server, Reliable)
+	void Server_StopSprint();
+	UFUNCTION(Server, Reliable)
+	void Server_Interact(AActor* InteractedActor);
+	// ~Server RPCs
+	
 	// Delegate Callback Handlers
 	UFUNCTION()
 	void HandleInteractableAvailableChanged(bool bAvailable);
@@ -75,8 +78,14 @@ private:
 	UFUNCTION()
 	void HandleOnRagdoll();
 	// ~Delegate Callback Handlers
+
+	// Replication Notifies
+	UFUNCTION()
+	void OnRep_EquippedInstrument();
+	// ~Replication Notifies
 	
-	FInteractionContext CurrentInteractionContext;
+	void UpdateAttackComponentState();
+	void InterpolateMovementSpeed(float DeltaSeconds) const;
 	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
@@ -89,4 +98,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Config|Movement")
 	float SprintInterpSpeed = 10.0f;
+	
+	FInteractionContext CurrentInteractionContext;
 };
