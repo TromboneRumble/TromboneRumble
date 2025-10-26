@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Utilities/Defines.h"
 #include "AttackDataAsset.generated.h"
 
 UCLASS()
@@ -17,4 +18,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float AttackCooldown = 1.0f;
+	
+	UPROPERTY(EditAnywhere)
+	EHitType HitType = EHitType::Invalid;
 };

@@ -65,7 +65,7 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 				FHitData HitData;
 				HitData.Initiator = OwnerCharacter;
 				HitData.HitDirection = (Hit.ImpactPoint - OwnerCharacter->GetActorLocation()).GetSafeNormal();
-				HitData.HitType = EHitType::Instrument;
+				HitData.HitType = CurrentAttackData->HitType;
 
 				CombatReceiver->OnHitReceived(HitData);
 			}
