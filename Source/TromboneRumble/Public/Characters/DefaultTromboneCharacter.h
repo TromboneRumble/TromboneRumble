@@ -42,8 +42,6 @@ protected:
 	
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
-	void Server_Interaction(AActor* Interactable);
-	UFUNCTION(Server, Reliable)
 	void Server_StartSprint();
 	UFUNCTION(Server, Reliable)
 	void Server_StopSprint();
@@ -77,6 +75,8 @@ private:
 	void HandleInteractableAvailableChanged(bool bAvailable);
 	UFUNCTION()
 	void HandleInteractSuccess(AActor* InteractedActor);
+	UFUNCTION()
+	void HandleOnRagdoll();
 	// ~Delegate Callback Handlers
 
 	UPROPERTY()

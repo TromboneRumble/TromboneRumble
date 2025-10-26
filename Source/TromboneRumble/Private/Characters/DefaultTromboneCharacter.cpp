@@ -113,7 +113,7 @@ void ADefaultTromboneCharacter::Headbutt()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	if (InstrumentAttackComponent) InstrumentAttackComponent->Attack();
+	if (InstrumentAttackComponent && CurrentInteractionContext.bIsEquipped) InstrumentAttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::SetInstrumentCollisionReference(UPrimitiveComponent* InCollision)
@@ -130,6 +130,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
+	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
 	HeadbuttComponent->SetOwnerCharacter(this);
 	InstrumentAttackComponent->SetOwnerCharacter(this);
@@ -187,8 +188,6 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 
 void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 {
-	PRINT_WITH_CURRENT_CONTEXT("Interaction Succeeded with " + (InteractedActor ? InteractedActor->GetName() : TEXT("None")));
-	
 	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
 	{
 		EquippedInstrument = Instrument;
@@ -196,6 +195,8 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 	}
 }
 
-void ADefaultTromboneCharacter::Server_Interaction_Implementation(AActor* Interactable)
+void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
+	EquippedInstrument = nullptr;
+	CurrentInteractionContext.bIsEquipped = false;
 }
