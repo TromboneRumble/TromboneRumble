@@ -28,6 +28,41 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="1069471245" Type="Event" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" Language="SFX" Hash="{93B3DAF7-90BC-8A38-5F09-E1635E13515B}">
+			<ObjectPath>Play_Note_Length</ObjectPath>
+			<ShortName>Play_Note_Length</ShortName>
+			<Path>Event/Play_Note_Length.bnk</Path>
+			<Media>
+				<File Id="234801056" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_C_F_3_Audio.wav</ShortName>
+					<Path>Media/234801056.wem</Path>
+					<CachePath>SFX/Piano_C_F_3_Audio_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="957044437" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_C_F_3_MIDI.mid</ShortName>
+					<Path>Media/957044437.wem</Path>
+					<CachePath>SFX/Piano_C_F_3_MIDI_5DB24424.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1069471245" Name="Play_Note_Length" ObjectPath="\Events\Default Work Unit\Play_Note_Length" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" DurationType="OneShot" DurationMin="224" DurationMax="224">
+					<MediaRefs>
+						<MediaRef Id="234801056"/>
+						<MediaRef Id="957044437"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{AC700B9A-39FB-58F5-3A68-14F2D9A36D30}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
@@ -173,7 +208,7 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{0AC39A69-5EC3-CDBB-7032-C51C66638CBC}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{870381E9-5136-B7C8-5BAC-E9926B61E5C9}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -217,7 +252,7 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="3717157269" Type="Event" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" Language="SFX" Hash="{4FFE4577-E22B-819B-F03A-F806883D1F43}">
+		<SoundBank Id="3717157269" Type="Event" GUID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}" Language="SFX" Hash="{9CEBD3C5-3F4E-066B-0AE5-E6E1AD5F870C}">
 			<ObjectPath>Play_Click_Test</ObjectPath>
 			<ShortName>Play_Click_Test</ShortName>
 			<Path>Event/Play_Click_Test.bnk</Path>
@@ -252,6 +287,47 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}">
+			<ObjectPath>Play_Long_Short</ObjectPath>
+			<ShortName>Play_Long_Short</ShortName>
+			<Path>Event/Play_Long_Short.bnk</Path>
+			<Media>
+				<File Id="373625262" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Short.mid</ShortName>
+					<Path>Media/373625262.wem</Path>
+					<CachePath>SFX/Short_CB4DD1B5.wem</CachePath>
+				</File>
+				<File Id="655394048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_Short_Long.wav</ShortName>
+					<Path>Media/655394048.wem</Path>
+					<CachePath>SFX/Piano_Short_Long_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="760131378" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Long.mid</ShortName>
+					<Path>Media/760131378.wem</Path>
+					<CachePath>SFX/Long_0D3FE42B.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
+					<MediaRefs>
+						<MediaRef Id="373625262"/>
+						<MediaRef Id="655394048"/>
+						<MediaRef Id="760131378"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 	</SoundBanks>
-	<FileHash>{55325BD6-51C9-71A2-4946-148038860471}</FileHash>
+	<FileHash>{E91070AA-A196-A326-43D5-45E532899B42}</FileHash>
 </SoundBanksInfo>

@@ -1,0 +1,79 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1069471245",
+    "Type": "Event",
+    "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
+    "Language": "SFX",
+    "Hash": "{93B3DAF7-90BC-8A38-5F09-E1635E13515B}",
+    "ObjectPath": "Play_Note_Length",
+    "ShortName": "Play_Note_Length",
+    "Path": "Event/Play_Note_Length.bnk",
+    "Media": [
+     {
+      "Id": "234801056",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_C_F_3_Audio.wav",
+      "Path": "Media/234801056.wem",
+      "CachePath": "SFX/Piano_C_F_3_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "957044437",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_C_F_3_MIDI.mid",
+      "Path": "Media/957044437.wem",
+      "CachePath": "SFX/Piano_C_F_3_MIDI_5DB24424.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1069471245",
+      "Name": "Play_Note_Length",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Note_Length",
+      "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
+      "DurationType": "OneShot",
+      "DurationMin": "224",
+      "DurationMax": "224",
+      "MediaRefs": [
+       {
+        "Id": "234801056"
+       },
+       {
+        "Id": "957044437"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{A6BC60B7-194C-8D0D-B83B-884967B7832A}"
+ }
+}

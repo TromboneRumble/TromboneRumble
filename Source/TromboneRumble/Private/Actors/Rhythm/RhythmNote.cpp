@@ -26,25 +26,39 @@ void ARhythmNote::Tick(float DeltaTime)
 	NoteLifeTime += DeltaTime;;
 }
 
+void ARhythmNote::OnTakenFromPool_Implementation()
+{
+	NoteLifeTime = 0.f;
+	CachedSpawner = nullptr;
+	CachedSplineComponent = nullptr;
+}
+
+
+void ARhythmNote::OnReturnToPool_Implementation()
+{
+	NoteLifeTime = 0.f;
+}
+
+
+void ARhythmNote::InitNote(ARhythmNoteSpawner* InSpawner, float InTimeToComplete)
+{
+	checkf(InSpawner, TEXT("Spawner not Valid"));
+	CachedSpawner = InSpawner;
+	CachedSplineComponent = InSpawner->GetSplineComponent();
+	TimeToComplete = InTimeToComplete;
+}
 
 void ARhythmNote::MoveNotes_Implementation()
 {
-
+	if (!CachedSpawner.Get() || !CachedSplineComponent.Get())
+	{
+		return;
+	}
 }
 
 void ARhythmNote::BeginPlay()
 {
 	Super::BeginPlay();
-	if (ARhythmNoteSpawner* Spawner = Cast<ARhythmNoteSpawner>(GetOwner()))
-	{
-		CachedSpawner = Spawner;
-		CachedSplineComponent = Spawner->GetSplineComponent();
-	}
-	else
-	{
-		CachedSpawner = nullptr;
-		ensureMsgf(false, TEXT("Owner is not ARhythmNoteSpawner. Owner=%s"), *GetNameSafe(GetOwner()));
-	}
 }
 
 

@@ -50,6 +50,28 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_Note_Length" ID="{33F02563-A654-4D79-8340-8F01CF66D217}">
+					<ChildrenList>
+						<Action Name="" ID="{0A175ACC-2114-4217-805E-51FA72D7EE44}" ShortID="56345341">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Test_Note_Length" ID="{789004DA-5327-41E9-A05E-BCF899398AE4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Long_Short" ID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}">
+					<ChildrenList>
+						<Action Name="" ID="{38DCF39B-6CD7-4067-AB47-1B97CDA8FAF1}" ShortID="512886752">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Test_Short_Long" ID="{1E72A2DD-6C3F-48CA-BAD7-A6FD1B403EFE}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

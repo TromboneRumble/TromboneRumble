@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1069471245" Type="Event" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" Language="SFX" Hash="{93B3DAF7-90BC-8A38-5F09-E1635E13515B}">
+			<ObjectPath>Play_Note_Length</ObjectPath>
+			<ShortName>Play_Note_Length</ShortName>
+			<Path>Event/Play_Note_Length.bnk</Path>
+			<Media>
+				<File Id="234801056" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_C_F_3_Audio.wav</ShortName>
+					<Path>Media/234801056.wem</Path>
+					<CachePath>SFX/Piano_C_F_3_Audio_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="957044437" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_C_F_3_MIDI.mid</ShortName>
+					<Path>Media/957044437.wem</Path>
+					<CachePath>SFX/Piano_C_F_3_MIDI_5DB24424.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1069471245" Name="Play_Note_Length" ObjectPath="\Events\Default Work Unit\Play_Note_Length" GUID="{33F02563-A654-4D79-8340-8F01CF66D217}" DurationType="OneShot" DurationMin="224" DurationMax="224">
+					<MediaRefs>
+						<MediaRef Id="234801056"/>
+						<MediaRef Id="957044437"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{55D8F285-1DF5-6346-3815-B1D1089CE707}</FileHash>
+</SoundBanksInfo>

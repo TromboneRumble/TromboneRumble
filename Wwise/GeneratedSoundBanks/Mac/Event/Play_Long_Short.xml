@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}">
+			<ObjectPath>Play_Long_Short</ObjectPath>
+			<ShortName>Play_Long_Short</ShortName>
+			<Path>Event/Play_Long_Short.bnk</Path>
+			<Media>
+				<File Id="373625262" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Short.mid</ShortName>
+					<Path>Media/373625262.wem</Path>
+					<CachePath>SFX/Short_CB4DD1B5.wem</CachePath>
+				</File>
+				<File Id="655394048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Piano_Short_Long.wav</ShortName>
+					<Path>Media/655394048.wem</Path>
+					<CachePath>SFX/Piano_Short_Long_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="760131378" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Long.mid</ShortName>
+					<Path>Media/760131378.wem</Path>
+					<CachePath>SFX/Long_0D3FE42B.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
+					<MediaRefs>
+						<MediaRef Id="373625262"/>
+						<MediaRef Id="655394048"/>
+						<MediaRef Id="760131378"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{7EB75595-1F9B-A2B2-8708-C0464D978EFD}</FileHash>
+</SoundBanksInfo>
