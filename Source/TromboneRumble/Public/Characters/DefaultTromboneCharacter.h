@@ -29,8 +29,8 @@ public:
 	void Look(const FInputActionValue& Value);
 	void Interact();
 	void Attack();
-	FORCEINLINE void Sprint() { Server_StartSprint(); }
-	FORCEINLINE void StopSprint() { Server_StopSprint(); }
+	void Sprint();
+	void StopSprint();
 
 protected:
 	virtual void BeginPlay() override;

@@ -107,6 +107,22 @@ void ADefaultTromboneCharacter::Attack()
 	if (AttackComponent) AttackComponent->Attack();
 }
 
+void ADefaultTromboneCharacter::Sprint()
+{
+	if (bIsSprinting) return; 
+
+	bIsSprinting = true;
+	Server_StartSprint();
+}
+
+void ADefaultTromboneCharacter::StopSprint()
+{
+	if (!bIsSprinting) return;
+
+	bIsSprinting = false;
+	Server_StopSprint();
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();

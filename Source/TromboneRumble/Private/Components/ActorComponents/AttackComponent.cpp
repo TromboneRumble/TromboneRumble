@@ -77,7 +77,25 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 void UAttackComponent::Attack()
 {
-	if (bIsAttacking || !OwnerCharacter || !bCanAttack || !CurrentAttackData) return;
+	if (!OwnerCharacter || (OwnerCharacter->GetLocalRole() < ROLE_AutonomousProxy)) return;
+
+	if (bIsAttacking || !bCanAttack || !CurrentAttackData) return;
+	
+	if (OwnerCharacter->IsLocallyControlled() && !OwnerCharacter->HasAuthority())
+	{
+		bCanAttack = false;
+		GetWorld()->GetTimerManager().SetTimer(
+		   AttackCooldownTimerHandle,
+		   this,
+		   &ThisClass::ResetAttackCooldown,
+		   CurrentAttackData->AttackCooldown,
+		   false
+		);
+		if (CurrentAttackData->AttackAnimMontage)
+		{
+			OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
+		}
+	}
 
 	if (OwnerCharacter->HasAuthority())
 	{
@@ -117,6 +135,8 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
+	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled() && !OwnerCharacter->HasAuthority()) return;
+	
 	if (!OwnerCharacter || !CurrentAttackData || !CurrentAttackData->AttackAnimMontage) return;
 
 	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
