@@ -90,13 +90,13 @@ private:
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
 	
-	UPROPERTY(EditAnywhere, Category = "Config|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
 	float WalkSpeed = 250.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "Config|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
 	float SprintSpeed = 600.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "Config|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
 	float SprintInterpSpeed = 10.0f;
 	
 	FInteractionContext CurrentInteractionContext;

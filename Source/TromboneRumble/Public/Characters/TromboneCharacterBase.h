@@ -57,7 +57,11 @@ private:
 
 private:
 	FTimerHandle OnHitTimerHandle;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Config|HitStatus")
 	float RagdollDuration = 2.5f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Config|HitStatus")
 	float StunDuration = 1.5f;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)

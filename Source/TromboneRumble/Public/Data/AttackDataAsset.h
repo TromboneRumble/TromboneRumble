@@ -13,12 +13,12 @@ class TROMBONERUMBLE_API UAttackDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Attack")
 	TObjectPtr<UAnimMontage> AttackAnimMontage = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Attack")
 	float AttackCooldown = 1.0f;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Attack")
 	EHitType HitType = EHitType::Invalid;
 };
