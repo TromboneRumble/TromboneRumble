@@ -40,15 +40,6 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 		CapsuleShape,
 		Params
 	);
-
-	// TODO : Remove debug drawing
-	if (const UCapsuleComponent* CapsuleComp = Cast<UCapsuleComponent>(CollisionComponent))
-	{
-		float Radius, HalfHeight;
-		CapsuleComp->GetUnscaledCapsuleSize(Radius, HalfHeight);
-		DrawDebugCapsule(GetWorld(), Start, HalfHeight, Radius, Rotation.Quaternion(), FColor::Red, false, 0.5f);
-		DrawDebugCapsule(GetWorld(), End, HalfHeight, Radius, Rotation.Quaternion(), FColor::Yellow, false, 0.5f);
-	}
 	
 	if (!bHit) return;
 
