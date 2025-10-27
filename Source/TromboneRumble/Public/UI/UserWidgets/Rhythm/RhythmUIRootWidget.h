@@ -7,6 +7,7 @@
 #include "RhythmUIRootWidget.generated.h"
 
 
+class UCanvasPanel;
 class URhythmSpawnWidget;
 
 /**
@@ -22,8 +23,8 @@ public:
 	void SpawnNotes(URhythmSpawnWidget* SpawnWidget, int32 LaneIndex);
 
 public:
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<URhythmSpawnWidget> RhythmSpawnWidget = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCanvasPanel> NoteCanvas = nullptr;
 
 
 };

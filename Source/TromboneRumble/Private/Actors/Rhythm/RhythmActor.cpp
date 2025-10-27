@@ -6,6 +6,8 @@
 #include "Actors/Rhythm/RhythmNote.h"
 #include "Components/BoxComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
+#include "Subsystems/ActorPoolSubsystem.h"
+#include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
 
@@ -24,10 +26,7 @@ ARhythmActor::ARhythmActor()
 
 	RhythmNoteDestroyer = CreateDefaultSubobject<UBoxComponent>(TEXT("Note Destroyer"));
 	RhythmNoteDestroyer->SetupAttachment(GetRootComponent());
-
-	RhythmNoteSpawner = CreateDefaultSubobject<UChildActorComponent>(TEXT("Note Spawner"));
-	RhythmNoteSpawner->SetupAttachment(GetRootComponent());
-	RhythmNoteSpawner->SetRelativeLocation(FVector::ZeroVector);
+	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
 }
 
 void ARhythmActor::Tick(float DeltaTime)
@@ -79,11 +78,74 @@ void ARhythmActor::DetectLongNoteEnd()
 	
 }
 
+ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
+{
+	if (auto Found = RhythmNoteSpawners.Find(InType))
+	{
+		return Found->Get();
+	}
+	checkf(RhythmNoteSpawnerClass, TEXT("RhythmNoteSpawnerClass is null"));
+
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+
+	FActorSpawnParameters Params;
+	Params.Owner = this;
+	Params.Instigator = GetInstigator();
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ARhythmNoteSpawner* NewSpawner = World->SpawnActor<ARhythmNoteSpawner>(RhythmNoteSpawnerClass, GetActorTransform(), Params);
+	if (!NewSpawner) return nullptr;
+
+	if (USceneComponent* Root = GetRootComponent())
+	{
+		NewSpawner->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	}
+	else
+	{
+		NewSpawner->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+	}
+
+	NewSpawner->SetActorRelativeLocation(FVector::ZeroVector);
+	NewSpawner->SetActorRelativeRotation(FRotator::ZeroRotator);
+
+	//Map에서 관리
+	RhythmNoteSpawners.Add(InType, NewSpawner);
+
+	NewSpawner->SpawnerType = InType;
+
+	return NewSpawner;
+}
+
+bool ARhythmActor::DestroySpawner(EInstrumentType InType)
+{
+	if (auto Found = RhythmNoteSpawners.Find(InType))
+	{
+		ARhythmNoteSpawner* Spawner = Found->Get();
+		if (IsValid(Spawner))
+		{
+			Spawner->Destroy();
+		}
+		RhythmNoteSpawners.Remove(InType);
+		return true;
+	}
+	return false;
+}
+
 
 void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (RhythmUIRootWidgetClass)
+	{
+		CachedRhythmUIRootWidget = CreateWidget<URhythmUIRootWidget>(GetWorld(), RhythmUIRootWidgetClass);
+		if (CachedRhythmUIRootWidget)
+		{
+			CachedRhythmUIRootWidget->AddToViewport();
+		}
+	}
+	//Todo : 음악에 맞게 스포너 생성
+	GetOrCreateSpawner(EInstrumentType::Trombone);
 }
 
 
@@ -174,6 +236,29 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 	}
 	return Result;
 	
+}
+
+UActorPoolSubsystem* ARhythmActor::GetCachedSubsystem()
+{
+	if (CachedActorPoolSubsystem.IsValid())
+		return CachedActorPoolSubsystem.Get();
+
+	if (UActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>())
+	{
+		CachedActorPoolSubsystem = PoolSubsystem;
+		return PoolSubsystem;
+	}
+
+	return nullptr;
+}
+
+void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
+	{
+		CachedActorPoolSubsystem->Release(OtherActor);
+	}
 }
 
 
