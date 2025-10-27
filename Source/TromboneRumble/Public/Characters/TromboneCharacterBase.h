@@ -57,8 +57,8 @@ private:
 
 private:
 	FTimerHandle OnHitTimerHandle;
-	float RagdollDuration = 3.0f;
-	float StunDuration = 1.0f;
+	float RagdollDuration = 2.5f;
+	float StunDuration = 1.5f;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
