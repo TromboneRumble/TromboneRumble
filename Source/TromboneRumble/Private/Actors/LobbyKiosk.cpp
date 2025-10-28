@@ -20,7 +20,7 @@ ALobbyKiosk::ALobbyKiosk()
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CapsuleComponent->SetSimulatePhysics(false);
 
-	InteractTrigger = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTrigger"));
+	// InteractTrigger = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTrigger"));
 }
 
 bool ALobbyKiosk::CanInteract_Implementation(AActor* InstigatorActor) const
