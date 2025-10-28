@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "AttackComponent.generated.h"
 
+class UCharacterAnimInstance;
 class UAttackDataAsset;
 
 UCLASS()
@@ -32,8 +33,14 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayAttackEffects();
 	
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ExecuteAttackEnd();
+	
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UPROPERTY()
+	TObjectPtr<UCharacterAnimInstance> CharacterAnimInstance = nullptr;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttackDataAsset> CurrentAttackData = nullptr;

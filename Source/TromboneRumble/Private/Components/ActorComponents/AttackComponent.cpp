@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/ActorComponents/AttackComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Animation/CharacterAnimInstance.h"
 #include "Data/AttackDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
@@ -68,6 +68,16 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 void UAttackComponent::Attack()
 {
+	if (!CharacterAnimInstance)
+	{
+		if (OwnerCharacter && OwnerCharacter->GetMesh())
+		{
+			CharacterAnimInstance = Cast<UCharacterAnimInstance>(OwnerCharacter->GetMesh()->GetAnimInstance());
+		}
+
+		if (!CharacterAnimInstance) return;
+	}
+	
 	if (!OwnerCharacter || (OwnerCharacter->GetLocalRole() < ROLE_AutonomousProxy)) return;
 
 	if (bIsAttacking || !bCanAttack || !CurrentAttackData) return;
@@ -84,6 +94,7 @@ void UAttackComponent::Attack()
 		);
 		if (CurrentAttackData->AttackAnimMontage)
 		{
+			CharacterAnimInstance->SetIsAttacking(true);
 			OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
 		}
 	}
@@ -122,6 +133,8 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 {
 	bIsAttacking = false;
 	AlreadyHitActors.Empty();
+
+	Multicast_ExecuteAttackEnd();
 }
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
@@ -130,18 +143,26 @@ void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 	
 	if (!OwnerCharacter || !CurrentAttackData || !CurrentAttackData->AttackAnimMontage) return;
 
-	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-	if (!AnimInstance) return;
+	if (!CharacterAnimInstance) return;
 
 	if (OwnerCharacter->HasAuthority())
 	{
-		if (!AnimInstance->OnMontageEnded.IsAlreadyBound(this, &ThisClass::OnAttackMontageEnded))
+		if (!CharacterAnimInstance->OnMontageEnded.IsAlreadyBound(this, &ThisClass::OnAttackMontageEnded))
 		{
-			AnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
+			CharacterAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
 		}
 	}
-	
+
+	CharacterAnimInstance->SetIsAttacking(true);
 	OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
+}
+
+void UAttackComponent::Multicast_ExecuteAttackEnd_Implementation()
+{
+	if (CharacterAnimInstance)
+	{
+		CharacterAnimInstance->SetIsAttacking(false);
+	}
 }
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
