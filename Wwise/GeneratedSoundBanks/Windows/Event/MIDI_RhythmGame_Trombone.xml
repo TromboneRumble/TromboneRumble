@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="890241682" Type="Event" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" Language="SFX" Hash="{56FECA6A-2DA4-AEC9-6F30-15919B5214ED}">
+		<SoundBank Id="890241682" Type="Event" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" Language="SFX" Hash="{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}">
 			<ObjectPath>MIDI_RhythmGame_Trombone</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Trombone</ShortName>
 			<Path>Event/MIDI_RhythmGame_Trombone.bnk</Path>
@@ -18,7 +18,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="890241682" Name="MIDI_RhythmGame_Trombone" ObjectPath="\Events\Default Work Unit\Test_Rhythm_Game\MIDI_RhythmGame_Trombone" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" DurationType="OneShot" DurationMin="80" DurationMax="80">
+				<Event Id="890241682" Name="MIDI_RhythmGame_Trombone" ObjectPath="\Events\Default Work Unit\Test_Rhythm_Game\MIDI_RhythmGame_Trombone" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" DurationType="OneShot" DurationMin="42" DurationMax="42">
 					<MediaRefs>
 						<MediaRef Id="64075962"/>
 					</MediaRefs>
@@ -31,5 +31,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{B4DFD4B0-3F87-2FC6-073B-9FB55AC59DA7}</FileHash>
+	<FileHash>{17EEF067-A615-7A30-A7DA-00F1DF25EAE1}</FileHash>
 </SoundBanksInfo>

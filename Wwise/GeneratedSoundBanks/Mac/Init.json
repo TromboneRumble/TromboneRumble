@@ -166,12 +166,20 @@
         "Name": "SW_T_Perfect",
         "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
         "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
-       },
+       }
+      ]
+     },
+     {
+      "Id": "748895195",
+      "Name": "None",
+      "ObjectPath": "\\Switches\\Default Work Unit\\None",
+      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
+      "Switches": [
        {
-        "Id": "2382423597",
-        "Name": "SW_T_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Pickup",
-        "GUID": "{8751CA16-BCA2-4044-8F89-D69DC4485E1E}"
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
+        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
        }
       ]
      },
@@ -181,12 +189,6 @@
       "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
       "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
       "Switches": [
-       {
-        "Id": "192528360",
-        "Name": "SW_C_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Pickup",
-        "GUID": "{7D5053AB-5891-4256-82B9-886685C7A42A}"
-       },
        {
         "Id": "899946472",
         "Name": "SW_C_Fail",
@@ -207,12 +209,6 @@
       "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
       "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
       "Switches": [
-       {
-        "Id": "1553653851",
-        "Name": "SW_V_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Pickup",
-        "GUID": "{202BEC27-490A-418C-9F62-2AF8E611670F}"
-       },
        {
         "Id": "1638842395",
         "Name": "SW_V_Fail",
@@ -694,6 +690,6 @@
     ]
    }
   ],
-  "FileHash": "{148FAD58-6502-A591-B130-850AFEB5AF7A}"
+  "FileHash": "{B477B396-C03A-D30E-E0D3-723A9854219A}"
  }
 }

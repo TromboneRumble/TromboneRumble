@@ -48,19 +48,21 @@
 					<Switches>
 						<Switch Id="670040001" Name="SW_T_Fail" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Fail" GUID="{82F8905C-547A-4053-9811-13FD3E245CAA}"/>
 						<Switch Id="1966965440" Name="SW_T_Perfect" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Perfect" GUID="{16031BE8-9736-456D-8EC9-6AA8BC731B76}"/>
-						<Switch Id="2382423597" Name="SW_T_Pickup" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Pickup" GUID="{8751CA16-BCA2-4044-8F89-D69DC4485E1E}"/>
+					</Switches>
+				</SwitchGroup>
+				<SwitchGroup Id="748895195" Name="None" ObjectPath="\Switches\Default Work Unit\None" GUID="{78896181-20AC-4A78-9A87-4C936D04C0F6}">
+					<Switches>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\None\SW_N" GUID="{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"/>
 					</Switches>
 				</SwitchGroup>
 				<SwitchGroup Id="761516531" Name="Cymbal" ObjectPath="\Switches\Default Work Unit\Cymbal" GUID="{ADACA603-67EC-4D63-BB90-B1751EAECC13}">
 					<Switches>
-						<Switch Id="192528360" Name="SW_C_Pickup" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Pickup" GUID="{7D5053AB-5891-4256-82B9-886685C7A42A}"/>
 						<Switch Id="899946472" Name="SW_C_Fail" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Fail" GUID="{243DD8E3-EBC4-4362-882F-A03AEB562222}"/>
 						<Switch Id="4034377147" Name="SW_C_Perfect" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Perfect" GUID="{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"/>
 					</Switches>
 				</SwitchGroup>
 				<SwitchGroup Id="3063529226" Name="Violin" ObjectPath="\Switches\Default Work Unit\Violin" GUID="{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}">
 					<Switches>
-						<Switch Id="1553653851" Name="SW_V_Pickup" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Pickup" GUID="{202BEC27-490A-418C-9F62-2AF8E611670F}"/>
 						<Switch Id="1638842395" Name="SW_V_Fail" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Fail" GUID="{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"/>
 						<Switch Id="2890494766" Name="SW_V_Perfect" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Perfect" GUID="{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"/>
 					</Switches>
@@ -196,5 +198,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5B2843BF-6C39-F122-8D34-EFC5CDCFBA9B}</FileHash>
+	<FileHash>{337F570F-80AB-3911-C567-3E144486CC73}</FileHash>
 </SoundBanksInfo>
