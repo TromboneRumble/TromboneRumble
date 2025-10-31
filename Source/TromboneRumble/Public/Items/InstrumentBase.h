@@ -7,6 +7,7 @@
 #include "Items/ItemBase.h"
 #include "InstrumentBase.generated.h"
 
+class UAttackDataAsset;
 class IInstrumentEventHandler;
 
 UCLASS()
@@ -23,6 +24,8 @@ public:
 	virtual void Equip_Implementation(AActor* OwnerActor) override;
 	virtual void Unequip_Implementation(AActor* OwnerActor) override;
 	// ~Interfaces
+
+	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -42,6 +45,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Config")
 	TObjectPtr<USoundBase> InstrumentSound = nullptr;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAttackDataAsset> AttackData;
 
 private:
 	UFUNCTION()

@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Interfaces/Interactable.h"
+#include "Items/InstrumentBase.h"
+#include "Utilities/Defines.h"
 
 UInteractorComponent::UInteractorComponent()
 {
@@ -11,24 +12,19 @@ UInteractorComponent::UInteractorComponent()
     SetIsReplicatedByDefault(true);
 }
 
-void UInteractorComponent::TryInteract(AActor* ExplicitTarget)
+void UInteractorComponent::TryInteract(const FInteractionContext Context, const AActor* ExplicitTarget)
 {
-    AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
+    const AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
     if (!Target) return;
 
-    // 서버면 바로 실행
-    if (GetOwnerRole() == ROLE_Authority)
-    {
-        if (UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>())
-        {
-            Trigger->Server_TryInteract(GetOwner());
-        }
-    }
-    // 클라이언트면 서버에 요청
-    else
-    {
-        Server_TryInteract(Target);
-    }
+    UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>();
+    if (!Trigger) return;
+
+    if (GetOwnerRole() != ROLE_Authority && !Trigger->IsTriggerActive()) return;
+
+    if (Target->IsA(AInstrumentBase::StaticClass()) && Context.bIsEquipped) return;
+
+    Server_TryInteract(Trigger);
 }
 
 void UInteractorComponent::RegisterCandidate(AActor* InCandidate)
@@ -50,6 +46,7 @@ void UInteractorComponent::RegisterCandidate(AActor* InCandidate)
     {
         OnInteractableAvailable.Broadcast(false);
     }
+    
     if (NewBest != BestCandidateCached.Get())
     {
         BestCandidateCached = NewBest;
@@ -84,6 +81,22 @@ void UInteractorComponent::UnregisterCandidate(AActor* InCandidate)
     }
 }
 
+void UInteractorComponent::Client_OnInteractSuccess_Implementation(AActor* InteractedActor)
+{
+    if (InteractedActor)
+    {
+        OnInteractSuccessDelegate.Broadcast(InteractedActor);
+    }
+}
+
+void UInteractorComponent::Server_TryInteract_Implementation(UInteractionTriggerComponent* TriggerToInteract)
+{
+    if (IsValid(TriggerToInteract))
+    {
+        TriggerToInteract->Server_TryInteract(GetOwner());
+    }
+}
+
 AActor* UInteractorComponent::GetBestCandidate() const
 {
     // 마지막으로 들어온 후보를 최우선
@@ -110,13 +123,3 @@ void UInteractorComponent::CleanupCandidates()
         }
     }
 }
-
-void UInteractorComponent::Server_TryInteract_Implementation(AActor* Target)
-{
-    if (!Target) return;
-    if (UInteractionTriggerComponent* Trigger = Target->FindComponentByClass<UInteractionTriggerComponent>())
-    {
-        Trigger->Server_TryInteract(GetOwner());
-    }
-}
-

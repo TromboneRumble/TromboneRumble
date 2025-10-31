@@ -10,6 +10,7 @@
 class UInputComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStunSignature);
 
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
@@ -20,26 +21,51 @@ public:
 	ATromboneCharacterBase();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnHitReceived(const FHitData& HitData) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	FOnRagdollSignature OnRagdollDelegate;
+	FOnStunSignature OnStunDelegate;
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCapsuleComponent> HeadbuttCapsuleComponent;
 	
 private:
-	void InitCharacter() const;
-	void SetupCapsuleComponent() const;
+	void InitCharacter();
+	void SetupCapsuleComponent();
 	void SetupSkeletalMeshComponent() const;
 	void SetupMovementComponent() const;
+
+	void OnRagdoll();
+	void EndRagdoll();
+	void OnStun();
+	void EndStun();
+
+	void ApplyStun();
+	void UnapplyStun();
 	
 	void ApplyRagdoll();
 	void UnapplyRagdoll();
 
+	// Replication Notifies
 	UFUNCTION()
 	void OnRep_IsRagdoll();
+	UFUNCTION()
+	void OnRep_IsStun();
+	// ~Replication Notifies
 
 private:
-	FTimerHandle RagdollTimerHandle;
-	float RagdollDuration = 3.0f;
+	FTimerHandle OnHitTimerHandle;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Config|HitStatus")
+	float RagdollDuration = 2.5f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Config|HitStatus")
+	float StunDuration = 1.5f;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
+	UPROPERTY(ReplicatedUsing = OnRep_IsStun)
+	bool bIsStun = false;
 };

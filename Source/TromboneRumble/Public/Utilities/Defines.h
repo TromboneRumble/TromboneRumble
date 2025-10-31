@@ -3,6 +3,17 @@
 #include "CoreMinimal.h"
 #include "Defines.generated.h"
 
+USTRUCT()
+struct FInteractionContext
+{
+	GENERATED_BODY()
+
+public:
+	bool bIsEquipped = false;
+
+	FInteractionContext() {}
+};
+
 // TODO : 추후 팀전 고려.
 UENUM()
 enum class EMatchState : uint8
@@ -36,6 +47,10 @@ enum class EHitType : uint8
 {
 	Headbutt,
 	Instrument,
+	Trombone,
+	Cymbals,
+	Violin,
+	Audience,
 	Invalid UMETA(Hidden)
 };
 

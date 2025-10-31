@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Components/SphereComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Interfaces/Interactable.h"
 #include "Utilities/DebugHelper.h"
 
 UInteractionTriggerComponent::UInteractionTriggerComponent()
@@ -30,10 +30,12 @@ void UInteractionTriggerComponent::Server_TryInteract_Implementation(AActor* Ins
 	GetOwner()->Tags.Add(GateTag);
 
 	AActor* TargetActor = GetOwner();
+	bool bSuccess = false;
+	
 	if (TargetActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
 	{
-		const bool bCan = IInteractable::Execute_CanInteract(TargetActor, InstigatorActor);
-		if (bCan)
+		bSuccess = IInteractable::Execute_CanInteract(TargetActor, InstigatorActor);
+		if (bSuccess)
 		{
 			IInteractable::Execute_Interact(TargetActor, InstigatorActor);
 		}
@@ -41,25 +43,31 @@ void UInteractionTriggerComponent::Server_TryInteract_Implementation(AActor* Ins
 
 	// 락 해제 (소비했든 안 했든)
 	GetOwner()->Tags.Remove(GateTag);
+
+	if (bSuccess)
+	{
+		if (UInteractorComponent* InstigatorInteractor = InstigatorActor->FindComponentByClass<UInteractorComponent>())
+		{
+			InstigatorInteractor->Client_OnInteractSuccess(TargetActor);
+		}
+	}
 }
 
-
-void UInteractionTriggerComponent::SetTriggerActive_Implementation(bool bActivate)
+void UInteractionTriggerComponent::SetTriggerActive_Implementation(const bool bActivate)
 {
-	if (!GetOwner() || bTriggerActive == bActivate) return; // 상태 변화 없음
+	if (!GetOwner() || bTriggerActive == bActivate) return;
 
 	bTriggerActive = bActivate;
-	//Trigger상태에 따른 충돌 설정
+	
 	OnRep_TriggerActive();
-
 	ForceRemoveThisFromAllInteractors();
 }
 
 void UInteractionTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	AActor* Owner = GetOwner();
-	USceneComponent* RootComp = Owner->GetRootComponent();
+
+	USceneComponent* RootComp = GetOwner()->GetRootComponent();
 	if (TriggerVolume)
 	{
 		TriggerVolume->AttachToComponent(RootComp, FAttachmentTransformRules::KeepRelativeTransform);
@@ -67,7 +75,6 @@ void UInteractionTriggerComponent::BeginPlay()
 		TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleEndOverlap);
 		SetCollisionEnabled(bTriggerActive);
 	}
-
 }
 
 void UInteractionTriggerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

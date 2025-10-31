@@ -27,11 +27,7 @@ AInstrumentBase::AInstrumentBase()
 		}
 	}
 	
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
-	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
-	CapsuleComponent->SetSimulatePhysics(false);
 }
 
 bool AInstrumentBase::CanInteract_Implementation(AActor* InstigatorActor) const
@@ -116,7 +112,7 @@ void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void AInstrumentBase::PlaySound() const
 {
-	if (AudioComponent) AudioComponent->Play();
+	// if (AudioComponent) AudioComponent->Play();
 }
 
 void AInstrumentBase::StopSound() const
@@ -138,17 +134,12 @@ void AInstrumentBase::OnRep_Equipped()
 {
 	if (bIsEquipped)
 	{
-		if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
-		{
-			OwnerCharacter->SetInstrumentCollisionReference(CapsuleComponent);
-		}
-		
 		SetPhysicsEnabled(false);
 		if (CurrentOwner)
 		{
 			if (const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
 			{
-				ItemMeshComponent->AttachToComponent(
+				CapsuleComponent->AttachToComponent(
 					OwnerChar->GetMesh(),
 					FAttachmentTransformRules::SnapToTargetIncludingScale,
 					AttachSocketName);
