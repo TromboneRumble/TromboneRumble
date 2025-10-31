@@ -58,7 +58,7 @@
     "Type": "Event",
     "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
     "Language": "SFX",
-    "Hash": "{69A0A907-3A9C-B446-9177-6A9FACE8ED91}",
+    "Hash": "{B4964263-3CBE-39AC-D5F9-63A766561C46}",
     "ObjectPath": "MIDI_RhythmGame_Violin",
     "ShortName": "MIDI_RhythmGame_Violin",
     "Path": "Event/MIDI_RhythmGame_Violin.bnk",
@@ -158,7 +158,7 @@
     "Type": "Event",
     "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
     "Language": "SFX",
-    "Hash": "{56FECA6A-2DA4-AEC9-6F30-15919B5214ED}",
+    "Hash": "{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}",
     "ObjectPath": "MIDI_RhythmGame_Trombone",
     "ShortName": "MIDI_RhythmGame_Trombone",
     "Path": "Event/MIDI_RhythmGame_Trombone.bnk",
@@ -192,8 +192,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Trombone",
       "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
       "DurationType": "OneShot",
-      "DurationMin": "80",
-      "DurationMax": "80",
+      "DurationMin": "42",
+      "DurationMax": "42",
       "MediaRefs": [
        {
         "Id": "64075962"
@@ -550,12 +550,20 @@
         "Name": "SW_T_Perfect",
         "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
         "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
-       },
+       }
+      ]
+     },
+     {
+      "Id": "748895195",
+      "Name": "None",
+      "ObjectPath": "\\Switches\\Default Work Unit\\None",
+      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
+      "Switches": [
        {
-        "Id": "2382423597",
-        "Name": "SW_T_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Pickup",
-        "GUID": "{8751CA16-BCA2-4044-8F89-D69DC4485E1E}"
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
+        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
        }
       ]
      },
@@ -565,12 +573,6 @@
       "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
       "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
       "Switches": [
-       {
-        "Id": "192528360",
-        "Name": "SW_C_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Pickup",
-        "GUID": "{7D5053AB-5891-4256-82B9-886685C7A42A}"
-       },
        {
         "Id": "899946472",
         "Name": "SW_C_Fail",
@@ -591,12 +593,6 @@
       "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
       "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
       "Switches": [
-       {
-        "Id": "1553653851",
-        "Name": "SW_V_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Pickup",
-        "GUID": "{202BEC27-490A-418C-9F62-2AF8E611670F}"
-       },
        {
         "Id": "1638842395",
         "Name": "SW_V_Fail",
@@ -1122,7 +1118,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{DCEB420A-613B-4E8F-6C9E-7AEDE6B4C49D}",
+    "Hash": "{EE77BE56-FD7D-CD7C-FC06-303E8BA1CE78}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -1210,7 +1206,7 @@
     "Type": "Event",
     "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
     "Language": "SFX",
-    "Hash": "{0DA77742-B6F2-8B67-B0DB-16C7248F2557}",
+    "Hash": "{3DF5CEAF-3F3D-9C40-0F50-0A73DDA1F7FF}",
     "ObjectPath": "Play_RhythmGame_Main",
     "ShortName": "Play_RhythmGame_Main",
     "Path": "Event/Play_RhythmGame_Main.bnk",
@@ -1223,6 +1219,15 @@
       "ShortName": "Violin_BBIK.wav",
       "Path": "Media/489694630.wem",
       "CachePath": "SFX/Violin_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "561564156",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "None.wav",
+      "Path": "Media/561564156.wem",
+      "CachePath": "SFX/None_FBC78EF0.wem"
      },
      {
       "Id": "750942268",
@@ -1286,11 +1291,14 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\Play_RhythmGame_Main",
       "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
       "DurationType": "OneShot",
-      "DurationMin": "80",
-      "DurationMax": "80",
+      "DurationMin": "42",
+      "DurationMax": "42",
       "MediaRefs": [
        {
         "Id": "489694630"
+       },
+       {
+        "Id": "561564156"
        },
        {
         "Id": "750942268"
@@ -1331,12 +1339,20 @@
         "Name": "SW_T_Perfect",
         "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
         "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
-       },
+       }
+      ]
+     },
+     {
+      "Id": "748895195",
+      "Name": "None",
+      "ObjectPath": "\\Switches\\Default Work Unit\\None",
+      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
+      "Switches": [
        {
-        "Id": "2382423597",
-        "Name": "SW_T_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Pickup",
-        "GUID": "{8751CA16-BCA2-4044-8F89-D69DC4485E1E}"
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
+        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
        }
       ]
      },
@@ -1346,12 +1362,6 @@
       "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
       "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
       "Switches": [
-       {
-        "Id": "192528360",
-        "Name": "SW_C_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Pickup",
-        "GUID": "{7D5053AB-5891-4256-82B9-886685C7A42A}"
-       },
        {
         "Id": "899946472",
         "Name": "SW_C_Fail",
@@ -1372,12 +1382,6 @@
       "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
       "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
       "Switches": [
-       {
-        "Id": "1553653851",
-        "Name": "SW_V_Pickup",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Pickup",
-        "GUID": "{202BEC27-490A-418C-9F62-2AF8E611670F}"
-       },
        {
         "Id": "1638842395",
         "Name": "SW_V_Fail",
@@ -1439,7 +1443,7 @@
     "Type": "Event",
     "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
     "Language": "SFX",
-    "Hash": "{3934FF8B-C6F9-BDC0-D9E3-8A7C23299915}",
+    "Hash": "{531F7CB9-AA6A-33E6-73CA-813123FE4A9E}",
     "ObjectPath": "MIDI_RhythmGame_Cymbal",
     "ShortName": "MIDI_RhythmGame_Cymbal",
     "Path": "Event/MIDI_RhythmGame_Cymbal.bnk",
@@ -1473,8 +1477,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Cymbal",
       "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
       "DurationType": "OneShot",
-      "DurationMin": "80",
-      "DurationMax": "80",
+      "DurationMin": "42",
+      "DurationMax": "42",
       "MediaRefs": [
        {
         "Id": "262266910"
@@ -1679,6 +1683,6 @@
     ]
    }
   ],
-  "FileHash": "{13D05294-A56A-E973-D4F7-BBC0ADA4BAC0}"
+  "FileHash": "{0AF0C7C4-C8E9-44C3-F8FD-C9F3EF8977E8}"
  }
 }

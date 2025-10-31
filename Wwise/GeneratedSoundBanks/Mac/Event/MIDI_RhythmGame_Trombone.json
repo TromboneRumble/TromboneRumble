@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
     "Language": "SFX",
-    "Hash": "{56FECA6A-2DA4-AEC9-6F30-15919B5214ED}",
+    "Hash": "{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}",
     "ObjectPath": "MIDI_RhythmGame_Trombone",
     "ShortName": "MIDI_RhythmGame_Trombone",
     "Path": "Event/MIDI_RhythmGame_Trombone.bnk",
@@ -44,8 +44,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Trombone",
       "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
       "DurationType": "OneShot",
-      "DurationMin": "80",
-      "DurationMax": "80",
+      "DurationMin": "42",
+      "DurationMax": "42",
       "MediaRefs": [
        {
         "Id": "64075962"
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{5E512E6F-D377-B50B-D61E-AD4A320B698A}"
+  "FileHash": "{5D1F03B0-C4E9-1F9D-07F8-35D4494269E3}"
  }
 }
