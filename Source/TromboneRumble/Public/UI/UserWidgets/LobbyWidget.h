@@ -18,7 +18,6 @@ class TROMBONERUMBLE_API ULobbyWidget : public UUserWidget
 	GENERATED_BODY()
 	
 protected:
-
 	virtual bool Initialize() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
@@ -54,13 +53,6 @@ private:
 	void OnLobbyStateUpdated(ELobbyState NewState);
 
 	void UpdateCountdown();
-
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> StartGameButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> BackToMainMenuButton;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> LobbyText;
