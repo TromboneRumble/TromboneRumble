@@ -4,25 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "LobbyPlayerState.generated.h"
+#include "DefaultPlayerState.generated.h"
+
+class AInstrumentBase;
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyPlayerState : public APlayerState
+class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 
 public:
-	ALobbyPlayerState();
+	ADefaultPlayerState();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_PlayerName() override;
+	virtual void CopyProperties(APlayerState* PlayerState) override;
 
 	void SetIsReady(bool bReady);
 	FORCEINLINE bool IsReady() const { return bIsReady; }
 
-private:
-	UFUNCTION()
-	void OnRep_IsReady();
+	UPROPERTY(VisibleInstanceOnly, Replicated)
+	TSubclassOf<AInstrumentBase> EquippedInstrumentClass;
 
-	UPROPERTY(ReplicatedUsing = OnRep_IsReady)
+private:
+	UPROPERTY(Replicated)
 	bool bIsReady = false;
 };

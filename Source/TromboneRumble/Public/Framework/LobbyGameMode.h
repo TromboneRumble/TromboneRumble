@@ -8,12 +8,12 @@
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
-class ALobbyPlayerState;
+class ADefaultPlayerState;
 class ALobbyGameState;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClientReadySignature, APlayerController*, ReadyPlayer);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentEquippedSignature, APlayerController*, EqippedPlayer);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentUnequippedSignature, APlayerController*, UnequippedPlayer);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentEquippedSignature, APlayerController*, EqippedPlayer, AActor*, EquippedInstrument);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentUnequippedSignature, APlayerController*, UnequippedPlayer, AActor*, UnequippedInstrument);
 
 UCLASS()
 class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IInstrumentEventHandler
@@ -26,15 +26,13 @@ public:
 	virtual void Logout(AController* ExitedPlayer) override;
 
 	// IInstrumentEventHandler interface
-	virtual void NotifyInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument) override;
-	virtual void NotifyInstrumentUnequipped(APlayerController* UnequippedPlayer, AActor* UnequippedInstrument) override;
+	virtual void NotifyInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument) override { OnInstrumentEquippedDelegate.Broadcast(EquippedPlayer, EquippedInstrument); }
+	virtual void NotifyInstrumentUnequipped(APlayerController* UnequippedPlayer, AActor* UnequippedInstrument) override { OnInstrumentUnequippedDelegate.Broadcast(UnequippedPlayer, UnequippedInstrument); }
 	// ~ IInstrumentEventHandler interface
 	
 	void RequestServerTravel(EGameState InGameState);
 	
 	FORCEINLINE void OnClientReady(APlayerController* ReadyPlayer) const { OnClientReadyDelegate.Broadcast(ReadyPlayer); }
-	FORCEINLINE void OnInstrumentEquipped(APlayerController* EquippedPlayer) const { OnInstrumentEquippedDelegate.Broadcast(EquippedPlayer); }
-	FORCEINLINE void OnInstrumentUnequipped(APlayerController* UnequippedPlayer) const { OnInstrumentUnequippedDelegate.Broadcast(UnequippedPlayer); }
 	
 public:
 	FOnClientReadySignature OnClientReadyDelegate;
@@ -52,7 +50,7 @@ private:
 	UFUNCTION()
 	void HandleClientReady(APlayerController* ReadyPlayer);
 	UFUNCTION()
-	void HandleInstrumentEquipped(APlayerController* EquippedPlayerState);
+	void HandleInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument);
 
 private:
 	UPROPERTY(Transient)

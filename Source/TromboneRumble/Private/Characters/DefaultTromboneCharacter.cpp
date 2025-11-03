@@ -10,6 +10,7 @@
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -150,6 +151,39 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	
 	DOREPLIFETIME(ThisClass, bIsSprinting);
 	DOREPLIFETIME(ThisClass, EquippedInstrument);
+}
+
+void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority()) return;
+	
+	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
+	if (PS && PS->EquippedInstrumentClass)
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
+
+		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(
+			PS->EquippedInstrumentClass, 
+			GetActorLocation(),
+			GetActorRotation(),
+			SpawnParams
+		);
+
+		if (NewInstrument)
+		{
+			IEquipable::Execute_Equip(NewInstrument, this);
+			EquippedInstrument = NewInstrument;
+			CurrentInteractionContext.bIsEquipped = true;
+			UpdateAttackComponentState();
+		}
+	}
 }
 
 void ADefaultTromboneCharacter::Server_StartSprint_Implementation()

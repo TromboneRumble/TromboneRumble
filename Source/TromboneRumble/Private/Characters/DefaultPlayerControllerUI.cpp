@@ -5,7 +5,7 @@
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameMode.h"
 #include "Framework/LobbyGameState.h"
-#include "Framework/LobbyPlayerState.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Prototype/PT_UIInGame.h"
 
 ADefaultPlayerController::ADefaultPlayerController()
@@ -91,10 +91,10 @@ void ADefaultPlayerController::InitializeInGameUI()
 
 void ADefaultPlayerController::Server_NotifyClientReady_Implementation()
 {
-	ALobbyPlayerState* LobbyPlayerState = GetPlayerState<ALobbyPlayerState>();
-	if (!LobbyPlayerState) return;
+	ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
+	if (!PS) return;
 
-	LobbyPlayerState->SetIsReady(true);
+	PS->SetIsReady(true);
 	
 	if (ALobbyGameMode* LobbyGameMode = GetWorld()->GetAuthGameMode<ALobbyGameMode>())
 	{

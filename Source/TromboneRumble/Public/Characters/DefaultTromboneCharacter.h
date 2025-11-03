@@ -36,6 +36,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PossessedBy(AController* NewController) override;
 	
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
