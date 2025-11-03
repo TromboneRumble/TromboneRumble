@@ -17,6 +17,7 @@
 ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bUseSeamlessTravel = true;
 	CurrentEquippedInstruments = 0;
 	Timer = 5.0f; // TODO : delete magic number
 	CachedInGameMapPath = TEXT("");
