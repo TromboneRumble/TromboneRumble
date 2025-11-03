@@ -12,6 +12,17 @@ UAttackComponent::UAttackComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UAttackComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	OwnerCharacter = Cast<ACharacter>(GetOwner());
+	if (OwnerCharacter && OwnerCharacter->GetMesh())
+	{
+		CharacterAnimInstance = Cast<UCharacterAnimInstance>(OwnerCharacter->GetMesh()->GetAnimInstance());
+	}
+}
+
 void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
@@ -68,17 +79,9 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 void UAttackComponent::Attack()
 {
-	if (!CharacterAnimInstance)
-	{
-		if (OwnerCharacter && OwnerCharacter->GetMesh())
-		{
-			CharacterAnimInstance = Cast<UCharacterAnimInstance>(OwnerCharacter->GetMesh()->GetAnimInstance());
-		}
-
-		if (!CharacterAnimInstance) return;
-	}
+	if (!OwnerCharacter || !CharacterAnimInstance) return;
 	
-	if (!OwnerCharacter || (OwnerCharacter->GetLocalRole() < ROLE_AutonomousProxy)) return;
+	if (OwnerCharacter->GetLocalRole() < ROLE_AutonomousProxy) return;
 
 	if (bIsAttacking || !bCanAttack || !CurrentAttackData) return;
 	
@@ -141,9 +144,7 @@ void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
 	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled() && !OwnerCharacter->HasAuthority()) return;
 	
-	if (!OwnerCharacter || !CurrentAttackData || !CurrentAttackData->AttackAnimMontage) return;
-
-	if (!CharacterAnimInstance) return;
+	if (!OwnerCharacter || !CharacterAnimInstance || !CurrentAttackData || !CurrentAttackData->AttackAnimMontage) return;
 
 	if (OwnerCharacter->HasAuthority())
 	{

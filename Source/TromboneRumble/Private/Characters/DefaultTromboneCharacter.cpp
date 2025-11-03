@@ -134,11 +134,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
-	if (AttackComponent)
-	{
-		AttackComponent->SetOwnerCharacter(this);
-		UpdateAttackComponentState();
-	}
+	if (AttackComponent) UpdateAttackComponentState();
 }
 
 void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
