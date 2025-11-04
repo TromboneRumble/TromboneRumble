@@ -2,17 +2,18 @@
 
 
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
-
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SplineComponent.h"
 #include "Actors/Rhythm/RhythmNote.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
-#include "Elements/Framework/TypedElementOwnerStore.h"
 #include "Subsystems/ActorPoolSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
+#include "Utilities/DebugHelper.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -25,7 +26,7 @@ ARhythmNoteSpawner::ARhythmNoteSpawner()
 	{
 		SplineComponent->SetupAttachment(RootComponent);
 		SplineComponent->SetLocationAtSplinePoint(
-			1, FVector(1000.f, 0.f, 0.f),
+			1, FVector(1500.f, 0.f, 0.f),
 			ESplineCoordinateSpace::Local,
 			true);
 	}
@@ -35,6 +36,18 @@ ARhythmNoteSpawner::ARhythmNoteSpawner()
 		ArrowComponent->SetupAttachment(RootComponent);
 		ArrowComponent->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	}
+
+	
+
+}
+
+void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent, UAkSwitchValue* InChangeSwitch,
+	UAkAudioEvent* InFailEvent)
+{
+	SpawnerType = InType;
+	SpawnNoteEvent = InNoteEvent;
+	ChangeSwitch = InChangeSwitch;
+	FailEvent = InFailEvent;
 }
 
 void ARhythmNoteSpawner::BeginPlay()
@@ -67,10 +80,19 @@ void ARhythmNoteSpawner::BeginPlay()
 
 }
 
-void ARhythmNoteSpawner::Tick(float DeltaTime)
+void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	Super::Tick(DeltaTime);
-
+	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
+	{
+		const FString CueName = MusicInfo->UserCueName;
+		SpawnRhythmNote(5.f, false, false);
+		if (CueName.StartsWith(TEXT("SS_")))
+		{
+			
+		}
+		
+	}
+	
 }
 
 void ARhythmNoteSpawner::SpawnRhythmNote(float TimeToComplete, bool InIsLongNote, bool InIsLongNoteEnd)
@@ -90,4 +112,3 @@ void ARhythmNoteSpawner::SpawnRhythmNote(float TimeToComplete, bool InIsLongNote
 		}
 	}
 }
-

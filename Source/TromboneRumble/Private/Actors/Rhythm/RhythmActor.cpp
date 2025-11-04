@@ -2,11 +2,13 @@
 
 
 #include "Actors/Rhythm/RhythmActor.h"
-
-#include "Actors/Rhythm/RhythmNote.h"
 #include "Components/BoxComponent.h"
-#include "Actors/Rhythm/RhythmNoteSpawner.h"
+#include "AkComponent.h"
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "Subsystems/ActorPoolSubsystem.h"
+#include "Actors/Rhythm/RhythmNote.h"
+#include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
@@ -27,6 +29,19 @@ ARhythmActor::ARhythmActor()
 	RhythmNoteDestroyer = CreateDefaultSubobject<UBoxComponent>(TEXT("Note Destroyer"));
 	RhythmNoteDestroyer->SetupAttachment(GetRootComponent());
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
+
+	NoteSpawnComponent = CreateDefaultSubobject<UAkComponent>(TEXT("NoteSpawnAKComponent"));
+	if (NoteSpawnComponent)
+	{
+		NoteSpawnComponent->SetupAttachment(RootComponent);
+		NoteSpawnComponent->OcclusionRefreshInterval = 0.f;
+	}
+	NoteHearingComponent = CreateDefaultSubobject<UAkComponent>(TEXT("NoteHearingAKComponent"));
+	if (NoteHearingComponent)
+	{
+		NoteHearingComponent->SetupAttachment(RootComponent);
+		NoteHearingComponent->OcclusionRefreshInterval = 0.f;
+	}
 }
 
 void ARhythmActor::Tick(float DeltaTime)
@@ -78,6 +93,99 @@ void ARhythmActor::DetectLongNoteEnd()
 	
 }
 
+void ARhythmActor::OnInstrumentPicked(EInstrumentType InType)
+{
+	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
+	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
+	if (InType == EInstrumentType::Background)
+	{
+		if (NoneSwitch)
+		{
+			NoteHearingComponent->SetSwitch(NoneSwitch, FString(TEXT("")), FString(TEXT("")));
+		}
+	}
+	else
+	{
+
+		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(InType))
+		{
+			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+		}
+	}
+}
+
+void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
+                                              UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent)
+{
+	checkf(InType < EInstrumentType::Background, TEXT("InType Is a background or Invalid Type"));
+	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
+	{
+		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent);
+	}
+}
+
+
+void ARhythmActor::InitBGMEvent(UAkAudioEvent* InSoundEvent, UAkSwitchValue* InNoneSwitch)
+{
+	checkf(InSoundEvent, TEXT("SoundEvent is nullptr"));
+	checkf(InNoneSwitch, TEXT("NoneSwitch is nullptr"));
+	PlayBGMEvent = InSoundEvent;
+	NoneSwitch = InNoneSwitch;
+}
+
+
+
+void ARhythmActor::StartRhythmGame()
+{
+	checkf(NoneSwitch, TEXT("NoneSwitch is null"));
+	checkf(PlayBGMEvent, TEXT("PlayBGMEvent is null"));
+
+	if (NoteSpawnComponent)
+	{
+		for (TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+		{
+			UAkAudioEvent* SpawnNoteEvent = Elem.Value->GetSpawnNoteEvent();
+			FOnAkPostEventCallback Callback;
+			Callback.BindUFunction(Elem.Value, FName("OnAkCallback"));
+			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_MIDIEvent;
+			NoteSpawnComponent->PostAkEvent(
+				SpawnNoteEvent,
+				CallbackMask,
+				Callback
+			);
+			Debug::Print(TEXT("PostAkEventCalled"));
+		}
+	}
+	GetWorldTimerManager().SetTimer(
+		TimerHandle,
+		this,
+		&ThisClass::PlayMusic,
+		4.5f,
+		false
+	);
+
+
+}
+
+
+void ARhythmActor::SpawnRhythmRootUI()
+{
+	if (RhythmUIRootWidgetClass)
+	{
+		CachedRhythmUIRootWidget = CreateWidget<URhythmUIRootWidget>(GetWorld(), RhythmUIRootWidgetClass);
+		if (CachedRhythmUIRootWidget)
+		{
+			CachedRhythmUIRootWidget->AddToViewport();
+		}
+	}
+}
+
+void ARhythmActor::BeginPlay()
+{
+	Super::BeginPlay();
+	EnableInput(GetWorld()->GetFirstPlayerController());
+}
+
 ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
 {
 	if (auto Found = RhythmNoteSpawners.Find(InType))
@@ -112,8 +220,6 @@ ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
 	//Map에서 관리
 	RhythmNoteSpawners.Add(InType, NewSpawner);
 
-	NewSpawner->SpawnerType = InType;
-
 	return NewSpawner;
 }
 
@@ -130,22 +236,6 @@ bool ARhythmActor::DestroySpawner(EInstrumentType InType)
 		return true;
 	}
 	return false;
-}
-
-
-void ARhythmActor::BeginPlay()
-{
-	Super::BeginPlay();
-	if (RhythmUIRootWidgetClass)
-	{
-		CachedRhythmUIRootWidget = CreateWidget<URhythmUIRootWidget>(GetWorld(), RhythmUIRootWidgetClass);
-		if (CachedRhythmUIRootWidget)
-		{
-			CachedRhythmUIRootWidget->AddToViewport();
-		}
-	}
-	//Todo : 음악에 맞게 스포너 생성
-	GetOrCreateSpawner(EInstrumentType::Trombone);
 }
 
 
@@ -258,6 +348,19 @@ void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedCo
 	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
 	{
 		CachedActorPoolSubsystem->Release(OtherActor);
+	}
+}
+
+void ARhythmActor::PlayMusic()
+{
+	if (PlayBGMEvent && NoteHearingComponent)
+	{
+		FOnAkPostEventCallback DummyCallback;
+		NoteHearingComponent->PostAkEvent(
+			PlayBGMEvent,
+			0,
+			DummyCallback
+		);
 	}
 }
 
