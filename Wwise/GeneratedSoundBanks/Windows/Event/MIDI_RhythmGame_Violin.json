@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
     "Language": "SFX",
-    "Hash": "{B4964263-3CBE-39AC-D5F9-63A766561C46}",
+    "Hash": "{E9DD993F-2433-315C-7190-6F062709ECB4}",
     "ObjectPath": "MIDI_RhythmGame_Violin",
     "ShortName": "MIDI_RhythmGame_Violin",
     "Path": "Event/MIDI_RhythmGame_Violin.bnk",
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{CEB09831-5D92-9191-074B-E01559C70967}"
+  "FileHash": "{D67CCA31-3FCC-E9B2-A0F2-F1A6540EA3D3}"
  }
 }

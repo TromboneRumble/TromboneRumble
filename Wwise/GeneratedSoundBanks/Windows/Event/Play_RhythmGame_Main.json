@@ -10,20 +10,11 @@
     "Type": "Event",
     "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
     "Language": "SFX",
-    "Hash": "{3DF5CEAF-3F3D-9C40-0F50-0A73DDA1F7FF}",
+    "Hash": "{4649A31C-608E-D906-1E88-B4F0E9B80B5E}",
     "ObjectPath": "Play_RhythmGame_Main",
     "ShortName": "Play_RhythmGame_Main",
     "Path": "Event/Play_RhythmGame_Main.bnk",
     "Media": [
-     {
-      "Id": "489694630",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Violin_BBIK.wav",
-      "Path": "Media/489694630.wem",
-      "CachePath": "SFX/Violin_BBIK_FBC78EF0.wem"
-     },
      {
       "Id": "561564156",
       "Language": "SFX",
@@ -34,15 +25,6 @@
       "CachePath": "SFX/None_FBC78EF0.wem"
      },
      {
-      "Id": "750942268",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Cymbal_BBIK.wav",
-      "Path": "Media/750942268.wem",
-      "CachePath": "SFX/Cymbal_BBIK_FBC78EF0.wem"
-     },
-     {
       "Id": "807859594",
       "Language": "SFX",
       "Streaming": "false",
@@ -50,15 +32,6 @@
       "ShortName": "Cymbal_Audio.wav",
       "Path": "Media/807859594.wem",
       "CachePath": "SFX/Cymbal_Audio_FBC78EF0.wem"
-     },
-     {
-      "Id": "851934626",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Trombone_BBIK.wav",
-      "Path": "Media/851934626.wem",
-      "CachePath": "SFX/Trombone_BBIK_FBC78EF0.wem"
      },
      {
       "Id": "911794588",
@@ -99,19 +72,10 @@
       "DurationMax": "42",
       "MediaRefs": [
        {
-        "Id": "489694630"
-       },
-       {
         "Id": "561564156"
        },
        {
-        "Id": "750942268"
-       },
-       {
         "Id": "807859594"
-       },
-       {
-        "Id": "851934626"
        },
        {
         "Id": "911794588"
@@ -127,82 +91,40 @@
     ],
     "SwitchGroups": [
      {
-      "Id": "237689789",
-      "Name": "Trombone",
-      "ObjectPath": "\\Switches\\Default Work Unit\\Trombone",
-      "GUID": "{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}",
+      "Id": "1522944609",
+      "Name": "Inst",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Inst",
+      "GUID": "{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}",
       "Switches": [
        {
-        "Id": "670040001",
-        "Name": "SW_T_Fail",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Fail",
-        "GUID": "{82F8905C-547A-4053-9811-13FD3E245CAA}"
+        "Id": "4279070465",
+        "Name": "SW_C",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_C",
+        "GUID": "{020477EC-CB00-409F-8904-420A04B4E3D8}"
        },
-       {
-        "Id": "1966965440",
-        "Name": "SW_T_Perfect",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
-        "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
-       }
-      ]
-     },
-     {
-      "Id": "748895195",
-      "Name": "None",
-      "ObjectPath": "\\Switches\\Default Work Unit\\None",
-      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
-      "Switches": [
        {
         "Id": "4279070476",
         "Name": "SW_N",
-        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
-        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
-       }
-      ]
-     },
-     {
-      "Id": "761516531",
-      "Name": "Cymbal",
-      "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
-      "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
-      "Switches": [
-       {
-        "Id": "899946472",
-        "Name": "SW_C_Fail",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Fail",
-        "GUID": "{243DD8E3-EBC4-4362-882F-A03AEB562222}"
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_N",
+        "GUID": "{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"
        },
        {
-        "Id": "4034377147",
-        "Name": "SW_C_Perfect",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Perfect",
-        "GUID": "{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"
-       }
-      ]
-     },
-     {
-      "Id": "3063529226",
-      "Name": "Violin",
-      "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
-      "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
-      "Switches": [
-       {
-        "Id": "1638842395",
-        "Name": "SW_V_Fail",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Fail",
-        "GUID": "{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"
+        "Id": "4279070484",
+        "Name": "SW_V",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_V",
+        "GUID": "{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"
        },
        {
-        "Id": "2890494766",
-        "Name": "SW_V_Perfect",
-        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Perfect",
-        "GUID": "{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"
+        "Id": "4279070486",
+        "Name": "SW_T",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
+        "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{51690057-4E56-573D-4D36-A98F015C0375}"
+  "FileHash": "{4217EB84-482D-8A29-A491-716707112510}"
  }
 }
