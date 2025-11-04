@@ -30,8 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> MoveAction;
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> LookAction;
-	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> InteractAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> SprintAction;
@@ -48,10 +46,8 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
-
 	// Input handlers
 	void Handle_Move(const struct FInputActionValue& Value);
-	void Handle_Look(const struct FInputActionValue& Value);
 	void Handle_JumpPressed();
 	void Handle_JumpReleased();
 	void Handle_Interact();

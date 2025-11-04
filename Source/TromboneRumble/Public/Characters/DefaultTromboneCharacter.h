@@ -26,7 +26,6 @@ public:
 	virtual void Jump() override;
 	virtual void StopJumping() override;
 	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
 	void Interact();
 	void Attack();
 	void Sprint();

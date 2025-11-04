@@ -87,17 +87,6 @@ void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 	}
 }
 
-void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
-{
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
-}
-
 void ADefaultTromboneCharacter::Interact()
 {
 	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
