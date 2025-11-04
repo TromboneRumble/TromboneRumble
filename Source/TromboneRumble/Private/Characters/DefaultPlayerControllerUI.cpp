@@ -4,9 +4,9 @@
 #include "AkGameplayTypes.h"
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameMode.h"
-#include "Framework/LobbyGameState.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Prototype/PT_UIInGame.h"
+#include "Subsystems/GameStateSubsystem.h"
 
 ADefaultPlayerController::ADefaultPlayerController()
 {
@@ -28,33 +28,14 @@ void ADefaultPlayerController::ShowInteractionUI(bool bShow) const
 void ADefaultPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!IsLocalController()) return;
 	
-	InitializeUI();
-	Server_NotifyClientReady();
+	const UGameInstance* GI = GetGameInstance();
+	if (!GI || !IsLocalController()) return;
 
-	if (TestSoundEvent)
-	{
-		FOnAkPostEventCallback OnCallback;
-		UAkGameplayStatics::PostEvent(TestSoundEvent, this, AK_EndOfEvent, OnCallback);
-	}
-}
+	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	if (!GameStateSubsystem) return;
 
-EGameState ADefaultPlayerController::GetGameState() const
-{
-	const AGameStateBase* CurrentGameState = GetWorld()->GetGameState();
-	
-	if (CurrentGameState->IsA(ALobbyGameState::StaticClass()))
-		return EGameState::Lobby;
-	// if (CurrentGameState->IsA(AInGameState::StaticClass()))
-		// return EGameState::InGame;
-	return EGameState::Invalid;
-}
-
-void ADefaultPlayerController::InitializeUI()
-{
-	switch (GetGameState())
+	switch (GameStateSubsystem->GetGameState())
 	{
 		case EGameState::MainMenu:
 			break;
@@ -66,6 +47,17 @@ void ADefaultPlayerController::InitializeUI()
 			break;
 		case EGameState::Invalid:
 			break;
+	}
+	
+	GameStateSubsystem->OnGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleGameStateChanged);
+	HandleGameStateChanged(GameStateSubsystem->GetGameState());
+	
+	Server_NotifyClientReady();
+
+	if (TestSoundEvent)
+	{
+		FOnAkPostEventCallback OnCallback;
+		UAkGameplayStatics::PostEvent(TestSoundEvent, this, AK_EndOfEvent, OnCallback);
 	}
 }
 
@@ -85,8 +77,6 @@ void ADefaultPlayerController::InitializeInGameUI()
 	const FInputModeGameOnly InputModeData;
 	SetInputMode(InputModeData);
 	bShowMouseCursor = false;
-
-	// TODO : Set InGamePlayerState Ready
 }
 
 void ADefaultPlayerController::Server_NotifyClientReady_Implementation()

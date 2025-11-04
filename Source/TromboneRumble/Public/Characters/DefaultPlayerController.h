@@ -24,7 +24,9 @@ public:
 
 	// InputActions
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> LobbyMappingContext;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputMappingContext> InGameMappingContext;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -39,11 +41,11 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void OnUnPossess() override;
 	virtual void AcknowledgePossession(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
-	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION()
+	void HandleGameStateChanged(EGameState NewState);
 
 private:
 	// Input handlers
@@ -55,11 +57,8 @@ private:
 	void Handle_SprintReleased();
 	void Handle_Attack();
 	// ~Input handlers
-
-	EGameState GetGameState() const;
-
+	
 	// UI
-	void InitializeUI();
 	void InitializeLobbyUI();
 	void InitializeInGameUI();
 	// ~UI
