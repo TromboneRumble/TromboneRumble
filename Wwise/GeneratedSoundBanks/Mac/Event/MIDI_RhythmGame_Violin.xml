@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{B4964263-3CBE-39AC-D5F9-63A766561C46}">
+		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{E9DD993F-2433-315C-7190-6F062709ECB4}">
 			<ObjectPath>MIDI_RhythmGame_Violin</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Violin</ShortName>
 			<Path>Event/MIDI_RhythmGame_Violin.bnk</Path>
@@ -31,5 +31,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{26E9E8AD-3400-CC1C-4F1C-1CD9A6EEB9EA}</FileHash>
+	<FileHash>{4020FDC7-2267-5878-1B73-D6EBA443DEA6}</FileHash>
 </SoundBanksInfo>
