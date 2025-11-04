@@ -56,9 +56,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 void ADefaultTromboneCharacter::Jump()
 {
-	if (bIsSprinting && !EquippedInstrument)
+	if (bIsSprinting && !CurrentInteractionContext.bIsEquipped)
 	{
-		Attack();
+		AttackComponent->Attack();
 	}
 	else
 	{
@@ -94,7 +94,7 @@ void ADefaultTromboneCharacter::Interact()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	if (AttackComponent) AttackComponent->Attack();
+	if (AttackComponent && CurrentInteractionContext.bIsEquipped) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::Sprint()
