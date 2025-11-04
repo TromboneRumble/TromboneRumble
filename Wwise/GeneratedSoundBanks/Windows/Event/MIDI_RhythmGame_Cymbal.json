@@ -1,0 +1,67 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3440465348",
+    "Type": "Event",
+    "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
+    "Language": "SFX",
+    "Hash": "{531F7CB9-AA6A-33E6-73CA-813123FE4A9E}",
+    "ObjectPath": "MIDI_RhythmGame_Cymbal",
+    "ShortName": "MIDI_RhythmGame_Cymbal",
+    "Path": "Event/MIDI_RhythmGame_Cymbal.bnk",
+    "Media": [
+     {
+      "Id": "262266910",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Cymbal_MIDI.mid",
+      "Path": "Media/262266910.wem",
+      "CachePath": "SFX/Cymbal_MIDI_8939F03D.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3440465348",
+      "Name": "MIDI_RhythmGame_Cymbal",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Cymbal",
+      "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
+      "DurationType": "OneShot",
+      "DurationMin": "42",
+      "DurationMax": "42",
+      "MediaRefs": [
+       {
+        "Id": "262266910"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{62013CD7-F944-225C-938B-0BAD7997F3D8}"
+ }
+}

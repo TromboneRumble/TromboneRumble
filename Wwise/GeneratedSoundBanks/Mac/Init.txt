@@ -1,3 +1,22 @@
+State Group	ID	Name			Wwise Object Path	Notes
+	237689789	Trombone			\Default Work Unit\Trombone	
+	761516531	Cymbal			\Default Work Unit\Cymbal	
+	3063529226	Violin			\Default Work Unit\Violin	
+
+State	ID	Name	State Group			Notes
+	748895195	None	Trombone			
+	2102744496	ST_T_Pickup	Trombone			
+	2521327923	ST_T_Perfect	Trombone			
+	3377110384	ST_T_Fail	Trombone			
+	748895195	None	Cymbal			
+	1696464809	ST_C_Fail	Cymbal			
+	3036277909	ST_C_Pickup	Cymbal			
+	3726929784	ST_C_Perfect	Cymbal			
+	270547950	ST_V_Fail	Violin			
+	748895195	None	Violin			
+	3406056149	ST_V_Perfect	Violin			
+	3736570874	ST_V_Pickup	Violin			
+
 Game Parameter	ID	Name			Wwise Object Path	Notes
 	504532776	Brick			\Factory Acoustic Textures\Textures\Brick	
 	513139656	Mountain			\Factory Acoustic Textures\Textures\Mountain	

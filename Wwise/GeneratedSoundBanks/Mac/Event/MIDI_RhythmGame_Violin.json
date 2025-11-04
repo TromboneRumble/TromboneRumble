@@ -1,0 +1,67 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "387421697",
+    "Type": "Event",
+    "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
+    "Language": "SFX",
+    "Hash": "{B4964263-3CBE-39AC-D5F9-63A766561C46}",
+    "ObjectPath": "MIDI_RhythmGame_Violin",
+    "ShortName": "MIDI_RhythmGame_Violin",
+    "Path": "Event/MIDI_RhythmGame_Violin.bnk",
+    "Media": [
+     {
+      "Id": "203878078",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Violin_MIDI.mid",
+      "Path": "Media/203878078.wem",
+      "CachePath": "SFX/Violin_MIDI_2686306C.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "387421697",
+      "Name": "MIDI_RhythmGame_Violin",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Violin",
+      "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
+      "DurationType": "OneShot",
+      "DurationMin": "80",
+      "DurationMax": "80",
+      "MediaRefs": [
+       {
+        "Id": "203878078"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{9EF42C38-4BBF-8023-FD06-961842366E0E}"
+ }
+}

@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	2848553920	Play_RhythmGame_Main			\Default Work Unit\Test_Rhythm_Game\Play_RhythmGame_Main	
+

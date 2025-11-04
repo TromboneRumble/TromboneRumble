@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{027A0577-DE47-A163-7628-00084A3F297B}",
+    "Hash": "{258EEF8A-04F5-AAB9-DD32-1E2F3F75E0DB}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -48,6 +48,180 @@
       "Name": "RTPC_BPM_Test",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BPM_Test",
       "GUID": "{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"
+     }
+    ],
+    "StateGroups": [
+     {
+      "Id": "237689789",
+      "Name": "Trombone",
+      "ObjectPath": "\\States\\Default Work Unit\\Trombone",
+      "GUID": "{F19FC8A2-5A62-4E4E-89D9-EDDF2E537998}",
+      "States": [
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\None",
+        "GUID": "{8E8FCD19-68F1-4546-8BF7-29E5A7A8ED85}"
+       },
+       {
+        "Id": "2102744496",
+        "Name": "ST_T_Pickup",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\ST_T_Pickup",
+        "GUID": "{FC6A871F-B6FC-453E-AD32-7B6EDD2D8C83}"
+       },
+       {
+        "Id": "2521327923",
+        "Name": "ST_T_Perfect",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\ST_T_Perfect",
+        "GUID": "{D691396D-50FC-4811-B90E-B06AB0C0DBDF}"
+       },
+       {
+        "Id": "3377110384",
+        "Name": "ST_T_Fail",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\ST_T_Fail",
+        "GUID": "{27F5AD81-593D-42CD-B200-A1FACC9BFFA7}"
+       }
+      ]
+     },
+     {
+      "Id": "761516531",
+      "Name": "Cymbal",
+      "ObjectPath": "\\States\\Default Work Unit\\Cymbal",
+      "GUID": "{DC9212B0-CCDD-469F-9DB1-587AC2445633}",
+      "States": [
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\None",
+        "GUID": "{0478367F-BEAF-4869-9456-192F15C676DF}"
+       },
+       {
+        "Id": "1696464809",
+        "Name": "ST_C_Fail",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\ST_C_Fail",
+        "GUID": "{17EF7819-53E3-44C6-AD20-5D336FC0542B}"
+       },
+       {
+        "Id": "3036277909",
+        "Name": "ST_C_Pickup",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\ST_C_Pickup",
+        "GUID": "{27F8852B-38E7-407B-A1AE-452C1483E79A}"
+       },
+       {
+        "Id": "3726929784",
+        "Name": "ST_C_Perfect",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\ST_C_Perfect",
+        "GUID": "{E3354B0B-7848-47A7-8BF1-6BEB1144C991}"
+       }
+      ]
+     },
+     {
+      "Id": "3063529226",
+      "Name": "Violin",
+      "ObjectPath": "\\States\\Default Work Unit\\Violin",
+      "GUID": "{D0E606EE-F94A-4B1D-9AFC-7B1E343D6B63}",
+      "States": [
+       {
+        "Id": "270547950",
+        "Name": "ST_V_Fail",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\ST_V_Fail",
+        "GUID": "{0E5F1242-544B-4713-9BE4-778193584E94}"
+       },
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\None",
+        "GUID": "{636C1800-E7D4-4B03-8C2E-42251A5F2CBC}"
+       },
+       {
+        "Id": "3406056149",
+        "Name": "ST_V_Perfect",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\ST_V_Perfect",
+        "GUID": "{0BCEF3A5-D1F8-4B5C-A01B-D16C96BDA98E}"
+       },
+       {
+        "Id": "3736570874",
+        "Name": "ST_V_Pickup",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\ST_V_Pickup",
+        "GUID": "{596DA757-1434-4228-8FB0-006989BE3592}"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "237689789",
+      "Name": "Trombone",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Trombone",
+      "GUID": "{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}",
+      "Switches": [
+       {
+        "Id": "670040001",
+        "Name": "SW_T_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Fail",
+        "GUID": "{82F8905C-547A-4053-9811-13FD3E245CAA}"
+       },
+       {
+        "Id": "1966965440",
+        "Name": "SW_T_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
+        "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
+       }
+      ]
+     },
+     {
+      "Id": "748895195",
+      "Name": "None",
+      "ObjectPath": "\\Switches\\Default Work Unit\\None",
+      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
+      "Switches": [
+       {
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
+        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
+       }
+      ]
+     },
+     {
+      "Id": "761516531",
+      "Name": "Cymbal",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
+      "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
+      "Switches": [
+       {
+        "Id": "899946472",
+        "Name": "SW_C_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Fail",
+        "GUID": "{243DD8E3-EBC4-4362-882F-A03AEB562222}"
+       },
+       {
+        "Id": "4034377147",
+        "Name": "SW_C_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Perfect",
+        "GUID": "{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"
+       }
+      ]
+     },
+     {
+      "Id": "3063529226",
+      "Name": "Violin",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
+      "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
+      "Switches": [
+       {
+        "Id": "1638842395",
+        "Name": "SW_V_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Fail",
+        "GUID": "{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"
+       },
+       {
+        "Id": "2890494766",
+        "Name": "SW_V_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Perfect",
+        "GUID": "{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"
+       }
+      ]
      }
     ],
     "AcousticTextures": [
@@ -516,6 +690,6 @@
     ]
    }
   ],
-  "FileHash": "{A90F36FD-1677-115C-33F8-C5842A4F1764}"
+  "FileHash": "{B477B396-C03A-D30E-E0D3-723A9854219A}"
  }
 }

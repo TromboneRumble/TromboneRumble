@@ -1,0 +1,67 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "890241682",
+    "Type": "Event",
+    "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
+    "Language": "SFX",
+    "Hash": "{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}",
+    "ObjectPath": "MIDI_RhythmGame_Trombone",
+    "ShortName": "MIDI_RhythmGame_Trombone",
+    "Path": "Event/MIDI_RhythmGame_Trombone.bnk",
+    "Media": [
+     {
+      "Id": "64075962",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_MIDI.mid",
+      "Path": "Media/64075962.wem",
+      "CachePath": "SFX/Trombone_MIDI_FBF1EAC5.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "890241682",
+      "Name": "MIDI_RhythmGame_Trombone",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Trombone",
+      "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
+      "DurationType": "OneShot",
+      "DurationMin": "42",
+      "DurationMax": "42",
+      "MediaRefs": [
+       {
+        "Id": "64075962"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{5D1F03B0-C4E9-1F9D-07F8-35D4494269E3}"
+ }
+}

@@ -80,3 +80,13 @@ public:
 	FRhythmTraceResult() {}
 };
 
+
+UENUM(BlueprintType)
+enum class EInstrumentType : uint8
+{
+	Trombone    UMETA(DisplayName = "Trombone"),
+	Violin		UMETA(DisplayName = "Violin"),
+	Cymbal		UMETA(DisplayName = "Cymbal"),
+	Background	UMETA(DisplayName = "Background"), // Instrument 추가시 Background 위에다 추가할 것
+	Invalid		UMETA(Hidden)
+};

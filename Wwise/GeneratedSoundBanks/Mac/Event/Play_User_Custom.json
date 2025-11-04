@@ -1,0 +1,123 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1081190771",
+    "Type": "Event",
+    "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
+    "Language": "SFX",
+    "Hash": "{EF6AC890-009E-CF42-7B7B-6E727E03252D}",
+    "ObjectPath": "Play_User_Custom",
+    "ShortName": "Play_User_Custom",
+    "Path": "Event/Play_User_Custom.bnk",
+    "Media": [
+     {
+      "Id": "373625262",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Short.mid",
+      "Path": "Media/373625262.wem",
+      "CachePath": "SFX/Short_CB4DD1B5.wem"
+     },
+     {
+      "Id": "655394048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_Short_Long.wav",
+      "Path": "Media/655394048.wem",
+      "CachePath": "SFX/Piano_Short_Long_FBC78EF0.wem"
+     },
+     {
+      "Id": "760131378",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Long.mid",
+      "Path": "Media/760131378.wem",
+      "CachePath": "SFX/Long_0D3FE42B.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "227036395",
+      "Name": "Note_Long_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_Start",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "1081190771",
+      "Name": "Play_User_Custom",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_User_Custom",
+      "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
+      "DurationType": "OneShot",
+      "DurationMin": "160",
+      "DurationMax": "160",
+      "MediaRefs": [
+       {
+        "Id": "373625262"
+       },
+       {
+        "Id": "655394048"
+       },
+       {
+        "Id": "760131378"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{CE52B93F-82AF-A1F3-1720-D90CE8AC053A}"
+ }
+}

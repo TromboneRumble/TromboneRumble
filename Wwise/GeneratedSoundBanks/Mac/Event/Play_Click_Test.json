@@ -50,7 +50,7 @@
      {
       "Id": "3717157269",
       "Name": "Play_Click_Test",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Click_Test",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Click_Test",
       "GUID": "{0FC8390B-5986-401E-A87F-7C9BD71357DB}",
       "DurationType": "OneShot",
       "DurationMin": "56",
@@ -74,6 +74,6 @@
     ]
    }
   ],
-  "FileHash": "{4A687DC2-679C-A2DD-FA4B-3F152DCC4916}"
+  "FileHash": "{CB2B80C0-6D04-3DEE-F68E-B542D7E7BAE1}"
  }
 }

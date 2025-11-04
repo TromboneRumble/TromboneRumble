@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}">
+		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{56C95FCE-EFE0-3A0E-B090-A22B65F68AE2}">
 			<ObjectPath>Play_Long_Short</ObjectPath>
 			<ShortName>Play_Long_Short</ShortName>
 			<Path>Event/Play_Long_Short.bnk</Path>
@@ -28,7 +28,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
+				<Event Id="4133920287" Name="Play_Long_Short" ObjectPath="\Events\Default Work Unit\Test\Play_Long_Short" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" DurationType="OneShot" DurationMin="160" DurationMax="160">
 					<MediaRefs>
 						<MediaRef Id="373625262"/>
 						<MediaRef Id="655394048"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{7EB75595-1F9B-A2B2-8708-C0464D978EFD}</FileHash>
+	<FileHash>{3F718C53-05A3-F9D5-DA43-33F0F10A67B5}</FileHash>
 </SoundBanksInfo>

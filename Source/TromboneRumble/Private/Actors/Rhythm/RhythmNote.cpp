@@ -40,12 +40,14 @@ void ARhythmNote::OnReturnToPool_Implementation()
 }
 
 
-void ARhythmNote::InitNote(ARhythmNoteSpawner* InSpawner, float InTimeToComplete)
+void ARhythmNote::InitNote(ARhythmNoteSpawner* InSpawner, float InTimeToComplete, bool InIsLongNote, bool InIsLongNoteEnd)
 {
 	checkf(InSpawner, TEXT("Spawner not Valid"));
 	CachedSpawner = InSpawner;
 	CachedSplineComponent = InSpawner->GetSplineComponent();
 	TimeToComplete = InTimeToComplete;
+	bIsLongNote = InIsLongNote;
+	bIsLongNoteEnd = InIsLongNoteEnd;
 }
 
 void ARhythmNote::MoveNotes_Implementation()

@@ -28,7 +28,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(ARhythmNoteSpawner* InSpawner, float InTimeToComplete = 5.f);
+	void InitNote(ARhythmNoteSpawner* InSpawner,  float InTimeToComplete = 5.f, bool InIsLongNote = false, bool InIsLongNoteEnd = false);
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category = "Rhythm")
 	void MoveNotes();

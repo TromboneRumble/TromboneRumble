@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
     "Language": "SFX",
-    "Hash": "{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}",
+    "Hash": "{56C95FCE-EFE0-3A0E-B090-A22B65F68AE2}",
     "ObjectPath": "Play_Long_Short",
     "ShortName": "Play_Long_Short",
     "Path": "Event/Play_Long_Short.bnk",
@@ -59,7 +59,7 @@
      {
       "Id": "4133920287",
       "Name": "Play_Long_Short",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Long_Short",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Long_Short",
       "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
       "DurationType": "OneShot",
       "DurationMin": "160",
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{6491DDA7-6B64-1B0A-2BC5-32B84C5102B7}"
+  "FileHash": "{EC131C2B-2E47-F297-3BDD-54900BEED2FE}"
  }
 }

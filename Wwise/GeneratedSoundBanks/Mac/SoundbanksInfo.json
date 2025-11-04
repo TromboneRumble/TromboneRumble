@@ -14,6 +14,102 @@
   "DialogueEvents": [],
   "SoundBanks": [
    {
+    "Id": "227036395",
+    "Type": "Event",
+    "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+    "Language": "SFX",
+    "Hash": "{BB322BBF-ED93-A0B3-5AC5-7162F979D879}",
+    "ObjectPath": "Note_Long_Start",
+    "ShortName": "Note_Long_Start",
+    "Path": "Event/Note_Long_Start.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "227036395",
+      "Name": "Note_Long_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_Start",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "387421697",
+    "Type": "Event",
+    "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
+    "Language": "SFX",
+    "Hash": "{B4964263-3CBE-39AC-D5F9-63A766561C46}",
+    "ObjectPath": "MIDI_RhythmGame_Violin",
+    "ShortName": "MIDI_RhythmGame_Violin",
+    "Path": "Event/MIDI_RhythmGame_Violin.bnk",
+    "Media": [
+     {
+      "Id": "203878078",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Violin_MIDI.mid",
+      "Path": "Media/203878078.wem",
+      "CachePath": "SFX/Violin_MIDI_2686306C.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "387421697",
+      "Name": "MIDI_RhythmGame_Violin",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Violin",
+      "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
+      "DurationType": "OneShot",
+      "DurationMin": "80",
+      "DurationMax": "80",
+      "MediaRefs": [
+       {
+        "Id": "203878078"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "534561221",
     "Type": "User",
     "GUID": "{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}",
@@ -36,7 +132,7 @@
      {
       "Id": "3666185889",
       "Name": "Play_Lobby_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Lobby_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Lobby_BGM",
       "GUID": "{94227083-3159-4322-BF3A-0D7AB2913647}",
       "DurationType": "Infinite",
       "MediaRefs": [
@@ -48,12 +144,68 @@
      {
       "Id": "3948599171",
       "Name": "Stop_Lobby_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Lobby_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Stop_Lobby_BGM",
       "GUID": "{A593B12B-6676-4295-9E55-E2E6FC49D923}",
       "MaxAttenuation": "0",
       "DurationType": "OneShot",
       "DurationMin": "0",
       "DurationMax": "0"
+     }
+    ]
+   },
+   {
+    "Id": "890241682",
+    "Type": "Event",
+    "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
+    "Language": "SFX",
+    "Hash": "{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}",
+    "ObjectPath": "MIDI_RhythmGame_Trombone",
+    "ShortName": "MIDI_RhythmGame_Trombone",
+    "Path": "Event/MIDI_RhythmGame_Trombone.bnk",
+    "Media": [
+     {
+      "Id": "64075962",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_MIDI.mid",
+      "Path": "Media/64075962.wem",
+      "CachePath": "SFX/Trombone_MIDI_FBF1EAC5.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "890241682",
+      "Name": "MIDI_RhythmGame_Trombone",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Trombone",
+      "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
+      "DurationType": "OneShot",
+      "DurationMin": "42",
+      "DurationMax": "42",
+      "MediaRefs": [
+       {
+        "Id": "64075962"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
      }
     ]
    },
@@ -102,7 +254,7 @@
      {
       "Id": "1069471245",
       "Name": "Play_Note_Length",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Note_Length",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Note_Length",
       "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
       "DurationType": "OneShot",
       "DurationMin": "224",
@@ -126,11 +278,123 @@
     ]
    },
    {
+    "Id": "1081190771",
+    "Type": "Event",
+    "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
+    "Language": "SFX",
+    "Hash": "{EF6AC890-009E-CF42-7B7B-6E727E03252D}",
+    "ObjectPath": "Play_User_Custom",
+    "ShortName": "Play_User_Custom",
+    "Path": "Event/Play_User_Custom.bnk",
+    "Media": [
+     {
+      "Id": "373625262",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Short.mid",
+      "Path": "Media/373625262.wem",
+      "CachePath": "SFX/Short_CB4DD1B5.wem"
+     },
+     {
+      "Id": "655394048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Piano_Short_Long.wav",
+      "Path": "Media/655394048.wem",
+      "CachePath": "SFX/Piano_Short_Long_FBC78EF0.wem"
+     },
+     {
+      "Id": "760131378",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Long.mid",
+      "Path": "Media/760131378.wem",
+      "CachePath": "SFX/Long_0D3FE42B.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "227036395",
+      "Name": "Note_Long_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_Start",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "1081190771",
+      "Name": "Play_User_Custom",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_User_Custom",
+      "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
+      "DurationType": "OneShot",
+      "DurationMin": "160",
+      "DurationMax": "160",
+      "MediaRefs": [
+       {
+        "Id": "373625262"
+       },
+       {
+        "Id": "655394048"
+       },
+       {
+        "Id": "760131378"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "1355168291",
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{027A0577-DE47-A163-7628-00084A3F297B}",
+    "Hash": "{258EEF8A-04F5-AAB9-DD32-1E2F3F75E0DB}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -168,6 +432,180 @@
       "Name": "RTPC_BPM_Test",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BPM_Test",
       "GUID": "{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"
+     }
+    ],
+    "StateGroups": [
+     {
+      "Id": "237689789",
+      "Name": "Trombone",
+      "ObjectPath": "\\States\\Default Work Unit\\Trombone",
+      "GUID": "{F19FC8A2-5A62-4E4E-89D9-EDDF2E537998}",
+      "States": [
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\None",
+        "GUID": "{8E8FCD19-68F1-4546-8BF7-29E5A7A8ED85}"
+       },
+       {
+        "Id": "2102744496",
+        "Name": "ST_T_Pickup",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\ST_T_Pickup",
+        "GUID": "{FC6A871F-B6FC-453E-AD32-7B6EDD2D8C83}"
+       },
+       {
+        "Id": "2521327923",
+        "Name": "ST_T_Perfect",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\ST_T_Perfect",
+        "GUID": "{D691396D-50FC-4811-B90E-B06AB0C0DBDF}"
+       },
+       {
+        "Id": "3377110384",
+        "Name": "ST_T_Fail",
+        "ObjectPath": "\\States\\Default Work Unit\\Trombone\\ST_T_Fail",
+        "GUID": "{27F5AD81-593D-42CD-B200-A1FACC9BFFA7}"
+       }
+      ]
+     },
+     {
+      "Id": "761516531",
+      "Name": "Cymbal",
+      "ObjectPath": "\\States\\Default Work Unit\\Cymbal",
+      "GUID": "{DC9212B0-CCDD-469F-9DB1-587AC2445633}",
+      "States": [
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\None",
+        "GUID": "{0478367F-BEAF-4869-9456-192F15C676DF}"
+       },
+       {
+        "Id": "1696464809",
+        "Name": "ST_C_Fail",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\ST_C_Fail",
+        "GUID": "{17EF7819-53E3-44C6-AD20-5D336FC0542B}"
+       },
+       {
+        "Id": "3036277909",
+        "Name": "ST_C_Pickup",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\ST_C_Pickup",
+        "GUID": "{27F8852B-38E7-407B-A1AE-452C1483E79A}"
+       },
+       {
+        "Id": "3726929784",
+        "Name": "ST_C_Perfect",
+        "ObjectPath": "\\States\\Default Work Unit\\Cymbal\\ST_C_Perfect",
+        "GUID": "{E3354B0B-7848-47A7-8BF1-6BEB1144C991}"
+       }
+      ]
+     },
+     {
+      "Id": "3063529226",
+      "Name": "Violin",
+      "ObjectPath": "\\States\\Default Work Unit\\Violin",
+      "GUID": "{D0E606EE-F94A-4B1D-9AFC-7B1E343D6B63}",
+      "States": [
+       {
+        "Id": "270547950",
+        "Name": "ST_V_Fail",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\ST_V_Fail",
+        "GUID": "{0E5F1242-544B-4713-9BE4-778193584E94}"
+       },
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\None",
+        "GUID": "{636C1800-E7D4-4B03-8C2E-42251A5F2CBC}"
+       },
+       {
+        "Id": "3406056149",
+        "Name": "ST_V_Perfect",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\ST_V_Perfect",
+        "GUID": "{0BCEF3A5-D1F8-4B5C-A01B-D16C96BDA98E}"
+       },
+       {
+        "Id": "3736570874",
+        "Name": "ST_V_Pickup",
+        "ObjectPath": "\\States\\Default Work Unit\\Violin\\ST_V_Pickup",
+        "GUID": "{596DA757-1434-4228-8FB0-006989BE3592}"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "237689789",
+      "Name": "Trombone",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Trombone",
+      "GUID": "{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}",
+      "Switches": [
+       {
+        "Id": "670040001",
+        "Name": "SW_T_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Fail",
+        "GUID": "{82F8905C-547A-4053-9811-13FD3E245CAA}"
+       },
+       {
+        "Id": "1966965440",
+        "Name": "SW_T_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
+        "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
+       }
+      ]
+     },
+     {
+      "Id": "748895195",
+      "Name": "None",
+      "ObjectPath": "\\Switches\\Default Work Unit\\None",
+      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
+      "Switches": [
+       {
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
+        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
+       }
+      ]
+     },
+     {
+      "Id": "761516531",
+      "Name": "Cymbal",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
+      "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
+      "Switches": [
+       {
+        "Id": "899946472",
+        "Name": "SW_C_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Fail",
+        "GUID": "{243DD8E3-EBC4-4362-882F-A03AEB562222}"
+       },
+       {
+        "Id": "4034377147",
+        "Name": "SW_C_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Perfect",
+        "GUID": "{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"
+       }
+      ]
+     },
+     {
+      "Id": "3063529226",
+      "Name": "Violin",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
+      "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
+      "Switches": [
+       {
+        "Id": "1638842395",
+        "Name": "SW_V_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Fail",
+        "GUID": "{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"
+       },
+       {
+        "Id": "2890494766",
+        "Name": "SW_V_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Perfect",
+        "GUID": "{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"
+       }
+      ]
      }
     ],
     "AcousticTextures": [
@@ -636,11 +1074,51 @@
     ]
    },
    {
+    "Id": "1795670352",
+    "Type": "Event",
+    "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+    "Language": "SFX",
+    "Hash": "{9398B9C5-03CC-C7AC-24E3-E74527502B00}",
+    "ObjectPath": "Note_Long_End",
+    "ShortName": "Note_Long_End",
+    "Path": "Event/Note_Long_End.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2075445586",
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{870381E9-5136-B7C8-5BAC-E9926B61E5C9}",
+    "Hash": "{EE77BE56-FD7D-CD7C-FC06-303E8BA1CE78}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -689,7 +1167,7 @@
      {
       "Id": "2075445586",
       "Name": "Play_MapA_BGM",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_MapA_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_MapA_BGM",
       "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
       "DurationType": "OneShot",
       "DurationMin": "429.5",
@@ -720,6 +1198,299 @@
       "Name": "RTPC_BPM_Test",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BPM_Test",
       "GUID": "{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"
+     }
+    ]
+   },
+   {
+    "Id": "2848553920",
+    "Type": "Event",
+    "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
+    "Language": "SFX",
+    "Hash": "{3DF5CEAF-3F3D-9C40-0F50-0A73DDA1F7FF}",
+    "ObjectPath": "Play_RhythmGame_Main",
+    "ShortName": "Play_RhythmGame_Main",
+    "Path": "Event/Play_RhythmGame_Main.bnk",
+    "Media": [
+     {
+      "Id": "489694630",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Violin_BBIK.wav",
+      "Path": "Media/489694630.wem",
+      "CachePath": "SFX/Violin_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "561564156",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "None.wav",
+      "Path": "Media/561564156.wem",
+      "CachePath": "SFX/None_FBC78EF0.wem"
+     },
+     {
+      "Id": "750942268",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Cymbal_BBIK.wav",
+      "Path": "Media/750942268.wem",
+      "CachePath": "SFX/Cymbal_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "807859594",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Cymbal_Audio.wav",
+      "Path": "Media/807859594.wem",
+      "CachePath": "SFX/Cymbal_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "851934626",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_BBIK.wav",
+      "Path": "Media/851934626.wem",
+      "CachePath": "SFX/Trombone_BBIK_FBC78EF0.wem"
+     },
+     {
+      "Id": "911794588",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Violin_Audio.wav",
+      "Path": "Media/911794588.wem",
+      "CachePath": "SFX/Violin_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "976228796",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_Audio.wav",
+      "Path": "Media/976228796.wem",
+      "CachePath": "SFX/Trombone_Audio_FBC78EF0.wem"
+     },
+     {
+      "Id": "1069913665",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Airplane.wav",
+      "Path": "Media/1069913665.wem",
+      "CachePath": "SFX/Airplane_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2848553920",
+      "Name": "Play_RhythmGame_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\Play_RhythmGame_Main",
+      "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
+      "DurationType": "OneShot",
+      "DurationMin": "42",
+      "DurationMax": "42",
+      "MediaRefs": [
+       {
+        "Id": "489694630"
+       },
+       {
+        "Id": "561564156"
+       },
+       {
+        "Id": "750942268"
+       },
+       {
+        "Id": "807859594"
+       },
+       {
+        "Id": "851934626"
+       },
+       {
+        "Id": "911794588"
+       },
+       {
+        "Id": "976228796"
+       },
+       {
+        "Id": "1069913665"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "237689789",
+      "Name": "Trombone",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Trombone",
+      "GUID": "{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}",
+      "Switches": [
+       {
+        "Id": "670040001",
+        "Name": "SW_T_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Fail",
+        "GUID": "{82F8905C-547A-4053-9811-13FD3E245CAA}"
+       },
+       {
+        "Id": "1966965440",
+        "Name": "SW_T_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Trombone\\SW_T_Perfect",
+        "GUID": "{16031BE8-9736-456D-8EC9-6AA8BC731B76}"
+       }
+      ]
+     },
+     {
+      "Id": "748895195",
+      "Name": "None",
+      "ObjectPath": "\\Switches\\Default Work Unit\\None",
+      "GUID": "{78896181-20AC-4A78-9A87-4C936D04C0F6}",
+      "Switches": [
+       {
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\None\\SW_N",
+        "GUID": "{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"
+       }
+      ]
+     },
+     {
+      "Id": "761516531",
+      "Name": "Cymbal",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal",
+      "GUID": "{ADACA603-67EC-4D63-BB90-B1751EAECC13}",
+      "Switches": [
+       {
+        "Id": "899946472",
+        "Name": "SW_C_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Fail",
+        "GUID": "{243DD8E3-EBC4-4362-882F-A03AEB562222}"
+       },
+       {
+        "Id": "4034377147",
+        "Name": "SW_C_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Cymbal\\SW_C_Perfect",
+        "GUID": "{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"
+       }
+      ]
+     },
+     {
+      "Id": "3063529226",
+      "Name": "Violin",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Violin",
+      "GUID": "{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}",
+      "Switches": [
+       {
+        "Id": "1638842395",
+        "Name": "SW_V_Fail",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Fail",
+        "GUID": "{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"
+       },
+       {
+        "Id": "2890494766",
+        "Name": "SW_V_Perfect",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Violin\\SW_V_Perfect",
+        "GUID": "{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "3199326751",
+    "Type": "Event",
+    "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+    "Language": "SFX",
+    "Hash": "{EF29FA3D-F47E-87CF-5166-D2812EAA2E89}",
+    "ObjectPath": "Note_Short_Start",
+    "ShortName": "Note_Short_Start",
+    "Path": "Event/Note_Short_Start.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3199326751",
+      "Name": "Note_Short_Start",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Short_Start",
+      "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "3440465348",
+    "Type": "Event",
+    "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
+    "Language": "SFX",
+    "Hash": "{531F7CB9-AA6A-33E6-73CA-813123FE4A9E}",
+    "ObjectPath": "MIDI_RhythmGame_Cymbal",
+    "ShortName": "MIDI_RhythmGame_Cymbal",
+    "Path": "Event/MIDI_RhythmGame_Cymbal.bnk",
+    "Media": [
+     {
+      "Id": "262266910",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Cymbal_MIDI.mid",
+      "Path": "Media/262266910.wem",
+      "CachePath": "SFX/Cymbal_MIDI_8939F03D.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3440465348",
+      "Name": "MIDI_RhythmGame_Cymbal",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Cymbal",
+      "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
+      "DurationType": "OneShot",
+      "DurationMin": "42",
+      "DurationMax": "42",
+      "MediaRefs": [
+       {
+        "Id": "262266910"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
      }
     ]
    },
@@ -768,7 +1539,7 @@
      {
       "Id": "3717157269",
       "Name": "Play_Click_Test",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Click_Test",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Click_Test",
       "GUID": "{0FC8390B-5986-401E-A87F-7C9BD71357DB}",
       "DurationType": "OneShot",
       "DurationMin": "56",
@@ -792,11 +1563,51 @@
     ]
    },
    {
+    "Id": "3781478780",
+    "Type": "Event",
+    "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
+    "Language": "SFX",
+    "Hash": "{A145A1D4-5983-E8B4-F857-EA34E9AA99F1}",
+    "ObjectPath": "Note_Short_End",
+    "ShortName": "Note_Short_End",
+    "Path": "Event/Note_Short_End.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3781478780",
+      "Name": "Note_Short_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Short_End",
+      "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "4133920287",
     "Type": "Event",
     "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
     "Language": "SFX",
-    "Hash": "{5756C3E4-70DB-28C6-A7EC-4E14F5DD7E9A}",
+    "Hash": "{56C95FCE-EFE0-3A0E-B090-A22B65F68AE2}",
     "ObjectPath": "Play_Long_Short",
     "ShortName": "Play_Long_Short",
     "Path": "Event/Play_Long_Short.bnk",
@@ -845,7 +1656,7 @@
      {
       "Id": "4133920287",
       "Name": "Play_Long_Short",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Long_Short",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Play_Long_Short",
       "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
       "DurationType": "OneShot",
       "DurationMin": "160",
@@ -872,6 +1683,6 @@
     ]
    }
   ],
-  "FileHash": "{15131380-72EB-6C3B-1247-246028876201}"
+  "FileHash": "{FE65BCA0-DE9E-1E5F-02F1-C6B58CABB8DB}"
  }
 }
