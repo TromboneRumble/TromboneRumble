@@ -16,10 +16,10 @@ class TROMBONERUMBLE_API UAttackComponent : public UActorComponent
 
 public:	
 	UAttackComponent();
+	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void Attack();
 	
-	FORCEINLINE	void SetOwnerCharacter(ACharacter* InOwner) { OwnerCharacter = InOwner; }
 	FORCEINLINE void SetCollisionComponent(const TObjectPtr<UPrimitiveComponent> InCollision) { CollisionComponent = InCollision; }
 	FORCEINLINE void SetAttackData(UAttackDataAsset* InAttackData) { CurrentAttackData = InAttackData; }
 
