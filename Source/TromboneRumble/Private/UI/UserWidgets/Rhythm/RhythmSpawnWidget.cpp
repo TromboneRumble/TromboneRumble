@@ -2,16 +2,16 @@
 
 
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
+
+#include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
-#include "Blueprint/SlateBlueprintLibrary.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
-#include "Utilities/DebugHelper.h"
+#include "GameFramework/GameplayMessageSubsystem.h"
+#include "Utilities/Defines.h"
 
 
-URhythmNoteWidget* URhythmSpawnWidget::SpawnNote(int32 LaneIndex)
+URhythmNoteWidget* URhythmSpawnWidget::SpawnRhythmNoteWidget(int32 LaneIndex)
 {
 	if (!NoteWidgetClass) return nullptr;
 
@@ -33,14 +33,7 @@ URhythmNoteWidget* URhythmSpawnWidget::SpawnNote(int32 LaneIndex)
 	NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 	NoteSlot->SetAutoSize(true);
 	NoteSlot->SetPosition(StartPos);
-	UE_LOG(LogTemp, Warning, TEXT("StartPos : %f, %f"), StartPos.X, StartPos.Y);
 	return Note;
-}
-
-void URhythmSpawnWidget::UpdateNoteProgress(URhythmNoteWidget* Note, float Alpha01)
-{
-	if (!Note) return;
-	Note->SetProgress(Alpha01);
 }
 
 void URhythmSpawnWidget::NativeConstruct()
@@ -57,6 +50,15 @@ void URhythmSpawnWidget::OnViewPortResizedHandler(FViewport* ViewPort, uint32)
 {
 	FIntPoint Size = ViewPort->GetSizeXY();
 	SetStartPoses();
+
+	//현재 존재하는 모든 RhythmNoteWidget들에게도 변경사항 전파
+	UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(GetWorld());
+	FViewportChangedMessage Message;
+	Message.LaneXStartPos = LaneXStartPos;
+	Message.LaneXEndPos = LaneXEndPos;
+	Message.LaneYPosArray = LaneYPosArray;
+
+	MessageSubsystem.BroadcastMessage(TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged, Message);
 }
 
 float URhythmSpawnWidget::GetLaneY(int32 LaneIndex) const
@@ -85,16 +87,16 @@ void URhythmSpawnWidget::SetStartPoses()
 
 	LaneXStartPos = TR_Local.X;
 	LaneXEndPos = TL_Local.X;
-	
-	const float TopY_Local = TL_Local.Y;
+
+	const float BotY_Local = BL_Local.Y;
 	const float Height_Local = BL_Local.Y - TL_Local.Y;
 
 	const float Step = Height_Local / static_cast<float>(MaxLanes + 1);
 
 	for (int32 i = 0;i<MaxLanes;++i)
 	{
-		// 등분선: 위에서 (LaneIndex+1)칸 내려온 선을 lane 센터로 사용
-		const float LaneCenterY = TopY_Local + Step * static_cast<float>(i + 1);
+		// 등분선: 아래서부터 (LaneIndex+1)칸 올라간 선을 LaneCenterY로 사용
+		const float LaneCenterY = BotY_Local - Step * static_cast<float>(i + 1);
 
 		if (LaneYPosArray.IsValidIndex(i))
 		{

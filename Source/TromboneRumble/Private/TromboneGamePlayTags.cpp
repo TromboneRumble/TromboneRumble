@@ -8,4 +8,7 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MainMap, "Trombone.Maps.MainMap");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_LobbyMap, "Trombone.Maps.LobbyMap");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGameMap, "Trombone.Maps.InGameMap");
+
+	// RhythmGame Broadcast Messages
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_OnLayoutChanged, "Trombone.Rhythm.OnLayoutChanged");
 }

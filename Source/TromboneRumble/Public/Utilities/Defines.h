@@ -57,29 +57,13 @@ enum class EHitType : uint8
 UENUM(BlueprintType)
 enum class ENoteResult : uint8
 {
-	None        UMETA(DisplayName = "None"),
-	Bad         UMETA(DisplayName = "Bad"),
+	None        UMETA(DisplayName = "None"), // 롱노트 시작, 혹은 롱노트 중간점 반환용
+	Bad         UMETA(DisplayName = "Bad"), //미스 판정용
 	Good        UMETA(DisplayName = "Good"),
 	Great       UMETA(DisplayName = "Great"),
 	Excellent   UMETA(DisplayName = "Excellent"),
 	Invalid     UMETA(Hidden)
 };
-
-USTRUCT(BlueprintType)
-struct FRhythmTraceResult
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadOnly	, VisibleAnywhere, Category = "Result")
-	TWeakObjectPtr<class ARhythmNote> NoteActor = nullptr;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Result")
-	ENoteResult Judge = ENoteResult::None;
-
-	FRhythmTraceResult() {}
-};
-
 
 UENUM(BlueprintType)
 enum class EInstrumentType : uint8
@@ -89,4 +73,20 @@ enum class EInstrumentType : uint8
 	Cymbal		UMETA(DisplayName = "Cymbal"),
 	Background	UMETA(DisplayName = "Background"), // Instrument 추가시 Background 위에다 추가할 것
 	Invalid		UMETA(Hidden)
+};
+
+USTRUCT()
+struct FViewportChangedMessage
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	float LaneXStartPos = 0.f;
+
+	UPROPERTY()
+	float LaneXEndPos = 0.f;
+
+	UPROPERTY()
+	TArray<float> LaneYPosArray;
 };

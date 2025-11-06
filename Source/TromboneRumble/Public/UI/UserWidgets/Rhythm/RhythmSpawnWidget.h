@@ -20,10 +20,7 @@ class TROMBONERUMBLE_API URhythmSpawnWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Note")
-	URhythmNoteWidget* SpawnNote(int32 LaneIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Note")
-	void UpdateNoteProgress(URhythmNoteWidget* Note, float Alpha01);
+	URhythmNoteWidget* SpawnRhythmNoteWidget(int32 LaneIndex);
 
 public:
 	UPROPERTY(meta = (BindWidget))

@@ -5,8 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Poolable.h"
+#include "Utilities/Defines.h"
 #include "RhythmNote.generated.h"
 
+class URhythmNoteUIControllerComponent;
+class URhythmNoteWidget;
 class USplineComponent;
 class USphereComponent;
 class UTimelineComponent;
@@ -28,7 +31,10 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(ARhythmNoteSpawner* InSpawner,  float InTimeToComplete = 5.f, bool InIsLongNote = false, bool InIsLongNoteEnd = false);
+	void InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidget* InWidget, float InTimeToComplete, int32 LineNum);
+	void SetToShortNote();
+	void SetToLongNoteStart();
+	void SetToLongNoteEnd();
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category = "Rhythm")
 	void MoveNotes();
@@ -40,6 +46,7 @@ protected:
 
 private:
 
+	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USphereComponent> OuterSphere = nullptr;
 
@@ -49,18 +56,30 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USphereComponent> InnerSphere = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	float TimeToComplete = 5.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<URhythmNoteUIControllerComponent> RhythmNoteUIControllerComponent = nullptr;
+	// ~ Components
 
-	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
-	TWeakObjectPtr<ARhythmNoteSpawner> CachedSpawner;
-
+	// Cached References
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<USplineComponent> CachedSplineComponent;
+	// ~Cached References
 
+	// RhythmNoteUI
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<URhythmNoteWidget> RhythmNoteWidgetClass;
+
+	UPROPERTY(Transient)
+	TObjectPtr<URhythmNoteWidget> CreatedWidget;
+	// ~RhythmNoteUI
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	float TimeToComplete = 5.f;
 	bool bIsLongNote = false;
 
 	bool bIsLongNoteEnd = false;
+
+	EInstrumentType NoteType;
 
 public:
 	// Getter Setter
@@ -78,5 +97,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsLongNoteEnd() const { return bIsLongNoteEnd; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE EInstrumentType GetNoteType() const { return NoteType; }
 	// ~Getter Setter
 };

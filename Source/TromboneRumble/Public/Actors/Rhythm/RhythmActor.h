@@ -34,10 +34,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void DetectNotes();
+	ENoteResult DetectNotes();
 
 	UFUNCTION(BlueprintCallable)
-	void DetectLongNoteEnd();
+	ENoteResult DetectLongNoteEnd();
 
 	UFUNCTION(BlueprintCallable)
 	void OnInstrumentPicked(EInstrumentType InType);
@@ -79,7 +79,7 @@ private:
 	// ~Rhythm Game Init
 
 	// Note Detection Logic
-	FRhythmTraceResult ReturnNoteResult(ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps);
+	ENoteResult ReturnNoteResult(const ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps) const;
 	ARhythmNote* GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InOutNoteToHitComps);
 	UActorPoolSubsystem* GetCachedSubsystem();
 	UFUNCTION()

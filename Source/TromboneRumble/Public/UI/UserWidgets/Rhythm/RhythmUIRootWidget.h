@@ -19,10 +19,6 @@ class TROMBONERUMBLE_API URhythmUIRootWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Note")
-	void SpawnNotes(URhythmSpawnWidget* SpawnWidget, int32 LaneIndex);
-
-public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> NoteCanvas = nullptr;
 

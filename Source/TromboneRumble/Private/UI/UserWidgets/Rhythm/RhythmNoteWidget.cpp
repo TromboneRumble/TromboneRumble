@@ -10,6 +10,8 @@ void URhythmNoteWidget::InitializeNote(const FVector2D& InStartNorm, const FVect
 	StartNorm = InStartNorm;
 	EndNorm = InEndNorm;
 	UpdatePixelPosition(0.f);
+	SetVisibility(ESlateVisibility::Collapsed);
+	
 }
 
 void URhythmNoteWidget::SetProgress(float InAlpha)

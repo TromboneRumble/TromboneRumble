@@ -32,21 +32,21 @@ public:
 	void OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 public:
 
-	UPROPERTY(Transient)
-	ARhythmActor* OwnerRhythmActor = nullptr;
+	UPROPERTY()
+	float TimeToComplete = 5.f;
 
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	void CreateSpawnWidget(const ARhythmActor* InRhythmActor);
+	void SpawnNote(const FString& InUserCueName);
 
-	UFUNCTION(BlueprintCallable, Category = "Rhythm")
-	void SpawnRhythmNote(float TimeToComplete = 4.f, bool InIsLongNote = false, bool InIsLongNoteEnd = false);
 
 private:
 	// Components
-		UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USplineComponent> SplineComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
@@ -92,4 +92,6 @@ public:
 	FORCEINLINE UAkSwitchValue* GetChangeSwitch() const { return ChangeSwitch; }
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE UAkAudioEvent* GetFailEvent() const { return FailEvent; }
+
+	URhythmSpawnWidget* GetSpawnWidget() const { return SpawnWidget; }
 };

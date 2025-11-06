@@ -5,10 +5,3 @@
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 
 
-void URhythmUIRootWidget::SpawnNotes(URhythmSpawnWidget* SpawnWidget, int32 LaneIndex)
-{
-	if (IsValid(SpawnWidget))
-	{
-		SpawnWidget->SpawnNote(LaneIndex);
-	}
-}
