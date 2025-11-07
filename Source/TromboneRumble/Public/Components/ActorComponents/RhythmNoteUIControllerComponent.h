@@ -9,10 +9,12 @@
 #include "RhythmNoteUIControllerComponent.generated.h"
 
 
-class URhythmSpawnWidget;
 class URhythmNoteWidget;
 
-UCLASS( ClassGroup=(Game), meta=(BlueprintSpawnableComponent) )
+/*
+ * RhythmNote랑 RhythmNoteWidget을 연결해주는 Controller역할
+ */
+UCLASS( ClassGroup=(UI), meta=(BlueprintSpawnableComponent) )
 class TROMBONERUMBLE_API URhythmNoteUIControllerComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -20,33 +22,32 @@ class TROMBONERUMBLE_API URhythmNoteUIControllerComponent : public UActorCompone
 public:	
 	URhythmNoteUIControllerComponent();
 
-	void InitSettings(URhythmSpawnWidget* InSpawnWidget, URhythmNoteWidget* InNoteWidget, int32 InLaneIndex);
-	void SetStartPoses(const float InLaneStartXPos, const float InLaneEndXPos, const TArray<float>& InLaneYPosArray);
-
-
-	UPROPERTY()
-	TObjectPtr<URhythmSpawnWidget> RhythmSpawnWidget = nullptr;
-
-	UPROPERTY()
-	TObjectPtr<URhythmNoteWidget> RhythmNoteWidget = nullptr;
-
-	int32 LaneIndex = -1;
+	void InitSettings(URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx);
+	
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	UPROPERTY(Transient)
-	float LaneXStartPos = 0.f;
-
-	UPROPERTY(Transient)
-	float LaneXEndPos = 0.f;
-
-	UPROPERTY(Transient)
-	TArray<float> LaneYPosArray;
-
-private:
-	FGameplayMessageListenerHandle LayoutChangedHandle;
-
+	void BindChannel();
+	void UnbindChannel();
 	void OnViewportChanged(FGameplayTag Channel, const FViewportChangedMessage& InMsg);
+	void SetStartPoses(const float InLaneStartXPos, const float InLaneEndXPos, const TArray<float>& InLaneYPosArray);
+	void UpdateNotePosition(const float InAlphaOnSpline);
+
+	UPROPERTY(Transient)
+	FNoteHandle Handle;
+	UPROPERTY(Transient)
+	TWeakObjectPtr<URhythmNoteWidget> RhythmNoteWidget = nullptr;
+
+	FDelegateHandle ProgressHandle, DespawnHandle;
+
+	float LaneXStartPos = 0.f;
+	float LaneXEndPos = 0.f;
+	TArray<float> LaneYPosArray;
+	int32 LaneIndex = 0;
+
+	FGameplayMessageListenerHandle LayoutChangedHandle;
+	
 		
 };

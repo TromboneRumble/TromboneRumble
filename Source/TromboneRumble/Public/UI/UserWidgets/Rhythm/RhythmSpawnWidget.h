@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmSpawnWidget.generated.h"
 
-class UVerticalBox;
 class UCanvasPanel;
 class URhythmNoteWidget;
 

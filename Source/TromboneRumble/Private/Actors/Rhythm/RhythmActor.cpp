@@ -7,8 +7,8 @@
 #include "AkGameplayStatics.h"
 #include "AkGameplayTypes.h"
 #include "Subsystems/ActorPoolSubsystem.h"
-#include "Actors/Rhythm/RhythmNote.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
+#include "Actors/Rhythm/RhythmNote.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
@@ -28,7 +28,7 @@ ARhythmActor::ARhythmActor()
 
 	RhythmNoteDestroyer = CreateDefaultSubobject<UBoxComponent>(TEXT("Note Destroyer"));
 	RhythmNoteDestroyer->SetupAttachment(GetRootComponent());
-	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
+	
 
 	NoteSpawnComponent = CreateDefaultSubobject<UAkComponent>(TEXT("NoteSpawnAKComponent"));
 	if (NoteSpawnComponent)
@@ -61,6 +61,7 @@ ENoteResult ARhythmActor::DetectNotes()
 		return ENoteResult::Bad;
 	}
 
+	//롱노트 시작점일 경우
 	if (BestNote->IsLongNote() && !BestNote->IsLongNoteEnd())
 	{
 		//TODO : 롱노트 세부판정
@@ -68,13 +69,11 @@ ENoteResult ARhythmActor::DetectNotes()
 		Debug::Print(TEXT("Long Note Sense Start"));
 		return ENoteResult::None;
 	}
-	else
-	{
-		ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
-		FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
-		Debug::Print(EnumName);
-		return Result;
-	}
+	//숏노트일 경우
+	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
+	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
+	Debug::Print(EnumName);
+	return Result;
 }
 
 ENoteResult ARhythmActor::DetectLongNoteEnd()
@@ -187,6 +186,7 @@ void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
 	EnableInput(GetWorld()->GetFirstPlayerController());
+	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
 }
 
 ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
@@ -292,7 +292,7 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 
 
 	//노트별로 히트된 컴포넌트 수 집계
-	
+
 	for (const FHitResult& H : HitResults)
 	{
 		if (ARhythmNote* Note = Cast<ARhythmNote>(H.GetActor()))
@@ -315,7 +315,7 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 		{
 			// 현재 선택된 악기가 아니므로 무시
 			if (Note->GetNoteType() != FocusedType) continue;
-			const double T = Note->NoteLifeTime;
+			const double T = Note->GetNoteLifetime();
 			if (T > BestTime) // 가장 큰 시간 = 가장 먼저 나온 노트
 			{
 				BestTime = T;
@@ -344,9 +344,10 @@ UActorPoolSubsystem* ARhythmActor::GetCachedSubsystem()
 void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped"));
 	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
 	{
-		CachedActorPoolSubsystem->Release(OtherActor);
+		GetCachedSubsystem()->Release(OtherActor);
 	}
 }
 

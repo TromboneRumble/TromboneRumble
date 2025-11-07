@@ -2,11 +2,10 @@
 
 
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
-
-#include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "TromboneGamePlayTags.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "Utilities/Defines.h"
 
@@ -28,7 +27,6 @@ URhythmNoteWidget* URhythmSpawnWidget::SpawnRhythmNoteWidget(int32 LaneIndex)
 	}
 
 	FVector2D StartPos(LaneXStartPos, GetLaneY(LaneIndex));
-	FVector2D EndPos(LaneXEndPos, GetLaneY(LaneIndex));
 	NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
 	NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 	NoteSlot->SetAutoSize(true);
@@ -50,15 +48,6 @@ void URhythmSpawnWidget::OnViewPortResizedHandler(FViewport* ViewPort, uint32)
 {
 	FIntPoint Size = ViewPort->GetSizeXY();
 	SetStartPoses();
-
-	//현재 존재하는 모든 RhythmNoteWidget들에게도 변경사항 전파
-	UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(GetWorld());
-	FViewportChangedMessage Message;
-	Message.LaneXStartPos = LaneXStartPos;
-	Message.LaneXEndPos = LaneXEndPos;
-	Message.LaneYPosArray = LaneYPosArray;
-
-	MessageSubsystem.BroadcastMessage(TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged, Message);
 }
 
 float URhythmSpawnWidget::GetLaneY(int32 LaneIndex) const
@@ -104,5 +93,14 @@ void URhythmSpawnWidget::SetStartPoses()
 			UE_LOG(LogTemp, Warning, TEXT("SetStartYPos : %f"), LaneCenterY);
 		}
 	}
+
+	//현재 존재하는 모든 RhythmNoteWidget들에게도 변경사항 전파
+	UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(GetWorld());
+	FViewportChangedMessage Message;
+	Message.LaneXStartPos = LaneXStartPos;
+	Message.LaneXEndPos = LaneXEndPos;
+	Message.LaneYPosArray = LaneYPosArray;
+
+	MessageSubsystem.BroadcastMessage(TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged, Message);
 	
 }

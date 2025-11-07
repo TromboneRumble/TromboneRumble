@@ -7,6 +7,8 @@
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
+class URhythmNoteChannelSubsystem;
+class UActorPoolSubsystem;
 class UAkSwitchValue;
 class UAkAudioEvent;
 class UAkCallbackInfo;
@@ -41,7 +43,7 @@ protected:
 
 private:
 	void CreateSpawnWidget(const ARhythmActor* InRhythmActor);
-	void SpawnNote(const FString& InUserCueName);
+	void SpawnAndMoveNote(const FString& InUserCueName);
 
 
 private:
@@ -55,9 +57,6 @@ private:
 
 	// WWise Audio
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	EInstrumentType SpawnerType = EInstrumentType::Invalid;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkAudioEvent> SpawnNoteEvent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
@@ -68,17 +67,27 @@ private:
 	// ~WWise Audio
 
 	// Rhythm Note UI
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ARhythmNote> RhythmNoteClass;
-
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<URhythmSpawnWidget> RhythmSpawnWidgetClass;
 
 	UPROPERTY(Transient, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<URhythmSpawnWidget> SpawnWidget = nullptr;
-
-	
 	// ~Rhythm Note UI
+
+	// Cached Reference
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<URhythmNoteChannelSubsystem> CachedRhythmNoteChannelSubsystem = nullptr;
+
+	// ~Cached Reference
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ARhythmNote> RhythmNoteClass;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	EInstrumentType SpawnerType = EInstrumentType::Invalid;
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Component")

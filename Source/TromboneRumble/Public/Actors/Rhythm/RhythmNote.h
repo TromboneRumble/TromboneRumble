@@ -8,12 +8,15 @@
 #include "Utilities/Defines.h"
 #include "RhythmNote.generated.h"
 
-class URhythmNoteUIControllerComponent;
+class URhythmSpawnWidget;
 class URhythmNoteWidget;
+class URhythmNoteChannelSubsystem;
+class URhythmNoteUIControllerComponent;
 class USplineComponent;
 class USphereComponent;
 class UTimelineComponent;
 class ARhythmNoteSpawner;
+
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API ARhythmNote : public AActor, public IPoolable
@@ -31,7 +34,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidget* InWidget, float InTimeToComplete, int32 LineNum);
+	void InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidget* InNoteWidget, float InTimeToComplete, int32 InLineNum);
 	void SetToShortNote();
 	void SetToLongNoteStart();
 	void SetToLongNoteEnd();
@@ -40,7 +43,9 @@ public:
 	void MoveNotes();
 	void MoveNotes_Implementation();
 
-	float NoteLifeTime;
+	UPROPERTY()
+	FNoteHandle NoteHandle;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -63,24 +68,24 @@ private:
 	// Cached References
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<USplineComponent> CachedSplineComponent;
+
+	UPROPERTY()
+	TWeakObjectPtr<URhythmNoteChannelSubsystem> CachedRhythmNoteChannelSubsystem = nullptr;
 	// ~Cached References
-
-	// RhythmNoteUI
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<URhythmNoteWidget> RhythmNoteWidgetClass;
-
-	UPROPERTY(Transient)
-	TObjectPtr<URhythmNoteWidget> CreatedWidget;
-	// ~RhythmNoteUI
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	float TimeToComplete = 5.f;
+
+	float NoteLifeTime;
+
 	bool bIsLongNote = false;
 
 	bool bIsLongNoteEnd = false;
 
 	EInstrumentType NoteType;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	float NoteAlphaOnSpline;
 public:
 	// Getter Setter
 	UFUNCTION(BlueprintCallable)
@@ -100,5 +105,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EInstrumentType GetNoteType() const { return NoteType; }
+
+	FORCEINLINE float GetNoteLifetime() const { return NoteLifeTime; }
 	// ~Getter Setter
 };

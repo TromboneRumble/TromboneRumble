@@ -6,6 +6,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
+#include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
 #include "Utilities/DebugHelper.h"
 
@@ -33,29 +34,30 @@ void ARhythmNote::Tick(float DeltaTime)
 void ARhythmNote::OnTakenFromPool_Implementation()
 {
 	NoteLifeTime = 0.f;
+	NoteAlphaOnSpline = 0.f;
 	CachedSplineComponent = nullptr;
-	if (CreatedWidget)
-	{
-		CreatedWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+
+	NoteHandle = FNoteHandle();
+	NoteHandle.NoteActor = this;
+
+	CachedRhythmNoteChannelSubsystem->OpenChannel(NoteHandle.Id);
 }
 
 
 void ARhythmNote::OnReturnToPool_Implementation()
 {
 	NoteLifeTime = 0.f;
-	if (CreatedWidget)
-	{
-		CreatedWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	NoteAlphaOnSpline = 1.f;
+	CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
+	CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
 }
 
-
-void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidget* InWidget, float InTimeToComplete, int32 LineNum)
+void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget* InNoteWidget, float InTimeToComplete,
+	int32 InLineNum)
 {
 	checkf(InSpawner, TEXT("Spawner not Valid in %s"), *GetName());
 	checkf(InSpawner->GetSpawnerType() != EInstrumentType::Invalid, TEXT("Spawner Type is Invalid"));
-	checkf(InWidget, TEXT("InWidget not valid in %s"), *GetName());
+	checkf(InNoteWidget, TEXT("InNoteWidget not valid in %s"), *GetName());
 
 	NoteType = InSpawner->GetSpawnerType();
 	CachedSplineComponent = InSpawner->GetSplineComponent();
@@ -63,7 +65,7 @@ void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidge
 
 	if (RhythmNoteUIControllerComponent)
 	{
-		RhythmNoteUIControllerComponent->InitSettings(InSpawner->GetSpawnWidget(), InWidget, LineNum);
+		RhythmNoteUIControllerComponent->InitSettings(InNoteWidget, NoteHandle, InLineNum);
 	}
 }
 
@@ -87,30 +89,15 @@ void ARhythmNote::SetToLongNoteEnd()
 
 void ARhythmNote::MoveNotes_Implementation()
 {
-	if (!CachedSplineComponent.Get())
-	{
-		return;
-	}
+	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, NoteAlphaOnSpline);
 }
 
 void ARhythmNote::BeginPlay()
 {
 	Super::BeginPlay();
-	checkf(RhythmNoteWidgetClass, TEXT("RhythmNoteWidgetClass is not set in %s"), *GetName());
-	if (CreatedWidget) return;
-	UWorld* World = GetWorld();
-	if (World)
+	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
 	{
-		// 위젯 생성
-		CreatedWidget = CreateWidget<URhythmNoteWidget>(World, RhythmNoteWidgetClass);
-		if (CreatedWidget)
-		{
-			CreatedWidget->AddToViewport();
-			
-
-			// 또는 특정 Parent Widget에 AddChild 할 수도 있음
-			UE_LOG(LogTemp, Log, TEXT("Widget created and added to viewport"));
-		}
+		CachedRhythmNoteChannelSubsystem = RhythmNoteChannelSubsystem;
 	}
 }
 

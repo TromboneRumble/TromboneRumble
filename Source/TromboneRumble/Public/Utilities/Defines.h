@@ -58,7 +58,7 @@ UENUM(BlueprintType)
 enum class ENoteResult : uint8
 {
 	None        UMETA(DisplayName = "None"), // 롱노트 시작, 혹은 롱노트 중간점 반환용
-	Bad         UMETA(DisplayName = "Bad"), //미스 판정용
+	Bad         UMETA(DisplayName = "Bad"),  //미스 판정용
 	Good        UMETA(DisplayName = "Good"),
 	Great       UMETA(DisplayName = "Great"),
 	Excellent   UMETA(DisplayName = "Excellent"),
@@ -75,18 +75,38 @@ enum class EInstrumentType : uint8
 	Invalid		UMETA(Hidden)
 };
 
+USTRUCT(BlueprintType)
+struct FNoteHandle
+{
+	GENERATED_BODY()
+	UPROPERTY() FGuid Id;
+	UPROPERTY() TWeakObjectPtr<AActor> NoteActor;
+	FNoteHandle() : Id(FGuid::NewGuid()) {}
+};
+
+USTRUCT()
+struct FNoteJudgedMessage
+{
+	GENERATED_BODY()
+	UPROPERTY() FNoteHandle Handle;
+	UPROPERTY() EInstrumentType Instrument = EInstrumentType::Invalid;
+	UPROPERTY() ENoteResult Judge = ENoteResult::None;
+};
+
+USTRUCT()
+struct FComboChangedMessage
+{
+	GENERATED_BODY()
+	UPROPERTY() int32 Combo = 0;
+	UPROPERTY() int32 DeltaScore = 0;
+};
+
 USTRUCT()
 struct FViewportChangedMessage
 {
 	GENERATED_BODY()
 
-public:
-	UPROPERTY()
-	float LaneXStartPos = 0.f;
-
-	UPROPERTY()
-	float LaneXEndPos = 0.f;
-
-	UPROPERTY()
-	TArray<float> LaneYPosArray;
+	UPROPERTY()	float LaneXStartPos = 0.f;
+	UPROPERTY()	float LaneXEndPos = 0.f;
+	UPROPERTY()	TArray<float> LaneYPosArray;
 };
