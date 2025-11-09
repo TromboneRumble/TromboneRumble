@@ -16,13 +16,7 @@ class ARhythmNote;
 class ARhythmNoteSpawner;
 class UBoxComponent;
 
-
-USTRUCT()
-struct FMyStruct
-{
-	GENERATED_BODY()
-	
-};
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentPickedDelegate, EInstrumentType, InType);
 
 UCLASS()
 class TROMBONERUMBLE_API ARhythmActor : public AActor
@@ -39,8 +33,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ENoteResult DetectLongNoteEnd();
 
+
 	UFUNCTION(BlueprintCallable)
-	void OnInstrumentPicked(EInstrumentType InType);
+	void ExecuteOnInstrumentPicked(EInstrumentType InType) const
+	{
+		OnInstrumentPicked.Broadcast(InType);
+	}
+
+	UPROPERTY(BlueprintAssignable)
+	FOnInstrumentPickedDelegate OnInstrumentPicked;
+
+	
 
 	// Init Game
 
@@ -89,7 +92,8 @@ private:
 	// ~Note Detection Logic
 
 	
-
+	UFUNCTION()
+	void OnInstrumentPickedHandler(EInstrumentType InType);
 
 	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -101,25 +105,22 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBoxComponent> RhythmNoteDestroyer = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAkComponent> NoteSpawnComponent;
+	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkComponent> NoteSpawnComponent = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAkComponent> NoteHearingComponent;
+	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkComponent> NoteHearingComponent = nullptr;
 	// ~Components
 
-	// Cached References
-	UPROPERTY(Transient)
-	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
-
-	UPROPERTY(Transient)
-	TObjectPtr<URhythmUIRootWidget> CachedRhythmUIRootWidget = nullptr;
-	// ~Cached References
-
-	// Rhythm Game
+	// Subclasses
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ARhythmNoteSpawner> RhythmNoteSpawnerClass = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<URhythmUIRootWidget> RhythmUIRootWidgetClass = nullptr;
+	// ~Subclasses
+
+	// Rhythm Game
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>> RhythmNoteSpawners;
 
@@ -129,25 +130,25 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UAkSwitchValue* NoneSwitch = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float StartToNoteHitboxTime = 4.f;
-
 	UFUNCTION()
 	void PlayMusic();
 	FTimerHandle TimerHandle;
 
 	UPROPERTY()
 	EInstrumentType FocusedType = EInstrumentType::Background;
-	// ~Rhythm Game
-
-	// UI references
-	UPROPERTY(EditDefaultsOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<URhythmUIRootWidget> RhythmUIRootWidgetClass = nullptr;
-	// ~UI references
 
 	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool IsSensingLongNote = false;
+	// ~Rhythm Game
 
+
+	// Cached References
+	UPROPERTY(Transient)
+	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
+
+	UPROPERTY(Transient)
+	TObjectPtr<URhythmUIRootWidget> CachedRhythmUIRootWidget = nullptr;
+	// ~Cached References
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Component")

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmSpawnWidget.generated.h"
 
+enum class EInstrumentType : uint8;
 class UCanvasPanel;
 class URhythmNoteWidget;
 
@@ -23,6 +24,9 @@ public:
 
 	void ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget);
 
+	UFUNCTION()
+	void PlayFadeAnimation(EInstrumentType InType);
+
 public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> NoteCanvas = nullptr;
@@ -32,6 +36,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Note")
 	int32 MaxLanes = 3;
+
+
+	EInstrumentType InstrumentType;
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -57,4 +64,14 @@ private:
 
 	bool bViewportBound = false;
 	FDelegateHandle ViewportResizedHandle;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeOutAnim;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeInAnim;
+
+	bool isShown = false;
+
+	
 };

@@ -97,15 +97,15 @@ void UWidgetPoolSubsystem::Activate(UUserWidget* InWidget)
 {
 	if (!InWidget) return;
 	//Visibility 설정을 하면 레이아웃 재계산을 해야하기 때문에 랙이 걸림.
-	//InWidget->SetVisibility(ESlateVisibility::Visible);
+	InWidget->SetVisibility(ESlateVisibility::Visible);
 	InWidget->SetIsEnabled(true);
-	InWidget->SetRenderOpacity(1.f);
+	//InWidget->SetRenderOpacity(1.f);
 }
 
 void UWidgetPoolSubsystem::Deactivate(UUserWidget* InWidget)
 {
 	if (!InWidget) return;
-	//InWidget->SetVisibility(ESlateVisibility::Hidden);
-	InWidget->SetRenderOpacity(0.f);
+	InWidget->SetVisibility(ESlateVisibility::Hidden);
+	//InWidget->SetRenderOpacity(0.f);
 	InWidget->SetIsEnabled(false);
 }

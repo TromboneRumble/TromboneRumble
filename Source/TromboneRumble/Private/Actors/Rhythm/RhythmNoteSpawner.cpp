@@ -81,20 +81,34 @@ void ARhythmNoteSpawner::BeginPlay()
 	}
 }
 
+void ARhythmNoteSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner());
+	if (IsValid(OwnerRhythmActor))
+	{
+		OwnerRhythmActor->OnInstrumentPicked.RemoveDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
+	}
+}
+
 void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
 {
 	checkf(IsValid(InRhythmActor), TEXT("InRhythmActor is invalid in %s"), *GetName());
 	SpawnWidget = CreateWidget<URhythmSpawnWidget>(GetWorld(), RhythmSpawnWidgetClass);
 	if (SpawnWidget)
 	{
+		SpawnWidget->InstrumentType = SpawnerType;
 		UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChild(SpawnWidget));
 		NoteSlot->SetAutoSize(true);
 		NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 		NoteSlot->SetAnchors(FAnchors(0.5f, 0.5f));
 		//TODO : Remove Magic Number
 		NoteSlot->SetPosition(FVector2D(175.f, -300.f));
+		if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
+		{
+			OwnerRhythmActor->OnInstrumentPicked.AddDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
+		}
 	}
-	
 }
 
 void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)

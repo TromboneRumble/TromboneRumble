@@ -53,6 +53,23 @@ void URhythmSpawnWidget::ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget
 	}
 }
 
+void URhythmSpawnWidget::PlayFadeAnimation(EInstrumentType InType)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Called"));
+
+	if (InType == InstrumentType && FadeInAnim && !isShown)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("called22"));
+		PlayAnimation(FadeInAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
+		isShown = true;
+	}
+	else if (InType != InstrumentType && FadeOutAnim && isShown)
+	{
+		PlayAnimation(FadeOutAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
+		isShown = false;
+	}
+}
+
 void URhythmSpawnWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -62,6 +79,8 @@ void URhythmSpawnWidget::NativeOnInitialized()
 		{
 			WidgetPoolSubsystem->Prewarm(NoteWidgetClass, 100, this, NoteCanvas);
 		}
+		
+		SetColorAndOpacity(FLinearColor{ 1.f,1.f,1.f,0.f });
 	}
 }
 

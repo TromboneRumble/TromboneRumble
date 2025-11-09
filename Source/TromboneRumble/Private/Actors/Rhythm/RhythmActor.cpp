@@ -95,11 +95,12 @@ ENoteResult ARhythmActor::DetectLongNoteEnd()
 	return ENoteResult::Bad;
 }
 
-void ARhythmActor::OnInstrumentPicked(EInstrumentType InType)
+void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
 {
 	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
 	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
 	IsSensingLongNote = false;
+
 	FocusedType = InType;
 	if (InType == EInstrumentType::Background)
 	{
@@ -188,6 +189,7 @@ void ARhythmActor::BeginPlay()
 	Super::BeginPlay();
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
+	OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 }
 
 ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
