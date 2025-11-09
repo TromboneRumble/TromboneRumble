@@ -111,6 +111,12 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 	SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
 	SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
 
+	//숏노트만 나오게 임시로 설정
+	if (!InUserCueName.StartsWith(TEXT("SS_")))
+	{
+		return;
+	}
+
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
 		URhythmNoteWidget* PooledRhythmNoteWidget = SpawnWidget->GetPooledRhythmNoteWidget(LineNum);

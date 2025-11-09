@@ -113,7 +113,7 @@ void URhythmSpawnWidget::SetStartPoses()
 	// SpawnWidget의 절대 좌표계
 	const FVector2D TL_Abs = CanvasGeo.GetAbsolutePosition();
 	const FVector2D AbsSize = CanvasGeo.GetAbsoluteSize();
-	const FVector2D TR_Abs = CanvasGeo.GetAbsolutePosition() + FVector2D(AbsSize.X - 42.f, 0.f);
+	const FVector2D TR_Abs = CanvasGeo.GetAbsolutePosition() + FVector2D(AbsSize.X - 41.f, 0.f);
 	
 
 	// 절대 좌표 -> 로컬 좌표

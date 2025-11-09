@@ -69,6 +69,7 @@ ENoteResult ARhythmActor::DetectNotes()
 		Debug::Print(TEXT("Long Note Sense Start"));
 		return ENoteResult::None;
 	}
+
 	//숏노트일 경우
 	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
 	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
@@ -99,6 +100,7 @@ void ARhythmActor::OnInstrumentPicked(EInstrumentType InType)
 	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
 	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
 	IsSensingLongNote = false;
+	FocusedType = InType;
 	if (InType == EInstrumentType::Background)
 	{
 		if (NoneSwitch)
@@ -155,7 +157,6 @@ void ARhythmActor::StartRhythmGame()
 				CallbackMask,
 				Callback
 			);
-			Debug::Print(TEXT("PostAkEventCalled"));
 		}
 	}
 	GetWorldTimerManager().SetTimer(
@@ -314,7 +315,10 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 		if (const ARhythmNote* Note = Pair.Key)
 		{
 			// 현재 선택된 악기가 아니므로 무시
-			if (Note->GetNoteType() != FocusedType) continue;
+			if (Note->GetNoteType() != FocusedType)
+			{
+				continue;
+			}
 			const double T = Note->GetNoteLifetime();
 			if (T > BestTime) // 가장 큰 시간 = 가장 먼저 나온 노트
 			{
