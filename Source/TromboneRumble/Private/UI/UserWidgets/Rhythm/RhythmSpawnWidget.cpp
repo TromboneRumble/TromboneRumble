@@ -55,11 +55,8 @@ void URhythmSpawnWidget::ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget
 
 void URhythmSpawnWidget::PlayFadeAnimation(EInstrumentType InType)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called"));
-
 	if (InType == InstrumentType && FadeInAnim && !isShown)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("called22"));
 		PlayAnimation(FadeInAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
 		isShown = true;
 	}
