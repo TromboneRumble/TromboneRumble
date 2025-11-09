@@ -68,6 +68,8 @@ protected:
 	UPROPERTY(Transient, ReplicatedUsing = OnRep_EquippedInstrument)
 	TObjectPtr<AInstrumentBase> EquippedInstrument = nullptr;
 
+	FInteractionContext CurrentInteractionContext;
+
 private:
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
@@ -104,6 +106,4 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
 	float SprintInterpSpeed = 5.0f;
-	
-	FInteractionContext CurrentInteractionContext;
 };
