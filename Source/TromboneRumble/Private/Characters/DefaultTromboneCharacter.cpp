@@ -12,6 +12,7 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -31,7 +32,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -66,11 +67,6 @@ void ADefaultTromboneCharacter::Jump()
 	}
 }
 
-void ADefaultTromboneCharacter::StopJumping()
-{
-	Super::StopJumping();
-}
-
 void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -97,12 +93,12 @@ void ADefaultTromboneCharacter::Attack()
 	if (AttackComponent && CurrentInteractionContext.bIsEquipped) AttackComponent->Attack();
 }
 
-void ADefaultTromboneCharacter::Sprint()
+void ADefaultTromboneCharacter::StartSprint()
 {
 	if (bIsSprinting) return; 
 
 	bIsSprinting = true;
-	Server_StartSprint();
+	Server_SetIsSprinting(true);
 }
 
 void ADefaultTromboneCharacter::StopSprint()
@@ -110,7 +106,7 @@ void ADefaultTromboneCharacter::StopSprint()
 	if (!bIsSprinting) return;
 
 	bIsSprinting = false;
-	Server_StopSprint();
+	Server_SetIsSprinting(false);
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
@@ -175,16 +171,6 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 	}
 }
 
-void ADefaultTromboneCharacter::Server_StartSprint_Implementation()
-{
-	bIsSprinting = true;
-}
-
-void ADefaultTromboneCharacter::Server_StopSprint_Implementation()
-{
-	bIsSprinting = false;
-}
-
 void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* InteractedActor)
 {
 	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
@@ -195,6 +181,14 @@ void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* Interacte
 	}
 }
 
+
+void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
+{
+	if (bIsSprinting != bNewIsSprinting)
+	{
+		bIsSprinting = bNewIsSprinting;
+	}
+}
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
 {
@@ -249,18 +243,14 @@ void ADefaultTromboneCharacter::UpdateAttackComponentState()
 
 void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
 {
-	if (auto* MovementComponent = GetCharacterMovement())
-	{
-		const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
+	const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
+	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
+	if (!MoveComp) return;
 
-		if (MovementComponent->MaxWalkSpeed != TargetSpeed)
-		{
-			MovementComponent->MaxWalkSpeed = FMath::FInterpTo(
-				MovementComponent->MaxWalkSpeed,
-				TargetSpeed,
-				DeltaSeconds,
-				SprintInterpSpeed
-			);
-		}
+	const float CurrentSpeed = MoveComp->MaxWalkSpeed;
+	if (!FMath::IsNearlyEqual(CurrentSpeed, TargetSpeed))
+	{
+		float NewSpeed = FMath::FInterpTo(CurrentSpeed, TargetSpeed, DeltaSeconds, SprintInterpSpeed);
+		MoveComp->MaxWalkSpeed = NewSpeed;
 	}
 }

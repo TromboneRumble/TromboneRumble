@@ -73,7 +73,7 @@ void ADefaultPlayerController::Handle_Interact()
 
 void ADefaultPlayerController::Handle_SprintPressed()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Sprint();
+	if (CachedOwnerCharacter) CachedOwnerCharacter->StartSprint();
 }
 
 void ADefaultPlayerController::Handle_SprintReleased()

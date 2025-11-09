@@ -24,11 +24,10 @@ public:
 	ADefaultTromboneCharacter();
 
 	virtual void Jump() override;
-	virtual void StopJumping() override;
 	void Move(const FInputActionValue& Value);
 	void Interact();
 	void Attack();
-	void Sprint();
+	void StartSprint();
 	void StopSprint();
 
 protected:
@@ -63,9 +62,7 @@ protected:
 private:
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
-	void Server_StartSprint();
-	UFUNCTION(Server, Reliable)
-	void Server_StopSprint();
+	void Server_SetIsSprinting(const bool bNewIsSprinting);
 	UFUNCTION(Server, Reliable)
 	void Server_Interact(AActor* InteractedActor);
 	// ~Server RPCs
@@ -97,7 +94,7 @@ private:
 	float SprintSpeed = 600.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
-	float SprintInterpSpeed = 10.0f;
+	float SprintInterpSpeed = 5.0f;
 	
 	FInteractionContext CurrentInteractionContext;
 };

@@ -6,12 +6,15 @@
 #include "Animation/AnimInstance.h"
 #include "CharacterAnimInstance.generated.h"
 
+class UCharacterMovementComponent;
+
 UCLASS()
 class TROMBONERUMBLE_API UCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "Animation")
@@ -26,4 +29,23 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	float BlendInterpSpeed = 15.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float GroundSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool bIsFalling;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool bShouldMove;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FVector Velocity;
+
+private:
+	UPROPERTY(Transient)
+	TObjectPtr<ACharacter> OwnerCharacter;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UCharacterMovementComponent> MovementComponent;
 };
