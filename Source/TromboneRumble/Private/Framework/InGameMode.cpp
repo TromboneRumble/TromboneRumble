@@ -6,3 +6,11 @@ AInGameMode::AInGameMode()
 {
 	bUseSeamlessTravel = true;
 }
+
+void AInGameMode::HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument)
+{
+}
+
+void AInGameMode::HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument)
+{
+}

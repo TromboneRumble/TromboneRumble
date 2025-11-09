@@ -49,9 +49,6 @@ protected:
 	TObjectPtr<UAttackDataAsset> AttackData;
 
 private:
-	UFUNCTION()
-	void HandleUnequip();
-	
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
 

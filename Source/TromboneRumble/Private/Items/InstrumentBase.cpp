@@ -48,11 +48,6 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 	CurrentOwner = OwnerActor;
 	bIsEquipped = true;
 
-	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
-	{
-		OwnerCharacter->OnRagdollDelegate.AddDynamic(this, &AInstrumentBase::HandleUnequip);
-	}
-
 	OnRep_Equipped();
 
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
@@ -67,11 +62,6 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
     
 	CurrentOwner = nullptr;
 	bIsEquipped = false;
-
-	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
-	{
-		OwnerCharacter->OnRagdollDelegate.RemoveDynamic(this, &AInstrumentBase::HandleUnequip);
-	}
 
 	OnRep_Equipped();
     
@@ -123,9 +113,4 @@ void AInstrumentBase::OnRep_Equipped()
 		SetPhysicsEnabled(true);
 		StopSound();
 	}
-}
-
-void AInstrumentBase::HandleUnequip()
-{
-	Execute_Unequip(this, CurrentOwner);
 }

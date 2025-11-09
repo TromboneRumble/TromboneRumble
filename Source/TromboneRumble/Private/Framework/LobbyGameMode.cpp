@@ -26,6 +26,25 @@ ALobbyGameMode::ALobbyGameMode()
 	CachedInGameMapPath = TEXT("");
 }
 
+void ALobbyGameMode::HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument)
+{
+	if (!EquippedPlayer || !EquippedInstrument) return;
+	
+	ADefaultPlayerState* PS = EquippedPlayer->GetPlayerState<ADefaultPlayerState>();
+	if (!PS) return;
+
+	PS->EquippedInstrumentClass = EquippedInstrument->GetClass();
+	
+	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
+	{
+		SetLobbyState(ELobbyState::CountdownToTravel);
+	}
+}
+
+void ALobbyGameMode::HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument)
+{
+}
+
 void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -98,12 +117,6 @@ void ALobbyGameMode::RequestServerTravel(const EGameState InGameState)
 			PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
 			break;
 	}
-}
-
-void ALobbyGameMode::SubscribeCharacterEvents(ADefaultTromboneCharacter* Character) const
-{
-	Character->OnInstrumentEquippedDelegate.AddDynamic(this, &ThisClass::HandleInstrumentEquipped);
-	Character->OnInstrumentUnequippedDelegate.AddDynamic(this, &ThisClass::HandleInstrumentUnequipped);
 }
 
 void ALobbyGameMode::InitializeMapPath()
@@ -212,23 +225,4 @@ void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
 {
 	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),Timer, false);
-}
-
-void ALobbyGameMode::HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument)
-{
-	if (!EquippedPlayer || !EquippedInstrument) return;
-	
-	ADefaultPlayerState* PS = EquippedPlayer->GetPlayerState<ADefaultPlayerState>();
-	if (!PS) return;
-
-	PS->EquippedInstrumentClass = EquippedInstrument->GetClass();
-	
-	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
-	{
-		SetLobbyState(ELobbyState::CountdownToTravel);
-	}
-}
-
-void ALobbyGameMode::HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument)
-{
 }

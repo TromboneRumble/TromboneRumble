@@ -4,27 +4,34 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Interfaces/InstrumentEquipHandler.h"
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
+class AInstrumentBase;
 class ADefaultTromboneCharacter;
 class ADefaultPlayerState;
 class ALobbyGameState;
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase
+class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IInstrumentEquipHandler
 {
 	GENERATED_BODY()
 	
 public:
 	ALobbyGameMode();
+
+	// IInstrumentEquipHandler Interfaces
+	virtual void HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument) override;
+	virtual void HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument) override;
+	// ~IInstrumentEquipHandler Interfaces
+	
 	virtual void BeginPlay() override;
 	virtual void Logout(AController* ExitedPlayer) override;
 	
 	void NotifyClientReady(APlayerController* ReadyPlayer);
 	void RequestServerTravel(EGameState InGameState);
-	void SubscribeCharacterEvents(ADefaultTromboneCharacter* Character) const;
-	
+
 private:
 	void InitializeMapPath();
 	void InitializeInstruments() const;
@@ -32,13 +39,6 @@ private:
 	void SetLobbyState(ELobbyState NewState);
 	void RequestServerTravel(const FString& MapPath) const;
 	void RequestSetTimer(TFunction<void()> OnTimerFinished);
-
-	// Delegate Handlers
-	UFUNCTION()
-	void HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument);
-	UFUNCTION()
-	void HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument);
-	// ~Delegate Handlers
 
 private:
 	UPROPERTY(Transient)

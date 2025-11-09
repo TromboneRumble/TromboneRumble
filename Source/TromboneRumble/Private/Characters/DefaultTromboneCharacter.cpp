@@ -63,6 +63,16 @@ void ADefaultTromboneCharacter::Equip(AItemBase* ItemToEquip)
 		EquippedInstrument = Instrument;
 		CurrentInteractionContext.bIsEquipped = true;
 		UpdateAttackComponentState();
+
+		if (HasAuthority())
+		{
+			AGameModeBase* CurrentGameMode = GetWorld()->GetAuthGameMode();
+			if (IInstrumentEquipHandler* EquipHandler = Cast<IInstrumentEquipHandler>(CurrentGameMode))
+			{
+				EquipHandler->HandleInstrumentEquipped(this, Instrument);
+			}
+		}
+		
 		OnInstrumentEquippedDelegate.Broadcast(this, Instrument);
 	}
 }
@@ -70,9 +80,20 @@ void ADefaultTromboneCharacter::Equip(AItemBase* ItemToEquip)
 void ADefaultTromboneCharacter::Unequip()
 {
 	OnInstrumentUnequippedDelegate.Broadcast(this, EquippedInstrument);
+
+	if (EquippedInstrument)
+	{
+		IEquipable::Execute_Unequip(EquippedInstrument, this);
+	}
 	
 	if (HasAuthority())
 	{
+		AGameModeBase* CurrentGameMode = GetWorld()->GetAuthGameMode();
+		if (IInstrumentEquipHandler* EquipHandler = Cast<IInstrumentEquipHandler>(CurrentGameMode))
+		{
+			EquipHandler->HandleInstrumentUnequipped(this, EquippedInstrument);
+		}
+		
 		EquippedInstrument = nullptr;
 	}
 	
@@ -169,11 +190,6 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 
 	if (!HasAuthority()) return;
 	
-	if (const ALobbyGameMode* GM = GetWorld()->GetAuthGameMode<ALobbyGameMode>())
-	{
-		GM->SubscribeCharacterEvents(this);
-	}
-	
 	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
 	if (PS && PS->EquippedInstrumentClass)
 	{
@@ -187,8 +203,8 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(PS->EquippedInstrumentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
 		if (NewInstrument)
 		{
-			IEquipable::Execute_Equip(NewInstrument, this);
 			Equip(NewInstrument);
+			IEquipable::Execute_Equip(NewInstrument, this);
 		}
 	}
 }
