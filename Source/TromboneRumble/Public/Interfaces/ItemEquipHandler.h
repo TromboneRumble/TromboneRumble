@@ -4,22 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "InstrumentEquipHandler.generated.h"
+#include "ItemEquipHandler.generated.h"
 
-class AInstrumentBase;
+class AItemBase;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UInstrumentEquipHandler : public UInterface
+class UItemEquipHandler : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class TROMBONERUMBLE_API IInstrumentEquipHandler
+class TROMBONERUMBLE_API IItemEquipHandler
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument) = 0;
-	virtual void HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument) = 0;
+	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) = 0;
+	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) = 0;
 };

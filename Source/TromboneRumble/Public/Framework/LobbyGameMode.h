@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "Interfaces/InstrumentEquipHandler.h"
+#include "Interfaces/ItemEquipHandler.h"
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
@@ -14,7 +14,7 @@ class ADefaultPlayerState;
 class ALobbyGameState;
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IInstrumentEquipHandler
+class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IItemEquipHandler
 {
 	GENERATED_BODY()
 	
@@ -22,8 +22,8 @@ public:
 	ALobbyGameMode();
 
 	// IInstrumentEquipHandler Interfaces
-	virtual void HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument) override;
-	virtual void HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument) override;
+	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
+	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
 	// ~IInstrumentEquipHandler Interfaces
 	
 	virtual void BeginPlay() override;

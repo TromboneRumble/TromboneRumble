@@ -26,14 +26,9 @@ ALobbyGameMode::ALobbyGameMode()
 	CachedInGameMapPath = TEXT("");
 }
 
-void ALobbyGameMode::HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrumentBase* EquippedInstrument)
+void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
-	if (!EquippedPlayer || !EquippedInstrument) return;
-	
-	ADefaultPlayerState* PS = EquippedPlayer->GetPlayerState<ADefaultPlayerState>();
-	if (!PS) return;
-
-	PS->EquippedInstrumentClass = EquippedInstrument->GetClass();
+	if (!EquippedPlayer || !EquippedItem) return;
 	
 	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
 	{
@@ -41,7 +36,7 @@ void ALobbyGameMode::HandleInstrumentEquipped(APawn* EquippedPlayer, AInstrument
 	}
 }
 
-void ALobbyGameMode::HandleInstrumentUnequipped(APawn* UnequippedPlayer, AInstrumentBase* UnequippedInstrument)
+void ALobbyGameMode::HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem)
 {
 }
 
