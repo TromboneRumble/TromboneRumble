@@ -65,7 +65,7 @@ void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget
 
 	if (RhythmNoteUIControllerComponent)
 	{
-		RhythmNoteUIControllerComponent->InitSettings(InNoteWidget, NoteHandle, InLineNum);
+		RhythmNoteUIControllerComponent->InitSettings(InSpawner->GetSpawnWidget(), InNoteWidget, NoteHandle, InLineNum);
 	}
 }
 

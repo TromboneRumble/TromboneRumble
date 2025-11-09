@@ -10,15 +10,10 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Actors/Rhythm/RhythmNote.h"
-#include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
-
 #include "Subsystems/ActorPoolSubsystem.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
-#include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
-
-#include "Utilities/DebugHelper.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -99,6 +94,7 @@ void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
 		//TODO : Remove Magic Number
 		NoteSlot->SetPosition(FVector2D(175.f, -300.f));
 	}
+	
 }
 
 void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
@@ -117,10 +113,8 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
-		
-
-		URhythmNoteWidget* CreatedRhythmNoteWidget = SpawnWidget->SpawnRhythmNoteWidget(LineNum);
-		PooledNote->InitNote(this, CreatedRhythmNoteWidget, TimeToComplete, LineNum);
+		URhythmNoteWidget* PooledRhythmNoteWidget = SpawnWidget->GetPooledRhythmNoteWidget(LineNum);
+		PooledNote->InitNote(this, PooledRhythmNoteWidget, TimeToComplete, LineNum);
 
 		if (InUserCueName.StartsWith(TEXT("SS_")))
 		{

@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS(Abstract, meta = (DisableNativeTick))
 class TROMBONERUMBLE_API URhythmNoteWidget : public UUserWidget
 {
 	GENERATED_BODY()

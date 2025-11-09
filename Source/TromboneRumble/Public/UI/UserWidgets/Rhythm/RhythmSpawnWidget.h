@@ -19,7 +19,9 @@ class TROMBONERUMBLE_API URhythmSpawnWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Note")
-	URhythmNoteWidget* SpawnRhythmNoteWidget(int32 LaneIndex);
+	URhythmNoteWidget* GetPooledRhythmNoteWidget(int32 LaneIndex);
+
+	void ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget);
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -32,7 +34,9 @@ public:
 	int32 MaxLanes = 3;
 
 protected:
+	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 private:
 	void OnViewPortResizedHandler(FViewport* ViewPort, uint32);
@@ -50,4 +54,7 @@ private:
 
 	UPROPERTY(Transient)
 	bool bInitializedPositions = false;
+
+	bool bViewportBound = false;
+	FDelegateHandle ViewportResizedHandle;
 };

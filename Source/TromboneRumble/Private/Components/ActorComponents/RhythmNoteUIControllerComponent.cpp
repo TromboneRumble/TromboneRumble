@@ -5,18 +5,20 @@
 #include "TromboneGamePlayTags.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
+#include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+
 
 URhythmNoteUIControllerComponent::URhythmNoteUIControllerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void URhythmNoteUIControllerComponent::InitSettings(URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx)
+void URhythmNoteUIControllerComponent::InitSettings(URhythmSpawnWidget* InSpawnWidget, URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx)
 {
-	
+	RhythmSpawnWidget = InSpawnWidget;
 	RhythmNoteWidget = InNoteWidget;
 	Handle = InHandle;
 	LaneIndex = InLineIdx;
@@ -26,22 +28,35 @@ void URhythmNoteUIControllerComponent::InitSettings(URhythmNoteWidget* InNoteWid
 void URhythmNoteUIControllerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (UWorld* World = GetWorld())
-	{
-		UGameplayMessageSubsystem& Msg = UGameplayMessageSubsystem::Get(World);
 
-		LayoutChangedHandle = Msg.RegisterListener<FViewportChangedMessage>(
-			TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged.GetTag(),
-			this,
-			&URhythmNoteUIControllerComponent::OnViewportChanged
-		);
+	if (UGameInstance* GameInstance = GetWorld() ? GetWorld()->GetGameInstance() : nullptr)
+	{
+		if (UGameplayMessageSubsystem* Msg = GameInstance->GetSubsystem<UGameplayMessageSubsystem>())
+		{
+			LayoutChangedHandle = Msg->RegisterListener<FViewportChangedMessage>(
+				TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged.GetTag(),
+				this,
+				&ThisClass::OnViewportChanged
+			);
+		}
 	}
 
 }
 
 void URhythmNoteUIControllerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (UGameInstance* GameInstance = GetWorld() ? GetWorld()->GetGameInstance() : nullptr)
+	{
+		if (UGameplayMessageSubsystem* Msg = GameInstance->GetSubsystem<UGameplayMessageSubsystem>())
+		{
+			if (LayoutChangedHandle.IsValid())
+			{
+				Msg->UnregisterListener(LayoutChangedHandle);
+				LayoutChangedHandle = {};
+			}
+		}
+	}
+
 	UnbindChannel();
 	Super::EndPlay(EndPlayReason);
 }
@@ -59,7 +74,11 @@ void URhythmNoteUIControllerComponent::BindChannel()
 				});
 			DespawnHandle = Channel->OnDespawn.AddWeakLambda(this, [this]()
 				{
-					if (RhythmNoteWidget.IsValid()) RhythmNoteWidget->RemoveFromParent();
+					if (RhythmNoteWidget.IsValid() && RhythmSpawnWidget.IsValid()) {
+						RhythmSpawnWidget->ReleasePooledRhythmNoteWidget(RhythmNoteWidget.Get());
+						RhythmSpawnWidget = nullptr;
+						RhythmNoteWidget = nullptr;
+					}
 				});
 		}
 	}

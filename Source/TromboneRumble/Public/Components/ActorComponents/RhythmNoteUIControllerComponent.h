@@ -9,6 +9,7 @@
 #include "RhythmNoteUIControllerComponent.generated.h"
 
 
+class URhythmSpawnWidget;
 class URhythmNoteWidget;
 
 /*
@@ -22,7 +23,7 @@ class TROMBONERUMBLE_API URhythmNoteUIControllerComponent : public UActorCompone
 public:	
 	URhythmNoteUIControllerComponent();
 
-	void InitSettings(URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx);
+	void InitSettings(URhythmSpawnWidget* InSpawnWidget, URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -37,6 +38,8 @@ private:
 
 	UPROPERTY(Transient)
 	FNoteHandle Handle;
+	UPROPERTY(Transient)
+	TWeakObjectPtr<URhythmSpawnWidget> RhythmSpawnWidget = nullptr;
 	UPROPERTY(Transient)
 	TWeakObjectPtr<URhythmNoteWidget> RhythmNoteWidget = nullptr;
 
