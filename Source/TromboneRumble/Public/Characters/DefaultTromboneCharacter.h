@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class AItemBase;
 class UAttackDataAsset;
 class AInstrumentBase;
 class UAttackComponent;
@@ -15,6 +16,9 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentEquippedSignature, APawn*, EquippedPlayer, AInstrumentBase*, EquippedInstrument);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentUnequippedSignature, APawn*, UnequippedPlayer, AInstrumentBase*, UnequippedInstrument);
+
 UCLASS()
 class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase
 {
@@ -23,12 +27,17 @@ class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBa
 public:
 	ADefaultTromboneCharacter();
 
+	virtual void Equip(AItemBase* ItemToEquip);
+	virtual void Unequip();
 	virtual void Jump() override;
 	void Move(const FInputActionValue& Value);
 	void Interact();
 	void Attack();
 	void StartSprint();
 	void StopSprint();
+	
+	FOnInstrumentEquippedSignature OnInstrumentEquippedDelegate;
+	FOnInstrumentUnequippedSignature OnInstrumentUnequippedDelegate;
 
 protected:
 	virtual void BeginPlay() override;
@@ -64,7 +73,7 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_SetIsSprinting(const bool bNewIsSprinting);
 	UFUNCTION(Server, Reliable)
-	void Server_Interact(AActor* InteractedActor);
+	void Server_InteractItem(AItemBase* InteractedItem);
 	// ~Server RPCs
 	
 	// Delegate Callback Handlers

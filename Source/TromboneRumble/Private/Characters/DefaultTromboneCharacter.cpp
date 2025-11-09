@@ -11,6 +11,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Framework/LobbyGameMode.h"
 #include "Items/InstrumentBase.h"
 #include "Utilities/DebugHelper.h"
 
@@ -53,6 +54,30 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
+}
+
+void ADefaultTromboneCharacter::Equip(AItemBase* ItemToEquip)
+{
+	if (AInstrumentBase* Instrument = Cast<AInstrumentBase>(ItemToEquip))
+	{
+		EquippedInstrument = Instrument;
+		CurrentInteractionContext.bIsEquipped = true;
+		UpdateAttackComponentState();
+		OnInstrumentEquippedDelegate.Broadcast(this, Instrument);
+	}
+}
+
+void ADefaultTromboneCharacter::Unequip()
+{
+	OnInstrumentUnequippedDelegate.Broadcast(this, EquippedInstrument);
+	
+	if (HasAuthority())
+	{
+		EquippedInstrument = nullptr;
+	}
+	
+	CurrentInteractionContext.bIsEquipped = false;
+	UpdateAttackComponentState();
 }
 
 void ADefaultTromboneCharacter::Jump()
@@ -144,6 +169,11 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 
 	if (!HasAuthority()) return;
 	
+	if (const ALobbyGameMode* GM = GetWorld()->GetAuthGameMode<ALobbyGameMode>())
+	{
+		GM->SubscribeCharacterEvents(this);
+	}
+	
 	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
 	if (PS && PS->EquippedInstrumentClass)
 	{
@@ -154,33 +184,14 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = this;
 
-		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(
-			PS->EquippedInstrumentClass, 
-			GetActorLocation(),
-			GetActorRotation(),
-			SpawnParams
-		);
-
+		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(PS->EquippedInstrumentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
 		if (NewInstrument)
 		{
 			IEquipable::Execute_Equip(NewInstrument, this);
-			EquippedInstrument = NewInstrument;
-			CurrentInteractionContext.bIsEquipped = true;
-			UpdateAttackComponentState();
+			Equip(NewInstrument);
 		}
 	}
 }
-
-void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* InteractedActor)
-{
-	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
-	{
-		EquippedInstrument = Instrument;
-		CurrentInteractionContext.bIsEquipped = true;
-		UpdateAttackComponentState();
-	}
-}
-
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
 {
@@ -188,6 +199,11 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 	{
 		bIsSprinting = bNewIsSprinting;
 	}
+}
+
+void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* InteractedItem)
+{
+	Equip(InteractedItem);
 }
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
@@ -200,21 +216,17 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 
 void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 {
-	if (IsValid(InteractedActor) && InteractedActor->IsA<AInstrumentBase>())
+	if (!IsValid(InteractedActor)) return;
+
+	if (AItemBase* Item = Cast<AItemBase>(InteractedActor))
 	{
-		Server_Interact(InteractedActor);
+		Server_InteractItem(Item);
 	}
 }
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	if (HasAuthority())
-	{
-		EquippedInstrument = nullptr;
-	}
-	
-	CurrentInteractionContext.bIsEquipped = false;
-	UpdateAttackComponentState();
+	Unequip();
 }
 
 void ADefaultTromboneCharacter::OnRep_EquippedInstrument()

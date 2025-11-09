@@ -6,8 +6,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/GameModeBase.h"
-#include "Interfaces/InstrumentEventHandler.h"
 #include "Net/UnrealNetwork.h"
 
 AInstrumentBase::AInstrumentBase()
@@ -58,17 +56,6 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 	OnRep_Equipped();
 
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
-    
-	if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
-	{
-		if (const APawn* OwnerPawn = Cast<APawn>(OwnerActor))
-		{
-			if (APlayerController* PlayerController = OwnerPawn->GetController<APlayerController>())
-			{
-				EventHandler->NotifyInstrumentEquipped(PlayerController, this);
-			}
-		}
-	}
 }
 
 void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
@@ -90,17 +77,6 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
     
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(true);
 	if (ItemMeshComponent) ItemMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
-
-	if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
-	{
-		if (const APawn* OwnerPawn = Cast<APawn>(OwnerActor))
-		{
-			if (APlayerController* PlayerController = OwnerPawn->GetController<APlayerController>())
-			{
-				EventHandler->NotifyInstrumentUnequipped(PlayerController, this);
-			}
-		}
-	}
 }
 
 void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -118,16 +94,6 @@ void AInstrumentBase::PlaySound() const
 void AInstrumentBase::StopSound() const
 {
 	if (AudioComponent) AudioComponent->Stop();
-}
-
-IInstrumentEventHandler* AInstrumentBase::GetInstrumentEventHandler() const
-{
-	AGameModeBase* const CurrentGameMode = GetWorld()->GetAuthGameMode();
-	if (CurrentGameMode && CurrentGameMode->Implements<UInstrumentEventHandler>())
-	{
-		return Cast<IInstrumentEventHandler>(CurrentGameMode);
-	}
-	return nullptr;
 }
 
 void AInstrumentBase::OnRep_Equipped()

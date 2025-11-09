@@ -32,7 +32,6 @@ protected:
 	
 	void PlaySound() const;
 	void StopSound() const;
-	IInstrumentEventHandler* GetInstrumentEventHandler() const;
 
 	UFUNCTION()
 	virtual void OnRep_Equipped();
