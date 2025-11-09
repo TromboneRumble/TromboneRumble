@@ -10,7 +10,9 @@
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -30,7 +32,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -55,19 +57,14 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 void ADefaultTromboneCharacter::Jump()
 {
-	if (bIsSprinting && !EquippedInstrument)
+	if (bIsSprinting && !CurrentInteractionContext.bIsEquipped)
 	{
-		Attack();
+		AttackComponent->Attack();
 	}
 	else
 	{
 		Super::Jump();
 	}
-}
-
-void ADefaultTromboneCharacter::StopJumping()
-{
-	Super::StopJumping();
 }
 
 void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
@@ -86,17 +83,6 @@ void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 	}
 }
 
-void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
-{
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
-}
-
 void ADefaultTromboneCharacter::Interact()
 {
 	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
@@ -104,15 +90,15 @@ void ADefaultTromboneCharacter::Interact()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	if (AttackComponent) AttackComponent->Attack();
+	if (AttackComponent && CurrentInteractionContext.bIsEquipped) AttackComponent->Attack();
 }
 
-void ADefaultTromboneCharacter::Sprint()
+void ADefaultTromboneCharacter::StartSprint()
 {
 	if (bIsSprinting) return; 
 
 	bIsSprinting = true;
-	Server_StartSprint();
+	Server_SetIsSprinting(true);
 }
 
 void ADefaultTromboneCharacter::StopSprint()
@@ -120,7 +106,7 @@ void ADefaultTromboneCharacter::StopSprint()
 	if (!bIsSprinting) return;
 
 	bIsSprinting = false;
-	Server_StopSprint();
+	Server_SetIsSprinting(false);
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
@@ -152,14 +138,37 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	DOREPLIFETIME(ThisClass, EquippedInstrument);
 }
 
-void ADefaultTromboneCharacter::Server_StartSprint_Implementation()
+void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 {
-	bIsSprinting = true;
-}
+	Super::PossessedBy(NewController);
 
-void ADefaultTromboneCharacter::Server_StopSprint_Implementation()
-{
-	bIsSprinting = false;
+	if (!HasAuthority()) return;
+	
+	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
+	if (PS && PS->EquippedInstrumentClass)
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
+
+		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(
+			PS->EquippedInstrumentClass, 
+			GetActorLocation(),
+			GetActorRotation(),
+			SpawnParams
+		);
+
+		if (NewInstrument)
+		{
+			IEquipable::Execute_Equip(NewInstrument, this);
+			EquippedInstrument = NewInstrument;
+			CurrentInteractionContext.bIsEquipped = true;
+			UpdateAttackComponentState();
+		}
+	}
 }
 
 void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* InteractedActor)
@@ -172,6 +181,14 @@ void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* Interacte
 	}
 }
 
+
+void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
+{
+	if (bIsSprinting != bNewIsSprinting)
+	{
+		bIsSprinting = bNewIsSprinting;
+	}
+}
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
 {
@@ -226,18 +243,14 @@ void ADefaultTromboneCharacter::UpdateAttackComponentState()
 
 void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
 {
-	if (auto* MovementComponent = GetCharacterMovement())
-	{
-		const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
+	const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
+	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
+	if (!MoveComp) return;
 
-		if (MovementComponent->MaxWalkSpeed != TargetSpeed)
-		{
-			MovementComponent->MaxWalkSpeed = FMath::FInterpTo(
-				MovementComponent->MaxWalkSpeed,
-				TargetSpeed,
-				DeltaSeconds,
-				SprintInterpSpeed
-			);
-		}
+	const float CurrentSpeed = MoveComp->MaxWalkSpeed;
+	if (!FMath::IsNearlyEqual(CurrentSpeed, TargetSpeed))
+	{
+		float NewSpeed = FMath::FInterpTo(CurrentSpeed, TargetSpeed, DeltaSeconds, SprintInterpSpeed);
+		MoveComp->MaxWalkSpeed = NewSpeed;
 	}
 }

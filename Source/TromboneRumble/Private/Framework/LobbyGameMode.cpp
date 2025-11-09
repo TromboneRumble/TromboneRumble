@@ -6,9 +6,11 @@
 #include "OnlineSessionSettings.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Framework/LobbyGameState.h"
-#include "Framework/LobbyPlayerState.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
+#include "Items/InstrumentBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "Utilities/DebugHelper.h"
@@ -17,6 +19,8 @@
 ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bUseSeamlessTravel = true;
+	NumPublicConnections = 4;
 	CurrentEquippedInstruments = 0;
 	Timer = 5.0f; // TODO : delete magic number
 	CachedInGameMapPath = TEXT("");
@@ -30,11 +34,6 @@ void ALobbyGameMode::BeginPlay()
 	OnInstrumentEquippedDelegate.AddDynamic(this, &ALobbyGameMode::HandleInstrumentEquipped);
 	
 	LobbyGameState = GetGameState<ALobbyGameState>();
-	if (!LobbyGameState)
-	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("LobbyGameState is null"));
-		return;
-	}
 
 	const UWorld* World = GetWorld();
 	if (!World) return;
@@ -45,20 +44,12 @@ void ALobbyGameMode::BeginPlay()
 	const USessionSubsystem* SessionSubsystem = GameInstance->GetSubsystem<USessionSubsystem>();
 	if (!SessionSubsystem) return;
 
-	if (SessionSubsystem)
+	const TSharedPtr<FOnlineSessionSettings> LastSetting = SessionSubsystem->GetLastSessionSettings();
+	if (LastSetting.IsValid())
 	{
-		TSharedPtr<FOnlineSessionSettings> LastSetting = SessionSubsystem->GetLastSessionSettings();
-		if (LastSetting.IsValid())
-		{
-			NumPublicConnections = LastSetting->NumPublicConnections;
-		}
-		else NumPublicConnections = 4;
+		NumPublicConnections = LastSetting->NumPublicConnections;
 	}
-	else
-	{
-		NumPublicConnections = 4;
-	}
-	
+
 	InitializeMapPath();
 	InitializeInstruments();
 	SetLobbyState(ELobbyState::WaitingForPlayers);
@@ -90,26 +81,16 @@ void ALobbyGameMode::RequestServerTravel(const EGameState InGameState)
 		case EGameState::MainMenu:
 			PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
 			break;
-		case EGameState::InGame:
-			RequestServerTravel(CachedInGameMapPath);
-			break;
 		case EGameState::Lobby:
 			RequestServerTravel(CachedLobbyMapPath);
+			break;
+		case EGameState::InGame:
+			RequestServerTravel(CachedInGameMapPath);
 			break;
 		default:
 			PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
 			break;
 	}
-}
-
-void ALobbyGameMode::NotifyInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument)
-{
-	OnInstrumentEquipped(EquippedPlayer);
-}
-
-void ALobbyGameMode::NotifyInstrumentUnequipped(APlayerController* UnequippedPlayer, AActor* UnequippedInstrument)
-{
-	IInstrumentEventHandler::NotifyInstrumentUnequipped(UnequippedPlayer, UnequippedInstrument);
 }
 
 void ALobbyGameMode::InitializeMapPath()
@@ -159,12 +140,12 @@ bool ALobbyGameMode::CheckAllClientsReady()
 {
 	if (GetNumPlayers() < NumPublicConnections) return false;
 	
-	for (APlayerState* PlayerState : GetGameState<AGameStateBase>()->PlayerArray)
+	for (APlayerState* PS : GetGameState<AGameStateBase>()->PlayerArray)
 	{
-		if (!PlayerState) return false;
+		if (!PS) return false;
 		
-		const ALobbyPlayerState* LobbyPlayerState = Cast<ALobbyPlayerState>(PlayerState);
-		if (!LobbyPlayerState || !LobbyPlayerState->IsReady()) return false;
+		const ADefaultPlayerState* DPS = Cast<ADefaultPlayerState>(PS);
+		if (!DPS || !DPS->IsReady()) return false;
 	}
 
 	return true;
@@ -224,23 +205,24 @@ void ALobbyGameMode::HandleClientReady(APlayerController* ReadyPlayer)
 {
 	if (!ReadyPlayer) return;
 
-	const FString PlayerName = ReadyPlayer->PlayerState->GetPlayerName();
-	const FString DebugMsg = FString::Printf(TEXT("Player Ready: %s"), *PlayerName);
-	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
-
 	if (CheckAllClientsReady())
 	{
 		SetLobbyState(ELobbyState::CountdownToScramble);
 	}
 }
 
-void ALobbyGameMode::HandleInstrumentEquipped(APlayerController* EquippedPlayer)
+void ALobbyGameMode::HandleInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument)
 {
-	if (!EquippedPlayer) return;
+	if (!EquippedPlayer || !EquippedInstrument) return;
+	
+	ADefaultPlayerState* PS = EquippedPlayer->GetPlayerState<ADefaultPlayerState>();
+	if (!PS) return;
 
-	const FString DebugMsg = FString::Printf(TEXT("Instrument Equipped by %s"), *EquippedPlayer->PlayerState->GetPlayerName());
-	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
-
+	const AInstrumentBase* Instrument = Cast<AInstrumentBase>(EquippedInstrument);
+	if (!Instrument) return;
+	
+	PS->EquippedInstrumentClass = Instrument->GetClass();
+	
 	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
 	{
 		SetLobbyState(ELobbyState::CountdownToTravel);
