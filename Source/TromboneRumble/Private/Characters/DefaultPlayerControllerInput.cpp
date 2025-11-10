@@ -68,7 +68,7 @@ void ADefaultPlayerController::Handle_JumpReleased()
 
 void ADefaultPlayerController::Handle_Interact()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Interact();
+	if (CachedOwnerCharacter) CachedOwnerCharacter->TryInteract();
 }
 
 void ADefaultPlayerController::Handle_SprintPressed()

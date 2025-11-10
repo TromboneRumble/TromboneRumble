@@ -49,9 +49,6 @@ protected:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	
 	UPROPERTY()
-	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
-	
-	UPROPERTY()
 	TObjectPtr<UPrimitiveComponent> CollisionComponent = nullptr;
 
 	FTransform PreviousFrameTransform;
@@ -61,5 +58,8 @@ protected:
 private:
 	void ResetAttackCooldown() { bCanAttack = true; }
 
+	UPROPERTY()
+	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
+	
 	FTimerHandle AttackCooldownTimerHandle;
 };

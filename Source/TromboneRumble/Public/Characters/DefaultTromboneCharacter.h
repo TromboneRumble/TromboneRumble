@@ -6,6 +6,8 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UEquipmentComponent;
+class AItemBase;
 class UAttackDataAsset;
 class AInstrumentBase;
 class UAttackComponent;
@@ -25,11 +27,11 @@ public:
 
 	virtual void Jump() override;
 	void Move(const FInputActionValue& Value);
-	void Interact();
+	void TryInteract();
 	void Attack();
 	void StartSprint();
 	void StopSprint();
-
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -48,6 +50,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAttackComponent> AttackComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UEquipmentComponent> EquipmentComponent;
 	// ~Components
 	
 	UPROPERTY(EditAnywhere)
@@ -55,16 +60,15 @@ protected:
 	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
-
-	UPROPERTY(Transient, ReplicatedUsing = OnRep_EquippedInstrument)
-	TObjectPtr<AInstrumentBase> EquippedInstrument = nullptr;
+	
+	FInteractionContext CurrentInteractionContext;
 
 private:
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
 	void Server_SetIsSprinting(const bool bNewIsSprinting);
 	UFUNCTION(Server, Reliable)
-	void Server_Interact(AActor* InteractedActor);
+	void Server_InteractItem(AItemBase* InteractedItem);
 	// ~Server RPCs
 	
 	// Delegate Callback Handlers
@@ -74,14 +78,10 @@ private:
 	void HandleInteractSuccess(AActor* InteractedActor);
 	UFUNCTION()
 	void HandleOnRagdoll();
-	// ~Delegate Callback Handlers
-
-	// Replication Notifies
 	UFUNCTION()
-	void OnRep_EquippedInstrument();
-	// ~Replication Notifies
+	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
+	// ~Delegate Callback Handlers
 	
-	void UpdateAttackComponentState();
 	void InterpolateMovementSpeed(float DeltaSeconds) const;
 	
 	UPROPERTY(Replicated)
@@ -95,6 +95,4 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
 	float SprintInterpSpeed = 5.0f;
-	
-	FInteractionContext CurrentInteractionContext;
 };

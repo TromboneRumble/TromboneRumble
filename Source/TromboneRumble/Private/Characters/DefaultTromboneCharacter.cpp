@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponents/AttackComponent.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Framework/DefaultPlayerState.h"
@@ -53,11 +54,14 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
+	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()
 {
-	if (bIsSprinting && !CurrentInteractionContext.bIsEquipped)
+	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	
+	if (bIsSprinting && !Weapon)
 	{
 		AttackComponent->Attack();
 	}
@@ -83,14 +87,16 @@ void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 	}
 }
 
-void ADefaultTromboneCharacter::Interact()
+void ADefaultTromboneCharacter::TryInteract()
 {
 	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
 }
 
 void ADefaultTromboneCharacter::Attack()
 {
-	if (AttackComponent && CurrentInteractionContext.bIsEquipped) AttackComponent->Attack();
+	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	
+	if (AttackComponent && Weapon) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::StartSprint()
@@ -118,9 +124,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
+	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
-	if (AttackComponent) UpdateAttackComponentState();
+	HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
 }
 
 void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
@@ -135,7 +142,6 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ThisClass, bIsSprinting);
-	DOREPLIFETIME(ThisClass, EquippedInstrument);
 }
 
 void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
@@ -143,6 +149,11 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	if (!HasAuthority()) return;
+
+	if (EquipmentComponent)
+	{
+		EquipmentComponent->InitializeOwner(this);
+	}
 	
 	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
 	if (PS && PS->EquippedInstrumentClass)
@@ -154,33 +165,13 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = this;
 
-		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(
-			PS->EquippedInstrumentClass, 
-			GetActorLocation(),
-			GetActorRotation(),
-			SpawnParams
-		);
-
+		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(PS->EquippedInstrumentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
 		if (NewInstrument)
 		{
-			IEquipable::Execute_Equip(NewInstrument, this);
-			EquippedInstrument = NewInstrument;
-			CurrentInteractionContext.bIsEquipped = true;
-			UpdateAttackComponentState();
+			EquipmentComponent->TryEquipItem(NewInstrument);
 		}
 	}
 }
-
-void ADefaultTromboneCharacter::Server_Interact_Implementation(AActor* InteractedActor)
-{
-	if (const TObjectPtr<AInstrumentBase> Instrument = Cast<AInstrumentBase>(InteractedActor))
-	{
-		EquippedInstrument = Instrument;
-		CurrentInteractionContext.bIsEquipped = true;
-		UpdateAttackComponentState();
-	}
-}
-
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
 {
@@ -188,6 +179,11 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 	{
 		bIsSprinting = bNewIsSprinting;
 	}
+}
+
+void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* InteractedItem)
+{
+	EquipmentComponent->TryEquipItem(InteractedItem);
 }
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
@@ -200,44 +196,40 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 
 void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 {
-	if (IsValid(InteractedActor) && InteractedActor->IsA<AInstrumentBase>())
+	if (!IsValid(InteractedActor)) return;
+
+	if (AItemBase* Item = Cast<AItemBase>(InteractedActor))
 	{
-		Server_Interact(InteractedActor);
+		Server_InteractItem(Item);
 	}
 }
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	if (HasAuthority())
-	{
-		EquippedInstrument = nullptr;
-	}
-	
-	CurrentInteractionContext.bIsEquipped = false;
-	UpdateAttackComponentState();
+	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
 }
 
-void ADefaultTromboneCharacter::OnRep_EquippedInstrument()
-{
-	UpdateAttackComponentState();
-}
-
-void ADefaultTromboneCharacter::UpdateAttackComponentState()
+void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
 	if (!AttackComponent) return;
-
-	if (EquippedInstrument)
+	
+	if (Slot == EEquipmentSlotType::Weapon)
 	{
-		UPrimitiveComponent* Collision = EquippedInstrument->GetCapsuleComponent();
-		UAttackDataAsset* Data = EquippedInstrument->GetAttackData();
-       
-		AttackComponent->SetCollisionComponent(Collision);
-		AttackComponent->SetAttackData(Data);
-	}
-	else
-	{
-		AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
-		AttackComponent->SetAttackData(HeadbuttAttackData);
+		if (NewItem)
+		{
+			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
+			{
+				AttackComponent->SetCollisionComponent(Instrument->GetCapsuleComponent());
+				AttackComponent->SetAttackData(Instrument->GetAttackData());
+				CurrentInteractionContext.bIsEquipped = true;
+			}
+		}
+		else
+		{
+			AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
+			AttackComponent->SetAttackData(HeadbuttAttackData);
+			CurrentInteractionContext.bIsEquipped = false;
+		}
 	}
 }
 

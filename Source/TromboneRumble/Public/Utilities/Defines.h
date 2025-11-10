@@ -3,6 +3,13 @@
 #include "CoreMinimal.h"
 #include "Defines.generated.h"
 
+UENUM()
+enum class EEquipmentSlotType : uint8
+{
+	Weapon,
+	MAX_SLOTS
+};
+
 USTRUCT()
 struct FInteractionContext
 {
