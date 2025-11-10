@@ -32,7 +32,6 @@ protected:
 	
 	void PlaySound() const;
 	void StopSound() const;
-	IInstrumentEventHandler* GetInstrumentEventHandler() const;
 
 	UFUNCTION()
 	virtual void OnRep_Equipped();
@@ -50,9 +49,6 @@ protected:
 	TObjectPtr<UAttackDataAsset> AttackData;
 
 private:
-	UFUNCTION()
-	void HandleUnequip();
-	
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
 

@@ -4,40 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "Interfaces/InstrumentEventHandler.h"
+#include "Interfaces/ItemEquipHandler.h"
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
+class AInstrumentBase;
+class ADefaultTromboneCharacter;
 class ADefaultPlayerState;
 class ALobbyGameState;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClientReadySignature, APlayerController*, ReadyPlayer);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentEquippedSignature, APlayerController*, EqippedPlayer, AActor*, EquippedInstrument);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentUnequippedSignature, APlayerController*, UnequippedPlayer, AActor*, UnequippedInstrument);
-
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IInstrumentEventHandler
+class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IItemEquipHandler
 {
 	GENERATED_BODY()
 	
 public:
 	ALobbyGameMode();
+
+	// IInstrumentEquipHandler Interfaces
+	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
+	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
+	// ~IInstrumentEquipHandler Interfaces
+	
 	virtual void BeginPlay() override;
 	virtual void Logout(AController* ExitedPlayer) override;
-
-	// IInstrumentEventHandler interface
-	virtual void NotifyInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument) override { OnInstrumentEquippedDelegate.Broadcast(EquippedPlayer, EquippedInstrument); }
-	virtual void NotifyInstrumentUnequipped(APlayerController* UnequippedPlayer, AActor* UnequippedInstrument) override { OnInstrumentUnequippedDelegate.Broadcast(UnequippedPlayer, UnequippedInstrument); }
-	// ~ IInstrumentEventHandler interface
 	
+	void NotifyClientReady(APlayerController* ReadyPlayer);
 	void RequestServerTravel(EGameState InGameState);
-	
-	FORCEINLINE void OnClientReady(APlayerController* ReadyPlayer) const { OnClientReadyDelegate.Broadcast(ReadyPlayer); }
-	
-public:
-	FOnClientReadySignature OnClientReadyDelegate;
-	FOnInstrumentEquippedSignature OnInstrumentEquippedDelegate;
-	FOnInstrumentUnequippedSignature OnInstrumentUnequippedDelegate;
 
 private:
 	void InitializeMapPath();
@@ -46,11 +39,6 @@ private:
 	void SetLobbyState(ELobbyState NewState);
 	void RequestServerTravel(const FString& MapPath) const;
 	void RequestSetTimer(TFunction<void()> OnTimerFinished);
-
-	UFUNCTION()
-	void HandleClientReady(APlayerController* ReadyPlayer);
-	UFUNCTION()
-	void HandleInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument);
 
 private:
 	UPROPERTY(Transient)

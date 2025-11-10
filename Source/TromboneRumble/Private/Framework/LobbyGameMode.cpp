@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/LobbyGameMode.h"
-
 #include "AkGameplayStatics.h"
 #include "OnlineSessionSettings.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Framework/LobbyGameState.h"
 #include "GameFramework/GameStateBase.h"
@@ -26,12 +26,23 @@ ALobbyGameMode::ALobbyGameMode()
 	CachedInGameMapPath = TEXT("");
 }
 
+void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
+{
+	if (!EquippedPlayer || !EquippedItem) return;
+	
+	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
+	{
+		SetLobbyState(ELobbyState::CountdownToTravel);
+	}
+}
+
+void ALobbyGameMode::HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem)
+{
+}
+
 void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	OnClientReadyDelegate.AddDynamic(this, &ALobbyGameMode::HandleClientReady);
-	OnInstrumentEquippedDelegate.AddDynamic(this, &ALobbyGameMode::HandleInstrumentEquipped);
 	
 	LobbyGameState = GetGameState<ALobbyGameState>();
 
@@ -71,6 +82,16 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	if (CurrentLobbyState == ELobbyState::CountdownToScramble || CurrentLobbyState == ELobbyState::InstrumentScramble)
 	{
 		SetLobbyState(ELobbyState::WaitingForPlayers);
+	}
+}
+
+void ALobbyGameMode::NotifyClientReady(APlayerController* ReadyPlayer)
+{
+	if (!ReadyPlayer) return;
+
+	if (CheckAllClientsReady())
+	{
+		SetLobbyState(ELobbyState::CountdownToScramble);
 	}
 }
 
@@ -199,32 +220,4 @@ void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
 {
 	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),Timer, false);
-}
-
-void ALobbyGameMode::HandleClientReady(APlayerController* ReadyPlayer)
-{
-	if (!ReadyPlayer) return;
-
-	if (CheckAllClientsReady())
-	{
-		SetLobbyState(ELobbyState::CountdownToScramble);
-	}
-}
-
-void ALobbyGameMode::HandleInstrumentEquipped(APlayerController* EquippedPlayer, AActor* EquippedInstrument)
-{
-	if (!EquippedPlayer || !EquippedInstrument) return;
-	
-	ADefaultPlayerState* PS = EquippedPlayer->GetPlayerState<ADefaultPlayerState>();
-	if (!PS) return;
-
-	const AInstrumentBase* Instrument = Cast<AInstrumentBase>(EquippedInstrument);
-	if (!Instrument) return;
-	
-	PS->EquippedInstrumentClass = Instrument->GetClass();
-	
-	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
-	{
-		SetLobbyState(ELobbyState::CountdownToTravel);
-	}
 }
