@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UCharacterDataAsset;
 class UEquipmentComponent;
 class AItemBase;
 class UAttackDataAsset;
@@ -34,15 +35,14 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	
 	// Components
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY()
@@ -82,17 +82,6 @@ private:
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 	// ~Delegate Callback Handlers
 	
-	void InterpolateMovementSpeed(float DeltaSeconds) const;
-	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
-	float WalkSpeed = 250.0f;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
-	float SprintSpeed = 600.0f;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Movement")
-	float SprintInterpSpeed = 5.0f;
 };
