@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
+#include "Utilities/Defines.h"
 #include "ItemBase.generated.h"
 
 class UInteractionTriggerComponent;

@@ -17,6 +17,7 @@ class ARhythmNoteSpawner;
 class UBoxComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentPickedDelegate, EInstrumentType, InType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InResult);
 
 UCLASS()
 class TROMBONERUMBLE_API ARhythmActor : public AActor
@@ -40,9 +41,18 @@ public:
 		OnInstrumentPicked.Broadcast(InType);
 	}
 
+	UFUNCTION(BlueprintCallable)
+	void ExecuteOnNoteDetected(ENoteResult InNote) const
+	{
+		OnNoteDetected.Broadcast(InNote);
+	}
+
 	UPROPERTY(BlueprintAssignable)
 	FOnInstrumentPickedDelegate OnInstrumentPicked;
 
+
+	UPROPERTY(BlueprintAssignable)
+	FOnNoteDetectedDelegate OnNoteDetected;
 	
 
 	// Init Game

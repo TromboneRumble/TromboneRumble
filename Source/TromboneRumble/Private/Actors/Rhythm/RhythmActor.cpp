@@ -52,13 +52,19 @@ void ARhythmActor::Tick(float DeltaTime)
 
 ENoteResult ARhythmActor::DetectNotes()
 {
+	if (FocusedType == EInstrumentType::Background || FocusedType == EInstrumentType::Invalid)
+	{
+		return ENoteResult::None;
+	}
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
 	if (!BestNote)
 	{
-		FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(ENoteResult::Bad));
-		Debug::Print(EnumName);
+		/*FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(ENoteResult::Bad));
+		Debug::Print(EnumName);*/
+		OnNoteDetected.Broadcast(ENoteResult::Bad);
 		return ENoteResult::Bad;
+		
 	}
 
 	//롱노트 시작점일 경우
@@ -72,8 +78,9 @@ ENoteResult ARhythmActor::DetectNotes()
 
 	//숏노트일 경우
 	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
-	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
-	Debug::Print(EnumName);
+	/*FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
+	Debug::Print(EnumName);*/
+	OnNoteDetected.Broadcast(Result);
 	return Result;
 }
 

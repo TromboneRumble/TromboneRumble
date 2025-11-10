@@ -13,6 +13,8 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
+#include "Actors/Rhythm/RhythmActor.h"
+#include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -120,6 +122,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
+	GetCachedRhythmActor();
 
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
@@ -128,6 +131,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
 	HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
+	
 }
 
 void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
@@ -222,6 +226,10 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 				AttackComponent->SetCollisionComponent(Instrument->GetCapsuleComponent());
 				AttackComponent->SetAttackData(Instrument->GetAttackData());
 				CurrentInteractionContext.bIsEquipped = true;
+				if (GetCachedRhythmActor())
+				{
+					CachedRhythmActor->ExecuteOnInstrumentPicked(Instrument->GetInstrumentType());
+				}
 			}
 		}
 		else
@@ -229,6 +237,10 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
 			AttackComponent->SetAttackData(HeadbuttAttackData);
 			CurrentInteractionContext.bIsEquipped = false;
+			if (GetCachedRhythmActor())
+			{
+				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
+			}
 		}
 	}
 }
@@ -245,4 +257,17 @@ void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSecond
 		float NewSpeed = FMath::FInterpTo(CurrentSpeed, TargetSpeed, DeltaSeconds, SprintInterpSpeed);
 		MoveComp->MaxWalkSpeed = NewSpeed;
 	}
+}
+
+ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
+{
+	if (CachedRhythmActor.IsValid()) return CachedRhythmActor.Get();
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+	if (ARhythmActor* FoundActor = Cast<ARhythmActor>(UGameplayStatics::GetActorOfClass(World, ARhythmActor::StaticClass())))
+	{
+		CachedRhythmActor = FoundActor;
+		return CachedRhythmActor.Get();
+	}
+	return nullptr;
 }
