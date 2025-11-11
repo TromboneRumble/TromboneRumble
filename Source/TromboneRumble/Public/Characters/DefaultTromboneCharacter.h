@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class ARhythmActor;
 class UCharacterDataAsset;
 class UEquipmentComponent;
 class AItemBase;
@@ -60,6 +61,9 @@ protected:
 	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ARhythmActor> CachedRhythmActor;
 	
 	FInteractionContext CurrentInteractionContext;
 
@@ -81,6 +85,9 @@ private:
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 	// ~Delegate Callback Handlers
+	
+	void InterpolateMovementSpeed(float DeltaSeconds) const;
+	ARhythmActor* GetCachedRhythmActor();
 	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;

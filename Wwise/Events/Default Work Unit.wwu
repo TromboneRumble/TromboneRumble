@@ -183,6 +183,17 @@
 						</Folder>
 					</ChildrenList>
 				</Folder>
+				<Event Name="Play_Inst_Fail" ID="{2DD019B1-0548-4041-B0ED-C8844C773403}">
+					<ChildrenList>
+						<Action Name="" ID="{79964FF1-27C3-45E3-A914-5819776E545A}" ShortID="419972979">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="SFX_Fail" ID="{6D7584D7-E328-4AAF-BA6B-3C9C0004EB6C}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

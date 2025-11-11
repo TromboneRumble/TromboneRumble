@@ -10,4 +10,7 @@ UCLASS()
 class TROMBONERUMBLE_API ATrumpet : public AInstrumentBase
 {
 	GENERATED_BODY()
+
+public:
+	ATrumpet();
 };

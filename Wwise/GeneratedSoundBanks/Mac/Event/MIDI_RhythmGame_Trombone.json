@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{802E09CC-22A8-4378-883F-72F2A420CC70}",
     "Language": "SFX",
-    "Hash": "{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}",
+    "Hash": "{870B9A4D-0DC6-026C-393B-BBD2243CB002}",
     "ObjectPath": "MIDI_RhythmGame_Trombone",
     "ShortName": "MIDI_RhythmGame_Trombone",
     "Path": "Event/MIDI_RhythmGame_Trombone.bnk",
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{5D1F03B0-C4E9-1F9D-07F8-35D4494269E3}"
+  "FileHash": "{4A57175D-3668-F7F3-470B-A9DA5CAFB4D6}"
  }
 }

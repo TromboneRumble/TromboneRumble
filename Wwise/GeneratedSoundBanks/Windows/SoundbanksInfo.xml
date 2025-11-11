@@ -28,7 +28,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{B4964263-3CBE-39AC-D5F9-63A766561C46}">
+		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{E9DD993F-2433-315C-7190-6F062709ECB4}">
 			<ObjectPath>MIDI_RhythmGame_Violin</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Violin</ShortName>
 			<Path>Event/MIDI_RhythmGame_Violin.bnk</Path>
@@ -76,7 +76,7 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Test\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="890241682" Type="Event" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" Language="SFX" Hash="{E73548B5-FCCA-A397-54AC-25B06D2A9A6A}">
+		<SoundBank Id="890241682" Type="Event" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" Language="SFX" Hash="{870B9A4D-0DC6-026C-393B-BBD2243CB002}">
 			<ObjectPath>MIDI_RhythmGame_Trombone</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Trombone</ShortName>
 			<Path>Event/MIDI_RhythmGame_Trombone.bnk</Path>
@@ -195,7 +195,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{D9B40E54-F887-46D8-8A09-E5139DB03C04}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{AC700B9A-39FB-58F5-3A68-14F2D9A36D30}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -211,54 +211,13 @@
 			<GameParameters>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
-			<StateGroups>
-				<StateGroup Id="237689789" Name="Trombone" ObjectPath="\States\Default Work Unit\Trombone" GUID="{F19FC8A2-5A62-4E4E-89D9-EDDF2E537998}">
-					<States>
-						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\Trombone\None" GUID="{8E8FCD19-68F1-4546-8BF7-29E5A7A8ED85}"/>
-						<State Id="2102744496" Name="ST_T_Pickup" ObjectPath="\States\Default Work Unit\Trombone\ST_T_Pickup" GUID="{FC6A871F-B6FC-453E-AD32-7B6EDD2D8C83}"/>
-						<State Id="2521327923" Name="ST_T_Perfect" ObjectPath="\States\Default Work Unit\Trombone\ST_T_Perfect" GUID="{D691396D-50FC-4811-B90E-B06AB0C0DBDF}"/>
-						<State Id="3377110384" Name="ST_T_Fail" ObjectPath="\States\Default Work Unit\Trombone\ST_T_Fail" GUID="{27F5AD81-593D-42CD-B200-A1FACC9BFFA7}"/>
-					</States>
-				</StateGroup>
-				<StateGroup Id="761516531" Name="Cymbal" ObjectPath="\States\Default Work Unit\Cymbal" GUID="{DC9212B0-CCDD-469F-9DB1-587AC2445633}">
-					<States>
-						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\Cymbal\None" GUID="{0478367F-BEAF-4869-9456-192F15C676DF}"/>
-						<State Id="1696464809" Name="ST_C_Fail" ObjectPath="\States\Default Work Unit\Cymbal\ST_C_Fail" GUID="{17EF7819-53E3-44C6-AD20-5D336FC0542B}"/>
-						<State Id="3036277909" Name="ST_C_Pickup" ObjectPath="\States\Default Work Unit\Cymbal\ST_C_Pickup" GUID="{27F8852B-38E7-407B-A1AE-452C1483E79A}"/>
-						<State Id="3726929784" Name="ST_C_Perfect" ObjectPath="\States\Default Work Unit\Cymbal\ST_C_Perfect" GUID="{E3354B0B-7848-47A7-8BF1-6BEB1144C991}"/>
-					</States>
-				</StateGroup>
-				<StateGroup Id="3063529226" Name="Violin" ObjectPath="\States\Default Work Unit\Violin" GUID="{D0E606EE-F94A-4B1D-9AFC-7B1E343D6B63}">
-					<States>
-						<State Id="270547950" Name="ST_V_Fail" ObjectPath="\States\Default Work Unit\Violin\ST_V_Fail" GUID="{0E5F1242-544B-4713-9BE4-778193584E94}"/>
-						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\Violin\None" GUID="{636C1800-E7D4-4B03-8C2E-42251A5F2CBC}"/>
-						<State Id="3406056149" Name="ST_V_Perfect" ObjectPath="\States\Default Work Unit\Violin\ST_V_Perfect" GUID="{0BCEF3A5-D1F8-4B5C-A01B-D16C96BDA98E}"/>
-						<State Id="3736570874" Name="ST_V_Pickup" ObjectPath="\States\Default Work Unit\Violin\ST_V_Pickup" GUID="{596DA757-1434-4228-8FB0-006989BE3592}"/>
-					</States>
-				</StateGroup>
-			</StateGroups>
 			<SwitchGroups>
-				<SwitchGroup Id="237689789" Name="Trombone" ObjectPath="\Switches\Default Work Unit\Trombone" GUID="{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}">
+				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
 					<Switches>
-						<Switch Id="670040001" Name="SW_T_Fail" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Fail" GUID="{82F8905C-547A-4053-9811-13FD3E245CAA}"/>
-						<Switch Id="1966965440" Name="SW_T_Perfect" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Perfect" GUID="{16031BE8-9736-456D-8EC9-6AA8BC731B76}"/>
-					</Switches>
-				</SwitchGroup>
-				<SwitchGroup Id="748895195" Name="None" ObjectPath="\Switches\Default Work Unit\None" GUID="{78896181-20AC-4A78-9A87-4C936D04C0F6}">
-					<Switches>
-						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\None\SW_N" GUID="{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"/>
-					</Switches>
-				</SwitchGroup>
-				<SwitchGroup Id="761516531" Name="Cymbal" ObjectPath="\Switches\Default Work Unit\Cymbal" GUID="{ADACA603-67EC-4D63-BB90-B1751EAECC13}">
-					<Switches>
-						<Switch Id="899946472" Name="SW_C_Fail" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Fail" GUID="{243DD8E3-EBC4-4362-882F-A03AEB562222}"/>
-						<Switch Id="4034377147" Name="SW_C_Perfect" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Perfect" GUID="{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"/>
-					</Switches>
-				</SwitchGroup>
-				<SwitchGroup Id="3063529226" Name="Violin" ObjectPath="\Switches\Default Work Unit\Violin" GUID="{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}">
-					<Switches>
-						<Switch Id="1638842395" Name="SW_V_Fail" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Fail" GUID="{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"/>
-						<Switch Id="2890494766" Name="SW_V_Perfect" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Perfect" GUID="{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"/>
+						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
+						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
@@ -454,35 +413,20 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="2848553920" Type="Event" GUID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" Language="SFX" Hash="{3DF5CEAF-3F3D-9C40-0F50-0A73DDA1F7FF}">
+		<SoundBank Id="2848553920" Type="Event" GUID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" Language="SFX" Hash="{4649A31C-608E-D906-1E88-B4F0E9B80B5E}">
 			<ObjectPath>Play_RhythmGame_Main</ObjectPath>
 			<ShortName>Play_RhythmGame_Main</ShortName>
 			<Path>Event/Play_RhythmGame_Main.bnk</Path>
 			<Media>
-				<File Id="489694630" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Violin_BBIK.wav</ShortName>
-					<Path>Media/489694630.wem</Path>
-					<CachePath>SFX/Violin_BBIK_FBC78EF0.wem</CachePath>
-				</File>
 				<File Id="561564156" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>None.wav</ShortName>
 					<Path>Media/561564156.wem</Path>
 					<CachePath>SFX/None_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="750942268" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Cymbal_BBIK.wav</ShortName>
-					<Path>Media/750942268.wem</Path>
-					<CachePath>SFX/Cymbal_BBIK_FBC78EF0.wem</CachePath>
-				</File>
 				<File Id="807859594" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Cymbal_Audio.wav</ShortName>
 					<Path>Media/807859594.wem</Path>
 					<CachePath>SFX/Cymbal_Audio_FBC78EF0.wem</CachePath>
-				</File>
-				<File Id="851934626" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Trombone_BBIK.wav</ShortName>
-					<Path>Media/851934626.wem</Path>
-					<CachePath>SFX/Trombone_BBIK_FBC78EF0.wem</CachePath>
 				</File>
 				<File Id="911794588" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Violin_Audio.wav</ShortName>
@@ -503,11 +447,8 @@
 			<Events>
 				<Event Id="2848553920" Name="Play_RhythmGame_Main" ObjectPath="\Events\Default Work Unit\Test_Rhythm_Game\Play_RhythmGame_Main" GUID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" DurationType="OneShot" DurationMin="42" DurationMax="42">
 					<MediaRefs>
-						<MediaRef Id="489694630"/>
 						<MediaRef Id="561564156"/>
-						<MediaRef Id="750942268"/>
 						<MediaRef Id="807859594"/>
-						<MediaRef Id="851934626"/>
 						<MediaRef Id="911794588"/>
 						<MediaRef Id="976228796"/>
 						<MediaRef Id="1069913665"/>
@@ -515,27 +456,12 @@
 				</Event>
 			</Events>
 			<SwitchGroups>
-				<SwitchGroup Id="237689789" Name="Trombone" ObjectPath="\Switches\Default Work Unit\Trombone" GUID="{6EA37BE8-524D-4585-A74F-1F6EA4A4F0CB}">
+				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
 					<Switches>
-						<Switch Id="670040001" Name="SW_T_Fail" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Fail" GUID="{82F8905C-547A-4053-9811-13FD3E245CAA}"/>
-						<Switch Id="1966965440" Name="SW_T_Perfect" ObjectPath="\Switches\Default Work Unit\Trombone\SW_T_Perfect" GUID="{16031BE8-9736-456D-8EC9-6AA8BC731B76}"/>
-					</Switches>
-				</SwitchGroup>
-				<SwitchGroup Id="748895195" Name="None" ObjectPath="\Switches\Default Work Unit\None" GUID="{78896181-20AC-4A78-9A87-4C936D04C0F6}">
-					<Switches>
-						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\None\SW_N" GUID="{297A7B0F-AEC0-4241-B67B-DCD21EC33DB0}"/>
-					</Switches>
-				</SwitchGroup>
-				<SwitchGroup Id="761516531" Name="Cymbal" ObjectPath="\Switches\Default Work Unit\Cymbal" GUID="{ADACA603-67EC-4D63-BB90-B1751EAECC13}">
-					<Switches>
-						<Switch Id="899946472" Name="SW_C_Fail" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Fail" GUID="{243DD8E3-EBC4-4362-882F-A03AEB562222}"/>
-						<Switch Id="4034377147" Name="SW_C_Perfect" ObjectPath="\Switches\Default Work Unit\Cymbal\SW_C_Perfect" GUID="{37B40E6E-7088-4B0F-815D-CC642A89BDCB}"/>
-					</Switches>
-				</SwitchGroup>
-				<SwitchGroup Id="3063529226" Name="Violin" ObjectPath="\Switches\Default Work Unit\Violin" GUID="{2BC3C71E-AAD2-4466-9A0A-D19A5D3BC92F}">
-					<Switches>
-						<Switch Id="1638842395" Name="SW_V_Fail" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Fail" GUID="{3EE0A17F-0CB5-475D-99DE-428D3FD949FF}"/>
-						<Switch Id="2890494766" Name="SW_V_Perfect" ObjectPath="\Switches\Default Work Unit\Violin\SW_V_Perfect" GUID="{6D5E7C54-51D5-423C-A51F-CCE5DCDDEF28}"/>
+						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
+						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
@@ -559,7 +485,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{531F7CB9-AA6A-33E6-73CA-813123FE4A9E}">
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{6A5A40D7-C908-22B1-58B6-0AD95A7B8106}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -585,6 +511,49 @@
 							<PluginRef Id="559532962"/>
 						</Custom>
 					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3479579317" Type="Event" GUID="{2DD019B1-0548-4041-B0ED-C8844C773403}" Language="SFX" Hash="{28AE0B84-7A0C-EC74-0317-54150EDA0A7B}">
+			<ObjectPath>Play_Inst_Fail</ObjectPath>
+			<ShortName>Play_Inst_Fail</ShortName>
+			<Path>Event/Play_Inst_Fail.bnk</Path>
+			<Media>
+				<File Id="159099732" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SFX_Fail_5.wav</ShortName>
+					<Path>Media/159099732.wem</Path>
+					<CachePath>SFX/SFX_Fail_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="620052977" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SFX_Fail_2.wav</ShortName>
+					<Path>Media/620052977.wem</Path>
+					<CachePath>SFX/SFX_Fail_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="729997106" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SFX_Fail_1.wav</ShortName>
+					<Path>Media/729997106.wem</Path>
+					<CachePath>SFX/SFX_Fail_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="767768891" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SFX_Fail_4.wav</ShortName>
+					<Path>Media/767768891.wem</Path>
+					<CachePath>SFX/SFX_Fail_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="988657482" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SFX_Fail_3.wav</ShortName>
+					<Path>Media/988657482.wem</Path>
+					<CachePath>SFX/SFX_Fail_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3479579317" Name="Play_Inst_Fail" ObjectPath="\Events\Default Work Unit\Play_Inst_Fail" GUID="{2DD019B1-0548-4041-B0ED-C8844C773403}" DurationType="OneShot" DurationMin="0.5224583" DurationMax="0.916875">
+					<MediaRefs>
+						<MediaRef Id="159099732"/>
+						<MediaRef Id="620052977"/>
+						<MediaRef Id="729997106"/>
+						<MediaRef Id="767768891"/>
+						<MediaRef Id="988657482"/>
+					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
@@ -684,5 +653,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{AC96049C-9498-6E4D-F97F-BBA5DE21632B}</FileHash>
+	<FileHash>{DD0B2682-989D-E8C5-5856-C5454899C6D8}</FileHash>
 </SoundBanksInfo>
