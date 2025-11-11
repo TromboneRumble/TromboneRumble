@@ -31,7 +31,7 @@ public:
 	float GravityScale = 1.5f;
 	
 	UPROPERTY(EditAnywhere, Category = "Config|Movement|Inertia")
-	float MaxAcceleration = 600.0f;
+	float MaxAcceleration = 1000.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Movement|Inertia")
 	float BrakingDecelerationWalking = 400.f;

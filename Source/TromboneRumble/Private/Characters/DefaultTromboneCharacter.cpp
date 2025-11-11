@@ -108,6 +108,8 @@ void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!IsLocallyControlled()) return;
+
 	CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
 	CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
 	CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
@@ -121,8 +123,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
-	HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
-	
+	if (!CurrentInteractionContext.bIsEquipped)
+	{
+		HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
+	}
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -157,6 +161,7 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		if (NewInstrument)
 		{
 			EquipmentComponent->TryEquipItem(NewInstrument);
+			HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, NewInstrument, nullptr);
 		}
 	}
 }
@@ -226,20 +231,6 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
 			}
 		}
-	}
-}
-
-void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
-{
-	const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
-	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
-	if (!MoveComp) return;
-
-	const float CurrentSpeed = MoveComp->MaxWalkSpeed;
-	if (!FMath::IsNearlyEqual(CurrentSpeed, TargetSpeed))
-	{
-		float NewSpeed = FMath::FInterpTo(CurrentSpeed, TargetSpeed, DeltaSeconds, SprintInterpSpeed);
-		MoveComp->MaxWalkSpeed = NewSpeed;
 	}
 }
 

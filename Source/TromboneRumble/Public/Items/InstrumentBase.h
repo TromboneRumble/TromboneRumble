@@ -48,7 +48,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAttackDataAsset> AttackData;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	EInstrumentType InstrumentType = EInstrumentType::Invalid;
 
 private:
