@@ -1,3 +1,6 @@
 Event	ID	Name			Wwise Object Path	Notes
 	3479579317	Play_Inst_Fail			\Default Work Unit\Play_Inst_Fail	
 
+Effect plug-ins	ID	Name	Type				Notes
+	99397611	Meter (Custom)	Wwise Meter			
+

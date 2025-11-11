@@ -194,6 +194,21 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Folder Name="Map_A" ID="{3A83726B-EFE8-4EF2-95E2-205216778012}" ShortID="600795364">
+					<ChildrenList>
+						<Event Name="Play_MapA_Main" ID="{7699882F-9ACF-4571-872E-794BC91CB66C}">
+							<ChildrenList>
+								<Action Name="" ID="{66C4FE84-C27E-4DA4-91DA-A4DC03D779AA}" ShortID="63270239">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Map_A" ID="{56D00CE1-E69E-44AF-8DF1-E169B7ACBEC8}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

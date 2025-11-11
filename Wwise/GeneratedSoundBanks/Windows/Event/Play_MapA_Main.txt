@@ -1,0 +1,9 @@
+Event	ID	Name			Wwise Object Path	Notes
+	967033451	Play_MapA_Main			\Default Work Unit\Map_A\Play_MapA_Main	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	1116151608	RTPC_Fail_Volume			\Default Work Unit\RTPC_Fail_Volume	
+
+Effect plug-ins	ID	Name	Type				Notes
+	459372084	Meter (Custom)	Wwise Meter			
+

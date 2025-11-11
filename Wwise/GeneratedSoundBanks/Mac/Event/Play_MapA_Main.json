@@ -1,0 +1,157 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "967033451",
+    "Type": "Event",
+    "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
+    "Language": "SFX",
+    "Hash": "{52E2DA5C-2D77-E6CC-159B-DDA235F64763}",
+    "ObjectPath": "Play_MapA_Main",
+    "ShortName": "Play_MapA_Main",
+    "Path": "Event/Play_MapA_Main.bnk",
+    "Media": [
+     {
+      "Id": "292465416",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Cymbal.wav",
+      "Path": "Media/292465416.wem",
+      "CachePath": "SFX/Map_A_Cymbal_FBC78EF0.wem"
+     },
+     {
+      "Id": "378149048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Trombone.wav",
+      "Path": "Media/378149048.wem",
+      "CachePath": "SFX/Map_A_Trombone_FBC78EF0.wem"
+     },
+     {
+      "Id": "681341114",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Main.wav",
+      "Path": "Media/681341114.wem",
+      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
+     },
+     {
+      "Id": "708259744",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_violin.wav",
+      "Path": "Media/708259744.wem",
+      "CachePath": "SFX/Map_A_violin_FBC78EF0.wem"
+     },
+     {
+      "Id": "858484202",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_None.wav",
+      "Path": "Media/858484202.wem",
+      "CachePath": "SFX/Map_A_None_FBC78EF0.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "459372084",
+       "Name": "Meter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\Map_A\\Map_A\\Map_A_Inst\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
+       "GUID": "{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "967033451",
+      "Name": "Play_MapA_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_A\\Play_MapA_Main",
+      "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
+      "DurationType": "OneShot",
+      "DurationMin": "176.13333",
+      "DurationMax": "176.13333",
+      "MediaRefs": [
+       {
+        "Id": "292465416"
+       },
+       {
+        "Id": "378149048"
+       },
+       {
+        "Id": "681341114"
+       },
+       {
+        "Id": "708259744"
+       },
+       {
+        "Id": "858484202"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "459372084"
+        }
+       ]
+      }
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1116151608",
+      "Name": "RTPC_Fail_Volume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Fail_Volume",
+      "GUID": "{B4B823F8-631E-401E-8129-C408D3A19230}"
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "1522944609",
+      "Name": "Inst",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Inst",
+      "GUID": "{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}",
+      "Switches": [
+       {
+        "Id": "4279070465",
+        "Name": "SW_C",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_C",
+        "GUID": "{020477EC-CB00-409F-8904-420A04B4E3D8}"
+       },
+       {
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_N",
+        "GUID": "{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"
+       },
+       {
+        "Id": "4279070484",
+        "Name": "SW_V",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_V",
+        "GUID": "{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"
+       },
+       {
+        "Id": "4279070486",
+        "Name": "SW_T",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
+        "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{F6E659F6-A5FE-BB21-8A67-DEC79C370E29}"
+ }
+}

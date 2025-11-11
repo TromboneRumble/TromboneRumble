@@ -145,6 +145,32 @@
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Effects">
+							<Reference>
+								<Local>
+									<EffectSlot Name="" ID="{549E1399-E31C-47F3-BE2A-9B30D50381D8}" ShortID="185760689">
+										<ReferenceList>
+											<Reference Name="Effect">
+												<Custom>
+													<Effect Name="Meter (Custom)" ID="{C34E4FF6-0CE9-4C59-BFC4-2BAEED552060}" ShortID="99397611" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
+														<PropertyList>
+															<Property Name="AttackTime" Type="Real32" Value="0.001"/>
+															<Property Name="Min" Type="Real32" Value="-89"/>
+															<Property Name="ReleaseTime" Type="Real32" Value="0.05"/>
+														</PropertyList>
+														<PluginData>
+	<GameParameter Name="RTPC_Fail_Volume" ID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
+</PluginData>
+													</Effect>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</EffectSlot>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
 				</RandomSequenceContainer>
 			</ChildrenList>
 		</WorkUnit>
