@@ -3,6 +3,7 @@
 
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
+#include "UI/UserWidgets/Rhythm/RhythmResultWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "TromboneGamePlayTags.h"
@@ -53,6 +54,28 @@ void URhythmSpawnWidget::ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget
 	}
 }
 
+
+void URhythmSpawnWidget::SpawnRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult)
+{
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+
+	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	{
+		if (URhythmResultWidget* ResultWidget = Cast<URhythmResultWidget>(WidgetPoolSubsystem->Acquire(NoteResultWidgetClass, this, NoteCanvas)))
+		{
+			if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(ResultWidget->Slot))
+			{
+				NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
+				NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
+				NoteSlot->SetAutoSize(true);
+				NoteSlot->SetPosition(SpawnPos);
+			}
+			ResultWidget->PlayAnimationOnResult(InResult);
+		}
+	}
+}
+
+
 void URhythmSpawnWidget::PlayFadeAnimation(EInstrumentType InType)
 {
 	if (InType == InstrumentType && FadeInAnim && !isShown)
@@ -67,6 +90,8 @@ void URhythmSpawnWidget::PlayFadeAnimation(EInstrumentType InType)
 	}
 }
 
+
+
 void URhythmSpawnWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -75,6 +100,7 @@ void URhythmSpawnWidget::NativeOnInitialized()
 		if (UWidgetPoolSubsystem* WidgetPoolSubsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetPoolSubsystem>())
 		{
 			WidgetPoolSubsystem->Prewarm(NoteWidgetClass, 100, this, NoteCanvas);
+			WidgetPoolSubsystem->Prewarm(NoteResultWidgetClass, 100, this, NoteCanvas);
 		}
 		
 		SetColorAndOpacity(FLinearColor{ 1.f,1.f,1.f,0.f });

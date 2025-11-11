@@ -84,6 +84,7 @@ private:
 	TWeakObjectPtr<URhythmNoteChannelSubsystem> CachedRhythmNoteChannelSubsystem = nullptr;
 
 	// ~Cached Reference
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ARhythmNote> RhythmNoteClass;
 

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmSpawnWidget.generated.h"
 
+enum class ENoteResult : uint8;
+class URhythmResultWidget;
 enum class EInstrumentType : uint8;
 class UCanvasPanel;
 class URhythmNoteWidget;
@@ -23,9 +25,12 @@ public:
 	URhythmNoteWidget* GetPooledRhythmNoteWidget(int32 LaneIndex);
 
 	void ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget);
+	void SpawnRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult);
+	
 
 	UFUNCTION()
 	void PlayFadeAnimation(EInstrumentType InType);
+
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -33,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class")
 	TSubclassOf<URhythmNoteWidget> NoteWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class")
+	TSubclassOf<URhythmResultWidget> NoteResultWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Note")
 	int32 MaxLanes = 3;
@@ -46,6 +54,7 @@ protected:
 	virtual void NativeDestruct() override;
 
 private:
+	void SpawnRhythmScoreWidget(const FVector2D& SpawnPos);
 	void OnViewPortResizedHandler(FViewport* ViewPort, uint32);
 	void SetStartPoses();
 	float GetLaneY(int32 LaneIndex) const;

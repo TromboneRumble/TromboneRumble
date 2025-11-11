@@ -24,6 +24,7 @@ public:
 	URhythmNoteUIControllerComponent();
 
 	void InitSettings(URhythmSpawnWidget* InSpawnWidget, URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx);
+	void SpawnRhythmResultWidget(ENoteResult InResult);
 	
 protected:
 	virtual void BeginPlay() override;

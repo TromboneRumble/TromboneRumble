@@ -25,6 +25,21 @@ void URhythmNoteUIControllerComponent::InitSettings(URhythmSpawnWidget* InSpawnW
 	BindChannel();
 }
 
+void URhythmNoteUIControllerComponent::SpawnRhythmResultWidget(ENoteResult InResult)
+{
+	if (RhythmSpawnWidget.Get() && RhythmNoteWidget.Get())
+	{
+		FVector2D Pos = FVector2D::ZeroVector;
+
+		if (UCanvasPanelSlot* Slot = Cast<UCanvasPanelSlot>(RhythmNoteWidget->Slot))
+		{
+			Pos = Slot->GetPosition();
+		}
+
+		RhythmSpawnWidget->SpawnRhythmResultWidget(Pos, InResult);
+	}
+}
+
 void URhythmNoteUIControllerComponent::BeginPlay()
 {
 	Super::BeginPlay();

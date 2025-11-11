@@ -64,7 +64,6 @@ ENoteResult ARhythmActor::DetectNotes()
 		Debug::Print(EnumName);*/
 		OnNoteDetected.Broadcast(ENoteResult::Bad);
 		return ENoteResult::Bad;
-		
 	}
 
 	//롱노트 시작점일 경우
@@ -78,9 +77,12 @@ ENoteResult ARhythmActor::DetectNotes()
 
 	//숏노트일 경우
 	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
-	/*FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
-	Debug::Print(EnumName);*/
+	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
+	Debug::Print(EnumName);
+	BestNote->SpawnRhythmResultWidget(Result);
 	OnNoteDetected.Broadcast(Result);
+	GetCachedSubsystem()->Release(BestNote);
+	
 	return Result;
 }
 
@@ -359,6 +361,14 @@ void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
 	{
+		if (ARhythmNote* Note = Cast<ARhythmNote>(OtherActor))
+		{
+			if (FocusedType == Note->GetNoteType())
+			{
+				Note->SpawnRhythmResultWidget(ENoteResult::Bad);
+				OnNoteDetected.Broadcast(ENoteResult::Bad);
+			}
+		}
 		GetCachedSubsystem()->Release(OtherActor);
 	}
 }

@@ -7,7 +7,9 @@
 #include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
+#include "Subsystems/WidgetPoolSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
+#include "UI/UserWidgets/Rhythm/RhythmResultWidget.h"
 #include "Utilities/DebugHelper.h"
 
 ARhythmNote::ARhythmNote()
@@ -90,6 +92,14 @@ void ARhythmNote::SetToLongNoteEnd()
 void ARhythmNote::MoveNotes_Implementation()
 {
 	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, NoteAlphaOnSpline);
+}
+
+void ARhythmNote::SpawnRhythmResultWidget(ENoteResult InNoteResult)
+{
+	if (RhythmNoteUIControllerComponent)
+	{
+		RhythmNoteUIControllerComponent->SpawnRhythmResultWidget(InNoteResult);
+	}
 }
 
 void ARhythmNote::BeginPlay()

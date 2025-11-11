@@ -46,6 +46,8 @@ public:
 	UPROPERTY()
 	FNoteHandle NoteHandle;
 
+	void SpawnRhythmResultWidget(ENoteResult InNoteResult);
+
 protected:
 	virtual void BeginPlay() override;
 
