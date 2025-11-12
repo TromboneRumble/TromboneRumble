@@ -3,23 +3,17 @@
 
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
-#include "Blueprint/SlateBlueprintLibrary.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
+#include "UI/UserWidgets/Rhythm/RhythmResultWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
-#include "Utilities/DebugHelper.h"
+#include "TromboneGamePlayTags.h"
+#include "GameFramework/GameplayMessageSubsystem.h"
+#include "Subsystems/WidgetPoolSubsystem.h"
+#include "Utilities/Defines.h"
 
 
-URhythmNoteWidget* URhythmSpawnWidget::SpawnNote(int32 LaneIndex)
+URhythmNoteWidget* URhythmSpawnWidget::GetPooledRhythmNoteWidget(int32 LaneIndex)
 {
-	if (!NoteWidgetClass) return nullptr;
-
-	URhythmNoteWidget* Note = CreateWidget<URhythmNoteWidget>(this, NoteWidgetClass);
-	if (!Note) return nullptr;
-
-	UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(NoteCanvas->AddChild(Note));
-	if (!NoteSlot) return Note;
 
 	if (!bInitializedPositions)
 	{
@@ -27,20 +21,90 @@ URhythmNoteWidget* URhythmSpawnWidget::SpawnNote(int32 LaneIndex)
 		bInitializedPositions = true;
 	}
 
-	FVector2D StartPos(LaneXStartPos, GetLaneY(LaneIndex));
-	FVector2D EndPos(LaneXEndPos, GetLaneY(LaneIndex));
-	NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
-	NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
-	NoteSlot->SetAutoSize(true);
-	NoteSlot->SetPosition(StartPos);
-	UE_LOG(LogTemp, Warning, TEXT("StartPos : %f, %f"), StartPos.X, StartPos.Y);
-	return Note;
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+
+	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	{
+		if (URhythmNoteWidget* Note = Cast<URhythmNoteWidget>(WidgetPoolSubsystem->Acquire(NoteWidgetClass, this, NoteCanvas)))
+		{
+			if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(Note->Slot))
+			{
+				//Vector2D StartPos(LaneXStartPos, GetLaneY(LaneIndex));
+				NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
+				NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
+				NoteSlot->SetAutoSize(true);
+				//NoteSlot->SetPosition(StartPos);
+			}
+			return Note;
+		}
+	}
+	return nullptr;
 }
 
-void URhythmSpawnWidget::UpdateNoteProgress(URhythmNoteWidget* Note, float Alpha01)
+void URhythmSpawnWidget::ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget)
 {
-	if (!Note) return;
-	Note->SetProgress(Alpha01);
+	if (!Widget)
+	{
+		return;
+	}
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	{
+		WidgetPoolSubsystem->Release(Widget);
+	}
+}
+
+
+void URhythmSpawnWidget::SpawnRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult)
+{
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+
+	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	{
+		if (URhythmResultWidget* ResultWidget = Cast<URhythmResultWidget>(WidgetPoolSubsystem->Acquire(NoteResultWidgetClass, this, NoteCanvas)))
+		{
+			if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(ResultWidget->Slot))
+			{
+				NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
+				NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
+				NoteSlot->SetAutoSize(true);
+				NoteSlot->SetPosition(SpawnPos);
+			}
+			ResultWidget->PlayAnimationOnResult(InResult);
+		}
+	}
+}
+
+
+void URhythmSpawnWidget::PlayFadeAnimation(EInstrumentType InType)
+{
+	if (InType == InstrumentType && FadeInAnim && !isShown)
+	{
+		PlayAnimation(FadeInAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
+		isShown = true;
+	}
+	else if (InType != InstrumentType && FadeOutAnim && isShown)
+	{
+		PlayAnimation(FadeOutAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
+		isShown = false;
+	}
+}
+
+
+
+void URhythmSpawnWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	if (!IsDesignTime())
+	{
+		if (UWidgetPoolSubsystem* WidgetPoolSubsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetPoolSubsystem>())
+		{
+			WidgetPoolSubsystem->Prewarm(NoteWidgetClass, 100, this, NoteCanvas);
+			WidgetPoolSubsystem->Prewarm(NoteResultWidgetClass, 100, this, NoteCanvas);
+		}
+		
+		SetColorAndOpacity(FLinearColor{ 1.f,1.f,1.f,0.f });
+	}
 }
 
 void URhythmSpawnWidget::NativeConstruct()
@@ -48,9 +112,20 @@ void URhythmSpawnWidget::NativeConstruct()
 	Super::NativeConstruct();
 	if (GEngine && GEngine->GameViewport)
 	{
-		GEngine->GameViewport->Viewport->ViewportResizedEvent.AddUObject(this, &ThisClass::OnViewPortResizedHandler);
+		ViewportResizedHandle = GEngine->GameViewport->Viewport->ViewportResizedEvent.AddUObject(this, &ThisClass::OnViewPortResizedHandler);
+		bViewportBound = true;
 	}
 	LaneYPosArray.SetNum(MaxLanes);
+}
+
+void URhythmSpawnWidget::NativeDestruct()
+{
+	if (bViewportBound && GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->Viewport->ViewportResizedEvent.Remove(ViewportResizedHandle);
+		bViewportBound = false;
+	}
+	Super::NativeDestruct();
 }
 
 void URhythmSpawnWidget::OnViewPortResizedHandler(FViewport* ViewPort, uint32)
@@ -71,35 +146,53 @@ float URhythmSpawnWidget::GetLaneY(int32 LaneIndex) const
 void URhythmSpawnWidget::SetStartPoses()
 {
 	checkf(NoteCanvas, TEXT("NoteCanvas is nullptr"));
+	
+	UWorld* World = GetWorld();
+	if (!World || !World->IsGameWorld()) return;
 
 	const FGeometry CanvasGeo = NoteCanvas->GetCachedGeometry();
 
 	// SpawnWidget의 절대 좌표계
-	const FVector2D AbsPos = CanvasGeo.GetAbsolutePosition();
+	const FVector2D TL_Abs = CanvasGeo.GetAbsolutePosition();
 	const FVector2D AbsSize = CanvasGeo.GetAbsoluteSize();
+	const FVector2D TR_Abs = CanvasGeo.GetAbsolutePosition() + FVector2D(AbsSize.X - 41.f, 0.f);
+	
 
 	// 절대 좌표 -> 로컬 좌표
-	const FVector2D TL_Local = CanvasGeo.AbsoluteToLocal(AbsPos);
-	const FVector2D TR_Local = CanvasGeo.AbsoluteToLocal(AbsPos + FVector2D(AbsSize.X, 0.f));
-	const FVector2D BL_Local = CanvasGeo.AbsoluteToLocal(AbsPos + FVector2D(0.f, AbsSize.Y));
+	const FVector2D TL_Local = CanvasGeo.AbsoluteToLocal(TL_Abs);
+	const FVector2D TR_Local = CanvasGeo.AbsoluteToLocal(TR_Abs);
+	const FVector2D BL_Local = CanvasGeo.AbsoluteToLocal(TL_Abs + FVector2D(0.f, AbsSize.Y));
 
 	LaneXStartPos = TR_Local.X;
 	LaneXEndPos = TL_Local.X;
-	
-	const float TopY_Local = TL_Local.Y;
+
+	const float BotY_Local = BL_Local.Y;
 	const float Height_Local = BL_Local.Y - TL_Local.Y;
 
 	const float Step = Height_Local / static_cast<float>(MaxLanes + 1);
 
 	for (int32 i = 0;i<MaxLanes;++i)
 	{
-		// 등분선: 위에서 (LaneIndex+1)칸 내려온 선을 lane 센터로 사용
-		const float LaneCenterY = TopY_Local + Step * static_cast<float>(i + 1);
+		// 등분선: 아래서부터 (LaneIndex+1)칸 올라간 선을 LaneCenterY로 사용
+		const float LaneCenterY = BotY_Local - Step * static_cast<float>(i + 1);
 
 		if (LaneYPosArray.IsValidIndex(i))
 		{
-			LaneYPosArray[i] = LaneCenterY;
-			UE_LOG(LogTemp, Warning, TEXT("SetStartYPos : %f"), LaneCenterY);
+			LaneYPosArray[i] = LaneCenterY - 20.f;
+		}
+	}
+
+
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UGameplayMessageSubsystem* MessageSubsystem = GameInstance->GetSubsystem<UGameplayMessageSubsystem>())
+		{
+			FViewportChangedMessage Message;
+			Message.LaneXStartPos = LaneXStartPos;
+			Message.LaneXEndPos = LaneXEndPos;
+			Message.LaneYPosArray = LaneYPosArray;
+
+			MessageSubsystem->BroadcastMessage(TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged, Message);
 		}
 	}
 	

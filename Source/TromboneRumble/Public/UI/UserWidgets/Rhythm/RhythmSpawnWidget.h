@@ -6,7 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmSpawnWidget.generated.h"
 
-class UVerticalBox;
+enum class ENoteResult : uint8;
+class URhythmResultWidget;
+enum class EInstrumentType : uint8;
 class UCanvasPanel;
 class URhythmNoteWidget;
 
@@ -20,10 +22,15 @@ class TROMBONERUMBLE_API URhythmSpawnWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Note")
-	URhythmNoteWidget* SpawnNote(int32 LaneIndex);
+	URhythmNoteWidget* GetPooledRhythmNoteWidget(int32 LaneIndex);
 
-	UFUNCTION(BlueprintCallable, Category = "Note")
-	void UpdateNoteProgress(URhythmNoteWidget* Note, float Alpha01);
+	void ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget);
+	void SpawnRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult);
+	
+
+	UFUNCTION()
+	void PlayFadeAnimation(EInstrumentType InType);
+
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -32,13 +39,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class")
 	TSubclassOf<URhythmNoteWidget> NoteWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class")
+	TSubclassOf<URhythmResultWidget> NoteResultWidgetClass;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Note")
 	int32 MaxLanes = 3;
 
+
+	EInstrumentType InstrumentType;
+
 protected:
+	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 private:
+	void SpawnRhythmScoreWidget(const FVector2D& SpawnPos);
 	void OnViewPortResizedHandler(FViewport* ViewPort, uint32);
 	void SetStartPoses();
 	float GetLaneY(int32 LaneIndex) const;
@@ -54,4 +70,17 @@ private:
 
 	UPROPERTY(Transient)
 	bool bInitializedPositions = false;
+
+	bool bViewportBound = false;
+	FDelegateHandle ViewportResizedHandle;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeOutAnim;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeInAnim;
+
+	bool isShown = false;
+
+	
 };

@@ -2,6 +2,7 @@
 
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
+#include "Data/CharacterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Utilities/Defines.h"
@@ -11,6 +12,13 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	InitCharacter();
+}
+
+void ATromboneCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetupCharacterData();
 }
 
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -66,7 +74,6 @@ void ATromboneCharacterBase::InitCharacter()
 {
 	SetupCapsuleComponent();
 	SetupSkeletalMeshComponent();
-	SetupMovementComponent();
 }
 
 void ATromboneCharacterBase::SetupCapsuleComponent()
@@ -90,10 +97,28 @@ void ATromboneCharacterBase::SetupSkeletalMeshComponent() const
 	GetMesh()->SetHiddenInGame(false);
 }
 
-void ATromboneCharacterBase::SetupMovementComponent() const
+void ATromboneCharacterBase::SetupCharacterData() const
 {
-	GetCharacterMovement()->bOrientRotationToMovement = false;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	
+	if (CharacterData)
+	{
+		// Ground
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, CharacterData->RotationRate, 0.0f);
+
+		// Air
+		GetCharacterMovement()->JumpZVelocity = CharacterData->JumpZVelocity;
+		GetCharacterMovement()->AirControl = CharacterData->AirControl;
+
+		// Inertia
+		GetCharacterMovement()->GravityScale = CharacterData->GravityScale;
+		GetCharacterMovement()->MaxAcceleration = CharacterData->MaxAcceleration;
+		GetCharacterMovement()->BrakingDecelerationWalking = CharacterData->BrakingDecelerationWalking;
+		GetCharacterMovement()->GroundFriction = CharacterData->GroundFriction;
+	}
 }
 
 void ATromboneCharacterBase::OnRagdoll()
@@ -114,7 +139,7 @@ void ATromboneCharacterBase::OnRagdoll()
 		OnHitTimerHandle, 
 		this, 
 		&ThisClass::EndRagdoll, 
-		RagdollDuration, 
+		CharacterData->RagdollDuration, 
 		false
 	);
 }
@@ -140,7 +165,7 @@ void ATromboneCharacterBase::OnStun()
 		OnHitTimerHandle, 
 		this, 
 		&ThisClass::EndStun, 
-		StunDuration, 
+		CharacterData->StunDuration, 
 		false
 	);
 }

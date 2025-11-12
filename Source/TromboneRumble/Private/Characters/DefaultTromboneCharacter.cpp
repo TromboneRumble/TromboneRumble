@@ -11,39 +11,24 @@
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
+#include "Actors/Rhythm/RhythmActor.h"
+#include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
-	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
-
-	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
-	// instead of recompiling to adjust them
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-
+	
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->TargetArmLength = 640.f;
-	CameraBoom->SetRelativeRotation(FRotator(-42.f, 0.f, 0.f));
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->bUsePawnControlRotation = false;
 
@@ -105,6 +90,8 @@ void ADefaultTromboneCharacter::StartSprint()
 
 	bIsSprinting = true;
 	Server_SetIsSprinting(true);
+
+	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->SprintSpeed;
 }
 
 void ADefaultTromboneCharacter::StopSprint()
@@ -113,13 +100,22 @@ void ADefaultTromboneCharacter::StopSprint()
 
 	bIsSprinting = false;
 	Server_SetIsSprinting(false);
+
+	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!IsLocallyControlled()) return;
+
+	CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
+	CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
+	CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
 	
 	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
+	GetCachedRhythmActor();
 
 	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
@@ -127,14 +123,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
-	HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
-}
-
-void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	InterpolateMovementSpeed(DeltaSeconds);
+	if (!CurrentInteractionContext.bIsEquipped)
+	{
+		HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
+	}
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -169,6 +161,7 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		if (NewInstrument)
 		{
 			EquipmentComponent->TryEquipItem(NewInstrument);
+			HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, NewInstrument, nullptr);
 		}
 	}
 }
@@ -222,6 +215,10 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 				AttackComponent->SetCollisionComponent(Instrument->GetCapsuleComponent());
 				AttackComponent->SetAttackData(Instrument->GetAttackData());
 				CurrentInteractionContext.bIsEquipped = true;
+				if (GetCachedRhythmActor())
+				{
+					CachedRhythmActor->ExecuteOnInstrumentPicked(Instrument->GetInstrumentType());
+				}
 			}
 		}
 		else
@@ -229,20 +226,23 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
 			AttackComponent->SetAttackData(HeadbuttAttackData);
 			CurrentInteractionContext.bIsEquipped = false;
+			if (GetCachedRhythmActor())
+			{
+				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
+			}
 		}
 	}
 }
 
-void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
+ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 {
-	const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
-	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
-	if (!MoveComp) return;
-
-	const float CurrentSpeed = MoveComp->MaxWalkSpeed;
-	if (!FMath::IsNearlyEqual(CurrentSpeed, TargetSpeed))
+	if (CachedRhythmActor.IsValid()) return CachedRhythmActor.Get();
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+	if (ARhythmActor* FoundActor = Cast<ARhythmActor>(UGameplayStatics::GetActorOfClass(World, ARhythmActor::StaticClass())))
 	{
-		float NewSpeed = FMath::FInterpTo(CurrentSpeed, TargetSpeed, DeltaSeconds, SprintInterpSpeed);
-		MoveComp->MaxWalkSpeed = NewSpeed;
+		CachedRhythmActor = FoundActor;
+		return CachedRhythmActor.Get();
 	}
+	return nullptr;
 }

@@ -4,16 +4,16 @@
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "AkGameplayStatics.h"
 #include "AkGameplayTypes.h"
-#include "Actors/Rhythm/RhythmActor.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SplineComponent.h"
-#include "Actors/Rhythm/RhythmNote.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Actors/Rhythm/RhythmActor.h"
+#include "Actors/Rhythm/RhythmNote.h"
 #include "Subsystems/ActorPoolSubsystem.h"
-#include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
+#include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
-#include "Utilities/DebugHelper.h"
+#include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -48,36 +48,12 @@ void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNo
 	SpawnNoteEvent = InNoteEvent;
 	ChangeSwitch = InChangeSwitch;
 	FailEvent = InFailEvent;
-}
 
-void ARhythmNoteSpawner::BeginPlay()
-{
-	Super::BeginPlay();
-
-	UActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>();
-	if (PoolSubsystem && RhythmNoteClass)
-	{
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(GetActorLocation());
-		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
-		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
-		PoolSubsystem->Prewarm(RhythmNoteClass, 100, SpawnTransform);
-	}
-	OwnerRhythmActor = Cast<ARhythmActor>(GetOwner());
+	ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner());
 	if (IsValid(OwnerRhythmActor))
 	{
-		SpawnWidget = CreateWidget<URhythmSpawnWidget>(GetWorld(), RhythmSpawnWidgetClass);
-		if (SpawnWidget)
-		{
-			UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(OwnerRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChild(SpawnWidget));
-			NoteSlot->SetAutoSize(true);
-			NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
-			NoteSlot->SetAnchors(FAnchors(0.5f, 0.5f));
-			//TODO : Remove Magic Number
-			NoteSlot->SetPosition(FVector2D(175.f, -300.f));
-		}
+		CreateSpawnWidget(OwnerRhythmActor);
 	}
-
 }
 
 void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
@@ -85,30 +61,105 @@ void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackI
 	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
 	{
 		const FString CueName = MusicInfo->UserCueName;
-		SpawnRhythmNote(5.f, false, false);
-		if (CueName.StartsWith(TEXT("SS_")))
-		{
-			
-		}
-		
+		SpawnAndMoveNote(CueName);
 	}
-	
+
 }
 
-void ARhythmNoteSpawner::SpawnRhythmNote(float TimeToComplete, bool InIsLongNote, bool InIsLongNoteEnd)
+void ARhythmNoteSpawner::BeginPlay()
 {
-	checkf(RhythmNoteClass, TEXT("RhythmNoteClass is not set in %s"), *GetName());
-	if (UActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>())
+	Super::BeginPlay();
+	CachedActorPoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>();
+	CachedRhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>();
+	if (CachedActorPoolSubsystem.Get() && RhythmNoteClass)
 	{
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetActorLocation());
 		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
 		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
+		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 100, SpawnTransform);
+	}
+}
 
-		if (ARhythmNote* PooledNote = Cast<ARhythmNote>(PoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
+void ARhythmNoteSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner());
+	if (IsValid(OwnerRhythmActor))
+	{
+		OwnerRhythmActor->OnInstrumentPicked.RemoveDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
+	}
+}
+
+void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
+{
+	checkf(IsValid(InRhythmActor), TEXT("InRhythmActor is invalid in %s"), *GetName());
+	SpawnWidget = CreateWidget<URhythmSpawnWidget>(GetWorld(), RhythmSpawnWidgetClass);
+	if (SpawnWidget)
+	{
+		SpawnWidget->InstrumentType = SpawnerType;
+		UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChild(SpawnWidget));
+		NoteSlot->SetAutoSize(true);
+		NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
+		NoteSlot->SetAnchors(FAnchors(0.5f, 0.5f));
+		//TODO : Remove Magic Number
+		NoteSlot->SetPosition(FVector2D(175.f, -300.f));
+		if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
 		{
-			PooledNote->InitNote(this, TimeToComplete,InIsLongNote,InIsLongNoteEnd);
-			PooledNote->MoveNotes();
+			OwnerRhythmActor->OnInstrumentPicked.AddDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
 		}
 	}
+}
+
+void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
+{
+	checkf(RhythmNoteClass, TEXT("RhythmNoteClass is not set in %s"), *GetName());
+	checkf(SpawnWidget, TEXT("SpawnWidget is not created in %s"), *GetName());
+	if (!CachedRhythmNoteChannelSubsystem.Get() || !CachedActorPoolSubsystem.Get()) return;
+
+	FString LastChar = InUserCueName.Right(1);
+	int32 LineNum = FCString::Atoi(*LastChar);
+
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(GetActorLocation());
+	SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
+	SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
+
+	//숏노트만 나오게 임시로 설정
+	if (!InUserCueName.StartsWith(TEXT("SS_")))
+	{
+		return;
+	}
+
+	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
+	{
+		URhythmNoteWidget* PooledRhythmNoteWidget = SpawnWidget->GetPooledRhythmNoteWidget(LineNum);
+		PooledNote->InitNote(this, PooledRhythmNoteWidget, TimeToComplete, LineNum);
+
+		if (InUserCueName.StartsWith(TEXT("SS_")))
+		{
+			PooledNote->SetToShortNote();
+		}
+		else if (InUserCueName.StartsWith(TEXT("LS_")))
+		{
+			PooledNote->SetToLongNoteStart();
+		}
+		else if (InUserCueName.StartsWith(TEXT("LC_")))
+		{
+			//TODO : Lone Note Change 만들기
+			return;
+		}
+		else if (InUserCueName.StartsWith(TEXT("LE_")))
+		{
+			PooledNote->SetToLongNoteEnd();
+		}
+		else
+		{
+			checkf(false, TEXT("Unknown CueName: %s"), *InUserCueName);
+		}
+
+		PooledNote->MoveNotes();
+	}
+
+	
 }

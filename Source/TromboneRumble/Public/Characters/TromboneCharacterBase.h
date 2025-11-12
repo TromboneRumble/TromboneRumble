@@ -7,6 +7,7 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UCharacterDataAsset;
 class UInputComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
@@ -19,23 +20,26 @@ class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICom
 
 public:
 	ATromboneCharacterBase();
+	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnHitReceived(const FHitData& HitData) override;
 	virtual void Tick(float DeltaSeconds) override;
 
-public:
 	FOnRagdollSignature OnRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
 
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCapsuleComponent> HeadbuttCapsuleComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	TObjectPtr<UCharacterDataAsset> CharacterData;
 	
 private:
 	void InitCharacter();
 	void SetupCapsuleComponent();
 	void SetupSkeletalMeshComponent() const;
-	void SetupMovementComponent() const;
+	void SetupCharacterData() const;
 
 	void OnRagdoll();
 	void EndRagdoll();
@@ -57,12 +61,6 @@ private:
 
 private:
 	FTimerHandle OnHitTimerHandle;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Config|HitStatus")
-	float RagdollDuration = 2.5f;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Config|HitStatus")
-	float StunDuration = 1.5f;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;

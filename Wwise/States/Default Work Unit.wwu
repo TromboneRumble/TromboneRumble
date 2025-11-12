@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{DC3A0741-B707-4661-9756-BBEB957CDE2D}" SchemaVersion="119">
 	<States>
-		<WorkUnit Name="Default Work Unit" ID="{DC3A0741-B707-4661-9756-BBEB957CDE2D}" PersistMode="Standalone">
-			<ChildrenList>
-				<StateGroup Name="Cymbal" ID="{DC9212B0-CCDD-469F-9DB1-587AC2445633}">
-					<ChildrenList>
-						<State Name="None" ID="{0478367F-BEAF-4869-9456-192F15C676DF}"/>
-						<State Name="ST_C_Fail" ID="{17EF7819-53E3-44C6-AD20-5D336FC0542B}"/>
-						<State Name="ST_C_Perfect" ID="{E3354B0B-7848-47A7-8BF1-6BEB1144C991}"/>
-						<State Name="ST_C_Pickup" ID="{27F8852B-38E7-407B-A1AE-452C1483E79A}"/>
-					</ChildrenList>
-				</StateGroup>
-				<StateGroup Name="Trombone" ID="{F19FC8A2-5A62-4E4E-89D9-EDDF2E537998}">
-					<ChildrenList>
-						<State Name="None" ID="{8E8FCD19-68F1-4546-8BF7-29E5A7A8ED85}"/>
-						<State Name="ST_T_Fail" ID="{27F5AD81-593D-42CD-B200-A1FACC9BFFA7}"/>
-						<State Name="ST_T_Perfect" ID="{D691396D-50FC-4811-B90E-B06AB0C0DBDF}"/>
-						<State Name="ST_T_Pickup" ID="{FC6A871F-B6FC-453E-AD32-7B6EDD2D8C83}"/>
-					</ChildrenList>
-				</StateGroup>
-				<StateGroup Name="Violin" ID="{D0E606EE-F94A-4B1D-9AFC-7B1E343D6B63}">
-					<ChildrenList>
-						<State Name="None" ID="{636C1800-E7D4-4B03-8C2E-42251A5F2CBC}"/>
-						<State Name="ST_V_Fail" ID="{0E5F1242-544B-4713-9BE4-778193584E94}"/>
-						<State Name="ST_V_Perfect" ID="{0BCEF3A5-D1F8-4B5C-A01B-D16C96BDA98E}"/>
-						<State Name="ST_V_Pickup" ID="{596DA757-1434-4228-8FB0-006989BE3592}"/>
-					</ChildrenList>
-				</StateGroup>
-			</ChildrenList>
-		</WorkUnit>
+		<WorkUnit Name="Default Work Unit" ID="{DC3A0741-B707-4661-9756-BBEB957CDE2D}" PersistMode="Standalone"/>
 	</States>
 </WwiseDocument>

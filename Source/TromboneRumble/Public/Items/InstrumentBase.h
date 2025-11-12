@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAttackDataAsset> AttackData;
 
+	UPROPERTY(EditAnywhere)
+	EInstrumentType InstrumentType = EInstrumentType::Invalid;
+
 private:
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
@@ -56,4 +59,8 @@ private:
 	float UpwardImpulse = 300.0f;
 	
 	FName AttachSocketName = TEXT("socket_hand_r");
+
+public:
+	//getter setter
+	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
 };
