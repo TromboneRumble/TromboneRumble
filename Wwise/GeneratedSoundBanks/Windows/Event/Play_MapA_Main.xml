@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{52E2DA5C-2D77-E6CC-159B-DDA235F64763}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{AFDF87A5-65BB-2299-0DA4-E02C4ADAA39D}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -34,11 +34,11 @@
 			</Media>
 			<Plugins>
 				<Custom>
-					<Plugin Id="459372084" Name="Meter (Custom)" ObjectPath="\Interactive Music Hierarchy\Default Work Unit\Map_A\Map_A\Map_A_Inst\[Effect Slot [0]: (Meter)]\Meter (Custom)" GUID="{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}" LibName="Wwise Meter" LibId="8454147"/>
+					<Plugin Id="459372084" Name="Meter (Custom)" ObjectPath="\Interactive Music Hierarchy\Default Work Unit\MapA_Song\Map_A\Map_A_Inst\[Effect Slot [0]: (Meter)]\Meter (Custom)" GUID="{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}" LibName="Wwise Meter" LibId="8454147"/>
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="967033451" Name="Play_MapA_Main" ObjectPath="\Events\Default Work Unit\Map_A\Play_MapA_Main" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
+				<Event Id="967033451" Name="Play_MapA_Main" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\Play_MapA_Main" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
 					<MediaRefs>
 						<MediaRef Id="292465416"/>
 						<MediaRef Id="378149048"/>
@@ -68,5 +68,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{6BE727CA-132C-D703-B4CC-3242082A4353}</FileHash>
+	<FileHash>{1BE906CD-0732-FD65-E72A-D1C8B65CCAF2}</FileHash>
 </SoundBanksInfo>
