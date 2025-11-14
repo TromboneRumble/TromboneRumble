@@ -56,9 +56,6 @@ protected:
 	TObjectPtr<UEquipmentComponent> EquipmentComponent;
 	// ~Components
 	
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAttackDataAsset> HeadbuttAttackData;
-	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
 

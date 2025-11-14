@@ -108,24 +108,21 @@ void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!IsLocallyControlled()) return;
-
-	CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
-	CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
-	CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
-	
-	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-	GetCachedRhythmActor();
-
-	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
-	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
-	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
-
-	if (!CurrentInteractionContext.bIsEquipped)
+	
+	if (IsLocallyControlled())
 	{
-		HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
+		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
+		CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
+		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
+	
+		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
+		GetCachedRhythmActor();
+
+		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	}
 }
 
@@ -161,7 +158,6 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		if (NewInstrument)
 		{
 			EquipmentComponent->TryEquipItem(NewInstrument);
-			HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, NewInstrument, nullptr);
 		}
 	}
 }
@@ -204,16 +200,12 @@ void ADefaultTromboneCharacter::HandleOnRagdoll()
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (!AttackComponent) return;
-	
 	if (Slot == EEquipmentSlotType::Weapon)
 	{
 		if (NewItem)
 		{
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
-				AttackComponent->SetCollisionComponent(Instrument->GetCapsuleComponent());
-				AttackComponent->SetAttackData(Instrument->GetAttackData());
 				CurrentInteractionContext.bIsEquipped = true;
 				if (GetCachedRhythmActor())
 				{
@@ -223,8 +215,6 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 		}
 		else
 		{
-			AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
-			AttackComponent->SetAttackData(HeadbuttAttackData);
 			CurrentInteractionContext.bIsEquipped = false;
 			if (GetCachedRhythmActor())
 			{

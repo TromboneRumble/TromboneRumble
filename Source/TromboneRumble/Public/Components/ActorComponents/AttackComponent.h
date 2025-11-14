@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "AttackComponent.generated.h"
 
+enum class EEquipmentSlotType : uint8;
+class AItemBase;
+class UCapsuleComponent;
 class UCharacterAnimInstance;
 class UAttackDataAsset;
 
@@ -19,9 +22,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void Attack();
-	
-	FORCEINLINE void SetCollisionComponent(const TObjectPtr<UPrimitiveComponent> InCollision) { CollisionComponent = InCollision; }
-	FORCEINLINE void SetAttackData(UAttackDataAsset* InAttackData) { CurrentAttackData = InAttackData; }
 
 protected:
 	UFUNCTION(Server, Reliable)
@@ -38,6 +38,8 @@ protected:
 	
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 
 	UPROPERTY()
 	TObjectPtr<UCharacterAnimInstance> CharacterAnimInstance = nullptr;
@@ -45,11 +47,14 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttackDataAsset> CurrentAttackData = nullptr;
 	
-	UPROPERTY()
-	TArray<TObjectPtr<AActor>> AlreadyHitActors;
-	
-	UPROPERTY()
-	TObjectPtr<UPrimitiveComponent> CollisionComponent = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPrimitiveComponent> CurrentCollisionComponent = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCapsuleComponent> HeadbuttCollisionComponent = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAttackDataAsset> HeadbuttAttackData = nullptr;
 
 	FTransform PreviousFrameTransform;
 	bool bIsAttacking = false;
@@ -60,6 +65,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	
 	FTimerHandle AttackCooldownTimerHandle;
 };
