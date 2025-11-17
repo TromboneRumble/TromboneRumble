@@ -119,12 +119,19 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 		CachedRhythmActor->DetectLongNoteEnd();
 	}
 }
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
+	
+	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
+	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Instrument;
+	if (AItemBase* AlreadyEquippedItem = EquipmentComponent->GetItemInSlot(TargetSlot))
+	{
+		HandleOnEquipmentChanged(TargetSlot, AlreadyEquippedItem, nullptr);
+	}
 	
 	if (IsLocallyControlled())
 	{
@@ -222,7 +229,7 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
 				CurrentInteractionContext.bIsEquipped = true;
-				if (GetCachedRhythmActor())
+				if (GetCachedRhythmActor() && IsLocallyControlled())
 				{
 					CachedRhythmActor->ExecuteOnInstrumentPicked(Instrument->GetInstrumentType());
 				}
@@ -231,7 +238,7 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 		else
 		{
 			CurrentInteractionContext.bIsEquipped = false;
-			if (GetCachedRhythmActor())
+			if (GetCachedRhythmActor() && IsLocallyControlled())
 			{
 				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
 			}
