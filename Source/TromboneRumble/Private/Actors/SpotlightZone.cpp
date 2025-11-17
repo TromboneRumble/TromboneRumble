@@ -42,7 +42,7 @@ ASpotlightZone::ASpotlightZone()
 	LightBeamMesh->SetCastShadow(false);
 	LightBeamMesh->SetVisibility(false);
 
-	SetReplicates(true);
+	bReplicates = true;
 	AActor::SetReplicateMovement(false);
 }
 

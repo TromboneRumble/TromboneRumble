@@ -79,7 +79,7 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 	if (!OwnerCharacter || !ItemToEquip) return;
 
 	// TODO: ItemToEquip의 슬롯 타입을 가져오는 로직 필요
-	EEquipmentSlotType Slot = EEquipmentSlotType::Weapon;
+	EEquipmentSlotType Slot = EEquipmentSlotType::Instrument;
     
 	const int32 SlotIndex = static_cast<int32>(Slot);
 	if (!EquippedItems.IsValidIndex(SlotIndex)) return;

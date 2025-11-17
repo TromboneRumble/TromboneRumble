@@ -6,7 +6,7 @@
 UENUM()
 enum class EEquipmentSlotType : uint8
 {
-	Weapon,
+	Instrument,
 	MAX_SLOTS
 };
 

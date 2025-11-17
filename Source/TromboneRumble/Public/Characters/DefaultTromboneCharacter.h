@@ -33,6 +33,7 @@ public:
 	void Attack();
 	void StartSprint();
 	void StopSprint();
+	void Rhythm(bool bIsPressed);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -83,7 +84,6 @@ private:
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 	// ~Delegate Callback Handlers
 	
-	void InterpolateMovementSpeed(float DeltaSeconds) const;
 	ARhythmActor* GetCachedRhythmActor();
 	
 	UPROPERTY(Replicated)

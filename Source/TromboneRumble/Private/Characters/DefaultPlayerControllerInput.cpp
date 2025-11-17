@@ -25,6 +25,8 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::Handle_SprintPressed);
 		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::Handle_SprintReleased);
 		if (AttackAction)  EIC->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::Handle_Attack);
+		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Started, this, &ThisClass::Handle_Rhythm, true);
+		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Completed, this, &ThisClass::Handle_Rhythm, false);
 	}
 }
 
@@ -84,4 +86,9 @@ void ADefaultPlayerController::Handle_SprintReleased()
 void ADefaultPlayerController::Handle_Attack()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Attack();
+}
+
+void ADefaultPlayerController::Handle_Rhythm(const bool bPressed)
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Rhythm(bPressed);
 }

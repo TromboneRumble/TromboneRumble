@@ -44,9 +44,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 void ADefaultTromboneCharacter::Jump()
 {
-	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
 	
-	if (bIsSprinting && !Weapon)
+	if (bIsSprinting && !Instrument)
 	{
 		AttackComponent->Attack();
 	}
@@ -79,9 +79,9 @@ void ADefaultTromboneCharacter::TryInteract()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
 	
-	if (AttackComponent && Weapon) AttackComponent->Attack();
+	if (AttackComponent && Instrument) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::StartSprint()
@@ -104,6 +104,21 @@ void ADefaultTromboneCharacter::StopSprint()
 	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
 }
 
+void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
+{
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+
+	if (!GetCachedRhythmActor() || !Instrument) return;
+
+	if (bIsPressed)
+	{
+		CachedRhythmActor->DetectNotes();
+	}
+	else
+	{
+		CachedRhythmActor->DetectLongNoteEnd();
+	}
+}
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -195,12 +210,12 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Instrument);
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (Slot == EEquipmentSlotType::Weapon)
+	if (Slot == EEquipmentSlotType::Instrument)
 	{
 		if (NewItem)
 		{

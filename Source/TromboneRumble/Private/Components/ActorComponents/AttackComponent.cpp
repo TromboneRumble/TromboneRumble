@@ -41,8 +41,8 @@ void UAttackComponent::BeginPlay()
 		{
 			EquipmentComp->OnEquipmentChangedDelegate.AddDynamic(this, &UAttackComponent::HandleOnEquipmentChanged);
 		
-			AItemBase* CurrentWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Weapon);
-			HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, CurrentWeapon, nullptr);
+			AItemBase* CurrentWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Instrument);
+			HandleOnEquipmentChanged(EEquipmentSlotType::Instrument, CurrentWeapon, nullptr);
 		}
 	}
 }
@@ -208,7 +208,7 @@ void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 
 void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (Slot != EEquipmentSlotType::Weapon) return;
+	if (Slot != EEquipmentSlotType::Instrument) return;
 
 	if (NewItem)
 	{

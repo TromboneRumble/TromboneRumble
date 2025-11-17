@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "AkGameplayStatics.h"
-#include "AkGameplayTypes.h"
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameMode.h"
 #include "Framework/DefaultPlayerState.h"
@@ -53,12 +51,6 @@ void ADefaultPlayerController::BeginPlay()
 	HandleGameStateChanged(GameStateSubsystem->GetGameState());
 	
 	Server_NotifyClientReady();
-
-	if (TestSoundEvent)
-	{
-		FOnAkPostEventCallback OnCallback;
-		UAkGameplayStatics::PostEvent(TestSoundEvent, this, AK_EndOfEvent, OnCallback);
-	}
 }
 
 void ADefaultPlayerController::InitializeLobbyUI()
