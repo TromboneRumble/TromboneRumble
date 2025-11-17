@@ -71,6 +71,8 @@ private:
 	void Server_SetIsSprinting(const bool bNewIsSprinting);
 	UFUNCTION(Server, Reliable)
 	void Server_InteractItem(AItemBase* InteractedItem);
+	UFUNCTION(Server, Reliable)
+	void Server_RequestSpotlightBonus();
 	// ~Server RPCs
 	
 	// Delegate Callback Handlers
@@ -82,8 +84,15 @@ private:
 	void HandleOnRagdoll();
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
+	UFUNCTION()
+	void HandleOnNoteDetected(ENoteResult NoteResult);
 	// ~Delegate Callback Handlers
-	
+
+	// Multicast RPCs
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_PlaySpotlightSuccessEffect();
+	// ~Multicast RPCs
+
 	ARhythmActor* GetCachedRhythmActor();
 	
 	UPROPERTY(Replicated)

@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
+#include "Actors/SpotlightZone.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -140,7 +141,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
 	
 		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-		GetCachedRhythmActor();
+		if (ARhythmActor* RhythmActor = GetCachedRhythmActor())
+		{
+			RhythmActor->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
 
 		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
@@ -197,6 +201,26 @@ void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* In
 	EquipmentComponent->TryEquipItem(InteractedItem);
 }
 
+void ADefaultTromboneCharacter::Server_RequestSpotlightBonus_Implementation()
+{
+	TArray<AActor*> OverlappingZones;
+	GetOverlappingActors(OverlappingZones, ASpotlightZone::StaticClass());
+
+	if (OverlappingZones.IsEmpty()) return;
+
+	for (AActor* Actor : OverlappingZones)
+	{
+		if (ASpotlightZone* Zone = Cast<ASpotlightZone>(Actor))
+		{
+			if (Zone->TryAwardBonus(this))
+			{
+				Multicast_PlaySpotlightSuccessEffect();
+				break; 
+			}
+		}
+	}
+}
+
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
 {
 	if (ADefaultPlayerController* PC = CachedCharacterController.Get())
@@ -244,6 +268,28 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			}
 		}
 	}
+}
+
+void ADefaultTromboneCharacter::HandleOnNoteDetected(ENoteResult NoteResult)
+{
+	if (NoteResult == ENoteResult::None || NoteResult == ENoteResult::Bad || NoteResult == ENoteResult::Invalid) return;
+	
+	if (!IsLocallyControlled()) return;
+	
+	if (HasAuthority())
+	{
+		Server_RequestSpotlightBonus_Implementation();
+	}
+	else
+	{
+		Server_RequestSpotlightBonus();
+	}
+}
+
+void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementation()
+{
+	// TODO : 폭죽 이펙트 재생
+	PRINT_WITH_CURRENT_CONTEXT("Spotlight Bonus Success!");
 }
 
 ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()

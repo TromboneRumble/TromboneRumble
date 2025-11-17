@@ -28,7 +28,7 @@ class TROMBONERUMBLE_API ASpotlightZone : public AActor
 public:	
 	ASpotlightZone();
 	void InitializeZone(bool bIsFeverTime);
-	bool AttemptToAwardBonus(ADefaultTromboneCharacter* Player);
+	bool TryAwardBonus(ADefaultTromboneCharacter* Player);
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

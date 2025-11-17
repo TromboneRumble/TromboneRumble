@@ -68,7 +68,7 @@ void ASpotlightZone::InitializeZone(const bool bIsFeverTime)
 	}
 }
 
-bool ASpotlightZone::AttemptToAwardBonus(ADefaultTromboneCharacter* Player)
+bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* Player)
 {
 	if (!HasAuthority()) return false;
 
