@@ -205,6 +205,11 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 	if (bIsSprinting != bNewIsSprinting)
 	{
 		bIsSprinting = bNewIsSprinting;
+		if (CharacterData)
+		{
+			const float NewSpeed = bNewIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
+			GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+		}
 	}
 }
 
