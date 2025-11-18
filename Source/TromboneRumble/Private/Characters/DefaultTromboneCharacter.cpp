@@ -121,6 +121,18 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 	}
 }
 
+EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
+{
+	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument))
+	{
+		if (const AInstrumentBase* InstrumentBase = Cast<AInstrumentBase>(Instrument))
+		{
+			return InstrumentBase->GetInstrumentType();
+		}
+	}
+	return EInstrumentType::Invalid;
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
