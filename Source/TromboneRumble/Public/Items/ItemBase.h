@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
+#include "Utilities/Defines.h"
 #include "ItemBase.generated.h"
 
 class UInteractionTriggerComponent;
@@ -18,6 +19,8 @@ class TROMBONERUMBLE_API AItemBase : public AActor, public IInteractable
 	
 public:
 	AItemBase();
+	
+	FORCEINLINE TObjectPtr<UCapsuleComponent> GetCapsuleComponent() const { return CapsuleComponent; }
 
 protected:
 	virtual void BeginPlay() override;

@@ -6,8 +6,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/GameModeBase.h"
-#include "Interfaces/InstrumentEventHandler.h"
 #include "Net/UnrealNetwork.h"
 
 AInstrumentBase::AInstrumentBase()
@@ -27,11 +25,7 @@ AInstrumentBase::AInstrumentBase()
 		}
 	}
 	
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
-	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
-	CapsuleComponent->SetSimulatePhysics(false);
 }
 
 bool AInstrumentBase::CanInteract_Implementation(AActor* InstigatorActor) const
@@ -54,25 +48,9 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 	CurrentOwner = OwnerActor;
 	bIsEquipped = true;
 
-	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
-	{
-		OwnerCharacter->OnRagdollDelegate.AddDynamic(this, &AInstrumentBase::HandleUnequip);
-	}
-
 	OnRep_Equipped();
 
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
-    
-	if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
-	{
-		if (const APawn* OwnerPawn = Cast<APawn>(OwnerActor))
-		{
-			if (APlayerController* PlayerController = OwnerPawn->GetController<APlayerController>())
-			{
-				EventHandler->NotifyInstrumentEquipped(PlayerController, this);
-			}
-		}
-	}
 }
 
 void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
@@ -85,26 +63,10 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
 	CurrentOwner = nullptr;
 	bIsEquipped = false;
 
-	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(OwnerActor))
-	{
-		OwnerCharacter->OnRagdollDelegate.RemoveDynamic(this, &AInstrumentBase::HandleUnequip);
-	}
-
 	OnRep_Equipped();
     
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(true);
 	if (ItemMeshComponent) ItemMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
-
-	if (IInstrumentEventHandler* EventHandler = GetInstrumentEventHandler())
-	{
-		if (const APawn* OwnerPawn = Cast<APawn>(OwnerActor))
-		{
-			if (APlayerController* PlayerController = OwnerPawn->GetController<APlayerController>())
-			{
-				EventHandler->NotifyInstrumentUnequipped(PlayerController, this);
-			}
-		}
-	}
 }
 
 void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -116,7 +78,7 @@ void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void AInstrumentBase::PlaySound() const
 {
-	if (AudioComponent) AudioComponent->Play();
+	// if (AudioComponent) AudioComponent->Play();
 }
 
 void AInstrumentBase::StopSound() const
@@ -124,31 +86,16 @@ void AInstrumentBase::StopSound() const
 	if (AudioComponent) AudioComponent->Stop();
 }
 
-IInstrumentEventHandler* AInstrumentBase::GetInstrumentEventHandler() const
-{
-	AGameModeBase* const CurrentGameMode = GetWorld()->GetAuthGameMode();
-	if (CurrentGameMode && CurrentGameMode->Implements<UInstrumentEventHandler>())
-	{
-		return Cast<IInstrumentEventHandler>(CurrentGameMode);
-	}
-	return nullptr;
-}
-
 void AInstrumentBase::OnRep_Equipped()
 {
 	if (bIsEquipped)
 	{
-		if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
-		{
-			OwnerCharacter->SetInstrumentCollisionReference(CapsuleComponent);
-		}
-		
 		SetPhysicsEnabled(false);
 		if (CurrentOwner)
 		{
 			if (const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
 			{
-				ItemMeshComponent->AttachToComponent(
+				CapsuleComponent->AttachToComponent(
 					OwnerChar->GetMesh(),
 					FAttachmentTransformRules::SnapToTargetIncludingScale,
 					AttachSocketName);
@@ -166,9 +113,4 @@ void AInstrumentBase::OnRep_Equipped()
 		SetPhysicsEnabled(true);
 		StopSound();
 	}
-}
-
-void AInstrumentBase::HandleUnequip()
-{
-	Execute_Unequip(this, CurrentOwner);
 }

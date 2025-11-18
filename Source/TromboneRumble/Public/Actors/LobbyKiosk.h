@@ -20,6 +20,9 @@ public:
 	virtual bool CanInteract_Implementation(AActor* InstigatorActor) const override;
 	virtual void Interact_Implementation(AActor* InstigatorActor) override;
 
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_RequestTravel();
@@ -31,8 +34,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UInteractionTriggerComponent> InteractTrigger = nullptr;
 
-	UPROPERTY()
-	TObjectPtr<UCapsuleComponent> CapsuleComponent = nullptr;
-
+	UPROPERTY(Replicated)
 	bool bIsUsed = false;
 };

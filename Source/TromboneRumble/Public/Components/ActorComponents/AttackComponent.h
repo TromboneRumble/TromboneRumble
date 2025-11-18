@@ -6,17 +6,68 @@
 #include "Components/ActorComponent.h"
 #include "AttackComponent.generated.h"
 
-UCLASS(Abstract)
+enum class EEquipmentSlotType : uint8;
+class AItemBase;
+class UCapsuleComponent;
+class UCharacterAnimInstance;
+class UAttackDataAsset;
+
+UCLASS()
 class TROMBONERUMBLE_API UAttackComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	UAttackComponent();
-	virtual void Attack() PURE_VIRTUAL(UAttackComponent::Attack, );
-	virtual void SetOwnerCharacter(ACharacter* InOwner);
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void Attack();
 
 protected:
+	UFUNCTION(Server, Reliable)
+	virtual void Server_ExecuteAttack();
+
+	UFUNCTION(Server, Reliable)
+	void Server_ExecuteAttackEnd();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayAttackEffects();
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ExecuteAttackEnd();
+	
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
+
+	UPROPERTY()
+	TObjectPtr<UCharacterAnimInstance> CharacterAnimInstance = nullptr;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAttackDataAsset> CurrentAttackData = nullptr;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPrimitiveComponent> CurrentCollisionComponent = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCapsuleComponent> HeadbuttCollisionComponent = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAttackDataAsset> HeadbuttAttackData = nullptr;
+
+	FTransform PreviousFrameTransform;
+	bool bIsAttacking = false;
+	bool bCanAttack = true;
+
+private:
+	void ResetAttackCooldown() { bCanAttack = true; }
+
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> AlreadyHitActors;
+	
+	FTimerHandle AttackCooldownTimerHandle;
 };

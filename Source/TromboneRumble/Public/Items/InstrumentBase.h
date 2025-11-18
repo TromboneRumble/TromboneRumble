@@ -7,6 +7,7 @@
 #include "Items/ItemBase.h"
 #include "InstrumentBase.generated.h"
 
+class UAttackDataAsset;
 class IInstrumentEventHandler;
 
 UCLASS()
@@ -24,12 +25,13 @@ public:
 	virtual void Unequip_Implementation(AActor* OwnerActor) override;
 	// ~Interfaces
 
+	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	void PlaySound() const;
 	void StopSound() const;
-	IInstrumentEventHandler* GetInstrumentEventHandler() const;
 
 	UFUNCTION()
 	virtual void OnRep_Equipped();
@@ -42,11 +44,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Config")
 	TObjectPtr<USoundBase> InstrumentSound = nullptr;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAttackDataAsset> AttackData;
+
+	UPROPERTY(EditAnywhere)
+	EInstrumentType InstrumentType = EInstrumentType::Invalid;
 
 private:
-	UFUNCTION()
-	void HandleUnequip();
-	
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
 
@@ -54,4 +59,8 @@ private:
 	float UpwardImpulse = 300.0f;
 	
 	FName AttachSocketName = TEXT("socket_hand_r");
+
+public:
+	//getter setter
+	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
 };

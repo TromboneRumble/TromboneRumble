@@ -2,10 +2,14 @@
 
 
 #include "Actors/Rhythm/RhythmActor.h"
-
-#include "Actors/Rhythm/RhythmNote.h"
 #include "Components/BoxComponent.h"
+#include "AkComponent.h"
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
+#include "Subsystems/ActorPoolSubsystem.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
+#include "Actors/Rhythm/RhythmNote.h"
+#include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
 
@@ -24,10 +28,20 @@ ARhythmActor::ARhythmActor()
 
 	RhythmNoteDestroyer = CreateDefaultSubobject<UBoxComponent>(TEXT("Note Destroyer"));
 	RhythmNoteDestroyer->SetupAttachment(GetRootComponent());
+	
 
-	RhythmNoteSpawner = CreateDefaultSubobject<UChildActorComponent>(TEXT("Note Spawner"));
-	RhythmNoteSpawner->SetupAttachment(GetRootComponent());
-	RhythmNoteSpawner->SetRelativeLocation(FVector::ZeroVector);
+	NoteSpawnComponent = CreateDefaultSubobject<UAkComponent>(TEXT("NoteSpawnAKComponent"));
+	if (NoteSpawnComponent)
+	{
+		NoteSpawnComponent->SetupAttachment(RootComponent);
+		NoteSpawnComponent->OcclusionRefreshInterval = 0.f;
+	}
+	NoteHearingComponent = CreateDefaultSubobject<UAkComponent>(TEXT("NoteHearingAKComponent"));
+	if (NoteHearingComponent)
+	{
+		NoteHearingComponent->SetupAttachment(RootComponent);
+		NoteHearingComponent->OcclusionRefreshInterval = 0.f;
+	}
 }
 
 void ARhythmActor::Tick(float DeltaTime)
@@ -36,89 +50,236 @@ void ARhythmActor::Tick(float DeltaTime)
 
 }
 
-void ARhythmActor::DetectNotes()
+ENoteResult ARhythmActor::DetectNotes()
 {
+	if (FocusedType == EInstrumentType::Background || FocusedType == EInstrumentType::Invalid)
+	{
+		return ENoteResult::None;
+	}
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
 	if (!BestNote)
 	{
-		FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(ENoteResult::Bad));
-		Debug::Print(EnumName);
-		return;
+		/*FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(ENoteResult::Bad));
+		Debug::Print(EnumName);*/
+		OnNoteDetected.Broadcast(ENoteResult::Bad);
+		return ENoteResult::Bad;
 	}
 
+	//롱노트 시작점일 경우
 	if (BestNote->IsLongNote() && !BestNote->IsLongNoteEnd())
 	{
 		//TODO : 롱노트 세부판정
 		IsSensingLongNote = true;
 		Debug::Print(TEXT("Long Note Sense Start"));
+		return ENoteResult::None;
 	}
-	else
-	{
-		FRhythmTraceResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
-		if (Result.NoteActor.Get())
-		{
-			FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result.Judge));
-			Debug::Print(EnumName);
-		}
-	}
+
+	//숏노트일 경우
+	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
+	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
+	Debug::Print(EnumName);
+	BestNote->SpawnRhythmResultWidget(Result);
+	OnNoteDetected.Broadcast(Result);
+	GetCachedSubsystem()->Release(BestNote);
+	
+	return Result;
 }
 
-void ARhythmActor::DetectLongNoteEnd()
+ENoteResult ARhythmActor::DetectLongNoteEnd()
 {
-	if (!IsSensingLongNote) return;
+	if (!IsSensingLongNote) return ENoteResult::None;
 	Debug::Print(TEXT("Long Note Sense End"));
 	IsSensingLongNote = false;
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
-	if (!BestNote) return;
+	// 롱노트 감지를 시작했지만 허공에다 마우스를 뗀 경우
+	if (!BestNote) return ENoteResult::Bad;
+	//롱노트 끝지점을 판정한 경우
 	if (BestNote->IsLongNote() && BestNote->IsLongNoteEnd())
 	{
-		ReturnNoteResult(BestNote, NoteToHitComps);
+		return ReturnNoteResult(BestNote, NoteToHitComps);
 	}
-	
+	//롱노트 끝을 판정해야 하는데 롱노트 시작점, 혹은 롱노트 중간점, 혹은 숏노트때 마우스를 뗀 경우
+	return ENoteResult::Bad;
 }
 
+void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
+{
+	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
+	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
+	IsSensingLongNote = false;
+
+	FocusedType = InType;
+	if (InType == EInstrumentType::Background)
+	{
+		if (NoneSwitch)
+		{
+			NoteHearingComponent->SetSwitch(NoneSwitch, FString(TEXT("")), FString(TEXT("")));
+		}
+	}
+	else
+	{
+
+		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(InType))
+		{
+			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+		}
+	}
+}
+
+void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
+                                              UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent)
+{
+	checkf(InType < EInstrumentType::Background, TEXT("InType Is a background or Invalid Type"));
+	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
+	{
+		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent);
+	}
+}
+
+
+void ARhythmActor::InitBGMEvent(UAkAudioEvent* InSoundEvent, UAkSwitchValue* InNoneSwitch)
+{
+	checkf(InSoundEvent, TEXT("SoundEvent is nullptr"));
+	checkf(InNoneSwitch, TEXT("NoneSwitch is nullptr"));
+	PlayBGMEvent = InSoundEvent;
+	NoneSwitch = InNoneSwitch;
+}
+
+
+
+void ARhythmActor::StartRhythmGame()
+{
+	checkf(NoneSwitch, TEXT("NoneSwitch is null"));
+	checkf(PlayBGMEvent, TEXT("PlayBGMEvent is null"));
+
+	if (NoteSpawnComponent)
+	{
+		for (TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+		{
+			UAkAudioEvent* SpawnNoteEvent = Elem.Value->GetSpawnNoteEvent();
+			FOnAkPostEventCallback Callback;
+			Callback.BindUFunction(Elem.Value, FName("OnAkCallback"));
+			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_MIDIEvent;
+			NoteSpawnComponent->PostAkEvent(
+				SpawnNoteEvent,
+				CallbackMask,
+				Callback
+			);
+		}
+	}
+	GetWorldTimerManager().SetTimer(
+		TimerHandle,
+		this,
+		&ThisClass::PlayMusic,
+		4.5f,
+		false
+	);
+
+
+}
+
+
+void ARhythmActor::SpawnRhythmRootUI()
+{
+	if (RhythmUIRootWidgetClass)
+	{
+		CachedRhythmUIRootWidget = CreateWidget<URhythmUIRootWidget>(GetWorld(), RhythmUIRootWidgetClass);
+		if (CachedRhythmUIRootWidget)
+		{
+			CachedRhythmUIRootWidget->AddToViewport();
+		}
+	}
+}
 
 void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	EnableInput(GetWorld()->GetFirstPlayerController());
+	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
+	OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 }
 
-
-FRhythmTraceResult ARhythmActor::ReturnNoteResult(ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps)
+ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
 {
+	if (auto Found = RhythmNoteSpawners.Find(InType))
+	{
+		return Found->Get();
+	}
+	checkf(RhythmNoteSpawnerClass, TEXT("RhythmNoteSpawnerClass is null"));
 
-	FRhythmTraceResult RhythmResult;
-	if (InNote == nullptr)
-	{
-		return RhythmResult;
-	}
-	const int32 HitCount = InNoteToHitComps.FindChecked(InNote).Num();
-	RhythmResult.NoteActor = InNote;
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
 
-	if (HitCount == 1)
+	FActorSpawnParameters Params;
+	Params.Owner = this;
+	Params.Instigator = GetInstigator();
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ARhythmNoteSpawner* NewSpawner = World->SpawnActor<ARhythmNoteSpawner>(RhythmNoteSpawnerClass, GetActorTransform(), Params);
+	if (!NewSpawner) return nullptr;
+
+	if (USceneComponent* Root = GetRootComponent())
 	{
-		RhythmResult.Judge = ENoteResult::Good;
-	}
-	else if (HitCount == 2)
-	{
-		RhythmResult.Judge = ENoteResult::Great;
-	}
-	else if (HitCount >= 3)
-	{
-		RhythmResult.Judge = ENoteResult::Excellent; // 또는 Perfect
+		NewSpawner->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	}
 	else
 	{
-		RhythmResult.Judge = ENoteResult::Bad;
+		NewSpawner->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 	}
 
-	/*Debug::Print(FString::Printf(TEXT("Note Detected: %s, HitCount=%d, Judge=%d"),
-		*InNote->GetName(), HitCount, static_cast<uint8>(RhythmResult.Judge)));*/
+	NewSpawner->SetActorRelativeLocation(FVector::ZeroVector);
+	NewSpawner->SetActorRelativeRotation(FRotator::ZeroRotator);
 
-	return RhythmResult;
+	//Map에서 관리
+	RhythmNoteSpawners.Add(InType, NewSpawner);
+
+	return NewSpawner;
+}
+
+bool ARhythmActor::DestroySpawner(EInstrumentType InType)
+{
+	if (auto Found = RhythmNoteSpawners.Find(InType))
+	{
+		ARhythmNoteSpawner* Spawner = Found->Get();
+		if (IsValid(Spawner))
+		{
+			Spawner->Destroy();
+		}
+		RhythmNoteSpawners.Remove(InType);
+		return true;
+	}
+	return false;
+}
+
+
+ENoteResult ARhythmActor::ReturnNoteResult(const ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps) const
+{
+
+	if (InNote == nullptr)
+	{
+		return ENoteResult::Bad;
+	}
+	const int32 HitCount = InNoteToHitComps.FindChecked(InNote).Num();
+
+	if (HitCount == 1)
+	{
+		return ENoteResult::Good;
+	}
+	else if (HitCount == 2)
+	{
+		return ENoteResult::Great;
+	}
+	else if (HitCount >= 3)
+	{
+		return ENoteResult::Excellent; // 또는 Perfect
+	}
+	else
+	{
+		checkf(nullptr, TEXT("InNoteToHitComps returned 0 components"));
+		return ENoteResult::Invalid;
+	}
 }
 
 
@@ -143,7 +304,7 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 
 
 	//노트별로 히트된 컴포넌트 수 집계
-	
+
 	for (const FHitResult& H : HitResults)
 	{
 		if (ARhythmNote* Note = Cast<ARhythmNote>(H.GetActor()))
@@ -164,7 +325,12 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 	{
 		if (const ARhythmNote* Note = Pair.Key)
 		{
-			const double T = Note->NoteLifeTime;
+			// 현재 선택된 악기가 아니므로 무시
+			if (Note->GetNoteType() != FocusedType)
+			{
+				continue;
+			}
+			const double T = Note->GetNoteLifetime();
 			if (T > BestTime) // 가장 큰 시간 = 가장 먼저 나온 노트
 			{
 				BestTime = T;
@@ -174,6 +340,50 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 	}
 	return Result;
 	
+}
+
+UActorPoolSubsystem* ARhythmActor::GetCachedSubsystem()
+{
+	if (CachedActorPoolSubsystem.IsValid())
+		return CachedActorPoolSubsystem.Get();
+
+	if (UActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>())
+	{
+		CachedActorPoolSubsystem = PoolSubsystem;
+		return PoolSubsystem;
+	}
+
+	return nullptr;
+}
+
+void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
+	{
+		if (ARhythmNote* Note = Cast<ARhythmNote>(OtherActor))
+		{
+			if (FocusedType == Note->GetNoteType())
+			{
+				Note->SpawnRhythmResultWidget(ENoteResult::Bad);
+				OnNoteDetected.Broadcast(ENoteResult::Bad);
+			}
+		}
+		GetCachedSubsystem()->Release(OtherActor);
+	}
+}
+
+void ARhythmActor::PlayMusic()
+{
+	if (PlayBGMEvent && NoteHearingComponent)
+	{
+		FOnAkPostEventCallback DummyCallback;
+		NoteHearingComponent->PostAkEvent(
+			PlayBGMEvent,
+			0,
+			DummyCallback
+		);
+	}
 }
 
 

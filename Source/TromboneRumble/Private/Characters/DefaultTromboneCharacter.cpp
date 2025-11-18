@@ -7,40 +7,29 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
-#include "Components/ActorComponents/HeadbuttComponent.h"
-#include "Components/ActorComponents/InstrumentAttackComponent.h"
+#include "Actors/SpotlightZone.h"
+#include "Components/ActorComponents/AttackComponent.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Data/CharacterDataAsset.h"
+#include "Framework/DefaultPlayerState.h"
+#include "Items/InstrumentBase.h"
+#include "Actors/Rhythm/RhythmActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
-	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
-
-	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
-	// instead of recompiling to adjust them
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-
+	
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->TargetArmLength = 640.f;
-	CameraBoom->SetRelativeRotation(FRotator(-42.f, 0.f, 0.f));
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->bUsePawnControlRotation = false;
 
@@ -50,26 +39,22 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
-	
-	HeadbuttComponent = CreateDefaultSubobject<UHeadbuttComponent>(TEXT("HeadbuttComponent"));
-	InstrumentAttackComponent = CreateDefaultSubobject<UInstrumentAttackComponent>(TEXT("InstrumentAttackComponent"));
+	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
+	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()
 {
-	if (bIsSprinting)
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+	
+	if (bIsSprinting && !Instrument)
 	{
-		Headbutt();
+		AttackComponent->Attack();
 	}
 	else
 	{
 		Super::Jump();
 	}
-}
-
-void ADefaultTromboneCharacter::StopJumping()
-{
-	Super::StopJumping();
 }
 
 void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
@@ -88,90 +73,150 @@ void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 	}
 }
 
-void ADefaultTromboneCharacter::Look(const struct FInputActionValue& Value)
+void ADefaultTromboneCharacter::TryInteract()
 {
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
-}
-
-void ADefaultTromboneCharacter::Interact()
-{
-	if (InteractorComponent) InteractorComponent->TryInteract();
-}
-
-void ADefaultTromboneCharacter::Headbutt()
-{
-	if (HeadbuttComponent) HeadbuttComponent->Attack();
+	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
 }
 
 void ADefaultTromboneCharacter::Attack()
 {
-	if (InstrumentAttackComponent) InstrumentAttackComponent->Attack();
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+	
+	if (AttackComponent && Instrument) AttackComponent->Attack();
 }
 
-void ADefaultTromboneCharacter::SetInstrumentCollisionReference(UPrimitiveComponent* InCollision)
+void ADefaultTromboneCharacter::StartSprint()
 {
-	if (InstrumentAttackComponent) InstrumentAttackComponent->SetInstrumentCollision(InCollision);
+	if (bIsSprinting) return; 
+
+	bIsSprinting = true;
+	Server_SetIsSprinting(true);
+
+	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->SprintSpeed;
+}
+
+void ADefaultTromboneCharacter::StopSprint()
+{
+	if (!bIsSprinting) return;
+
+	bIsSprinting = false;
+	Server_SetIsSprinting(false);
+
+	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+}
+
+void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
+{
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+
+	if (!GetCachedRhythmActor() || !Instrument) return;
+
+	if (bIsPressed)
+	{
+		CachedRhythmActor->DetectNotes();
+	}
+	else
+	{
+		CachedRhythmActor->DetectLongNoteEnd();
+	}
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 	
-	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-	checkf(InteractorComponent, TEXT("InteractorComponent is missing on %s."), *GetName());
+	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
+	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Instrument;
+	if (AItemBase* AlreadyEquippedItem = EquipmentComponent->GetItemInSlot(TargetSlot))
+	{
+		HandleOnEquipmentChanged(TargetSlot, AlreadyEquippedItem, nullptr);
+	}
+	
+	if (IsLocallyControlled())
+	{
+		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
+		CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
+		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
+	
+		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
+		if (ARhythmActor* RhythmActor = GetCachedRhythmActor())
+		{
+			RhythmActor->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
 
-	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
-	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
-
-	HeadbuttComponent->SetOwnerCharacter(this);
-	InstrumentAttackComponent->SetOwnerCharacter(this);
-}
-
-void ADefaultTromboneCharacter::Tick(const float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	InterpolateMovementSpeed(DeltaSeconds);
+		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
+	}
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	DOREPLIFETIME(ADefaultTromboneCharacter, bIsEquipped);
-	DOREPLIFETIME(ADefaultTromboneCharacter, bIsSprinting);
+	DOREPLIFETIME(ThisClass, bIsSprinting);
 }
 
-void ADefaultTromboneCharacter::Server_StartSprint_Implementation()
+void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 {
-	bIsSprinting = true;
-}
+	Super::PossessedBy(NewController);
 
-void ADefaultTromboneCharacter::Server_StopSprint_Implementation()
-{
-	bIsSprinting = false;
-}
+	if (!HasAuthority()) return;
 
-void ADefaultTromboneCharacter::InterpolateMovementSpeed(const float DeltaSeconds) const
-{
-	if (auto* MovementComponent = GetCharacterMovement())
+	if (EquipmentComponent)
 	{
-		const float TargetSpeed = bIsSprinting ? SprintSpeed : WalkSpeed;
+		EquipmentComponent->InitializeOwner(this);
+	}
+	
+	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
+	if (PS && PS->EquippedInstrumentClass)
+	{
+		UWorld* World = GetWorld();
+		if (!World) return;
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
 
-		if (MovementComponent->MaxWalkSpeed != TargetSpeed)
+		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(PS->EquippedInstrumentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
+		if (NewInstrument)
 		{
-			MovementComponent->MaxWalkSpeed = FMath::FInterpTo(
-				MovementComponent->MaxWalkSpeed,
-				TargetSpeed,
-				DeltaSeconds,
-				SprintInterpSpeed
-			);
+			EquipmentComponent->TryEquipItem(NewInstrument);
+		}
+	}
+}
+
+void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
+{
+	if (bIsSprinting != bNewIsSprinting)
+	{
+		bIsSprinting = bNewIsSprinting;
+	}
+}
+
+void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* InteractedItem)
+{
+	EquipmentComponent->TryEquipItem(InteractedItem);
+}
+
+void ADefaultTromboneCharacter::Server_RequestSpotlightBonus_Implementation()
+{
+	TArray<AActor*> OverlappingZones;
+	GetOverlappingActors(OverlappingZones, ASpotlightZone::StaticClass());
+
+	if (OverlappingZones.IsEmpty()) return;
+
+	for (AActor* Actor : OverlappingZones)
+	{
+		if (ASpotlightZone* Zone = Cast<ASpotlightZone>(Actor))
+		{
+			if (Zone->TryAwardBonus(this))
+			{
+				Multicast_PlaySpotlightSuccessEffect();
+				break; 
+			}
 		}
 	}
 }
@@ -184,6 +229,78 @@ void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailab
 	}
 }
 
-void ADefaultTromboneCharacter::Server_Interaction_Implementation(AActor* Interactable)
+void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 {
+	if (!IsValid(InteractedActor)) return;
+
+	if (AItemBase* Item = Cast<AItemBase>(InteractedActor))
+	{
+		Server_InteractItem(Item);
+	}
+}
+
+void ADefaultTromboneCharacter::HandleOnRagdoll()
+{
+	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Instrument);
+}
+
+void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
+{
+	if (Slot == EEquipmentSlotType::Instrument)
+	{
+		if (NewItem)
+		{
+			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
+			{
+				CurrentInteractionContext.bIsEquipped = true;
+				if (GetCachedRhythmActor() && IsLocallyControlled())
+				{
+					CachedRhythmActor->ExecuteOnInstrumentPicked(Instrument->GetInstrumentType());
+				}
+			}
+		}
+		else
+		{
+			CurrentInteractionContext.bIsEquipped = false;
+			if (GetCachedRhythmActor() && IsLocallyControlled())
+			{
+				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
+			}
+		}
+	}
+}
+
+void ADefaultTromboneCharacter::HandleOnNoteDetected(ENoteResult NoteResult)
+{
+	if (NoteResult == ENoteResult::None || NoteResult == ENoteResult::Bad || NoteResult == ENoteResult::Invalid) return;
+	
+	if (!IsLocallyControlled()) return;
+	
+	if (HasAuthority())
+	{
+		Server_RequestSpotlightBonus_Implementation();
+	}
+	else
+	{
+		Server_RequestSpotlightBonus();
+	}
+}
+
+void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementation()
+{
+	// TODO : 폭죽 이펙트 재생
+	PRINT_WITH_CURRENT_CONTEXT("Spotlight Bonus Success!");
+}
+
+ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
+{
+	if (CachedRhythmActor.IsValid()) return CachedRhythmActor.Get();
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+	if (ARhythmActor* FoundActor = Cast<ARhythmActor>(UGameplayStatics::GetActorOfClass(World, ARhythmActor::StaticClass())))
+	{
+		CachedRhythmActor = FoundActor;
+		return CachedRhythmActor.Get();
+	}
+	return nullptr;
 }

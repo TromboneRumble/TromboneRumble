@@ -4,43 +4,13 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-
-void ADefaultPlayerController::OnPossess(APawn* APawn)
-{
-	Super::OnPossess(APawn);
-	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(APawn);
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-		{
-			if (DefaultMappingContext)
-			{
-				Subsystem->AddMappingContext(DefaultMappingContext,0);
-			}
-		}
-	}
-}
-
-void ADefaultPlayerController::OnUnPossess()
-{
-	Super::OnUnPossess();
-	CachedOwnerCharacter = nullptr;
-}
+#include "Framework/LobbyGameMode.h"
 
 void ADefaultPlayerController::AcknowledgePossession(APawn* InPawn)
 {
 	Super::AcknowledgePossession(InPawn);
+	
 	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(InPawn);
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (auto* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-		{
-			if (DefaultMappingContext)
-			{
-				Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			}
-		}
-	}
 }
 
 void ADefaultPlayerController::SetupInputComponent()
@@ -49,29 +19,43 @@ void ADefaultPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		if (MoveAction)    EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Move);
-		//if (LookAction)    EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Look);
 		if (InteractAction)EIC->BindAction(InteractAction, ETriggerEvent::Started, this, &ThisClass::Handle_Interact);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Handle_JumpPressed);
 		if (JumpAction)    EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::Handle_JumpReleased);
 		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::Handle_SprintPressed);
 		if (SprintAction)  EIC->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::Handle_SprintReleased);
 		if (AttackAction)  EIC->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::Handle_Attack);
+		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Started, this, &ThisClass::Handle_Rhythm, true);
+		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Completed, this, &ThisClass::Handle_Rhythm, false);
 	}
 }
 
-void ADefaultPlayerController::Tick(float DeltaSeconds)
+void ADefaultPlayerController::HandleGameStateChanged(EGameState NewState)
 {
-	Super::Tick(DeltaSeconds);
+	if (const ULocalPlayer* Lp = GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = Lp->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			Subsystem->ClearAllMappings();
+
+			switch (NewState)
+			{
+			case EGameState::Lobby:
+				if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
+				break;
+			case EGameState::InGame:
+				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 void ADefaultPlayerController::Handle_Move(const struct FInputActionValue& Value)
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Move(Value);
-}
-
-void ADefaultPlayerController::Handle_Look(const struct FInputActionValue& Value)
-{
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Look(Value);
 }
 
 void ADefaultPlayerController::Handle_JumpPressed()
@@ -86,12 +70,12 @@ void ADefaultPlayerController::Handle_JumpReleased()
 
 void ADefaultPlayerController::Handle_Interact()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Interact();
+	if (CachedOwnerCharacter) CachedOwnerCharacter->TryInteract();
 }
 
 void ADefaultPlayerController::Handle_SprintPressed()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Sprint();
+	if (CachedOwnerCharacter) CachedOwnerCharacter->StartSprint();
 }
 
 void ADefaultPlayerController::Handle_SprintReleased()
@@ -102,4 +86,9 @@ void ADefaultPlayerController::Handle_SprintReleased()
 void ADefaultPlayerController::Handle_Attack()
 {
 	if (CachedOwnerCharacter) CachedOwnerCharacter->Attack();
+}
+
+void ADefaultPlayerController::Handle_Rhythm(const bool bPressed)
+{
+	if (CachedOwnerCharacter) CachedOwnerCharacter->Rhythm(bPressed);
 }

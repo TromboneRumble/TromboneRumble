@@ -24,46 +24,44 @@ public:
 
 	// InputActions
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> LobbyMappingContext;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputMappingContext> InGameMappingContext;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> MoveAction;
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> LookAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> InteractAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> SprintAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> AttackAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> RhythmAction;
 	// ~InputActions
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void OnUnPossess() override;
 	virtual void AcknowledgePossession(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
-	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION()
+	void HandleGameStateChanged(EGameState NewState);
 
 private:
-
 	// Input handlers
 	void Handle_Move(const struct FInputActionValue& Value);
-	void Handle_Look(const struct FInputActionValue& Value);
 	void Handle_JumpPressed();
 	void Handle_JumpReleased();
 	void Handle_Interact();
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
 	void Handle_Attack();
+	void Handle_Rhythm(bool bPressed);
 	// ~Input handlers
-
-	EGameState GetGameState() const;
-
+	
 	// UI
-	void InitializeUI();
 	void InitializeLobbyUI();
 	void InitializeInGameUI();
 	// ~UI
@@ -78,9 +76,4 @@ private:
 
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAkAudioEvent> TestSoundEvent;
-
-	bool bIsSprinting = false;
 };

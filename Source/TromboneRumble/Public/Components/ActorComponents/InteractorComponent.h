@@ -6,6 +6,10 @@
 #include "Components/ActorComponent.h"
 #include "InteractorComponent.generated.h"
 
+struct FInteractionContext;
+class UInteractionTriggerComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractSuccessSignature, AActor*, InteractedActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractableAvailable, bool, bAvailable);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBestCandidateChanged, AActor*, NewTarget);
 
@@ -13,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBestCandidateChanged, AActor*, Ne
 /// IInteractable이 있는 액터와 상호작용할수 있는 컴포넌트
 /// IInteractable이 구현되어있는 액터는 InteractionTriggerComponent가 있어야함
 /// </summary>
-UCLASS( ClassGroup=(Interaction), meta=(BlueprintSpawnableComponent, DisableNativeTick) )
+UCLASS()
 class TROMBONERUMBLE_API UInteractorComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -21,20 +25,21 @@ class TROMBONERUMBLE_API UInteractorComponent : public UActorComponent
 public:
 	UInteractorComponent();
 
-    UFUNCTION(BlueprintCallable, Category = "Interact")
-    void TryInteract(AActor* ExplicitTarget = nullptr);
-
+    void TryInteract(FInteractionContext Context, const AActor* ExplicitTarget = nullptr);
     void RegisterCandidate(AActor* InCandidate);
     void UnregisterCandidate(AActor* InCandidate);
 
-    UPROPERTY(BlueprintAssignable, Category = "Interact")
     FOnInteractableAvailable OnInteractableAvailable;
-
-    UPROPERTY(BlueprintAssignable, Category = "Interact")
     FOnBestCandidateChanged OnBestCandidateChanged;
+	FOnInteractSuccessSignature OnInteractSuccessDelegate;
+	
+	UFUNCTION(Client, Reliable)
+	void Client_OnInteractSuccess(AActor* InteractedActor);
+	
 protected:
     UFUNCTION(Server, Reliable)
-    void Server_TryInteract(AActor* Target);
+	void Server_TryInteract(UInteractionTriggerComponent* TriggerToInteract);
+	
 private:
     AActor* GetBestCandidate() const;
     void CleanupCandidates();
@@ -44,7 +49,4 @@ private:
 
     UPROPERTY()
     TWeakObjectPtr<AActor> BestCandidateCached;
-
-    
-		
 };

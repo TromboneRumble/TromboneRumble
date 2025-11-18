@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/UserWidgets/LobbyWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -12,7 +11,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
-
 
 bool ULobbyWidget::Initialize()
 {
@@ -30,27 +28,15 @@ bool ULobbyWidget::Initialize()
 	CachedMainMenuMapPath = MainMenuMapPath;
 
 	BindSubsystemCallbacks();
-
-	if (StartGameButton)
-	{
-		StartGameButton->OnClicked.AddDynamic(this, &ThisClass::StartGameButtonClicked);
-	}
-	if (BackToMainMenuButton)
-	{
-		BackToMainMenuButton->OnClicked.AddDynamic(this, &ThisClass::BackToMainMenuButtonClicked);
-	}
+	
 	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
 	{
 		LobbyGameState->OnLobbyStateChanged.AddDynamic(this, &ThisClass::OnLobbyStateUpdated);
 		OnPlayerListUpdated(LobbyGameState->GetPlayerList());
 	}
 
-
-	
-
 	return true;
 }
-
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -60,14 +46,6 @@ void ULobbyWidget::NativeConstruct()
 	
 	checkf(SessionsSubsystem, TEXT("SessionsSubsystem is null from [NativeConstruct]"));
 	
-	if (!SessionsSubsystem->IsLocalHost())
-	{
-		StartGameButton->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else
-	{
-		StartGameButton->SetVisibility(ESlateVisibility::Visible);
-	}
 	if (CountdownText)
 	{
 		CountdownText->SetVisibility(ESlateVisibility::Hidden);

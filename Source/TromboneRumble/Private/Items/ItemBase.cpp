@@ -2,7 +2,6 @@
 
 #include "Items/ItemBase.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -11,14 +10,17 @@ AItemBase::AItemBase()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	
-	ItemMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
-	SetRootComponent(ItemMeshComponent);
-	ItemMeshComponent->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
-	ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	ItemMeshComponent->SetSimulatePhysics(true);
-
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	CapsuleComponent->SetupAttachment(RootComponent);
+	SetRootComponent(CapsuleComponent);
+	CapsuleComponent->SetSimulatePhysics(true);
+	CapsuleComponent->SetEnableGravity(true);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
+	ItemMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
+	ItemMeshComponent->SetupAttachment(RootComponent);
+	ItemMeshComponent->SetSimulatePhysics(false);
+	ItemMeshComponent->SetEnableGravity(false);
+	ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InteractTriggerComponent = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTriggerComponent"));
 }
@@ -57,9 +59,9 @@ void AItemBase::OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 void AItemBase::SetPhysicsEnabled(bool bEnable) const
 {
-	if (ItemMeshComponent)
+	if (CapsuleComponent)
 	{
-		ItemMeshComponent->SetSimulatePhysics(bEnable);
-		ItemMeshComponent->SetCollisionEnabled(bEnable ? ECollisionEnabled::PhysicsOnly : ECollisionEnabled::NoCollision);
+		CapsuleComponent->SetSimulatePhysics(bEnable);
+		CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }

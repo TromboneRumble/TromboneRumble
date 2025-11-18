@@ -4,7 +4,12 @@
 #include "Actors/Rhythm/RhythmNote.h"
 #include "Components/SphereComponent.h"
 #include "Components/SplineComponent.h"
+#include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
+#include "Subsystems/RhythmNoteChannelSubsystem.h"
+#include "Subsystems/WidgetPoolSubsystem.h"
+#include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
+#include "UI/UserWidgets/Rhythm/RhythmResultWidget.h"
 #include "Utilities/DebugHelper.h"
 
 ARhythmNote::ARhythmNote()
@@ -18,6 +23,8 @@ ARhythmNote::ARhythmNote()
 	MiddleSphere->SetupAttachment(RootComponent);
 	InnerSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InnerSphere"));
 	InnerSphere->SetupAttachment(RootComponent);
+
+	RhythmNoteUIControllerComponent = CreateDefaultSubobject<URhythmNoteUIControllerComponent>(TEXT("RhythmNoteUIControllerComponent"));
 }
 
 void ARhythmNote::Tick(float DeltaTime)
@@ -26,24 +33,81 @@ void ARhythmNote::Tick(float DeltaTime)
 	NoteLifeTime += DeltaTime;;
 }
 
+void ARhythmNote::OnTakenFromPool_Implementation()
+{
+	NoteLifeTime = 0.f;
+	NoteAlphaOnSpline = 0.f;
+	CachedSplineComponent = nullptr;
+
+	NoteHandle = FNoteHandle();
+	NoteHandle.NoteActor = this;
+
+	CachedRhythmNoteChannelSubsystem->OpenChannel(NoteHandle.Id);
+}
+
+
+void ARhythmNote::OnReturnToPool_Implementation()
+{
+	NoteLifeTime = 0.f;
+	NoteAlphaOnSpline = 1.f;
+	CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
+	CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
+}
+
+void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget* InNoteWidget, float InTimeToComplete,
+	int32 InLineNum)
+{
+	checkf(InSpawner, TEXT("Spawner not Valid in %s"), *GetName());
+	checkf(InSpawner->GetSpawnerType() != EInstrumentType::Invalid, TEXT("Spawner Type is Invalid"));
+	checkf(InNoteWidget, TEXT("InNoteWidget not valid in %s"), *GetName());
+
+	NoteType = InSpawner->GetSpawnerType();
+	CachedSplineComponent = InSpawner->GetSplineComponent();
+	TimeToComplete = InTimeToComplete;
+
+	if (RhythmNoteUIControllerComponent)
+	{
+		RhythmNoteUIControllerComponent->InitSettings(InSpawner->GetSpawnWidget(), InNoteWidget, NoteHandle, InLineNum);
+	}
+}
+
+void ARhythmNote::SetToShortNote()
+{
+	bIsLongNote = false;
+	bIsLongNoteEnd = false;
+}
+
+void ARhythmNote::SetToLongNoteStart()
+{
+	bIsLongNote = true;
+	bIsLongNoteEnd = false;
+}
+
+void ARhythmNote::SetToLongNoteEnd()
+{
+	bIsLongNote = true;
+	bIsLongNoteEnd = true;
+}
 
 void ARhythmNote::MoveNotes_Implementation()
 {
+	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, NoteAlphaOnSpline);
+}
 
+void ARhythmNote::SpawnRhythmResultWidget(ENoteResult InNoteResult)
+{
+	if (RhythmNoteUIControllerComponent)
+	{
+		RhythmNoteUIControllerComponent->SpawnRhythmResultWidget(InNoteResult);
+	}
 }
 
 void ARhythmNote::BeginPlay()
 {
 	Super::BeginPlay();
-	if (ARhythmNoteSpawner* Spawner = Cast<ARhythmNoteSpawner>(GetOwner()))
+	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
 	{
-		CachedSpawner = Spawner;
-		CachedSplineComponent = Spawner->GetSplineComponent();
-	}
-	else
-	{
-		CachedSpawner = nullptr;
-		ensureMsgf(false, TEXT("Owner is not ARhythmNoteSpawner. Owner=%s"), *GetNameSafe(GetOwner()));
+		CachedRhythmNoteChannelSubsystem = RhythmNoteChannelSubsystem;
 	}
 }
 
