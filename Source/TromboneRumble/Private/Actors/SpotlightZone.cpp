@@ -76,8 +76,6 @@ bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* Player)
 	{
 		bIsBonusAwarded = true;
 		SetState(ESpotlightState::Awarded);
-		const FString DebugMsg = FString::Printf(TEXT("SpotlightZone '%s': Bonus awarded to player '%s'"), *GetName(), *Player->GetName());
-		PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 		return true;
 	}
 
