@@ -28,6 +28,7 @@ public:
 	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	void PlaySound() const;
@@ -52,6 +53,8 @@ protected:
 	EInstrumentType InstrumentType = EInstrumentType::Invalid;
 
 private:
+	FTransform OriginMeshTransform;
+	
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
 
