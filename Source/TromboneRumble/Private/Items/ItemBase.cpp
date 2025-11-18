@@ -9,6 +9,7 @@ AItemBase::AItemBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
+	AActor::SetReplicateMovement(true);
 	
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	SetRootComponent(CapsuleComponent);
