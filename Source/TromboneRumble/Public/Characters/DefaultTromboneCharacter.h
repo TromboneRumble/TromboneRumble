@@ -34,6 +34,8 @@ public:
 	void StartSprint();
 	void StopSprint();
 	void Rhythm(bool bIsPressed);
+
+	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	
 protected:
 	virtual void BeginPlay() override;

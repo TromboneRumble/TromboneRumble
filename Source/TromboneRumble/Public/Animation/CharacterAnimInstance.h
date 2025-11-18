@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Utilities/Defines.h"
 #include "CharacterAnimInstance.generated.h"
 
+class ADefaultTromboneCharacter;
 class UCharacterMovementComponent;
 
 UCLASS()
@@ -42,9 +44,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	FVector Velocity;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Instrument")
+	EInstrumentType CurrentInstrumentType = EInstrumentType::Invalid;
+
 private:
 	UPROPERTY(Transient)
-	TObjectPtr<ACharacter> OwnerCharacter;
+	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UCharacterMovementComponent> MovementComponent;

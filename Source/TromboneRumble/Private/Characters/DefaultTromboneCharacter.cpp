@@ -121,6 +121,18 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 	}
 }
 
+EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
+{
+	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument))
+	{
+		if (const AInstrumentBase* InstrumentBase = Cast<AInstrumentBase>(Instrument))
+		{
+			return InstrumentBase->GetInstrumentType();
+		}
+	}
+	return EInstrumentType::Invalid;
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -193,6 +205,11 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 	if (bIsSprinting != bNewIsSprinting)
 	{
 		bIsSprinting = bNewIsSprinting;
+		if (CharacterData)
+		{
+			const float NewSpeed = bNewIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
+			GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+		}
 	}
 }
 

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Animation/CharacterAnimInstance.h"
-
+#include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -9,7 +9,7 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 {
     Super::NativeInitializeAnimation();
 
-    OwnerCharacter = Cast<ACharacter>(TryGetPawnOwner());
+    OwnerCharacter = Cast<ADefaultTromboneCharacter>(TryGetPawnOwner());
     if (OwnerCharacter)
     {
         MovementComponent = OwnerCharacter->GetCharacterMovement();
@@ -35,6 +35,8 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     const bool bIsAccelerating = !CurrentAcceleration.IsNearlyZero();
     
     bShouldMove = (GroundSpeed > 3.0f) || bIsAccelerating;
+
+    CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
 }
 
 void UCharacterAnimInstance::SetIsAttacking(const bool bNewIsAttacking)
