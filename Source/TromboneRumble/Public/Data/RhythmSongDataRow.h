@@ -18,13 +18,13 @@ struct FRhythmInstrumentSound
 
     // 어떤 악기인지
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    EInstrumentType InstrumentType = EInstrumentType::Trombone;
+    EInstrumentType InstrumentType = EInstrumentType::Invalid;
 
     // 노트 성공 시 재생할 이벤트
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSoftObjectPtr<UAkAudioEvent> NoteEvent;
 
-    // 롱노트 change 시에 바꿀 Switch
+    // 악기를 들었을때 변경할 Switch
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSoftObjectPtr<UAkSwitchValue> ChangeSwitch;
 
@@ -39,15 +39,14 @@ struct FRhythmSongDataRow : public FTableRowBase
     GENERATED_BODY()
 
     // 이 Row를 식별할 GameplayTag (키 역할)
-    // RowName이랑 같은 값으로 맞춰두면 나중에 찾기 쉬움.
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Categories = "Trombone.Rhythm.Song"))
     FGameplayTag SongTag;
 
-    // 곡 BGM 이벤트 (비워도 됨)
+    // 곡 BGM 이벤트
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSoftObjectPtr<UAkAudioEvent> BgmEvent;
 
-    // "None" 상태로 쓸 Switch (비워도 됨)
+    // 악기를 떨궜을때 재생할 Switch
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSoftObjectPtr<UAkSwitchValue> NoneSwitch;
 
