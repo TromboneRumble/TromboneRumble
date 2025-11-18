@@ -37,6 +37,8 @@ public:
 	TObjectPtr<UInputAction> SprintAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> AttackAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> RhythmAction;
 	// ~InputActions
 
 protected:
@@ -56,6 +58,7 @@ private:
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
 	void Handle_Attack();
+	void Handle_Rhythm(bool bPressed);
 	// ~Input handlers
 	
 	// UI
@@ -73,9 +76,4 @@ private:
 
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAkAudioEvent> TestSoundEvent;
-
-	bool bIsSprinting = false;
 };

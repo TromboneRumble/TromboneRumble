@@ -51,7 +51,7 @@ private:
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Instrument")
-	TSubclassOf<AActor> InstrumentToSpawn;
+	TArray<TSubclassOf<AInstrumentBase>> InstrumentClassesToSpawn;
 	
 	FTimerHandle LobbyTimerHandle;
 	int32 NumPublicConnections;

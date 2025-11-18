@@ -29,9 +29,6 @@ public:
 	FOnStunSignature OnStunDelegate;
 
 protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UCapsuleComponent> HeadbuttCapsuleComponent;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
 	

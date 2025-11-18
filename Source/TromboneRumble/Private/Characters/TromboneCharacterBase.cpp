@@ -78,11 +78,6 @@ void ATromboneCharacterBase::InitCharacter()
 
 void ATromboneCharacterBase::SetupCapsuleComponent()
 {
-	HeadbuttCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadbuttCapsuleComponent"));
-	HeadbuttCapsuleComponent->SetupAttachment(RootComponent);
-	HeadbuttCapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1) ; // Object Channel 1 : Weapon
-	HeadbuttCapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);

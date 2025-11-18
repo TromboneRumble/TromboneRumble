@@ -139,21 +139,24 @@ void ALobbyGameMode::InitializeMapPath()
 
 void ALobbyGameMode::InitializeInstruments() const
 {
-	if (!InstrumentToSpawn) return;
+	if (InstrumentClassesToSpawn.Num() == 0) return;
 	
 	TArray<AActor*> SpawnPointActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
 
-	if (SpawnPointActors.Num() > 0)
+	if (SpawnPointActors.Num() == 0) return;
+	
+	for (int32 i = 0; i < NumPublicConnections - 1; ++i)
 	{
-		const AActor* SpawnPoint = SpawnPointActors[0];
+		const int32 SpawnPointIndex = i % SpawnPointActors.Num();
+		const AActor* SpawnPoint = SpawnPointActors[SpawnPointIndex];
 		const FVector SpawnLocation = SpawnPoint->GetActorLocation();
 		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
-		
-		for (int32 i = 0; i < NumPublicConnections - 1; ++i)
-		{
-			GetWorld()->SpawnActor<AActor>(InstrumentToSpawn, SpawnLocation, SpawnRotation);
-		}
+
+		const int32 InstrumentClassIndex = i % InstrumentClassesToSpawn.Num();
+		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentClassesToSpawn[InstrumentClassIndex];
+
+		GetWorld()->SpawnActor<AInstrumentBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
 	}
 }
 

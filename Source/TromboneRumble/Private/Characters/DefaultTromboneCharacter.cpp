@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
+#include "Actors/SpotlightZone.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -44,9 +45,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 void ADefaultTromboneCharacter::Jump()
 {
-	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
 	
-	if (bIsSprinting && !Weapon)
+	if (bIsSprinting && !Instrument)
 	{
 		AttackComponent->Attack();
 	}
@@ -79,9 +80,9 @@ void ADefaultTromboneCharacter::TryInteract()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
 	
-	if (AttackComponent && Weapon) AttackComponent->Attack();
+	if (AttackComponent && Instrument) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::StartSprint()
@@ -104,28 +105,50 @@ void ADefaultTromboneCharacter::StopSprint()
 	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
 }
 
+void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
+{
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+
+	if (!GetCachedRhythmActor() || !Instrument) return;
+
+	if (bIsPressed)
+	{
+		CachedRhythmActor->DetectNotes();
+	}
+	else
+	{
+		CachedRhythmActor->DetectLongNoteEnd();
+	}
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!IsLocallyControlled()) return;
-
-	CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
-	CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
-	CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
-	
-	CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-	GetCachedRhythmActor();
-
-	InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
-	InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
-	InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
-	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
-
-	if (!CurrentInteractionContext.bIsEquipped)
+	
+	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
+	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Instrument;
+	if (AItemBase* AlreadyEquippedItem = EquipmentComponent->GetItemInSlot(TargetSlot))
 	{
-		HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, nullptr, nullptr);
+		HandleOnEquipmentChanged(TargetSlot, AlreadyEquippedItem, nullptr);
+	}
+	
+	if (IsLocallyControlled())
+	{
+		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
+		CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
+		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
+	
+		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
+		if (ARhythmActor* RhythmActor = GetCachedRhythmActor())
+		{
+			RhythmActor->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
+
+		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
+		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	}
 }
 
@@ -161,7 +184,6 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 		if (NewInstrument)
 		{
 			EquipmentComponent->TryEquipItem(NewInstrument);
-			HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, NewInstrument, nullptr);
 		}
 	}
 }
@@ -177,6 +199,26 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* InteractedItem)
 {
 	EquipmentComponent->TryEquipItem(InteractedItem);
+}
+
+void ADefaultTromboneCharacter::Server_RequestSpotlightBonus_Implementation()
+{
+	TArray<AActor*> OverlappingZones;
+	GetOverlappingActors(OverlappingZones, ASpotlightZone::StaticClass());
+
+	if (OverlappingZones.IsEmpty()) return;
+
+	for (AActor* Actor : OverlappingZones)
+	{
+		if (ASpotlightZone* Zone = Cast<ASpotlightZone>(Actor))
+		{
+			if (Zone->TryAwardBonus(this))
+			{
+				Multicast_PlaySpotlightSuccessEffect();
+				break; 
+			}
+		}
+	}
 }
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
@@ -199,23 +241,19 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Instrument);
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (!AttackComponent) return;
-	
-	if (Slot == EEquipmentSlotType::Weapon)
+	if (Slot == EEquipmentSlotType::Instrument)
 	{
 		if (NewItem)
 		{
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
-				AttackComponent->SetCollisionComponent(Instrument->GetCapsuleComponent());
-				AttackComponent->SetAttackData(Instrument->GetAttackData());
 				CurrentInteractionContext.bIsEquipped = true;
-				if (GetCachedRhythmActor())
+				if (GetCachedRhythmActor() && IsLocallyControlled())
 				{
 					CachedRhythmActor->ExecuteOnInstrumentPicked(Instrument->GetInstrumentType());
 				}
@@ -223,15 +261,35 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 		}
 		else
 		{
-			AttackComponent->SetCollisionComponent(HeadbuttCapsuleComponent);
-			AttackComponent->SetAttackData(HeadbuttAttackData);
 			CurrentInteractionContext.bIsEquipped = false;
-			if (GetCachedRhythmActor())
+			if (GetCachedRhythmActor() && IsLocallyControlled())
 			{
 				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
 			}
 		}
 	}
+}
+
+void ADefaultTromboneCharacter::HandleOnNoteDetected(ENoteResult NoteResult)
+{
+	if (NoteResult == ENoteResult::None || NoteResult == ENoteResult::Bad || NoteResult == ENoteResult::Invalid) return;
+	
+	if (!IsLocallyControlled()) return;
+	
+	if (HasAuthority())
+	{
+		Server_RequestSpotlightBonus_Implementation();
+	}
+	else
+	{
+		Server_RequestSpotlightBonus();
+	}
+}
+
+void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementation()
+{
+	// TODO : 폭죽 이펙트 재생
+	PRINT_WITH_CURRENT_CONTEXT("Spotlight Bonus Success!");
 }
 
 ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()

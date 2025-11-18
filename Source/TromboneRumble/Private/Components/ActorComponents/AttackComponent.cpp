@@ -2,25 +2,48 @@
 
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Animation/CharacterAnimInstance.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/AttackDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
+#include "Items/InstrumentBase.h"
+#include "Net/UnrealNetwork.h"
 #include "Utilities/DebugHelper.h"
 
 UAttackComponent::UAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicatedByDefault(true);
+
+	HeadbuttCollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadbuttCapsuleComponent"));
+	HeadbuttCollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1) ; // Object Channel 1 : Weapon
 }
 
 void UAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	if (OwnerCharacter && OwnerCharacter->GetMesh())
+	if (OwnerCharacter && OwnerCharacter->GetMesh() && HeadbuttCollisionComponent)
 	{
+		HeadbuttCollisionComponent->AttachToComponent(
+			OwnerCharacter->GetMesh(), 
+			FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+			FName("head")
+		);
+		HeadbuttCollisionComponent->Activate(); 
+		HeadbuttCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		
 		CharacterAnimInstance = Cast<UCharacterAnimInstance>(OwnerCharacter->GetMesh()->GetAnimInstance());
+
+		UEquipmentComponent* EquipmentComp = OwnerCharacter->FindComponentByClass<UEquipmentComponent>();
+		if (IsValid(EquipmentComp))
+		{
+			EquipmentComp->OnEquipmentChangedDelegate.AddDynamic(this, &UAttackComponent::HandleOnEquipmentChanged);
+		
+			AItemBase* CurrentWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Instrument);
+			HandleOnEquipmentChanged(EEquipmentSlotType::Instrument, CurrentWeapon, nullptr);
+		}
 	}
 }
 
@@ -29,9 +52,9 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (!bIsAttacking || !CollisionComponent || !OwnerCharacter->HasAuthority()) return;
+	if (!bIsAttacking || !CurrentCollisionComponent || !OwnerCharacter->HasAuthority()) return;
 
-	const FTransform CurrentTransform = CollisionComponent->GetComponentTransform();
+	const FTransform CurrentTransform = CurrentCollisionComponent->GetComponentTransform();
 	const FVector Start = PreviousFrameTransform.GetLocation();
 	const FVector End = CurrentTransform.GetLocation();
 	const FRotator Rotation = CurrentTransform.GetRotation().Rotator();
@@ -39,9 +62,9 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	TArray<FHitResult> HitResults;
 	FComponentQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
-	Params.AddIgnoredActor(CollisionComponent->GetOwner());
+	Params.AddIgnoredActor(CurrentCollisionComponent->GetOwner());
 	
-	const FCollisionShape CapsuleShape = CollisionComponent->GetCollisionShape();
+	const FCollisionShape CapsuleShape = CurrentCollisionComponent->GetCollisionShape();
 	
 	const bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
@@ -115,7 +138,7 @@ void UAttackComponent::Attack()
 
 void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
-	if (bIsAttacking || !bCanAttack || !CollisionComponent || !CurrentAttackData) return;
+	if (bIsAttacking || !bCanAttack || !CurrentCollisionComponent || !CurrentAttackData) return;
 
 	bCanAttack = false;
 	GetWorld()->GetTimerManager().SetTimer(
@@ -128,7 +151,7 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 	
 	bIsAttacking = true;
 	AlreadyHitActors.Empty();
-	PreviousFrameTransform = CollisionComponent->GetComponentTransform();
+	PreviousFrameTransform = CurrentCollisionComponent->GetComponentTransform();
 
 	Multicast_PlayAttackEffects();
 }
@@ -180,5 +203,24 @@ void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 				AnimInstance->OnMontageEnded.RemoveDynamic(this, &ThisClass::OnAttackMontageEnded);
 			}
 		}
+	}
+}
+
+void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
+{
+	if (Slot != EEquipmentSlotType::Instrument) return;
+
+	if (NewItem)
+	{
+		if (const AInstrumentBase* NewInstrument = Cast<AInstrumentBase>(NewItem))
+		{
+			CurrentCollisionComponent = NewInstrument->GetCapsuleComponent();
+			CurrentAttackData = NewInstrument->GetAttackData();
+		}
+	}
+	else
+	{
+		CurrentCollisionComponent = HeadbuttCollisionComponent;
+		CurrentAttackData = HeadbuttAttackData;
 	}
 }

@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Actors/LobbyKiosk.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Framework/LobbyGameMode.h"
+#include "Net/UnrealNetwork.h"
 #include "Utilities/Defines.h"
 
 ALobbyKiosk::ALobbyKiosk()
@@ -14,13 +14,7 @@ ALobbyKiosk::ALobbyKiosk()
 	KioskMeshComp->SetSimulatePhysics(false);
 	SetRootComponent(KioskMeshComp);
 	
-	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
-	CapsuleComponent->SetupAttachment(RootComponent);
-	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CapsuleComponent->SetSimulatePhysics(false);
-
-	// InteractTrigger = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTrigger"));
+	InteractTrigger = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTrigger"));
 }
 
 bool ALobbyKiosk::CanInteract_Implementation(AActor* InstigatorActor) const
@@ -30,8 +24,22 @@ bool ALobbyKiosk::CanInteract_Implementation(AActor* InstigatorActor) const
 
 void ALobbyKiosk::Interact_Implementation(AActor* InstigatorActor)
 {
-	Server_RequestTravel();
+	if (HasAuthority())
+	{
+		Server_RequestTravel_Implementation();
+	}
+	else
+	{
+		Server_RequestTravel();
+	}
 	bIsUsed = true;
+}
+
+void ALobbyKiosk::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, bIsUsed);
 }
 
 void ALobbyKiosk::Server_RequestTravel_Implementation()
