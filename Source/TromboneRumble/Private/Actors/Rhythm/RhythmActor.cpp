@@ -131,7 +131,8 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
 void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
                                               UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent)
 {
-	checkf(InType < EInstrumentType::Background, TEXT("InType Is a background or Invalid Type"));
+	checkf(!(InType == EInstrumentType::Background || InType == EInstrumentType::Invalid),
+		TEXT("InType must NOT be Background or Invalid"));
 	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
 	{
 		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent);
