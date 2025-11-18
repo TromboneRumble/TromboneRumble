@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{2DD019B1-0548-4041-B0ED-C8844C773403}",
     "Language": "SFX",
-    "Hash": "{28AE0B84-7A0C-EC74-0317-54150EDA0A7B}",
+    "Hash": "{9B1626F3-52DF-0637-21BA-D65A45062FD6}",
     "ObjectPath": "Play_Inst_Fail",
     "ShortName": "Play_Inst_Fail",
     "Path": "Event/Play_Inst_Fail.bnk",
@@ -61,6 +61,18 @@
       "CachePath": "SFX/SFX_Fail_3_818F3B66.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "99397611",
+       "Name": "Meter (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\SFX_Fail\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
+       "GUID": "{C34E4FF6-0CE9-4C59-BFC4-2BAEED552060}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "3479579317",
@@ -86,11 +98,18 @@
        {
         "Id": "988657482"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "99397611"
+        }
+       ]
+      }
      }
     ]
    }
   ],
-  "FileHash": "{0D1EBED5-8CD0-ED64-2020-17268C52DFF2}"
+  "FileHash": "{48E048A4-81F1-C718-66EE-878F4728F7E5}"
  }
 }

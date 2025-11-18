@@ -194,6 +194,54 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Folder Name="Map_A_Rhythm" ID="{3A83726B-EFE8-4EF2-95E2-205216778012}" ShortID="600795364">
+					<ChildrenList>
+						<Event Name="Play_MapA_Main" ID="{7699882F-9ACF-4571-872E-794BC91CB66C}">
+							<ChildrenList>
+								<Action Name="" ID="{66C4FE84-C27E-4DA4-91DA-A4DC03D779AA}" ShortID="63270239">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Map_A" ID="{56D00CE1-E69E-44AF-8DF1-E169B7ACBEC8}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_RhythmGame_C" ID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}">
+							<ChildrenList>
+								<Action Name="" ID="{6B2A69C3-2456-4B55-981D-A09DD6F227F5}" ShortID="770042822">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapA_Cymbal_MIDI" ID="{17B5ABCB-7FC0-42E4-AA3F-7EA63213BE3D}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_RhythmGame_V" ID="{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}">
+							<ChildrenList>
+								<Action Name="" ID="{69573F2D-CC9F-4768-A5F7-B2E5E520CAFB}" ShortID="830718194">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapA_Violin_MIDI" ID="{09B9F8D4-A759-4FCF-BD92-4112C24D2626}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_RhythmGame_T" ID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}">
+							<ChildrenList>
+								<Action Name="" ID="{801E689E-D84E-4A38-828D-B865F5555B5C}" ShortID="627131004">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapA_Trombone_MIDI" ID="{BDFF069B-AD0C-4D2D-9229-AB4C3EC4608B}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

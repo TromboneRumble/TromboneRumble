@@ -4,6 +4,13 @@
 		<WorkUnit Name="Default Work Unit" ID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}" PersistMode="Standalone">
 			<ChildrenList>
 				<GameParameter Name="RTPC_BPM_Test" ID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
+				<GameParameter Name="RTPC_Fail_Volume" ID="{B4B823F8-631E-401E-8129-C408D3A19230}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="-89"/>
+						<Property Name="Max" Type="Real64" Value="0"/>
+						<Property Name="Min" Type="Real64" Value="-89"/>
+					</PropertyList>
+				</GameParameter>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>

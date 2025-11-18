@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3479579317" Type="Event" GUID="{2DD019B1-0548-4041-B0ED-C8844C773403}" Language="SFX" Hash="{28AE0B84-7A0C-EC74-0317-54150EDA0A7B}">
+		<SoundBank Id="3479579317" Type="Event" GUID="{2DD019B1-0548-4041-B0ED-C8844C773403}" Language="SFX" Hash="{9B1626F3-52DF-0637-21BA-D65A45062FD6}">
 			<ObjectPath>Play_Inst_Fail</ObjectPath>
 			<ShortName>Play_Inst_Fail</ShortName>
 			<Path>Event/Play_Inst_Fail.bnk</Path>
@@ -32,6 +32,11 @@
 					<CachePath>SFX/SFX_Fail_3_818F3B66.wem</CachePath>
 				</File>
 			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="99397611" Name="Meter (Custom)" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\SFX_Fail\[Effect Slot [0]: (Meter)]\Meter (Custom)" GUID="{C34E4FF6-0CE9-4C59-BFC4-2BAEED552060}" LibName="Wwise Meter" LibId="8454147"/>
+				</Custom>
+			</Plugins>
 			<Events>
 				<Event Id="3479579317" Name="Play_Inst_Fail" ObjectPath="\Events\Default Work Unit\Play_Inst_Fail" GUID="{2DD019B1-0548-4041-B0ED-C8844C773403}" DurationType="OneShot" DurationMin="0.5224583" DurationMax="0.916875">
 					<MediaRefs>
@@ -41,9 +46,14 @@
 						<MediaRef Id="767768891"/>
 						<MediaRef Id="988657482"/>
 					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="99397611"/>
+						</Custom>
+					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8DB05041-D441-6CA1-C94D-160B8BF98295}</FileHash>
+	<FileHash>{CAC8AABD-A091-0DF4-90AA-FCE1E57792CA}</FileHash>
 </SoundBanksInfo>
