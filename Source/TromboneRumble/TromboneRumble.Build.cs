@@ -11,7 +11,7 @@ public class TromboneRumble : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "OnlineSubsystem", "OnlineSubsystemSteam", "OnlineSubsystemUtils", "GameplayTags", "UMG", 
-			"AkAudio", "WwiseSoundEngine" });
+			"AkAudio", "WwiseSoundEngine", "Niagara" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayMessageRuntime"});
 
