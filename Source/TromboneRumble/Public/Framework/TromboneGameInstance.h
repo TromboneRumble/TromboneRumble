@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Engine/GameInstance.h"
 #include "TromboneGameInstance.generated.h"
 
@@ -16,4 +17,13 @@ class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
+
+private:
+    UPROPERTY(Transient)
+    FGameplayTag SelectedSongTag;
+
+public:
+    //getter setter
+    void SetSelectedSongTag(const FGameplayTag& InTag) { SelectedSongTag = InTag; }
+    FGameplayTag GetSelectedSongTag() const { return SelectedSongTag; }
 };

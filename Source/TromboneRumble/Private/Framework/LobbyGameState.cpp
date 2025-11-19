@@ -3,12 +3,16 @@
 #include "Framework/LobbyGameState.h"
 
 #include "Engine/StaticMeshActor.h"
+#include "Framework/TromboneGameInstance.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Subsystems/GameDataSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
+
+class UGameDataSubsystem;
 
 void ALobbyGameState::BeginPlay()
 {
@@ -31,6 +35,7 @@ void ALobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	
 	DOREPLIFETIME(ALobbyGameState, PlayerList);
 	DOREPLIFETIME(ALobbyGameState, CurrentLobbyState);
+	DOREPLIFETIME(ALobbyGameState, SelectedSongTag);
 }
 
 void ALobbyGameState::UpdatePlayerList()
@@ -63,6 +68,13 @@ void ALobbyGameState::SetLobbyState(const ELobbyState NewState)
 	OnRep_LobbyState();
 }
 
+void ALobbyGameState::SetSelectedSongTag(const FGameplayTag& InTag)
+{
+	if (!HasAuthority()) return;
+	SelectedSongTag = InTag;
+	OnRep_SelectedSongTag();
+}
+
 void ALobbyGameState::Multicast_RemoveWall_Implementation()
 {
 	TArray<AActor*> FoundActors;
@@ -91,4 +103,18 @@ void ALobbyGameState::OnRep_SessionPlayerList() const
 void ALobbyGameState::OnRep_LobbyState() const
 {
 	OnLobbyStateChanged.Broadcast(CurrentLobbyState);
+}
+
+void ALobbyGameState::OnRep_SelectedSongTag()
+{
+	Debug::Print(TEXT("OnRep_SelecetedSongTag CAlled"));
+	if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		GameInstance->SetSelectedSongTag(SelectedSongTag);
+	}
+
+	if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+	{
+		DataSubsystem->PreloadSongAssets(SelectedSongTag);
+	}
 }

@@ -4,6 +4,8 @@
 #include "Subsystems/GameDataSubsystem.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
+#include "AkAudioEvent.h"
+#include "AkSwitchValue.h"
 
 void UGameDataSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -22,10 +24,28 @@ void UGameDataSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     }
 }
 
-const FRhythmSongDataRow* UGameDataSubsystem::GetSongRow(const FGameplayTag& SongTag) const
+const FRhythmSongDataRow* UGameDataSubsystem::GetSongRow(const FGameplayTag& InSongTag) const
 {
-    if (!RhythmSongDataTable || !SongTag.IsValid()) return nullptr;
+    if (!RhythmSongDataTable || !InSongTag.IsValid()) return nullptr;
 
     static const FString Ctx = TEXT("GetSongRow");
-    return RhythmSongDataTable->FindRow<FRhythmSongDataRow>(SongTag.GetTagName(), Ctx, true);
+    return RhythmSongDataTable->FindRow<FRhythmSongDataRow>(InSongTag.GetTagName(), Ctx, true);
+}
+
+void UGameDataSubsystem::PreloadSongAssets(const FGameplayTag& InSongTag)
+{
+    const FRhythmSongDataRow* Row = GetSongRow(InSongTag);
+    if (!Row) return;
+
+    // BGM
+    Row->BgmEvent.LoadSynchronous();
+    Row->NoneSwitch.LoadSynchronous();
+
+    // 악기 사운드
+    for (auto& Sound : Row->InstrumentSounds)
+    {
+        Sound.NoteEvent.LoadSynchronous();
+        Sound.ChangeSwitch.LoadSynchronous();
+        Sound.FailEvent.LoadSynchronous();
+    }
 }

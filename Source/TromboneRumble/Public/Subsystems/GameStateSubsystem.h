@@ -36,8 +36,7 @@ private:
 	void AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState);
 
 
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag SelectedSongTag;
+
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EGameState CurrentGameState;
@@ -48,10 +47,4 @@ public:
 	// Getter Setter
 	FString GetMapNameForGameState(const EGameState& InGameState) const;
 	FORCEINLINE EGameState GetGameState() const { return CurrentGameState; }
-
-	UFUNCTION(BlueprintCallable)
-	void SetSelectedSongTag(const FGameplayTag& InTag) { SelectedSongTag = InTag; }
-
-	UFUNCTION(BlueprintCallable)
-	FGameplayTag GetSelectedSongTag() const { return SelectedSongTag; }
 };

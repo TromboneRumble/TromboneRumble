@@ -87,6 +87,7 @@ protected:
 
 private:
 	// Rhythm Game Init
+	void PrepareRhythmGame();
 	ARhythmNoteSpawner* GetOrCreateSpawner(EInstrumentType InType);
 	bool DestroySpawner(EInstrumentType InType);
 	// ~Rhythm Game Init

@@ -16,6 +16,7 @@
 #include "Subsystems/SessionSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Data/RhythmSongDataRow.h"
+#include "Framework/TromboneGameInstance.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -63,13 +64,7 @@ void ALobbyGameMode::BeginPlay()
 		NumPublicConnections = LastSetting->NumPublicConnections;
 	}
 
-	//Todo : UI를 통해서 어떤 곡을 선택했는지 정하기
-	if (auto* StateSub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
-	{
-		StateSub->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
-	}
 
-	InitializeInstruments();
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
@@ -98,6 +93,12 @@ void ALobbyGameMode::NotifyClientReady(APlayerController* ReadyPlayer)
 
 	if (CheckAllClientsReady())
 	{
+		//Todo : UI를 통해서 어떤 곡을 선택했는지 정하기
+		if (LobbyGameState)
+		{
+			LobbyGameState->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
+			InitializeInstruments();
+		}
 		SetLobbyState(ELobbyState::CountdownToScramble);
 	}
 }
@@ -129,11 +130,10 @@ void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 }
 void ALobbyGameMode::InitializeInstruments() const
 {
-
-	auto* StateSub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>();
+	UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance());
 	auto* DataSub = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
 
-	FGameplayTag SongTag = StateSub->GetSelectedSongTag();
+	FGameplayTag SongTag = GameInstance->GetSelectedSongTag();
 	const FRhythmSongDataRow* SongRow = DataSub->GetSongRow(SongTag);
 
 	if (!SongRow)
@@ -176,7 +176,6 @@ bool ALobbyGameMode::CheckAllClientsReady()
 		const ADefaultPlayerState* DPS = Cast<ADefaultPlayerState>(PS);
 		if (!DPS || !DPS->IsReady()) return false;
 	}
-
 	return true;
 }
 
@@ -201,7 +200,10 @@ void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 				break;
 
 			case ELobbyState::CountdownToScramble:
-				RequestSetTimer([this]() { SetLobbyState(ELobbyState::InstrumentScramble); });
+				RequestSetTimer([this]()
+				{
+					SetLobbyState(ELobbyState::InstrumentScramble);
+				});
 				break;
 
 			case ELobbyState::InstrumentScramble:
@@ -209,7 +211,8 @@ void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 				break;
 
 			case ELobbyState::CountdownToTravel:
-				RequestSetTimer([this, GameStateSubsystem]() { RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::InGame)); });
+				RequestSetTimer([this, GameStateSubsystem]() { 
+					RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::InGame)); });
 				break;
 
 			default:;

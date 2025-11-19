@@ -21,5 +21,7 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-    const FRhythmSongDataRow* GetSongRow(const FGameplayTag& SongTag) const;
+    void PreloadSongAssets(const FGameplayTag& InSongTag);
+    const FRhythmSongDataRow* GetSongRow(const FGameplayTag& InSongTag) const;
+
 };
