@@ -8,6 +8,9 @@
 #include "Utilities/Defines.h"
 #include "GameStateSubsystem.generated.h"
 
+struct FGameplayTag;
+
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EGameState, NewState);
 
 UCLASS()
@@ -25,12 +28,17 @@ public:
 	
 protected:
 	UFUNCTION()
-	void OnPostLoadMap(UWorld* LoadedWorld);
+	void OnPostLoadMap(UWorld* InLoadedWorld);
 	
-	void SetGameState(EGameState NewState);
+	void SetGameState(const EGameState& InNewState);
 
 	EGameState CurrentGameState;
-	FString CachedMainMenuMapName;
-	FString CachedLobbyMapName;
-	FString CachedInGameMapName;
+
+	UPROPERTY(Transient)
+	TMap<EGameState, FString> GameStateToMapNameMap;
+
+private:
+	void AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState);
+public:
+	FString GetMapNameForGameState(const EGameState& InGameState) const;
 };
