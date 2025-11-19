@@ -14,6 +14,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
+#include "Subsystems/GameDataSubsystem.h"
+#include "Data/RhythmSongDataRow.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -59,6 +61,12 @@ void ALobbyGameMode::BeginPlay()
 	if (LastSetting.IsValid())
 	{
 		NumPublicConnections = LastSetting->NumPublicConnections;
+	}
+
+	//Todo : UI를 통해서 어떤 곡을 선택했는지 정하기
+	if (auto* StateSub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+	{
+		StateSub->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
 	}
 
 	InitializeInstruments();
@@ -121,7 +129,22 @@ void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 }
 void ALobbyGameMode::InitializeInstruments() const
 {
-	if (InstrumentClassesToSpawn.Num() == 0) return;
+
+	auto* StateSub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>();
+	auto* DataSub = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
+
+	FGameplayTag SongTag = StateSub->GetSelectedSongTag();
+	const FRhythmSongDataRow* SongRow = DataSub->GetSongRow(SongTag);
+
+	if (!SongRow)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SongRow not found"));
+		return;
+	}
+
+	const auto& InstrumentSounds = SongRow->InstrumentSounds;
+	if (InstrumentSounds.Num() == 0) return;
+
 	
 	TArray<AActor*> SpawnPointActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
@@ -135,8 +158,8 @@ void ALobbyGameMode::InitializeInstruments() const
 		const FVector SpawnLocation = SpawnPoint->GetActorLocation();
 		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 
-		const int32 InstrumentClassIndex = i % InstrumentClassesToSpawn.Num();
-		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentClassesToSpawn[InstrumentClassIndex];
+		const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
+		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
 
 		GetWorld()->SpawnActor<AInstrumentBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
 	}

@@ -6,7 +6,7 @@
 #include "InstrumentBase.h"
 #include "Trumpet.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class TROMBONERUMBLE_API ATrumpet : public AInstrumentBase
 {
 	GENERATED_BODY()

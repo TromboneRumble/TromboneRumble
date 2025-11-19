@@ -10,7 +10,7 @@
 class UAttackDataAsset;
 class IInstrumentEventHandler;
 
-UCLASS()
+UCLASS(Abstract)
 class TROMBONERUMBLE_API AInstrumentBase : public AItemBase, public IEquipable
 {
 	GENERATED_BODY()

@@ -6,6 +6,7 @@
 #include "Engine/WorldInitializationValues.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Utilities/Defines.h"
+#include "GameplayTagContainer.h"
 #include "GameStateSubsystem.generated.h"
 
 struct FGameplayTag;
@@ -17,28 +18,40 @@ UCLASS()
 class TROMBONERUMBLE_API UGameStateSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
-	FORCEINLINE EGameState GetGameState() const { return CurrentGameState; }
-
 	FOnGameStateChangedSignature OnGameStateChanged;
-	
+
 protected:
 	UFUNCTION()
 	void OnPostLoadMap(UWorld* InLoadedWorld);
-	
+
 	void SetGameState(const EGameState& InNewState);
 
+
+private:
+	void AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState);
+
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag SelectedSongTag;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EGameState CurrentGameState;
 
 	UPROPERTY(Transient)
 	TMap<EGameState, FString> GameStateToMapNameMap;
-
-private:
-	void AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState);
 public:
+	// Getter Setter
 	FString GetMapNameForGameState(const EGameState& InGameState) const;
+	FORCEINLINE EGameState GetGameState() const { return CurrentGameState; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetSelectedSongTag(const FGameplayTag& InTag) { SelectedSongTag = InTag; }
+
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetSelectedSongTag() const { return SelectedSongTag; }
 };
