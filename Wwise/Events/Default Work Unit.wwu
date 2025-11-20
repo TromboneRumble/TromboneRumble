@@ -183,17 +183,6 @@
 						</Folder>
 					</ChildrenList>
 				</Folder>
-				<Event Name="Play_Inst_Fail" ID="{2DD019B1-0548-4041-B0ED-C8844C773403}">
-					<ChildrenList>
-						<Action Name="" ID="{79964FF1-27C3-45E3-A914-5819776E545A}" ShortID="419972979">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="SFX_Fail" ID="{6D7584D7-E328-4AAF-BA6B-3C9C0004EB6C}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
 				<Folder Name="Map_A_Rhythm" ID="{3A83726B-EFE8-4EF2-95E2-205216778012}" ShortID="600795364">
 					<ChildrenList>
 						<Event Name="Play_MapA_Main" ID="{7699882F-9ACF-4571-872E-794BC91CB66C}">
@@ -235,6 +224,43 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="MapA_Trombone_MIDI" ID="{BDFF069B-AD0C-4D2D-9229-AB4C3EC4608B}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="BBIK" ID="{C3A4F699-E9EE-4656-A06F-DEBD26B98B3C}" ShortID="78320047">
+					<ChildrenList>
+						<Event Name="Play_C_BBIK" ID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}">
+							<ChildrenList>
+								<Action Name="" ID="{5BC920CE-EC84-4D6B-8BCD-6D686781A3CC}" ShortID="789641287">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="BBIK_C" ID="{9CFD72A2-7318-4ADA-A9E1-D926382C58A9}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_T_BBIK" ID="{065F46F0-9308-4999-B591-08B87BB59775}">
+							<ChildrenList>
+								<Action Name="" ID="{BC7C7879-1656-4657-AD3C-462C459E7DB9}" ShortID="495951185">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_V_BBIK" ID="{6F774DF0-065B-4E18-88C3-4330E80A9591}">
+							<ChildrenList>
+								<Action Name="" ID="{B6AD47ED-8151-45E0-A857-5C40DB2A6C68}" ShortID="145658292">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="BBIK_V" ID="{48EC31B0-D73E-4049-BDE1-68EC4B8A04A1}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

@@ -88,6 +88,9 @@
 										</Property>
 									</PropertyList>
 									<ReferenceList>
+										<Reference Name="DefaultSwitchOrState">
+											<ObjectRef Name="SW_N" ID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
+										</Reference>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 										</Reference>
@@ -171,7 +174,8 @@
 																<Custom>
 																	<Effect Name="Meter (Custom)" ID="{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}" ShortID="459372084" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
 																		<PropertyList>
-																			<Property Name="AttackTime" Type="Real32" Value="4.95"/>
+																			<Property Name="AttackTime" Type="Real32" Value="0.37"/>
+																			<Property Name="Min" Type="Real32" Value="-93.8"/>
 																		</PropertyList>
 																	</Effect>
 																</Custom>

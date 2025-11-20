@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{D7E12E13-CB6B-4FBE-AD41-C099A1D419A1}" SchemaVersion="119">
 	<Effects>
-		<WorkUnit Name="Default Work Unit" ID="{D7E12E13-CB6B-4FBE-AD41-C099A1D419A1}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{D7E12E13-CB6B-4FBE-AD41-C099A1D419A1}" PersistMode="Standalone">
+			<ChildrenList>
+				<Effect Name="BBIK_Meter" ID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
+					<PropertyList>
+						<Property Name="Min" Type="Real32" Value="-84"/>
+						<Property Name="ReleaseTime" Type="Real32" Value="0"/>
+					</PropertyList>
+					<PluginData>
+	<GameParameter Name="RTPC_Fail_Volume" ID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
+</PluginData>
+				</Effect>
+			</ChildrenList>
+		</WorkUnit>
 	</Effects>
 </WwiseDocument>
