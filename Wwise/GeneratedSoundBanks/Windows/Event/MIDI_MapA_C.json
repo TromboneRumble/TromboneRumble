@@ -1,0 +1,91 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1909551216",
+    "Type": "Event",
+    "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
+    "Language": "SFX",
+    "Hash": "{7CD1448F-8EE7-9DD6-C60B-770819C50FF4}",
+    "ObjectPath": "MIDI_MapA_C",
+    "ShortName": "MIDI_MapA_C",
+    "Path": "Event/MIDI_MapA_C.bnk",
+    "Media": [
+     {
+      "Id": "134442568",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MIDI_C.mid",
+      "Path": "Media/134442568.wem",
+      "CachePath": "SFX/MIDI_C_59E86301.wem"
+     },
+     {
+      "Id": "292465416",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Cymbal.wav",
+      "Path": "Media/292465416.wem",
+      "CachePath": "SFX/Map_A_Cymbal_FBC78EF0.wem"
+     },
+     {
+      "Id": "681341114",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Main.wav",
+      "Path": "Media/681341114.wem",
+      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1909551216",
+      "Name": "MIDI_MapA_C",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_C",
+      "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
+      "DurationType": "OneShot",
+      "DurationMin": "176.13333",
+      "DurationMax": "176.13333",
+      "MediaRefs": [
+       {
+        "Id": "134442568"
+       },
+       {
+        "Id": "292465416"
+       },
+       {
+        "Id": "681341114"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{AA737035-843E-0B51-94FD-F8A7F504A1C9}"
+ }
+}

@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1436785871	Play_BBIK_T			\Default Work Unit\BBIK\Play_BBIK_T	
+
+Effect plug-ins	ID	Name	Type				Notes
+	2456097223	BBIK_Meter	Wwise Meter			
+

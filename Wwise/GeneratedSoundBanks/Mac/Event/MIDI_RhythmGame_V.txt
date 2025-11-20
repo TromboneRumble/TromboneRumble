@@ -1,6 +1,0 @@
-Event	ID	Name			Wwise Object Path	Notes
-	2272762172	MIDI_RhythmGame_V			\Default Work Unit\Map_A_Rhythm\MIDI_RhythmGame_V	
-
-Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
-	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	
-

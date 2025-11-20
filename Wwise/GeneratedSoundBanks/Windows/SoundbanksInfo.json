@@ -54,98 +54,6 @@
     ]
    },
    {
-    "Id": "353254397",
-    "Type": "Event",
-    "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
-    "Language": "SFX",
-    "Hash": "{5DD58DCA-F79A-E39B-00E3-1A4D1ECA3A86}",
-    "ObjectPath": "Play_T_BBIK",
-    "ShortName": "Play_T_BBIK",
-    "Path": "Event/Play_T_BBIK.bnk",
-    "Media": [
-     {
-      "Id": "716964804",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_2.wav",
-      "Path": "Media/716964804.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
-     },
-     {
-      "Id": "837988067",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_4.wav",
-      "Path": "Media/837988067.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
-     },
-     {
-      "Id": "869664519",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_1.wav",
-      "Path": "Media/869664519.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
-     },
-     {
-      "Id": "947817868",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_3.wav",
-      "Path": "Media/947817868.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
-     }
-    ],
-    "Plugins": {
-     "ShareSets": [
-      {
-       "Id": "2456097223",
-       "Name": "BBIK_Meter",
-       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
-       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
-       "LibName": "Wwise Meter",
-       "LibId": "8454147"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "353254397",
-      "Name": "Play_T_BBIK",
-      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_T_BBIK",
-      "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
-      "DurationType": "OneShot",
-      "DurationMin": "0.15951025",
-      "DurationMax": "1.2582892",
-      "MediaRefs": [
-       {
-        "Id": "716964804"
-       },
-       {
-        "Id": "837988067"
-       },
-       {
-        "Id": "869664519"
-       },
-       {
-        "Id": "947817868"
-       }
-      ],
-      "PluginRefs": {
-       "ShareSets": [
-        {
-         "Id": "2456097223"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
     "Id": "387421697",
     "Type": "Event",
     "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
@@ -1178,54 +1086,14 @@
     ]
    },
    {
-    "Id": "1795670352",
+    "Id": "1436785869",
     "Type": "Event",
-    "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+    "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
     "Language": "SFX",
-    "Hash": "{9398B9C5-03CC-C7AC-24E3-E74527502B00}",
-    "ObjectPath": "Note_Long_End",
-    "ShortName": "Note_Long_End",
-    "Path": "Event/Note_Long_End.bnk",
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "1795670352",
-      "Name": "Note_Long_End",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
-      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
-      "DurationType": "OneShot",
-      "DurationMin": "1",
-      "DurationMax": "1",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
-    "Id": "1844873988",
-    "Type": "Event",
-    "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
-    "Language": "SFX",
-    "Hash": "{39EA2484-CBCF-7417-5DD2-5DBC1F99640C}",
-    "ObjectPath": "Play_C_BBIK",
-    "ShortName": "Play_C_BBIK",
-    "Path": "Event/Play_C_BBIK.bnk",
+    "Hash": "{FFF0EE4C-C2DD-40D9-F7D2-BACD34E699C6}",
+    "ObjectPath": "Play_BBIK_V",
+    "ShortName": "Play_BBIK_V",
+    "Path": "Event/Play_BBIK_V.bnk",
     "Media": [
      {
       "Id": "716964804",
@@ -1278,9 +1146,193 @@
     },
     "Events": [
      {
-      "Id": "1844873988",
-      "Name": "Play_C_BBIK",
-      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_C_BBIK",
+      "Id": "1436785869",
+      "Name": "Play_BBIK_V",
+      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_BBIK_V",
+      "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.40170857",
+      "DurationMax": "1.076586",
+      "MediaRefs": [
+       {
+        "Id": "716964804"
+       },
+       {
+        "Id": "837988067"
+       },
+       {
+        "Id": "869664519"
+       },
+       {
+        "Id": "947817868"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2456097223"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1436785871",
+    "Type": "Event",
+    "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
+    "Language": "SFX",
+    "Hash": "{831331CA-50A1-BFFC-D3C9-A73E0F732BA8}",
+    "ObjectPath": "Play_BBIK_T",
+    "ShortName": "Play_BBIK_T",
+    "Path": "Event/Play_BBIK_T.bnk",
+    "Media": [
+     {
+      "Id": "716964804",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_2.wav",
+      "Path": "Media/716964804.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
+     },
+     {
+      "Id": "837988067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_4.wav",
+      "Path": "Media/837988067.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
+     },
+     {
+      "Id": "869664519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_1.wav",
+      "Path": "Media/869664519.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
+     },
+     {
+      "Id": "947817868",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_3.wav",
+      "Path": "Media/947817868.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "2456097223",
+       "Name": "BBIK_Meter",
+       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
+       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1436785871",
+      "Name": "Play_BBIK_T",
+      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_BBIK_T",
+      "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.15951025",
+      "DurationMax": "1.2582892",
+      "MediaRefs": [
+       {
+        "Id": "716964804"
+       },
+       {
+        "Id": "837988067"
+       },
+       {
+        "Id": "869664519"
+       },
+       {
+        "Id": "947817868"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2456097223"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1436785880",
+    "Type": "Event",
+    "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
+    "Language": "SFX",
+    "Hash": "{7E7D5B63-B671-4626-AB9E-582C922F6C75}",
+    "ObjectPath": "Play_BBIK_C",
+    "ShortName": "Play_BBIK_C",
+    "Path": "Event/Play_BBIK_C.bnk",
+    "Media": [
+     {
+      "Id": "716964804",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_2.wav",
+      "Path": "Media/716964804.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
+     },
+     {
+      "Id": "837988067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_4.wav",
+      "Path": "Media/837988067.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
+     },
+     {
+      "Id": "869664519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_1.wav",
+      "Path": "Media/869664519.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
+     },
+     {
+      "Id": "947817868",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_3.wav",
+      "Path": "Media/947817868.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "2456097223",
+       "Name": "BBIK_Meter",
+       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
+       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1436785880",
+      "Name": "Play_BBIK_C",
+      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_BBIK_C",
       "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
       "DurationType": "OneShot",
       "DurationMin": "0.5224583",
@@ -1303,6 +1355,342 @@
        "ShareSets": [
         {
          "Id": "2456097223"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1795670352",
+    "Type": "Event",
+    "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+    "Language": "SFX",
+    "Hash": "{9398B9C5-03CC-C7AC-24E3-E74527502B00}",
+    "ObjectPath": "Note_Long_End",
+    "ShortName": "Note_Long_End",
+    "Path": "Event/Note_Long_End.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1795670352",
+      "Name": "Note_Long_End",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1909551205",
+    "Type": "Event",
+    "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
+    "Language": "SFX",
+    "Hash": "{654D3410-F671-6CC0-7A38-FBA34B92D24D}",
+    "ObjectPath": "MIDI_MapA_V",
+    "ShortName": "MIDI_MapA_V",
+    "Path": "Event/MIDI_MapA_V.bnk",
+    "Media": [
+     {
+      "Id": "681341114",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Main.wav",
+      "Path": "Media/681341114.wem",
+      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
+     },
+     {
+      "Id": "708259744",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_violin.wav",
+      "Path": "Media/708259744.wem",
+      "CachePath": "SFX/Map_A_violin_FBC78EF0.wem"
+     },
+     {
+      "Id": "1052433117",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MIDI_V.mid",
+      "Path": "Media/1052433117.wem",
+      "CachePath": "SFX/MIDI_V_DD9D0199.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1909551205",
+      "Name": "MIDI_MapA_V",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_V",
+      "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
+      "DurationType": "OneShot",
+      "DurationMin": "313.486",
+      "DurationMax": "313.486",
+      "MediaRefs": [
+       {
+        "Id": "681341114"
+       },
+       {
+        "Id": "708259744"
+       },
+       {
+        "Id": "1052433117"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1909551207",
+    "Type": "Event",
+    "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
+    "Language": "SFX",
+    "Hash": "{176B8E3D-7872-77FA-E48C-8E84362F8B16}",
+    "ObjectPath": "MIDI_MapA_T",
+    "ShortName": "MIDI_MapA_T",
+    "Path": "Event/MIDI_MapA_T.bnk",
+    "Media": [
+     {
+      "Id": "157812467",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MIDI_T.mid",
+      "Path": "Media/157812467.wem",
+      "CachePath": "SFX/MIDI_T_2982EAA2.wem"
+     },
+     {
+      "Id": "378149048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Trombone.wav",
+      "Path": "Media/378149048.wem",
+      "CachePath": "SFX/Map_A_Trombone_FBC78EF0.wem"
+     },
+     {
+      "Id": "681341114",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Main.wav",
+      "Path": "Media/681341114.wem",
+      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1909551207",
+      "Name": "MIDI_MapA_T",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_T",
+      "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
+      "DurationType": "OneShot",
+      "DurationMin": "313.4729",
+      "DurationMax": "313.4729",
+      "MediaRefs": [
+       {
+        "Id": "157812467"
+       },
+       {
+        "Id": "378149048"
+       },
+       {
+        "Id": "681341114"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1909551216",
+    "Type": "Event",
+    "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
+    "Language": "SFX",
+    "Hash": "{7CD1448F-8EE7-9DD6-C60B-770819C50FF4}",
+    "ObjectPath": "MIDI_MapA_C",
+    "ShortName": "MIDI_MapA_C",
+    "Path": "Event/MIDI_MapA_C.bnk",
+    "Media": [
+     {
+      "Id": "134442568",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MIDI_C.mid",
+      "Path": "Media/134442568.wem",
+      "CachePath": "SFX/MIDI_C_59E86301.wem"
+     },
+     {
+      "Id": "292465416",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Cymbal.wav",
+      "Path": "Media/292465416.wem",
+      "CachePath": "SFX/Map_A_Cymbal_FBC78EF0.wem"
+     },
+     {
+      "Id": "681341114",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_Main.wav",
+      "Path": "Media/681341114.wem",
+      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1909551216",
+      "Name": "MIDI_MapA_C",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_C",
+      "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
+      "DurationType": "OneShot",
+      "DurationMin": "176.13333",
+      "DurationMax": "176.13333",
+      "MediaRefs": [
+       {
+        "Id": "134442568"
+       },
+       {
+        "Id": "292465416"
+       },
+       {
+        "Id": "681341114"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "Id": "1985904344",
+    "Type": "Event",
+    "GUID": "{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}",
+    "Language": "SFX",
+    "Hash": "{74559EE6-AD3E-A490-53F6-3F83AD0D2E6C}",
+    "ObjectPath": "MIDI_MapA_Object",
+    "ShortName": "MIDI_MapA_Object",
+    "Path": "Event/MIDI_MapA_Object.bnk",
+    "Media": [
+     {
+      "Id": "622013022",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MIDI_O.mid",
+      "Path": "Media/622013022.wem",
+      "CachePath": "SFX/MIDI_O_3B11EB7A.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1985904344",
+      "Name": "MIDI_MapA_Object",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_Object",
+      "GUID": "{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}",
+      "DurationType": "OneShot",
+      "DurationMin": "168.25934",
+      "DurationMax": "168.25934",
+      "MediaRefs": [
+       {
+        "Id": "622013022"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
         }
        ]
       }
@@ -1394,246 +1782,6 @@
       "Name": "RTPC_BPM_Test",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BPM_Test",
       "GUID": "{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"
-     }
-    ]
-   },
-   {
-    "Id": "2272762153",
-    "Type": "Event",
-    "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
-    "Language": "SFX",
-    "Hash": "{BA5974D7-05AF-92F5-7EF0-4E0EA3684232}",
-    "ObjectPath": "MIDI_RhythmGame_C",
-    "ShortName": "MIDI_RhythmGame_C",
-    "Path": "Event/MIDI_RhythmGame_C.bnk",
-    "Media": [
-     {
-      "Id": "134442568",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "MIDI_C.mid",
-      "Path": "Media/134442568.wem",
-      "CachePath": "SFX/MIDI_C_59E86301.wem"
-     },
-     {
-      "Id": "292465416",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Map_A_Cymbal.wav",
-      "Path": "Media/292465416.wem",
-      "CachePath": "SFX/Map_A_Cymbal_FBC78EF0.wem"
-     },
-     {
-      "Id": "681341114",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Map_A_Main.wav",
-      "Path": "Media/681341114.wem",
-      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
-     }
-    ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "2272762153",
-      "Name": "MIDI_RhythmGame_C",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_RhythmGame_C",
-      "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
-      "DurationType": "OneShot",
-      "DurationMin": "176.13333",
-      "DurationMax": "176.13333",
-      "MediaRefs": [
-       {
-        "Id": "134442568"
-       },
-       {
-        "Id": "292465416"
-       },
-       {
-        "Id": "681341114"
-       }
-      ],
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
-    "Id": "2272762172",
-    "Type": "Event",
-    "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
-    "Language": "SFX",
-    "Hash": "{84CB94F9-87DD-7641-9DB7-64A87159B750}",
-    "ObjectPath": "MIDI_RhythmGame_V",
-    "ShortName": "MIDI_RhythmGame_V",
-    "Path": "Event/MIDI_RhythmGame_V.bnk",
-    "Media": [
-     {
-      "Id": "681341114",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Map_A_Main.wav",
-      "Path": "Media/681341114.wem",
-      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
-     },
-     {
-      "Id": "708259744",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Map_A_violin.wav",
-      "Path": "Media/708259744.wem",
-      "CachePath": "SFX/Map_A_violin_FBC78EF0.wem"
-     },
-     {
-      "Id": "1052433117",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "MIDI_V.mid",
-      "Path": "Media/1052433117.wem",
-      "CachePath": "SFX/MIDI_V_DD9D0199.wem"
-     }
-    ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "2272762172",
-      "Name": "MIDI_RhythmGame_V",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_RhythmGame_V",
-      "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
-      "DurationType": "OneShot",
-      "DurationMin": "313.486",
-      "DurationMax": "313.486",
-      "MediaRefs": [
-       {
-        "Id": "681341114"
-       },
-       {
-        "Id": "708259744"
-       },
-       {
-        "Id": "1052433117"
-       }
-      ],
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
-    "Id": "2272762174",
-    "Type": "Event",
-    "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
-    "Language": "SFX",
-    "Hash": "{F9E77F99-DFA3-504C-28E8-8FA548F4B197}",
-    "ObjectPath": "MIDI_RhythmGame_T",
-    "ShortName": "MIDI_RhythmGame_T",
-    "Path": "Event/MIDI_RhythmGame_T.bnk",
-    "Media": [
-     {
-      "Id": "157812467",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "MIDI_T.mid",
-      "Path": "Media/157812467.wem",
-      "CachePath": "SFX/MIDI_T_2982EAA2.wem"
-     },
-     {
-      "Id": "378149048",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Map_A_Trombone.wav",
-      "Path": "Media/378149048.wem",
-      "CachePath": "SFX/Map_A_Trombone_FBC78EF0.wem"
-     },
-     {
-      "Id": "681341114",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Map_A_Main.wav",
-      "Path": "Media/681341114.wem",
-      "CachePath": "SFX/Map_A_Main_FBC78EF0.wem"
-     }
-    ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "2272762174",
-      "Name": "MIDI_RhythmGame_T",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_RhythmGame_T",
-      "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
-      "DurationType": "OneShot",
-      "DurationMin": "313.4729",
-      "DurationMax": "313.4729",
-      "MediaRefs": [
-       {
-        "Id": "157812467"
-       },
-       {
-        "Id": "378149048"
-       },
-       {
-        "Id": "681341114"
-       }
-      ],
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
      }
     ]
    },
@@ -1790,98 +1938,6 @@
        "Custom": [
         {
          "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
-    "Id": "3407662727",
-    "Type": "Event",
-    "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
-    "Language": "SFX",
-    "Hash": "{26166929-3852-5F46-D1BF-3BBA8C47254C}",
-    "ObjectPath": "Play_V_BBIK",
-    "ShortName": "Play_V_BBIK",
-    "Path": "Event/Play_V_BBIK.bnk",
-    "Media": [
-     {
-      "Id": "716964804",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_2.wav",
-      "Path": "Media/716964804.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
-     },
-     {
-      "Id": "837988067",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_4.wav",
-      "Path": "Media/837988067.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
-     },
-     {
-      "Id": "869664519",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_1.wav",
-      "Path": "Media/869664519.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
-     },
-     {
-      "Id": "947817868",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_3.wav",
-      "Path": "Media/947817868.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
-     }
-    ],
-    "Plugins": {
-     "ShareSets": [
-      {
-       "Id": "2456097223",
-       "Name": "BBIK_Meter",
-       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
-       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
-       "LibName": "Wwise Meter",
-       "LibId": "8454147"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "3407662727",
-      "Name": "Play_V_BBIK",
-      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_V_BBIK",
-      "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
-      "DurationType": "OneShot",
-      "DurationMin": "0.40170857",
-      "DurationMax": "1.076586",
-      "MediaRefs": [
-       {
-        "Id": "716964804"
-       },
-       {
-        "Id": "837988067"
-       },
-       {
-        "Id": "869664519"
-       },
-       {
-        "Id": "947817868"
-       }
-      ],
-      "PluginRefs": {
-       "ShareSets": [
-        {
-         "Id": "2456097223"
         }
        ]
       }
@@ -2133,6 +2189,6 @@
     ]
    }
   ],
-  "FileHash": "{003CFD0C-322E-2A90-96DB-740F156D61B6}"
+  "FileHash": "{2AEFFB0E-B3E9-981B-C50E-D6B69B16677B}"
  }
 }
