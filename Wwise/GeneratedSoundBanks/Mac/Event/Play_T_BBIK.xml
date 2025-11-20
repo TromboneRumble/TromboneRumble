@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="353254397" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{5DD58DCA-F79A-E39B-00E3-1A4D1ECA3A86}">
+			<ObjectPath>Play_T_BBIK</ObjectPath>
+			<ShortName>Play_T_BBIK</ShortName>
+			<Path>Event/Play_T_BBIK.bnk</Path>
+			<Media>
+				<File Id="716964804" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C\BBIK_C_2.wav</ShortName>
+					<Path>Media/716964804.wem</Path>
+					<CachePath>SFX/BBIK_C/BBIK_C_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="837988067" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C\BBIK_C_4.wav</ShortName>
+					<Path>Media/837988067.wem</Path>
+					<CachePath>SFX/BBIK_C/BBIK_C_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="869664519" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C\BBIK_C_1.wav</ShortName>
+					<Path>Media/869664519.wem</Path>
+					<CachePath>SFX/BBIK_C/BBIK_C_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="947817868" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C\BBIK_C_3.wav</ShortName>
+					<Path>Media/947817868.wem</Path>
+					<CachePath>SFX/BBIK_C/BBIK_C_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="2456097223" Name="BBIK_Meter" ObjectPath="\Effects\Default Work Unit\BBIK_Meter" GUID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" LibName="Wwise Meter" LibId="8454147"/>
+				</ShareSets>
+			</Plugins>
+			<Events>
+				<Event Id="353254397" Name="Play_T_BBIK" ObjectPath="\Events\Default Work Unit\BBIK\Play_T_BBIK" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" DurationType="OneShot" DurationMin="0.15951025" DurationMax="1.2582892">
+					<MediaRefs>
+						<MediaRef Id="716964804"/>
+						<MediaRef Id="837988067"/>
+						<MediaRef Id="869664519"/>
+						<MediaRef Id="947817868"/>
+					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="2456097223"/>
+						</ShareSets>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{7030BF17-6700-9203-29D2-B77E6FFF75A7}</FileHash>
+</SoundBanksInfo>

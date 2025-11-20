@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2272762174" Type="Event" GUID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}" Language="SFX" Hash="{F09D0D0F-7219-32E6-07C4-37A3BCCE0ECE}">
+		<SoundBank Id="2272762174" Type="Event" GUID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}" Language="SFX" Hash="{F9E77F99-DFA3-504C-28E8-8FA548F4B197}">
 			<ObjectPath>MIDI_RhythmGame_T</ObjectPath>
 			<ShortName>MIDI_RhythmGame_T</ShortName>
 			<Path>Event/MIDI_RhythmGame_T.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5292A9E7-7DE6-3371-E84D-1FB3868A2D3F}</FileHash>
+	<FileHash>{0C014C33-C217-B7F8-F03C-82491D56E420}</FileHash>
 </SoundBanksInfo>

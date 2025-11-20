@@ -54,6 +54,98 @@
     ]
    },
    {
+    "Id": "353254397",
+    "Type": "Event",
+    "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
+    "Language": "SFX",
+    "Hash": "{5DD58DCA-F79A-E39B-00E3-1A4D1ECA3A86}",
+    "ObjectPath": "Play_T_BBIK",
+    "ShortName": "Play_T_BBIK",
+    "Path": "Event/Play_T_BBIK.bnk",
+    "Media": [
+     {
+      "Id": "716964804",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_2.wav",
+      "Path": "Media/716964804.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
+     },
+     {
+      "Id": "837988067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_4.wav",
+      "Path": "Media/837988067.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
+     },
+     {
+      "Id": "869664519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_1.wav",
+      "Path": "Media/869664519.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
+     },
+     {
+      "Id": "947817868",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_3.wav",
+      "Path": "Media/947817868.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "2456097223",
+       "Name": "BBIK_Meter",
+       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
+       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "353254397",
+      "Name": "Play_T_BBIK",
+      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_T_BBIK",
+      "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.15951025",
+      "DurationMax": "1.2582892",
+      "MediaRefs": [
+       {
+        "Id": "716964804"
+       },
+       {
+        "Id": "837988067"
+       },
+       {
+        "Id": "869664519"
+       },
+       {
+        "Id": "947817868"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2456097223"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "387421697",
     "Type": "Event",
     "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
@@ -214,7 +306,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{AFDF87A5-65BB-2299-0DA4-E02C4ADAA39D}",
+    "Hash": "{53DA426E-A8AF-1393-8841-1AE49F5F5C2D}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -1126,6 +1218,98 @@
     ]
    },
    {
+    "Id": "1844873988",
+    "Type": "Event",
+    "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
+    "Language": "SFX",
+    "Hash": "{39EA2484-CBCF-7417-5DD2-5DBC1F99640C}",
+    "ObjectPath": "Play_C_BBIK",
+    "ShortName": "Play_C_BBIK",
+    "Path": "Event/Play_C_BBIK.bnk",
+    "Media": [
+     {
+      "Id": "716964804",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_2.wav",
+      "Path": "Media/716964804.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
+     },
+     {
+      "Id": "837988067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_4.wav",
+      "Path": "Media/837988067.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
+     },
+     {
+      "Id": "869664519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_1.wav",
+      "Path": "Media/869664519.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
+     },
+     {
+      "Id": "947817868",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_3.wav",
+      "Path": "Media/947817868.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "2456097223",
+       "Name": "BBIK_Meter",
+       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
+       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1844873988",
+      "Name": "Play_C_BBIK",
+      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_C_BBIK",
+      "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.5224583",
+      "DurationMax": "0.916875",
+      "MediaRefs": [
+       {
+        "Id": "716964804"
+       },
+       {
+        "Id": "837988067"
+       },
+       {
+        "Id": "869664519"
+       },
+       {
+        "Id": "947817868"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2456097223"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2075445586",
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
@@ -1218,7 +1402,7 @@
     "Type": "Event",
     "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
     "Language": "SFX",
-    "Hash": "{0C1AB26D-FA2A-1CDF-C9B0-9B691372DAF6}",
+    "Hash": "{BA5974D7-05AF-92F5-7EF0-4E0EA3684232}",
     "ObjectPath": "MIDI_RhythmGame_C",
     "ShortName": "MIDI_RhythmGame_C",
     "Path": "Event/MIDI_RhythmGame_C.bnk",
@@ -1270,8 +1454,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_RhythmGame_C",
       "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
       "DurationType": "OneShot",
-      "DurationMin": "175.45",
-      "DurationMax": "175.45",
+      "DurationMin": "176.13333",
+      "DurationMax": "176.13333",
       "MediaRefs": [
        {
         "Id": "134442568"
@@ -1298,7 +1482,7 @@
     "Type": "Event",
     "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
     "Language": "SFX",
-    "Hash": "{9E6F71D5-2B18-1541-B216-07565291A053}",
+    "Hash": "{84CB94F9-87DD-7641-9DB7-64A87159B750}",
     "ObjectPath": "MIDI_RhythmGame_V",
     "ShortName": "MIDI_RhythmGame_V",
     "Path": "Event/MIDI_RhythmGame_V.bnk",
@@ -1378,7 +1562,7 @@
     "Type": "Event",
     "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
     "Language": "SFX",
-    "Hash": "{F09D0D0F-7219-32E6-07C4-37A3BCCE0ECE}",
+    "Hash": "{F9E77F99-DFA3-504C-28E8-8FA548F4B197}",
     "ObjectPath": "MIDI_RhythmGame_T",
     "ShortName": "MIDI_RhythmGame_T",
     "Path": "Event/MIDI_RhythmGame_T.bnk",
@@ -1613,6 +1797,98 @@
     ]
    },
    {
+    "Id": "3407662727",
+    "Type": "Event",
+    "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
+    "Language": "SFX",
+    "Hash": "{26166929-3852-5F46-D1BF-3BBA8C47254C}",
+    "ObjectPath": "Play_V_BBIK",
+    "ShortName": "Play_V_BBIK",
+    "Path": "Event/Play_V_BBIK.bnk",
+    "Media": [
+     {
+      "Id": "716964804",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_2.wav",
+      "Path": "Media/716964804.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
+     },
+     {
+      "Id": "837988067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_4.wav",
+      "Path": "Media/837988067.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
+     },
+     {
+      "Id": "869664519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_1.wav",
+      "Path": "Media/869664519.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
+     },
+     {
+      "Id": "947817868",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BBIK_C\\BBIK_C_3.wav",
+      "Path": "Media/947817868.wem",
+      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "2456097223",
+       "Name": "BBIK_Meter",
+       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
+       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3407662727",
+      "Name": "Play_V_BBIK",
+      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_V_BBIK",
+      "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.40170857",
+      "DurationMax": "1.076586",
+      "MediaRefs": [
+       {
+        "Id": "716964804"
+       },
+       {
+        "Id": "837988067"
+       },
+       {
+        "Id": "869664519"
+       },
+       {
+        "Id": "947817868"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2456097223"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "3440465348",
     "Type": "Event",
     "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
@@ -1662,110 +1938,6 @@
        "Custom": [
         {
          "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
-    "Id": "3479579317",
-    "Type": "Event",
-    "GUID": "{2DD019B1-0548-4041-B0ED-C8844C773403}",
-    "Language": "SFX",
-    "Hash": "{9B1626F3-52DF-0637-21BA-D65A45062FD6}",
-    "ObjectPath": "Play_Inst_Fail",
-    "ShortName": "Play_Inst_Fail",
-    "Path": "Event/Play_Inst_Fail.bnk",
-    "Media": [
-     {
-      "Id": "159099732",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "SFX_Fail_5.wav",
-      "Path": "Media/159099732.wem",
-      "CachePath": "SFX/SFX_Fail_5_818F3B66.wem"
-     },
-     {
-      "Id": "620052977",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "SFX_Fail_2.wav",
-      "Path": "Media/620052977.wem",
-      "CachePath": "SFX/SFX_Fail_2_818F3B66.wem"
-     },
-     {
-      "Id": "729997106",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "SFX_Fail_1.wav",
-      "Path": "Media/729997106.wem",
-      "CachePath": "SFX/SFX_Fail_1_818F3B66.wem"
-     },
-     {
-      "Id": "767768891",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "SFX_Fail_4.wav",
-      "Path": "Media/767768891.wem",
-      "CachePath": "SFX/SFX_Fail_4_818F3B66.wem"
-     },
-     {
-      "Id": "988657482",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "SFX_Fail_3.wav",
-      "Path": "Media/988657482.wem",
-      "CachePath": "SFX/SFX_Fail_3_818F3B66.wem"
-     }
-    ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "99397611",
-       "Name": "Meter (Custom)",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\SFX_Fail\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
-       "GUID": "{C34E4FF6-0CE9-4C59-BFC4-2BAEED552060}",
-       "LibName": "Wwise Meter",
-       "LibId": "8454147"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "3479579317",
-      "Name": "Play_Inst_Fail",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Inst_Fail",
-      "GUID": "{2DD019B1-0548-4041-B0ED-C8844C773403}",
-      "DurationType": "OneShot",
-      "DurationMin": "0.5224583",
-      "DurationMax": "0.916875",
-      "MediaRefs": [
-       {
-        "Id": "159099732"
-       },
-       {
-        "Id": "620052977"
-       },
-       {
-        "Id": "729997106"
-       },
-       {
-        "Id": "767768891"
-       },
-       {
-        "Id": "988657482"
-       }
-      ],
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "99397611"
         }
        ]
       }
@@ -1961,6 +2133,6 @@
     ]
    }
   ],
-  "FileHash": "{1AD2DFE6-9FB9-2426-19AC-291BB9F3F21D}"
+  "FileHash": "{38FE8942-C744-CC19-EBFA-1F918FEACDC3}"
  }
 }

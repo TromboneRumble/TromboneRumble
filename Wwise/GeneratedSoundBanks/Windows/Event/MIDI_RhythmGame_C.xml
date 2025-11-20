@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2272762153" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{0C1AB26D-FA2A-1CDF-C9B0-9B691372DAF6}">
+		<SoundBank Id="2272762153" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{BA5974D7-05AF-92F5-7EF0-4E0EA3684232}">
 			<ObjectPath>MIDI_RhythmGame_C</ObjectPath>
 			<ShortName>MIDI_RhythmGame_C</ShortName>
 			<Path>Event/MIDI_RhythmGame_C.bnk</Path>
@@ -28,7 +28,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="2272762153" Name="MIDI_RhythmGame_C" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\MIDI_RhythmGame_C" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" DurationType="OneShot" DurationMin="175.45" DurationMax="175.45">
+				<Event Id="2272762153" Name="MIDI_RhythmGame_C" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\MIDI_RhythmGame_C" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
 					<MediaRefs>
 						<MediaRef Id="134442568"/>
 						<MediaRef Id="292465416"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0A9A0DB1-0C0A-1119-61DB-D9AFF90B4756}</FileHash>
+	<FileHash>{4E1AE3C0-1404-5F88-99D0-BD0674F67AD4}</FileHash>
 </SoundBanksInfo>

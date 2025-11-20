@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
     "Language": "SFX",
-    "Hash": "{0C1AB26D-FA2A-1CDF-C9B0-9B691372DAF6}",
+    "Hash": "{BA5974D7-05AF-92F5-7EF0-4E0EA3684232}",
     "ObjectPath": "MIDI_RhythmGame_C",
     "ShortName": "MIDI_RhythmGame_C",
     "Path": "Event/MIDI_RhythmGame_C.bnk",
@@ -62,8 +62,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_RhythmGame_C",
       "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
       "DurationType": "OneShot",
-      "DurationMin": "175.45",
-      "DurationMax": "175.45",
+      "DurationMin": "176.13333",
+      "DurationMax": "176.13333",
       "MediaRefs": [
        {
         "Id": "134442568"
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{68351D97-B877-AE36-132F-6051AA5B2685}"
+  "FileHash": "{E233EBF0-82CD-181B-AB1B-8BFEE59F4102}"
  }
 }
