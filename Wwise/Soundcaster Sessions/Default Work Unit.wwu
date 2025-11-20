@@ -22,7 +22,7 @@
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<CurrentSwitchRef Name="SW_T" ID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>

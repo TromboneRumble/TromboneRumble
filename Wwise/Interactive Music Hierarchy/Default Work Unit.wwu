@@ -10,6 +10,11 @@
 								<Property Name="EndPosition" Type="Real64" Value="184186.046511628"/>
 								<Property Name="Tempo" Type="Real64" Value="172"/>
 								<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-6</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -37,7 +42,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Map_A_Main" ID="{B4DAC608-0FB2-4827-818C-D78B65CDFE37}">
+										<AudioFileSource Name="Map_A_Main" ID="{C4C618CD-C761-4182-A6A8-FC4E2C812569}">
 											<Language>SFX</Language>
 											<AudioFile>Map_A_Main.wav</AudioFile>
 											<MediaIDList>
@@ -54,13 +59,13 @@
 															<ObjectList Name="Clips">
 																<Reference>
 																	<Local>
-																		<MusicClip Name="Map_A_Main" ID="{4E3CE2EC-A992-476C-9550-3732DC6A87CE}">
+																		<MusicClip Name="Map_A_Main" ID="{DD8F7350-EE67-4470-9081-28CA97D3EA49}">
 																			<PropertyList>
-																				<Property Name="EndTrimOffset" Type="Real64" Value="175450"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="168633.333333333"/>
 																				<Property Name="FadeInMode" Type="int16" Value="0"/>
 																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
 																			</PropertyList>
-																			<AudioSourceRef Name="Map_A_Main" ID="{B4DAC608-0FB2-4827-818C-D78B65CDFE37}"/>
+																			<AudioSourceRef Name="Map_A_Main" ID="{C4C618CD-C761-4182-A6A8-FC4E2C812569}"/>
 																		</MusicClip>
 																	</Local>
 																</Reference>
@@ -76,6 +81,11 @@
 									<PropertyList>
 										<Property Name="MusicTrackType" Type="int16" Value="3"/>
 										<Property Name="OverrideEffect" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="OutputBus">
@@ -122,13 +132,6 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Map_A_Trombone" ID="{64D6E362-6941-4A46-9F62-022447C64D54}">
-											<Language>SFX</Language>
-											<AudioFile>Map_A_Trombone.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="378149048"/>
-											</MediaIDList>
-										</AudioFileSource>
 										<AudioFileSource Name="Map_A_Cymbal" ID="{B54C9D76-9A9F-401D-AB73-725FC4EE308A}">
 											<Language>SFX</Language>
 											<AudioFile>Map_A_Cymbal.wav</AudioFile>
@@ -148,6 +151,13 @@
 											<AudioFile>Map_A_None.wav</AudioFile>
 											<MediaIDList>
 												<MediaID ID="858484202"/>
+											</MediaIDList>
+										</AudioFileSource>
+										<AudioFileSource Name="Map_A_Trombone" ID="{D0345CA8-D2FC-4841-B130-5D633E5B3985}">
+											<Language>SFX</Language>
+											<AudioFile>Map_A_Trombone.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="378149048"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
@@ -227,13 +237,13 @@
 															<ObjectList Name="Clips">
 																<Reference>
 																	<Local>
-																		<MusicClip Name="Map_A_Trombone" ID="{B7B69F0F-3FA9-49B8-BF05-11480D2762A9}">
+																		<MusicClip Name="Map_A_Trombone" ID="{3EED9EFC-266B-4BF5-B872-0447CCDEDD74}">
 																			<PropertyList>
-																				<Property Name="EndTrimOffset" Type="Real64" Value="175800"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="168633.333333333"/>
 																				<Property Name="FadeInMode" Type="int16" Value="0"/>
-																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutDuration" Type="Real64" Value="2254.54446654243"/>
 																			</PropertyList>
-																			<AudioSourceRef Name="Map_A_Trombone" ID="{64D6E362-6941-4A46-9F62-022447C64D54}"/>
+																			<AudioSourceRef Name="Map_A_Trombone" ID="{D0345CA8-D2FC-4841-B130-5D633E5B3985}"/>
 																		</MusicClip>
 																	</Local>
 																</Reference>
@@ -256,10 +266,10 @@
 																	<Local>
 																		<MusicClip Name="Map_A_Cymbal" ID="{37FA7A84-7979-4BCE-B730-6E7C1CEC30ED}">
 																			<PropertyList>
-																				<Property Name="BeginTrimOffset" Type="Real64" Value="9.09494701772928E-13"/>
+																				<Property Name="BeginTrimOffset" Type="Real64" Value="8372.09302325582"/>
 																				<Property Name="EndTrimOffset" Type="Real64" Value="176133.333333333"/>
 																				<Property Name="FadeInMode" Type="int16" Value="0"/>
-																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutDuration" Type="Real64" Value="2254.54446654243"/>
 																			</PropertyList>
 																			<AudioSourceRef Name="Map_A_Cymbal" ID="{B54C9D76-9A9F-401D-AB73-725FC4EE308A}"/>
 																			<PropertyCurveList>
@@ -270,7 +280,7 @@
 																						</PropertyList>
 																						<PointList>
 																							<Point>
-																								<XPos>0</XPos>
+																								<XPos>8.37209</XPos>
 																								<YPos>0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
@@ -289,7 +299,7 @@
 																						</PropertyList>
 																						<PointList>
 																							<Point>
-																								<XPos>0</XPos>
+																								<XPos>8.37209</XPos>
 																								<YPos>0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
@@ -308,7 +318,7 @@
 																						</PropertyList>
 																						<PointList>
 																							<Point>
-																								<XPos>0</XPos>
+																								<XPos>8.37209</XPos>
 																								<YPos>0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
@@ -345,7 +355,7 @@
 																			<PropertyList>
 																				<Property Name="EndTrimOffset" Type="Real64" Value="173400"/>
 																				<Property Name="FadeInMode" Type="int16" Value="0"/>
-																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutDuration" Type="Real64" Value="1690.90834990679"/>
 																			</PropertyList>
 																			<AudioSourceRef Name="Map_A_violin" ID="{707F5AA9-A330-44A9-BA37-F3E7D1CB2ABD}"/>
 																		</MusicClip>
@@ -477,7 +487,7 @@
 					<ChildrenList>
 						<MusicSegment Name="MapA_Cymbal_MIDI" ID="{17B5ABCB-7FC0-42E4-AA3F-7EA63213BE3D}" ShortID="602591955">
 							<PropertyList>
-								<Property Name="EndPosition" Type="Real64" Value="176133.333333333"/>
+								<Property Name="EndPosition" Type="Real64" Value="184237.508429983"/>
 								<Property Name="Tempo" Type="Real64" Value="172.000106811523"/>
 							</PropertyList>
 							<ReferenceList>
@@ -528,7 +538,7 @@
 																	<Local>
 																		<MusicClipMidi Name="MIDI_C" ID="{923D5DF6-7EAA-4E2C-85F4-D2FAE43A3163}">
 																			<PropertyList>
-																				<Property Name="BeginTrimOffset" Type="Real64" Value="-6.80699940858176E-12"/>
+																				<Property Name="BeginTrimOffset" Type="Real64" Value="8372.08782421249"/>
 																				<Property Name="EndTrimOffset" Type="Real64" Value="166744.082498898"/>
 																				<Property Name="PlayAt" Type="Real64" Value="6.82121026329696E-12"/>
 																			</PropertyList>
@@ -561,7 +571,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Map_A_Cymbal" ID="{01E7AA2C-811D-47A7-8B56-ECE0F4B33753}">
+										<AudioFileSource Name="Map_A_Cymbal" ID="{4ACD098D-28DC-4EBD-BDC5-D81EB06ECB2F}">
 											<Language>SFX</Language>
 											<AudioFile>Map_A_Cymbal.wav</AudioFile>
 											<MediaIDList>
@@ -578,27 +588,28 @@
 															<ObjectList Name="Clips">
 																<Reference>
 																	<Local>
-																		<MusicClip Name="Map_A_Cymbal" ID="{6B974EA2-0ABB-4A1A-B6BC-414A85AFAD52}">
+																		<MusicClip Name="Map_A_Cymbal" ID="{2115DDE0-C459-48B9-A55A-D13A5517F867}">
 																			<PropertyList>
-																				<Property Name="EndTrimOffset" Type="Real64" Value="167092.919491574"/>
+																				<Property Name="BeginTrimOffset" Type="Real64" Value="8372.08782421249"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="176133.333333333"/>
 																				<Property Name="FadeInMode" Type="int16" Value="0"/>
 																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
 																			</PropertyList>
-																			<AudioSourceRef Name="Map_A_Cymbal" ID="{01E7AA2C-811D-47A7-8B56-ECE0F4B33753}"/>
+																			<AudioSourceRef Name="Map_A_Cymbal" ID="{4ACD098D-28DC-4EBD-BDC5-D81EB06ECB2F}"/>
 																			<PropertyCurveList>
 																				<PropertyCurve PropertyName="Highpass">
-																					<Curve Name="" ID="{1270CE0B-79EF-47ED-B6F0-4172DE8B02E5}">
+																					<Curve Name="" ID="{E733D74E-4738-45E6-A857-2BCF6244F3A6}">
 																						<PropertyList>
 																							<Property Name="Flags" Type="int32" Value="1"/>
 																						</PropertyList>
 																						<PointList>
 																							<Point>
-																								<XPos>0</XPos>
+																								<XPos>8.37209</XPos>
 																								<YPos>0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
 																							<Point>
-																								<XPos>167.09292</XPos>
+																								<XPos>176.133333333333</XPos>
 																								<YPos>0</YPos>
 																								<Flags>37</Flags>
 																							</Point>
@@ -606,18 +617,18 @@
 																					</Curve>
 																				</PropertyCurve>
 																				<PropertyCurve PropertyName="Lowpass">
-																					<Curve Name="" ID="{DB280BEF-272E-4EEE-8DD4-F83C7BF99569}">
+																					<Curve Name="" ID="{A6E52FCE-0EC2-49C7-A4EA-A8A10D054326}">
 																						<PropertyList>
 																							<Property Name="Flags" Type="int32" Value="1"/>
 																						</PropertyList>
 																						<PointList>
 																							<Point>
-																								<XPos>0</XPos>
+																								<XPos>8.37209</XPos>
 																								<YPos>0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
 																							<Point>
-																								<XPos>167.09292</XPos>
+																								<XPos>176.133333333333</XPos>
 																								<YPos>0</YPos>
 																								<Flags>37</Flags>
 																							</Point>
@@ -625,18 +636,18 @@
 																					</Curve>
 																				</PropertyCurve>
 																				<PropertyCurve PropertyName="Volume">
-																					<Curve Name="" ID="{7A46A4F0-F6E3-4D0C-8FBC-77224E286444}">
+																					<Curve Name="" ID="{564F870E-73AE-4E1A-9E78-3D4633AD1707}">
 																						<PropertyList>
 																							<Property Name="Flags" Type="int32" Value="3"/>
 																						</PropertyList>
 																						<PointList>
 																							<Point>
-																								<XPos>0</XPos>
+																								<XPos>8.37209</XPos>
 																								<YPos>0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
 																							<Point>
-																								<XPos>167.09292</XPos>
+																								<XPos>176.133333333333</XPos>
 																								<YPos>0</YPos>
 																								<Flags>37</Flags>
 																							</Point>
@@ -672,7 +683,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Map_A_Main" ID="{5311A391-049E-4B02-8941-2F87E07E62F9}">
+										<AudioFileSource Name="Map_A_Main" ID="{032C0F20-4739-4712-AB87-421F32389001}">
 											<Language>SFX</Language>
 											<AudioFile>Map_A_Main.wav</AudioFile>
 											<MediaIDList>
@@ -689,13 +700,13 @@
 															<ObjectList Name="Clips">
 																<Reference>
 																	<Local>
-																		<MusicClip Name="Map_A_Main" ID="{739D1079-16C2-4F9B-A4CE-BC3B6289C001}">
+																		<MusicClip Name="Map_A_Main" ID="{DBC24FCB-D4B9-4CD5-A465-11151CFE88C6}">
 																			<PropertyList>
-																				<Property Name="EndTrimOffset" Type="Real64" Value="175450"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="168633.333333333"/>
 																				<Property Name="FadeInMode" Type="int16" Value="0"/>
 																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
 																			</PropertyList>
-																			<AudioSourceRef Name="Map_A_Main" ID="{5311A391-049E-4B02-8941-2F87E07E62F9}"/>
+																			<AudioSourceRef Name="Map_A_Main" ID="{032C0F20-4739-4712-AB87-421F32389001}"/>
 																		</MusicClip>
 																	</Local>
 																</Reference>
@@ -730,37 +741,7 @@
 											<MusicCue Name="SS_1" ID="{91F5FB9A-E1C3-4CA8-90AE-4E7B701A1656}">
 												<PropertyList>
 													<Property Name="CueType" Type="int16" Value="2"/>
-													<Property Name="TimeMs" Type="Real64" Value="1046.51097802656"/>
-												</PropertyList>
-											</MusicCue>
-										</Local>
-									</Reference>
-									<Reference>
-										<Local>
-											<MusicCue Name="SS_1" ID="{B49B76D4-A95E-44BA-849F-8F1ECA8F40C6}">
-												<PropertyList>
-													<Property Name="CueType" Type="int16" Value="2"/>
-													<Property Name="TimeMs" Type="Real64" Value="1395.34797070208"/>
-												</PropertyList>
-											</MusicCue>
-										</Local>
-									</Reference>
-									<Reference>
-										<Local>
-											<MusicCue Name="SS_1" ID="{2F857110-50E4-4EBE-B925-41E3F999B611}">
-												<PropertyList>
-													<Property Name="CueType" Type="int16" Value="2"/>
-													<Property Name="TimeMs" Type="Real64" Value="2093.02195605312"/>
-												</PropertyList>
-											</MusicCue>
-										</Local>
-									</Reference>
-									<Reference>
-										<Local>
-											<MusicCue Name="SS_1" ID="{EF82B77A-C35C-4F56-9D59-3345E7503EA0}">
-												<PropertyList>
-													<Property Name="CueType" Type="int16" Value="2"/>
-													<Property Name="TimeMs" Type="Real64" Value="2441.85894872864"/>
+													<Property Name="TimeMs" Type="Real64" Value="8372.08782421249"/>
 												</PropertyList>
 											</MusicCue>
 										</Local>
