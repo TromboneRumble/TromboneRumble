@@ -75,7 +75,7 @@ enum class ENoteResult : uint8
 UENUM(BlueprintType)
 enum class EInstrumentType : uint8
 {
-	Background	= 0		UMETA(DisplayName = "Background"), // Instrument 추가시 Background 위에다 추가할 것
+	Background	= 0		UMETA(DisplayName = "Background"),
 	Trombone    = 1		UMETA(DisplayName = "Trombone"),
 	Violin		= 2		UMETA(DisplayName = "Violin"),
 	Cymbal		= 3		UMETA(DisplayName = "Cymbal"),

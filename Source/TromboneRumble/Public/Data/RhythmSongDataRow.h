@@ -81,4 +81,8 @@ struct FRhythmSongDataRow : public FTableRowBase
 		ToolTip = "이 곡에서 사용할 악기별 사운드 설정들"
         ))
     TArray<FRhythmInstrumentSound> InstrumentSounds;
+
+#if WITH_EDITOR
+    virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override;
+#endif
 };
