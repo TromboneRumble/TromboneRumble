@@ -7,6 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Actors/SpotlightZone.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
@@ -121,6 +123,18 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 	}
 }
 
+EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
+{
+	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument))
+	{
+		if (const AInstrumentBase* InstrumentBase = Cast<AInstrumentBase>(Instrument))
+		{
+			return InstrumentBase->GetInstrumentType();
+		}
+	}
+	return EInstrumentType::Invalid;
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -193,6 +207,11 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 	if (bIsSprinting != bNewIsSprinting)
 	{
 		bIsSprinting = bNewIsSprinting;
+		if (CharacterData)
+		{
+			const float NewSpeed = bNewIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
+			GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+		}
 	}
 }
 
@@ -288,8 +307,22 @@ void ADefaultTromboneCharacter::HandleOnNoteDetected(ENoteResult NoteResult)
 
 void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementation()
 {
-	// TODO : 폭죽 이펙트 재생
-	PRINT_WITH_CURRENT_CONTEXT("Spotlight Bonus Success!");
+	if (SpotlightSuccessVFX)
+	{
+		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, -1000.f);
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			SpotlightSuccessVFX,
+			SpawnLocation,
+			FRotator::ZeroRotator,
+			FVector(1.f),
+			true,
+			true,
+			ENCPoolMethod::None,
+			true
+		);
+	}
 }
 
 ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()

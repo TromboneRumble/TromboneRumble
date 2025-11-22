@@ -2,13 +2,19 @@
 
 
 #include "Actors/Rhythm/RhythmActor.h"
+
+#include "AkAudioEvent.h"
 #include "Components/BoxComponent.h"
 #include "AkComponent.h"
 #include "AkGameplayStatics.h"
 #include "AkGameplayTypes.h"
+#include "AkSwitchValue.h"
 #include "Subsystems/ActorPoolSubsystem.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "Actors/Rhythm/RhythmNote.h"
+#include "Data/RhythmSongDataRow.h"
+#include "Framework/TromboneGameInstance.h"
+#include "Subsystems/GameDataSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
@@ -131,7 +137,8 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
 void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
                                               UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent)
 {
-	checkf(InType < EInstrumentType::Background, TEXT("InType Is a background or Invalid Type"));
+	checkf(!(InType == EInstrumentType::Background || InType == EInstrumentType::Invalid),
+		TEXT("InType must NOT be Background or Invalid"));
 	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
 	{
 		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent);
@@ -196,9 +203,39 @@ void ARhythmActor::SpawnRhythmRootUI()
 void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
-	EnableInput(GetWorld()->GetFirstPlayerController());
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
 	OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
+	PrepareRhythmGame();
+	NoteSpawnComponent->SetOutputBusVolume(0.f);
+	StartRhythmGame();
+	EnableInput(GetWorld()->GetFirstPlayerController());
+}
+
+void ARhythmActor::PrepareRhythmGame()
+{
+	SpawnRhythmRootUI();
+	if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		FGameplayTag SelectedTag = GameInstance->GetSelectedSongTag();
+		if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+		{
+			FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(SelectedTag);
+			if (SongRow)
+			{
+				InitBGMEvent(SongRow->BgmEvent.Get(), SongRow->NoneSwitch.Get());
+
+				//악기별로 스포너 생성 및 초기화
+				for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
+				{
+					EInstrumentType InstrumentType = Sound.InstrumentType;
+					UAkAudioEvent* NoteEvent = Sound.NoteEvent.Get();
+					UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.Get();
+					UAkAudioEvent* FailEvent = Sound.FailEvent.Get();
+					CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
+				}
+			}
+		}
+	}
 }
 
 ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)

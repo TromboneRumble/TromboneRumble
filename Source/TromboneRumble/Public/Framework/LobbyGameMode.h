@@ -30,29 +30,20 @@ public:
 	virtual void Logout(AController* ExitedPlayer) override;
 	
 	void NotifyClientReady(APlayerController* ReadyPlayer);
-	void RequestServerTravel(EGameState InGameState);
+	void RequestServerTravel(const EGameState& InGameState);
 
 private:
-	void InitializeMapPath();
 	void InitializeInstruments() const;
 	bool CheckAllClientsReady();
-	void SetLobbyState(ELobbyState NewState);
+	void SetLobbyState(const ELobbyState& InNewState);
 	void RequestServerTravel(const FString& MapPath) const;
 	void RequestSetTimer(TFunction<void()> OnTimerFinished);
 
-private:
-	UPROPERTY(Transient)
-	FString CachedInGameMapPath;
-	
-	UPROPERTY(Transient)
-	FString CachedLobbyMapPath;
-	
+private:	
 	UPROPERTY()
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Instrument")
-	TArray<TSubclassOf<AInstrumentBase>> InstrumentClassesToSpawn;
-	
+	UPROPERTY(Transient)
 	FTimerHandle LobbyTimerHandle;
 	int32 NumPublicConnections;
 	int32 CurrentEquippedInstruments;

@@ -8,6 +8,7 @@
 #include "TromboneGamePlayTags.h"
 #include "RhythmSongDataRow.generated.h"
 
+class AInstrumentBase;
 class UAkAudioEvent;
 class UAkSwitchValue;
 
@@ -16,20 +17,30 @@ struct FRhythmInstrumentSound
 {
     GENERATED_BODY()
 
-    // 어떤 악기인지
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+   
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "어떤 악기인지"
+        ))
     EInstrumentType InstrumentType = EInstrumentType::Invalid;
 
-    // 노트 성공 시 재생할 이벤트
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "악기에 해당하는 Actor"
+        ))
+    TSubclassOf<AInstrumentBase> SpawnInstrument;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+        ToolTip = "노트 성공 시 재생할 이벤트"
+        ))
     TSoftObjectPtr<UAkAudioEvent> NoteEvent;
 
-    // 악기를 들었을때 변경할 Switch
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "악기를 들었을때 변경할 Switch"
+        ))
     TSoftObjectPtr<UAkSwitchValue> ChangeSwitch;
 
-    // 실패 시 재생할 이벤트
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "노트 실패 시 재생할 이벤트"
+        ))
     TSoftObjectPtr<UAkAudioEvent> FailEvent;
 };
 
@@ -38,19 +49,40 @@ struct FRhythmSongDataRow : public FTableRowBase
 {
     GENERATED_BODY()
 
-    // 이 Row를 식별할 GameplayTag (키 역할)
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Categories = "Trombone.Rhythm.Song"))
+    
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+        Categories = "Trombone.Rhythm.Song",
+		ToolTip = "해당 Row의 이름을 꼭 Tag랑 맞출것"
+        ))
     FGameplayTag SongTag;
 
-    // 곡 BGM 이벤트
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+        ToolTip = "인게임에서 보여질 곡의 이름"
+        ))
+    FString SongName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+        ToolTip = "곡의 총 길이"
+        ))
+    float SongLength;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "이 곡의 BGM으로 재생할 AkAudioEvent"
+        ))
     TSoftObjectPtr<UAkAudioEvent> BgmEvent;
 
-    // 악기를 떨궜을때 재생할 Switch
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "악기를 떨궜을때 재생할 Switch"
+        ))
     TSoftObjectPtr<UAkSwitchValue> NoneSwitch;
 
-    // 이 곡에서 사용할 악기별 사운드 설정들
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
+		ToolTip = "이 곡에서 사용할 악기별 사운드 설정들"
+        ))
     TArray<FRhythmInstrumentSound> InstrumentSounds;
+
+#if WITH_EDITOR
+    virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override;
+#endif
 };

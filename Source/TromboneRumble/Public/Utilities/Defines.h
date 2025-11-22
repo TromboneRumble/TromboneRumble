@@ -27,7 +27,7 @@ enum class EMatchState : uint8
 {
 	FreeForAll,
 	TwoTeams,
-	Invalid UMETA(Hidden)
+	Invalid = 255 UMETA(Hidden)
 };
 
 UENUM()
@@ -36,7 +36,7 @@ enum class EGameState : uint8
 	MainMenu,
 	Lobby,
 	InGame,
-	Invalid UMETA(Hidden)
+	Invalid = 255 UMETA(Hidden)
 };
 
 UENUM()
@@ -46,7 +46,7 @@ enum class ELobbyState : uint8
 	CountdownToScramble,
 	InstrumentScramble,
 	CountdownToTravel,
-	Invalid UMETA(Hidden)
+	Invalid					= 255 UMETA(Hidden)
 };
 
 UENUM()
@@ -58,28 +58,29 @@ enum class EHitType : uint8
 	Cymbals,
 	Violin,
 	Audience,
-	Invalid UMETA(Hidden)
+	Invalid		= 255	UMETA(Hidden)
 };
 
 UENUM(BlueprintType)
 enum class ENoteResult : uint8
 {
-	None        UMETA(DisplayName = "None"), // 롱노트 시작, 혹은 롱노트 중간점 반환용
-	Bad         UMETA(DisplayName = "Bad"),  //미스 판정용
-	Good        UMETA(DisplayName = "Good"),
-	Great       UMETA(DisplayName = "Great"),
-	Excellent   UMETA(DisplayName = "Excellent"),
-	Invalid     UMETA(Hidden)
+	None        = 0		UMETA(DisplayName = "None"), // 롱노트 시작, 혹은 롱노트 중간점 반환용
+	Bad         = 1		UMETA(DisplayName = "Bad"),  //미스 판정용
+	Good        = 2		UMETA(DisplayName = "Good"),
+	Great       = 3		UMETA(DisplayName = "Great"),
+	Excellent   = 4		UMETA(DisplayName = "Excellent"),
+	Invalid		= 255   UMETA(Hidden)
 };
 
 UENUM(BlueprintType)
 enum class EInstrumentType : uint8
 {
-	Trombone    UMETA(DisplayName = "Trombone"),
-	Violin		UMETA(DisplayName = "Violin"),
-	Cymbal		UMETA(DisplayName = "Cymbal"),
-	Background	UMETA(DisplayName = "Background"), // Instrument 추가시 Background 위에다 추가할 것
-	Invalid		UMETA(Hidden)
+	Background	= 0		UMETA(DisplayName = "Background"),
+	Trombone    = 1		UMETA(DisplayName = "Trombone"),
+	Violin		= 2		UMETA(DisplayName = "Violin"),
+	Cymbal		= 3		UMETA(DisplayName = "Cymbal"),
+				 
+	Invalid		= 255	UMETA(Hidden)
 };
 
 USTRUCT(BlueprintType)
