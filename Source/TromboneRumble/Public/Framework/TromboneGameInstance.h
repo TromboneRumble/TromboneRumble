@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "TromboneGamePlayTags.h"
 #include "Engine/GameInstance.h"
 #include "TromboneGameInstance.generated.h"
 
@@ -20,7 +21,7 @@ public:
 
 private:
     UPROPERTY(Transient)
-    FGameplayTag SelectedSongTag;
+    FGameplayTag SelectedSongTag = TromboneGamePlayTags::Trombone_Rhythm_Song_MapA;
 
 public:
     //getter setter
