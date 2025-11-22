@@ -23,19 +23,14 @@ ASpotlightZone::ASpotlightZone()
 
 	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
 	SpotLightComponent->SetupAttachment(RootComponent);
-	SpotLightComponent->SetIntensity(50000.0f);
-	SpotLightComponent->SetAttenuationRadius(600.0f);
-	SpotLightComponent->SetInnerConeAngle(5.0f);
-	SpotLightComponent->SetOuterConeAngle(20.0f);
+	SpotLightComponent->SetIntensity(100000.0f);
+	SpotLightComponent->SetAttenuationRadius(1500.0f);
+	SpotLightComponent->SetInnerConeAngle(12.5f);
+	SpotLightComponent->SetOuterConeAngle(25.0f);
 	SpotLightComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f)); 
 	SpotLightComponent->SetVisibility(false);
-
-	DecalComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
-	DecalComponent->SetupAttachment(RootComponent);
-	DecalComponent->DecalSize = FVector(700.0f, 200.0f, 200.0f);
-	DecalComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f)); 
-	DecalComponent->SetVisibility(false);
-
+	SpotLightComponent->SetLightColor(FLinearColor::White);
+	
 	LightBeamMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightBeamMesh"));
 	LightBeamMesh->SetupAttachment(RootComponent);
 	LightBeamMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
@@ -152,35 +147,31 @@ void ASpotlightZone::OnRep_CurrentState()
 	switch (CurrentState)
 	{
 		case ESpotlightState::Warning:
-			SpotLightComponent->SetVisibility(false);
-			DecalComponent->SetVisibility(true);
-			DecalComponent->SetMaterial(0, WarningMaterial);
+			SpotLightComponent->SetVisibility(true);
+			SpotLightComponent->SetLightColor(FLinearColor::White);
 			LightBeamMesh->SetVisibility(false);
+
 			break;
 		
 		case ESpotlightState::Active:
 			SpotLightComponent->SetVisibility(true);
-			DecalComponent->SetVisibility(true);
-			DecalComponent->SetMaterial(0, ActiveMaterial);
+			SpotLightComponent->SetLightColor(SpotlightActiveColor);
 			LightBeamMesh->SetVisibility(true);
 			break;
 		
 		case ESpotlightState::Awarded:
 			SpotLightComponent->SetVisibility(false);
-			DecalComponent->SetVisibility(false);
 			LightBeamMesh->SetVisibility(false);
 			break;
 		
 		case ESpotlightState::Fading:
 			SpotLightComponent->SetVisibility(false);
-			DecalComponent->SetVisibility(false);
 			LightBeamMesh->SetVisibility(false);
 			break;
 		
 		case ESpotlightState::None:
 		default:
 			SpotLightComponent->SetVisibility(false);
-			DecalComponent->SetVisibility(false);
 			LightBeamMesh->SetVisibility(false);
 			break;
 	}
