@@ -10,10 +10,4 @@ UCLASS()
 class TROMBONERUMBLE_API AInGameState : public AGameStateBase
 {
 	GENERATED_BODY()
-
-public:
-	float GetSongProgress() const { return SongProgress; }
-
-private:
-	float SongProgress = 0.15f;
 };

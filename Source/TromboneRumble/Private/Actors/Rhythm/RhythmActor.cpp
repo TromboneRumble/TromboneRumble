@@ -15,6 +15,7 @@
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/GameDataSubsystem.h"
+#include "Subsystems/RhythmMusicCueSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
@@ -168,7 +169,7 @@ void ARhythmActor::StartRhythmGame()
 			UAkAudioEvent* SpawnNoteEvent = Elem.Value->GetSpawnNoteEvent();
 			FOnAkPostEventCallback Callback;
 			Callback.BindUFunction(Elem.Value, FName("OnAkCallback"));
-			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_MIDIEvent;
+			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue;// | AkCallbackType::AK_MIDIEvent;
 			NoteSpawnComponent->PostAkEvent(
 				SpawnNoteEvent,
 				CallbackMask,
@@ -414,6 +415,25 @@ void ARhythmActor::PlayMusic()
 {
 	if (PlayBGMEvent && NoteHearingComponent)
 	{
+		if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
+		{
+			if (URhythmMusicCueSubsystem* MusicSubsys = GameInstance->GetSubsystem<URhythmMusicCueSubsystem>())
+			{
+				FOnAkPostEventCallback Callback;
+				Callback.BindUFunction(MusicSubsys, FName("OnMusicAkCallback"));
+
+				const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue;
+
+				NoteHearingComponent->PostAkEvent(
+					PlayBGMEvent,
+					CallbackMask,
+					Callback
+				);
+				return;
+			}
+		}
+
+		// 서브시스템 못 찾았으면 콜백 없이 그냥 재생
 		FOnAkPostEventCallback DummyCallback;
 		NoteHearingComponent->PostAkEvent(
 			PlayBGMEvent,

@@ -4,25 +4,26 @@
 #include "Actors/SpotlightZone.h"
 #include "Engine/TargetPoint.h"
 #include "Framework/InGameState.h"
+#include "Subsystems/RhythmMusicCueSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 ASpotlightManager::ASpotlightManager()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	SetReplicates(false);
 }
 
 void ASpotlightManager::BeginPlay()
 {
 	Super::BeginPlay();
+    
 
 	if (HasAuthority())
 	{
-		CachedInGameState = GetWorld()->GetGameState<AInGameState>();
-	}
-	else
-	{
-		SetActorTickEnabled(false);
+        if (URhythmMusicCueSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmMusicCueSubsystem>())
+        {
+            MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::CheckSpotlightStart);
+        }
 	}
 }
 
@@ -33,38 +34,22 @@ void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void ASpotlightManager::Tick(const float DeltaTime)
+void ASpotlightManager::CheckSpotlightStart(FName CueName)
 {
-	Super::Tick(DeltaTime);
-
-	if (!bIsSpotlightActive)
+	if (CueName == TEXT("Event_Spotlight_Start"))
 	{
-		CheckSpotlightStart();
+        bIsSpotlightActive = true;
+        TriggerSpotlightSpawn();
 	}
-}
-
-void ASpotlightManager::CheckSpotlightStart()
-{
-	if (!CachedInGameState)
-	{
-		CachedInGameState = GetWorld()->GetGameState<AInGameState>();
-		if (!CachedInGameState) return;
-	}
-
-	if (GetCurrentSongProgress() >= SpotlightStartTimePercent)
-	{
-		bIsSpotlightActive = true;
-		SetActorTickEnabled(false);
-		TriggerSpotlightSpawn();
-	}
+    if (CueName == TEXT("Event_Spotlight_Fever"))
+    {
+        bIsFeverTime = true;
+    }
 }
 
 void ASpotlightManager::TriggerSpotlightSpawn()
 {
 	if (!HasAuthority()) return;
-
-    const float CurrentProgress = GetCurrentSongProgress();
-    const bool bIsFeverTime = (CurrentProgress >= FeverTimeStartPercent);
 
     const int32 MinCount = bIsFeverTime ? MinSpawnCount_Fever : MinSpawnCount_Normal;
     const int32 MaxCount = bIsFeverTime ? MaxSpawnCount_Fever : MaxSpawnCount_Normal;
@@ -117,13 +102,3 @@ void ASpotlightManager::TriggerSpotlightSpawn()
         false
     );
 }
-
-float ASpotlightManager::GetCurrentSongProgress() const
-{
-	if (CachedInGameState)
-	{
-		return CachedInGameState->GetSongProgress();
-	}
-	return 0.0f;
-}
-

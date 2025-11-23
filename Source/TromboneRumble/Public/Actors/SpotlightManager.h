@@ -10,7 +10,7 @@ class AInGameState;
 class ATargetPoint;
 class ASpotlightZone;
 
-UCLASS()
+UCLASS(Abstract)
 class TROMBONERUMBLE_API ASpotlightManager : public AActor
 {
 	GENERATED_BODY()
@@ -21,12 +21,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void Tick(float DeltaTime) override;
 
 private:
-	void CheckSpotlightStart();
+	UFUNCTION()
+	void CheckSpotlightStart(FName CueName);
 	void TriggerSpotlightSpawn();
-	float GetCurrentSongProgress() const;
 	
 	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
 	TSubclassOf<ASpotlightZone> SpotlightZoneClass;
@@ -58,9 +57,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spotlight|Fever", meta = (ToolTip = "피버 타임 시 스포트라이트 존 최대 스폰 개수"))
 	int32 MaxSpawnCount_Fever = 4;
 	
-	UPROPERTY()
-	TObjectPtr<AInGameState> CachedInGameState;
-	
 	FTimerHandle SpawnTimerHandle;
 	bool bIsSpotlightActive = false;
+	bool bIsFeverTime = false;
 };
