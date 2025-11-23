@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/CapsuleComponent.h"
 #include "Interfaces/Equipable.h"
 #include "Items/ItemBase.h"
 #include "InstrumentBase.generated.h"
@@ -26,6 +27,9 @@ public:
 	// ~Interfaces
 
 	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
+
+	void AttachToIdleSocket() const;
+	void AttachToAttackSocket() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,7 +65,8 @@ private:
 	UPROPERTY(EditAnywhere, Category="Config")
 	float UpwardImpulse = 300.0f;
 	
-	FName AttachSocketName = TEXT("socket_hand_r");
+	FName AttachSocketNameTromboneIdle = TEXT("socket_hand_r_idle");
+	FName AttachSocketNameTromboneAttack = TEXT("socket_hand_l_attack");
 
 public:
 	//getter setter
