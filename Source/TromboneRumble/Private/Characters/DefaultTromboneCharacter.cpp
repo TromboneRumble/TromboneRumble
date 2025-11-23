@@ -7,6 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Actors/SpotlightZone.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
@@ -305,8 +307,22 @@ void ADefaultTromboneCharacter::HandleOnNoteDetected(ENoteResult NoteResult)
 
 void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementation()
 {
-	// TODO : 폭죽 이펙트 재생
-	PRINT_WITH_CURRENT_CONTEXT("Spotlight Bonus Success!");
+	if (SpotlightSuccessVFX)
+	{
+		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, -1000.f);
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			SpotlightSuccessVFX,
+			SpawnLocation,
+			FRotator::ZeroRotator,
+			FVector(1.f),
+			true,
+			true,
+			ENCPoolMethod::None,
+			true
+		);
+	}
 }
 
 ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()

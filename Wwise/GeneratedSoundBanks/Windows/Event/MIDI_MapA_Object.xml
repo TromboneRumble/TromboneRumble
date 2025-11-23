@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1985904344" Type="Event" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" Language="SFX" Hash="{74559EE6-AD3E-A490-53F6-3F83AD0D2E6C}">
+			<ObjectPath>MIDI_MapA_Object</ObjectPath>
+			<ShortName>MIDI_MapA_Object</ShortName>
+			<Path>Event/MIDI_MapA_Object.bnk</Path>
+			<Media>
+				<File Id="622013022" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_O.mid</ShortName>
+					<Path>Media/622013022.wem</Path>
+					<CachePath>SFX/MIDI_O_3B11EB7A.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1985904344" Name="MIDI_MapA_Object" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\MIDI_MapA_Object" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" DurationType="OneShot" DurationMin="168.25934" DurationMax="168.25934">
+					<MediaRefs>
+						<MediaRef Id="622013022"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{5666C8EA-4AFA-A11C-AB96-D92D83F58222}</FileHash>
+</SoundBanksInfo>

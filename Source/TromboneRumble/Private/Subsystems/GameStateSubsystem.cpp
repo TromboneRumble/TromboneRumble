@@ -11,15 +11,10 @@ void UGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	CurrentGameState = EGameState::MainMenu;
 
-	CachedLobbyMapName = FPackageName::GetShortName(
-		UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap)
-	);
-	CachedInGameMapName = FPackageName::GetShortName(
-		UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap)
-	);
-	CachedMainMenuMapName = FPackageName::GetShortName(
-		UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMap)
-	);
+	
+	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_MainMap, EGameState::MainMenu);
+	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGameMap, EGameState::InGame);
+	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap, EGameState::Lobby);
 
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UGameStateSubsystem::OnPostLoadMap);
 	
@@ -36,32 +31,53 @@ void UGameStateSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
-void UGameStateSubsystem::OnPostLoadMap(UWorld* LoadedWorld)
+void UGameStateSubsystem::OnPostLoadMap(UWorld* InLoadedWorld)
 {
-	const FString& MapName = LoadedWorld->GetMapName();
-	if (MapName.Contains(CachedInGameMapName))
+	if (!InLoadedWorld)
 	{
-		SetGameState(EGameState::InGame);
+		SetGameState(EGameState::Invalid);
+		return;
 	}
-	else if (MapName.Contains(CachedLobbyMapName))
+
+	const FString& MapName = InLoadedWorld->GetMapName();
+	for (const TPair<EGameState, FString>& Pair : GameStateToMapNameMap)
 	{
-		SetGameState(EGameState::Lobby);
+		if (!Pair.Value.IsEmpty() && MapName.Contains(Pair.Value))
+		{
+			SetGameState(Pair.Key);
+			return;
+		}
 	}
-	else if (MapName.Contains(CachedMainMenuMapName))
+	// 어떤 것도 매칭 안 되면 Invalid
+	SetGameState(EGameState::Invalid);
+}
+
+void UGameStateSubsystem::SetGameState(const EGameState& InNewState)
+{
+	if (CurrentGameState != InNewState)
 	{
-		SetGameState(EGameState::MainMenu);
-	}
-	else
-	{
-		SetGameState(EGameState::Invalid); 
+		CurrentGameState = InNewState;
+		OnGameStateChanged.Broadcast(CurrentGameState);
 	}
 }
 
-void UGameStateSubsystem::SetGameState(const EGameState NewState)
+void UGameStateSubsystem::AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState)
 {
-	if (CurrentGameState != NewState)
+	FString CachedMapName = FPackageName::GetShortName(
+		UTromboneFunctionLibrary::GetMapPathByTag(InTag)
+	);
+	if (!CachedMapName.IsEmpty())
 	{
-		CurrentGameState = NewState;
-		OnGameStateChanged.Broadcast(CurrentGameState);
+		GameStateToMapNameMap.Add(InGameState,CachedMapName);
 	}
+
+}
+
+FString UGameStateSubsystem::GetMapNameForGameState(const EGameState& InGameState) const
+{
+	if (const FString* FoundName = GameStateToMapNameMap.Find(InGameState))
+	{
+		return *FoundName;
+	}
+	return FString();
 }

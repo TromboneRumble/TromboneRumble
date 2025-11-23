@@ -103,7 +103,7 @@ void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
 		NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 		NoteSlot->SetAnchors(FAnchors(0.5f, 0.5f));
 		//TODO : Remove Magic Number
-		NoteSlot->SetPosition(FVector2D(175.f, -300.f));
+		NoteSlot->SetPosition(FVector2D(170.f, 300.f));
 		if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
 		{
 			OwnerRhythmActor->OnInstrumentPicked.AddDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);

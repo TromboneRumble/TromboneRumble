@@ -87,6 +87,7 @@ protected:
 
 private:
 	// Rhythm Game Init
+	void PrepareRhythmGame();
 	ARhythmNoteSpawner* GetOrCreateSpawner(EInstrumentType InType);
 	bool DestroySpawner(EInstrumentType InType);
 	// ~Rhythm Game Init
@@ -115,7 +116,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBoxComponent> RhythmNoteDestroyer = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkComponent> NoteSpawnComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))

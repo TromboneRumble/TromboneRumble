@@ -6,15 +6,28 @@
 				<SoundcasterSession Name="Test" ID="{B8CE04C6-33B9-4E65-80FA-7D87A37FDCA0}">
 					<ModuleList>
 						<Module>
-							<ObjectRef Name="Play_RhythmGame_Main" ID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<ObjectRef Name="Map_A" ID="{56D00CE1-E69E-44AF-8DF1-E169B7ACBEC8}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="0" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Inst_Fail" ID="{2DD019B1-0548-4041-B0ED-C8844C773403}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<ObjectRef Name="BBIK_V" ID="{48EC31B0-D73E-4049-BDE1-68EC4B8A04A1}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 							<Position X="1" Y="0"/>
 						</Module>
+						<Module>
+							<ObjectRef Name="BBIK_C" ID="{9CFD72A2-7318-4ADA-A9E1-D926382C58A9}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+							<Position X="2" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+							<Position X="3" Y="0"/>
+						</Module>
 					</ModuleList>
-					<RTPCValueList ShowAll="true"/>
+					<RTPCValueList ShowAll="true">
+						<RTPCValue>
+							<GameParameterRef Name="RTPC_Fail_Volume" ID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
+							<Value>-89</Value>
+						</RTPCValue>
+					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">
 						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>

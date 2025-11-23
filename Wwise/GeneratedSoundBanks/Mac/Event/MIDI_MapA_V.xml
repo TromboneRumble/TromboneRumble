@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1909551205" Type="Event" GUID="{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}" Language="SFX" Hash="{654D3410-F671-6CC0-7A38-FBA34B92D24D}">
+			<ObjectPath>MIDI_MapA_V</ObjectPath>
+			<ShortName>MIDI_MapA_V</ShortName>
+			<Path>Event/MIDI_MapA_V.bnk</Path>
+			<Media>
+				<File Id="681341114" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Main.wav</ShortName>
+					<Path>Media/681341114.wem</Path>
+					<CachePath>SFX/Map_A_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="708259744" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_violin.wav</ShortName>
+					<Path>Media/708259744.wem</Path>
+					<CachePath>SFX/Map_A_violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1052433117" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_V.mid</ShortName>
+					<Path>Media/1052433117.wem</Path>
+					<CachePath>SFX/MIDI_V_DD9D0199.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1909551205" Name="MIDI_MapA_V" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\MIDI_MapA_V" GUID="{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}" DurationType="OneShot" DurationMin="313.486" DurationMax="313.486">
+					<MediaRefs>
+						<MediaRef Id="681341114"/>
+						<MediaRef Id="708259744"/>
+						<MediaRef Id="1052433117"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{6F06D9DD-CB0A-5F9B-1BF9-DFA828B78663}</FileHash>
+</SoundBanksInfo>

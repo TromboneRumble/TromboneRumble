@@ -59,10 +59,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USpotLightComponent> SpotLightComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	TObjectPtr<UDecalComponent> DecalComponent;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> LightBeamMesh;
 
@@ -75,11 +72,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
 	float AwardedDuration = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Visuals")
-	TObjectPtr<UMaterialInterface> WarningMaterial;
-    
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Visuals")
-	TObjectPtr<UMaterialInterface> ActiveMaterial;
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	FLinearColor SpotlightActiveColor = FLinearColor(1, 0.98f, 0.64f);
 
 	FTimerHandle LifecycleTimerHandle;
 };

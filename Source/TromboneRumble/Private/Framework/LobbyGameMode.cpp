@@ -12,7 +12,11 @@
 #include "GameFramework/PlayerState.h"
 #include "Items/InstrumentBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
+#include "Subsystems/GameDataSubsystem.h"
+#include "Data/RhythmSongDataRow.h"
+#include "Framework/TromboneGameInstance.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -23,7 +27,6 @@ ALobbyGameMode::ALobbyGameMode()
 	NumPublicConnections = 4;
 	CurrentEquippedInstruments = 0;
 	Timer = 5.0f; // TODO : delete magic number
-	CachedInGameMapPath = TEXT("");
 }
 
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
@@ -61,8 +64,7 @@ void ALobbyGameMode::BeginPlay()
 		NumPublicConnections = LastSetting->NumPublicConnections;
 	}
 
-	InitializeMapPath();
-	InitializeInstruments();
+
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
@@ -91,55 +93,58 @@ void ALobbyGameMode::NotifyClientReady(APlayerController* ReadyPlayer)
 
 	if (CheckAllClientsReady())
 	{
+		//Todo : UI를 통해서 어떤 곡을 선택했는지 정하기
+		if (LobbyGameState)
+		{
+			LobbyGameState->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
+			InitializeInstruments();
+		}
 		SetLobbyState(ELobbyState::CountdownToScramble);
 	}
 }
 
-void ALobbyGameMode::RequestServerTravel(const EGameState InGameState)
+void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 {
-	switch (InGameState)
-	{
-		case EGameState::MainMenu:
-			PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
-			break;
-		case EGameState::Lobby:
-			RequestServerTravel(CachedLobbyMapPath);
-			break;
-		case EGameState::InGame:
-			RequestServerTravel(CachedInGameMapPath);
-			break;
-		default:
-			PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
-			break;
-	}
-}
 
-void ALobbyGameMode::InitializeMapPath()
-{
-	FString InGameMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGameMap);
-	FString LobbyMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap);
-	
-	if (InGameMapPath.IsEmpty() || LobbyMapPath.IsEmpty())
+	if (UGameInstance* GameInstance = GetGameInstance())
 	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("MapPath is empty. Please set it in GameMaps Location in Project Settings."));
-	}
-	
-	if (InGameMapPath.Contains(TEXT("."))) // 전달받은 문자열이 "오브젝트 경로(/A/B.Map.Map)"면 패키지 경로("/A/B.Map")로 정규화
-	{
-		InGameMapPath = FSoftObjectPath(CachedInGameMapPath).GetLongPackageName();
-	}
-	if (LobbyMapPath.Contains(TEXT(".")))
-	{
-		LobbyMapPath = FSoftObjectPath(CachedLobbyMapPath).GetLongPackageName();
-	}
-	
-	CachedInGameMapPath = InGameMapPath;
-	CachedLobbyMapPath = LobbyMapPath;
+		if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
+		{
+			switch (InGameState)
+			{
+			case EGameState::MainMenu:
+				PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
+				break;
+			case EGameState::Lobby:
+				RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::Lobby));
+				break;
+			case EGameState::InGame:
+				RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::InGame));
+				break;
+			default:
+				PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
+				break;
+			}
+		}
+	}	
 }
-
 void ALobbyGameMode::InitializeInstruments() const
 {
-	if (InstrumentClassesToSpawn.Num() == 0) return;
+	UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance());
+	auto* DataSub = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
+
+	FGameplayTag SongTag = GameInstance->GetSelectedSongTag();
+	const FRhythmSongDataRow* SongRow = DataSub->GetSongRow(SongTag);
+
+	if (!SongRow)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SongRow not found"));
+		return;
+	}
+
+	const auto& InstrumentSounds = SongRow->InstrumentSounds;
+	if (InstrumentSounds.Num() == 0) return;
+
 	
 	TArray<AActor*> SpawnPointActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
@@ -153,8 +158,8 @@ void ALobbyGameMode::InitializeInstruments() const
 		const FVector SpawnLocation = SpawnPoint->GetActorLocation();
 		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 
-		const int32 InstrumentClassIndex = i % InstrumentClassesToSpawn.Num();
-		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentClassesToSpawn[InstrumentClassIndex];
+		const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
+		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
 
 		GetWorld()->SpawnActor<AInstrumentBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
 	}
@@ -171,40 +176,48 @@ bool ALobbyGameMode::CheckAllClientsReady()
 		const ADefaultPlayerState* DPS = Cast<ADefaultPlayerState>(PS);
 		if (!DPS || !DPS->IsReady()) return false;
 	}
-
 	return true;
 }
 
-void ALobbyGameMode::SetLobbyState(const ELobbyState NewState)
+void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 {
-	if (LobbyGameState->GetCurrentLobbyState() == NewState) return;
-
-	LobbyGameState->SetLobbyState(NewState);
-	
-	switch (NewState)
+	if (LobbyGameState->GetCurrentLobbyState() == InNewState) return;
+	if (UGameInstance* GameInstance = GetGameInstance())
 	{
-		case ELobbyState::WaitingForPlayers:
-			
-			if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
+		if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
+		{
+			LobbyGameState->SetLobbyState(InNewState);
+
+			switch (InNewState)
 			{
-				GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+			case ELobbyState::WaitingForPlayers:
+
+				if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
+				{
+					GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+				}
+				RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::Lobby));
+				break;
+
+			case ELobbyState::CountdownToScramble:
+				RequestSetTimer([this]()
+				{
+					SetLobbyState(ELobbyState::InstrumentScramble);
+				});
+				break;
+
+			case ELobbyState::InstrumentScramble:
+				LobbyGameState->Multicast_RemoveWall();
+				break;
+
+			case ELobbyState::CountdownToTravel:
+				RequestSetTimer([this, GameStateSubsystem]() { 
+					RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::InGame)); });
+				break;
+
+			default:;
 			}
-			RequestServerTravel(CachedLobbyMapPath);
-			break;
-	            
-		case ELobbyState::CountdownToScramble:
-			RequestSetTimer([this]() { SetLobbyState(ELobbyState::InstrumentScramble); });
-			break;
-	            
-		case ELobbyState::InstrumentScramble:
-			LobbyGameState->Multicast_RemoveWall();
-			break;
-	            
-		case ELobbyState::CountdownToTravel:
-			RequestSetTimer([this]() { RequestServerTravel(CachedInGameMapPath); });
-			break;
-			
-		default: ;
+		}
 	}
 }
 

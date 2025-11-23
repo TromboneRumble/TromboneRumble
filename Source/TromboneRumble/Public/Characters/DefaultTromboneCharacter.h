@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UNiagaraSystem;
 class ARhythmActor;
 class UCharacterDataAsset;
 class UEquipmentComponent;
@@ -66,6 +67,9 @@ protected:
 	TWeakObjectPtr<ARhythmActor> CachedRhythmActor;
 	
 	FInteractionContext CurrentInteractionContext;
+
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> SpotlightSuccessVFX;
 
 private:
 	// Server RPCs
