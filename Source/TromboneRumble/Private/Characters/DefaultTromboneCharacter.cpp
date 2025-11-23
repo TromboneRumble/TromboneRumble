@@ -132,7 +132,7 @@ EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() co
 			return InstrumentBase->GetInstrumentType();
 		}
 	}
-	return EInstrumentType::Invalid;
+	return EInstrumentType::None;
 }
 
 void ADefaultTromboneCharacter::BeginPlay()

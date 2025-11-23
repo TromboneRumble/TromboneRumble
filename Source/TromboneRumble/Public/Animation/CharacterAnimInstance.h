@@ -45,7 +45,7 @@ protected:
 	FVector Velocity;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Instrument")
-	EInstrumentType CurrentInstrumentType = EInstrumentType::Invalid;
+	EInstrumentType CurrentInstrumentType = EInstrumentType::None;
 
 private:
 	UPROPERTY(Transient)
