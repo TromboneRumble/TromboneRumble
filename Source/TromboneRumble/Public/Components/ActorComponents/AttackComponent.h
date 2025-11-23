@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "AttackComponent.generated.h"
 
+class AInstrumentBase;
 enum class EEquipmentSlotType : uint8;
 class AItemBase;
 class UCapsuleComponent;
@@ -70,4 +71,6 @@ private:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	
 	FTimerHandle AttackCooldownTimerHandle;
+
+	AInstrumentBase* FindEquippedInstrument() const;
 };

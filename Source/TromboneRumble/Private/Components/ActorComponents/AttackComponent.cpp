@@ -170,6 +170,11 @@ void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 	
 	if (!OwnerCharacter || !CharacterAnimInstance || !CurrentAttackData || !CurrentAttackData->AttackAnimMontage) return;
 
+	if (const AInstrumentBase* Instrument = FindEquippedInstrument())
+	{
+		Instrument->AttachToAttackSocket();
+	}
+
 	if (OwnerCharacter->HasAuthority())
 	{
 		if (!CharacterAnimInstance->OnMontageEnded.IsAlreadyBound(this, &ThisClass::OnAttackMontageEnded))
@@ -187,6 +192,11 @@ void UAttackComponent::Multicast_ExecuteAttackEnd_Implementation()
 	if (CharacterAnimInstance)
 	{
 		CharacterAnimInstance->SetIsAttacking(false);
+	}
+
+	if (const AInstrumentBase* Instrument = FindEquippedInstrument())
+	{
+		Instrument->AttachToIdleSocket();
 	}
 }
 
@@ -223,4 +233,22 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 		CurrentCollisionComponent = HeadbuttCollisionComponent;
 		CurrentAttackData = HeadbuttAttackData;
 	}
+}
+
+AInstrumentBase* UAttackComponent::FindEquippedInstrument() const
+{
+	if (!OwnerCharacter) return nullptr;
+
+	TArray<AActor*> AttachedActors;
+	OwnerCharacter->GetAttachedActors(AttachedActors);
+
+	for (AActor* AttachedActor : AttachedActors)
+	{
+		if (AInstrumentBase* Instrument = Cast<AInstrumentBase>(AttachedActor))
+		{
+			return Instrument;
+		}
+	}
+
+	return nullptr;
 }
