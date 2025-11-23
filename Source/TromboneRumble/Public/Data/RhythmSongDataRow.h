@@ -64,7 +64,7 @@ struct FRhythmSongDataRow : public FTableRowBase
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
         ToolTip = "곡의 총 길이"
         ))
-    float SongLength;
+    float SongLength = 0.f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
 		ToolTip = "이 곡의 BGM으로 재생할 AkAudioEvent"

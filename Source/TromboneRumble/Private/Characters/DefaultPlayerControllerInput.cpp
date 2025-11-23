@@ -55,40 +55,40 @@ void ADefaultPlayerController::HandleGameStateChanged(EGameState NewState)
 
 void ADefaultPlayerController::Handle_Move(const struct FInputActionValue& Value)
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Move(Value);
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->Move(Value);
 }
 
 void ADefaultPlayerController::Handle_JumpPressed()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Jump();
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->Jump();
 }
 
 void ADefaultPlayerController::Handle_JumpReleased()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->StopJumping();
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->StopJumping();
 }
 
 void ADefaultPlayerController::Handle_Interact()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->TryInteract();
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->TryInteract();
 }
 
 void ADefaultPlayerController::Handle_SprintPressed()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->StartSprint();
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->StartSprint();
 }
 
 void ADefaultPlayerController::Handle_SprintReleased()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->StopSprint();
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->StopSprint();
 }
 
 void ADefaultPlayerController::Handle_Attack()
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Attack();
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->Attack();
 }
 
 void ADefaultPlayerController::Handle_Rhythm(const bool bPressed)
 {
-	if (CachedOwnerCharacter) CachedOwnerCharacter->Rhythm(bPressed);
+	if (CachedOwnerCharacter.Get()) CachedOwnerCharacter->Rhythm(bPressed);
 }

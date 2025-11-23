@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Subsystems/RhythmMusicCueSubsystem.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "AkGameplayTypes.h"
 #include "Utilities/DebugHelper.h"
 
-void URhythmMusicCueSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
+void URhythmSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
 	if (CallbackType != EAkCallbackType::MusicSyncUserCue || !CallbackInfo)
 	{
@@ -24,7 +24,7 @@ void URhythmMusicCueSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, U
 }
 
 
-void URhythmMusicCueSubsystem::BroadcastUserCue(const FName& CueName)
+void URhythmSubsystem::BroadcastUserCue(const FName& CueName)
 {
 	OnMusicUserCue.Broadcast(CueName);
 }

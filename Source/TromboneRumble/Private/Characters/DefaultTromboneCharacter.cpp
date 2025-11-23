@@ -19,6 +19,7 @@
 #include "Items/InstrumentBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -155,15 +156,28 @@ void ADefaultTromboneCharacter::BeginPlay()
 		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
 	
 		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-		if (ARhythmActor* RhythmActor = GetCachedRhythmActor())
+		if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 		{
-			RhythmActor->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
+			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
 		}
 
 		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	}
+}
+
+void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	
+	if (IsLocallyControlled())
+	{
+		if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		{
+			RhythmSubsystem->OnNoteDetected.RemoveDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -272,18 +286,24 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
 				CurrentInteractionContext.bIsEquipped = true;
-				if (GetCachedRhythmActor() && IsLocallyControlled())
+				if (IsLocallyControlled())
 				{
-					CachedRhythmActor->ExecuteOnInstrumentPicked(Instrument->GetInstrumentType());
+					if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+					{
+						RhythmSubsystem->OnInstrumentPicked.Broadcast(Instrument->GetInstrumentType());
+					}
 				}
 			}
 		}
 		else
 		{
 			CurrentInteractionContext.bIsEquipped = false;
-			if (GetCachedRhythmActor() && IsLocallyControlled())
+			if (IsLocallyControlled())
 			{
-				CachedRhythmActor->ExecuteOnInstrumentPicked(EInstrumentType::Background);
+				if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+				{
+					RhythmSubsystem->OnInstrumentPicked.Broadcast(EInstrumentType::Background);
+				}
 			}
 		}
 	}

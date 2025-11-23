@@ -7,6 +7,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmActor.generated.h"
 
+class URhythmSubsystem;
 class UAkSwitchValue;
 class UAkAudioEvent;
 class UAkComponent;
@@ -16,8 +17,6 @@ class ARhythmNote;
 class ARhythmNoteSpawner;
 class UBoxComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentPickedDelegate, EInstrumentType, InType);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);
 
 UCLASS()
 class TROMBONERUMBLE_API ARhythmActor : public AActor
@@ -29,30 +28,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	ENoteResult DetectNotes();
+	void DetectNotes();
 
 	UFUNCTION(BlueprintCallable)
 	ENoteResult DetectLongNoteEnd();
-
-
-	UFUNCTION(BlueprintCallable)
-	void ExecuteOnInstrumentPicked(EInstrumentType InType) const
-	{
-		OnInstrumentPicked.Broadcast(InType);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	void ExecuteOnNoteDetected(ENoteResult InNoteResult) const
-	{
-		OnNoteDetected.Broadcast(InNoteResult);
-	}
-
-	UPROPERTY(BlueprintAssignable)
-	FOnInstrumentPickedDelegate OnInstrumentPicked;
-
-
-	UPROPERTY(BlueprintAssignable)
-	FOnNoteDetectedDelegate OnNoteDetected;
 	
 
 	// Init Game
@@ -90,21 +69,20 @@ private:
 	void PrepareRhythmGame();
 	ARhythmNoteSpawner* GetOrCreateSpawner(EInstrumentType InType);
 	bool DestroySpawner(EInstrumentType InType);
+
+	UFUNCTION()
+	void OnInstrumentPickedHandler(EInstrumentType InType);
 	// ~Rhythm Game Init
 
 	// Note Detection Logic
 	ENoteResult ReturnNoteResult(const ARhythmNote* InNote, const TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InNoteToHitComps) const;
 	ARhythmNote* GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPrimitiveComponent*>>& InOutNoteToHitComps);
-	UActorPoolSubsystem* GetCachedSubsystem();
+	
 	UFUNCTION()
 	void OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
 	// ~Note Detection Logic
-
-	
-	UFUNCTION()
-	void OnInstrumentPickedHandler(EInstrumentType InType);
 
 	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -154,8 +132,13 @@ private:
 
 
 	// Cached References
+	UActorPoolSubsystem* GetCachedActorPoolSubsystem();
+	URhythmSubsystem* GetCachedRhythmSubsystem();
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<URhythmSubsystem> CachedRhythmSubsystem = nullptr;
 
 	UPROPERTY(Transient)
 	TObjectPtr<URhythmUIRootWidget> CachedRhythmUIRootWidget = nullptr;

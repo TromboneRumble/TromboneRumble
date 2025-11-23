@@ -75,5 +75,5 @@ private:
 	TObjectPtr<UPT_UIInGame> InGameUI;
 
 	UPROPERTY(Transient)
-	TObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
+	TWeakObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
 };

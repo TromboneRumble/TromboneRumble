@@ -4,7 +4,7 @@
 #include "Actors/SpotlightZone.h"
 #include "Engine/TargetPoint.h"
 #include "Framework/InGameState.h"
-#include "Subsystems/RhythmMusicCueSubsystem.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 ASpotlightManager::ASpotlightManager()
@@ -20,7 +20,7 @@ void ASpotlightManager::BeginPlay()
 
 	if (HasAuthority())
 	{
-        if (URhythmMusicCueSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmMusicCueSubsystem>())
+        if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
         {
             MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::CheckSpotlightStart);
         }
@@ -30,6 +30,13 @@ void ASpotlightManager::BeginPlay()
 void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	GetWorldTimerManager().ClearAllTimersForObject(this);
+    if (HasAuthority())
+    {
+        if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+        {
+            MusicCueSubsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::CheckSpotlightStart);
+        }
+    }
 	
 	Super::EndPlay(EndPlayReason);
 }

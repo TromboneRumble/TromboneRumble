@@ -12,6 +12,7 @@
 #include "Actors/Rhythm/RhythmNote.h"
 #include "Subsystems/ActorPoolSubsystem.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 
@@ -84,10 +85,9 @@ void ARhythmNoteSpawner::BeginPlay()
 void ARhythmNoteSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner());
-	if (IsValid(OwnerRhythmActor))
+	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 	{
-		OwnerRhythmActor->OnInstrumentPicked.RemoveDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
+		RhythmSubsystem->OnInstrumentPicked.RemoveDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
 	}
 }
 
@@ -104,9 +104,9 @@ void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
 		NoteSlot->SetAnchors(FAnchors(0.5f, 0.5f));
 		//TODO : Remove Magic Number
 		NoteSlot->SetPosition(FVector2D(170.f, 300.f));
-		if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
+		if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 		{
-			OwnerRhythmActor->OnInstrumentPicked.AddDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
+			RhythmSubsystem->OnInstrumentPicked.AddDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
 		}
 	}
 }

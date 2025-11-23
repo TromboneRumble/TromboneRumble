@@ -87,9 +87,10 @@ USTRUCT(BlueprintType)
 struct FNoteHandle
 {
 	GENERATED_BODY()
-	UPROPERTY() FGuid Id;
-	UPROPERTY() TWeakObjectPtr<AActor> NoteActor;
-	FNoteHandle() : Id(FGuid::NewGuid()) {}
+	UPROPERTY()
+	FGuid Id = FGuid::NewGuid();
+	UPROPERTY()
+	TWeakObjectPtr<AActor> NoteActor = nullptr;
 };
 
 USTRUCT()

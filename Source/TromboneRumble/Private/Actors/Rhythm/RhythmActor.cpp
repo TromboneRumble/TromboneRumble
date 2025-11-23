@@ -15,7 +15,7 @@
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/GameDataSubsystem.h"
-#include "Subsystems/RhythmMusicCueSubsystem.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
@@ -57,20 +57,18 @@ void ARhythmActor::Tick(float DeltaTime)
 
 }
 
-ENoteResult ARhythmActor::DetectNotes()
+void ARhythmActor::DetectNotes()
 {
 	if (FocusedType == EInstrumentType::Background || FocusedType == EInstrumentType::Invalid)
 	{
-		return ENoteResult::None;
+		return;
 	}
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
 	if (!BestNote)
 	{
-		/*FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(ENoteResult::Bad));
-		Debug::Print(EnumName);*/
-		OnNoteDetected.Broadcast(ENoteResult::Bad);
-		return ENoteResult::Bad;
+		GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(ENoteResult::Bad);
+		return;
 	}
 
 	//롱노트 시작점일 경우
@@ -79,7 +77,7 @@ ENoteResult ARhythmActor::DetectNotes()
 		//TODO : 롱노트 세부판정
 		IsSensingLongNote = true;
 		Debug::Print(TEXT("Long Note Sense Start"));
-		return ENoteResult::None;
+		return;
 	}
 
 	//숏노트일 경우
@@ -87,10 +85,8 @@ ENoteResult ARhythmActor::DetectNotes()
 	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
 	Debug::Print(EnumName);
 	BestNote->SpawnRhythmResultWidget(Result);
-	OnNoteDetected.Broadcast(Result);
-	GetCachedSubsystem()->Release(BestNote);
-	
-	return Result;
+	GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(Result);
+	GetCachedActorPoolSubsystem()->Release(BestNote);
 }
 
 ENoteResult ARhythmActor::DetectLongNoteEnd()
@@ -109,30 +105,6 @@ ENoteResult ARhythmActor::DetectLongNoteEnd()
 	}
 	//롱노트 끝을 판정해야 하는데 롱노트 시작점, 혹은 롱노트 중간점, 혹은 숏노트때 마우스를 뗀 경우
 	return ENoteResult::Bad;
-}
-
-void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
-{
-	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
-	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
-	IsSensingLongNote = false;
-
-	FocusedType = InType;
-	if (InType == EInstrumentType::Background)
-	{
-		if (NoneSwitch)
-		{
-			NoteHearingComponent->SetSwitch(NoneSwitch, FString(TEXT("")), FString(TEXT("")));
-		}
-	}
-	else
-	{
-
-		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(InType))
-		{
-			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
-		}
-	}
 }
 
 void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
@@ -205,7 +177,9 @@ void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
-	OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
+	
+	GetCachedActorPoolSubsystem();
+	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	PrepareRhythmGame();
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
 	StartRhythmGame();
@@ -223,15 +197,17 @@ void ARhythmActor::PrepareRhythmGame()
 			FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(SelectedTag);
 			if (SongRow)
 			{
-				InitBGMEvent(SongRow->BgmEvent.Get(), SongRow->NoneSwitch.Get());
+				UAkAudioEvent* SongBgmEvent = SongRow->BgmEvent.LoadSynchronous();
+				UAkSwitchValue* SongNoneSwitch = SongRow->NoneSwitch.LoadSynchronous();
+				InitBGMEvent(SongBgmEvent, SongNoneSwitch);
 
 				//악기별로 스포너 생성 및 초기화
 				for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
 				{
 					EInstrumentType InstrumentType = Sound.InstrumentType;
-					UAkAudioEvent* NoteEvent = Sound.NoteEvent.Get();
-					UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.Get();
-					UAkAudioEvent* FailEvent = Sound.FailEvent.Get();
+					UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
+					UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
+					UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
 					CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
 				}
 			}
@@ -289,6 +265,30 @@ bool ARhythmActor::DestroySpawner(EInstrumentType InType)
 		return true;
 	}
 	return false;
+}
+
+void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
+{
+	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
+	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
+	IsSensingLongNote = false;
+
+	FocusedType = InType;
+	if (InType == EInstrumentType::Background)
+	{
+		if (NoneSwitch)
+		{
+			NoteHearingComponent->SetSwitch(NoneSwitch, FString(TEXT("")), FString(TEXT("")));
+		}
+	}
+	else
+	{
+
+		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(InType))
+		{
+			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+		}
+	}
 }
 
 
@@ -380,7 +380,7 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 	
 }
 
-UActorPoolSubsystem* ARhythmActor::GetCachedSubsystem()
+UActorPoolSubsystem* ARhythmActor::GetCachedActorPoolSubsystem()
 {
 	if (CachedActorPoolSubsystem.IsValid())
 		return CachedActorPoolSubsystem.Get();
@@ -389,6 +389,20 @@ UActorPoolSubsystem* ARhythmActor::GetCachedSubsystem()
 	{
 		CachedActorPoolSubsystem = PoolSubsystem;
 		return PoolSubsystem;
+	}
+
+	return nullptr;
+}
+
+URhythmSubsystem* ARhythmActor::GetCachedRhythmSubsystem()
+{
+	if (CachedRhythmSubsystem.IsValid())
+		return CachedRhythmSubsystem.Get();
+
+	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+	{
+		CachedRhythmSubsystem = RhythmSubsystem;
+		return CachedRhythmSubsystem.Get();
 	}
 
 	return nullptr;
@@ -404,10 +418,10 @@ void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedCo
 			if (FocusedType == Note->GetNoteType())
 			{
 				Note->SpawnRhythmResultWidget(ENoteResult::Bad);
-				OnNoteDetected.Broadcast(ENoteResult::Bad);
+				GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(ENoteResult::Bad);
 			}
 		}
-		GetCachedSubsystem()->Release(OtherActor);
+		GetCachedActorPoolSubsystem()->Release(OtherActor);
 	}
 }
 
@@ -417,20 +431,17 @@ void ARhythmActor::PlayMusic()
 	{
 		if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
-			if (URhythmMusicCueSubsystem* MusicSubsys = GameInstance->GetSubsystem<URhythmMusicCueSubsystem>())
-			{
-				FOnAkPostEventCallback Callback;
-				Callback.BindUFunction(MusicSubsys, FName("OnMusicAkCallback"));
+			FOnAkPostEventCallback Callback;
+			Callback.BindUFunction(GetCachedRhythmSubsystem(), FName("OnMusicAkCallback"));
 
-				const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue;
+			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue;
 
-				NoteHearingComponent->PostAkEvent(
-					PlayBGMEvent,
-					CallbackMask,
-					Callback
-				);
-				return;
-			}
+			NoteHearingComponent->PostAkEvent(
+				PlayBGMEvent,
+				CallbackMask,
+				Callback
+			);
+			return;
 		}
 
 		// 서브시스템 못 찾았으면 콜백 없이 그냥 재생
