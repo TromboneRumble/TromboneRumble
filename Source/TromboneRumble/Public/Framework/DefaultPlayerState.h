@@ -7,7 +7,11 @@
 #include "DefaultPlayerState.generated.h"
 
 class AInstrumentBase;
+class URhythmSubsystem;
+class AInGameState;
+enum class ENoteResult : uint8;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLocalScoreChanged, APlayerState*, PlayerState);
 UCLASS()
 class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 {
@@ -15,13 +19,28 @@ class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 
 public:
 	ADefaultPlayerState();
+
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_PlayerName() override;
-	virtual void CopyProperties(APlayerState* PlayerState) override;
+	virtual void OnRep_Score() override;
+	virtual void CopyProperties(APlayerState* PlayerState) override;	
+
+
+	UPROPERTY(BlueprintAssignable)
+	FOnLocalScoreChanged OnLocalScoreChanged;
+
+	void AddScore(int32 Amount);
+	UFUNCTION(Server, Reliable)
+	void Server_AddScore(int32 Amount);
+	UFUNCTION()
+	void HandleNoteDetected(ENoteResult InNoteResult);
 
 	UPROPERTY(VisibleInstanceOnly, Replicated)
 	TSubclassOf<AInstrumentBase> EquippedInstrumentClass;
-
+	
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
 	FLinearColor SkinColor = FLinearColor::Black;
@@ -34,11 +53,11 @@ private:
 	bool bIsReady = false;
 
 public:
-	// Getter & Setter
-	void SetIsReady(bool bReady);
-	void SetSkinColor(const FLinearColor& InSkinColor);
-	
+	//getter setter
+	void SetIsReady(bool bReady) { if (!HasAuthority() || bIsReady == bReady) return; bIsReady = bReady; }
 	FORCEINLINE bool IsReady() const { return bIsReady; }
+	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
+	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
-	// ~ Getter & Setter
+	// ~getter setter
 };

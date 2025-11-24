@@ -67,8 +67,7 @@ enum class ENoteResult : uint8
 	None        = 0		UMETA(DisplayName = "None"), // 롱노트 시작, 혹은 롱노트 중간점 반환용
 	Bad         = 1		UMETA(DisplayName = "Bad"),  //미스 판정용
 	Good        = 2		UMETA(DisplayName = "Good"),
-	Great       = 3		UMETA(DisplayName = "Great"),
-	Excellent   = 4		UMETA(DisplayName = "Excellent"),
+	Excellent   = 3		UMETA(DisplayName = "Excellent"),
 	Invalid		= 255   UMETA(Hidden)
 };
 

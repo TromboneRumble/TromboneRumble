@@ -23,9 +23,6 @@ void URhythmResultWidget::PlayAnimationOnResult(ENoteResult InResult)
 		case ENoteResult::Good:
 			ScoreText->SetColorAndOpacity(FLinearColor{ 1.f,1.f,0.f,1.f });
 			break;
-		case ENoteResult::Great:
-			ScoreText->SetColorAndOpacity(FLinearColor{ 0.f,1.f,0.f,1.f });
-			break;
 		case ENoteResult::Excellent:
 			ScoreText->SetColorAndOpacity(FLinearColor{ 0.f,0.f,1.f,1.f });
 			break;

@@ -3,12 +3,52 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Framework/LobbyGameState.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultPlayerState::ADefaultPlayerState()
 {
 	bIsReady = false;
+	bReplicates = true;
 }
+
+void ADefaultPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
+	{
+		if (PC->IsLocalController())
+		{
+			if (UGameInstance* GI = GetGameInstance())
+			{
+				if (URhythmSubsystem* RhythmSubsystem = GI->GetSubsystem<URhythmSubsystem>())
+				{
+					RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ADefaultPlayerState::HandleNoteDetected);
+				}
+			}
+		}
+	}
+}
+
+void ADefaultPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
+	{
+		if (PC->IsLocalController())
+		{
+			if (UGameInstance* GI = GetGameInstance())
+			{
+				if (URhythmSubsystem* RhythmSubsystem = GI->GetSubsystem<URhythmSubsystem>())
+				{
+					RhythmSubsystem->OnNoteDetected.RemoveDynamic(this, &ADefaultPlayerState::HandleNoteDetected);
+				}
+			}
+		}
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 
 void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -29,6 +69,12 @@ void ADefaultPlayerState::OnRep_PlayerName()
 	}
 }
 
+void ADefaultPlayerState::OnRep_Score()
+{
+	Super::OnRep_Score();
+	OnLocalScoreChanged.Broadcast(this);
+}
+
 void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 {
 	Super::CopyProperties(PlayerState);
@@ -41,13 +87,57 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 	}
 }
 
-void ADefaultPlayerState::SetIsReady(bool bReady)
+
+
+
+void ADefaultPlayerState::AddScore(int32 Amount)
 {
-	if (!HasAuthority() || bIsReady == bReady) return;
-	
-	bIsReady = bReady;
+	if (!HasAuthority() || Amount == 0)	return;
+	const float NewScore = GetScore() + static_cast<float>(Amount);
+	SetScore(NewScore);
+	OnLocalScoreChanged.Broadcast(this);
 }
 
+void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount)
+{
+	AddScore(Amount);
+}
+
+void ADefaultPlayerState::HandleNoteDetected(ENoteResult InNoteResult)
+{
+	int32 ScoreToAdd = 0;
+
+	switch (InNoteResult)
+	{
+	case ENoteResult::Excellent:
+		ScoreToAdd = 10;
+		break;
+	case ENoteResult::Good:
+		ScoreToAdd = 5;
+		break;
+	case ENoteResult::Bad:
+	case ENoteResult::None:
+	default:
+		ScoreToAdd = 0;
+		break;
+	}
+
+	if (ScoreToAdd == 0)
+	{
+		return;
+	}
+
+	// 클라이언트에서 서버로 점수 증가 요청
+	if (!HasAuthority())
+	{
+		Server_AddScore(ScoreToAdd);
+	}
+	else
+	{
+		// 서버에서 자기자신 점수 증가
+		AddScore(ScoreToAdd);
+	}
+}
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
 {
 	SkinColor = InSkinColor;

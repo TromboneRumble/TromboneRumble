@@ -19,8 +19,6 @@ ARhythmNote::ARhythmNote()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	OuterSphere = CreateDefaultSubobject<USphereComponent>(TEXT("OuterSphere"));
 	OuterSphere->SetupAttachment(RootComponent);
-	MiddleSphere = CreateDefaultSubobject<USphereComponent>(TEXT("MiddleSphere"));
-	MiddleSphere->SetupAttachment(RootComponent);
 	InnerSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InnerSphere"));
 	InnerSphere->SetupAttachment(RootComponent);
 

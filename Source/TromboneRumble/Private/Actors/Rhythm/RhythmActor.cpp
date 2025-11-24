@@ -83,7 +83,6 @@ void ARhythmActor::DetectNotes()
 	//숏노트일 경우
 	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
 	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
-	Debug::Print(EnumName);
 	BestNote->SpawnRhythmResultWidget(Result);
 	GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(Result);
 	GetCachedActorPoolSubsystem()->Release(BestNote);
@@ -305,13 +304,9 @@ ENoteResult ARhythmActor::ReturnNoteResult(const ARhythmNote* InNote, const TMap
 	{
 		return ENoteResult::Good;
 	}
-	else if (HitCount == 2)
+	else if (HitCount >= 2)
 	{
-		return ENoteResult::Great;
-	}
-	else if (HitCount >= 3)
-	{
-		return ENoteResult::Excellent; // 또는 Perfect
+		return ENoteResult::Excellent;
 	}
 	else
 	{
