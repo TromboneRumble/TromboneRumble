@@ -27,6 +27,7 @@ public:
 	// ~IInstrumentEquipHandler Interfaces
 	
 	virtual void BeginPlay() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* ExitedPlayer) override;
 	
 	void NotifyClientReady(APlayerController* ReadyPlayer);
@@ -40,6 +41,12 @@ private:
 	void RequestSetTimer(TFunction<void()> OnTimerFinished);
 
 private:	
+	FLinearColor AssignUniqueColorToCharacter();
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FLinearColor> AvailableColors;
+	TArray<FLinearColor> UsedColors;
+	
 	UPROPERTY()
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 

@@ -79,7 +79,8 @@ enum class EInstrumentType : uint8
 	Trombone    = 1		UMETA(DisplayName = "Trombone"),
 	Violin		= 2		UMETA(DisplayName = "Violin"),
 	Cymbal		= 3		UMETA(DisplayName = "Cymbal"),
-				 
+
+	None 		= 254   UMETA(DisplayName = "None"),
 	Invalid		= 255	UMETA(Hidden)
 };
 

@@ -19,13 +19,26 @@ public:
 	virtual void OnRep_PlayerName() override;
 	virtual void CopyProperties(APlayerState* PlayerState) override;
 
-	void SetIsReady(bool bReady);
-	FORCEINLINE bool IsReady() const { return bIsReady; }
-
 	UPROPERTY(VisibleInstanceOnly, Replicated)
 	TSubclassOf<AInstrumentBase> EquippedInstrumentClass;
+
+protected:
+	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
+	FLinearColor SkinColor = FLinearColor::Black;
+
+	UFUNCTION()
+	void OnRep_SkinColor();
 
 private:
 	UPROPERTY(Replicated)
 	bool bIsReady = false;
+
+public:
+	// Getter & Setter
+	void SetIsReady(bool bReady);
+	void SetSkinColor(const FLinearColor& InSkinColor);
+	
+	FORCEINLINE bool IsReady() const { return bIsReady; }
+	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
+	// ~ Getter & Setter
 };
