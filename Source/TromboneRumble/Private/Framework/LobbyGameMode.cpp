@@ -105,7 +105,11 @@ void ALobbyGameMode::NotifyClientReady(APlayerController* ReadyPlayer)
 
 void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 {
-
+	if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
+	{
+		GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+	}
+	
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
 		if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
