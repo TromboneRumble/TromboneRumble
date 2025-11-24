@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
     "Language": "SFX",
-    "Hash": "{654D3410-F671-6CC0-7A38-FBA34B92D24D}",
+    "Hash": "{3F73B97A-CD88-2148-D3FF-AB38BF87BB1A}",
     "ObjectPath": "MIDI_MapA_V",
     "ShortName": "MIDI_MapA_V",
     "Path": "Event/MIDI_MapA_V.bnk",
@@ -62,8 +62,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_V",
       "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
       "DurationType": "OneShot",
-      "DurationMin": "313.486",
-      "DurationMax": "313.486",
+      "DurationMin": "313.4729",
+      "DurationMax": "313.4729",
       "MediaRefs": [
        {
         "Id": "681341114"
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{B801BE4B-7426-92FD-777D-BF1F7C8AC3E1}"
+  "FileHash": "{431ED351-1C75-CD6E-B009-8868DC3200AD}"
  }
 }

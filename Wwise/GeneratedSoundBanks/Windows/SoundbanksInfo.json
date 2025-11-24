@@ -214,7 +214,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{53DA426E-A8AF-1393-8841-1AE49F5F5C2D}",
+    "Hash": "{54ABA254-117E-7705-15B0-CDC18043EC2E}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -1406,7 +1406,7 @@
     "Type": "Event",
     "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
     "Language": "SFX",
-    "Hash": "{654D3410-F671-6CC0-7A38-FBA34B92D24D}",
+    "Hash": "{3F73B97A-CD88-2148-D3FF-AB38BF87BB1A}",
     "ObjectPath": "MIDI_MapA_V",
     "ShortName": "MIDI_MapA_V",
     "Path": "Event/MIDI_MapA_V.bnk",
@@ -1458,8 +1458,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Map_A_Rhythm\\MIDI_MapA_V",
       "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
       "DurationType": "OneShot",
-      "DurationMin": "313.486",
-      "DurationMax": "313.486",
+      "DurationMin": "313.4729",
+      "DurationMax": "313.4729",
       "MediaRefs": [
        {
         "Id": "681341114"
@@ -1486,7 +1486,7 @@
     "Type": "Event",
     "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
     "Language": "SFX",
-    "Hash": "{176B8E3D-7872-77FA-E48C-8E84362F8B16}",
+    "Hash": "{96840A47-2BB4-BB40-2B20-F58196C5EB08}",
     "ObjectPath": "MIDI_MapA_T",
     "ShortName": "MIDI_MapA_T",
     "Path": "Event/MIDI_MapA_T.bnk",
@@ -1566,7 +1566,7 @@
     "Type": "Event",
     "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
     "Language": "SFX",
-    "Hash": "{7CD1448F-8EE7-9DD6-C60B-770819C50FF4}",
+    "Hash": "{8FE52CA8-9180-881D-114C-E0CD93F850FD}",
     "ObjectPath": "MIDI_MapA_C",
     "ShortName": "MIDI_MapA_C",
     "Path": "Event/MIDI_MapA_C.bnk",
@@ -2189,6 +2189,6 @@
     ]
    }
   ],
-  "FileHash": "{2AEFFB0E-B3E9-981B-C50E-D6B69B16677B}"
+  "FileHash": "{42004B02-9397-04A6-8DD7-37CE33D008CB}"
  }
 }
