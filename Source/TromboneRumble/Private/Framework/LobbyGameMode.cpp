@@ -5,7 +5,6 @@
 #include "OnlineSessionSettings.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Characters/DefaultTromboneCharacter.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Framework/LobbyGameState.h"
 #include "GameFramework/GameStateBase.h"
@@ -66,6 +65,20 @@ void ALobbyGameMode::BeginPlay()
 
 
 	SetLobbyState(ELobbyState::WaitingForPlayers);
+}
+
+void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	if (ADefaultPlayerState* PS = NewPlayer->GetPlayerState<ADefaultPlayerState>())
+	{
+		if (PS->GetSkinColor() == FLinearColor::Black)
+		{
+			const FLinearColor AssignedColor = AssignUniqueColorToCharacter();
+			PS->SetSkinColor(AssignedColor); 
+		}
+	}
 }
 
 void ALobbyGameMode::Logout(AController* ExitedPlayer)
@@ -240,4 +253,32 @@ void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
 {
 	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),Timer, false);
+}
+
+FLinearColor ALobbyGameMode::AssignUniqueColorToCharacter()
+{
+	if (!HasAuthority()) return FLinearColor::White;
+
+	if (UsedColors.Num() < 4) 
+	{
+		TArray<FLinearColor> RemainingColors = AvailableColors;
+        
+		for (const FLinearColor& Color : UsedColors)
+		{
+			RemainingColors.Remove(Color);
+		}
+
+		if (RemainingColors.Num() > 0)
+		{
+			const int32 RandomIndex = FMath::RandRange(0, RemainingColors.Num() - 1);
+			const FLinearColor AssignedColor = RemainingColors[RandomIndex];
+            
+			UsedColors.Add(AssignedColor); 
+            
+			return AssignedColor;
+		}
+	}
+
+	const int32 RandomIndex = FMath::RandRange(0, AvailableColors.Num() - 1);
+	return AvailableColors[RandomIndex];
 }
