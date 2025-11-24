@@ -3,6 +3,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "Data/CharacterDataAsset.h"
+#include "Framework/DefaultPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Utilities/Defines.h"
@@ -14,19 +15,41 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	InitCharacter();
 }
 
+void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
+{
+	if (SkinMID)
+	{
+		SkinMID->SetVectorParameterValue(TEXT("BaseColor"), InSkinColor);
+	}
+	if (FaceMID)
+	{
+		FaceMID->SetVectorParameterValue(TEXT("BaseColor"), InSkinColor);
+	}
+}
+
 void ATromboneCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UMaterialInterface* BaseSkinMat = GetMesh()->GetMaterial(1);
+	SkinMID = GetMesh()->CreateDynamicMaterialInstance(1, BaseSkinMat);
+	GetMesh()->SetMaterial(1, SkinMID);
+
+	UMaterialInterface* BaseFaceMat = GetMesh()->GetMaterial(2);
+	FaceMID = GetMesh()->CreateDynamicMaterialInstance(2, BaseFaceMat);
+	GetMesh()->SetMaterial(2, FaceMID);
+
 	SetupCharacterData();
+	UpdateSkinFromPlayerState();
 }
 
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	DOREPLIFETIME(ATromboneCharacterBase, bIsRagdoll);
-	DOREPLIFETIME(ATromboneCharacterBase, bIsStun);
+	DOREPLIFETIME(ThisClass, bIsRagdoll);
+	DOREPLIFETIME(ThisClass, bIsStun);
+	DOREPLIFETIME(ThisClass, SkinColor);
 }
 
 void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
@@ -70,6 +93,25 @@ void ATromboneCharacterBase::Tick(float DeltaSeconds)
 	}
 }
 
+void ATromboneCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	UpdateSkinFromPlayerState();
+}
+
+void ATromboneCharacterBase::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	UpdateSkinFromPlayerState();
+}
+
+void ATromboneCharacterBase::OnRep_SkinColor()
+{
+	ApplySkinColor(SkinColor);
+}
+
 void ATromboneCharacterBase::InitCharacter()
 {
 	SetupCapsuleComponent();
@@ -84,7 +126,7 @@ void ATromboneCharacterBase::SetupCapsuleComponent()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block); // Object Channel 1 : Weapon
 }
 
-void ATromboneCharacterBase::SetupSkeletalMeshComponent() const
+void ATromboneCharacterBase::SetupSkeletalMeshComponent()
 {
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -245,6 +287,15 @@ void ATromboneCharacterBase::UnapplyRagdoll()
 		{
 			EnableInput(PlayerController);
 		}
+	}
+}
+
+void ATromboneCharacterBase::UpdateSkinFromPlayerState()
+{
+	if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+	{
+		SkinColor = DPS->GetSkinColor();
+		ApplySkinColor(SkinColor);
 	}
 }
 
