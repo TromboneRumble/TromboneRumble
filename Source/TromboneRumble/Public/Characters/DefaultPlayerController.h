@@ -14,6 +14,8 @@ class UInputMappingContext;
 class UInputAction;
 class ADefaultTromboneCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged, APlayerState*, NewPlayerState);
+
 UCLASS()
 class TROMBONERUMBLE_API ADefaultPlayerController : public APlayerController
 {
@@ -41,14 +43,16 @@ public:
 	TObjectPtr<UInputAction> RhythmAction;
 	// ~InputActions
 
+	UPROPERTY(BlueprintAssignable, Category = "PlayerState")
+	FOnPlayerStateChanged OnPlayerStateChanged;
 protected:
 	virtual void BeginPlay() override;
 	virtual void AcknowledgePossession(APawn* InPawn) override;
+	virtual void OnRep_PlayerState() override;
 	virtual void SetupInputComponent() override;
 
 	UFUNCTION()
 	void HandleGameStateChanged(EGameState NewState);
-
 private:
 	// Input handlers
 	void Handle_Move(const struct FInputActionValue& Value);

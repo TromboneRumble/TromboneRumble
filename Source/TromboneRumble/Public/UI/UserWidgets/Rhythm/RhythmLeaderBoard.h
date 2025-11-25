@@ -33,6 +33,10 @@ protected:
 	UFUNCTION()
 	void RefreshLeaderboard(APlayerState* AffectedPlayerState);
 
+	// 네트워크 상황에서 로컬 플레이어의 PlayerState는 늦게 할당될 수 있음
+	UFUNCTION()
+	void HandleLocalPlayerStateChanged(APlayerState* NewPlayerState);
+
 
 private:
 	UPROPERTY()
@@ -41,7 +45,7 @@ private:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerState> LocalPlayerState;
 
-	float RowHeight = 75.f;
+	float RowHeight = 50.f;
 	int32 MaxVisibleRows = 4;
 
 	void UpdateRowHeight();

@@ -13,6 +13,12 @@ void ADefaultPlayerController::AcknowledgePossession(APawn* InPawn)
 	CachedOwnerCharacter = Cast<ADefaultTromboneCharacter>(InPawn);
 }
 
+void ADefaultPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	OnPlayerStateChanged.Broadcast(PlayerState);
+}
+
 void ADefaultPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

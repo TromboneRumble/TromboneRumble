@@ -22,6 +22,20 @@ void URhythmLeaderBoard::NativeConstruct()
 		{
 			InGameState->OnScoreChanged.AddDynamic(this, &ThisClass::RefreshLeaderboard);
 		}
+
+		if (APlayerController* PlayerController = GetOwningPlayer())
+		{
+			if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(PlayerController))
+			{
+				DefaultPlayerController->OnPlayerStateChanged.AddDynamic(this, &ThisClass::HandleLocalPlayerStateChanged);
+
+				// 이미 PlayerState가 붙어 있는 경우(호스트 등) 즉시 한 번 처리
+				if (APlayerState* PS = DefaultPlayerController->PlayerState)
+				{
+					HandleLocalPlayerStateChanged(PS);
+				}
+			}
+		}
 	}
 
 	RefreshLeaderboard(nullptr);
@@ -35,6 +49,14 @@ void URhythmLeaderBoard::NativeDestruct()
 		if (AInGameState* InGameState = World->GetGameState<AInGameState>())
 		{
 			InGameState->OnScoreChanged.RemoveDynamic(this, &ThisClass::RefreshLeaderboard);
+		}
+
+		if (APlayerController* PlayerController = GetOwningPlayer())
+		{
+			if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(PlayerController))
+			{
+				DefaultPlayerController->OnPlayerStateChanged.RemoveDynamic(this, &ThisClass::HandleLocalPlayerStateChanged);
+			}
 		}
 	}
 
@@ -65,8 +87,7 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 		Players.SetNum(MaxVisibleRows);
 	}
 
-	APlayerController* LocalPC = GetOwningPlayer();
-	APlayerState* LocalPS = LocalPC ? LocalPC->PlayerState : nullptr;
+	ADefaultPlayerState* LocalPS = LocalPlayerState.Get();
 
 	int32 Rank = 1;
 
@@ -87,6 +108,9 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 			Entry = CreateWidget<URhythmLeaderBoardEntry>(World, EntryClass);
 			if (!Entry) continue;
 
+			const float AdditionalPadding = RowHeight * 0.1f;
+			const float EntryHeight = RowHeight * 0.9f;
+
 			// CanvasPanel에 붙이기
 			if (UCanvasPanelSlot* CanvasSlot = Canvas_LeaderBoard->AddChildToCanvas(Entry))
 			{
@@ -94,22 +118,25 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 				CanvasSlot->SetAlignment(FVector2D(0.f, 0.f));
 				CanvasSlot->SetAutoSize(true);
 
-				const float InitialY = (Rank - 1) * RowHeight;
+				const float InitialY = (Rank - 1) * (EntryHeight + AdditionalPadding);
 				CanvasSlot->SetPosition(FVector2D(0.f, InitialY));
 			}
 
 			EntryMap.Add(PS, Entry);
 		}
 
-		bool bIsLocal = false;
-		if (LocalPC)
-		{
-			bIsLocal = (PS == LocalPS) || (PS->GetOwner() == LocalPC);
-		}
+		const bool bIsLocal = (LocalPS && PS == LocalPS);
 
 		// 데이터 갱신 + 목표 랭크 설정
 		Entry->SetRowHeight(RowHeight);
+		FLinearColor SkinColor = FLinearColor{ 1.0f,0.f,1.0f,1.f };
+		if (ADefaultPlayerState* DefaultPlayerState = Cast<ADefaultPlayerState>(PS))
+		{
+			SkinColor = DefaultPlayerState->GetSkinColor();
+		}
+		
 		Entry->UpdateData(
+			SkinColor,
 			Rank,
 			static_cast<int32>(PS->GetScore()),
 			bIsLocal);
@@ -136,6 +163,15 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 
 			It.RemoveCurrent();
 		}
+	}
+}
+
+void URhythmLeaderBoard::HandleLocalPlayerStateChanged(APlayerState* NewPlayerState)
+{
+	if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(NewPlayerState))
+	{
+		LocalPlayerState = DefaultPS;
+		RefreshLeaderboard(DefaultPS);
 	}
 }
 

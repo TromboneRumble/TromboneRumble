@@ -27,7 +27,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	bool bIsLocalPlayer = false;
 
-	void UpdateData(int32 InRank, int32 InScore, bool bInIsLocalPlayer);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	FLinearColor SkinColor = FLinearColor::White;
+
+	void UpdateData(const FLinearColor& InSkinColor, int32 InRank, int32 InScore, bool bInIsLocalPlayer);
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -39,6 +42,9 @@ protected:
 	TObjectPtr<UTextBlock> ScoreText;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> PlayerBackGround;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> RightBackground;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leaderboard|Style")
@@ -48,7 +54,7 @@ protected:
 	TObjectPtr<UTexture2D> OtherPlayerBG;
 private:
 	int32 TargetRank = 0;
-	float RowHeight = 75.f;
+	float RowHeight = 50.f;
 	float MoveSpeed = 10.f;
 
 	
