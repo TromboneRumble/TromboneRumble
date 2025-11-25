@@ -329,7 +329,7 @@ void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementat
 {
 	if (SpotlightSuccessVFX)
 	{
-		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, -1000.f);
+		const FVector SpawnLocation = GetActorLocation();
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,
