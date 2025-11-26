@@ -1,0 +1,85 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "816711006",
+    "Type": "Event",
+    "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
+    "Language": "SFX",
+    "Hash": "{E8D91722-61EB-002E-5F82-BE07723BAE00}",
+    "ObjectPath": "Play_Light_On",
+    "ShortName": "Play_Light_On",
+    "Path": "Event/Play_Light_On.bnk",
+    "Media": [
+     {
+      "Id": "173696643",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Light\\Light_2.wav",
+      "Path": "Media/173696643.wem",
+      "CachePath": "SFX/Light/Light_2_818F3B66.wem"
+     },
+     {
+      "Id": "525052850",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Light\\Light_4.wav",
+      "Path": "Media/525052850.wem",
+      "CachePath": "SFX/Light/Light_4_818F3B66.wem"
+     },
+     {
+      "Id": "914459346",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Light\\Light_1.wav",
+      "Path": "Media/914459346.wem",
+      "CachePath": "SFX/Light/Light_1_818F3B66.wem"
+     },
+     {
+      "Id": "918122136",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Light\\Light_3.wav",
+      "Path": "Media/918122136.wem",
+      "CachePath": "SFX/Light/Light_3_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "816711006",
+      "Name": "Play_Light_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Light_On",
+      "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "2.688",
+      "DurationMax": "2.7313957",
+      "MediaRefs": [
+       {
+        "Id": "173696643"
+       },
+       {
+        "Id": "525052850"
+       },
+       {
+        "Id": "914459346"
+       },
+       {
+        "Id": "918122136"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{18D2B7D8-5DD6-E7A9-19B4-9483D07A1897}"
+ }
+}

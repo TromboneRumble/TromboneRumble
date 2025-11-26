@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1324798284	Play_Player_Foot			\Default Work Unit\Player_SFX\Play_Player_Foot	
+

@@ -76,6 +76,43 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Test\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{E8D91722-61EB-002E-5F82-BE07723BAE00}">
+			<ObjectPath>Play_Light_On</ObjectPath>
+			<ShortName>Play_Light_On</ShortName>
+			<Path>Event/Play_Light_On.bnk</Path>
+			<Media>
+				<File Id="173696643" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light\Light_2.wav</ShortName>
+					<Path>Media/173696643.wem</Path>
+					<CachePath>SFX/Light/Light_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="525052850" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light\Light_4.wav</ShortName>
+					<Path>Media/525052850.wem</Path>
+					<CachePath>SFX/Light/Light_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="914459346" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light\Light_1.wav</ShortName>
+					<Path>Media/914459346.wem</Path>
+					<CachePath>SFX/Light/Light_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="918122136" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light\Light_3.wav</ShortName>
+					<Path>Media/918122136.wem</Path>
+					<CachePath>SFX/Light/Light_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="816711006" Name="Play_Light_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Light_On" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="2.688" DurationMax="2.7313957">
+					<MediaRefs>
+						<MediaRef Id="173696643"/>
+						<MediaRef Id="525052850"/>
+						<MediaRef Id="914459346"/>
+						<MediaRef Id="918122136"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="890241682" Type="Event" GUID="{802E09CC-22A8-4378-883F-72F2A420CC70}" Language="SFX" Hash="{870B9A4D-0DC6-026C-393B-BBD2243CB002}">
 			<ObjectPath>MIDI_RhythmGame_Trombone</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Trombone</ShortName>
@@ -258,6 +295,49 @@
 							<PluginRef Id="559532962"/>
 						</Custom>
 					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{1A3E856D-EBC3-C9B6-97D1-C7E42D530F56}">
+			<ObjectPath>Play_Player_Foot</ObjectPath>
+			<ShortName>Play_Player_Foot</ShortName>
+			<Path>Event/Play_Player_Foot.bnk</Path>
+			<Media>
+				<File Id="296563695" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_3.wav</ShortName>
+					<Path>Media/296563695.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="480487708" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_5.wav</ShortName>
+					<Path>Media/480487708.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="895246282" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_4.wav</ShortName>
+					<Path>Media/895246282.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="923656824" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_1.wav</ShortName>
+					<Path>Media/923656824.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="973706153" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_2.wav</ShortName>
+					<Path>Media/973706153.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_2_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" DurationType="OneShot" DurationMin="0.4058125" DurationMax="0.5898542">
+					<MediaRefs>
+						<MediaRef Id="296563695"/>
+						<MediaRef Id="480487708"/>
+						<MediaRef Id="895246282"/>
+						<MediaRef Id="923656824"/>
+						<MediaRef Id="973706153"/>
+					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
@@ -659,7 +739,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1909551216" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{58D37486-5971-1629-4D0F-93D1AA373F1A}">
+		<SoundBank Id="1909551216" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{4967F0EB-D53D-C7B2-35A2-EEBCC8128F3D}">
 			<ObjectPath>MIDI_MapA_C</ObjectPath>
 			<ShortName>MIDI_MapA_C</ShortName>
 			<Path>Event/MIDI_MapA_C.bnk</Path>
@@ -970,5 +1050,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8C154E57-5DCD-E38C-6732-344F7BAA25CB}</FileHash>
+	<FileHash>{8B6FCA1E-C49E-57C5-053C-4D3792F7857E}</FileHash>
 </SoundBanksInfo>
