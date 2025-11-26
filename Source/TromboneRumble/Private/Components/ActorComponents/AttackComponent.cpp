@@ -222,7 +222,7 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 
 	if (bIsAttacking)
 	{
-		OwnerCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(0.1f);
+		OwnerCharacter->StopAnimMontage();
 
 		if (OwnerCharacter->HasAuthority())
 		{
