@@ -45,7 +45,7 @@ private:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerState> LocalPlayerState;
 
-	float RowHeight = 50.f;
+	float RowHeight = 55.f;
 	int32 MaxVisibleRows = 4;
 
 	void UpdateRowHeight();

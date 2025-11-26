@@ -21,23 +21,25 @@ URhythmNoteWidget* URhythmSpawnWidget::GetPooledRhythmNoteWidget(int32 LaneIndex
 		bInitializedPositions = true;
 	}
 
-	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
-
-	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	if (ULocalPlayer* LocalPlayer = GetOwningLocalPlayer())
 	{
-		if (URhythmNoteWidget* Note = Cast<URhythmNoteWidget>(WidgetPoolSubsystem->Acquire(NoteWidgetClass, this, NoteCanvas)))
+		if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
 		{
-			if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(Note->Slot))
+			if (URhythmNoteWidget* Note = Cast<URhythmNoteWidget>(WidgetPoolSubsystem->Acquire(NoteWidgetClass, this, NoteCanvas)))
 			{
-				//Vector2D StartPos(LaneXStartPos, GetLaneY(LaneIndex));
-				NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
-				NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
-				NoteSlot->SetAutoSize(true);
-				//NoteSlot->SetPosition(StartPos);
+				if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(Note->Slot))
+				{
+					//Vector2D StartPos(LaneXStartPos, GetLaneY(LaneIndex));
+					NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
+					NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
+					NoteSlot->SetAutoSize(true);
+					//NoteSlot->SetPosition(StartPos);
+				}
+				return Note;
 			}
-			return Note;
 		}
 	}
+	
 	return nullptr;
 }
 
