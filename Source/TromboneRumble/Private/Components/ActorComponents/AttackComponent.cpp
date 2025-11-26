@@ -220,6 +220,20 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 {
 	if (Slot != EEquipmentSlotType::Instrument) return;
 
+	if (bIsAttacking)
+	{
+		OwnerCharacter->StopAnimMontage();
+
+		if (OwnerCharacter->HasAuthority())
+		{
+			Server_ExecuteAttackEnd_Implementation();
+		}
+		else
+		{
+			Server_ExecuteAttackEnd(); 
+		}
+	}
+
 	if (NewItem)
 	{
 		if (const AInstrumentBase* NewInstrument = Cast<AInstrumentBase>(NewItem))
