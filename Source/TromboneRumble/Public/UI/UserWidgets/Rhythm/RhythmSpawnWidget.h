@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/UserWidgetPool.h"
 #include "RhythmSpawnWidget.generated.h"
 
 enum class ENoteResult : uint8;
-class URhythmResultWidget;
 enum class EInstrumentType : uint8;
 class UCanvasPanel;
 class URhythmNoteWidget;
+class URhythmResultWidget;
 
 /**
  * 
@@ -21,10 +22,13 @@ class TROMBONERUMBLE_API URhythmSpawnWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	URhythmSpawnWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 	UFUNCTION(BlueprintCallable, Category = "Note")
 	URhythmNoteWidget* GetPooledRhythmNoteWidget(int32 LaneIndex);
 
 	void ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget);
+	void ReleasePooledRhythmResultWidget(URhythmResultWidget* Widget);
 	void SpawnRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult);
 	
 
@@ -53,8 +57,14 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+	UPROPERTY(Transient)
+	FUserWidgetPool WidgetPool;
+
+	void PrewarmWidgetPool();
+
+	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
+
 private:
-	void SpawnRhythmScoreWidget(const FVector2D& SpawnPos);
 	void OnViewPortResizedHandler(FViewport* ViewPort, uint32);
 	void SetStartPoses();
 	float GetLaneY(int32 LaneIndex) const;

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmResultWidget.generated.h"
 
+class URhythmSpawnWidget;
 class UTextBlock;
 enum class ENoteResult : uint8;
 /**
@@ -35,4 +36,8 @@ private:
 	UPROPERTY(EditDefaultsOnly,Transient, meta = (BindWidgetAnim, AllowPrivateAccess = "true"))
 	TObjectPtr<UWidgetAnimation> Detected = nullptr;
 
+	UPROPERTY(Transient)
+	TWeakObjectPtr<URhythmSpawnWidget> OwnerSpawnWidget;
+public:
+	FORCEINLINE void SetOwnerSpawnWidget(URhythmSpawnWidget* InWidget) { OwnerSpawnWidget = InWidget; }
 };

@@ -2,11 +2,10 @@
 
 
 #include "UI/UserWidgets/Rhythm/RhythmResultWidget.h"
-
+#include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
 #include "Animation/WidgetAnimation.h"
 #include "Utilities/Defines.h"
 #include "Components/TextBlock.h"
-#include "Subsystems/WidgetPoolSubsystem.h"
 
 void URhythmResultWidget::PlayAnimationOnResult(ENoteResult InResult)
 {
@@ -57,11 +56,12 @@ void URhythmResultWidget::NativeDestruct()
 
 void URhythmResultWidget::OnDetectedAnimationFinished()
 {
-	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
-
-	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	if (OwnerSpawnWidget.IsValid())
 	{
-		WidgetPoolSubsystem->Release(this);
-		
+		OwnerSpawnWidget->ReleasePooledRhythmResultWidget(this);
+	}
+	else
+	{
+		RemoveFromParent();
 	}
 }

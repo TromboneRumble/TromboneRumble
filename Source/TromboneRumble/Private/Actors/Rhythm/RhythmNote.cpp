@@ -7,9 +7,7 @@
 #include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
-#include "Subsystems/WidgetPoolSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
-#include "UI/UserWidgets/Rhythm/RhythmResultWidget.h"
 #include "Utilities/DebugHelper.h"
 
 ARhythmNote::ARhythmNote()

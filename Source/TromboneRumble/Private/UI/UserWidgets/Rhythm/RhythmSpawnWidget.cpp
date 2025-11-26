@@ -8,9 +8,14 @@
 #include "Components/CanvasPanelSlot.h"
 #include "TromboneGamePlayTags.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
-#include "Subsystems/WidgetPoolSubsystem.h"
 #include "Utilities/Defines.h"
 
+
+URhythmSpawnWidget::URhythmSpawnWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+	, WidgetPool(*this)
+{
+}
 
 URhythmNoteWidget* URhythmSpawnWidget::GetPooledRhythmNoteWidget(int32 LaneIndex)
 {
@@ -20,27 +25,32 @@ URhythmNoteWidget* URhythmSpawnWidget::GetPooledRhythmNoteWidget(int32 LaneIndex
 		SetStartPoses();
 		bInitializedPositions = true;
 	}
-
-	if (ULocalPlayer* LocalPlayer = GetOwningLocalPlayer())
+	if (!NoteWidgetClass || !NoteCanvas)
 	{
-		if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
-		{
-			if (URhythmNoteWidget* Note = Cast<URhythmNoteWidget>(WidgetPoolSubsystem->Acquire(NoteWidgetClass, this, NoteCanvas)))
-			{
-				if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(Note->Slot))
-				{
-					//Vector2D StartPos(LaneXStartPos, GetLaneY(LaneIndex));
-					NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
-					NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
-					NoteSlot->SetAutoSize(true);
-					//NoteSlot->SetPosition(StartPos);
-				}
-				return Note;
-			}
-		}
+		return nullptr;
 	}
-	
-	return nullptr;
+
+	URhythmNoteWidget* Note = WidgetPool.GetOrCreateInstance<URhythmNoteWidget>(NoteWidgetClass);
+	if (!Note)
+	{
+		return nullptr;
+	}
+
+	// 새로 만들어진 애라면 부모가 없으니 Canvas에 붙여줌
+	if (!Note->GetParent())
+	{
+		NoteCanvas->AddChild(Note);
+	}
+
+	if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(Note->Slot))
+	{
+		NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
+		NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
+		NoteSlot->SetAutoSize(true);
+	}
+
+	Note->SetVisibility(ESlateVisibility::HitTestInvisible);
+	return Note;
 }
 
 void URhythmSpawnWidget::ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget)
@@ -49,31 +59,47 @@ void URhythmSpawnWidget::ReleasePooledRhythmNoteWidget(URhythmNoteWidget* Widget
 	{
 		return;
 	}
-	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
-	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	Widget->SetVisibility(ESlateVisibility::Collapsed);
+	WidgetPool.Release(Widget);
+}
+
+void URhythmSpawnWidget::ReleasePooledRhythmResultWidget(URhythmResultWidget* Widget)
+{
+	if (!Widget)
 	{
-		WidgetPoolSubsystem->Release(Widget);
+		return;
 	}
+
+	Widget->SetVisibility(ESlateVisibility::Collapsed);
+	WidgetPool.Release(Widget);
 }
 
 
 void URhythmSpawnWidget::SpawnRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult)
 {
-	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
-
-	if (UWidgetPoolSubsystem* WidgetPoolSubsystem = LocalPlayer->GetSubsystem<UWidgetPoolSubsystem>())
+	if (!NoteResultWidgetClass || !NoteCanvas)
 	{
-		if (URhythmResultWidget* ResultWidget = Cast<URhythmResultWidget>(WidgetPoolSubsystem->Acquire(NoteResultWidgetClass, this, NoteCanvas)))
+		return;
+	}
+
+	if (URhythmResultWidget* ResultWidget = WidgetPool.GetOrCreateInstance<URhythmResultWidget>(NoteResultWidgetClass))
+	{
+		if (!ResultWidget->GetParent())
 		{
-			if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(ResultWidget->Slot))
-			{
-				NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
-				NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
-				NoteSlot->SetAutoSize(true);
-				NoteSlot->SetPosition(SpawnPos);
-			}
-			ResultWidget->PlayAnimationOnResult(InResult);
+			NoteCanvas->AddChild(ResultWidget);
 		}
+		ResultWidget->SetOwnerSpawnWidget(this);
+
+		if (UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(ResultWidget->Slot))
+		{
+			NoteSlot->SetAnchors(FAnchors(0.f, 0.f));
+			NoteSlot->SetAlignment(FVector2D(0.f, 0.f));
+			NoteSlot->SetAutoSize(true);
+			NoteSlot->SetPosition(SpawnPos);
+		}
+
+		ResultWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+		ResultWidget->PlayAnimationOnResult(InResult);
 	}
 }
 
@@ -99,12 +125,8 @@ void URhythmSpawnWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	if (!IsDesignTime())
 	{
-		if (UWidgetPoolSubsystem* WidgetPoolSubsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetPoolSubsystem>())
-		{
-			WidgetPoolSubsystem->Prewarm(NoteWidgetClass, 100, this, NoteCanvas);
-			WidgetPoolSubsystem->Prewarm(NoteResultWidgetClass, 100, this, NoteCanvas);
-		}
-		
+		WidgetPool = FUserWidgetPool(*this);
+		PrewarmWidgetPool();
 		SetColorAndOpacity(FLinearColor{ 1.f,1.f,1.f,0.f });
 	}
 }
@@ -128,6 +150,45 @@ void URhythmSpawnWidget::NativeDestruct()
 		bViewportBound = false;
 	}
 	Super::NativeDestruct();
+}
+
+void URhythmSpawnWidget::PrewarmWidgetPool()
+{
+	if (!NoteCanvas) return;
+	if (!NoteWidgetClass || !NoteResultWidgetClass) return;
+
+	for (int32 i = 0; i < 10; ++i)
+	{
+		if (URhythmNoteWidget* Note = WidgetPool.GetOrCreateInstance<URhythmNoteWidget>(NoteWidgetClass))
+		{
+			if (!Note->GetParent())
+			{
+				NoteCanvas->AddChild(Note);
+			}
+			Note->SetVisibility(ESlateVisibility::Collapsed);
+			WidgetPool.Release(Note);
+		}
+	}
+
+	for (int32 i = 0; i < 10; ++i)
+	{
+		if (URhythmResultWidget* Result = WidgetPool.GetOrCreateInstance<URhythmResultWidget>(NoteResultWidgetClass))
+		{
+			if (!Result->GetParent())
+			{
+				NoteCanvas->AddChild(Result);
+			}
+			Result->SetOwnerSpawnWidget(this);
+			Result->SetVisibility(ESlateVisibility::Collapsed);
+			WidgetPool.Release(Result);
+		}
+	}
+}
+
+void URhythmSpawnWidget::ReleaseSlateResources(bool bReleaseChildren)
+{
+	Super::ReleaseSlateResources(bReleaseChildren);
+	WidgetPool.ReleaseAllSlateResources();
 }
 
 void URhythmSpawnWidget::OnViewPortResizedHandler(FViewport* ViewPort, uint32)
