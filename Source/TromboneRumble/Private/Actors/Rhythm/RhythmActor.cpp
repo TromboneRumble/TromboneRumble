@@ -133,21 +133,50 @@ void ARhythmActor::StartRhythmGame()
 	checkf(NoneSwitch, TEXT("NoneSwitch is null"));
 	checkf(PlayBGMEvent, TEXT("PlayBGMEvent is null"));
 
-	if (NoteSpawnComponent)
+	if (!NoteSpawnComponent) return;
+	struct FSpawnEventInfo
 	{
-		for (TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+		UAkAudioEvent* Event = nullptr;
+		ARhythmNoteSpawner* Spawner = nullptr;
+	};
+
+	TArray<FSpawnEventInfo> SpawnEvents;
+	SpawnEvents.Reserve(RhythmNoteSpawners.Num());
+
+	for (TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+	{
+		ARhythmNoteSpawner* Spawner = Elem.Value;
+		if (!IsValid(Spawner))
 		{
-			UAkAudioEvent* SpawnNoteEvent = Elem.Value->GetSpawnNoteEvent();
-			FOnAkPostEventCallback Callback;
-			Callback.BindUFunction(Elem.Value, FName("OnAkCallback"));
-			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue;// | AkCallbackType::AK_MIDIEvent;
-			NoteSpawnComponent->PostAkEvent(
-				SpawnNoteEvent,
-				CallbackMask,
-				Callback
-			);
+			continue;
 		}
+
+		UAkAudioEvent* SpawnNoteEvent = Spawner->GetSpawnNoteEvent();
+		if (!SpawnNoteEvent)
+		{
+			UE_LOG(LogTemp, Warning,
+				TEXT("ARhythmActor::StartRhythmGame - SpawnNoteEvent is null. Spawner : %s"),
+				*GetNameSafe(Spawner));
+			continue;
+		}
+
+		SpawnEvents.Add({ SpawnNoteEvent, Spawner });
 	}
+
+	const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue; // | AkCallbackType::AK_MIDIEvent;
+
+	for (const FSpawnEventInfo& Info : SpawnEvents)
+	{
+		FOnAkPostEventCallback Callback;
+		Callback.BindUFunction(Info.Spawner, FName("OnAkCallback"));
+
+		NoteSpawnComponent->PostAkEvent(
+			Info.Event,
+			CallbackMask,
+			Callback
+		);
+	}
+
 	GetWorldTimerManager().SetTimer(
 		TimerHandle,
 		this,
@@ -181,6 +210,7 @@ void ARhythmActor::BeginPlay()
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	PrepareRhythmGame();
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
+	//NoteHearingComponent->SetOutputBusVolume(0.f);
 	StartRhythmGame();
 	EnableInput(GetWorld()->GetFirstPlayerController());
 }
