@@ -85,7 +85,6 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 		{
 			if (ICombatReceiver* CombatReceiver = Cast<ICombatReceiver>(HitActor))
 			{
-				PRINT_WITH_CURRENT_CONTEXT("Instrument hit actor: " + (HitActor ? HitActor->GetName() : TEXT("None")));
 				AlreadyHitActors.Add(HitActor);
 
 				FHitData HitData;

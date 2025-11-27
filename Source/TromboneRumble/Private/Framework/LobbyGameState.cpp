@@ -107,7 +107,6 @@ void ALobbyGameState::OnRep_LobbyState() const
 
 void ALobbyGameState::OnRep_SelectedSongTag()
 {
-	Debug::Print(TEXT("OnRep_SelecetedSongTag CAlled"));
 	if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		GameInstance->SetSelectedSongTag(SelectedSongTag);
