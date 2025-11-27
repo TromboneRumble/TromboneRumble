@@ -94,8 +94,7 @@ void ADefaultTromboneCharacter::StartSprint()
 
 	bIsSprinting = true;
 	Server_SetIsSprinting(true);
-
-	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->SprintSpeed;
+	UpdateMaxWalkSpeed();
 }
 
 void ADefaultTromboneCharacter::StopSprint()
@@ -104,8 +103,7 @@ void ADefaultTromboneCharacter::StopSprint()
 
 	bIsSprinting = false;
 	Server_SetIsSprinting(false);
-
-	if (CharacterData) GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+	UpdateMaxWalkSpeed();
 }
 
 void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
@@ -218,15 +216,10 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
 {
-	if (bIsSprinting != bNewIsSprinting)
-	{
-		bIsSprinting = bNewIsSprinting;
-		if (CharacterData)
-		{
-			const float NewSpeed = bNewIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
-			GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-		}
-	}
+	if (bIsSprinting == bNewIsSprinting) return;
+	
+	bIsSprinting = bNewIsSprinting;
+	UpdateMaxWalkSpeed();
 }
 
 void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* InteractedItem)
@@ -247,11 +240,35 @@ void ADefaultTromboneCharacter::Server_RequestSpotlightBonus_Implementation()
 		{
 			if (Zone->TryAwardBonus(this))
 			{
+				GetPlayerState<ADefaultPlayerState>()->Server_AddScore(20.0f); // TODO : Spotlight bonus score value
 				Multicast_PlaySpotlightSuccessEffect();
 				break; 
 			}
 		}
 	}
+}
+
+void ADefaultTromboneCharacter::UpdateMaxWalkSpeed() const
+{
+	if (!CharacterData) return;
+
+	float TargetSpeed = bIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
+
+	TargetSpeed *= GetCurrentMovementSpeedMultiplier();
+
+	GetCharacterMovement()->MaxWalkSpeed = TargetSpeed;
+}
+
+float ADefaultTromboneCharacter::GetCurrentMovementSpeedMultiplier() const
+{
+	float Multiplier = 1.0f;
+
+	if (EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument))
+	{
+		Multiplier *= CharacterData->EquippedMovementSpeedMultiplier;
+	}
+
+	return Multiplier;
 }
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
@@ -281,31 +298,28 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 {
 	if (Slot == EEquipmentSlotType::Instrument)
 	{
+		EInstrumentType Type = EInstrumentType::Background;
 		if (NewItem)
 		{
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
 				CurrentInteractionContext.bIsEquipped = true;
-				if (IsLocallyControlled())
-				{
-					if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-					{
-						RhythmSubsystem->OnInstrumentPicked.Broadcast(Instrument->GetInstrumentType());
-					}
-				}
+				Type = Instrument->GetInstrumentType();
 			}
 		}
 		else
 		{
 			CurrentInteractionContext.bIsEquipped = false;
-			if (IsLocallyControlled())
+		}
+
+		if (IsLocallyControlled())
+		{
+			if (const URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 			{
-				if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-				{
-					RhythmSubsystem->OnInstrumentPicked.Broadcast(EInstrumentType::Background);
-				}
+				RhythmSubsystem->OnInstrumentPicked.Broadcast(Type);
 			}
 		}
+		UpdateMaxWalkSpeed();
 	}
 }
 
@@ -329,7 +343,7 @@ void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementat
 {
 	if (SpotlightSuccessVFX)
 	{
-		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, -1000.f);
+		const FVector SpawnLocation = GetActorLocation();
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,

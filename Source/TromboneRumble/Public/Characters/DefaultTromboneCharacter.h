@@ -73,6 +73,9 @@ protected:
 	TObjectPtr<UNiagaraSystem> SpotlightSuccessVFX;
 
 private:
+	void UpdateMaxWalkSpeed() const;
+	float GetCurrentMovementSpeedMultiplier() const;
+	
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
 	void Server_SetIsSprinting(const bool bNewIsSprinting);

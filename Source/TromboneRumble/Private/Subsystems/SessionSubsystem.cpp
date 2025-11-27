@@ -303,9 +303,7 @@ void USessionSubsystem::HandleJoinSessionComplete(FName InSessionName, EOnJoinSe
 	const IOnlineSessionPtr SI = SessionInterfaceWeak.Pin();
 	FString ConnectString;
 	const bool bGot = SI.IsValid() ? SI->GetResolvedConnectString(InSessionName, ConnectString) : false;
-	Debug::Print(FString::Printf(TEXT("GetResolvedConnectString=%s, URL=%s"),
-		bGot ? TEXT("true") : TEXT("false"),
-		*ConnectString));
+	
 	if (Result == EOnJoinSessionCompleteResult::Success && bGot)
 	{
 	}

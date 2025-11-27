@@ -17,6 +17,9 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Config|Movement|Ground", meta = (Tooltip = "캐릭터의 전력 질주 속도입니다. (cm/s)"))
     float SprintSpeed = 500.0f;
+	
+    UPROPERTY(EditAnywhere, Category = "Config|Movement|Ground", meta = (Tooltip = "아이템 장착 시 이동 속도 배율입니다."))
+	float EquippedMovementSpeedMultiplier = 0.8f;
 
     UPROPERTY(EditAnywhere, Category = "Config|Movement|Ground", meta = (Tooltip = "캐릭터가 회전하는 속도입니다. (degrees/s)"))
     float RotationRate = 360.f;

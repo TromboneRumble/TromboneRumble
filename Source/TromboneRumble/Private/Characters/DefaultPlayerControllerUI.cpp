@@ -20,7 +20,7 @@ void ADefaultPlayerController::ShowInteractionUI(bool bShow) const
 {
 	if (!InGameUI) return;
 
-	InGameUI->ShowInteractionHint(bShow);
+	// InGameUI->ShowInteractionHint(bShow);
 }
 
 void ADefaultPlayerController::BeginPlay()

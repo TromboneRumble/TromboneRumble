@@ -102,7 +102,7 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 			break;
 
 		case ESpotlightState::Fading:
-			StartLifecycleTimer(AwardedDuration, &ASpotlightZone::OnFadingFinished);
+			StartLifecycleTimer(FadingDuration, &ASpotlightZone::OnFadingFinished);
 			break;
 
 		case ESpotlightState::None:
@@ -160,8 +160,6 @@ void ASpotlightZone::OnRep_CurrentState()
 			break;
 		
 		case ESpotlightState::Awarded:
-			SpotLightComponent->SetVisibility(false);
-			LightBeamMesh->SetVisibility(false);
 			break;
 		
 		case ESpotlightState::Fading:
