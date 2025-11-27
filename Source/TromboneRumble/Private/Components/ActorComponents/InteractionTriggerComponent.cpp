@@ -89,7 +89,7 @@ void UInteractionTriggerComponent::HandleBeginOverlap(UPrimitiveComponent* Overl
 {
 	if (!bTriggerActive || !OtherActor)
 	{
-		Debug::Print(TEXT("TriggerNotActive or OtherActor is None"));
+		// Debug::Print(TEXT("TriggerNotActive or OtherActor is None"));
 		return;
 	}
 
@@ -100,7 +100,7 @@ void UInteractionTriggerComponent::HandleBeginOverlap(UPrimitiveComponent* Overl
 	}
 	else
 	{
-		Debug::Print(TEXT("No UInteractorComponent Found"));
+		// Debug::Print(TEXT("No UInteractorComponent Found"));
 	}
 }
 
