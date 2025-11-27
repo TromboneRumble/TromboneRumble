@@ -21,16 +21,7 @@ ARhythmNoteSpawner::ARhythmNoteSpawner()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("NoteSpawner"));
-	
-	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Lane"));
-	if (SplineComponent)
-	{
-		SplineComponent->SetupAttachment(RootComponent);
-		SplineComponent->SetLocationAtSplinePoint(
-			1, FVector(1500.f, 0.f, 0.f),
-			ESplineCoordinateSpace::Local,
-			true);
-	}
+
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	if (ArrowComponent)
 	{

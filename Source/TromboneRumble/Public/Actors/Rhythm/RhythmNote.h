@@ -12,9 +12,7 @@ class URhythmSpawnWidget;
 class URhythmNoteWidget;
 class URhythmNoteChannelSubsystem;
 class URhythmNoteUIControllerComponent;
-class USplineComponent;
 class USphereComponent;
-class UTimelineComponent;
 class ARhythmNoteSpawner;
 
 
@@ -65,9 +63,6 @@ private:
 	// ~ Components
 
 	// Cached References
-	UPROPERTY(BlueprintReadOnly, Transient, meta = (AllowPrivateAccess = "true"))
-	TWeakObjectPtr<USplineComponent> CachedSplineComponent;
-
 	UPROPERTY()
 	TWeakObjectPtr<URhythmNoteChannelSubsystem> CachedRhythmNoteChannelSubsystem = nullptr;
 	// ~Cached References
@@ -86,8 +81,6 @@ private:
 	bool bIsLongNote = false;
 
 	bool bIsLongNoteEnd = false;
-
-	
 
 	EInstrumentType NoteType;
 

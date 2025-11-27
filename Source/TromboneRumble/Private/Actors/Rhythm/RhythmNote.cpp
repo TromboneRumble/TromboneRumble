@@ -3,7 +3,6 @@
 
 #include "Actors/Rhythm/RhythmNote.h"
 #include "Components/SphereComponent.h"
-#include "Components/SplineComponent.h"
 #include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
@@ -29,7 +28,6 @@ void ARhythmNote::Tick(float DeltaTime)
 	if (!bIsMoving) return;
 	NoteLifeTime += DeltaTime;
 	float Alpha = FMath::Clamp(NoteLifeTime / TimeToComplete, 0.f, 1.f);
-	UE_LOG(LogTemp, Warning, TEXT("%f : %f : %f"), NoteLifeTime, TimeToComplete, Alpha);
 	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
 	SetActorLocation(NewLocation);
 	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, Alpha);
@@ -39,7 +37,6 @@ void ARhythmNote::OnTakenFromPool_Implementation()
 {
 	NoteLifeTime = 0.f;
 	NoteAlphaOnSpline = 0.f;
-	CachedSplineComponent = nullptr;
 	bIsMoving = true;
 
 	NoteHandle = FNoteHandle();
@@ -67,7 +64,6 @@ void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget
 	checkf(InNoteWidget, TEXT("InNoteWidget not valid in %s"), *GetName());
 
 	NoteType = InSpawner->GetSpawnerType();
-	CachedSplineComponent = InSpawner->GetSplineComponent();
 	TimeToComplete = InTimeToComplete;
 
 	StartLocation = InSpawner->GetActorLocation();

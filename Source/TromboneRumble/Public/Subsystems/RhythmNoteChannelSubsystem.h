@@ -34,7 +34,6 @@ public:
 	{
 		if (FNoteChannel* NoteChannel = Channels.Find(Id))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Alpha : %f"), InAlpha);
 			NoteChannel->OnProgress.Broadcast(InAlpha);
 		}
 	}

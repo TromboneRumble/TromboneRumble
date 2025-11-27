@@ -210,7 +210,6 @@ void ARhythmActor::BeginPlay()
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	PrepareRhythmGame();
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
-	//NoteHearingComponent->SetOutputBusVolume(0.f);
 	StartRhythmGame();
 	EnableInput(GetWorld()->GetFirstPlayerController());
 }

@@ -50,9 +50,6 @@ private:
 private:
 	// Components
 	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USplineComponent> SplineComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UArrowComponent> ArrowComponent;
 	// ~Components
 
@@ -92,9 +89,6 @@ private:
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;
 public:
 	//getter setter
-	UFUNCTION(BlueprintCallable, Category = "Component")
-	FORCEINLINE USplineComponent* GetSplineComponent() const { return SplineComponent; }
-
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE EInstrumentType GetSpawnerType() const { return SpawnerType; }
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
