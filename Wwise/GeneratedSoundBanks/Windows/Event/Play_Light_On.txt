@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	816711006	Play_Light_On			\Default Work Unit\Object_SFX\Play_Light_On	
+

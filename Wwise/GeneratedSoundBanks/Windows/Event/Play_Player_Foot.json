@@ -1,0 +1,96 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1324798284",
+    "Type": "Event",
+    "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
+    "Language": "SFX",
+    "Hash": "{1A3E856D-EBC3-C9B6-97D1-C7E42D530F56}",
+    "ObjectPath": "Play_Player_Foot",
+    "ShortName": "Play_Player_Foot",
+    "Path": "Event/Play_Player_Foot.bnk",
+    "Media": [
+     {
+      "Id": "296563695",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Foot\\Wood_Foot_3.wav",
+      "Path": "Media/296563695.wem",
+      "CachePath": "SFX/Foot/Wood_Foot_3_818F3B66.wem"
+     },
+     {
+      "Id": "480487708",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Foot\\Wood_Foot_5.wav",
+      "Path": "Media/480487708.wem",
+      "CachePath": "SFX/Foot/Wood_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "895246282",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Foot\\Wood_Foot_4.wav",
+      "Path": "Media/895246282.wem",
+      "CachePath": "SFX/Foot/Wood_Foot_4_818F3B66.wem"
+     },
+     {
+      "Id": "923656824",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Foot\\Wood_Foot_1.wav",
+      "Path": "Media/923656824.wem",
+      "CachePath": "SFX/Foot/Wood_Foot_1_818F3B66.wem"
+     },
+     {
+      "Id": "973706153",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Foot\\Wood_Foot_2.wav",
+      "Path": "Media/973706153.wem",
+      "CachePath": "SFX/Foot/Wood_Foot_2_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1324798284",
+      "Name": "Play_Player_Foot",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Foot",
+      "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.4058125",
+      "DurationMax": "0.5898542",
+      "MediaRefs": [
+       {
+        "Id": "296563695"
+       },
+       {
+        "Id": "480487708"
+       },
+       {
+        "Id": "895246282"
+       },
+       {
+        "Id": "923656824"
+       },
+       {
+        "Id": "973706153"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{5682200A-6494-AD36-566E-F874F46BE0D8}"
+ }
+}

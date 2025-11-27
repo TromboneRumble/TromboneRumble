@@ -279,6 +279,36 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Object_SFX" ID="{7F7E561E-7F1F-426D-8714-DAECD07C7418}" ShortID="876223329">
+					<ChildrenList>
+						<Event Name="Play_Light_On" ID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}">
+							<ChildrenList>
+								<Action Name="" ID="{4E4E4F69-5CEC-45AD-892D-F31D6479CC46}" ShortID="785128589">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Light" ID="{9681D325-9502-40AB-8219-8E6F1C1BF842}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
+					<ChildrenList>
+						<Event Name="Play_Player_Foot" ID="{802600D1-086F-4B89-A202-B18F89409828}">
+							<ChildrenList>
+								<Action Name="" ID="{E326E787-052C-474D-8B65-E81E5B11D870}" ShortID="420151719">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Foot" ID="{86276A5C-BCEC-4960-8462-5E0111768624}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

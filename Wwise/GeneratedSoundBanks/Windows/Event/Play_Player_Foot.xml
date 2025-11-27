@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{1A3E856D-EBC3-C9B6-97D1-C7E42D530F56}">
+			<ObjectPath>Play_Player_Foot</ObjectPath>
+			<ShortName>Play_Player_Foot</ShortName>
+			<Path>Event/Play_Player_Foot.bnk</Path>
+			<Media>
+				<File Id="296563695" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_3.wav</ShortName>
+					<Path>Media/296563695.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="480487708" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_5.wav</ShortName>
+					<Path>Media/480487708.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="895246282" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_4.wav</ShortName>
+					<Path>Media/895246282.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="923656824" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_1.wav</ShortName>
+					<Path>Media/923656824.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="973706153" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Foot\Wood_Foot_2.wav</ShortName>
+					<Path>Media/973706153.wem</Path>
+					<CachePath>SFX/Foot/Wood_Foot_2_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" DurationType="OneShot" DurationMin="0.4058125" DurationMax="0.5898542">
+					<MediaRefs>
+						<MediaRef Id="296563695"/>
+						<MediaRef Id="480487708"/>
+						<MediaRef Id="895246282"/>
+						<MediaRef Id="923656824"/>
+						<MediaRef Id="973706153"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{B2666A0C-1FE8-4478-F4C8-37DCFCFF4274}</FileHash>
+</SoundBanksInfo>

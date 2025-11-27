@@ -10,6 +10,10 @@
 							<Position X="0" Y="0"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Play_Player_Foot" ID="{802600D1-086F-4B89-A202-B18F89409828}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<Position X="0" Y="1"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="BBIK_V" ID="{48EC31B0-D73E-4049-BDE1-68EC4B8A04A1}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 							<Position X="1" Y="0"/>
 						</Module>
@@ -21,6 +25,10 @@
 							<ObjectRef Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 							<Position X="3" Y="0"/>
 						</Module>
+						<Module>
+							<ObjectRef Name="Play_Light_On" ID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<Position X="4" Y="0"/>
+						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
@@ -30,7 +38,7 @@
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<CurrentSwitchRef Name="SW_V" ID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
