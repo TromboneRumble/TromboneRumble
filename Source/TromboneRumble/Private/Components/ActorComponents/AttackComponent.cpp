@@ -8,8 +8,9 @@
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Items/InstrumentBase.h"
-#include "Net/UnrealNetwork.h"
 #include "Utilities/DebugHelper.h"
+
+static const FName GSocket_Head(TEXT("head"));
 
 UAttackComponent::UAttackComponent()
 {
@@ -24,26 +25,26 @@ void UAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	if (OwnerCharacter && OwnerCharacter->GetMesh() && HeadbuttCollisionComponent)
-	{
-		HeadbuttCollisionComponent->AttachToComponent(
-			OwnerCharacter->GetMesh(), 
-			FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
-			FName("head")
-		);
-		HeadbuttCollisionComponent->Activate(); 
-		HeadbuttCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		
-		CharacterAnimInstance = Cast<UCharacterAnimInstance>(OwnerCharacter->GetMesh()->GetAnimInstance());
+	if (!OwnerCharacter) return;
 
-		UEquipmentComponent* EquipmentComp = OwnerCharacter->FindComponentByClass<UEquipmentComponent>();
-		if (IsValid(EquipmentComp))
+	if (USkeletalMeshComponent* Mesh = OwnerCharacter->GetMesh())
+	{
+		CharacterAnimInstance = Cast<UCharacterAnimInstance>(Mesh->GetAnimInstance());
+
+		if (HeadbuttCollisionComponent)
 		{
-			EquipmentComp->OnEquipmentChangedDelegate.AddDynamic(this, &UAttackComponent::HandleOnEquipmentChanged);
-		
-			AItemBase* CurrentWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Instrument);
-			HandleOnEquipmentChanged(EEquipmentSlotType::Instrument, CurrentWeapon, nullptr);
+			HeadbuttCollisionComponent->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, GSocket_Head);
+			HeadbuttCollisionComponent->SetRelativeLocation(FVector(0.0f, -20.f, 20.0f));
+			HeadbuttCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
+	}
+
+	if (UEquipmentComponent* EquipmentComp = OwnerCharacter->FindComponentByClass<UEquipmentComponent>())
+	{
+		EquipmentComp->OnEquipmentChangedDelegate.AddDynamic(this, &UAttackComponent::HandleOnEquipmentChanged);
+		
+		AItemBase* CurrentWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Instrument);
+		HandleOnEquipmentChanged(EEquipmentSlotType::Instrument, CurrentWeapon, nullptr);
 	}
 }
 
@@ -81,7 +82,7 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	for (const FHitResult& Hit : HitResults)
 	{
 		AActor* HitActor = Hit.GetActor();
-		if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != OwnerCharacter && HitActor->Implements<UCombatReceiver>())
+		if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != OwnerCharacter)
 		{
 			if (ICombatReceiver* CombatReceiver = Cast<ICombatReceiver>(HitActor))
 			{
@@ -102,25 +103,16 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 void UAttackComponent::Attack()
 {
-	if (!OwnerCharacter || !CharacterAnimInstance) return;
-	
-	if (OwnerCharacter->GetLocalRole() < ROLE_AutonomousProxy) return;
-
 	if (bIsAttacking || !bCanAttack || !CurrentAttackData) return;
 	
-	if (OwnerCharacter->IsLocallyControlled() && !OwnerCharacter->HasAuthority())
+	if (OwnerCharacter->IsLocallyControlled())
 	{
 		bCanAttack = false;
-		GetWorld()->GetTimerManager().SetTimer(
-		   AttackCooldownTimerHandle,
-		   this,
-		   &ThisClass::ResetAttackCooldown,
-		   CurrentAttackData->AttackCooldown,
-		   false
-		);
+		GetWorld()->GetTimerManager().SetTimer(AttackCooldownTimerHandle, this, &ThisClass::ResetAttackCooldown, CurrentAttackData->AttackCooldown, false);
+		
 		if (CurrentAttackData->AttackAnimMontage)
 		{
-			CharacterAnimInstance->SetIsAttacking(true);
+			if (CharacterAnimInstance) CharacterAnimInstance->SetIsAttacking(true);
 			OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
 		}
 	}
@@ -137,53 +129,39 @@ void UAttackComponent::Attack()
 
 void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
-	if (bIsAttacking || !bCanAttack || !CurrentCollisionComponent || !CurrentAttackData) return;
+	if (bIsAttacking || !CurrentCollisionComponent || !CurrentAttackData) return;
 
 	bCanAttack = false;
-	GetWorld()->GetTimerManager().SetTimer(
-		AttackCooldownTimerHandle,
-		this,
-		&ThisClass::ResetAttackCooldown,
-		CurrentAttackData->AttackCooldown,
-		false
-	);
-	
-	bIsAttacking = true;
-	AlreadyHitActors.Empty();
-	PreviousFrameTransform = CurrentCollisionComponent->GetComponentTransform();
+	GetWorld()->GetTimerManager().SetTimer(AttackCooldownTimerHandle, this, &ThisClass::ResetAttackCooldown, CurrentAttackData->AttackCooldown, false);
 
+	SetAttackState(true);
 	Multicast_PlayAttackEffects();
 }
 
 void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 {
-	bIsAttacking = false;
-	AlreadyHitActors.Empty();
-
+	SetAttackState(false);
 	Multicast_ExecuteAttackEnd();
 }
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
-	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled() && !OwnerCharacter->HasAuthority()) return;
+	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled()) return;
 	
-	if (!OwnerCharacter || !CharacterAnimInstance || !CurrentAttackData || !CurrentAttackData->AttackAnimMontage) return;
-
-	if (const AInstrumentBase* Instrument = FindEquippedInstrument())
+	if (CurrentInstrument)
 	{
-		Instrument->AttachToAttackSocket();
+		CurrentInstrument->AttachToAttackSocket();
 	}
 
-	if (OwnerCharacter->HasAuthority())
+	if (CharacterAnimInstance)
 	{
-		if (!CharacterAnimInstance->OnMontageEnded.IsAlreadyBound(this, &ThisClass::OnAttackMontageEnded))
-		{
-			CharacterAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
-		}
+		CharacterAnimInstance->SetIsAttacking(true);
 	}
 
-	CharacterAnimInstance->SetIsAttacking(true);
-	OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
+	if (CurrentAttackData && CurrentAttackData->AttackAnimMontage)
+	{
+		OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
+	}
 }
 
 void UAttackComponent::Multicast_ExecuteAttackEnd_Implementation()
@@ -193,9 +171,9 @@ void UAttackComponent::Multicast_ExecuteAttackEnd_Implementation()
 		CharacterAnimInstance->SetIsAttacking(false);
 	}
 
-	if (const AInstrumentBase* Instrument = FindEquippedInstrument())
+	if (CurrentInstrument)
 	{
-		Instrument->AttachToIdleSocket();
+		CurrentInstrument->AttachToIdleSocket();
 	}
 }
 
@@ -204,14 +182,6 @@ void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 	if (CurrentAttackData && Montage == CurrentAttackData->AttackAnimMontage)
 	{
 		Server_ExecuteAttackEnd_Implementation();
-
-		if (OwnerCharacter)
-		{
-			if (UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance())
-			{
-				AnimInstance->OnMontageEnded.RemoveDynamic(this, &ThisClass::OnAttackMontageEnded);
-			}
-		}
 	}
 }
 
@@ -222,7 +192,6 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 	if (bIsAttacking)
 	{
 		OwnerCharacter->StopAnimMontage();
-
 		if (OwnerCharacter->HasAuthority())
 		{
 			Server_ExecuteAttackEnd_Implementation();
@@ -235,33 +204,38 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 
 	if (NewItem)
 	{
-		if (const AInstrumentBase* NewInstrument = Cast<AInstrumentBase>(NewItem))
+		if (AInstrumentBase* NewInstrument = Cast<AInstrumentBase>(NewItem))
 		{
+			CurrentInstrument = NewInstrument;
 			CurrentCollisionComponent = NewInstrument->GetCapsuleComponent();
 			CurrentAttackData = NewInstrument->GetAttackData();
 		}
 	}
 	else
 	{
+		CurrentInstrument = nullptr;
 		CurrentCollisionComponent = HeadbuttCollisionComponent;
 		CurrentAttackData = HeadbuttAttackData;
 	}
 }
 
-AInstrumentBase* UAttackComponent::FindEquippedInstrument() const
+void UAttackComponent::SetAttackState(const bool bNewState)
 {
-	if (!OwnerCharacter) return nullptr;
+	if (!CharacterAnimInstance) return;
 
-	TArray<AActor*> AttachedActors;
-	OwnerCharacter->GetAttachedActors(AttachedActors);
-
-	for (AActor* AttachedActor : AttachedActors)
+	bIsAttacking = bNewState;
+	if (bNewState)
 	{
-		if (AInstrumentBase* Instrument = Cast<AInstrumentBase>(AttachedActor))
+		AlreadyHitActors.Empty();
+		PreviousFrameTransform = CurrentCollisionComponent->GetComponentTransform();
+
+		if (!CharacterAnimInstance->OnMontageEnded.IsAlreadyBound(this, &ThisClass::OnAttackMontageEnded))
 		{
-			return Instrument;
+			CharacterAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
 		}
 	}
-
-	return nullptr;
+	else
+	{
+		CharacterAnimInstance->OnMontageEnded.RemoveDynamic(this, &ThisClass::OnAttackMontageEnded);
+	}
 }

@@ -45,6 +45,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UCharacterAnimInstance> CharacterAnimInstance = nullptr;
 	
+	UPROPERTY()
+	TObjectPtr<AInstrumentBase> CurrentInstrument = nullptr;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttackDataAsset> CurrentAttackData = nullptr;
 	
@@ -63,6 +66,7 @@ protected:
 
 private:
 	void ResetAttackCooldown() { bCanAttack = true; }
+	void SetAttackState(bool bNewState);
 
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
@@ -71,6 +75,4 @@ private:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	
 	FTimerHandle AttackCooldownTimerHandle;
-
-	AInstrumentBase* FindEquippedInstrument() const;
 };
