@@ -70,7 +70,10 @@ private:
 	float ActiveDuration = 3.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
-	float AwardedDuration = 1.0f;
+	float AwardedDuration = 2.0f;
+	
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	float FadingDuration = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
 	FLinearColor SpotlightActiveColor = FLinearColor(1, 0.98f, 0.64f);
