@@ -240,6 +240,7 @@ void ADefaultTromboneCharacter::Server_RequestSpotlightBonus_Implementation()
 		{
 			if (Zone->TryAwardBonus(this))
 			{
+				GetPlayerState<ADefaultPlayerState>()->Server_AddScore(20.0f); // TODO : Spotlight bonus score value
 				Multicast_PlaySpotlightSuccessEffect();
 				break; 
 			}
