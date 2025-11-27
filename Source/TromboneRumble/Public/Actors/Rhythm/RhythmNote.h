@@ -75,11 +75,19 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	float TimeToComplete = 5.f;
 
+	bool bIsMoving = false;
+
+	FVector StartLocation = FVector::Zero();
+
+	FVector EndLocation = FVector::Zero();
+
 	float NoteLifeTime;
 
 	bool bIsLongNote = false;
 
 	bool bIsLongNoteEnd = false;
+
+	
 
 	EInstrumentType NoteType;
 

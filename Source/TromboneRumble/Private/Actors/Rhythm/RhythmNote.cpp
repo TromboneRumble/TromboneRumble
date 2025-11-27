@@ -28,7 +28,13 @@ ARhythmNote::ARhythmNote()
 void ARhythmNote::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	NoteLifeTime += DeltaTime;;
+	if (!bIsMoving) return;
+	NoteLifeTime += DeltaTime;
+	float Alpha = FMath::Clamp(NoteLifeTime / TimeToComplete, 0.f, 1.f);
+	UE_LOG(LogTemp, Warning, TEXT("%f : %f : %f"), NoteLifeTime, TimeToComplete, Alpha);
+	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
+	SetActorLocation(NewLocation);
+	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, Alpha);
 }
 
 void ARhythmNote::OnTakenFromPool_Implementation()
@@ -36,6 +42,7 @@ void ARhythmNote::OnTakenFromPool_Implementation()
 	NoteLifeTime = 0.f;
 	NoteAlphaOnSpline = 0.f;
 	CachedSplineComponent = nullptr;
+	bIsMoving = true;
 
 	NoteHandle = FNoteHandle();
 	NoteHandle.NoteActor = this;
@@ -48,6 +55,8 @@ void ARhythmNote::OnReturnToPool_Implementation()
 {
 	NoteLifeTime = 0.f;
 	NoteAlphaOnSpline = 1.f;
+	bIsMoving = false;
+
 	CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
 	CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
 }
@@ -62,6 +71,9 @@ void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget
 	NoteType = InSpawner->GetSpawnerType();
 	CachedSplineComponent = InSpawner->GetSplineComponent();
 	TimeToComplete = InTimeToComplete;
+
+	StartLocation = InSpawner->GetActorLocation();
+	EndLocation = StartLocation + FVector(1000.f, 0.f, 0.f);
 
 	if (RhythmNoteUIControllerComponent)
 	{
@@ -89,7 +101,8 @@ void ARhythmNote::SetToLongNoteEnd()
 
 void ARhythmNote::MoveNotes_Implementation()
 {
-	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, NoteAlphaOnSpline);
+	//CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, NoteAlphaOnSpline);
+	bIsMoving = true;
 }
 
 void ARhythmNote::SpawnRhythmResultWidget(ENoteResult InNoteResult)
