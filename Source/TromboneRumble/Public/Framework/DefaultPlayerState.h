@@ -48,14 +48,9 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
-private:
-	UPROPERTY(Replicated)
-	bool bIsReady = false;
 
 public:
 	//getter setter
-	void SetIsReady(bool bReady) { if (!HasAuthority() || bIsReady == bReady) return; bIsReady = bReady; }
-	FORCEINLINE bool IsReady() const { return bIsReady; }
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }

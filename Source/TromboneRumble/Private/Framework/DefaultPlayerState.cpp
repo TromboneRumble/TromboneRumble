@@ -9,7 +9,6 @@
 
 ADefaultPlayerState::ADefaultPlayerState()
 {
-	bIsReady = false;
 	bReplicates = true;
 }
 
@@ -54,7 +53,6 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ThisClass, bIsReady);
 	DOREPLIFETIME(ThisClass, EquippedInstrumentClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
 }
@@ -82,7 +80,6 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 	if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(PlayerState))
 	{
 		DefaultPS->EquippedInstrumentClass = this->EquippedInstrumentClass;
-		DefaultPS->bIsReady = this->bIsReady;
 		DefaultPS->SkinColor = this->SkinColor;
 	}
 }

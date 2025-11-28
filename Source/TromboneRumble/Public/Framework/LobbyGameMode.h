@@ -29,16 +29,16 @@ public:
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* ExitedPlayer) override;
-	
-	void NotifyClientReady(APlayerController* ReadyPlayer);
+
 	void RequestServerTravel(const EGameState& InGameState);
 
 private:
+	void HandlePlayerLoadingScreenFinished(APlayerController* PC);
 	void InitializeInstruments() const;
-	bool CheckAllClientsReady();
 	void SetLobbyState(const ELobbyState& InNewState);
 	void RequestServerTravel(const FString& MapPath) const;
 	void RequestSetTimer(TFunction<void()> OnTimerFinished);
+	
 
 private:	
 	FLinearColor AssignUniqueColorToCharacter();
@@ -52,6 +52,10 @@ private:
 
 	UPROPERTY(Transient)
 	FTimerHandle LobbyTimerHandle;
+
+	UPROPERTY()
+	TArray<TObjectPtr<APlayerController>> LobbyReadyPlayers;
+
 	int32 NumPublicConnections;
 	int32 CurrentEquippedInstruments;
 	float Timer;

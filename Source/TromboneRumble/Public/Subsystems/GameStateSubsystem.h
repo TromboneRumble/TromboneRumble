@@ -13,6 +13,7 @@ struct FGameplayTag;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EGameState, NewState);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerLoadingScreenFinishedSignature, APlayerController*);
 
 UCLASS()
 class TROMBONERUMBLE_API UGameStateSubsystem : public UGameInstanceSubsystem
@@ -24,6 +25,7 @@ public:
 	virtual void Deinitialize() override;
 
 	FOnGameStateChangedSignature OnGameStateChanged;
+	FOnPlayerLoadingScreenFinishedSignature OnPlayerLoadingScreenFinished;
 
 protected:
 	UFUNCTION()
@@ -34,9 +36,6 @@ protected:
 
 private:
 	void AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState);
-
-
-
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EGameState CurrentGameState;

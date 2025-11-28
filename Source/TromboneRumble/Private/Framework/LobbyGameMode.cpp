@@ -63,6 +63,13 @@ void ALobbyGameMode::BeginPlay()
 		NumPublicConnections = LastSetting->NumPublicConnections;
 	}
 
+	LobbyReadyPlayers.Empty();
+	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+	{
+		GS->OnPlayerLoadingScreenFinished.AddUObject(
+			this, &ThisClass::HandlePlayerLoadingScreenFinished
+		);
+	}
 
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
@@ -100,22 +107,6 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	}
 }
 
-void ALobbyGameMode::NotifyClientReady(APlayerController* ReadyPlayer)
-{
-	if (!ReadyPlayer) return;
-
-	if (CheckAllClientsReady())
-	{
-		//Todo : UI를 통해서 어떤 곡을 선택했는지 정하기
-		if (LobbyGameState)
-		{
-			LobbyGameState->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
-			InitializeInstruments();
-		}
-		SetLobbyState(ELobbyState::CountdownToScramble);
-	}
-}
-
 void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 {
 	if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
@@ -145,6 +136,36 @@ void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 		}
 	}	
 }
+void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
+{
+	if (!PC)
+	{
+		return;
+	}
+
+	//로딩이 완료된 플레이어
+	LobbyReadyPlayers.AddUnique(PC);
+
+	//현재 접속한 플레이어
+	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
+
+	if (CurrentPlayerCount < NumPublicConnections)
+	{
+		return;
+	}
+
+	//현재 접속한 플레이어가 로딩까지 완료되었다면
+	if (LobbyReadyPlayers.Num() >= CurrentPlayerCount)
+	{
+		if (LobbyGameState)
+		{
+			LobbyGameState->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
+			InitializeInstruments();
+		}
+		SetLobbyState(ELobbyState::CountdownToScramble);
+	}
+}
+
 void ALobbyGameMode::InitializeInstruments() const
 {
 	UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance());
@@ -180,20 +201,6 @@ void ALobbyGameMode::InitializeInstruments() const
 
 		GetWorld()->SpawnActor<AInstrumentBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
 	}
-}
-
-bool ALobbyGameMode::CheckAllClientsReady()
-{
-	if (GetNumPlayers() < NumPublicConnections) return false;
-	
-	for (APlayerState* PS : GetGameState<AGameStateBase>()->PlayerArray)
-	{
-		if (!PS) return false;
-		
-		const ADefaultPlayerState* DPS = Cast<ADefaultPlayerState>(PS);
-		if (!DPS || !DPS->IsReady()) return false;
-	}
-	return true;
 }
 
 void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)

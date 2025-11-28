@@ -47,6 +47,7 @@ public:
 	FOnPlayerStateChanged OnPlayerStateChanged;
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void AcknowledgePossession(APawn* InPawn) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupInputComponent() override;
@@ -71,7 +72,11 @@ private:
 	// ~UI
 
 	UFUNCTION(Server, Reliable)
-	void Server_NotifyClientReady();
+	void Server_NotifyLoadingScreenFinished();
+
+	void HandleLoadingScreenFinished();
+
+	bool bHasNotifiedLoadingFinished = false;
 
 	TSubclassOf<UUserWidget> InGameUIClass;
 

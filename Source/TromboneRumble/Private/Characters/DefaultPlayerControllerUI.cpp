@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "AsyncLoadingScreen.h"
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameMode.h"
 #include "Framework/DefaultPlayerState.h"
@@ -27,10 +28,10 @@ void ADefaultPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	const UGameInstance* GI = GetGameInstance();
-	if (!GI || !IsLocalController()) return;
+	const UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance || !IsLocalController()) return;
 
-	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>();
 	if (!GameStateSubsystem) return;
 
 	switch (GameStateSubsystem->GetGameState())
@@ -50,7 +51,26 @@ void ADefaultPlayerController::BeginPlay()
 	GameStateSubsystem->OnGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleGameStateChanged);
 	HandleGameStateChanged(GameStateSubsystem->GetGameState());
 	
-	Server_NotifyClientReady();
+	FAsyncLoadingScreenModule::OnLoadingScreenFinished().AddUObject(
+		this, &ADefaultPlayerController::HandleLoadingScreenFinished);
+
+	// 2) 🔥 Fallback: 이미 Lobby 맵 안에 있는데
+	//    AsyncLoadingScreen 쪽 이벤트가 안 올 수도 있는 상황(클라가 중간 합류) 대비.
+	if (GameStateSubsystem->GetGameState() == EGameState::Lobby)
+	{
+		// 여기서 한 번 직접 호출해 줌.
+		// 만약 나중에 실제 OnLoadingScreenFinished가 또 불리면
+		// HandleLoadingScreenFinished 안의 bHasNotifiedLoadingFinished 때문에 무시됨.
+		HandleLoadingScreenFinished();
+	}
+
+}
+
+void ADefaultPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	FAsyncLoadingScreenModule::OnLoadingScreenFinished().RemoveAll(this);
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void ADefaultPlayerController::InitializeLobbyUI()
@@ -71,15 +91,28 @@ void ADefaultPlayerController::InitializeInGameUI()
 	bShowMouseCursor = false;
 }
 
-void ADefaultPlayerController::Server_NotifyClientReady_Implementation()
+void ADefaultPlayerController::Server_NotifyLoadingScreenFinished_Implementation()
 {
-	ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
-	if (!PS) return;
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance || !HasAuthority()) return;
 
-	PS->SetIsReady(true);
-	
-	if (ALobbyGameMode* LobbyGameMode = GetWorld()->GetAuthGameMode<ALobbyGameMode>())
+	if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 	{
-		LobbyGameMode->NotifyClientReady(this);
+		GameStateSubsystem->OnPlayerLoadingScreenFinished.Broadcast(this);
 	}
+}
+
+void ADefaultPlayerController::HandleLoadingScreenFinished()
+{
+	if (!IsLocalController()) return;
+
+	// 같은 맵에서 여러 번 호출 방지
+	if (bHasNotifiedLoadingFinished) return;
+
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance) return;
+
+	bHasNotifiedLoadingFinished = true;
+
+	Server_NotifyLoadingScreenFinished();
 }
