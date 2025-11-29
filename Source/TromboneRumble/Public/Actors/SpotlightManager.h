@@ -56,6 +56,9 @@ private:
 	int32 MinSpawnCount_Fever = 2;
 	UPROPERTY(EditAnywhere, Category = "Spotlight|Fever", meta = (ToolTip = "피버 타임 시 스포트라이트 존 최대 스폰 개수"))
 	int32 MaxSpawnCount_Fever = 4;
+
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (ToolTip = "스포트라이트 성공시 받게 되는 점수"))
+	int32 SpotlightBonusScore = 300;
 	
 	FTimerHandle SpawnTimerHandle;
 	bool bIsSpotlightActive = false;

@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UClientToServerRelayComponent;
 class UNiagaraSystem;
 class ARhythmActor;
 class UCharacterDataAsset;
@@ -40,7 +41,6 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	
@@ -59,6 +59,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UEquipmentComponent> EquipmentComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
 	// ~Components
 	
 	UPROPERTY(Transient)
@@ -69,9 +72,6 @@ protected:
 	
 	FInteractionContext CurrentInteractionContext;
 
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	TObjectPtr<UNiagaraSystem> SpotlightSuccessVFX;
-
 private:
 	void UpdateMaxWalkSpeed() const;
 	float GetCurrentMovementSpeedMultiplier() const;
@@ -81,8 +81,6 @@ private:
 	void Server_SetIsSprinting(const bool bNewIsSprinting);
 	UFUNCTION(Server, Reliable)
 	void Server_InteractItem(AItemBase* InteractedItem);
-	UFUNCTION(Server, Reliable)
-	void Server_RequestSpotlightBonus();
 	// ~Server RPCs
 	
 	// Delegate Callback Handlers
@@ -94,17 +92,14 @@ private:
 	void HandleOnRagdoll();
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
-	UFUNCTION()
-	void HandleOnNoteDetected(ENoteResult NoteResult);
 	// ~Delegate Callback Handlers
-
-	// Multicast RPCs
-	UFUNCTION(NetMulticast, Unreliable)
-	void Multicast_PlaySpotlightSuccessEffect();
-	// ~Multicast RPCs
 
 	ARhythmActor* GetCachedRhythmActor();
 	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
+
+public:
+	//getter setter
+	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 };

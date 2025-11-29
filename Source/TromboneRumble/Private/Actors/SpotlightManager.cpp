@@ -92,7 +92,7 @@ void ASpotlightManager::TriggerSpotlightSpawn()
 
             if (NewZone)
             {
-                NewZone->InitializeZone(bIsFeverTime);
+                NewZone->InitializeZone(bIsFeverTime, SpotlightBonusScore);
             }
         }
     }

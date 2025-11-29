@@ -7,19 +7,17 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
-#include "NiagaraComponent.h"
-#include "NiagaraFunctionLibrary.h"
-#include "Actors/SpotlightZone.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
-#include "Net/UnrealNetwork.h"
 #include "Components/ActorComponents/InteractorComponent.h"
+#include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Net/UnrealNetwork.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -44,6 +42,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("Interactor"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
+	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()
@@ -154,28 +153,11 @@ void ADefaultTromboneCharacter::BeginPlay()
 		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
 	
 		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
-		if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-		{
-			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
-		}
 
 		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 	}
-}
-
-void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	
-	if (IsLocallyControlled())
-	{
-		if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-		{
-			RhythmSubsystem->OnNoteDetected.RemoveDynamic(this, &ThisClass::HandleOnNoteDetected);
-		}
-	}
-	Super::EndPlay(EndPlayReason);
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -225,27 +207,6 @@ void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool 
 void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* InteractedItem)
 {
 	EquipmentComponent->TryEquipItem(InteractedItem);
-}
-
-void ADefaultTromboneCharacter::Server_RequestSpotlightBonus_Implementation()
-{
-	TArray<AActor*> OverlappingZones;
-	GetOverlappingActors(OverlappingZones, ASpotlightZone::StaticClass());
-
-	if (OverlappingZones.IsEmpty()) return;
-
-	for (AActor* Actor : OverlappingZones)
-	{
-		if (ASpotlightZone* Zone = Cast<ASpotlightZone>(Actor))
-		{
-			if (Zone->TryAwardBonus(this))
-			{
-				GetPlayerState<ADefaultPlayerState>()->Server_AddScore(20.0f); // TODO : Spotlight bonus score value
-				Multicast_PlaySpotlightSuccessEffect();
-				break; 
-			}
-		}
-	}
 }
 
 void ADefaultTromboneCharacter::UpdateMaxWalkSpeed() const
@@ -320,42 +281,6 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			}
 		}
 		UpdateMaxWalkSpeed();
-	}
-}
-
-void ADefaultTromboneCharacter::HandleOnNoteDetected(ENoteResult NoteResult)
-{
-	if (NoteResult == ENoteResult::None || NoteResult == ENoteResult::Bad || NoteResult == ENoteResult::Invalid) return;
-	
-	if (!IsLocallyControlled()) return;
-	
-	if (HasAuthority())
-	{
-		Server_RequestSpotlightBonus_Implementation();
-	}
-	else
-	{
-		Server_RequestSpotlightBonus();
-	}
-}
-
-void ADefaultTromboneCharacter::Multicast_PlaySpotlightSuccessEffect_Implementation()
-{
-	if (SpotlightSuccessVFX)
-	{
-		const FVector SpawnLocation = GetActorLocation();
-
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			this,
-			SpotlightSuccessVFX,
-			SpawnLocation,
-			FRotator::ZeroRotator,
-			FVector(1.f),
-			true,
-			true,
-			ENCPoolMethod::None,
-			true
-		);
 	}
 }
 

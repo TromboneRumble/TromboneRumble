@@ -1,11 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Actors/SpotlightZone.h"
-#include "Characters/DefaultTromboneCharacter.h"
-#include "Components/DecalComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "AkComponent.h"
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "Net/UnrealNetwork.h"
+#include "Subsystems/RhythmSubsystem.h"
+#include "Framework/DefaultPlayerState.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "Characters/DefaultTromboneCharacter.h"
+#include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Utilities/DebugHelper.h"
 
 ASpotlightZone::ASpotlightZone()
@@ -37,22 +44,17 @@ ASpotlightZone::ASpotlightZone()
 	LightBeamMesh->SetCastShadow(false);
 	LightBeamMesh->SetVisibility(false);
 
+	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
+	AkComponent->SetupAttachment(RootComponent);
+
 	bReplicates = true;
 	AActor::SetReplicateMovement(false);
 }
 
-void ASpotlightZone::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, CurrentState);
-	DOREPLIFETIME(ThisClass, bIsBonusAwarded);
-}
-
-void ASpotlightZone::InitializeZone(const bool bIsFeverTime)
+void ASpotlightZone::InitializeZone(const bool bIsFeverTime, const int32 InSpotlightBonusScore)
 {
 	if (!HasAuthority()) return;
-
+	SpotlightBonusScore = InSpotlightBonusScore;
 	if (bIsFeverTime)
 	{
 		SetState(ESpotlightState::Active);
@@ -63,19 +65,168 @@ void ASpotlightZone::InitializeZone(const bool bIsFeverTime)
 	}
 }
 
-bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* Player)
+void ASpotlightZone::HandleServerRPC(ACharacter* InstigatorCharacter)
 {
-	if (!HasAuthority()) return false;
-
-	if (CurrentState == ESpotlightState::Active && !bIsBonusAwarded)
+	if (!HasAuthority() || !InstigatorCharacter) return;
+	if (!TriggerVolume->IsOverlappingActor(InstigatorCharacter)) return;
+	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(InstigatorCharacter))
 	{
-		bIsBonusAwarded = true;
-		SetState(ESpotlightState::Awarded);
-		return true;
+		TryAwardBonus(TromboneCharacter);
+	}
+	
+}
+
+
+void ASpotlightZone::BeginPlay()
+{
+	Super::BeginPlay();
+	if (TriggerVolume)
+	{
+		TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::HandleTriggerBeginOverlap);
+		TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &ThisClass::HandleTriggerEndOverlap);
 	}
 
-	return false;
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
+		{
+			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
+	}
 }
+
+void ASpotlightZone::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
+		{
+			RhythmSubsystem->OnNoteDetected.RemoveDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
+void ASpotlightZone::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, CurrentState);
+	DOREPLIFETIME(ThisClass, bIsBonusAwarded);
+}
+
+void ASpotlightZone::HandleTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(OtherActor))
+	{
+		// 이 클라 기준 로컬 플레이어만 기억
+		if (Character->IsLocallyControlled())
+		{
+			bIsLocalPlayerOverlapping = true;
+		}
+	}
+}
+
+void ASpotlightZone::HandleTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(OtherActor))
+	{
+		if (Character->IsLocallyControlled())
+		{
+			bIsLocalPlayerOverlapping = false;
+		}
+	}
+}
+
+void ASpotlightZone::HandleOnNoteDetected(ENoteResult NoteResult)
+{
+
+	if (NoteResult == ENoteResult::None ||
+		NoteResult == ENoteResult::Bad ||
+		NoteResult == ENoteResult::Invalid)
+	{
+		return;
+	}
+
+	if (!bIsLocalPlayerOverlapping)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController) return;
+
+	ADefaultTromboneCharacter* LocalCharacter = Cast<ADefaultTromboneCharacter>(PlayerController->GetPawn());
+	if (!LocalCharacter) return;
+
+
+	if (HasAuthority())
+	{
+		if (PlayerController->IsLocalController())
+		{
+			HandleServerRPC(LocalCharacter);
+		}
+	}
+	else
+	{
+		if (UClientToServerRelayComponent* Relay = LocalCharacter->GetClientToServerRelayComponent())
+		{
+			Relay->Server_SendRPCRequest(this);
+		}
+	}
+}
+
+void ASpotlightZone::Multicast_PlaySpotlightTurnOnSFX_Implementation()
+{
+	if (SpotLightTurnOnSFX && AkComponent)
+	{
+		AkComponent->PostAkEvent(
+			SpotLightTurnOnSFX,
+			0,
+			FOnAkPostEventCallback()
+		);
+	}
+}
+
+void ASpotlightZone::Multicast_PlaySpotlightSuccessEffect_Implementation(ADefaultTromboneCharacter* InPlayer)
+{
+	if (!SpotlightSuccessVFX || !IsValid(InPlayer))
+	{
+		SetState(ESpotlightState::Awarded);
+		return;
+	}
+
+	const FVector SpawnLocation = InPlayer->GetActorLocation();
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		this,
+		SpotlightSuccessVFX,
+		SpawnLocation,
+		FRotator::ZeroRotator,
+		FVector(1.f),
+		true,
+		true,
+		ENCPoolMethod::None,
+		true
+	);
+
+	if (SpotlightSuccessSFX && AkComponent)
+	{
+		FOnAkPostEventCallback Callback;
+		Callback.BindDynamic(this, &ThisClass::OnSpotlightSuccessSFXFinished);
+		AkComponent->PostAkEvent(
+			SpotlightSuccessSFX,
+			AkCallbackType::AK_EndOfEvent,
+			Callback
+		);
+	}
+}
+
+
 
 void ASpotlightZone::SetState(ESpotlightState NewState)
 {
@@ -111,6 +262,26 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 	}
 }
 
+bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* InCharacter)
+{
+	if (!HasAuthority() || !InCharacter) return false;
+
+	if (CurrentState == ESpotlightState::Active && !bIsBonusAwarded)
+	{
+		bIsBonusAwarded = true;
+		
+		if (ADefaultPlayerState* PS = InCharacter->GetPlayerState<ADefaultPlayerState>())
+		{
+			PS->Server_AddScore(FMath::Clamp(SpotlightBonusScore, 0, SpotlightBonusScore));
+		}
+
+		Multicast_PlaySpotlightSuccessEffect(InCharacter);
+		return true;
+	}
+
+	return false;
+}
+
 void ASpotlightZone::StartLifecycleTimer(const float InDuration, void(ASpotlightZone::* InTimerMethod)())
 {
 	GetWorldTimerManager().SetTimer(LifecycleTimerHandle, this, InTimerMethod, InDuration, false);
@@ -118,6 +289,7 @@ void ASpotlightZone::StartLifecycleTimer(const float InDuration, void(ASpotlight
 
 void ASpotlightZone::OnWarningFinished()
 {
+	Multicast_PlaySpotlightTurnOnSFX();
 	SetState(ESpotlightState::Active);
 }
 
@@ -139,6 +311,17 @@ void ASpotlightZone::OnFadingFinished()
 	if (HasAuthority())
 	{
 		Destroy();
+	}
+}
+
+void ASpotlightZone::OnSpotlightSuccessSFXFinished(EAkCallbackType InCallbackType, UAkCallbackInfo* InCallbackInfo)
+{
+	if (InCallbackType == EAkCallbackType::EndOfEvent)
+	{
+		if (HasAuthority())
+		{
+			SetState(ESpotlightState::Awarded);
+		}
 	}
 }
 
