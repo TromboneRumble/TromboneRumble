@@ -7,6 +7,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
+class URhythmSubsystem;
 class URhythmNoteChannelSubsystem;
 class UActorPoolSubsystem;
 class UAkSwitchValue;

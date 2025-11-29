@@ -208,6 +208,7 @@ void ARhythmActor::BeginPlay()
 	
 	GetCachedActorPoolSubsystem();
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
+	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
 	PrepareRhythmGame();
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
 	StartRhythmGame();
@@ -316,6 +317,25 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
 		{
 			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
 		}
+	}
+}
+
+void ARhythmActor::OnNoteDetectedHandler(ENoteResult InNoteResult)
+{
+	if (InNoteResult == ENoteResult::Bad)
+	{
+		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(FocusedType))
+		{
+			if (NoteHearingComponent && FoundSpawner->GetFailEvent())
+			{
+				NoteHearingComponent->PostAkEvent(
+					FoundSpawner->GetFailEvent(),
+					0,
+					FOnAkPostEventCallback()
+				);
+			}
+		}
+
 	}
 }
 

@@ -72,6 +72,9 @@ private:
 
 	UFUNCTION()
 	void OnInstrumentPickedHandler(EInstrumentType InType);
+
+	UFUNCTION()
+	void OnNoteDetectedHandler(ENoteResult InNoteResult);
 	// ~Rhythm Game Init
 
 	// Note Detection Logic

@@ -5,7 +5,6 @@
 #include "AkGameplayStatics.h"
 #include "AkGameplayTypes.h"
 #include "Components/ArrowComponent.h"
-#include "Components/SplineComponent.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Actors/Rhythm/RhythmActor.h"
