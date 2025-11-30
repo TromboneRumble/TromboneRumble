@@ -13,7 +13,8 @@
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
-#include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
+#include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
+#include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -72,31 +73,16 @@ void ARhythmNoteSpawner::BeginPlay()
 	}
 }
 
-void ARhythmNoteSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-	{
-		RhythmSubsystem->OnInstrumentPicked.RemoveDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
-	}
-}
-
 void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
 {
 	checkf(IsValid(InRhythmActor), TEXT("InRhythmActor is invalid in %s"), *GetName());
-	SpawnWidget = CreateWidget<URhythmSpawnWidget>(GetWorld(), RhythmSpawnWidgetClass);
+	SpawnWidget = CreateWidget<URhythmSpawnWidgetBase>(GetWorld(), RhythmSpawnWidgetClass);
 	if (SpawnWidget)
 	{
-		SpawnWidget->InstrumentType = SpawnerType;
-		UCanvasPanelSlot* NoteSlot = Cast<UCanvasPanelSlot>(InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChild(SpawnWidget));
-		NoteSlot->SetAutoSize(true);
-		NoteSlot->SetAlignment(FVector2D(0.5f, 0.5f));
-		NoteSlot->SetAnchors(FAnchors(0.5f, 0.5f));
-		//TODO : Remove Magic Number
-		NoteSlot->SetPosition(FVector2D(170.f, 300.f));
-		if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		if (InRhythmActor->GetRhythmUIRootWidget())
 		{
-			RhythmSubsystem->OnInstrumentPicked.AddDynamic(SpawnWidget, &URhythmSpawnWidget::PlayFadeAnimation);
+			InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChild(SpawnWidget);
+			SpawnWidget->Init(this);
 		}
 	}
 }
@@ -106,9 +92,6 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 	checkf(RhythmNoteClass, TEXT("RhythmNoteClass is not set in %s"), *GetName());
 	checkf(SpawnWidget, TEXT("SpawnWidget is not created in %s"), *GetName());
 	if (!CachedRhythmNoteChannelSubsystem.Get() || !CachedActorPoolSubsystem.Get()) return;
-
-	FString LastChar = InUserCueName.Right(1);
-	int32 LineNum = FCString::Atoi(*LastChar);
 
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(GetActorLocation());
@@ -123,8 +106,9 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
-		URhythmNoteWidget* PooledRhythmNoteWidget = SpawnWidget->GetPooledRhythmNoteWidget(LineNum);
-		PooledNote->InitNote(this, PooledRhythmNoteWidget, TimeToComplete, LineNum);
+		URhythmNoteWidgetBase* PooledRhythmNoteWidget = SpawnWidget->SpawnPooledRhythmNoteWidget();
+		PooledRhythmNoteWidget->InitWithCueMessage(InUserCueName);
+		PooledNote->InitNote(this, PooledRhythmNoteWidget, TimeToComplete);
 
 		if (InUserCueName.StartsWith(TEXT("SS_")))
 		{

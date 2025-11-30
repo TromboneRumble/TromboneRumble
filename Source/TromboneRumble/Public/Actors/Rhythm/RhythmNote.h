@@ -8,8 +8,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmNote.generated.h"
 
-class URhythmSpawnWidget;
-class URhythmNoteWidget;
+class URhythmNoteWidgetBase;
 class URhythmNoteChannelSubsystem;
 class URhythmNoteUIControllerComponent;
 class USphereComponent;
@@ -32,7 +31,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidget* InNoteWidget, float InTimeToComplete, int32 InLineNum);
+	void InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidgetBase* InNoteWidget, float InTimeToComplete);
 	void SetToShortNote();
 	void SetToLongNoteStart();
 	void SetToLongNoteEnd();
@@ -84,8 +83,6 @@ private:
 
 	EInstrumentType NoteType;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	float NoteAlphaOnSpline;
 public:
 	// Getter Setter
 	UFUNCTION(BlueprintCallable)

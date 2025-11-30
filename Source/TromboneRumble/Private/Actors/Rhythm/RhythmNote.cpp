@@ -6,7 +6,7 @@
 #include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
-#include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
+#include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "Utilities/DebugHelper.h"
 
 ARhythmNote::ARhythmNote()
@@ -36,7 +36,6 @@ void ARhythmNote::Tick(float DeltaTime)
 void ARhythmNote::OnTakenFromPool_Implementation()
 {
 	NoteLifeTime = 0.f;
-	NoteAlphaOnSpline = 0.f;
 	bIsMoving = true;
 
 	NoteHandle = FNoteHandle();
@@ -49,15 +48,13 @@ void ARhythmNote::OnTakenFromPool_Implementation()
 void ARhythmNote::OnReturnToPool_Implementation()
 {
 	NoteLifeTime = 0.f;
-	NoteAlphaOnSpline = 1.f;
 	bIsMoving = false;
 
 	CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
 	CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
 }
 
-void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget* InNoteWidget, float InTimeToComplete,
-	int32 InLineNum)
+void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidgetBase* InNoteWidget, float InTimeToComplete)
 {
 	checkf(InSpawner, TEXT("Spawner not Valid in %s"), *GetName());
 	checkf(InSpawner->GetSpawnerType() != EInstrumentType::Invalid, TEXT("Spawner Type is Invalid"));
@@ -71,7 +68,7 @@ void ARhythmNote::InitNote(const ARhythmNoteSpawner* InSpawner,URhythmNoteWidget
 
 	if (RhythmNoteUIControllerComponent)
 	{
-		RhythmNoteUIControllerComponent->InitSettings(InSpawner->GetSpawnWidget(), InNoteWidget, NoteHandle, InLineNum);
+		RhythmNoteUIControllerComponent->InitSettings(InSpawner->GetSpawnWidget(), InNoteWidget, NoteHandle);
 	}
 }
 
@@ -95,7 +92,6 @@ void ARhythmNote::SetToLongNoteEnd()
 
 void ARhythmNote::MoveNotes_Implementation()
 {
-	//CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, NoteAlphaOnSpline);
 	bIsMoving = true;
 }
 
