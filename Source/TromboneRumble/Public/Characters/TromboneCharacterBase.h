@@ -33,6 +33,9 @@ public:
 	
 	void ApplySkinColor(const FLinearColor InSkinColor) const;
 
+	bool IsStun() const { return bIsStun; }
+	bool IsRagdoll() const { return bIsRagdoll; }
+
 	FOnRagdollSignature OnRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
 

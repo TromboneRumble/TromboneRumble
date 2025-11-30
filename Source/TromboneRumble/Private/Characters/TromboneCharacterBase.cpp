@@ -219,18 +219,12 @@ void ATromboneCharacterBase::ApplyStun()
 {
 	StopAnimMontage();
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (IsLocallyControlled())
 		{
-			DisableInput(PlayerController);
+			DisableInput(PC);
 		}
-	}
-
-	if (UCharacterMovementComponent* CM = GetCharacterMovement())
-	{
-		const FVector CurrentVelocity = CM->Velocity;
-		CM->Velocity = FVector(0.f, 0.f, CurrentVelocity.Z);
 	}
 }
 
@@ -238,11 +232,7 @@ void ATromboneCharacterBase::UnapplyStun()
 {
 	if (bIsRagdoll) return;
 
-	UCharacterMovementComponent* CM = GetCharacterMovement();
-	if (CM && !CM->IsFalling()) 
-	{
-		CM->SetMovementMode(EMovementMode::MOVE_Walking);
-	}
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{

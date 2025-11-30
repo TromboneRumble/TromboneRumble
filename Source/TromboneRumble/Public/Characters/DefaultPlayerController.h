@@ -65,6 +65,8 @@ private:
 	void Handle_Attack();
 	void Handle_Rhythm(bool bPressed);
 	// ~Input handlers
+
+	bool CanProcessInput();
 	
 	// UI
 	void InitializeLobbyUI();
