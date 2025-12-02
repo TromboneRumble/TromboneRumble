@@ -93,6 +93,11 @@ void URhythmSpawnWidgetSquare::NativeOnInitialized()
 	}
 }
 
+void URhythmSpawnWidgetSquare::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
 void URhythmSpawnWidgetSquare::NativeDestruct()
 {
 	if (bViewportBound && GEngine && GEngine->GameViewport)
@@ -111,13 +116,11 @@ void URhythmSpawnWidgetSquare::PlayFadeAnimation(EInstrumentType InType)
 {
 	if (InType == InstrumentType && FadeInAnim && !isShown)
 	{
-		Debug::Print(TEXT("FadeIn Called"));
 		PlayAnimation(FadeInAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
 		isShown = true;
 	}
 	else if (InType != InstrumentType && FadeOutAnim && isShown)
 	{
-		Debug::Print(TEXT("FadeOut Called"));
 		PlayAnimation(FadeOutAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
 		isShown = false;
 	}

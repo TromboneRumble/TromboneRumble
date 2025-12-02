@@ -79,7 +79,7 @@ void URhythmSpawnWidgetBase::NativeOnInitialized()
 	{
 		WidgetPool = FUserWidgetPool(*this);
 		PrewarmWidgetPool();
-		SetColorAndOpacity(FLinearColor{ 1.f,1.f,1.f,0.f });
+		SetRenderOpacity(0.f);
 	}
 }
 

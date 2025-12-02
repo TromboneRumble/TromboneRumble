@@ -81,7 +81,7 @@ void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
 	{
 		if (InRhythmActor->GetRhythmUIRootWidget())
 		{
-			InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChild(SpawnWidget);
+			InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChildToCanvas(SpawnWidget);
 			SpawnWidget->Init(this);
 		}
 	}
@@ -133,6 +133,22 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		}
 
 		PooledNote->MoveNotes();
+
+		//싱크가 맞는지 확인하는 디버그 코드
+		float Delay = 4.5f;
+		if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
+		{
+			FTimerHandle DebugHandle;
+			GetWorld()->GetTimerManager().SetTimer(
+				DebugHandle,
+				FTimerDelegate::CreateLambda([OwnerRhythmActor]()
+					{
+						OwnerRhythmActor->DetectNotes();
+					}),
+				Delay,
+				false
+			);
+		}
 	}
 
 	

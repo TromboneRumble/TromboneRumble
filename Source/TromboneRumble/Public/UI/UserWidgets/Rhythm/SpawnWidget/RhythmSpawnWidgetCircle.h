@@ -3,15 +3,39 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "RhythmSpawnWidgetBase.h"
 #include "RhythmSpawnWidgetCircle.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class TROMBONERUMBLE_API URhythmSpawnWidgetCircle : public UUserWidget
+class TROMBONERUMBLE_API URhythmSpawnWidgetCircle : public URhythmSpawnWidgetBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void Init(ARhythmNoteSpawner* InNoteSpawner) override;
+
+	virtual URhythmNoteWidgetBase* SpawnPooledRhythmNoteWidget() override;
+
+	virtual URhythmResultWidgetBase* SpawnPooledRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult) override;
+
+
+protected:
+	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+
+
+private:
+	UFUNCTION()
+	void PlayFadeAnimation(EInstrumentType InType);
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeOutAnim;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeInAnim;
+
 };
