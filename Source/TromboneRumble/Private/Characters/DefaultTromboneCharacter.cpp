@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AkComponent.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
@@ -43,6 +44,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
+	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 }
 
 void ADefaultTromboneCharacter::Jump()

@@ -7,6 +7,8 @@
 #include "Utilities/Defines.h"
 #include "CharacterAnimInstance.generated.h"
 
+class UAkAudioEvent;
+class UAkComponent;
 class ADefaultTromboneCharacter;
 class UCharacterMovementComponent;
 
@@ -19,8 +21,7 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
-	UFUNCTION(BlueprintCallable, Category = "Animation")
-	void SetIsAttacking(const bool bNewIsAttacking);
+
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")	
@@ -48,9 +49,20 @@ protected:
 	EInstrumentType CurrentInstrumentType = EInstrumentType::None;
 
 private:
-	UPROPERTY(Transient)
-	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
+	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TWeakObjectPtr<ADefaultTromboneCharacter> OwnerCharacter = nullptr;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UCharacterMovementComponent> MovementComponent;
+	TWeakObjectPtr<UCharacterMovementComponent> MovementComponent = nullptr;
+
+	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TWeakObjectPtr<UAkComponent> OwnerAkSoundComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> FootstepAkEvent = nullptr;
+
+public:
+	//Getter Setter
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	FORCEINLINE void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; };
 };

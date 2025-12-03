@@ -6,6 +6,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
+class UAkComponent;
 class UClientToServerRelayComponent;
 class UNiagaraSystem;
 class ARhythmActor;
@@ -61,6 +62,9 @@ protected:
 	TObjectPtr<UEquipmentComponent> EquipmentComponent;
 
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAkComponent> AkSoundComponent;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
 	// ~Components
 	
@@ -102,4 +106,5 @@ private:
 public:
 	//getter setter
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
+	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
 };

@@ -4,15 +4,20 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AkComponent.h"
 
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
     Super::NativeInitializeAnimation();
 
     OwnerCharacter = Cast<ADefaultTromboneCharacter>(TryGetPawnOwner());
-    if (OwnerCharacter)
+    if (OwnerCharacter.Get())
     {
         MovementComponent = OwnerCharacter->GetCharacterMovement();
+        if (OwnerCharacter->GetAkComponent())
+        {
+			OwnerAkSoundComponent = OwnerCharacter->GetAkComponent();
+        }
     }
 }
 
@@ -24,7 +29,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     
     UpperBodyBlendAlpha = FMath::FInterpTo(UpperBodyBlendAlpha, TargetAlpha, DeltaSeconds, BlendInterpSpeed);
 
-    if (!OwnerCharacter || !MovementComponent) return;
+    if (!OwnerCharacter.Get() || !MovementComponent.Get()) return;
 
     Velocity = MovementComponent->Velocity;
     
@@ -37,9 +42,4 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     bShouldMove = (GroundSpeed > 3.0f) || bIsAccelerating;
 
     CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
-}
-
-void UCharacterAnimInstance::SetIsAttacking(const bool bNewIsAttacking)
-{
-    bIsAttacking = bNewIsAttacking;
 }
