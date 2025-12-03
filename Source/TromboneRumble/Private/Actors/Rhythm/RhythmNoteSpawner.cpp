@@ -135,20 +135,24 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		PooledNote->MoveNotes();
 
 		//싱크가 맞는지 확인하는 디버그 코드
-		float Delay = 4.5f;
-		if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
+		if (isSyncTesting)
 		{
-			FTimerHandle DebugHandle;
-			GetWorld()->GetTimerManager().SetTimer(
-				DebugHandle,
-				FTimerDelegate::CreateLambda([OwnerRhythmActor]()
-					{
-						OwnerRhythmActor->DetectNotes();
-					}),
-				Delay,
-				false
-			);
+			float Delay = 4.5f;
+			if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
+			{
+				FTimerHandle DebugHandle;
+				GetWorld()->GetTimerManager().SetTimer(
+					DebugHandle,
+					FTimerDelegate::CreateLambda([OwnerRhythmActor]()
+						{
+							OwnerRhythmActor->DetectNotes();
+						}),
+					Delay,
+					false
+				);
+			}
 		}
+		
 	}
 
 	

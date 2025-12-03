@@ -86,6 +86,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;
+
+	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	bool isSyncTesting = false;
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
