@@ -3,27 +3,38 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
-class UAkComponent;
-class UClientToServerRelayComponent;
-class UNiagaraSystem;
-class ARhythmActor;
-class UCharacterDataAsset;
-class UEquipmentComponent;
-class AItemBase;
-class UAttackDataAsset;
-class AInstrumentBase;
-class UAttackComponent;
+
+
 struct FInputActionValue;
 class ADefaultPlayerController;
+
+class UEquipmentComponent;
+class UAkComponent;
+class UClientToServerRelayComponent;
+class UAttackComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
+class UAbilitySystemComponent;
+class UNiagaraSystem;
+
+class ARhythmActor;
+class UCharacterDataAsset;
+class UAttackDataAsset;
+class UCharacterAttributeSet;
+
+class AItemBase;
+class AInstrumentBase;
+
+
+
 
 UCLASS()
-class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase
+class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -64,6 +75,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAkComponent> AkSoundComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UCharacterAttributeSet> CharacterAttributes;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
 	// ~Components
@@ -77,8 +94,7 @@ protected:
 	FInteractionContext CurrentInteractionContext;
 
 private:
-	void UpdateMaxWalkSpeed() const;
-	float GetCurrentMovementSpeedMultiplier() const;
+	void UpdateMaxWalkSpeed();
 	
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
@@ -107,4 +123,5 @@ public:
 	//getter setter
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 };
