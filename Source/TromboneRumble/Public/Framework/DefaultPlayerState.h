@@ -29,6 +29,7 @@ public:
 	virtual void CopyProperties(APlayerState* PlayerState) override;	
 
 
+	// 클라이언트 PlayerState 에서 점수가 바뀌면 GameState에 알림.
 	UPROPERTY(BlueprintAssignable)
 	FOnLocalScoreChanged OnLocalScoreChanged;
 
