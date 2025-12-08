@@ -38,6 +38,7 @@ public:
 	bool IsRagdoll() const { return bIsRagdoll; }
 	bool IsCanProcessInput() const { return bIsCanProcessInput; }
 	void EnablePlayerInput();
+	void DisablePlayerInput();
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
@@ -65,9 +66,8 @@ private:
 
 	void UpdateSkinFromPlayerState();
 
-	void TempFunc();
+	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
-	void ApplyPhysicalAnimationSettings();
 	void RagdollUpdate();
 	void SetActorLocationDuringRagdoll();
 

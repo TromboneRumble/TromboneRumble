@@ -39,12 +39,12 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
 }
 
-void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFaceUp)
+void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 {
     FOnMontageEnded EndedDelegate;
     EndedDelegate.BindUObject(this, &UCharacterAnimInstance::OnGetUpMontageEnded);
 
-    if (UAnimMontage* TargetMontage = bIsFaceUp ? GetUpFrontMontage : GetUpBackMontage)
+    if (UAnimMontage* TargetMontage = bIsFacingUp ? GetUpBackMontage : GetUpFrontMontage)
     {
         Montage_Play(TargetMontage);
         Montage_SetEndDelegate(EndedDelegate, TargetMontage);

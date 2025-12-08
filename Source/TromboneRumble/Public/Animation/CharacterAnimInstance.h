@@ -24,10 +24,9 @@ public:
 	void SetRagdollSnapshotName(const FName& NewSnapshotName) { RagdollSnapshotName = NewSnapshotName; }
 	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
 	void SetIsRagdollBlending(const bool bNewIsRagdollBlending) { bIsRagdollBlending = bNewIsRagdollBlending; }
-	void SetIsCapturedRagdollPose(const bool bNewIsCapturedRagdollPose) { bIsCapturedRagdollPose = bNewIsCapturedRagdollPose; }
 	//~ End Setters
 
-	void PlayGetUpMontage(bool bIsFaceUp);
+	void PlayGetUpMontage(bool bIsFacingUp);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")	
@@ -59,9 +58,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
 	bool bIsRagdollBlending;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
-	bool bIsCapturedRagdollPose = false;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
 	FName RagdollSnapshotName;
