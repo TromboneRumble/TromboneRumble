@@ -7,6 +7,7 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
 class UInputComponent;
 
@@ -35,6 +36,8 @@ public:
 
 	bool IsStun() const { return bIsStun; }
 	bool IsRagdoll() const { return bIsRagdoll; }
+	bool IsCanProcessInput() const { return bIsCanProcessInput; }
+	void EnablePlayerInput();
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
@@ -62,6 +65,12 @@ private:
 
 	void UpdateSkinFromPlayerState();
 
+	void TempFunc();
+	bool IsFacingUp() const;
+	void ApplyPhysicalAnimationSettings();
+	void RagdollUpdate();
+	void SetActorLocationDuringRagdoll();
+
 	// Replication Notifies
 	UFUNCTION()
 	void OnRep_IsRagdoll();
@@ -72,6 +81,12 @@ private:
 	// ~Replication Notifies
 
 	FTimerHandle OnHitTimerHandle;
+
+	bool bIsCanProcessInput = true;
+	bool bRagdollOnGround = true;
+	bool bRagdollFaceUp = false;
+	FVector LastRagdollVelocity = FVector::ZeroVector;
+	FName DefaultMeshCollisionProfileName;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
@@ -84,4 +99,7 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+
+	UPROPERTY()
+	UPhysicalAnimationComponent* PhysicalAnimationComp;
 };

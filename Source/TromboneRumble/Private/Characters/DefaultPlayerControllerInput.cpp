@@ -101,5 +101,5 @@ void ADefaultPlayerController::Handle_Rhythm(const bool bPressed)
 
 bool ADefaultPlayerController::CanProcessInput()
 {
-	return CachedOwnerCharacter.IsValid() && !CachedOwnerCharacter->IsStun() && !CachedOwnerCharacter->IsRagdoll();
+	return CachedOwnerCharacter.IsValid() && !CachedOwnerCharacter->IsStun() && !CachedOwnerCharacter->IsRagdoll() && CachedOwnerCharacter->IsCanProcessInput();
 }

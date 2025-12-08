@@ -39,7 +39,22 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
 }
 
-void UCharacterAnimInstance::SetIsAttacking(const bool bNewIsAttacking)
+void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFaceUp)
 {
-    bIsAttacking = bNewIsAttacking;
+    FOnMontageEnded EndedDelegate;
+    EndedDelegate.BindUObject(this, &UCharacterAnimInstance::OnGetUpMontageEnded);
+
+    if (UAnimMontage* TargetMontage = bIsFaceUp ? GetUpFrontMontage : GetUpBackMontage)
+    {
+        Montage_Play(TargetMontage);
+        Montage_SetEndDelegate(EndedDelegate, TargetMontage);
+    }
+}
+
+void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+    if (Montage == GetUpFrontMontage || Montage == GetUpBackMontage)
+    {
+        OwnerCharacter->EnablePlayerInput();
+    }
 }

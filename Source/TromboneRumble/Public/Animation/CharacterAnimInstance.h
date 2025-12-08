@@ -18,9 +18,16 @@ class TROMBONERUMBLE_API UCharacterAnimInstance : public UAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-	
-	UFUNCTION(BlueprintCallable, Category = "Animation")
-	void SetIsAttacking(const bool bNewIsAttacking);
+
+	//~ Begin Setters
+	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
+	void SetRagdollSnapshotName(const FName& NewSnapshotName) { RagdollSnapshotName = NewSnapshotName; }
+	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
+	void SetIsRagdollBlending(const bool bNewIsRagdollBlending) { bIsRagdollBlending = bNewIsRagdollBlending; }
+	void SetIsCapturedRagdollPose(const bool bNewIsCapturedRagdollPose) { bIsCapturedRagdollPose = bNewIsCapturedRagdollPose; }
+	//~ End Setters
+
+	void PlayGetUpMontage(bool bIsFaceUp);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")	
@@ -46,8 +53,30 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Instrument")
 	EInstrumentType CurrentInstrumentType = EInstrumentType::None;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	bool bIsRagdolling;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	bool bIsRagdollBlending;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	bool bIsCapturedRagdollPose = false;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	FName RagdollSnapshotName;
 
 private:
+	UFUNCTION()
+	void OnGetUpMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
+	TObjectPtr<UAnimMontage> GetUpFrontMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
+	TObjectPtr<UAnimMontage> GetUpBackMontage;
+	
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
 
