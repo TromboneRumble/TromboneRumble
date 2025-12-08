@@ -309,6 +309,10 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
 		{
 			NoteHearingComponent->SetSwitch(NoneSwitch, FString(TEXT("")), FString(TEXT("")));
 		}
+		if (RhythmNoteDestroyer)
+		{
+			RhythmNoteDestroyer->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+		}
 	}
 	else
 	{
@@ -316,6 +320,10 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
 		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(InType))
 		{
 			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+		}
+		if (RhythmNoteDestroyer)
+		{
+			RhythmNoteDestroyer->SetBoxExtent(FVector(RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent));
 		}
 	}
 }
