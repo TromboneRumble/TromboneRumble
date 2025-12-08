@@ -24,6 +24,10 @@ public:
 
 	
 protected:
+	UFUNCTION()
+	void AnimNotify_FootStep();
+
+
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")	
 	float UpperBodyBlendAlpha = 0.0f;
 	
@@ -60,6 +64,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkAudioEvent> FootstepAkEvent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> FootstepWaterAkEvent = nullptr;
 
 public:
 	//Getter Setter
