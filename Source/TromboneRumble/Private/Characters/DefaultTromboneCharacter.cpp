@@ -280,25 +280,31 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 {
 	if (Slot == EEquipmentSlotType::Instrument)
 	{
-		EInstrumentType Type = EInstrumentType::Background;
+		EInstrumentType NewType = EInstrumentType::Background;
 		if (NewItem)
 		{
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
 				CurrentInteractionContext.bIsEquipped = true;
-				Type = Instrument->GetInstrumentType();
+				NewType = Instrument->GetInstrumentType();
 			}
 		}
 		else
 		{
 			CurrentInteractionContext.bIsEquipped = false;
 		}
-
+		
 		if (IsLocallyControlled())
 		{
+			EInstrumentType OldType = EInstrumentType::None;
+			if (const AInstrumentBase* OldInstrument = Cast<AInstrumentBase>(OldItem))
+			{
+				OldType = OldInstrument->GetInstrumentType();
+			}
+
 			if (const URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 			{
-				RhythmSubsystem->OnInstrumentPicked.Broadcast(Type);
+				RhythmSubsystem->OnInstrumentPicked.Broadcast(OldType, NewType);
 			}
 		}
 	}

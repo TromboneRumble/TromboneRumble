@@ -2,18 +2,8 @@
 
 
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
-#include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
-#include "Components/CanvasPanel.h"
-#include "Components/CanvasPanelSlot.h"
 
-void URhythmNoteWidgetBase::Init(URhythmSpawnWidgetBase* InOwner)
+void URhythmNoteWidgetBase::Init(const EInstrumentType& InType)
 {
-	if (!InOwner) return;
-	OwnerSpawnWidget = InOwner;
-	if (!GetParent())
-	{
-		UCanvasPanel* ParentCanvas = InOwner->NoteCanvas;
-		ParentCanvas->AddChild(this);
-	}
-	SetVisibility(ESlateVisibility::HitTestInvisible);
+	InstrumentType = InType;
 }

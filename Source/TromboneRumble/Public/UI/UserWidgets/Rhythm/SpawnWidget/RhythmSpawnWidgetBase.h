@@ -12,6 +12,7 @@ class ARhythmNoteSpawner;
 enum class ENoteResult : uint8;
 enum class EInstrumentType : uint8;
 class UCanvasPanel;
+class UPanelWidget;
 class URhythmNoteWidgetBase;
 class URhythmResultWidgetBase;
 
@@ -25,8 +26,9 @@ class TROMBONERUMBLE_API URhythmSpawnWidgetBase : public UUserWidget
 public:
 	URhythmSpawnWidgetBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	virtual void Init(ARhythmNoteSpawner* InNoteSpawner);
-	virtual URhythmNoteWidgetBase* SpawnPooledRhythmNoteWidget();
+	void PrepareNoteContainer(const EInstrumentType& InType);
+
+	virtual URhythmNoteWidgetBase* SpawnPooledRhythmNoteWidget(const EInstrumentType& InType);
 	virtual URhythmResultWidgetBase* SpawnPooledRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InNoteResult);
 
 	virtual void ReleasePooledRhythmNoteWidget(URhythmNoteWidgetBase* Widget);
@@ -42,17 +44,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class")
 	TSubclassOf<URhythmResultWidgetBase> NoteResultWidgetClass;
 
-	EInstrumentType InstrumentType;
-
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeDestruct() override;
 	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
+
+	UFUNCTION()
+	void OnInstrumentChangedHandler(EInstrumentType PrevType, EInstrumentType NewType);
 
 	UPROPERTY(Transient)
 	FUserWidgetPool WidgetPool;
 
+	// 각 악기별 NoteWidget을 담을 CanvasPanel
+	UPROPERTY(Transient)
+	TMap<EInstrumentType, TObjectPtr<UPanelWidget>> InstrumentContainers;
+
 	bool isShown = false;
 
 private:
-	void PrewarmWidgetPool();
+	void PrepareRhythmResultWidgets();
 };

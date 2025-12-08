@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Actors/Rhythm/RhythmActor.h"
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
@@ -42,7 +43,6 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void CreateSpawnWidget(const ARhythmActor* InRhythmActor);
 	void SpawnAndMoveNote(const FString& InUserCueName);
 
 
@@ -63,15 +63,10 @@ private:
 	TObjectPtr<UAkAudioEvent> FailEvent = nullptr;
 	// ~WWise Audio
 
-	// Rhythm Note UI
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<URhythmSpawnWidgetBase> RhythmSpawnWidgetClass;
-
-	UPROPERTY(Transient, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<URhythmSpawnWidgetBase> SpawnWidget = nullptr;
-	// ~Rhythm Note UI
-
 	// Cached Reference
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ARhythmActor> CachedRhythmActor = nullptr;
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
@@ -99,6 +94,4 @@ public:
 	FORCEINLINE UAkSwitchValue* GetChangeSwitch() const { return ChangeSwitch; }
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE UAkAudioEvent* GetFailEvent() const { return FailEvent; }
-
-	URhythmSpawnWidgetBase* GetSpawnWidget() const { return SpawnWidget; }
 };
