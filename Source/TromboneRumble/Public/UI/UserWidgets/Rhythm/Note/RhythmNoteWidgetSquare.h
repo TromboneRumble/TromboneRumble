@@ -17,7 +17,7 @@ class TROMBONERUMBLE_API URhythmNoteWidgetSquare : public URhythmNoteWidgetBase
 	GENERATED_BODY()
 
 public:
-	virtual void Init(URhythmSpawnWidgetBase* InOwner) override;
+	virtual void Init(const EInstrumentType& InType) override;
 	virtual void InitWithCueMessage(const FString& InUserCueName) override;
 	virtual void UpdateNotePosition(const float InAlpha) override;
 

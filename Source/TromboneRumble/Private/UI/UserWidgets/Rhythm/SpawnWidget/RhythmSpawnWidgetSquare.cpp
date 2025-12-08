@@ -12,28 +12,14 @@
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
 
-void URhythmSpawnWidgetSquare::Init(ARhythmNoteSpawner* InNoteSpawner)
-{
-	Super::Init(InNoteSpawner);
-	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(Slot))
-	{
-		CanvasPanelSlot->SetAutoSize(true);
-		CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.5f));
-		CanvasPanelSlot->SetAnchors(FAnchors(0.5f, 0.5f));
-		//TODO : Remove Magic Number
-		CanvasPanelSlot->SetPosition(FVector2D(170.f, 300.f));
-	}
-	SetStartPoses();
-}
-
-URhythmNoteWidgetBase* URhythmSpawnWidgetSquare::SpawnPooledRhythmNoteWidget()
+URhythmNoteWidgetBase* URhythmSpawnWidgetSquare::SpawnPooledRhythmNoteWidget(const EInstrumentType& InType)
 {
 	if (!bInitializedPositions)
 	{
 		SetStartPoses();
 		bInitializedPositions = true;
 	}
-	URhythmNoteWidgetBase* Note = Super::SpawnPooledRhythmNoteWidget();
+	URhythmNoteWidgetBase* Note = Super::SpawnPooledRhythmNoteWidget(InType);
 	if (!Note) return nullptr;
 	URhythmNoteWidgetSquare* SquareNote = Cast<URhythmNoteWidgetSquare>(Note);
 	if (!SquareNote) return Note;
@@ -112,14 +98,14 @@ void URhythmSpawnWidgetSquare::NativeDestruct()
 	Super::NativeDestruct();
 }
 
-void URhythmSpawnWidgetSquare::PlayFadeAnimation(EInstrumentType InType)
+void URhythmSpawnWidgetSquare::PlayFadeAnimation(EInstrumentType OldType, EInstrumentType NewType)
 {
-	if (InType == InstrumentType && FadeInAnim && !isShown)
+	if (FadeInAnim && !isShown)
 	{
 		PlayAnimation(FadeInAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
 		isShown = true;
 	}
-	else if (InType != InstrumentType && FadeOutAnim && isShown)
+	else if (FadeOutAnim && isShown)
 	{
 		PlayAnimation(FadeOutAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
 		isShown = false;

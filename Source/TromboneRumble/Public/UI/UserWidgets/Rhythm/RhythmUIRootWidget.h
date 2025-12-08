@@ -7,6 +7,8 @@
 #include "RhythmUIRootWidget.generated.h"
 
 
+enum class EInstrumentType : uint8;
+class URhythmSpawnWidgetBase;
 class UCanvasPanel;
 class URhythmSpawnWidget;
 
@@ -19,8 +21,12 @@ class TROMBONERUMBLE_API URhythmUIRootWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	void PrepareNoteContainer(const EInstrumentType& InType);
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> NoteCanvas = nullptr;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<URhythmSpawnWidgetBase> RhythmSpawnWidget = nullptr;
 
 };
