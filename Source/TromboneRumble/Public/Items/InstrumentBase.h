@@ -32,22 +32,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	void PlaySound() const;
-	void StopSound() const;
 
 	UFUNCTION()
 	virtual void OnRep_Equipped();
 	
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Equipped)
 	uint8 bIsEquipped : 1 = 0;
-	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UAudioComponent> AudioComponent = nullptr;
 
-	UPROPERTY(EditAnywhere, Category="Config")
-	TObjectPtr<USoundBase> InstrumentSound = nullptr;
-	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAttackDataAsset> AttackData;
 

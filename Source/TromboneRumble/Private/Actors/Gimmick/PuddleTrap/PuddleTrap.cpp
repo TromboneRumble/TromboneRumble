@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/Gimmick/PuddleTrap.h"
+#include "Actors/Gimmick/PuddleTrap/PuddleTrap.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/Character.h"

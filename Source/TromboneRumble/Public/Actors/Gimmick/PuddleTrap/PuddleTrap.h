@@ -13,7 +13,7 @@ class UDecalComponent;
 class UPhysicalMaterial;
 class ACharacter;
 
-UCLASS()
+UCLASS(Abstract)
 class TROMBONERUMBLE_API APuddleTrap : public AActor
 {
 	GENERATED_BODY()
