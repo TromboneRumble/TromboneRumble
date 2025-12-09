@@ -20,14 +20,7 @@ class TROMBONERUMBLE_API UCharacterAnimInstance : public UAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-
-	//~ Begin Setters
-	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
-	void SetRagdollSnapshotName(const FName& NewSnapshotName) { RagdollSnapshotName = NewSnapshotName; }
-	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
-	void SetIsRagdollBlending(const bool bNewIsRagdollBlending) { bIsRagdollBlending = bNewIsRagdollBlending; }
-	//~ End Setters
-
+	
 	void PlayGetUpMontage(bool bIsFacingUp);
 	
 protected:
@@ -95,7 +88,10 @@ private:
 	TObjectPtr<UAkAudioEvent> FootstepWaterAkEvent = nullptr;
 
 public:
-	//Getter Setter
-	UFUNCTION(BlueprintCallable, Category = "Animation")
-	FORCEINLINE void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; };
+	//~ Begin Setters
+	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
+	void SetRagdollSnapshotName(const FName& NewSnapshotName) { RagdollSnapshotName = NewSnapshotName; }
+	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
+	void SetIsRagdollBlending(const bool bNewIsRagdollBlending) { bIsRagdollBlending = bNewIsRagdollBlending; }
+	//~ End Setters
 };

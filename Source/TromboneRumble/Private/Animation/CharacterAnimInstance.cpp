@@ -48,7 +48,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UCharacterAnimInstance::AnimNotify_FootStep()
 {
-    if (!OwnerCharacter.IsValid() || !OwnerAkSoundComponent.IsValid())
+    if (!IsValid(OwnerCharacter) || !OwnerAkSoundComponent.IsValid())
     {
         return;
     }
