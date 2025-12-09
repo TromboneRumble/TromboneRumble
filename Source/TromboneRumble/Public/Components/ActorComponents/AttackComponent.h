@@ -65,6 +65,7 @@ protected:
 	bool bCanAttack = true;
 
 private:
+	bool IsCanSweep() const;
 	void ResetAttackCooldown() { bCanAttack = true; }
 	void SetAttackState(bool bNewState);
 

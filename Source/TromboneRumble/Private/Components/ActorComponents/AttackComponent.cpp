@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Items/InstrumentBase.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 static const FName GSocket_Head(TEXT("head"));
@@ -54,6 +55,8 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (!bIsAttacking || !CurrentCollisionComponent || !OwnerCharacter->HasAuthority()) return;
+
+	if (!IsCanSweep()) return;
 
 	const FTransform CurrentTransform = CurrentCollisionComponent->GetComponentTransform();
 	const FVector Start = PreviousFrameTransform.GetLocation();
@@ -207,6 +210,20 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 		CurrentCollisionComponent = HeadbuttCollisionComponent;
 		CurrentAttackData = HeadbuttAttackData;
 	}
+}
+
+bool UAttackComponent::IsCanSweep() const
+{
+	const UGameInstance* GI = GetWorld()->GetGameInstance();
+	if (!GI) return false;
+
+	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	if (!GameStateSubsystem || GameStateSubsystem->GetGameState() != EGameState::InGame)
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 void UAttackComponent::SetAttackState(const bool bNewState)
