@@ -33,12 +33,7 @@ public:
 	// ~ End ICombatReceiver Interfaces
 	
 	void ApplySkinColor(const FLinearColor InSkinColor) const;
-
-	bool IsStun() const { return bIsStun; }
-	bool IsRagdoll() const { return bIsRagdoll; }
-	bool IsCanProcessInput() const { return bIsCanProcessInput; }
-	void EnablePlayerInput();
-	void DisablePlayerInput();
+	void SetPlayerInput(const bool bShouldEnable);
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
@@ -69,7 +64,7 @@ private:
 	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
 	void RagdollUpdate();
-	void SetActorLocationDuringRagdoll();
+	void SetActorLocationAndRotationDuringRagdoll();
 
 	// Replication Notifies
 	UFUNCTION()
@@ -83,10 +78,6 @@ private:
 	FTimerHandle OnHitTimerHandle;
 
 	bool bIsCanProcessInput = true;
-	bool bRagdollOnGround = true;
-	bool bRagdollFaceUp = false;
-	FVector LastRagdollVelocity = FVector::ZeroVector;
-	FName DefaultMeshCollisionProfileName;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
@@ -100,6 +91,12 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
 
-	UPROPERTY()
-	UPhysicalAnimationComponent* PhysicalAnimationComp;
+	FName PelvisBoneName = "pelvis";
+
+public:
+	//~ Begin Setter
+	bool IsStun() const { return bIsStun; }
+	bool IsRagdoll() const { return bIsRagdoll; }
+	bool IsCanProcessInput() const { return bIsCanProcessInput; }
+	//~ End Setter
 };

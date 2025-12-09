@@ -129,6 +129,6 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
 {
     if (Montage == GetUpFrontMontage || Montage == GetUpBackMontage)
     {
-        OwnerCharacter->EnablePlayerInput();
+        OwnerCharacter->SetPlayerInput(true);
     }
 }

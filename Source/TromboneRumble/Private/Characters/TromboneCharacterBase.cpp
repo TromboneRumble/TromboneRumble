@@ -7,15 +7,12 @@
 #include "Framework/DefaultPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "PhysicsEngine/PhysicalAnimationComponent.h"
-#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
 	
 	InitCharacter();
 }
@@ -32,30 +29,24 @@ void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) cons
 	}
 }
 
-void ATromboneCharacterBase::EnablePlayerInput()
+void ATromboneCharacterBase::SetPlayerInput(const bool bShouldEnable)
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			EnableInput(PlayerController);
-		}
-	}
-	
-	bIsCanProcessInput = true;
-}
+	bIsCanProcessInput = bShouldEnable;
 
-void ATromboneCharacterBase::DisablePlayerInput()
-{
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (IsLocallyControlled())
 		{
-			DisableInput(PlayerController);
+			if (bShouldEnable)
+			{
+				EnableInput(PlayerController);
+			}
+			else
+			{
+				DisableInput(PlayerController);
+			}
 		}
 	}
-	
-	bIsCanProcessInput = false;
 }
 
 void ATromboneCharacterBase::BeginPlay()
@@ -257,7 +248,7 @@ void ATromboneCharacterBase::EndStun()
 void ATromboneCharacterBase::ApplyStun()
 {
 	StopAnimMontage();
-	DisablePlayerInput();
+	SetPlayerInput(false);
 }
 
 void ATromboneCharacterBase::UnapplyStun()
@@ -265,13 +256,13 @@ void ATromboneCharacterBase::UnapplyStun()
 	if (bIsRagdoll) return;
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	EnablePlayerInput();
+	SetPlayerInput(true);
 }
 
 void ATromboneCharacterBase::ApplyRagdoll()
 {
-	DisablePlayerInput();
-	
+	SetPlayerInput(false);
+
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 
@@ -316,24 +307,12 @@ void ATromboneCharacterBase::InternalUnapplyRagdoll()
 	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInst) return;
 
-	const float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -HalfHeight), FRotator(0.f, -90.f, 0.f));
-	
-	if (bRagdollOnGround)
-	{
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-		AnimInst->PlayGetUpMontage(IsFacingUp());
-	}
-	else
-	{
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-		GetCharacterMovement()->Velocity = LastRagdollVelocity;
-	}
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	AnimInst->PlayGetUpMontage(IsFacingUp());
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	GetMesh()->SetAllBodiesSimulatePhysics(false);
 	AnimInst->SetIsRagdollBlending(false);
 	AnimInst->SetIsRagdolling(false);
 }
@@ -342,8 +321,7 @@ bool ATromboneCharacterBase::IsFacingUp() const
 {
 	if (!GetMesh()) return true;
 
-	const FName PelvisSocketName = TEXT("pelvis"); 
-	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisSocketName);
+	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
 	const FVector PelvisUp = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::Z);
     
 	return (FVector::DotProduct(PelvisUp, FVector::UpVector) > 0.0f);
@@ -351,35 +329,17 @@ bool ATromboneCharacterBase::IsFacingUp() const
 
 void ATromboneCharacterBase::RagdollUpdate()
 {
-	LastRagdollVelocity = GetMesh()->GetPhysicsLinearVelocity(TEXT("root"));
-	const float Spring = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 100.0f), FVector2D(1000.0f, 2800.0f), LastRagdollVelocity.Length());
-	GetMesh()->SetAllMotorsAngularDriveParams(Spring, 0.0f, 0.0f, false);
-	
-	FPhysicalAnimationData StrengthData_0;
-	StrengthData_0.bIsLocalSimulation = true;
-	StrengthData_0.OrientationStrength = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 500.0f), FVector2D(0.0f, 1000.0f), LastRagdollVelocity.Length());
-	
-	FPhysicalAnimationData StrengthData_1;
-	StrengthData_1.bIsLocalSimulation = true;
-	StrengthData_1.OrientationStrength = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 500.0f), FVector2D(0.0f, 1000.0f), LastRagdollVelocity.Length());
-	StrengthData_1.PositionStrength = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 500.0f), FVector2D(0.0f, 2000.0f), LastRagdollVelocity.Length());
-	
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow("spine_03", StrengthData_0, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow("thigh_l", StrengthData_0, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow("thigh_r", StrengthData_0, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow("hand_l", StrengthData_1, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow("hand_r", StrengthData_1, true);
-	
+	const FVector LastRagdollVelocity = GetMesh()->GetPhysicsLinearVelocity(TEXT("root"));
 	GetMesh()->SetEnableGravity(LastRagdollVelocity.Z > -4000.0f);
-	SetActorLocationDuringRagdoll();
+	SetActorLocationAndRotationDuringRagdoll();
 }
 
-void ATromboneCharacterBase::SetActorLocationDuringRagdoll()
+void ATromboneCharacterBase::SetActorLocationAndRotationDuringRagdoll()
 {
-	const FVector TargetRagdollLocation = GetMesh()->GetSocketLocation("pelvis");
-	const FRotator PelvisRotation = GetMesh()->GetSocketRotation("pelvis");
+	const FVector TargetRagdollLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
+	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
 
-	const FRotator TargetRagdollRotation = FRotator(0.0f, PelvisRotation.Yaw - (IsFacingUp() ? 180.0f : 0.0f), 0.0f);
+	const FRotator TargetRagdollRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
 
 	const float MeshHeightOffset = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	const FVector TraceEnd = TargetRagdollLocation - FVector(0.0f, 0.0f, MeshHeightOffset);
@@ -387,9 +347,8 @@ void ATromboneCharacterBase::SetActorLocationDuringRagdoll()
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
-	
-	bRagdollOnGround = GetWorld()->LineTraceSingleByChannel(HitResult, TargetRagdollLocation, TraceEnd, ECC_Visibility, QueryParams);
-	if (bRagdollOnGround)
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, TargetRagdollLocation, TraceEnd, ECC_Visibility, QueryParams))
 	{
 		const float Offset = MeshHeightOffset - abs(HitResult.ImpactPoint.Z - HitResult.TraceStart.Z) + 2.0f;
 		SetActorLocation(TargetRagdollLocation + FVector(0.0f, 0.0f, Offset));
