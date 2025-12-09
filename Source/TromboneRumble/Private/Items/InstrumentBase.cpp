@@ -13,19 +13,13 @@
 
 AInstrumentBase::AInstrumentBase()
 {
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AudioComponent->SetupAttachment(RootComponent);
-	AudioComponent->bAutoActivate = false;
-	AudioComponent->bAllowSpatialization = true;
-	AudioComponent->bOverrideAttenuation = true;
-
-	if (!InstrumentSound)
+	if (ItemMeshComponent)
 	{
-		static ConstructorHelpers::FObjectFinder<USoundBase> SoundFinder(TEXT("/Game/Sounds/Trumpet.Trumpet"));
-		if (SoundFinder.Succeeded())
-		{
-			AudioComponent->SetSound(SoundFinder.Object);
-		}
+		ItemMeshComponent->SetReceivesDecals(false);
+	}
+	if (CapsuleComponent)
+	{
+		CapsuleComponent->SetReceivesDecals(false);
 	}
 	
 	CapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
@@ -142,15 +136,6 @@ void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AInstrumentBase, bIsEquipped);
 }
 
-void AInstrumentBase::PlaySound() const
-{
-	// if (AudioComponent) AudioComponent->Play();
-}
-
-void AInstrumentBase::StopSound() const
-{
-	if (AudioComponent) AudioComponent->Stop();
-}
 
 void AInstrumentBase::OnRep_Equipped()
 {
@@ -172,13 +157,11 @@ void AInstrumentBase::OnRep_Equipped()
 				AttachToActor(CurrentOwner, FAttachmentTransformRules::KeepWorldTransform);
 			}
 		}
-		PlaySound();
 	}
 	else
 	{
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		SetPhysicsEnabled(true);
-		StopSound();
 		ItemMeshComponent->SetRelativeTransform(OriginMeshTransform);
 	}
 }
