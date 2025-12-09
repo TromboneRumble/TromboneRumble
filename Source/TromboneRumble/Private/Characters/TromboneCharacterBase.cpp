@@ -64,7 +64,6 @@ void ATromboneCharacterBase::BeginPlay()
 	SetupCharacterData();
 	UpdateSkinFromPlayerState();
 
-	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
 }
 
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

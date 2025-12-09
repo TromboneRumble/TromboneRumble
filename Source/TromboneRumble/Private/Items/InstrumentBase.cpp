@@ -106,28 +106,6 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
 	if (ItemMeshComponent) ItemMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
 }
 
-void AInstrumentBase::AttachToIdleSocket() const
-{
-	if (const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
-	{
-		CapsuleComponent->AttachToComponent(
-			OwnerChar->GetMesh(),
-			FAttachmentTransformRules::SnapToTargetIncludingScale,
-			AttachSocketNameTromboneIdle);
-	}
-}
-
-void AInstrumentBase::AttachToAttackSocket() const
-{
-	if (const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
-	{
-		CapsuleComponent->AttachToComponent(
-			OwnerChar->GetMesh(),
-			FAttachmentTransformRules::SnapToTargetIncludingScale,
-			AttachSocketNameTromboneAttack);
-	}
-}
-
 void AInstrumentBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -164,7 +142,7 @@ void AInstrumentBase::OnRep_Equipped()
 				CapsuleComponent->AttachToComponent(
 					OwnerChar->GetMesh(),
 					FAttachmentTransformRules::SnapToTargetIncludingScale,
-					AttachSocketNameTromboneIdle);
+					TromboneSocketName);
 				ItemMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 			}
 			else

@@ -29,9 +29,6 @@ public:
 
 	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
 
-	void AttachToIdleSocket() const;
-	void AttachToAttackSocket() const;
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -72,8 +69,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="Config")
 	float UpwardImpulse = 300.0f;
 	
-	FName AttachSocketNameTromboneIdle = TEXT("socket_hand_r_idle");
-	FName AttachSocketNameTromboneAttack = TEXT("socket_hand_l_attack");
+	FName TromboneSocketName = TEXT("socket_hand_l");
 
 public:
 	//getter setter

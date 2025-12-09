@@ -148,11 +148,6 @@ void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
 	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled()) return;
 	
-	if (CurrentInstrument)
-	{
-		CurrentInstrument->AttachToAttackSocket();
-	}
-
 	if (CharacterAnimInstance)
 	{
 		CharacterAnimInstance->SetIsAttacking(true);
@@ -169,11 +164,6 @@ void UAttackComponent::Multicast_ExecuteAttackEnd_Implementation()
 	if (CharacterAnimInstance)
 	{
 		CharacterAnimInstance->SetIsAttacking(false);
-	}
-
-	if (CurrentInstrument)
-	{
-		CurrentInstrument->AttachToIdleSocket();
 	}
 }
 
