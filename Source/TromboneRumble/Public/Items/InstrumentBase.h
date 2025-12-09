@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/CapsuleComponent.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "Interfaces/Equipable.h"
 #include "Items/ItemBase.h"
 #include "InstrumentBase.generated.h"
 
 class UAttackDataAsset;
 class IInstrumentEventHandler;
+class UGameplayEffect;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API AInstrumentBase : public AItemBase, public IEquipable
@@ -55,6 +56,12 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	EInstrumentType InstrumentType = EInstrumentType::Invalid;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Movement")
+	TSubclassOf<UGameplayEffect> EquipMoveSpeedEffectClass;
+
+	// 이 악기가 현재 소유자에게 걸어둔 GE 핸들
+	FActiveGameplayEffectHandle EquipMoveSpeedEffectHandle;
 
 private:
 	FTransform OriginMeshTransform;

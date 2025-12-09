@@ -7,6 +7,8 @@
 #include "Utilities/Defines.h"
 #include "CharacterAnimInstance.generated.h"
 
+class UAkAudioEvent;
+class UAkComponent;
 class ADefaultTromboneCharacter;
 class UCharacterMovementComponent;
 
@@ -29,6 +31,10 @@ public:
 	void PlayGetUpMontage(bool bIsFacingUp);
 	
 protected:
+	UFUNCTION()
+	void AnimNotify_FootStep();
+
+
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")	
 	float UpperBodyBlendAlpha = 0.0f;
 	
@@ -77,5 +83,19 @@ private:
 	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UCharacterMovementComponent> MovementComponent;
+	TWeakObjectPtr<UCharacterMovementComponent> MovementComponent = nullptr;
+
+	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TWeakObjectPtr<UAkComponent> OwnerAkSoundComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> FootstepAkEvent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> FootstepWaterAkEvent = nullptr;
+
+public:
+	//Getter Setter
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	FORCEINLINE void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; };
 };

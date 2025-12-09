@@ -15,9 +15,7 @@ class TROMBONERUMBLE_API URhythmSpawnWidgetCircle : public URhythmSpawnWidgetBas
 	GENERATED_BODY()
 
 public:
-	virtual void Init(ARhythmNoteSpawner* InNoteSpawner) override;
-
-	virtual URhythmNoteWidgetBase* SpawnPooledRhythmNoteWidget() override;
+	virtual URhythmNoteWidgetBase* SpawnPooledRhythmNoteWidget(const EInstrumentType& InType) override;
 
 	virtual URhythmResultWidgetBase* SpawnPooledRhythmResultWidget(const FVector2D& SpawnPos, ENoteResult InResult) override;
 
@@ -30,7 +28,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void PlayFadeAnimation(EInstrumentType InType);
+	void PlayFadeAnimation(EInstrumentType OldType, EInstrumentType NewType);
 
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
 	UWidgetAnimation* FadeOutAnim;

@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmResultWidgetBase.generated.h"
 
-class URhythmSpawnWidgetBase;
 /**
  * 
  */
@@ -14,7 +13,4 @@ UCLASS(Abstract)
 class TROMBONERUMBLE_API URhythmResultWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
-
-public:
-	void Init(URhythmSpawnWidgetBase* InOwner);
 };

@@ -6,6 +6,10 @@
 #include "Engine/DataAsset.h"
 #include "CharacterDataAsset.generated.h"
 
+/*
+ * DataAsset 형태로 캐릭터 초기 설정값 보관
+ * 인게임에서 변경될 값(Health, Stamina 등)은 CharacterAttributeSet에서 관리
+ */
 UCLASS()
 class TROMBONERUMBLE_API UCharacterDataAsset : public UDataAsset
 {

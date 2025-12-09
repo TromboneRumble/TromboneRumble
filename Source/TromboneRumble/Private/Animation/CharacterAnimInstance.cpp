@@ -4,15 +4,22 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AkComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
     Super::NativeInitializeAnimation();
 
     OwnerCharacter = Cast<ADefaultTromboneCharacter>(TryGetPawnOwner());
-    if (OwnerCharacter)
+    if (OwnerCharacter.Get())
     {
         MovementComponent = OwnerCharacter->GetCharacterMovement();
+        if (OwnerCharacter->GetAkComponent())
+        {
+			OwnerAkSoundComponent = OwnerCharacter->GetAkComponent();
+        }
     }
 }
 
@@ -24,7 +31,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     
     UpperBodyBlendAlpha = FMath::FInterpTo(UpperBodyBlendAlpha, TargetAlpha, DeltaSeconds, BlendInterpSpeed);
 
-    if (!OwnerCharacter || !MovementComponent) return;
+    if (!OwnerCharacter.Get() || !MovementComponent.Get()) return;
 
     Velocity = MovementComponent->Velocity;
     
@@ -37,6 +44,73 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     bShouldMove = (GroundSpeed > 3.0f) || bIsAccelerating;
 
     CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
+}
+
+void UCharacterAnimInstance::AnimNotify_FootStep()
+{
+    if (!OwnerCharacter.IsValid() || !OwnerAkSoundComponent.IsValid())
+    {
+        return;
+    }
+
+    UWorld* World = OwnerCharacter->GetWorld();
+    if (!World)
+    {
+        return;
+    }
+
+   
+    const FVector Start = OwnerCharacter->GetActorLocation();
+
+    const FVector UpVector = OwnerCharacter->GetActorUpVector();
+    const FVector End = Start + UpVector * -200.0f;
+
+    FHitResult HitResult;
+
+    // 자기 자신은 무시
+    FCollisionQueryParams Params(SCENE_QUERY_STAT(FootstepTrace), false, OwnerCharacter.Get());
+
+    const bool bHit = World->LineTraceSingleByChannel(
+        HitResult,
+        Start,
+        End,
+        ECollisionChannel::ECC_Visibility,
+        Params
+    );
+
+    if (!bHit)
+    {
+        return;
+    }
+
+    
+    const EPhysicalSurface SurfaceType = UGameplayStatics::GetSurfaceType(HitResult);
+
+    UAkAudioEvent* EventToPost = FootstepAkEvent;
+
+    switch (SurfaceType)
+    {
+    case SurfaceType_Default:
+        EventToPost = FootstepAkEvent;
+        break;
+    case SurfaceType1:
+        EventToPost = FootstepWaterAkEvent ? FootstepWaterAkEvent : FootstepAkEvent;
+        break;
+    default:
+        EventToPost = FootstepAkEvent;
+        break;
+    }
+
+    if (!EventToPost)
+    {
+        return;
+    }
+
+    OwnerAkSoundComponent->PostAkEvent(
+        EventToPost,
+        0,                                  
+        FOnAkPostEventCallback() 
+    );
 }
 
 void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)

@@ -28,9 +28,6 @@ ARhythmNoteSpawner::ARhythmNoteSpawner()
 		ArrowComponent->SetupAttachment(RootComponent);
 		ArrowComponent->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	}
-
-	
-
 }
 
 void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent, UAkSwitchValue* InChangeSwitch,
@@ -40,12 +37,6 @@ void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNo
 	SpawnNoteEvent = InNoteEvent;
 	ChangeSwitch = InChangeSwitch;
 	FailEvent = InFailEvent;
-
-	ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner());
-	if (IsValid(OwnerRhythmActor))
-	{
-		CreateSpawnWidget(OwnerRhythmActor);
-	}
 }
 
 void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
@@ -71,26 +62,15 @@ void ARhythmNoteSpawner::BeginPlay()
 		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
 		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 100, SpawnTransform);
 	}
-}
-
-void ARhythmNoteSpawner::CreateSpawnWidget(const ARhythmActor* InRhythmActor)
-{
-	checkf(IsValid(InRhythmActor), TEXT("InRhythmActor is invalid in %s"), *GetName());
-	SpawnWidget = CreateWidget<URhythmSpawnWidgetBase>(GetWorld(), RhythmSpawnWidgetClass);
-	if (SpawnWidget)
+	if (ARhythmActor* OwnerActor = Cast<ARhythmActor>(GetOwner()))
 	{
-		if (InRhythmActor->GetRhythmUIRootWidget())
-		{
-			InRhythmActor->GetRhythmUIRootWidget()->NoteCanvas->AddChildToCanvas(SpawnWidget);
-			SpawnWidget->Init(this);
-		}
+		CachedRhythmActor = OwnerActor;
 	}
 }
 
 void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 {
 	checkf(RhythmNoteClass, TEXT("RhythmNoteClass is not set in %s"), *GetName());
-	checkf(SpawnWidget, TEXT("SpawnWidget is not created in %s"), *GetName());
 	if (!CachedRhythmNoteChannelSubsystem.Get() || !CachedActorPoolSubsystem.Get()) return;
 
 	FTransform SpawnTransform;
@@ -106,9 +86,8 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
-		URhythmNoteWidgetBase* PooledRhythmNoteWidget = SpawnWidget->SpawnPooledRhythmNoteWidget();
-		PooledRhythmNoteWidget->InitWithCueMessage(InUserCueName);
-		PooledNote->InitNote(this, PooledRhythmNoteWidget, TimeToComplete);
+		
+		PooledNote->InitNote(CachedRhythmActor.Get(), this, TimeToComplete, InUserCueName);
 
 		if (InUserCueName.StartsWith(TEXT("SS_")))
 		{
@@ -140,16 +119,7 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 			float Delay = 4.5f;
 			if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
 			{
-				FTimerHandle DebugHandle;
-				GetWorld()->GetTimerManager().SetTimer(
-					DebugHandle,
-					FTimerDelegate::CreateLambda([OwnerRhythmActor]()
-						{
-							OwnerRhythmActor->DetectNotes();
-						}),
-					Delay,
-					false
-				);
+				PooledNote->StartSyncDebugTimer(OwnerRhythmActor, Delay);
 			}
 		}
 		

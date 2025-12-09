@@ -8,9 +8,9 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Utilities/Defines.h"
 
-void URhythmNoteWidgetSquare::Init(URhythmSpawnWidgetBase* InOwner)
+void URhythmNoteWidgetSquare::Init(const EInstrumentType& InType)
 {
-	Super::Init(InOwner);
+	Super::Init(InType);
 }
 
 void URhythmNoteWidgetSquare::InitWithCueMessage(const FString& InUserCueName)

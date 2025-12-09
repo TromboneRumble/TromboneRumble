@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmNoteWidgetBase.generated.h"
 
+enum class EInstrumentType : uint8;
 class URhythmSpawnWidgetBase;
 /**
  * 
@@ -16,13 +17,18 @@ class TROMBONERUMBLE_API URhythmNoteWidgetBase : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void Init(URhythmSpawnWidgetBase* InOwner);
-	virtual void InitWithCueMessage(const FString& InUserCueName){};
+	virtual void Init(const EInstrumentType& InType);
 
+	virtual void InitWithCueMessage(const FString& InUserCueName){};
 	virtual void UpdateNotePosition(const float InAlpha){};
 
 protected:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<URhythmSpawnWidgetBase> OwnerSpawnWidget;
+
+	EInstrumentType InstrumentType;
+
+public:
+	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
 	
 };

@@ -8,11 +8,12 @@
 #include "Utilities/Defines.h"
 #include "RhythmNote.generated.h"
 
-class URhythmNoteWidgetBase;
+class ARhythmActor;
+class ARhythmNoteSpawner;
 class URhythmNoteChannelSubsystem;
 class URhythmNoteUIControllerComponent;
 class USphereComponent;
-class ARhythmNoteSpawner;
+struct FTimerHandle;
 
 
 UCLASS(Abstract)
@@ -31,7 +32,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(const ARhythmNoteSpawner* InSpawner, URhythmNoteWidgetBase* InNoteWidget, float InTimeToComplete);
+	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, float InTimeToComplete, const FString& InUserCueName);
 	void SetToShortNote();
 	void SetToLongNoteStart();
 	void SetToLongNoteEnd();
@@ -39,6 +40,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category = "Rhythm")
 	void MoveNotes();
 	void MoveNotes_Implementation();
+
+	void StartSyncDebugTimer(ARhythmActor* RhythmActor, float InDelaySeconds);
+	void CancelSyncDebugTimer();
 
 	UPROPERTY()
 	FNoteHandle NoteHandle;
@@ -82,6 +86,10 @@ private:
 	bool bIsLongNoteEnd = false;
 
 	EInstrumentType NoteType;
+
+	FTimerHandle SyncDebugTimerHandle;
+
+	bool bHasSyncDebugTimer = false;
 
 public:
 	// Getter Setter

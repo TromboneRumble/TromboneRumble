@@ -71,7 +71,7 @@ private:
 	bool DestroySpawner(EInstrumentType InType);
 
 	UFUNCTION()
-	void OnInstrumentPickedHandler(EInstrumentType InType);
+	void OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType);
 
 	UFUNCTION()
 	void OnNoteDetectedHandler(ENoteResult InNoteResult);

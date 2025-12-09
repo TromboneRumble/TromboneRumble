@@ -6,6 +6,9 @@
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
+#include "AbilitySystemInterface.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffect.h"
 #include "Utilities/DebugHelper.h"
 
 AInstrumentBase::AInstrumentBase()
@@ -51,15 +54,49 @@ void AInstrumentBase::Equip_Implementation(AActor* OwnerActor)
 	OnRep_Equipped();
 
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
+
+	// Move Speed Gameplay Effect 적용
+	if (EquipMoveSpeedEffectClass)
+	{
+		if (IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(OwnerActor))
+		{
+			if (UAbilitySystemComponent* ASC = ASCInterface->GetAbilitySystemComponent())
+			{
+				const UGameplayEffect* GE = EquipMoveSpeedEffectClass->GetDefaultObject<UGameplayEffect>();
+
+				FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+				Context.AddSourceObject(this);
+
+				EquipMoveSpeedEffectHandle =
+					ASC->ApplyGameplayEffectToSelf(GE, 1.f, Context);
+			}
+		}
+	}
 }
 
 void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
 {
 	if (!HasAuthority() || !bIsEquipped) return;
 
+	if (EquipMoveSpeedEffectHandle.IsValid())
+	{
+		if (OwnerActor)
+		{
+			if (IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(OwnerActor))
+			{
+				if (UAbilitySystemComponent* ASC = ASCInterface->GetAbilitySystemComponent())
+				{
+					ASC->RemoveActiveGameplayEffect(EquipMoveSpeedEffectHandle);
+				}
+			}
+		}
+
+		EquipMoveSpeedEffectHandle.Invalidate();
+	}
+
 	const FVector VForwardImpulse = CurrentOwner->GetActorForwardVector() * ForwardImpulse;
 	const FVector VUpwardImpulse = FVector::UpVector * UpwardImpulse;
-    
+
 	CurrentOwner = nullptr;
 	bIsEquipped = false;
 

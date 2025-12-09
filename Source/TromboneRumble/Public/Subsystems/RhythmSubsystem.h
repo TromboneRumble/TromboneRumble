@@ -14,7 +14,7 @@ class UAkMusicSyncCallbackInfo;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMusicUserCue, FName, CueName);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstrumentPickedDelegate, EInstrumentType, InType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentPickedDelegate, EInstrumentType, PrevType, EInstrumentType, NewType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);
 
 /**
