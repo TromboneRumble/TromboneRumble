@@ -292,16 +292,27 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Splash_On" ID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}">
+							<ChildrenList>
+								<Action Name="" ID="{925F1128-0926-4B7C-BD10-516A5236A825}" ShortID="660516854">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Splash" ID="{8316B0FD-4627-4B60-A1AE-4322014D99FD}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
 					<ChildrenList>
 						<Event Name="Play_Player_Foot" ID="{802600D1-086F-4B89-A202-B18F89409828}">
 							<ChildrenList>
-								<Action Name="" ID="{E326E787-052C-474D-8B65-E81E5B11D870}" ShortID="420151719">
+								<Action Name="" ID="{D8C2D2F3-EE20-4303-9AD2-98FF02A94315}" ShortID="996425837">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Foot" ID="{86276A5C-BCEC-4960-8462-5E0111768624}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+											<ObjectRef Name="Player_Foot" ID="{6C6B7ACD-6F90-407B-A6E0-759EB5180DA4}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

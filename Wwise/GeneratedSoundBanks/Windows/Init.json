@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{E8E9FCE4-A3DC-8F72-63AA-3DD414AA5643}",
+    "Hash": "{A6C78E83-0118-FBF9-4FE6-0344627BC883}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -86,6 +86,26 @@
         "Name": "SW_T",
         "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
         "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     },
+     {
+      "Id": "3031504797",
+      "Name": "Foot",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Foot",
+      "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
+      "Switches": [
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
+        "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
+       },
+       {
+        "Id": "2654748154",
+        "Name": "Water",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
+        "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
        }
       ]
      }
@@ -556,6 +576,6 @@
     ]
    }
   ],
-  "FileHash": "{F5D43D2B-755B-AE24-912F-06688237EE3E}"
+  "FileHash": "{E87A4538-48AC-6064-2D47-D1A2434D84EC}"
  }
 }

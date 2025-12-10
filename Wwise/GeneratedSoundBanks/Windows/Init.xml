@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{E8E9FCE4-A3DC-8F72-63AA-3DD414AA5643}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{A6C78E83-0118-FBF9-4FE6-0344627BC883}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -25,6 +25,12 @@
 						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
 						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
 						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
+					</Switches>
+				</SwitchGroup>
+				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
+					<Switches>
+						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
@@ -158,5 +164,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5A84F0FA-8CEB-75F9-79E7-6150B1B71B82}</FileHash>
+	<FileHash>{89286AE4-3D5E-7505-BD5C-4118A1DFAD34}</FileHash>
 </SoundBanksInfo>

@@ -298,50 +298,98 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{1A3E856D-EBC3-C9B6-97D1-C7E42D530F56}">
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{05A57BAF-AA2B-645C-F7E9-D226020DD306}">
 			<ObjectPath>Play_Player_Foot</ObjectPath>
 			<ShortName>Play_Player_Foot</ShortName>
 			<Path>Event/Play_Player_Foot.bnk</Path>
 			<Media>
-				<File Id="296563695" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Foot\Wood_Foot_3.wav</ShortName>
-					<Path>Media/296563695.wem</Path>
-					<CachePath>SFX/Foot/Wood_Foot_3_818F3B66.wem</CachePath>
+				<File Id="71206826" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood2_Foot_3.wav</ShortName>
+					<Path>Media/71206826.wem</Path>
+					<CachePath>SFX/Wood2_Foot_3_818F3B66.wem</CachePath>
 				</File>
-				<File Id="480487708" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Foot\Wood_Foot_5.wav</ShortName>
-					<Path>Media/480487708.wem</Path>
-					<CachePath>SFX/Foot/Wood_Foot_5_818F3B66.wem</CachePath>
+				<File Id="80669302" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Water_Foot_2.wav</ShortName>
+					<Path>Media/80669302.wem</Path>
+					<CachePath>SFX/Water_Foot_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="895246282" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Foot\Wood_Foot_4.wav</ShortName>
-					<Path>Media/895246282.wem</Path>
-					<CachePath>SFX/Foot/Wood_Foot_4_818F3B66.wem</CachePath>
+				<File Id="167561171" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood2_Foot_2.wav</ShortName>
+					<Path>Media/167561171.wem</Path>
+					<CachePath>SFX/Wood2_Foot_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="923656824" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Foot\Wood_Foot_1.wav</ShortName>
-					<Path>Media/923656824.wem</Path>
-					<CachePath>SFX/Foot/Wood_Foot_1_818F3B66.wem</CachePath>
+				<File Id="279374184" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood2_Foot_4.wav</ShortName>
+					<Path>Media/279374184.wem</Path>
+					<CachePath>SFX/Wood2_Foot_4_818F3B66.wem</CachePath>
 				</File>
-				<File Id="973706153" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Foot\Wood_Foot_2.wav</ShortName>
-					<Path>Media/973706153.wem</Path>
-					<CachePath>SFX/Foot/Wood_Foot_2_818F3B66.wem</CachePath>
+				<File Id="494162867" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Water_Foot_5.wav</ShortName>
+					<Path>Media/494162867.wem</Path>
+					<CachePath>SFX/Water_Foot_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="512909462" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood2_Foot_1.wav</ShortName>
+					<Path>Media/512909462.wem</Path>
+					<CachePath>SFX/Wood2_Foot_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="547171557" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Water_Foot_4.wav</ShortName>
+					<Path>Media/547171557.wem</Path>
+					<CachePath>SFX/Water_Foot_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="589790040" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Water_Foot_1.wav</ShortName>
+					<Path>Media/589790040.wem</Path>
+					<CachePath>SFX/Water_Foot_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="941571148" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood2_Foot_5.wav</ShortName>
+					<Path>Media/941571148.wem</Path>
+					<CachePath>SFX/Wood2_Foot_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="953859740" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Water_Foot_3.wav</ShortName>
+					<Path>Media/953859740.wem</Path>
+					<CachePath>SFX/Water_Foot_3_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" DurationType="OneShot" DurationMin="0.4058125" DurationMax="0.5898542">
-					<MediaRefs>
-						<MediaRef Id="296563695"/>
-						<MediaRef Id="480487708"/>
-						<MediaRef Id="895246282"/>
-						<MediaRef Id="923656824"/>
-						<MediaRef Id="973706153"/>
-					</MediaRefs>
+				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" DurationType="OneShot" DurationMin="0.28835043" DurationMax="0.45528895">
+					<SwitchContainers>
+						<SwitchContainer>
+							<SwitchValue GroupType="Switch" GroupId="3031504797" Id="2058049674" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}" Default="true"/>
+							<MediaRefs>
+								<MediaRef Id="71206826"/>
+								<MediaRef Id="167561171"/>
+								<MediaRef Id="279374184"/>
+								<MediaRef Id="512909462"/>
+								<MediaRef Id="941571148"/>
+							</MediaRefs>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="Switch" GroupId="3031504797" Id="2654748154" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+							<MediaRefs>
+								<MediaRef Id="80669302"/>
+								<MediaRef Id="494162867"/>
+								<MediaRef Id="547171557"/>
+								<MediaRef Id="589790040"/>
+								<MediaRef Id="953859740"/>
+							</MediaRefs>
+						</SwitchContainer>
+					</SwitchContainers>
 				</Event>
 			</Events>
+			<SwitchGroups>
+				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
+					<Switches>
+						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{E8E9FCE4-A3DC-8F72-63AA-3DD414AA5643}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{A6C78E83-0118-FBF9-4FE6-0344627BC883}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -365,6 +413,12 @@
 						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
 						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
 						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
+					</Switches>
+				</SwitchGroup>
+				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
+					<Switches>
+						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
@@ -633,6 +687,53 @@
 					<PluginRefs>
 						<ShareSets>
 							<PluginRef Id="2456097223"/>
+						</ShareSets>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{24B7A222-22F5-A73D-08F1-2323C6E7F3EE}">
+			<ObjectPath>Play_Splash_On</ObjectPath>
+			<ShortName>Play_Splash_On</ShortName>
+			<Path>Event/Play_Splash_On.bnk</Path>
+			<Media>
+				<File Id="4251908" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_4.wav</ShortName>
+					<Path>Media/4251908.wem</Path>
+					<CachePath>SFX/Splash_4_9756B083.wem</CachePath>
+				</File>
+				<File Id="255748029" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_3.wav</ShortName>
+					<Path>Media/255748029.wem</Path>
+					<CachePath>SFX/Splash_3_12716D4A.wem</CachePath>
+				</File>
+				<File Id="375473682" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_1.wav</ShortName>
+					<Path>Media/375473682.wem</Path>
+					<CachePath>SFX/Splash_1_A147C05E.wem</CachePath>
+				</File>
+				<File Id="699976713" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_2.wav</ShortName>
+					<Path>Media/699976713.wem</Path>
+					<CachePath>SFX/Splash_2_89E94740.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
+			<Events>
+				<Event Id="1556462077" Name="Play_Splash_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Splash_On" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" MaxAttenuation="100" DurationType="OneShot" DurationMin="0.77579165" DurationMax="1.0090417">
+					<MediaRefs>
+						<MediaRef Id="4251908"/>
+						<MediaRef Id="255748029"/>
+						<MediaRef Id="375473682"/>
+						<MediaRef Id="699976713"/>
+					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
 						</ShareSets>
 					</PluginRefs>
 				</Event>
@@ -1050,5 +1151,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8B6FCA1E-C49E-57C5-053C-4D3792F7857E}</FileHash>
+	<FileHash>{1F4A0A5C-BA92-CE99-65A9-C6E8E6FD0546}</FileHash>
 </SoundBanksInfo>
