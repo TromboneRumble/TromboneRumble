@@ -48,12 +48,4 @@ private:
 	bool bViewportBound = false;
 	FDelegateHandle ViewportResizedHandle;
 
-	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	UWidgetAnimation* FadeOutAnim;
-
-	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	UWidgetAnimation* FadeInAnim;
-
-	bool isShown = false;
-	
 };

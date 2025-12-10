@@ -100,15 +100,15 @@ void URhythmSpawnWidgetSquare::NativeDestruct()
 
 void URhythmSpawnWidgetSquare::PlayFadeAnimation(EInstrumentType OldType, EInstrumentType NewType)
 {
-	if (FadeInAnim && !isShown)
+	if (FadeInAnim && EInstrumentType::Background < NewType && NewType < EInstrumentType::None && !isShown)
 	{
+		StopAllAnimations();
 		PlayAnimation(FadeInAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
-		isShown = true;
 	}
-	else if (FadeOutAnim && isShown)
+	else if (FadeOutAnim && NewType == EInstrumentType::Background && isShown)
 	{
+		StopAllAnimations();
 		PlayAnimation(FadeOutAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
-		isShown = false;
 	}
 }
 

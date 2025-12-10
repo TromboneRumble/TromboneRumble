@@ -4,6 +4,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 #include "AbilitySystemInterface.h"
@@ -27,7 +28,24 @@ AInstrumentBase::AInstrumentBase()
 
 bool AInstrumentBase::CanInteract_Implementation(AActor* InstigatorActor) const
 {
-	return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
+	//플레이어의 악기 스위칭이 가능하면 현재 악기가 누군가에게 장착됐는지 여부만 확인
+	if (CanBeSwitched)
+	{
+		return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
+	}
+	// 악기 스위칭이 불가하면 플레이어가 악기를 들고있는지 확인
+	else
+	{
+		//플레이어가 악기를 들고있으면 false반환
+		if (UEquipmentComponent* EquipComp = InstigatorActor->FindComponentByClass<UEquipmentComponent>())
+		{
+			if (EquipComp->GetItemInSlot(EEquipmentSlotType::Instrument))
+			{
+				return false;
+			}
+		}
+		return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
+	}
 }
 
 void AInstrumentBase::Interact_Implementation(AActor* InstigatorActor)

@@ -35,9 +35,14 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_Equipped();
-	
+
+	//이 악기가 누군가에게 장착된 상태인지 여부
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Equipped)
 	uint8 bIsEquipped : 1 = 0;
+
+	//악기를 들고있는 상태에서 현재 악기로 바꿀 수 있는 경우
+	UPROPERTY(EditAnywhere)
+	bool CanBeSwitched = false;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAttackDataAsset> AttackData;
