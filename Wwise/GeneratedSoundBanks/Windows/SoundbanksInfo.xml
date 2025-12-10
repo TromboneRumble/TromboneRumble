@@ -389,7 +389,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{E8E9FCE4-A3DC-8F72-63AA-3DD414AA5643}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{A6C78E83-0118-FBF9-4FE6-0344627BC883}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -687,6 +687,53 @@
 					<PluginRefs>
 						<ShareSets>
 							<PluginRef Id="2456097223"/>
+						</ShareSets>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{24B7A222-22F5-A73D-08F1-2323C6E7F3EE}">
+			<ObjectPath>Play_Splash_On</ObjectPath>
+			<ShortName>Play_Splash_On</ShortName>
+			<Path>Event/Play_Splash_On.bnk</Path>
+			<Media>
+				<File Id="4251908" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_4.wav</ShortName>
+					<Path>Media/4251908.wem</Path>
+					<CachePath>SFX/Splash_4_9756B083.wem</CachePath>
+				</File>
+				<File Id="255748029" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_3.wav</ShortName>
+					<Path>Media/255748029.wem</Path>
+					<CachePath>SFX/Splash_3_12716D4A.wem</CachePath>
+				</File>
+				<File Id="375473682" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_1.wav</ShortName>
+					<Path>Media/375473682.wem</Path>
+					<CachePath>SFX/Splash_1_A147C05E.wem</CachePath>
+				</File>
+				<File Id="699976713" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Splash_2.wav</ShortName>
+					<Path>Media/699976713.wem</Path>
+					<CachePath>SFX/Splash_2_89E94740.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
+			<Events>
+				<Event Id="1556462077" Name="Play_Splash_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Splash_On" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" MaxAttenuation="100" DurationType="OneShot" DurationMin="0.77579165" DurationMax="1.0090417">
+					<MediaRefs>
+						<MediaRef Id="4251908"/>
+						<MediaRef Id="255748029"/>
+						<MediaRef Id="375473682"/>
+						<MediaRef Id="699976713"/>
+					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
 						</ShareSets>
 					</PluginRefs>
 				</Event>
@@ -1104,5 +1151,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{84AEEEB9-36E1-9BAF-F84B-2DBDE0E9F96D}</FileHash>
+	<FileHash>{1F4A0A5C-BA92-CE99-65A9-C6E8E6FD0546}</FileHash>
 </SoundBanksInfo>
