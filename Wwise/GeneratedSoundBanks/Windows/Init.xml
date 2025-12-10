@@ -27,6 +27,12 @@
 						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
 					</Switches>
 				</SwitchGroup>
+				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
+					<Switches>
+						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+					</Switches>
+				</SwitchGroup>
 			</SwitchGroups>
 			<AcousticTextures>
 				<AcousticTexture Id="504532776" Name="Brick" ObjectPath="\Virtual Acoustics\Factory Acoustic Textures\Textures\Brick" GUID="{B086A5A9-F204-4C53-A838-BDB18B18F6D6}">
@@ -158,5 +164,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5A84F0FA-8CEB-75F9-79E7-6150B1B71B82}</FileHash>
+	<FileHash>{0E5D6239-B784-C15C-29D9-1EDC417A9720}</FileHash>
 </SoundBanksInfo>

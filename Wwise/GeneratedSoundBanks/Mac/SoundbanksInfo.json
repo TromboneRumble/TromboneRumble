@@ -614,55 +614,100 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{1A3E856D-EBC3-C9B6-97D1-C7E42D530F56}",
+    "Hash": "{05A57BAF-AA2B-645C-F7E9-D226020DD306}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
     "Media": [
      {
-      "Id": "296563695",
+      "Id": "71206826",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Foot\\Wood_Foot_3.wav",
-      "Path": "Media/296563695.wem",
-      "CachePath": "SFX/Foot/Wood_Foot_3_818F3B66.wem"
+      "ShortName": "Wood2_Foot_3.wav",
+      "Path": "Media/71206826.wem",
+      "CachePath": "SFX/Wood2_Foot_3_818F3B66.wem"
      },
      {
-      "Id": "480487708",
+      "Id": "80669302",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Foot\\Wood_Foot_5.wav",
-      "Path": "Media/480487708.wem",
-      "CachePath": "SFX/Foot/Wood_Foot_5_818F3B66.wem"
+      "ShortName": "Water_Foot_2.wav",
+      "Path": "Media/80669302.wem",
+      "CachePath": "SFX/Water_Foot_2_818F3B66.wem"
      },
      {
-      "Id": "895246282",
+      "Id": "167561171",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Foot\\Wood_Foot_4.wav",
-      "Path": "Media/895246282.wem",
-      "CachePath": "SFX/Foot/Wood_Foot_4_818F3B66.wem"
+      "ShortName": "Wood2_Foot_2.wav",
+      "Path": "Media/167561171.wem",
+      "CachePath": "SFX/Wood2_Foot_2_818F3B66.wem"
      },
      {
-      "Id": "923656824",
+      "Id": "279374184",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Foot\\Wood_Foot_1.wav",
-      "Path": "Media/923656824.wem",
-      "CachePath": "SFX/Foot/Wood_Foot_1_818F3B66.wem"
+      "ShortName": "Wood2_Foot_4.wav",
+      "Path": "Media/279374184.wem",
+      "CachePath": "SFX/Wood2_Foot_4_818F3B66.wem"
      },
      {
-      "Id": "973706153",
+      "Id": "494162867",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Foot\\Wood_Foot_2.wav",
-      "Path": "Media/973706153.wem",
-      "CachePath": "SFX/Foot/Wood_Foot_2_818F3B66.wem"
+      "ShortName": "Water_Foot_5.wav",
+      "Path": "Media/494162867.wem",
+      "CachePath": "SFX/Water_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "512909462",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood2_Foot_1.wav",
+      "Path": "Media/512909462.wem",
+      "CachePath": "SFX/Wood2_Foot_1_818F3B66.wem"
+     },
+     {
+      "Id": "547171557",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Water_Foot_4.wav",
+      "Path": "Media/547171557.wem",
+      "CachePath": "SFX/Water_Foot_4_818F3B66.wem"
+     },
+     {
+      "Id": "589790040",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Water_Foot_1.wav",
+      "Path": "Media/589790040.wem",
+      "CachePath": "SFX/Water_Foot_1_818F3B66.wem"
+     },
+     {
+      "Id": "941571148",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood2_Foot_5.wav",
+      "Path": "Media/941571148.wem",
+      "CachePath": "SFX/Wood2_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "953859740",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Water_Foot_3.wav",
+      "Path": "Media/953859740.wem",
+      "CachePath": "SFX/Water_Foot_3_818F3B66.wem"
      }
     ],
     "Events": [
@@ -672,23 +717,81 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Foot",
       "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
       "DurationType": "OneShot",
-      "DurationMin": "0.4058125",
-      "DurationMax": "0.5898542",
-      "MediaRefs": [
+      "DurationMin": "0.28835043",
+      "DurationMax": "0.45528895",
+      "SwitchContainers": [
        {
-        "Id": "296563695"
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "2058049674",
+         "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}",
+         "Default": "true"
+        },
+        "MediaRefs": [
+         {
+          "Id": "71206826"
+         },
+         {
+          "Id": "167561171"
+         },
+         {
+          "Id": "279374184"
+         },
+         {
+          "Id": "512909462"
+         },
+         {
+          "Id": "941571148"
+         }
+        ]
        },
        {
-        "Id": "480487708"
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "2654748154",
+         "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "80669302"
+         },
+         {
+          "Id": "494162867"
+         },
+         {
+          "Id": "547171557"
+         },
+         {
+          "Id": "589790040"
+         },
+         {
+          "Id": "953859740"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "3031504797",
+      "Name": "Foot",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Foot",
+      "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
+      "Switches": [
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
+        "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
        },
        {
-        "Id": "895246282"
-       },
-       {
-        "Id": "923656824"
-       },
-       {
-        "Id": "973706153"
+        "Id": "2654748154",
+        "Name": "Water",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
+        "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
        }
       ]
      }
@@ -775,6 +878,26 @@
         "Name": "SW_T",
         "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
         "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     },
+     {
+      "Id": "3031504797",
+      "Name": "Foot",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Foot",
+      "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
+      "Switches": [
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
+        "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
+       },
+       {
+        "Id": "2654748154",
+        "Name": "Water",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
+        "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
        }
       ]
      }
@@ -2348,6 +2471,6 @@
     ]
    }
   ],
-  "FileHash": "{E4875F42-7CC8-B4BB-70B0-345E7F33C0C7}"
+  "FileHash": "{9322F898-EDA1-8635-D9B3-268F40379133}"
  }
 }

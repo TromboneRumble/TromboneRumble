@@ -88,6 +88,26 @@
         "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
        }
       ]
+     },
+     {
+      "Id": "3031504797",
+      "Name": "Foot",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Foot",
+      "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
+      "Switches": [
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
+        "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
+       },
+       {
+        "Id": "2654748154",
+        "Name": "Water",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
+        "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
+       }
+      ]
      }
     ],
     "AcousticTextures": [
@@ -556,6 +576,6 @@
     ]
    }
   ],
-  "FileHash": "{F5D43D2B-755B-AE24-912F-06688237EE3E}"
+  "FileHash": "{152EF7CA-16B1-D3BE-071D-2C2B41854BAF}"
  }
 }
