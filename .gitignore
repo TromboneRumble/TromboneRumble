@@ -82,9 +82,9 @@ Plugins/Developer/RiderLink/*
 *.iobj
 *.ilk
 
-# Wwise
-# Plugins/Wwise
-# Plugins/WwiseNiagara
+#Wwise
+#Plugins/Wwise
+#Plugins/WwiseNiagara
 
 # Wwise Projects
 Wwise/Deployment/
