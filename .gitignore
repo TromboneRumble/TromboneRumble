@@ -83,8 +83,8 @@ Plugins/Developer/RiderLink/*
 *.ilk
 
 # Wwise
-Plugins/Wwise
-Plugins/WwiseNiagara
+# Plugins/Wwise
+# Plugins/WwiseNiagara
 
 # Wwise Projects
 Wwise/Deployment/
