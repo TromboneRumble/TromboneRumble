@@ -10,6 +10,9 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectTypes.h"
+#include "AkComponent.h"
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "Utilities/DebugHelper.h"
 
 APuddleTrap::APuddleTrap()
@@ -70,6 +73,16 @@ void APuddleTrap::BeginPlay()
 	{
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBoxBeginOverlap);
 		BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnBoxEndOverlap);
+	}
+
+	if (AkComponent && PuddleSpawnSFX)
+	{
+		FOnAkPostEventCallback Callback;
+		AkComponent->PostAkEvent(
+			PuddleSpawnSFX,
+			0,
+			Callback
+		);
 	}
 
 	// Fade가 끝났을때 Destroy

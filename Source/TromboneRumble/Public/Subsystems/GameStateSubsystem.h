@@ -41,9 +41,12 @@ private:
 	EGameState CurrentGameState;
 
 	UPROPERTY(Transient)
-	TMap<EGameState, FString> GameStateToMapNameMap;
+	TMap<FGameplayTag, FString> MapTagToMapNameMap;
+
+	UPROPERTY(Transient)
+	TMap<FGameplayTag, EGameState> MapTagToGameStateMap;
 public:
 	// Getter Setter
-	FString GetMapNameForGameState(const EGameState& InGameState) const;
+	FString GetMapNameForTag(const FGameplayTag& MapTag) const;
 	FORCEINLINE EGameState GetGameState() const { return CurrentGameState; }
 };
