@@ -7,6 +7,7 @@
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "RhythmNoteWidgetSquare.generated.h"
 
+class UCanvasPanelSlot;
 struct FViewportChangedMessage;
 /**
  * 
@@ -31,6 +32,9 @@ public:
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeDestruct() override;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidgetOptional))
+	TObjectPtr<UCanvasPanelSlot> CanvasPanelSlot;
 
 private:
 	void OnViewportChanged(FGameplayTag Channel, const FViewportChangedMessage& InMsg);
