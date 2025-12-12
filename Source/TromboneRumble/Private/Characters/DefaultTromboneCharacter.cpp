@@ -49,6 +49,11 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
+
+	if (AkSoundComponent)
+	{
+		AkSoundComponent->OcclusionRefreshInterval = 0.f;
+	}
 }
 
 void ADefaultTromboneCharacter::Jump()

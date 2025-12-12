@@ -33,6 +33,16 @@ APuddleTrap::APuddleTrap()
 
 	DecalComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
 	DecalComponent->SetupAttachment(BoxComponent);
+
+	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
+	if (AkComponent)
+	{
+		AkComponent->OcclusionRefreshInterval = 0.f;
+		AkComponent->SetupAttachment(RootComponent);
+	}
+
+	
+	
 }
 
 void APuddleTrap::Tick(float DeltaTime)
