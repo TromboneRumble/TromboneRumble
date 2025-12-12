@@ -52,6 +52,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 	if (AkSoundComponent)
 	{
+		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
 }
