@@ -692,6 +692,7 @@
 							<PropertyList>
 								<Property Name="3DSpatialization" Type="int16" Value="2"/>
 								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-14</Value>
@@ -708,6 +709,7 @@
 														<Value>True</Value>
 													</ValueList>
 												</Property>
+												<Property Name="RadiusMax" Type="Real64" Value="1000"/>
 											</PropertyList>
 											<CurveUsageInfoList>
 												<VolumeDryUsage>
@@ -723,7 +725,7 @@
 																	<Flags>5</Flags>
 																</Point>
 																<Point>
-																	<XPos>100</XPos>
+																	<XPos>1000</XPos>
 																	<YPos>-200</YPos>
 																	<Flags>37</Flags>
 																</Point>
@@ -904,6 +906,9 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+							<PositioningInfo>
+								<Panner Name="" ID="{C2507FD8-AFA0-4C32-9E4C-C4EF6260C788}"/>
+							</PositioningInfo>
 							<ObjectLists>
 								<ObjectList Name="Effects">
 									<Reference>

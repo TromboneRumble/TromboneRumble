@@ -692,7 +692,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{24B7A222-22F5-A73D-08F1-2323C6E7F3EE}">
+		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{29AD7468-FA94-82DF-D6D8-3AD5E6463B85}">
 			<ObjectPath>Play_Splash_On</ObjectPath>
 			<ShortName>Play_Splash_On</ShortName>
 			<Path>Event/Play_Splash_On.bnk</Path>
@@ -724,7 +724,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1556462077" Name="Play_Splash_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Splash_On" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" MaxAttenuation="100" DurationType="OneShot" DurationMin="0.77579165" DurationMax="1.0090417">
+				<Event Id="1556462077" Name="Play_Splash_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Splash_On" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.77579165" DurationMax="1.0090417">
 					<MediaRefs>
 						<MediaRef Id="4251908"/>
 						<MediaRef Id="255748029"/>
@@ -1188,5 +1188,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{C2E1162D-B9CF-F6EA-066C-A765E7DBE876}</FileHash>
+	<FileHash>{BB449109-266D-C730-F0A7-A17FD88F290A}</FileHash>
 </SoundBanksInfo>
