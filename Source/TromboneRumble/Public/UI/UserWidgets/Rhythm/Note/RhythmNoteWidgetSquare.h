@@ -33,9 +33,6 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeDestruct() override;
 
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidgetOptional))
-	TObjectPtr<UCanvasPanelSlot> CanvasPanelSlot;
-
 private:
 	void OnViewportChanged(FGameplayTag Channel, const FViewportChangedMessage& InMsg);
 

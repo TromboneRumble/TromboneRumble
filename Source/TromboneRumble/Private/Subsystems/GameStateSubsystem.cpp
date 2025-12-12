@@ -17,7 +17,8 @@ void UGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap, EGameState::Lobby);
 	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main, EGameState::InGame);
 	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_MK, EGameState::InGame);
-	//AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_HW, EGameState::InGame);
+	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_HW, EGameState::InGame);
+	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_MJ, EGameState::InGame);
 
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UGameStateSubsystem::OnPostLoadMap);
 	
