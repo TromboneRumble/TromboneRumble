@@ -318,6 +318,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Trombone_Attack" ID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}">
+							<ChildrenList>
+								<Action Name="" ID="{EAD317D9-5052-4614-96D0-93A9B69D30A7}" ShortID="751975379">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Trombone_Attack" ID="{0A645A61-80E0-49C2-BF1D-AEE0B425635A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>

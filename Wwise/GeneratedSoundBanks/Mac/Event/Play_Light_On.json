@@ -10,46 +10,46 @@
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
     "Language": "SFX",
-    "Hash": "{E8D91722-61EB-002E-5F82-BE07723BAE00}",
+    "Hash": "{13F8D54B-FDE8-8C0F-EFED-7A39566C5D36}",
     "ObjectPath": "Play_Light_On",
     "ShortName": "Play_Light_On",
     "Path": "Event/Play_Light_On.bnk",
     "Media": [
      {
-      "Id": "173696643",
+      "Id": "319074503",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_2.wav",
-      "Path": "Media/173696643.wem",
-      "CachePath": "SFX/Light/Light_2_818F3B66.wem"
+      "ShortName": "Light_2.wav",
+      "Path": "Media/319074503.wem",
+      "CachePath": "SFX/Light_2_818F3B66.wem"
      },
      {
-      "Id": "525052850",
+      "Id": "380454884",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_4.wav",
-      "Path": "Media/525052850.wem",
-      "CachePath": "SFX/Light/Light_4_818F3B66.wem"
+      "ShortName": "Light_1.wav",
+      "Path": "Media/380454884.wem",
+      "CachePath": "SFX/Light_1_818F3B66.wem"
      },
      {
-      "Id": "914459346",
+      "Id": "491418174",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_1.wav",
-      "Path": "Media/914459346.wem",
-      "CachePath": "SFX/Light/Light_1_818F3B66.wem"
+      "ShortName": "Light_3.wav",
+      "Path": "Media/491418174.wem",
+      "CachePath": "SFX/Light_3_818F3B66.wem"
      },
      {
-      "Id": "918122136",
+      "Id": "719796623",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_3.wav",
-      "Path": "Media/918122136.wem",
-      "CachePath": "SFX/Light/Light_3_818F3B66.wem"
+      "ShortName": "Light_4.wav",
+      "Path": "Media/719796623.wem",
+      "CachePath": "SFX/Light_4_818F3B66.wem"
      }
     ],
     "Events": [
@@ -64,22 +64,22 @@
       "DurationMax": "2.7313957",
       "MediaRefs": [
        {
-        "Id": "173696643"
+        "Id": "319074503"
        },
        {
-        "Id": "525052850"
+        "Id": "380454884"
        },
        {
-        "Id": "914459346"
+        "Id": "491418174"
        },
        {
-        "Id": "918122136"
+        "Id": "719796623"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{18D2B7D8-5DD6-E7A9-19B4-9483D07A1897}"
+  "FileHash": "{92846E44-00C6-D2E5-4924-B9AF5F65317B}"
  }
 }

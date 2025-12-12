@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{A5203148-877B-D39D-45A6-E5264D6880C5}">
+			<ObjectPath>Play_Trombone_Attack</ObjectPath>
+			<ShortName>Play_Trombone_Attack</ShortName>
+			<Path>Event/Play_Trombone_Attack.bnk</Path>
+			<Media>
+				<File Id="451014174" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Attack_T_4.wav</ShortName>
+					<Path>Media/451014174.wem</Path>
+					<CachePath>SFX/Attack_T_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="941583466" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Attack_T_1.wav</ShortName>
+					<Path>Media/941583466.wem</Path>
+					<CachePath>SFX/Attack_T_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="952668855" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Attack_T_2.wav</ShortName>
+					<Path>Media/952668855.wem</Path>
+					<CachePath>SFX/Attack_T_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="968238248" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Attack_T_3.wav</ShortName>
+					<Path>Media/968238248.wem</Path>
+					<CachePath>SFX/Attack_T_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" DurationType="OneShot" DurationMin="0.770625" DurationMax="0.770625">
+					<MediaRefs>
+						<MediaRef Id="451014174"/>
+						<MediaRef Id="941583466"/>
+						<MediaRef Id="952668855"/>
+						<MediaRef Id="968238248"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{E4A4DF75-413F-75FF-3ADD-8DD2C96B15F3}</FileHash>
+</SoundBanksInfo>

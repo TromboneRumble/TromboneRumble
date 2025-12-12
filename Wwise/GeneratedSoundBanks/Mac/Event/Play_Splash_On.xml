@@ -14,17 +14,17 @@
 				<File Id="255748029" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Splash_3.wav</ShortName>
 					<Path>Media/255748029.wem</Path>
-					<CachePath>SFX/Splash_3_12716D4A.wem</CachePath>
+					<CachePath>SFX/Splash_3_31C1040B.wem</CachePath>
 				</File>
 				<File Id="375473682" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Splash_1.wav</ShortName>
 					<Path>Media/375473682.wem</Path>
-					<CachePath>SFX/Splash_1_A147C05E.wem</CachePath>
+					<CachePath>SFX/Splash_1_B9309F80.wem</CachePath>
 				</File>
 				<File Id="699976713" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Splash_2.wav</ShortName>
 					<Path>Media/699976713.wem</Path>
-					<CachePath>SFX/Splash_2_89E94740.wem</CachePath>
+					<CachePath>SFX/Splash_2_8161D7BB.wem</CachePath>
 				</File>
 			</Media>
 			<Plugins>
@@ -49,5 +49,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{739590BC-23E6-F57A-127E-86F429F5D687}</FileHash>
+	<FileHash>{586AD7A3-1BD2-54C9-9C13-A3C46E833A06}</FileHash>
 </SoundBanksInfo>

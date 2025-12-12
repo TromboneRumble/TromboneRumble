@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "Splash_3.wav",
       "Path": "Media/255748029.wem",
-      "CachePath": "SFX/Splash_3_12716D4A.wem"
+      "CachePath": "SFX/Splash_3_31C1040B.wem"
      },
      {
       "Id": "375473682",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "Splash_1.wav",
       "Path": "Media/375473682.wem",
-      "CachePath": "SFX/Splash_1_A147C05E.wem"
+      "CachePath": "SFX/Splash_1_B9309F80.wem"
      },
      {
       "Id": "699976713",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "Splash_2.wav",
       "Path": "Media/699976713.wem",
-      "CachePath": "SFX/Splash_2_89E94740.wem"
+      "CachePath": "SFX/Splash_2_8161D7BB.wem"
      }
     ],
     "Plugins": {
@@ -99,6 +99,6 @@
     ]
    }
   ],
-  "FileHash": "{3503EDA4-036C-5FEA-F874-EA36D5453A50}"
+  "FileHash": "{B74B36EC-1F1F-4C4E-AF35-A314EB6EDA72}"
  }
 }
