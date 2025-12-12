@@ -10,46 +10,46 @@
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
     "Language": "SFX",
-    "Hash": "{13F8D54B-FDE8-8C0F-EFED-7A39566C5D36}",
+    "Hash": "{4068C2FD-DD8F-36D6-61FE-C1D2A93AA983}",
     "ObjectPath": "Play_Light_On",
     "ShortName": "Play_Light_On",
     "Path": "Event/Play_Light_On.bnk",
     "Media": [
      {
-      "Id": "319074503",
+      "Id": "256373702",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light_2.wav",
-      "Path": "Media/319074503.wem",
-      "CachePath": "SFX/Light_2_818F3B66.wem"
+      "ShortName": "Light_Fix_1.wav",
+      "Path": "Media/256373702.wem",
+      "CachePath": "SFX/Light_Fix_1_818F3B66.wem"
      },
      {
-      "Id": "380454884",
+      "Id": "631679084",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light_1.wav",
-      "Path": "Media/380454884.wem",
-      "CachePath": "SFX/Light_1_818F3B66.wem"
+      "ShortName": "Light_Fix_2.wav",
+      "Path": "Media/631679084.wem",
+      "CachePath": "SFX/Light_Fix_2_818F3B66.wem"
      },
      {
-      "Id": "491418174",
+      "Id": "883607643",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light_3.wav",
-      "Path": "Media/491418174.wem",
-      "CachePath": "SFX/Light_3_818F3B66.wem"
+      "ShortName": "Light_Fix_3.wav",
+      "Path": "Media/883607643.wem",
+      "CachePath": "SFX/Light_Fix_3_818F3B66.wem"
      },
      {
-      "Id": "719796623",
+      "Id": "1003353392",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light_4.wav",
-      "Path": "Media/719796623.wem",
-      "CachePath": "SFX/Light_4_818F3B66.wem"
+      "ShortName": "Light_Fix_4.wav",
+      "Path": "Media/1003353392.wem",
+      "CachePath": "SFX/Light_Fix_4_818F3B66.wem"
      }
     ],
     "Events": [
@@ -60,26 +60,26 @@
       "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "2.688",
-      "DurationMax": "2.7313957",
+      "DurationMin": "0.14466667",
+      "DurationMax": "0.26366666",
       "MediaRefs": [
        {
-        "Id": "319074503"
+        "Id": "256373702"
        },
        {
-        "Id": "380454884"
+        "Id": "631679084"
        },
        {
-        "Id": "491418174"
+        "Id": "883607643"
        },
        {
-        "Id": "719796623"
+        "Id": "1003353392"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{92846E44-00C6-D2E5-4924-B9AF5F65317B}"
+  "FileHash": "{2F19B5A1-1695-18DC-ACE6-62AD4A75E10F}"
  }
 }

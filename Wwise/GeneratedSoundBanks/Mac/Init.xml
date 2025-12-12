@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{EF90E288-5D11-E5D3-D9DD-5AF418D78A77}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{EF7F11AE-398D-B9AD-FE88-48F547B6F42A}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
+				<ShareSets>
+					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
+				</ShareSets>
 				<AudioDevices>
 					<Plugin Id="2317455096" Name="No_Output" ObjectPath="\Audio Devices\Default Work Unit\No_Output" GUID="{A0E246DD-8BBA-47B7-B730-647191F3EC15}" LibName="No Output" LibId="11862023"/>
 					<Plugin Id="3859886410" Name="System" ObjectPath="\Audio Devices\Default Work Unit\System" GUID="{3DCD955D-C911-4DB6-8632-E08A621D2561}" LibName="System" LibId="11403271"/>
@@ -14,6 +17,15 @@
 			<Busses>
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
+			<AuxBusses>
+				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3701691487"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
+			</AuxBusses>
 			<GameParameters>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
@@ -164,5 +176,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{438EA45C-4D4B-EBDB-48F0-333ED24AF7F1}</FileHash>
+	<FileHash>{7933371D-C91B-191A-4063-9556FD16EB3D}</FileHash>
 </SoundBanksInfo>

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}",
     "Language": "SFX",
-    "Hash": "{29AD7468-FA94-82DF-D6D8-3AD5E6463B85}",
+    "Hash": "{E35A2303-D829-C7D1-2870-4B276CF220D8}",
     "ObjectPath": "Play_Splash_On",
     "ShortName": "Play_Splash_On",
     "Path": "Event/Play_Splash_On.bnk",
@@ -99,6 +99,6 @@
     ]
    }
   ],
-  "FileHash": "{EA29094B-D041-59A6-6784-7D91468D3212}"
+  "FileHash": "{5745E873-9E0E-0FA6-E8CB-11A774C67230}"
  }
 }

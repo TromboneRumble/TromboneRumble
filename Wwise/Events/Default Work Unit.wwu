@@ -286,7 +286,7 @@
 								<Action Name="" ID="{4E4E4F69-5CEC-45AD-892D-F31D6479CC46}" ShortID="785128589">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Object_Light" ID="{9681D325-9502-40AB-8219-8E6F1C1BF842}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+											<ObjectRef Name="Object_Light" ID="{0AD2263C-2911-417E-847B-FA51F9F3B0EA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

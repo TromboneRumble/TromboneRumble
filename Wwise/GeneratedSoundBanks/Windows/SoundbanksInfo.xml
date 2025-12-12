@@ -28,6 +28,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="356551040" Type="Bus" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}" Language="SFX" Hash="{9924DF2A-E273-9BDE-9B9D-EAAA6FFA0251}">
+			<ObjectPath>Map_A_Reverb</ObjectPath>
+			<ShortName>Map_A_Reverb</ShortName>
+			<Path>Bus/Map_A_Reverb.bnk</Path>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
+				</ShareSets>
+			</Plugins>
+			<AuxBusses>
+				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3701691487"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
+			</AuxBusses>
+		</SoundBank>
 		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{E9DD993F-2433-315C-7190-6F062709ECB4}">
 			<ObjectPath>MIDI_RhythmGame_Violin</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Violin</ShortName>
@@ -76,39 +95,39 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Test\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{13F8D54B-FDE8-8C0F-EFED-7A39566C5D36}">
+		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{4068C2FD-DD8F-36D6-61FE-C1D2A93AA983}">
 			<ObjectPath>Play_Light_On</ObjectPath>
 			<ShortName>Play_Light_On</ShortName>
 			<Path>Event/Play_Light_On.bnk</Path>
 			<Media>
-				<File Id="319074503" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_2.wav</ShortName>
-					<Path>Media/319074503.wem</Path>
-					<CachePath>SFX/Light_2_818F3B66.wem</CachePath>
+				<File Id="256373702" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_1.wav</ShortName>
+					<Path>Media/256373702.wem</Path>
+					<CachePath>SFX/Light_Fix_1_818F3B66.wem</CachePath>
 				</File>
-				<File Id="380454884" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_1.wav</ShortName>
-					<Path>Media/380454884.wem</Path>
-					<CachePath>SFX/Light_1_818F3B66.wem</CachePath>
+				<File Id="631679084" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_2.wav</ShortName>
+					<Path>Media/631679084.wem</Path>
+					<CachePath>SFX/Light_Fix_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="491418174" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_3.wav</ShortName>
-					<Path>Media/491418174.wem</Path>
-					<CachePath>SFX/Light_3_818F3B66.wem</CachePath>
+				<File Id="883607643" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_3.wav</ShortName>
+					<Path>Media/883607643.wem</Path>
+					<CachePath>SFX/Light_Fix_3_818F3B66.wem</CachePath>
 				</File>
-				<File Id="719796623" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_4.wav</ShortName>
-					<Path>Media/719796623.wem</Path>
-					<CachePath>SFX/Light_4_818F3B66.wem</CachePath>
+				<File Id="1003353392" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_4.wav</ShortName>
+					<Path>Media/1003353392.wem</Path>
+					<CachePath>SFX/Light_Fix_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="816711006" Name="Play_Light_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Light_On" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="2.688" DurationMax="2.7313957">
+				<Event Id="816711006" Name="Play_Light_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Light_On" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.14466667" DurationMax="0.26366666">
 					<MediaRefs>
-						<MediaRef Id="319074503"/>
-						<MediaRef Id="380454884"/>
-						<MediaRef Id="491418174"/>
-						<MediaRef Id="719796623"/>
+						<MediaRef Id="256373702"/>
+						<MediaRef Id="631679084"/>
+						<MediaRef Id="883607643"/>
+						<MediaRef Id="1003353392"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -298,7 +317,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{05A57BAF-AA2B-645C-F7E9-D226020DD306}">
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{279EC146-A2DB-5342-8AF1-DB9673BF37E3}">
 			<ObjectPath>Play_Player_Foot</ObjectPath>
 			<ShortName>Play_Player_Foot</ShortName>
 			<Path>Event/Play_Player_Foot.bnk</Path>
@@ -389,11 +408,14 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{A6C78E83-0118-FBF9-4FE6-0344627BC883}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{945C7BD6-C2C2-4B33-93F5-EE75AC04598E}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
+				<ShareSets>
+					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
+				</ShareSets>
 				<AudioDevices>
 					<Plugin Id="2317455096" Name="No_Output" ObjectPath="\Audio Devices\Default Work Unit\No_Output" GUID="{A0E246DD-8BBA-47B7-B730-647191F3EC15}" LibName="No Output" LibId="11862023"/>
 					<Plugin Id="3859886410" Name="System" ObjectPath="\Audio Devices\Default Work Unit\System" GUID="{3DCD955D-C911-4DB6-8632-E08A621D2561}" LibName="System" LibId="11403271"/>
@@ -402,6 +424,15 @@
 			<Busses>
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
+			<AuxBusses>
+				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3701691487"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
+			</AuxBusses>
 			<GameParameters>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
@@ -692,7 +723,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{29AD7468-FA94-82DF-D6D8-3AD5E6463B85}">
+		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{E35A2303-D829-C7D1-2870-4B276CF220D8}">
 			<ObjectPath>Play_Splash_On</ObjectPath>
 			<ShortName>Play_Splash_On</ShortName>
 			<Path>Event/Play_Splash_On.bnk</Path>
@@ -954,7 +985,7 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{A5203148-877B-D39D-45A6-E5264D6880C5}">
+		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{5541E5A9-D58E-3BBC-7D95-884CF3F1A423}">
 			<ObjectPath>Play_Trombone_Attack</ObjectPath>
 			<ShortName>Play_Trombone_Attack</ShortName>
 			<Path>Event/Play_Trombone_Attack.bnk</Path>
@@ -1188,5 +1219,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{BB449109-266D-C730-F0A7-A17FD88F290A}</FileHash>
+	<FileHash>{33A1C3EE-FBDC-E50D-1F11-30E1FA82A9F0}</FileHash>
 </SoundBanksInfo>
