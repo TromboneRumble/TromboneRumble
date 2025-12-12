@@ -236,7 +236,7 @@ void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 
 			case ELobbyState::CountdownToTravel:
 				RequestSetTimer([this, GameStateSubsystem]() { 
-					RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap));
+					RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
 				});
 				break;
 
