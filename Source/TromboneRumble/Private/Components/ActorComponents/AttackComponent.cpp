@@ -11,15 +11,13 @@
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
-static const FName GSocket_Head(TEXT("head"));
-
 UAttackComponent::UAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicatedByDefault(true);
 
 	HeadbuttCollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadbuttCapsuleComponent"));
-	HeadbuttCollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1) ; // Object Channel 1 : Weapon
+	HeadbuttCollisionComponent->SetCollisionObjectType(AttackTraceChannel) ; // Object Channel 1 : Weapon
 }
 
 void UAttackComponent::BeginPlay()
@@ -34,7 +32,7 @@ void UAttackComponent::BeginPlay()
 
 		if (HeadbuttCollisionComponent)
 		{
-			HeadbuttCollisionComponent->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, GSocket_Head);
+			HeadbuttCollisionComponent->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, HeadSocketName);
 			HeadbuttCollisionComponent->SetRelativeLocation(FVector(0.0f, -20.f, 20.0f));
 			HeadbuttCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
@@ -75,7 +73,7 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 		Start,
 		End,
 		Rotation.Quaternion(),
-		ECC_GameTraceChannel1,
+		AttackTraceChannel,
 		CapsuleShape,
 		Params
 	);

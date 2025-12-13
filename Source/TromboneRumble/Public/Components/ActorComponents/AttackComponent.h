@@ -54,11 +54,18 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPrimitiveComponent> CurrentCollisionComponent = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCapsuleComponent> HeadbuttCollisionComponent = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttackDataAsset> HeadbuttAttackData = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly)
+	FName HeadSocketName = FName("head");
+	
+	UPROPERTY(EditDefaultsOnly)
+	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
+	
 
 	FTransform PreviousFrameTransform;
 	bool bIsAttacking = false;
