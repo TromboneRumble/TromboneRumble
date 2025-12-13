@@ -30,7 +30,6 @@ public:
 	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION()
@@ -52,8 +51,6 @@ protected:
 	FActiveGameplayEffectHandle EquipMoveSpeedEffectHandle;
 
 private:
-	FTransform OriginMeshTransform;
-	
 	UPROPERTY(EditAnywhere, Category="Config")
 	float ForwardImpulse = 500.0f;
 
