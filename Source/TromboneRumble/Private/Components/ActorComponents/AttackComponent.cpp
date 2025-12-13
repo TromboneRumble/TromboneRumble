@@ -10,7 +10,6 @@
 #include "Items/InstrumentBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 UAttackComponent::UAttackComponent()
 {
@@ -131,7 +130,6 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
 	if (bIsAttacking)
 	{
-		PRINT_WITH_CURRENT_CONTEXT("Rejected Attack Attempt : bIsAttacking is true");
 		Client_OnAttackRejected();
 		return;
 	}
@@ -141,7 +139,6 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 		const float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AttackCooldownTimerHandle);
 		if (RemainingTime > AttackCooldownTolerance)
 		{
-			PRINT_WITH_CURRENT_CONTEXT("Rejected Attack Attempt : bCanAttack is false");
 			Client_OnAttackRejected(); 
 			return;
 		}
