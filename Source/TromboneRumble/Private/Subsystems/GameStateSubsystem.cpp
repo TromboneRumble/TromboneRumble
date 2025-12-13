@@ -12,7 +12,7 @@ void UGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	CurrentGameState = EGameState::MainMenu;
 
 	
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_MainMap, EGameState::MainMenu);
+	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_MainMenuMap, EGameState::MainMenu);
 	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGameMap, EGameState::InGame);
 	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap, EGameState::Lobby);
 

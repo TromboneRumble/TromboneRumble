@@ -59,16 +59,16 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
         return;
     }
 
-   
-    const FVector Start = OwnerCharacter->GetActorLocation();
 
     const FVector UpVector = OwnerCharacter->GetActorUpVector();
+    const FVector Start = OwnerCharacter->GetActorLocation() + UpVector * 10.f;
     const FVector End = Start + UpVector * -200.0f;
 
     FHitResult HitResult;
 
     // 자기 자신은 무시
     FCollisionQueryParams Params(SCENE_QUERY_STAT(FootstepTrace), false, OwnerCharacter.Get());
+    Params.bReturnPhysicalMaterial = true;
 
     const bool bHit = World->LineTraceSingleByChannel(
         HitResult,
