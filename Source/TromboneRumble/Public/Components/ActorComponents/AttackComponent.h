@@ -22,6 +22,7 @@ public:
 	UAttackComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void Attack();
 
 protected:
@@ -34,8 +35,14 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayAttackEffects();
 	
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_ExecuteAttackEnd();
+	UFUNCTION(Client, Reliable)
+	void Client_OnAttackRejected();
+	
+	void PlayAttackEffects() const;
+	void ResetAttackCooldown();
+	void StartAttackCooldown();
+	void SetIsAttacking(const bool bNewIsAttacking);
+	void SetCanAttack(const bool bNewCanAttack) { bCanAttack = bNewCanAttack; }
 	
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -66,15 +73,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
 	
+	UPROPERTY(EditDefaultsOnly)
+	float AttackCooldownTolerance = 0.2f;
 
 	FTransform PreviousFrameTransform;
+	
+	UPROPERTY(Replicated)
 	bool bIsAttacking = false;
 	bool bCanAttack = true;
 
 private:
 	bool IsCanSweep() const;
-	void ResetAttackCooldown() { bCanAttack = true; }
-	void SetAttackState(bool bNewState);
 
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
