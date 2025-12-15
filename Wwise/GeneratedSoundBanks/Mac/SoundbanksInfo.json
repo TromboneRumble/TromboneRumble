@@ -191,11 +191,61 @@
     ]
    },
    {
+    "Id": "562256996",
+    "Type": "Event",
+    "GUID": "{9A720635-720F-4279-A256-D1A0C4C248B2}",
+    "Language": "SFX",
+    "Hash": "{09EB7931-A278-86D7-CB90-EFC52FFB94D3}",
+    "ObjectPath": "Play_Player_Jump",
+    "ShortName": "Play_Player_Jump",
+    "Path": "Event/Play_Player_Jump.bnk",
+    "Media": [
+     {
+      "Id": "211994488",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Jump\\Player_Jump_2.wav",
+      "Path": "Media/211994488.wem",
+      "CachePath": "SFX/Player_Jump/Player_Jump_2_818F3B66.wem"
+     },
+     {
+      "Id": "366445495",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Jump\\Player_Jump_1.wav",
+      "Path": "Media/366445495.wem",
+      "CachePath": "SFX/Player_Jump/Player_Jump_1_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "562256996",
+      "Name": "Play_Player_Jump",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Jump",
+      "GUID": "{9A720635-720F-4279-A256-D1A0C4C248B2}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.36720636",
+      "DurationMax": "0.38755894",
+      "MediaRefs": [
+       {
+        "Id": "211994488"
+       },
+       {
+        "Id": "366445495"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "816711006",
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
     "Language": "SFX",
-    "Hash": "{4068C2FD-DD8F-36D6-61FE-C1D2A93AA983}",
+    "Hash": "{431C46F2-3B1C-C7AA-F543-61117BFAFA60}",
     "ObjectPath": "Play_Light_On",
     "ShortName": "Play_Light_On",
     "Path": "Event/Play_Light_On.bnk",
@@ -651,7 +701,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{279EC146-A2DB-5342-8AF1-DB9673BF37E3}",
+    "Hash": "{CC806B23-40C7-4F04-556D-7F149240ABF7}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -1710,7 +1760,7 @@
     "Type": "Event",
     "GUID": "{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}",
     "Language": "SFX",
-    "Hash": "{E35A2303-D829-C7D1-2870-4B276CF220D8}",
+    "Hash": "{4B4EF19B-BE9F-7909-2367-FC84A3E01656}",
     "ObjectPath": "Play_Splash_On",
     "ShortName": "Play_Splash_On",
     "Path": "Event/Play_Splash_On.bnk",
@@ -2227,7 +2277,7 @@
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
     "Language": "SFX",
-    "Hash": "{5541E5A9-D58E-3BBC-7D95-884CF3F1A423}",
+    "Hash": "{982552FF-7D04-0617-E083-E3E82304EB8F}",
     "ObjectPath": "Play_Trombone_Attack",
     "ShortName": "Play_Trombone_Attack",
     "Path": "Event/Play_Trombone_Attack.bnk",
@@ -2515,19 +2565,19 @@
     "Type": "Event",
     "GUID": "{B0C36204-52E2-4794-8556-4F4C7B718AEC}",
     "Language": "SFX",
-    "Hash": "{2F71B935-C960-EDA8-A5A8-BCE5486C3F4D}",
+    "Hash": "{7360A512-FD4F-930E-F45A-77AFAE152570}",
     "ObjectPath": "Play_Party_On",
     "ShortName": "Play_Party_On",
     "Path": "Event/Play_Party_On.bnk",
     "Media": [
      {
-      "Id": "763165883",
+      "Id": "961276031",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light_Party.wav",
-      "Path": "Media/763165883.wem",
-      "CachePath": "SFX/Light_Party_818F3B66.wem"
+      "ShortName": "Light_Party_2.wav",
+      "Path": "Media/961276031.wem",
+      "CachePath": "SFX/Light_Party_2_818F3B66.wem"
      }
     ],
     "Events": [
@@ -2536,12 +2586,13 @@
       "Name": "Play_Party_On",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Party_On",
       "GUID": "{B0C36204-52E2-4794-8556-4F4C7B718AEC}",
+      "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "1.2693334",
-      "DurationMax": "1.2693334",
+      "DurationMin": "1.1223333",
+      "DurationMax": "1.1223333",
       "MediaRefs": [
        {
-        "Id": "763165883"
+        "Id": "961276031"
        }
       ]
      }
@@ -2656,6 +2707,104 @@
     ]
    },
    {
+    "Id": "3792786383",
+    "Type": "Event",
+    "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
+    "Language": "SFX",
+    "Hash": "{E82916D4-1F78-85D0-EC0C-C74B01BC9C56}",
+    "ObjectPath": "Play_Voice_Attack",
+    "ShortName": "Play_Voice_Attack",
+    "Path": "Event/Play_Voice_Attack.bnk",
+    "Media": [
+     {
+      "Id": "58884900",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_1.wav",
+      "Path": "Media/58884900.wem",
+      "CachePath": "SFX/Player_Attack_Voice_1_818F3B66.wem"
+     },
+     {
+      "Id": "104383533",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_2.wav",
+      "Path": "Media/104383533.wem",
+      "CachePath": "SFX/Player_Attack_Voice_2_818F3B66.wem"
+     },
+     {
+      "Id": "438912652",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_3.wav",
+      "Path": "Media/438912652.wem",
+      "CachePath": "SFX/Player_Attack_Voice_3_818F3B66.wem"
+     },
+     {
+      "Id": "444341275",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_4.wav",
+      "Path": "Media/444341275.wem",
+      "CachePath": "SFX/Player_Attack_Voice_4_818F3B66.wem"
+     },
+     {
+      "Id": "717956438",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_5.wav",
+      "Path": "Media/717956438.wem",
+      "CachePath": "SFX/Player_Attack_Voice_5_818F3B66.wem"
+     },
+     {
+      "Id": "820887562",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_6.wav",
+      "Path": "Media/820887562.wem",
+      "CachePath": "SFX/Player_Attack_Voice_6_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3792786383",
+      "Name": "Play_Voice_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Voice_Attack",
+      "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.238",
+      "DurationMax": "0.35933334",
+      "MediaRefs": [
+       {
+        "Id": "58884900"
+       },
+       {
+        "Id": "104383533"
+       },
+       {
+        "Id": "438912652"
+       },
+       {
+        "Id": "444341275"
+       },
+       {
+        "Id": "717956438"
+       },
+       {
+        "Id": "820887562"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "4133920287",
     "Type": "Event",
     "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
@@ -2736,6 +2885,6 @@
     ]
    }
   ],
-  "FileHash": "{D32113ED-35A6-CCC7-197B-FFBC68D47E6A}"
+  "FileHash": "{35AA0B1F-FE9B-4F52-DD8A-656FF42ACF58}"
  }
 }

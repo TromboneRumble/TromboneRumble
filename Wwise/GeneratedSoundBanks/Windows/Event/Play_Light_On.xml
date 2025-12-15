@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{4068C2FD-DD8F-36D6-61FE-C1D2A93AA983}">
+		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{431C46F2-3B1C-C7AA-F543-61117BFAFA60}">
 			<ObjectPath>Play_Light_On</ObjectPath>
 			<ShortName>Play_Light_On</ShortName>
 			<Path>Event/Play_Light_On.bnk</Path>
@@ -39,5 +39,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{1ED337D9-C8A1-180A-D767-BA1854DA63E8}</FileHash>
+	<FileHash>{758CDD7E-DE60-4D93-6E29-A99978C862F6}</FileHash>
 </SoundBanksInfo>
