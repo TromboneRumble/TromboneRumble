@@ -2511,6 +2511,43 @@
     ]
    },
    {
+    "Id": "3557138646",
+    "Type": "Event",
+    "GUID": "{B0C36204-52E2-4794-8556-4F4C7B718AEC}",
+    "Language": "SFX",
+    "Hash": "{2F71B935-C960-EDA8-A5A8-BCE5486C3F4D}",
+    "ObjectPath": "Play_Party_On",
+    "ShortName": "Play_Party_On",
+    "Path": "Event/Play_Party_On.bnk",
+    "Media": [
+     {
+      "Id": "763165883",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Light_Party.wav",
+      "Path": "Media/763165883.wem",
+      "CachePath": "SFX/Light_Party_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3557138646",
+      "Name": "Play_Party_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Party_On",
+      "GUID": "{B0C36204-52E2-4794-8556-4F4C7B718AEC}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.2693334",
+      "DurationMax": "1.2693334",
+      "MediaRefs": [
+       {
+        "Id": "763165883"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "3717157269",
     "Type": "Event",
     "GUID": "{0FC8390B-5986-401E-A87F-7C9BD71357DB}",
@@ -2699,6 +2736,6 @@
     ]
    }
   ],
-  "FileHash": "{0D15AACE-029C-68CB-D381-AC0AE3E0DD7D}"
+  "FileHash": "{AFE249D5-3700-9323-0368-B9319E1EE3BD}"
  }
 }
