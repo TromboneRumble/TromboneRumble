@@ -1,17 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/TromboneCharacterBase.h"
+#include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "PhysicsEngine/PhysicalAnimationComponent.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
+	
 	InitCharacter();
 }
 
@@ -27,6 +31,26 @@ void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) cons
 	}
 }
 
+void ATromboneCharacterBase::SetPlayerInput(const bool bShouldEnable)
+{
+	bIsCanProcessInput = bShouldEnable;
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (IsLocallyControlled())
+		{
+			if (bShouldEnable)
+			{
+				EnableInput(PlayerController);
+			}
+			else
+			{
+				DisableInput(PlayerController);
+			}
+		}
+	}
+}
+
 void ATromboneCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -39,8 +63,11 @@ void ATromboneCharacterBase::BeginPlay()
 	FaceMID = GetMesh()->CreateDynamicMaterialInstance(2, BaseFaceMat);
 	GetMesh()->SetMaterial(2, FaceMID);
 
+	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
+	
 	SetupCharacterData();
 	UpdateSkinFromPlayerState();
+	ApplyFlagPhysics();
 }
 
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -91,6 +118,11 @@ void ATromboneCharacterBase::Tick(float DeltaSeconds)
 			true
 		);
 	}
+
+	if (bIsRagdoll)
+	{
+		RagdollUpdate();
+	}
 }
 
 void ATromboneCharacterBase::PossessedBy(AController* NewController)
@@ -128,7 +160,8 @@ void ATromboneCharacterBase::SetupCapsuleComponent()
 
 void ATromboneCharacterBase::SetupSkeletalMeshComponent()
 {
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
+	float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -CapsuleHalfHeight), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetMesh()->SetHiddenInGame(false);
@@ -218,14 +251,7 @@ void ATromboneCharacterBase::EndStun()
 void ATromboneCharacterBase::ApplyStun()
 {
 	StopAnimMontage();
-
-	if (APlayerController* PC = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			DisableInput(PC);
-		}
-	}
+	SetPlayerInput(false);
 }
 
 void ATromboneCharacterBase::UnapplyStun()
@@ -233,58 +259,41 @@ void ATromboneCharacterBase::UnapplyStun()
 	if (bIsRagdoll) return;
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			EnableInput(PlayerController);
-		}
-	}
+	SetPlayerInput(true);
 }
 
 void ATromboneCharacterBase::ApplyRagdoll()
 {
-	if (GetMesh()->IsSimulatingPhysics()) return;
-	
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			DisableInput(PlayerController);
-		}
-	}
-	
-	const FVector LastVelocity = GetCharacterMovement()->Velocity;
-
-	GetCharacterMovement()->DisableMovement();
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetPlayerInput(false);
 
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->AddImpulse(LastVelocity, NAME_None, true);
+
+	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInst) return;
+	AnimInst->SetIsRagdolling(true);
 }
 
 void ATromboneCharacterBase::UnapplyRagdoll()
 {
-	if (!GetMesh()->IsSimulatingPhysics()) return;
-
 	GetMesh()->SetSimulatePhysics(false);
-	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
-	GetMesh()->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInst) return;
 	
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	const FName SnapshotName = TEXT("RagdollSnapshot");
+	AnimInst->SavePoseSnapshot(SnapshotName);
+	AnimInst->SetRagdollSnapshotName(SnapshotName);
+	AnimInst->SetIsRagdollBlending(true);
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			EnableInput(PlayerController);
-		}
-	}
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(
+		Handle, 
+		this, 
+		&ThisClass::InternalUnapplyRagdoll, 
+		0.2f,
+		false
+	);
 }
 
 void ATromboneCharacterBase::UpdateSkinFromPlayerState()
@@ -294,6 +303,91 @@ void ATromboneCharacterBase::UpdateSkinFromPlayerState()
 		SkinColor = DPS->GetSkinColor();
 		ApplySkinColor(SkinColor);
 	}
+}
+
+void ATromboneCharacterBase::InternalUnapplyRagdoll()
+{
+	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInst) return;
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	AnimInst->PlayGetUpMontage(IsFacingUp());
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AnimInst->SetIsRagdollBlending(false);
+	AnimInst->SetIsRagdolling(false);
+
+	ApplyFlagPhysics();
+}
+
+bool ATromboneCharacterBase::IsFacingUp() const
+{
+	if (!GetMesh()) return true;
+
+	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
+	const FVector PelvisUp = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::Z);
+    
+	return (FVector::DotProduct(PelvisUp, FVector::UpVector) > 0.0f);
+}
+
+void ATromboneCharacterBase::RagdollUpdate()
+{
+	const FVector LastRagdollVelocity = GetMesh()->GetPhysicsLinearVelocity(TEXT("root"));
+	GetMesh()->SetEnableGravity(LastRagdollVelocity.Z > -4000.0f);
+	SetActorLocationAndRotationDuringRagdoll();
+}
+
+void ATromboneCharacterBase::SetActorLocationAndRotationDuringRagdoll()
+{
+	const FVector TargetRagdollLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
+	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
+
+	const FRotator TargetRagdollRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
+
+	const float MeshHeightOffset = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FVector TraceEnd = TargetRagdollLocation - FVector(0.0f, 0.0f, MeshHeightOffset);
+
+	FHitResult HitResult;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, TargetRagdollLocation, TraceEnd, ECC_Visibility, QueryParams))
+	{
+		const float Offset = MeshHeightOffset - abs(HitResult.ImpactPoint.Z - HitResult.TraceStart.Z) + 2.0f;
+		SetActorLocation(TargetRagdollLocation + FVector(0.0f, 0.0f, Offset));
+	}
+	else
+	{
+		SetActorLocation(TargetRagdollLocation);
+	}
+	
+	SetActorRotation(TargetRagdollRotation);
+}
+
+void ATromboneCharacterBase::ApplyFlagPhysics()
+{
+	const UGameInstance* GI = GetWorld()->GetGameInstance();
+	if (!GI) return;
+
+	const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	if (!GameStateSubsystem || GameStateSubsystem->GetGameState() != EGameState::InGame) return;
+	
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
+	FPhysicalAnimationData FlagAnimData;
+	FlagAnimData.bIsLocalSimulation = false;
+	FlagAnimData.OrientationStrength = 10.0f;
+	FlagAnimData.AngularVelocityStrength = 5.0f;
+	FlagAnimData.PositionStrength = 10.0f;
+	FlagAnimData.VelocityStrength = 0.0f;
+	FlagAnimData.MaxAngularForce = 0.0f;
+	FlagAnimData.MaxLinearForce = 0.0f;
+
+	FName BoneName = FName("flage01");
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(BoneName, true, true);
+	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(BoneName, FlagAnimData, true);
 }
 
 void ATromboneCharacterBase::OnRep_IsRagdoll()

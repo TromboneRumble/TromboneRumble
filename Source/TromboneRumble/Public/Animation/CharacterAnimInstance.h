@@ -7,6 +7,8 @@
 #include "Utilities/Defines.h"
 #include "CharacterAnimInstance.generated.h"
 
+class UAkAudioEvent;
+class UAkComponent;
 class ADefaultTromboneCharacter;
 class UCharacterMovementComponent;
 
@@ -19,10 +21,13 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
-	UFUNCTION(BlueprintCallable, Category = "Animation")
-	void SetIsAttacking(const bool bNewIsAttacking);
+	void PlayGetUpMontage(bool bIsFacingUp);
 	
 protected:
+	UFUNCTION()
+	void AnimNotify_FootStep();
+
+
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")	
 	float UpperBodyBlendAlpha = 0.0f;
 	
@@ -46,11 +51,47 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Instrument")
 	EInstrumentType CurrentInstrumentType = EInstrumentType::None;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	bool bIsRagdolling;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	bool bIsRagdollBlending;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
+	FName RagdollSnapshotName;
 
 private:
+	UFUNCTION()
+	void OnGetUpMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
+	TObjectPtr<UAnimMontage> GetUpFrontMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
+	TObjectPtr<UAnimMontage> GetUpBackMontage;
+	
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UCharacterMovementComponent> MovementComponent;
+	TWeakObjectPtr<UCharacterMovementComponent> MovementComponent = nullptr;
+
+	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TWeakObjectPtr<UAkComponent> OwnerAkSoundComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> FootstepAkEvent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> FootstepWaterAkEvent = nullptr;
+
+public:
+	//~ Begin Setters
+	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
+	void SetRagdollSnapshotName(const FName& NewSnapshotName) { RagdollSnapshotName = NewSnapshotName; }
+	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
+	void SetIsRagdollBlending(const bool bNewIsRagdollBlending) { bIsRagdollBlending = bNewIsRagdollBlending; }
+	//~ End Setters
 };

@@ -76,11 +76,8 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 	UpdateRowHeight();
 
 	// Score 기준 내림차순 정렬
-	TArray<APlayerState*> Players = InGameState->PlayerArray;	
-	Players.Sort([](const APlayerState& A, const APlayerState& B)
-		{
-			return A.GetScore() > B.GetScore();
-		});
+	TArray<APlayerState*> Players;
+	InGameState->GetPlayersSortedByScore(Players);
 
 	if (Players.Num() > MaxVisibleRows)
 	{

@@ -71,7 +71,7 @@ private:
 	bool DestroySpawner(EInstrumentType InType);
 
 	UFUNCTION()
-	void OnInstrumentPickedHandler(EInstrumentType InType);
+	void OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType);
 
 	UFUNCTION()
 	void OnNoteDetectedHandler(ENoteResult InNoteResult);
@@ -131,6 +131,9 @@ private:
 
 	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool IsSensingLongNote = false;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	float RhythmDestroyerBoxExtent = 30.f;
 	// ~Rhythm Game
 
 

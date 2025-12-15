@@ -201,7 +201,7 @@ void ASpotlightZone::Multicast_PlaySpotlightSuccessEffect_Implementation(ADefaul
 		return;
 	}
 
-	const FVector SpawnLocation = InPlayer->GetActorLocation();
+	const FVector SpawnLocation = GetActorLocation();
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 		this,
 		SpotlightSuccessVFX,

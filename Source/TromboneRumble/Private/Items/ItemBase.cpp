@@ -11,27 +11,16 @@ AItemBase::AItemBase()
 	bReplicates = true;
 	AActor::SetReplicateMovement(true);
 	
-    CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	SetRootComponent(CapsuleComponent);
-	CapsuleComponent->SetSimulatePhysics(true);
-	CapsuleComponent->SetEnableGravity(true);
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
 	ItemMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
-	ItemMeshComponent->SetupAttachment(RootComponent);
-	ItemMeshComponent->SetSimulatePhysics(false);
-	ItemMeshComponent->SetEnableGravity(false);
-	ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetRootComponent(ItemMeshComponent);
+	SetPhysicsEnabled(true);
+	
+    CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+	CapsuleComponent->SetupAttachment(RootComponent);
+	CapsuleComponent->SetSimulatePhysics(false);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InteractTriggerComponent = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTriggerComponent"));
-}
-
-void AItemBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AItemBase::OnCapsuleBeginOverlap);
-	CapsuleComponent->OnComponentEndOverlap.AddDynamic(this, &AItemBase::OnCapsuleEndOverlap);
 }
 
 void AItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -46,23 +35,19 @@ bool AItemBase::CanInteract_Implementation(AActor* InstigatorActor) const
 	return CurrentOwner == nullptr;
 }
 
-void AItemBase::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-}
-
-void AItemBase::OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	
-}
-
 void AItemBase::SetPhysicsEnabled(bool bEnable) const
 {
-	if (CapsuleComponent)
+	if (bEnable)
 	{
-		CapsuleComponent->SetSimulatePhysics(bEnable);
-		CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		ItemMeshComponent->SetCollisionProfileName(TEXT("PhysicsActor"));
+		ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		ItemMeshComponent->SetSimulatePhysics(true);
+		ItemMeshComponent->SetAllBodiesSimulatePhysics(true);
+	}
+	else
+	{
+		ItemMeshComponent->SetSimulatePhysics(false);	
+		ItemMeshComponent->SetAllBodiesSimulatePhysics(false);
+		ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }

@@ -6,11 +6,14 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AkComponent.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
+#include "AbilitySystemComponent.h"
+#include "Data/CharacterAttributeSet.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
@@ -43,6 +46,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
+	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
+	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
 }
 
 void ADefaultTromboneCharacter::Jump()
@@ -145,6 +151,22 @@ void ADefaultTromboneCharacter::BeginPlay()
 	{
 		HandleOnEquipmentChanged(TargetSlot, AlreadyEquippedItem, nullptr);
 	}
+
+	// GAS 초기화
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+
+	if (CharacterAttributes)
+	{
+		const float InitialSpeed = GetCharacterMovement()->MaxWalkSpeed;
+		CharacterAttributes->InitMoveSpeed(InitialSpeed);
+
+		// 혹시 OnRep 전에 바로 반영되도록 한 번 더 보정
+		GetCharacterMovement()->MaxWalkSpeed = CharacterAttributes->GetMoveSpeed();
+	}
+	// ~GAS 초기화
 	
 	if (IsLocallyControlled())
 	{
@@ -209,27 +231,26 @@ void ADefaultTromboneCharacter::Server_InteractItem_Implementation(AItemBase* In
 	EquipmentComponent->TryEquipItem(InteractedItem);
 }
 
-void ADefaultTromboneCharacter::UpdateMaxWalkSpeed() const
+void ADefaultTromboneCharacter::UpdateMaxWalkSpeed()
 {
 	if (!CharacterData) return;
 
-	float TargetSpeed = bIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
+	const float BaseSpeed = bIsSprinting ? CharacterData->SprintSpeed : CharacterData->WalkSpeed;
 
-	TargetSpeed *= GetCurrentMovementSpeedMultiplier();
-
-	GetCharacterMovement()->MaxWalkSpeed = TargetSpeed;
-}
-
-float ADefaultTromboneCharacter::GetCurrentMovementSpeedMultiplier() const
-{
-	float Multiplier = 1.0f;
-
-	if (EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument))
+	// MoveSpeed Attribute에 기본값 세팅
+	// 나머지 로직은 GameplayEffect에서 처리
+	if (HasAuthority() && CharacterAttributes)
 	{
-		Multiplier *= CharacterData->EquippedMovementSpeedMultiplier;
+		CharacterAttributes->SetMoveSpeed(BaseSpeed);
 	}
+	// 로컬에서 움직임 즉시 반영
+	if (UCharacterMovementComponent* Move = GetCharacterMovement())
+	{
+		// 현재 MoveSpeed Attribute가 있다면 그 값을, 없다면 BaseSpeed를 사용
+		const float FinalSpeed = CharacterAttributes ? CharacterAttributes->GetMoveSpeed() : BaseSpeed;
 
-	return Multiplier;
+		Move->MaxWalkSpeed = FinalSpeed;
+	}
 }
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
@@ -259,28 +280,33 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 {
 	if (Slot == EEquipmentSlotType::Instrument)
 	{
-		EInstrumentType Type = EInstrumentType::Background;
+		EInstrumentType NewType = EInstrumentType::Background;
 		if (NewItem)
 		{
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
 				CurrentInteractionContext.bIsEquipped = true;
-				Type = Instrument->GetInstrumentType();
+				NewType = Instrument->GetInstrumentType();
 			}
 		}
 		else
 		{
 			CurrentInteractionContext.bIsEquipped = false;
 		}
-
+		
 		if (IsLocallyControlled())
 		{
+			EInstrumentType OldType = EInstrumentType::None;
+			if (const AInstrumentBase* OldInstrument = Cast<AInstrumentBase>(OldItem))
+			{
+				OldType = OldInstrument->GetInstrumentType();
+			}
+
 			if (const URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 			{
-				RhythmSubsystem->OnInstrumentPicked.Broadcast(Type);
+				RhythmSubsystem->OnInstrumentPicked.Broadcast(OldType, NewType);
 			}
 		}
-		UpdateMaxWalkSpeed();
 	}
 }
 

@@ -5,8 +5,8 @@
 #include "TromboneGamePlayTags.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
-#include "UI/UserWidgets/Rhythm/RhythmSpawnWidget.h"
-#include "UI/UserWidgets/Rhythm/RhythmNoteWidget.h"
+#include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
+#include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 
@@ -16,12 +16,11 @@ URhythmNoteUIControllerComponent::URhythmNoteUIControllerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void URhythmNoteUIControllerComponent::InitSettings(URhythmSpawnWidget* InSpawnWidget, URhythmNoteWidget* InNoteWidget, const FNoteHandle& InHandle, const int32 InLineIdx)
+void URhythmNoteUIControllerComponent::InitSettings(URhythmSpawnWidgetBase* InSpawnWidget, URhythmNoteWidgetBase* InNoteWidget, const FNoteHandle& InHandle)
 {
 	RhythmSpawnWidget = InSpawnWidget;
 	RhythmNoteWidget = InNoteWidget;
 	Handle = InHandle;
-	LaneIndex = InLineIdx;
 	BindChannel();
 }
 
@@ -36,41 +35,12 @@ void URhythmNoteUIControllerComponent::SpawnRhythmResultWidget(ENoteResult InRes
 			Pos = Slot->GetPosition();
 		}
 
-		RhythmSpawnWidget->SpawnRhythmResultWidget(Pos, InResult);
+		RhythmSpawnWidget->SpawnPooledRhythmResultWidget(Pos, InResult);
 	}
-}
-
-void URhythmNoteUIControllerComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (UGameInstance* GameInstance = GetWorld() ? GetWorld()->GetGameInstance() : nullptr)
-	{
-		if (UGameplayMessageSubsystem* Msg = GameInstance->GetSubsystem<UGameplayMessageSubsystem>())
-		{
-			LayoutChangedHandle = Msg->RegisterListener<FViewportChangedMessage>(
-				TromboneGamePlayTags::Trombone_Rhythm_OnLayoutChanged.GetTag(),
-				this,
-				&ThisClass::OnViewportChanged
-			);
-		}
-	}
-
 }
 
 void URhythmNoteUIControllerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (UGameInstance* GameInstance = GetWorld() ? GetWorld()->GetGameInstance() : nullptr)
-	{
-		if (UGameplayMessageSubsystem* Msg = GameInstance->GetSubsystem<UGameplayMessageSubsystem>())
-		{
-			if (LayoutChangedHandle.IsValid())
-			{
-				Msg->UnregisterListener(LayoutChangedHandle);
-				LayoutChangedHandle = {};
-			}
-		}
-	}
 
 	UnbindChannel();
 	Super::EndPlay(EndPlayReason);
@@ -111,28 +81,10 @@ void URhythmNoteUIControllerComponent::UnbindChannel()
 	}
 }
 
-void URhythmNoteUIControllerComponent::OnViewportChanged(FGameplayTag Channel, const FViewportChangedMessage& InMsg)
-{
-	SetStartPoses(InMsg.LaneXStartPos, InMsg.LaneXEndPos, InMsg.LaneYPosArray);
-}
-
-void URhythmNoteUIControllerComponent::SetStartPoses(const float InLaneStartXPos, const float InLaneEndXPos,
-	const TArray<float>& InLaneYPosArray)
-{
-	LaneXStartPos = InLaneStartXPos;
-	LaneXEndPos = InLaneEndXPos;
-	LaneYPosArray = InLaneYPosArray;
-}
-
-void URhythmNoteUIControllerComponent::UpdateNotePosition(const float InAlphaOnSpline)
+void URhythmNoteUIControllerComponent::UpdateNotePosition(const float InAlpha)
 {
 	if (RhythmNoteWidget.IsValid())
 	{
-		const float XPos = FMath::Lerp(LaneXStartPos, LaneXEndPos, InAlphaOnSpline);
-		const float YPos = LaneYPosArray.IsValidIndex(LaneIndex) ? LaneYPosArray[LaneIndex] : 0.f;
-		if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(RhythmNoteWidget->Slot))
-		{
-			CanvasPanelSlot->SetPosition(FVector2D(XPos, YPos));
-		}
+		RhythmNoteWidget->UpdateNotePosition(InAlpha);
 	}
 }

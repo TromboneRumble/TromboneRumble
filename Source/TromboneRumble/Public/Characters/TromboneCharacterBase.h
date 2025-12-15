@@ -7,6 +7,7 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
 class UInputComponent;
 
@@ -32,9 +33,7 @@ public:
 	// ~ End ICombatReceiver Interfaces
 	
 	void ApplySkinColor(const FLinearColor InSkinColor) const;
-
-	bool IsStun() const { return bIsStun; }
-	bool IsRagdoll() const { return bIsRagdoll; }
+	void SetPlayerInput(const bool bShouldEnable);
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
@@ -62,6 +61,13 @@ private:
 
 	void UpdateSkinFromPlayerState();
 
+	void InternalUnapplyRagdoll();
+	bool IsFacingUp() const;
+	void RagdollUpdate();
+	void SetActorLocationAndRotationDuringRagdoll();
+
+	void ApplyFlagPhysics();
+
 	// Replication Notifies
 	UFUNCTION()
 	void OnRep_IsRagdoll();
@@ -72,6 +78,8 @@ private:
 	// ~Replication Notifies
 
 	FTimerHandle OnHitTimerHandle;
+
+	bool bIsCanProcessInput = true;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
@@ -84,4 +92,15 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+	UPROPERTY()
+	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
+
+	FName PelvisBoneName = "pelvis";
+
+public:
+	//~ Begin Setter
+	bool IsStun() const { return bIsStun; }
+	bool IsRagdoll() const { return bIsRagdoll; }
+	bool IsCanProcessInput() const { return bIsCanProcessInput; }
+	//~ End Setter
 };

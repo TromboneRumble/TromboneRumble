@@ -84,6 +84,10 @@ void ARhythmActor::DetectNotes()
 	ENoteResult Result = ReturnNoteResult(BestNote, NoteToHitComps);
 	FString EnumName = StaticEnum<ENoteResult>()->GetNameStringByValue(static_cast<int64>(Result));
 	BestNote->SpawnRhythmResultWidget(Result);
+	if (Result == ENoteResult::Good || Result == ENoteResult::Excellent)
+	{
+		BestNote->CancelSyncDebugTimer();
+	}
 	GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(Result);
 	GetCachedActorPoolSubsystem()->Release(BestNote);
 }
@@ -114,6 +118,7 @@ void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEv
 	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
 	{
 		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent);
+		CachedRhythmUIRootWidget->PrepareNoteContainer(InType);
 	}
 }
 
@@ -296,26 +301,34 @@ bool ARhythmActor::DestroySpawner(EInstrumentType InType)
 	return false;
 }
 
-void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType InType)
+void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType)
 {
-	checkf(InType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
+	checkf(NewType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
 	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
 	IsSensingLongNote = false;
 
-	FocusedType = InType;
-	if (InType == EInstrumentType::Background)
+	FocusedType = NewType;
+	if (NewType == EInstrumentType::Background)
 	{
 		if (NoneSwitch)
 		{
 			NoteHearingComponent->SetSwitch(NoneSwitch, FString(TEXT("")), FString(TEXT("")));
 		}
+		if (RhythmNoteDestroyer)
+		{
+			RhythmNoteDestroyer->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+		}
 	}
 	else
 	{
 
-		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(InType))
+		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(NewType))
 		{
 			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+		}
+		if (RhythmNoteDestroyer)
+		{
+			RhythmNoteDestroyer->SetBoxExtent(FVector(RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent));
 		}
 	}
 }
@@ -459,6 +472,7 @@ void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedCo
 	{
 		if (ARhythmNote* Note = Cast<ARhythmNote>(OtherActor))
 		{
+			Note->CancelSyncDebugTimer();
 			if (FocusedType == Note->GetNoteType())
 			{
 				Note->SpawnRhythmResultWidget(ENoteResult::Bad);

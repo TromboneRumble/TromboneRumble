@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Actors/Rhythm/RhythmActor.h"
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
@@ -16,9 +17,8 @@ class UAkCallbackInfo;
 enum class EAkCallbackType : uint8;
 class ARhythmActor;
 class UArrowComponent;
-class USplineComponent;
 class ARhythmNote;
-class URhythmSpawnWidget;
+class URhythmSpawnWidgetBase;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API ARhythmNoteSpawner : public AActor
@@ -41,10 +41,8 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	void CreateSpawnWidget(const ARhythmActor* InRhythmActor);
 	void SpawnAndMoveNote(const FString& InUserCueName);
 
 
@@ -65,15 +63,10 @@ private:
 	TObjectPtr<UAkAudioEvent> FailEvent = nullptr;
 	// ~WWise Audio
 
-	// Rhythm Note UI
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<URhythmSpawnWidget> RhythmSpawnWidgetClass;
-
-	UPROPERTY(Transient, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<URhythmSpawnWidget> SpawnWidget = nullptr;
-	// ~Rhythm Note UI
-
 	// Cached Reference
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ARhythmActor> CachedRhythmActor = nullptr;
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
@@ -88,6 +81,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;
+
+	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	bool isSyncTesting = false;
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
@@ -98,6 +94,4 @@ public:
 	FORCEINLINE UAkSwitchValue* GetChangeSwitch() const { return ChangeSwitch; }
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE UAkAudioEvent* GetFailEvent() const { return FailEvent; }
-
-	URhythmSpawnWidget* GetSpawnWidget() const { return SpawnWidget; }
 };
