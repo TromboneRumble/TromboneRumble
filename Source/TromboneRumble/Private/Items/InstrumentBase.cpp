@@ -11,17 +11,17 @@
 
 AInstrumentBase::AInstrumentBase()
 {
-	if (ItemMeshComponent)
+	if (SkeletalMeshComponent)
 	{
-		ItemMeshComponent->SetReceivesDecals(false);
+		SkeletalMeshComponent->SetReceivesDecals(false);
 	}
 	if (CapsuleComponent)
 	{
 		CapsuleComponent->SetReceivesDecals(false);
 	}
 	
-	ItemMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
-	ItemMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	SkeletalMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
+	SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	CapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
 	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 }
@@ -98,7 +98,7 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
 	OnRep_Equipped();
     
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(true);
-	if (ItemMeshComponent) ItemMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
+	if (SkeletalMeshComponent) SkeletalMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
 }
 
 void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -119,15 +119,15 @@ void AInstrumentBase::OnRep_Equipped()
 		
 		SetPhysicsEnabled(false);
 		AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TromboneSocketName);
-		ItemMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-		ItemMeshComponent->IgnoreActorWhenMoving(CurrentOwner, true);
-		ItemMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, true);
+		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	}
 	else
 	{
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		SetPhysicsEnabled(true);
-		ItemMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
-		ItemMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
+		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	}
 }

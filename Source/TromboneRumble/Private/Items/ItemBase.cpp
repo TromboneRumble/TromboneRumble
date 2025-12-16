@@ -11,9 +11,9 @@ AItemBase::AItemBase()
 	bReplicates = true;
 	AActor::SetReplicateMovement(true);
 	
-	ItemMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
-	ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	SetRootComponent(ItemMeshComponent);
+	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
+	SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SetRootComponent(SkeletalMeshComponent);
 	SetPhysicsEnabled(true);
 	
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
@@ -40,13 +40,13 @@ void AItemBase::SetPhysicsEnabled(bool bEnable) const
 {
 	if (bEnable)
 	{
-		ItemMeshComponent->SetCollisionProfileName(TEXT("PhysicsActor"));
-		ItemMeshComponent->SetSimulatePhysics(true);
-		ItemMeshComponent->SetAllBodiesSimulatePhysics(true);
+		SkeletalMeshComponent->SetCollisionProfileName(TEXT("PhysicsActor"));
+		SkeletalMeshComponent->SetSimulatePhysics(true);
+		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(true);
 	}
 	else
 	{
-		ItemMeshComponent->SetSimulatePhysics(false);
-		ItemMeshComponent->SetAllBodiesSimulatePhysics(false);
+		SkeletalMeshComponent->SetSimulatePhysics(false);
+		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(false);
 	}
 }
