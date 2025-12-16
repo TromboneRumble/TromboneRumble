@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Items/InstrumentBase.h"
-#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
@@ -10,7 +9,6 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
-#include "Utilities/DebugHelper.h"
 
 AInstrumentBase::AInstrumentBase()
 {
@@ -118,20 +116,12 @@ void AInstrumentBase::Unequip_Implementation(AActor* OwnerActor)
 	if (ItemMeshComponent) ItemMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
 }
 
-void AInstrumentBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-	OriginMeshTransform = ItemMeshComponent->GetRelativeTransform();
-}
-
 void AInstrumentBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AInstrumentBase, bIsEquipped);
 }
-
 
 void AInstrumentBase::OnRep_Equipped()
 {
@@ -142,10 +132,7 @@ void AInstrumentBase::OnRep_Equipped()
 		{
 			if (const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
 			{
-				CapsuleComponent->AttachToComponent(
-					OwnerChar->GetMesh(),
-					FAttachmentTransformRules::SnapToTargetIncludingScale,
-					TromboneSocketName);
+				AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TromboneSocketName);
 				ItemMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 			}
 			else
@@ -158,6 +145,5 @@ void AInstrumentBase::OnRep_Equipped()
 	{
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		SetPhysicsEnabled(true);
-		ItemMeshComponent->SetRelativeTransform(OriginMeshTransform);
 	}
 }

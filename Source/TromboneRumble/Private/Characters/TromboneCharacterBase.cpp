@@ -7,12 +7,14 @@
 #include "Framework/DefaultPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "PhysicsEngine/PhysicalAnimationComponent.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
 	
 	InitCharacter();
 }
@@ -61,9 +63,11 @@ void ATromboneCharacterBase::BeginPlay()
 	FaceMID = GetMesh()->CreateDynamicMaterialInstance(2, BaseFaceMat);
 	GetMesh()->SetMaterial(2, FaceMID);
 
+	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
+	
 	SetupCharacterData();
 	UpdateSkinFromPlayerState();
-
+	ApplyFlagPhysics();
 }
 
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -314,6 +318,8 @@ void ATromboneCharacterBase::InternalUnapplyRagdoll()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AnimInst->SetIsRagdollBlending(false);
 	AnimInst->SetIsRagdolling(false);
+
+	ApplyFlagPhysics();
 }
 
 bool ATromboneCharacterBase::IsFacingUp() const
@@ -358,6 +364,30 @@ void ATromboneCharacterBase::SetActorLocationAndRotationDuringRagdoll()
 	}
 	
 	SetActorRotation(TargetRagdollRotation);
+}
+
+void ATromboneCharacterBase::ApplyFlagPhysics()
+{
+	const UGameInstance* GI = GetWorld()->GetGameInstance();
+	if (!GI) return;
+
+	const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	if (!GameStateSubsystem || GameStateSubsystem->GetGameState() != EGameState::InGame) return;
+	
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
+	FPhysicalAnimationData FlagAnimData;
+	FlagAnimData.bIsLocalSimulation = false;
+	FlagAnimData.OrientationStrength = 10.0f;
+	FlagAnimData.AngularVelocityStrength = 5.0f;
+	FlagAnimData.PositionStrength = 10.0f;
+	FlagAnimData.VelocityStrength = 0.0f;
+	FlagAnimData.MaxAngularForce = 0.0f;
+	FlagAnimData.MaxLinearForce = 0.0f;
+
+	FName BoneName = FName("flage01");
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(BoneName, true, true);
+	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(BoneName, FlagAnimData, true);
 }
 
 void ATromboneCharacterBase::OnRep_IsRagdoll()

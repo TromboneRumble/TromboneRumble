@@ -66,6 +66,8 @@ private:
 	void RagdollUpdate();
 	void SetActorLocationAndRotationDuringRagdoll();
 
+	void ApplyFlagPhysics();
+
 	// Replication Notifies
 	UFUNCTION()
 	void OnRep_IsRagdoll();
@@ -90,6 +92,8 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+	UPROPERTY()
+	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
 
 	FName PelvisBoneName = "pelvis";
 

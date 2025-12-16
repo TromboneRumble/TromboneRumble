@@ -8,9 +8,8 @@
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Items/InstrumentBase.h"
-#include "Utilities/DebugHelper.h"
-
-static const FName GSocket_Head(TEXT("head"));
+#include "Net/UnrealNetwork.h"
+#include "Subsystems/GameStateSubsystem.h"
 
 UAttackComponent::UAttackComponent()
 {
@@ -18,7 +17,7 @@ UAttackComponent::UAttackComponent()
 	SetIsReplicatedByDefault(true);
 
 	HeadbuttCollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadbuttCapsuleComponent"));
-	HeadbuttCollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1) ; // Object Channel 1 : Weapon
+	HeadbuttCollisionComponent->SetCollisionObjectType(AttackTraceChannel) ; // Object Channel 1 : Weapon
 }
 
 void UAttackComponent::BeginPlay()
@@ -33,7 +32,7 @@ void UAttackComponent::BeginPlay()
 
 		if (HeadbuttCollisionComponent)
 		{
-			HeadbuttCollisionComponent->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, GSocket_Head);
+			HeadbuttCollisionComponent->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, HeadSocketName);
 			HeadbuttCollisionComponent->SetRelativeLocation(FVector(0.0f, -20.f, 20.0f));
 			HeadbuttCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
@@ -55,6 +54,8 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 	if (!bIsAttacking || !CurrentCollisionComponent || !OwnerCharacter->HasAuthority()) return;
 
+	if (!IsCanSweep()) return;
+
 	const FTransform CurrentTransform = CurrentCollisionComponent->GetComponentTransform();
 	const FVector Start = PreviousFrameTransform.GetLocation();
 	const FVector End = CurrentTransform.GetLocation();
@@ -72,7 +73,7 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 		Start,
 		End,
 		Rotation.Quaternion(),
-		ECC_GameTraceChannel1,
+		AttackTraceChannel,
 		CapsuleShape,
 		Params
 	);
@@ -101,77 +102,125 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	PreviousFrameTransform = CurrentTransform;
 }
 
+void UAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ThisClass, bIsAttacking);
+}
+
 void UAttackComponent::Attack()
 {
-	if (bIsAttacking || !bCanAttack || !CurrentAttackData) return;
+	if (bIsAttacking || !bCanAttack) return;
+	
+	if (!OwnerCharacter->HasAuthority())
+	{
+		StartAttackCooldown();
+	}
 	
 	if (OwnerCharacter->IsLocallyControlled())
 	{
-		bCanAttack = false;
-		GetWorld()->GetTimerManager().SetTimer(AttackCooldownTimerHandle, this, &ThisClass::ResetAttackCooldown, CurrentAttackData->AttackCooldown, false);
-		
-		if (CurrentAttackData->AttackAnimMontage)
-		{
-			if (CharacterAnimInstance) CharacterAnimInstance->SetIsAttacking(true);
-			OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
-		}
+		PlayAttackEffects();
 	}
 
-	if (OwnerCharacter->HasAuthority())
-	{
-		Server_ExecuteAttack_Implementation();
-	}
-	else
-	{
-		Server_ExecuteAttack();
-	}
+	Server_ExecuteAttack();
 }
 
 void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
-	if (bIsAttacking || !CurrentCollisionComponent || !CurrentAttackData) return;
-
-	bCanAttack = false;
-	GetWorld()->GetTimerManager().SetTimer(AttackCooldownTimerHandle, this, &ThisClass::ResetAttackCooldown, CurrentAttackData->AttackCooldown, false);
-
-	SetAttackState(true);
+	if (bIsAttacking)
+	{
+		Client_OnAttackRejected();
+		return;
+	}
+	
+	if (!bCanAttack)
+	{
+		const float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AttackCooldownTimerHandle);
+		if (RemainingTime > AttackCooldownTolerance)
+		{
+			Client_OnAttackRejected(); 
+			return;
+		}
+        
+		GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
+		bCanAttack = true;
+	}
+	
+	StartAttackCooldown();
+	SetIsAttacking(true);
 	Multicast_PlayAttackEffects();
 }
 
 void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 {
-	SetAttackState(false);
-	Multicast_ExecuteAttackEnd();
+	SetIsAttacking(false);
 }
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
-	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled()) return;
-	
-	if (CharacterAnimInstance)
+	if (OwnerCharacter->IsLocallyControlled()) return;
+
+	PlayAttackEffects();
+}
+
+void UAttackComponent::Client_OnAttackRejected_Implementation()
+{
+	if (OwnerCharacter && CharacterAnimInstance)
 	{
-		CharacterAnimInstance->SetIsAttacking(true);
+		OwnerCharacter->StopAnimMontage();
+		CharacterAnimInstance->SetIsAttacking(false);
 	}
 
+	bIsAttacking = false;
+	AlreadyHitActors.Empty();
+
+	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
+	bCanAttack = true;
+}
+
+void UAttackComponent::PlayAttackEffects() const
+{
 	if (CurrentAttackData && CurrentAttackData->AttackAnimMontage)
 	{
+		CharacterAnimInstance->SetIsAttacking(true);
 		OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
 	}
 }
 
-void UAttackComponent::Multicast_ExecuteAttackEnd_Implementation()
+void UAttackComponent::ResetAttackCooldown()
 {
-	if (CharacterAnimInstance)
+	bCanAttack = true;
+}
+
+void UAttackComponent::StartAttackCooldown()
+{
+	if (!CurrentAttackData) return;
+	
+	bCanAttack = false;
+	
+	const float Cooldown = CurrentAttackData->AttackCooldown;
+	
+	if (Cooldown <= 0.0f)
 	{
-		CharacterAnimInstance->SetIsAttacking(false);
+		ResetAttackCooldown();
+		return;
 	}
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		AttackCooldownTimerHandle,
+		this,
+		&ThisClass::ResetAttackCooldown,
+		Cooldown,
+		false
+	);
 }
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (CurrentAttackData && Montage == CurrentAttackData->AttackAnimMontage)
 	{
-		Server_ExecuteAttackEnd_Implementation();
+		Server_ExecuteAttackEnd();
 	}
 }
 
@@ -179,17 +228,13 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 {
 	if (Slot != EEquipmentSlotType::Instrument) return;
 
+	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
+	bCanAttack = true;
+	
 	if (bIsAttacking)
 	{
 		OwnerCharacter->StopAnimMontage();
-		if (OwnerCharacter->HasAuthority())
-		{
-			Server_ExecuteAttackEnd_Implementation();
-		}
-		else
-		{
-			Server_ExecuteAttackEnd(); 
-		}
+		Server_ExecuteAttackEnd();
 	}
 
 	if (NewItem)
@@ -209,12 +254,27 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 	}
 }
 
-void UAttackComponent::SetAttackState(const bool bNewState)
+bool UAttackComponent::IsCanSweep() const
+{
+	const UGameInstance* GI = GetWorld()->GetGameInstance();
+	if (!GI) return false;
+
+	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	if (!GameStateSubsystem || GameStateSubsystem->GetGameState() != EGameState::InGame)
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+void UAttackComponent::SetIsAttacking(const bool bNewIsAttacking)
 {
 	if (!CharacterAnimInstance) return;
 
-	bIsAttacking = bNewState;
-	if (bNewState)
+	bIsAttacking = bNewIsAttacking;
+	
+	if (bNewIsAttacking)
 	{
 		AlreadyHitActors.Empty();
 		PreviousFrameTransform = CurrentCollisionComponent->GetComponentTransform();
