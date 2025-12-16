@@ -12,6 +12,7 @@ AItemBase::AItemBase()
 	AActor::SetReplicateMovement(true);
 	
 	ItemMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
+	ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetRootComponent(ItemMeshComponent);
 	SetPhysicsEnabled(true);
 	
@@ -40,14 +41,12 @@ void AItemBase::SetPhysicsEnabled(bool bEnable) const
 	if (bEnable)
 	{
 		ItemMeshComponent->SetCollisionProfileName(TEXT("PhysicsActor"));
-		ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 		ItemMeshComponent->SetSimulatePhysics(true);
 		ItemMeshComponent->SetAllBodiesSimulatePhysics(true);
 	}
 	else
 	{
-		ItemMeshComponent->SetSimulatePhysics(false);	
+		ItemMeshComponent->SetSimulatePhysics(false);
 		ItemMeshComponent->SetAllBodiesSimulatePhysics(false);
-		ItemMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }

@@ -96,6 +96,15 @@ void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 				CombatReceiver->OnHitReceived(HitData);
 			}
+			
+			if (ACharacter* HitCharacter = Cast<ACharacter>(HitActor))
+			{
+				FVector KnockbackDir = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+				KnockbackDir.Z = 0.5f;
+				float KnockbackForce = 500.0f;
+				
+				HitCharacter->LaunchCharacter(KnockbackDir * KnockbackForce, true, true);
+			}
 		}
 	}
 

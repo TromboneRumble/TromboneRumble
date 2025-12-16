@@ -20,7 +20,10 @@ AInstrumentBase::AInstrumentBase()
 		CapsuleComponent->SetReceivesDecals(false);
 	}
 	
+	ItemMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
+	ItemMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	CapsuleComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // Object Channel 1 : Weapon
+	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 }
 
 bool AInstrumentBase::CanInteract_Implementation(AActor* InstigatorActor) const
@@ -109,23 +112,22 @@ void AInstrumentBase::OnRep_Equipped()
 {
 	if (bIsEquipped)
 	{
+		if (!CurrentOwner) return;
+
+		const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner);
+		if (!OwnerChar) return;
+		
 		SetPhysicsEnabled(false);
-		if (CurrentOwner)
-		{
-			if (const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner))
-			{
-				AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TromboneSocketName);
-				ItemMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-			}
-			else
-			{
-				AttachToActor(CurrentOwner, FAttachmentTransformRules::KeepWorldTransform);
-			}
-		}
+		AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TromboneSocketName);
+		ItemMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+		ItemMeshComponent->IgnoreActorWhenMoving(CurrentOwner, true);
+		ItemMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	}
 	else
 	{
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		SetPhysicsEnabled(true);
+		ItemMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
+		ItemMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	}
 }
