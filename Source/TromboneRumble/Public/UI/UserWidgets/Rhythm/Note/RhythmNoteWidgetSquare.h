@@ -7,6 +7,7 @@
 #include "GameFramework/GameplayMessageSubsystem.h"
 #include "RhythmNoteWidgetSquare.generated.h"
 
+class UCanvasPanelSlot;
 struct FViewportChangedMessage;
 /**
  * 

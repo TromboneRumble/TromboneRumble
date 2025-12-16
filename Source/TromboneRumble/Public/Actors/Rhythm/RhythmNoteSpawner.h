@@ -29,7 +29,7 @@ public:
 	ARhythmNoteSpawner();
 
 	void InitSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
-		UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent);
+		UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent, bool InIsSyncTesting);
 
 	UFUNCTION()
 	void OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
@@ -82,8 +82,8 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;
 
-	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	bool isSyncTesting = false;
+	UPROPERTY(EditAnywhere, Category = "Rhythm")
+	bool IsSyncTesting = false;
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")

@@ -90,8 +90,6 @@ protected:
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ARhythmActor> CachedRhythmActor;
-	
-	FInteractionContext CurrentInteractionContext;
 
 private:
 	void UpdateMaxWalkSpeed();

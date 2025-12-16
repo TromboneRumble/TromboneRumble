@@ -10,17 +10,6 @@ enum class EEquipmentSlotType : uint8
 	MAX_SLOTS
 };
 
-USTRUCT()
-struct FInteractionContext
-{
-	GENERATED_BODY()
-
-public:
-	bool bIsEquipped = false;
-
-	FInteractionContext() {}
-};
-
 // TODO : 추후 팀전 고려.
 UENUM()
 enum class EMatchState : uint8

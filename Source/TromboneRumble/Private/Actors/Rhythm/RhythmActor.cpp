@@ -117,7 +117,7 @@ void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEv
 		TEXT("InType must NOT be Background or Invalid"));
 	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
 	{
-		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent);
+		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent, IsSyncTesting);
 		CachedRhythmUIRootWidget->PrepareNoteContainer(InType);
 	}
 }
@@ -186,7 +186,7 @@ void ARhythmActor::StartRhythmGame()
 		TimerHandle,
 		this,
 		&ThisClass::PlayMusic,
-		4.5f,
+		5.0f,
 		false
 	);
 
@@ -468,6 +468,7 @@ URhythmSubsystem* ARhythmActor::GetCachedRhythmSubsystem()
 void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (IsSyncTesting) return;
 	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
 	{
 		if (ARhythmNote* Note = Cast<ARhythmNote>(OtherActor))

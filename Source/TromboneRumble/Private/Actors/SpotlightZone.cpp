@@ -45,7 +45,12 @@ ASpotlightZone::ASpotlightZone()
 	LightBeamMesh->SetVisibility(false);
 
 	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
-	AkComponent->SetupAttachment(RootComponent);
+	if (AkComponent)
+	{
+		AkComponent->OcclusionRefreshInterval = 0.f;
+		AkComponent->SetupAttachment(RootComponent);
+	}
+	
 
 	bReplicates = true;
 	AActor::SetReplicateMovement(false);

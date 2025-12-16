@@ -1,0 +1,84 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2751601189",
+    "Type": "Event",
+    "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
+    "Language": "SFX",
+    "Hash": "{982552FF-7D04-0617-E083-E3E82304EB8F}",
+    "ObjectPath": "Play_Trombone_Attack",
+    "ShortName": "Play_Trombone_Attack",
+    "Path": "Event/Play_Trombone_Attack.bnk",
+    "Media": [
+     {
+      "Id": "451014174",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Attack_T_4.wav",
+      "Path": "Media/451014174.wem",
+      "CachePath": "SFX/Attack_T_4_818F3B66.wem"
+     },
+     {
+      "Id": "941583466",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Attack_T_1.wav",
+      "Path": "Media/941583466.wem",
+      "CachePath": "SFX/Attack_T_1_818F3B66.wem"
+     },
+     {
+      "Id": "952668855",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Attack_T_2.wav",
+      "Path": "Media/952668855.wem",
+      "CachePath": "SFX/Attack_T_2_818F3B66.wem"
+     },
+     {
+      "Id": "968238248",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Attack_T_3.wav",
+      "Path": "Media/968238248.wem",
+      "CachePath": "SFX/Attack_T_3_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2751601189",
+      "Name": "Play_Trombone_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Trombone_Attack",
+      "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.770625",
+      "DurationMax": "0.770625",
+      "MediaRefs": [
+       {
+        "Id": "451014174"
+       },
+       {
+        "Id": "941583466"
+       },
+       {
+        "Id": "952668855"
+       },
+       {
+        "Id": "968238248"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{F1167A51-788C-5DF0-D8CF-7DA67C64C5ED}"
+ }
+}

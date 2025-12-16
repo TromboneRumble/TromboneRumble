@@ -10,11 +10,21 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{97ADA0EA-3E43-0C70-B20C-56038C4EC9B1}",
+    "Hash": "{EF7F11AE-398D-B9AD-FE88-48F547B6F42A}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3701691487",
+       "Name": "Hall_Large_Bright",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large_Bright",
+       "GUID": "{CB602948-2D1D-4977-A8D5-378184293E80}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      }
+     ],
      "AudioDevices": [
       {
        "Id": "2317455096",
@@ -40,6 +50,21 @@
       "Name": "Master Audio Bus",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus",
       "GUID": "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"
+     }
+    ],
+    "AuxBusses": [
+     {
+      "Id": "356551040",
+      "Name": "Map_A_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_A_Reverb",
+      "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -86,6 +111,26 @@
         "Name": "SW_T",
         "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
         "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     },
+     {
+      "Id": "3031504797",
+      "Name": "Foot",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Foot",
+      "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
+      "Switches": [
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
+        "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
+       },
+       {
+        "Id": "2654748154",
+        "Name": "Water",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
+        "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
        }
       ]
      }
@@ -556,6 +601,6 @@
     ]
    }
   ],
-  "FileHash": "{FC79AE75-67F7-F182-C3C4-FA609CA3DE9C}"
+  "FileHash": "{BB2E93FE-55E0-F995-99C9-EC711F690BCD}"
  }
 }

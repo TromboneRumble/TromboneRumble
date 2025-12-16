@@ -10,46 +10,46 @@
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
     "Language": "SFX",
-    "Hash": "{E8D91722-61EB-002E-5F82-BE07723BAE00}",
+    "Hash": "{431C46F2-3B1C-C7AA-F543-61117BFAFA60}",
     "ObjectPath": "Play_Light_On",
     "ShortName": "Play_Light_On",
     "Path": "Event/Play_Light_On.bnk",
     "Media": [
      {
-      "Id": "173696643",
+      "Id": "256373702",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_2.wav",
-      "Path": "Media/173696643.wem",
-      "CachePath": "SFX/Light/Light_2_818F3B66.wem"
+      "ShortName": "Light_Fix_1.wav",
+      "Path": "Media/256373702.wem",
+      "CachePath": "SFX/Light_Fix_1_818F3B66.wem"
      },
      {
-      "Id": "525052850",
+      "Id": "631679084",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_4.wav",
-      "Path": "Media/525052850.wem",
-      "CachePath": "SFX/Light/Light_4_818F3B66.wem"
+      "ShortName": "Light_Fix_2.wav",
+      "Path": "Media/631679084.wem",
+      "CachePath": "SFX/Light_Fix_2_818F3B66.wem"
      },
      {
-      "Id": "914459346",
+      "Id": "883607643",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_1.wav",
-      "Path": "Media/914459346.wem",
-      "CachePath": "SFX/Light/Light_1_818F3B66.wem"
+      "ShortName": "Light_Fix_3.wav",
+      "Path": "Media/883607643.wem",
+      "CachePath": "SFX/Light_Fix_3_818F3B66.wem"
      },
      {
-      "Id": "918122136",
+      "Id": "1003353392",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Light\\Light_3.wav",
-      "Path": "Media/918122136.wem",
-      "CachePath": "SFX/Light/Light_3_818F3B66.wem"
+      "ShortName": "Light_Fix_4.wav",
+      "Path": "Media/1003353392.wem",
+      "CachePath": "SFX/Light_Fix_4_818F3B66.wem"
      }
     ],
     "Events": [
@@ -60,26 +60,26 @@
       "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "2.688",
-      "DurationMax": "2.7313957",
+      "DurationMin": "0.14466667",
+      "DurationMax": "0.26366666",
       "MediaRefs": [
        {
-        "Id": "173696643"
+        "Id": "256373702"
        },
        {
-        "Id": "525052850"
+        "Id": "631679084"
        },
        {
-        "Id": "914459346"
+        "Id": "883607643"
        },
        {
-        "Id": "918122136"
+        "Id": "1003353392"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{18D2B7D8-5DD6-E7A9-19B4-9483D07A1897}"
+  "FileHash": "{8810B282-49EF-2B50-EA03-CB54B0DC8509}"
  }
 }

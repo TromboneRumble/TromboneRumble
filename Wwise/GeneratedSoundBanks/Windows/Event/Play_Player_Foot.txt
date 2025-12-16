@@ -1,3 +1,10 @@
 Event	ID	Name			Wwise Object Path	Notes
 	1324798284	Play_Player_Foot			\Default Work Unit\Player_SFX\Play_Player_Foot	
 
+Switch Group	ID	Name			Wwise Object Path	Notes
+	3031504797	Foot			\Default Work Unit\Foot	
+
+Switch	ID	Name	Switch Group			Notes
+	2058049674	Wood	Foot			
+	2654748154	Water	Foot			
+

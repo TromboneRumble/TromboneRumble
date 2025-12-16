@@ -8,6 +8,7 @@
 #include "CharacterAnimInstance.generated.h"
 
 class UAkAudioEvent;
+class UAkSwitchValue;
 class UAkComponent;
 class ADefaultTromboneCharacter;
 class UCharacterMovementComponent;
@@ -84,8 +85,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkAudioEvent> FootstepAkEvent = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAkAudioEvent> FootstepWaterAkEvent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkSwitchValue> NormalFootstepSwitch = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkSwitchValue> WaterFootstepSwitch = nullptr;
 
 public:
 	//~ Begin Setters

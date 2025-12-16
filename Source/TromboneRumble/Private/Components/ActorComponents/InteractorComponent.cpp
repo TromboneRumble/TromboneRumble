@@ -12,7 +12,7 @@ UInteractorComponent::UInteractorComponent()
     SetIsReplicatedByDefault(true);
 }
 
-void UInteractorComponent::TryInteract(const FInteractionContext Context, const AActor* ExplicitTarget)
+void UInteractorComponent::TryInteract(const AActor* ExplicitTarget)
 {
     const AActor* Target = ExplicitTarget ? ExplicitTarget : GetBestCandidate();
     if (!Target) return;
@@ -21,8 +21,6 @@ void UInteractorComponent::TryInteract(const FInteractionContext Context, const 
     if (!Trigger) return;
 
     if (GetOwnerRole() != ROLE_Authority && !Trigger->IsTriggerActive()) return;
-
-    if (Target->IsA(AInstrumentBase::StaticClass()) && Context.bIsEquipped) return;
 
     Server_TryInteract(Trigger);
 }

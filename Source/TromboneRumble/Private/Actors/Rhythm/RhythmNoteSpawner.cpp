@@ -31,12 +31,13 @@ ARhythmNoteSpawner::ARhythmNoteSpawner()
 }
 
 void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent, UAkSwitchValue* InChangeSwitch,
-	UAkAudioEvent* InFailEvent)
+	UAkAudioEvent* InFailEvent, bool InIsSyncTesting)
 {
 	SpawnerType = InType;
 	SpawnNoteEvent = InNoteEvent;
 	ChangeSwitch = InChangeSwitch;
 	FailEvent = InFailEvent;
+	IsSyncTesting = InIsSyncTesting;
 }
 
 void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
@@ -114,9 +115,9 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		PooledNote->MoveNotes();
 
 		//싱크가 맞는지 확인하는 디버그 코드
-		if (isSyncTesting)
+		if (IsSyncTesting)
 		{
-			float Delay = 4.5f;
+			float Delay = 5.0f;
 			if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
 			{
 				PooledNote->StartSyncDebugTimer(OwnerRhythmActor, Delay);

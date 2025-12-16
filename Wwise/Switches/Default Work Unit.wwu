@@ -11,6 +11,12 @@
 						<Switch Name="SW_N" ID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
 					</ChildrenList>
 				</SwitchGroup>
+				<SwitchGroup Name="Foot" ID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
+					<ChildrenList>
+						<Switch Name="Wood" ID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<Switch Name="Water" ID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+					</ChildrenList>
+				</SwitchGroup>
 			</ChildrenList>
 		</WorkUnit>
 	</Switches>

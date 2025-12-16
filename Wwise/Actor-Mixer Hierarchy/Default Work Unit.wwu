@@ -58,9 +58,16 @@
 												<MediaID ID="869664519"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{255F8355-A82E-4ECD-A77F-23FFC25E8828}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="721172056"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_1" ID="{493AA414-A490-425D-B535-A97E33322035}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{255F8355-A82E-4ECD-A77F-23FFC25E8828}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_2" ID="{F47871A6-1EF6-4D13-986A-C7BFCDBE5D00}" ShortID="971978089">
@@ -80,9 +87,16 @@
 												<MediaID ID="716964804"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{CB3DCFD1-CFE0-4E8B-9553-77E3D1EAD39B}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="445099123"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_2" ID="{C17759DE-55B4-471A-A9A2-FF674B29C1AD}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{CB3DCFD1-CFE0-4E8B-9553-77E3D1EAD39B}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_3" ID="{4200E0CE-1C66-4D7D-992F-5E37E9E7F0F9}" ShortID="388743935">
@@ -102,9 +116,16 @@
 												<MediaID ID="947817868"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{169CB301-7C0F-4C8D-A135-E2F1A3450BCB}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="702903757"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_3" ID="{A371E128-8ABC-41ED-A129-57E952BA8344}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{169CB301-7C0F-4C8D-A135-E2F1A3450BCB}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_4" ID="{BEBB2AA7-150F-4367-899B-F21129EC879D}" ShortID="583411164">
@@ -124,9 +145,16 @@
 												<MediaID ID="837988067"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{9C7D4E7B-3654-4ECB-8F45-61251E085C72}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="736509684"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_4" ID="{81798C67-DA78-4B98-813F-36BFB38A1D6D}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{9C7D4E7B-3654-4ECB-8F45-61251E085C72}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
@@ -202,9 +230,37 @@
 												<MediaID ID="869664519"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_2" ID="{01CDCB88-7168-4766-B2D6-9E0351FAAE6B}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="445099123"/>
+											</MediaIDList>
+										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_3" ID="{178017DB-3237-437E-A9BC-F11A861B6417}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="702903757"/>
+											</MediaIDList>
+										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_4" ID="{50D11060-8086-4B9E-A16E-F5AB39CCBE2C}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="736509684"/>
+											</MediaIDList>
+										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{0CB7C94B-D0CF-4ACC-B639-82968C27C9CF}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="721172056"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_1" ID="{492B0D01-0660-42EB-8F61-9B5F40E4FF10}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{0CB7C94B-D0CF-4ACC-B639-82968C27C9CF}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_2" ID="{08BC0C72-D2CC-42BD-84CE-5872B27057A6}" ShortID="39561624">
@@ -224,9 +280,16 @@
 												<MediaID ID="716964804"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{96C5C010-3D84-4914-BCF9-F64285AFBFF7}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="445099123"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_2" ID="{C622DD2C-2579-40DB-8E9A-51DB9B33A9C5}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{96C5C010-3D84-4914-BCF9-F64285AFBFF7}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_3" ID="{A75D59AD-FF9D-4813-A8D2-10943959E90C}" ShortID="490034077">
@@ -246,9 +309,16 @@
 												<MediaID ID="947817868"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{7BFDF7F1-181A-45B3-AEDA-B89FB3CC111D}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="702903757"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_3" ID="{F65DF923-BD33-4F9A-A1BC-515AA1D0D178}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{7BFDF7F1-181A-45B3-AEDA-B89FB3CC111D}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_4" ID="{1A5E4994-4D81-4082-BED6-DA0BD549CD74}" ShortID="1044626480">
@@ -268,9 +338,16 @@
 												<MediaID ID="837988067"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{EF096EB1-7CBC-486A-91EB-0A957D147506}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="736509684"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_4" ID="{3A1B0D10-67BB-4898-9672-F90EF5C617F8}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{EF096EB1-7CBC-486A-91EB-0A957D147506}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
@@ -338,9 +415,16 @@
 												<MediaID ID="869664519"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{0D86948E-643C-4628-A439-FD8546B0CBD8}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="721172056"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_1" ID="{70B42570-6DB9-4B34-A19D-39286DFDE2E7}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{0D86948E-643C-4628-A439-FD8546B0CBD8}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_2" ID="{8278245D-8766-4C22-96BF-11726698A649}" ShortID="266180166">
@@ -360,9 +444,16 @@
 												<MediaID ID="716964804"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{86B9F3C4-938E-42BD-AC01-86D746665858}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="445099123"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_2" ID="{8AFBD60D-F4D3-412C-BAF6-5F6A6B091CD7}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{86B9F3C4-938E-42BD-AC01-86D746665858}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_3" ID="{E091A8D7-8F93-41B9-B0CD-98988B2E18A8}" ShortID="271642713">
@@ -382,9 +473,16 @@
 												<MediaID ID="947817868"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{6281F995-F01B-41AD-9C68-5D1E26A867B4}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="702903757"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_3" ID="{7A81D354-6280-41E6-AF24-80416EDA39AC}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{6281F995-F01B-41AD-9C68-5D1E26A867B4}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="BBIK_C_4" ID="{9CE833DD-EB65-4E93-87B4-08C8E68ADDEC}" ShortID="717850159">
@@ -404,9 +502,16 @@
 												<MediaID ID="837988067"/>
 											</MediaIDList>
 										</AudioFileSource>
+										<AudioFileSource Name="BBIK_C_01" ID="{7A681E50-39A6-4498-B6F7-E177AADA53E3}">
+											<Language>SFX</Language>
+											<AudioFile>BBIK_C_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="736509684"/>
+											</MediaIDList>
+										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="BBIK_C_4" ID="{C796139C-6551-4713-9B5E-110F58421ECF}" Platform="Linked"/>
+										<ActiveSource Name="BBIK_C_01" ID="{7A681E50-39A6-4498-B6F7-E177AADA53E3}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
@@ -430,23 +535,252 @@
 				</Folder>
 				<Folder Name="Object_SFX" ID="{6105D98A-2B1D-432E-9F32-D9055C7D66B9}" ShortID="569723449">
 					<ChildrenList>
-						<RandomSequenceContainer Name="Object_Light" ID="{9681D325-9502-40AB-8219-8E6F1C1BF842}" ShortID="625760930">
+						<RandomSequenceContainer Name="Object_Splash" ID="{8316B0FD-4627-4B60-A1AE-4322014D99FD}" ShortID="138640166">
 							<PropertyList>
 								<Property Name="3DSpatialization" Type="int16" Value="2"/>
-								<Property Name="MaxSoundPerInstance" Type="int16">
-									<ValueList>
-										<Value>2</Value>
-									</ValueList>
-								</Property>
-								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
-								<Property Name="UseMaxSoundPerInstance" Type="bool">
-									<ValueList>
-										<Value>True</Value>
-									</ValueList>
-								</Property>
+								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-13</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<Custom>
+										<Attenuation Name="Attenuation (Custom)" ID="{4F4AAAC2-4F62-4912-929B-ABF604B6ED26}" ShortID="764810512">
+											<PropertyList>
+												<Property Name="ConeUse" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="RadiusMax" Type="Real64" Value="1000"/>
+											</PropertyList>
+											<CurveUsageInfoList>
+												<VolumeDryUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+														<Curve Name="VolumeDry" ID="{88341A52-A15F-4941-82E3-2460D59ED167}">
+															<PropertyList>
+																<Property Name="Flags" Type="int32" Value="3"/>
+															</PropertyList>
+															<PointList>
+																<Point>
+																	<XPos>0</XPos>
+																	<YPos>0</YPos>
+																	<Flags>5</Flags>
+																</Point>
+																<Point>
+																	<XPos>1000</XPos>
+																	<YPos>-200</YPos>
+																	<Flags>37</Flags>
+																</Point>
+															</PointList>
+														</Curve>
+													</CurveUsageInfo>
+												</VolumeDryUsage>
+												<VolumeWetGameUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+												</VolumeWetGameUsage>
+												<VolumeWetUserUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+												</VolumeWetUserUsage>
+												<LowPassFilterUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+												</LowPassFilterUsage>
+												<HighPassFilterUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+												</HighPassFilterUsage>
+												<SpreadUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+												</SpreadUsage>
+												<FocusUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+												</FocusUsage>
+												<ObstructionVolumeUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</ObstructionVolumeUsage>
+												<ObstructionLPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</ObstructionLPFUsage>
+												<ObstructionHPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</ObstructionHPFUsage>
+												<OcclusionVolumeUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</OcclusionVolumeUsage>
+												<OcclusionLPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</OcclusionLPFUsage>
+												<OcclusionHPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</OcclusionHPFUsage>
+												<DiffractionVolumeUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</DiffractionVolumeUsage>
+												<DiffractionLPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</DiffractionLPFUsage>
+												<DiffractionHPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</DiffractionHPFUsage>
+												<TransmissionVolumeUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</TransmissionVolumeUsage>
+												<TransmissionLPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</TransmissionLPFUsage>
+												<TransmissionHPFUsage>
+													<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+												</TransmissionHPFUsage>
+											</CurveUsageInfoList>
+										</Attenuation>
+									</Custom>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Splash_1" ID="{231BC43D-8A95-4C28-9674-940C72E73CB1}" ShortID="257773876">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Splash_1" ID="{8B15FF56-3CA7-48F8-B457-C947BC222CA3}">
+											<PropertyList>
+												<Property Name="FadeOutDuration" Type="Real64" Value="0.383030866778149"/>
+												<Property Name="LoopBegin" Type="Real64" Value="0"/>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+											</PropertyList>
+											<Language>SFX</Language>
+											<AudioFile>Splash_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="375473682"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Splash_1" ID="{8B15FF56-3CA7-48F8-B457-C947BC222CA3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Splash_2" ID="{CEF4BE2A-B8F5-48DB-B6BB-F03715D35EBC}" ShortID="391498001">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Splash_2" ID="{EC927176-E9D5-443F-9F05-C1D2BE9514DF}">
+											<PropertyList>
+												<Property Name="FadeOutDuration" Type="Real64" Value="0.255570164437012"/>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+											</PropertyList>
+											<Language>SFX</Language>
+											<AudioFile>Splash_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="699976713"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Splash_2" ID="{EC927176-E9D5-443F-9F05-C1D2BE9514DF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Splash_3" ID="{59745B38-E954-4164-8B11-42395AD26595}" ShortID="633286232">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Splash_3" ID="{49F656D0-9F2E-4AE2-9CC2-11DF3A39261C}">
+											<PropertyList>
+												<Property Name="FadeOutDuration" Type="Real64" Value="0.32242520206243"/>
+												<Property Name="LoopBegin" Type="Real64" Value="0"/>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+											</PropertyList>
+											<Language>SFX</Language>
+											<AudioFile>Splash_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="255748029"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Splash_3" ID="{49F656D0-9F2E-4AE2-9CC2-11DF3A39261C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Splash_4" ID="{0D96625A-CFC3-48A4-B892-1FE43FB361D2}" ShortID="697993521">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Splash_4" ID="{9BA35A3A-7220-40ED-A9C8-2720AA16BFEC}">
+											<PropertyList>
+												<Property Name="FadeOutDuration" Type="Real64" Value="0.546892419175028"/>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+											</PropertyList>
+											<Language>SFX</Language>
+											<AudioFile>Splash_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="4251908"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Splash_4" ID="{9BA35A3A-7220-40ED-A9C8-2720AA16BFEC}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<PositioningInfo>
+								<Panner Name="" ID="{C2507FD8-AFA0-4C32-9E4C-C4EF6260C788}"/>
+							</PositioningInfo>
+							<ObjectLists>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{CC34A5BA-256B-4B50-9291-26349444394D}" ShortID="1050786192">
+												<ReferenceList>
+													<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+														<ObjectRef Name="High_Pass_60Hz" ID="{F9627628-0B10-4272-BC30-D4C20423CB38}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Object_Light" ID="{0AD2263C-2911-417E-847B-FA51F9F3B0EA}" ShortID="87404312">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
+								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-4</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -462,7 +796,7 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<Sound Name="Light_1" ID="{4542795B-99C5-43CB-A0B7-8C0454E1E43C}" ShortID="996281594">
+								<Sound Name="Light_Fix_1" ID="{A1797B52-AD50-4CA4-AD41-AC99D066215A}" ShortID="551624792">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -472,19 +806,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Light_1" ID="{FBC4D1EB-D0AD-4FFE-8672-C84F0D4AD10D}">
+										<AudioFileSource Name="Light_Fix_1" ID="{7C134935-1D63-49FB-BEA3-8BA840EE6B8B}">
 											<Language>SFX</Language>
-											<AudioFile>Light\Light_1.wav</AudioFile>
+											<AudioFile>Light_Fix_1.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="914459346"/>
+												<MediaID ID="256373702"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Light_1" ID="{FBC4D1EB-D0AD-4FFE-8672-C84F0D4AD10D}" Platform="Linked"/>
+										<ActiveSource Name="Light_Fix_1" ID="{7C134935-1D63-49FB-BEA3-8BA840EE6B8B}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Light_2" ID="{CC755CE8-A608-4481-82B5-23AEEED2C2CA}" ShortID="208622304">
+								<Sound Name="Light_Fix_2" ID="{3BBF5926-C4CB-45BC-8F3E-87E45626D3BE}" ShortID="454693684">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -494,19 +828,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Light_2" ID="{D9E6F2B6-C325-4494-8019-CA058E2F65F5}">
+										<AudioFileSource Name="Light_Fix_2" ID="{FD5DC1B3-FC65-4123-B8B8-19A99E36AB9B}">
 											<Language>SFX</Language>
-											<AudioFile>Light\Light_2.wav</AudioFile>
+											<AudioFile>Light_Fix_2.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="173696643"/>
+												<MediaID ID="631679084"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Light_2" ID="{D9E6F2B6-C325-4494-8019-CA058E2F65F5}" Platform="Linked"/>
+										<ActiveSource Name="Light_Fix_2" ID="{FD5DC1B3-FC65-4123-B8B8-19A99E36AB9B}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Light_3" ID="{52362344-FE1A-46F6-9694-0FA23CCCFCC8}" ShortID="821830666">
+								<Sound Name="Light_Fix_3" ID="{4DD3BA62-EF60-4BC8-939D-C9C23EC9D2B7}" ShortID="890969945">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -516,19 +850,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Light_3" ID="{B1CE29EA-D795-430D-A250-BC5C91D9133A}">
+										<AudioFileSource Name="Light_Fix_3" ID="{7DA9C77A-981F-4B3D-83D8-9354B45D58C6}">
 											<Language>SFX</Language>
-											<AudioFile>Light\Light_3.wav</AudioFile>
+											<AudioFile>Light_Fix_3.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="918122136"/>
+												<MediaID ID="883607643"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Light_3" ID="{B1CE29EA-D795-430D-A250-BC5C91D9133A}" Platform="Linked"/>
+										<ActiveSource Name="Light_Fix_3" ID="{7DA9C77A-981F-4B3D-83D8-9354B45D58C6}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Light_4" ID="{71ACE0DD-550C-4609-9595-B1EA3528841A}" ShortID="167023583">
+								<Sound Name="Light_Fix_4" ID="{60B598DB-4AC3-4168-9E5D-08307CE4802A}" ShortID="1042013975">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -538,32 +872,592 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Light_4" ID="{A04793CB-D7EC-41B8-83BA-5781EBCA3959}">
+										<AudioFileSource Name="Light_Fix_4" ID="{C6123C0D-2F8B-4CB5-8F49-1E1D7C1AE06B}">
 											<Language>SFX</Language>
-											<AudioFile>Light\Light_4.wav</AudioFile>
+											<AudioFile>Light_Fix_4.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="525052850"/>
+												<MediaID ID="1003353392"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Light_4" ID="{A04793CB-D7EC-41B8-83BA-5781EBCA3959}" Platform="Linked"/>
+										<ActiveSource Name="Light_Fix_4" ID="{C6123C0D-2F8B-4CB5-8F49-1E1D7C1AE06B}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
 							<PositioningInfo>
-								<Panner Name="" ID="{86B53372-768A-4C59-A2AD-0624BCC72B45}"/>
+								<Panner Name="" ID="{1423CA89-7142-4094-A29E-7009B6E2670E}"/>
 							</PositioningInfo>
 						</RandomSequenceContainer>
+						<Sound Name="Object_Party" ID="{254D3463-A552-4799-B16B-E972FA9DEEC0}" ShortID="19654190">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-6</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Light" ID="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Light_Party_2" ID="{AB0C264B-FC3E-4315-A0A1-72EBEA09B23E}">
+									<Language>SFX</Language>
+									<AudioFile>Light_Party_2.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="961276031"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<PositioningInfo>
+								<Panner Name="" ID="{F6BD1E63-4FC1-4CA3-A55C-6F869C03807D}"/>
+							</PositioningInfo>
+							<ActiveSourceList>
+								<ActiveSource Name="Light_Party_2" ID="{AB0C264B-FC3E-4315-A0A1-72EBEA09B23E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3C68F66F-7F1C-4B0C-B8ED-7D9C0BDCA4A7}" ShortID="956046924">
 					<ChildrenList>
-						<RandomSequenceContainer Name="Foot" ID="{86276A5C-BCEC-4960-8462-5E0111768624}" ShortID="279063185">
+						<SwitchContainer Name="Player_Foot" ID="{6C6B7ACD-6F90-407B-A6E0-759EB5180DA4}" ShortID="716347646">
 							<PropertyList>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-15</Value>
+										<Value>-10</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="DefaultSwitchOrState">
+									<ObjectRef Name="Wood" ID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+								<Reference Name="SwitchGroupOrStateGroup">
+									<ObjectRef Name="Foot" ID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<RandomSequenceContainer Name="Water_Foot" ID="{404E0BE2-3512-4D50-B7F4-3BA6694FF640}" ShortID="25065862">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="2"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{658FFA8E-FEFB-4A0E-A331-BA4C01E77577}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="10"/>
+															<Property Name="Min" Type="Real64" Value="-10"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-9</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<Custom>
+												<Attenuation Name="Attenuation (Custom)" ID="{A6E74B76-BC22-4D7F-98E2-0EB0B22E8E10}" ShortID="855326395">
+													<PropertyList>
+														<Property Name="ConeUse" Type="bool">
+															<ValueList>
+																<Value>True</Value>
+															</ValueList>
+														</Property>
+													</PropertyList>
+													<CurveUsageInfoList>
+														<VolumeDryUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																<Curve Name="VolumeDry" ID="{BF0BA2F7-D2DD-4751-AEE8-00899587F745}">
+																	<PropertyList>
+																		<Property Name="Flags" Type="int32" Value="3"/>
+																	</PropertyList>
+																	<PointList>
+																		<Point>
+																			<XPos>0</XPos>
+																			<YPos>0</YPos>
+																			<Flags>5</Flags>
+																		</Point>
+																		<Point>
+																			<XPos>100</XPos>
+																			<YPos>-200</YPos>
+																			<Flags>37</Flags>
+																		</Point>
+																	</PointList>
+																</Curve>
+															</CurveUsageInfo>
+														</VolumeDryUsage>
+														<VolumeWetGameUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+														</VolumeWetGameUsage>
+														<VolumeWetUserUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+														</VolumeWetUserUsage>
+														<LowPassFilterUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</LowPassFilterUsage>
+														<HighPassFilterUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</HighPassFilterUsage>
+														<SpreadUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</SpreadUsage>
+														<FocusUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</FocusUsage>
+														<ObstructionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionVolumeUsage>
+														<ObstructionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionLPFUsage>
+														<ObstructionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionHPFUsage>
+														<OcclusionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionVolumeUsage>
+														<OcclusionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionLPFUsage>
+														<OcclusionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionHPFUsage>
+														<DiffractionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionVolumeUsage>
+														<DiffractionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionLPFUsage>
+														<DiffractionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionHPFUsage>
+														<TransmissionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionVolumeUsage>
+														<TransmissionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionLPFUsage>
+														<TransmissionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionHPFUsage>
+													</CurveUsageInfoList>
+												</Attenuation>
+											</Custom>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Water_Foot_1" ID="{AC507647-4367-48E1-8206-887D8FFBC53F}" ShortID="28068467">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Water_Foot_1" ID="{AD1010BF-09BD-4089-8F21-4B25C702E1FB}">
+													<Language>SFX</Language>
+													<AudioFile>Water_Foot_1.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="589790040"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Water_Foot_1" ID="{AD1010BF-09BD-4089-8F21-4B25C702E1FB}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Water_Foot_2" ID="{AF3826C7-5B4F-45DA-A5C5-760FDAC58324}" ShortID="51814895">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Water_Foot_2" ID="{DABFD5BC-D724-4DC5-B4E4-EF44FD0B2A8C}">
+													<Language>SFX</Language>
+													<AudioFile>Water_Foot_2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="80669302"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Water_Foot_2" ID="{DABFD5BC-D724-4DC5-B4E4-EF44FD0B2A8C}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Water_Foot_3" ID="{5481DCD3-376C-4703-AD86-2A46CD2580B9}" ShortID="410267803">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Water_Foot_3" ID="{E7D4F03B-2FD5-4F7B-A873-A9EDA7126ECB}">
+													<Language>SFX</Language>
+													<AudioFile>Water_Foot_3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="953859740"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Water_Foot_3" ID="{E7D4F03B-2FD5-4F7B-A873-A9EDA7126ECB}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Water_Foot_4" ID="{A437D171-B74F-4B91-9BF7-AC61B2204142}" ShortID="969772933">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Water_Foot_4" ID="{8135BA2B-B030-45ED-AE75-F3120FB74ABC}">
+													<Language>SFX</Language>
+													<AudioFile>Water_Foot_4.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="547171557"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Water_Foot_4" ID="{8135BA2B-B030-45ED-AE75-F3120FB74ABC}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Water_Foot_5" ID="{8BF1A868-F6DF-4B0E-8DB8-43A7722EF48A}" ShortID="314590590">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Water_Foot_5" ID="{55ABF6EB-EFF5-4193-ADDA-6A0DD14DD7D9}">
+													<Language>SFX</Language>
+													<AudioFile>Water_Foot_5.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="494162867"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Water_Foot_5" ID="{55ABF6EB-EFF5-4193-ADDA-6A0DD14DD7D9}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+									<PositioningInfo>
+										<Position Name="" ID="{8CF6AE40-221E-4B10-A07D-AC058611A45D}"/>
+									</PositioningInfo>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Wood_Foot" ID="{86276A5C-BCEC-4960-8462-5E0111768624}" ShortID="279063185">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="2"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{A7EA56A8-F823-470F-B5A9-74C9EB96E2F3}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="10"/>
+															<Property Name="Min" Type="Real64" Value="-10"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-9</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<Custom>
+												<Attenuation Name="Attenuation (Custom)" ID="{3DFF3D53-1C67-4A01-92BE-99C5FFA21B32}" ShortID="63987468">
+													<PropertyList>
+														<Property Name="ConeUse" Type="bool">
+															<ValueList>
+																<Value>True</Value>
+															</ValueList>
+														</Property>
+													</PropertyList>
+													<CurveUsageInfoList>
+														<VolumeDryUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																<Curve Name="VolumeDry" ID="{CB7001E9-44AC-4F10-BAC6-E80F0B39E98D}">
+																	<PropertyList>
+																		<Property Name="Flags" Type="int32" Value="3"/>
+																	</PropertyList>
+																	<PointList>
+																		<Point>
+																			<XPos>0</XPos>
+																			<YPos>0</YPos>
+																			<Flags>5</Flags>
+																		</Point>
+																		<Point>
+																			<XPos>100</XPos>
+																			<YPos>-200</YPos>
+																			<Flags>37</Flags>
+																		</Point>
+																	</PointList>
+																</Curve>
+															</CurveUsageInfo>
+														</VolumeDryUsage>
+														<VolumeWetGameUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+														</VolumeWetGameUsage>
+														<VolumeWetUserUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+														</VolumeWetUserUsage>
+														<LowPassFilterUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</LowPassFilterUsage>
+														<HighPassFilterUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</HighPassFilterUsage>
+														<SpreadUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</SpreadUsage>
+														<FocusUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</FocusUsage>
+														<ObstructionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionVolumeUsage>
+														<ObstructionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionLPFUsage>
+														<ObstructionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionHPFUsage>
+														<OcclusionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionVolumeUsage>
+														<OcclusionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionLPFUsage>
+														<OcclusionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionHPFUsage>
+														<DiffractionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionVolumeUsage>
+														<DiffractionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionLPFUsage>
+														<DiffractionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionHPFUsage>
+														<TransmissionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionVolumeUsage>
+														<TransmissionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionLPFUsage>
+														<TransmissionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionHPFUsage>
+													</CurveUsageInfoList>
+												</Attenuation>
+											</Custom>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Wood2_Foot_1" ID="{F24152F2-5B0B-4AE3-A690-F64A1D7669EE}" ShortID="939718431">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Wood2_Foot_1" ID="{B3584C89-D7B8-4F62-B77D-67F98600AD3F}">
+													<Language>SFX</Language>
+													<AudioFile>Wood2_Foot_1.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="512909462"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood2_Foot_1" ID="{B3584C89-D7B8-4F62-B77D-67F98600AD3F}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Wood2_Foot_2" ID="{447562A8-825D-49C2-88CD-AB3B9217E136}" ShortID="641930618">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Wood2_Foot_2" ID="{FD2E650A-8BA7-4665-B709-63450418C77D}">
+													<Language>SFX</Language>
+													<AudioFile>Wood2_Foot_2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="167561171"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood2_Foot_2" ID="{FD2E650A-8BA7-4665-B709-63450418C77D}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Wood2_Foot_3" ID="{B19985A7-8529-4619-A194-D2E72C12C62D}" ShortID="591764734">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Wood2_Foot_3" ID="{DCC745BC-013C-42B4-A034-945AD76CB8CC}">
+													<Language>SFX</Language>
+													<AudioFile>Wood2_Foot_3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="71206826"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood2_Foot_3" ID="{DCC745BC-013C-42B4-A034-945AD76CB8CC}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Wood2_Foot_4" ID="{1E4F5AF8-DAD0-4AC7-963B-73A851D5DA4B}" ShortID="763262823">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Wood2_Foot_4" ID="{E229B8DE-1BBB-499B-9E21-BA2E97DDD266}">
+													<Language>SFX</Language>
+													<AudioFile>Wood2_Foot_4.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="279374184"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood2_Foot_4" ID="{E229B8DE-1BBB-499B-9E21-BA2E97DDD266}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Wood2_Foot_5" ID="{91A34092-5165-44D7-861B-E7EFB6B0A84D}" ShortID="855694702">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Wood2_Foot_5" ID="{8443DD5A-EC04-4FE3-AB13-96DB17843AE6}">
+													<Language>SFX</Language>
+													<AudioFile>Wood2_Foot_5.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="941571148"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood2_Foot_5" ID="{8443DD5A-EC04-4FE3-AB13-96DB17843AE6}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+							</ChildrenList>
+							<GroupingInfo>
+								<GroupingBehaviorList>
+									<GroupingBehavior>
+										<ItemRef Name="Wood_Foot" ID="{86276A5C-BCEC-4960-8462-5E0111768624}"/>
+									</GroupingBehavior>
+									<GroupingBehavior>
+										<ItemRef Name="Water_Foot" ID="{404E0BE2-3512-4D50-B7F4-3BA6694FF640}"/>
+									</GroupingBehavior>
+								</GroupingBehaviorList>
+								<GroupingList>
+									<Grouping>
+										<SwitchRef Name="Wood" ID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+										<ItemList>
+											<ItemRef Name="Wood_Foot" ID="{86276A5C-BCEC-4960-8462-5E0111768624}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Water" ID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+										<ItemList>
+											<ItemRef Name="Water_Foot" ID="{404E0BE2-3512-4D50-B7F4-3BA6694FF640}"/>
+										</ItemList>
+									</Grouping>
+								</GroupingList>
+							</GroupingInfo>
+						</SwitchContainer>
+						<RandomSequenceContainer Name="Player_Trombone_Attack" ID="{0A645A61-80E0-49C2-BF1D-AEE0B425635A}" ShortID="709268249">
+							<PropertyList>
+								<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
+								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-11</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -576,7 +1470,7 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<Sound Name="Wood_Foot_1" ID="{C62A8603-5AEC-497C-9031-43B7530B12DB}" ShortID="946456524">
+								<Sound Name="Attack_T_1" ID="{1364B767-219F-48DA-9F4D-343242825D80}" ShortID="214941210">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -586,19 +1480,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Wood_Foot_1" ID="{3BA9F287-7BB4-4E63-B1C7-61A6BD3BEF33}">
+										<AudioFileSource Name="Attack_T_1" ID="{945FEA0F-1C6F-4907-B8F2-A8DA43263560}">
 											<Language>SFX</Language>
-											<AudioFile>Foot\Wood_Foot_1.wav</AudioFile>
+											<AudioFile>Attack_T_1.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="923656824"/>
+												<MediaID ID="941583466"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Wood_Foot_1" ID="{3BA9F287-7BB4-4E63-B1C7-61A6BD3BEF33}" Platform="Linked"/>
+										<ActiveSource Name="Attack_T_1" ID="{945FEA0F-1C6F-4907-B8F2-A8DA43263560}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Wood_Foot_2" ID="{5A47BF3A-8E94-4D90-B2B8-DA3222399F59}" ShortID="946411017">
+								<Sound Name="Attack_T_2" ID="{DB58621C-E566-4C51-B64B-0809CBBDFB01}" ShortID="603497342">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -608,19 +1502,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Wood_Foot_2" ID="{E22D6B94-F8A3-4C62-9D92-FF5174D5E522}">
+										<AudioFileSource Name="Attack_T_2" ID="{C0C2A24C-CA8D-4807-9501-9EE5FBB2C6B5}">
 											<Language>SFX</Language>
-											<AudioFile>Foot\Wood_Foot_2.wav</AudioFile>
+											<AudioFile>Attack_T_2.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="973706153"/>
+												<MediaID ID="952668855"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Wood_Foot_2" ID="{E22D6B94-F8A3-4C62-9D92-FF5174D5E522}" Platform="Linked"/>
+										<ActiveSource Name="Attack_T_2" ID="{C0C2A24C-CA8D-4807-9501-9EE5FBB2C6B5}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Wood_Foot_3" ID="{CD4DD6E0-0B0D-45DE-A3F2-D1A09FDFC0DE}" ShortID="600492592">
+								<Sound Name="Attack_T_3" ID="{00B291B3-38A9-44C1-BC10-14E0CAA03780}" ShortID="47991351">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -630,19 +1524,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Wood_Foot_3" ID="{BCDE75BE-3972-491C-9C15-503B5B5E1D17}">
+										<AudioFileSource Name="Attack_T_3" ID="{599BB284-F07E-4DDA-82A5-221003F2E693}">
 											<Language>SFX</Language>
-											<AudioFile>Foot\Wood_Foot_3.wav</AudioFile>
+											<AudioFile>Attack_T_3.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="296563695"/>
+												<MediaID ID="968238248"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Wood_Foot_3" ID="{BCDE75BE-3972-491C-9C15-503B5B5E1D17}" Platform="Linked"/>
+										<ActiveSource Name="Attack_T_3" ID="{599BB284-F07E-4DDA-82A5-221003F2E693}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Wood_Foot_4" ID="{55D7035D-44A4-423C-8ED6-00B13922F1A3}" ShortID="372392940">
+								<Sound Name="Attack_T_4" ID="{2DD39A75-268E-4D3E-9422-B471ACEC307E}" ShortID="523826165">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -652,41 +1546,175 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Wood_Foot_4" ID="{8C14F70F-7EEF-4DC4-B295-5317CE6BA33F}">
+										<AudioFileSource Name="Attack_T_4" ID="{A735B282-8087-47DD-B614-C99CF3F3FF36}">
 											<Language>SFX</Language>
-											<AudioFile>Foot\Wood_Foot_4.wav</AudioFile>
+											<AudioFile>Attack_T_4.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="895246282"/>
+												<MediaID ID="451014174"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Wood_Foot_4" ID="{8C14F70F-7EEF-4DC4-B295-5317CE6BA33F}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="Wood_Foot_5" ID="{DB6E9B34-9C7D-4F75-B528-94AF0336FBB6}" ShortID="843129272">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="Wood_Foot_5" ID="{CDB763AE-43A4-4659-A246-729354B203FF}">
-											<Language>SFX</Language>
-											<AudioFile>Foot\Wood_Foot_5.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="480487708"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="Wood_Foot_5" ID="{CDB763AE-43A4-4659-A246-729354B203FF}" Platform="Linked"/>
+										<ActiveSource Name="Attack_T_4" ID="{A735B282-8087-47DD-B614-C99CF3F3FF36}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Player_Attack_Voice" ID="{D23E0181-AAA5-4AC3-AF9A-D16421CFF630}" ShortID="307415182">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
+								<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
+								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
+								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Light" ID="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Player_Attack_Voice_1" ID="{D1A906C6-3A7B-4975-BA2E-442B6A015507}" ShortID="639702937">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Attack_Voice_1" ID="{20391E9B-5158-47DD-8B47-BB99E83094FF}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Attack_Voice_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="58884900"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Attack_Voice_1" ID="{20391E9B-5158-47DD-8B47-BB99E83094FF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Player_Attack_Voice_2" ID="{F7EE41C0-FC14-434C-B06D-D5502328956B}" ShortID="817821220">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Attack_Voice_2" ID="{F67BDA05-29F4-4463-8D3A-CBB6D0696BD7}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Attack_Voice_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="104383533"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Attack_Voice_2" ID="{F67BDA05-29F4-4463-8D3A-CBB6D0696BD7}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Player_Attack_Voice_3" ID="{49D46254-FA6F-41ED-A1A0-B5CF6A951D40}" ShortID="819493984">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Attack_Voice_3" ID="{9C41A291-CA13-41EA-A356-9A3150F0C68B}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Attack_Voice_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="438912652"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Attack_Voice_3" ID="{9C41A291-CA13-41EA-A356-9A3150F0C68B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Player_Attack_Voice_4" ID="{D64088CB-3B9F-47DC-A3CA-1C746024E5E5}" ShortID="870108328">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Attack_Voice_4" ID="{863661EC-D905-41FD-A1AB-646AAABC75F1}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Attack_Voice_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="444341275"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Attack_Voice_4" ID="{863661EC-D905-41FD-A1AB-646AAABC75F1}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Player_Attack_Voice_5" ID="{016B17EA-E3A5-49C5-8E1E-BB1226E28693}" ShortID="287578">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Attack_Voice_5" ID="{3E30F2B4-5706-407A-9BA3-7CF5D59719F9}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Attack_Voice_5.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="717956438"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Attack_Voice_5" ID="{3E30F2B4-5706-407A-9BA3-7CF5D59719F9}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Player_Attack_Voice_6" ID="{83064B01-EBC6-4763-BC8C-E34233AB1DB9}" ShortID="320290823">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Attack_Voice_6" ID="{FCDCBEF3-714C-4A41-8570-49D7062D1A53}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Attack_Voice_6.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="820887562"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Attack_Voice_6" ID="{FCDCBEF3-714C-4A41-8570-49D7062D1A53}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<PositioningInfo>
+								<Panner Name="" ID="{A2468695-96F0-4EBF-B969-1DA9BFF4B483}"/>
+							</PositioningInfo>
 						</RandomSequenceContainer>
 					</ChildrenList>
 				</Folder>

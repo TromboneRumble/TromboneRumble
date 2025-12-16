@@ -49,6 +49,12 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
+
+	if (AkSoundComponent)
+	{
+		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		AkSoundComponent->OcclusionRefreshInterval = 0.f;
+	}
 }
 
 void ADefaultTromboneCharacter::Jump()
@@ -83,7 +89,7 @@ void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 
 void ADefaultTromboneCharacter::TryInteract()
 {
-	if (InteractorComponent) InteractorComponent->TryInteract(CurrentInteractionContext);
+	if (InteractorComponent) InteractorComponent->TryInteract();
 }
 
 void ADefaultTromboneCharacter::Attack()
@@ -285,13 +291,8 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 		{
 			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
 			{
-				CurrentInteractionContext.bIsEquipped = true;
 				NewType = Instrument->GetInstrumentType();
 			}
-		}
-		else
-		{
-			CurrentInteractionContext.bIsEquipped = false;
 		}
 		
 		if (IsLocallyControlled())

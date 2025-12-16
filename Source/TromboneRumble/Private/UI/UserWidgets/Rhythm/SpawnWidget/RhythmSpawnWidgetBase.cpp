@@ -162,6 +162,23 @@ void URhythmSpawnWidgetBase::NativeOnInitialized()
 	}
 }
 
+void URhythmSpawnWidgetBase::NativeConstruct()
+{
+	Super::NativeConstruct();
+	if (FadeInAnim)
+	{
+		FWidgetAnimationDynamicEvent FinishedEvent;
+		FinishedEvent.BindDynamic(this, &ThisClass::OnFadeInFinished);
+		BindToAnimationFinished(FadeInAnim, FinishedEvent);
+	}
+	if (FadeOutAnim)
+	{
+		FWidgetAnimationDynamicEvent FinishedEvent;
+		FinishedEvent.BindDynamic(this, &ThisClass::OnFadeOutFinished);
+		BindToAnimationFinished(FadeOutAnim, FinishedEvent);
+	}
+}
+
 void URhythmSpawnWidgetBase::NativeDestruct()
 {
 	if (!IsDesignTime())
