@@ -5,20 +5,68 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 
+static bool TryGetGameStateFromMapTag(const FGameplayTag& MapTag, EGameState& OutState)
+{
+	// 자식 태그가 있으면 안 됨
+	const FGameplayTagContainer Children = UGameplayTagsManager::Get().RequestGameplayTagChildren(MapTag);
+	if (Children.Num() > 0) return false;
+
+	// "Trombone.Maps.InGame.Main"
+	const FString TagStr = MapTag.ToString();
+	TArray<FString> Parts;
+	TagStr.ParseIntoArray(Parts, TEXT("."), true);
+
+	// "Trombone.Maps.<State>.<MapName>" 형태만 통과
+	if (Parts.Num() < 4)
+	{
+		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (Need 4 tokens): %s"), *TagStr));
+		return false;
+	}
+
+	if (Parts[0] != TEXT("Trombone") || Parts[1] != TEXT("Maps"))
+	{
+		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (Not Trombone.Maps): %s"), *TagStr));
+		return false;
+	}
+
+	const FString& StateStr = Parts[2]; // "InGame", "Lobby", "MainMenu"
+
+	// enum 이름과 동일하면 자동 변환 가능
+	const UEnum* Enum = StaticEnum<EGameState>();
+	const int64 Value = Enum ? Enum->GetValueByNameString(StateStr) : INDEX_NONE;
+	if (Value == INDEX_NONE)
+	{
+		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (No EGameState match): %s"), *StateStr));
+		return false;
+	}
+
+	OutState = static_cast<EGameState>(Value);
+	return true;
+}
+
 void UGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
 	CurrentGameState = EGameState::MainMenu;
 
-	
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_MainMenuMap, EGameState::MainMenu);
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main, EGameState::InGame);
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap, EGameState::Lobby);
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main, EGameState::InGame);
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_MK, EGameState::InGame);
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_HW, EGameState::InGame);
-	AddMapPathFromGameTag(TromboneGamePlayTags::Trombone_Maps_InGame_MJ, EGameState::InGame);
+	// 루트 태그
+	const FGameplayTag MapsRoot = FGameplayTag::RequestGameplayTag(TEXT("Trombone.Maps"));
+
+	// 하위 태그 전부 수집
+	const FGameplayTagContainer Children =
+		UGameplayTagsManager::Get().RequestGameplayTagChildren(MapsRoot);
+
+	for (const FGameplayTag& Tag : Children)
+	{
+		EGameState State;
+		if (!TryGetGameStateFromMapTag(Tag, State))
+		{
+			continue;
+		}
+
+		AddMapPathFromGameTag(Tag, State);
+	}
 
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UGameStateSubsystem::OnPostLoadMap);
 	

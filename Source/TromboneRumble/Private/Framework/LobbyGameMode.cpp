@@ -124,7 +124,7 @@ void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 				PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
 				break;
 			case EGameState::Lobby:
-				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap));
+				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
 				break;
 			case EGameState::InGame:
 				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
@@ -220,7 +220,7 @@ void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 				{
 					GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 				}
-				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap));
+				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
 				break;
 
 			case ELobbyState::CountdownToScramble:

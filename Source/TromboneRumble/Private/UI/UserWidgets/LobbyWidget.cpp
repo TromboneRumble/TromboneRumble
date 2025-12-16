@@ -23,7 +23,7 @@ bool ULobbyWidget::Initialize()
 	checkf(!InGameMapPath.IsEmpty(), TEXT("InGameMapPath map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedInGameMapPath = InGameMapPath;
 
-	const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenuMap);
+	const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
 	checkf(!MainMenuMapPath.IsEmpty(), TEXT("MainMenu map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedMainMenuMapPath = MainMenuMapPath;
 
