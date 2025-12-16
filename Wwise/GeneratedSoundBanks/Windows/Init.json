@@ -10,11 +10,21 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{A6C78E83-0118-FBF9-4FE6-0344627BC883}",
+    "Hash": "{945C7BD6-C2C2-4B33-93F5-EE75AC04598E}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3701691487",
+       "Name": "Hall_Large_Bright",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large_Bright",
+       "GUID": "{CB602948-2D1D-4977-A8D5-378184293E80}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      }
+     ],
      "AudioDevices": [
       {
        "Id": "2317455096",
@@ -40,6 +50,21 @@
       "Name": "Master Audio Bus",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus",
       "GUID": "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"
+     }
+    ],
+    "AuxBusses": [
+     {
+      "Id": "356551040",
+      "Name": "Map_A_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_A_Reverb",
+      "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -576,6 +601,6 @@
     ]
    }
   ],
-  "FileHash": "{E87A4538-48AC-6064-2D47-D1A2434D84EC}"
+  "FileHash": "{CDF8AC25-3654-DB7E-DEDC-2F53461D91FA}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
     "Language": "SFX",
-    "Hash": "{A5203148-877B-D39D-45A6-E5264D6880C5}",
+    "Hash": "{982552FF-7D04-0617-E083-E3E82304EB8F}",
     "ObjectPath": "Play_Trombone_Attack",
     "ShortName": "Play_Trombone_Attack",
     "Path": "Event/Play_Trombone_Attack.bnk",
@@ -79,6 +79,6 @@
     ]
    }
   ],
-  "FileHash": "{FA7C7256-56C2-C9EF-25DB-42D33330925D}"
+  "FileHash": "{C7A6823D-CECB-0E2D-8764-DF8F733D6830}"
  }
 }

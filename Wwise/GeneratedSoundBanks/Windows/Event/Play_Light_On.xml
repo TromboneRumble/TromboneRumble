@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{13F8D54B-FDE8-8C0F-EFED-7A39566C5D36}">
+		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{431C46F2-3B1C-C7AA-F543-61117BFAFA60}">
 			<ObjectPath>Play_Light_On</ObjectPath>
 			<ShortName>Play_Light_On</ShortName>
 			<Path>Event/Play_Light_On.bnk</Path>
 			<Media>
-				<File Id="319074503" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_2.wav</ShortName>
-					<Path>Media/319074503.wem</Path>
-					<CachePath>SFX/Light_2_818F3B66.wem</CachePath>
+				<File Id="256373702" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_1.wav</ShortName>
+					<Path>Media/256373702.wem</Path>
+					<CachePath>SFX/Light_Fix_1_818F3B66.wem</CachePath>
 				</File>
-				<File Id="380454884" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_1.wav</ShortName>
-					<Path>Media/380454884.wem</Path>
-					<CachePath>SFX/Light_1_818F3B66.wem</CachePath>
+				<File Id="631679084" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_2.wav</ShortName>
+					<Path>Media/631679084.wem</Path>
+					<CachePath>SFX/Light_Fix_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="491418174" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_3.wav</ShortName>
-					<Path>Media/491418174.wem</Path>
-					<CachePath>SFX/Light_3_818F3B66.wem</CachePath>
+				<File Id="883607643" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_3.wav</ShortName>
+					<Path>Media/883607643.wem</Path>
+					<CachePath>SFX/Light_Fix_3_818F3B66.wem</CachePath>
 				</File>
-				<File Id="719796623" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Light_4.wav</ShortName>
-					<Path>Media/719796623.wem</Path>
-					<CachePath>SFX/Light_4_818F3B66.wem</CachePath>
+				<File Id="1003353392" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Fix_4.wav</ShortName>
+					<Path>Media/1003353392.wem</Path>
+					<CachePath>SFX/Light_Fix_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="816711006" Name="Play_Light_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Light_On" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="2.688" DurationMax="2.7313957">
+				<Event Id="816711006" Name="Play_Light_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Light_On" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.14466667" DurationMax="0.26366666">
 					<MediaRefs>
-						<MediaRef Id="319074503"/>
-						<MediaRef Id="380454884"/>
-						<MediaRef Id="491418174"/>
-						<MediaRef Id="719796623"/>
+						<MediaRef Id="256373702"/>
+						<MediaRef Id="631679084"/>
+						<MediaRef Id="883607643"/>
+						<MediaRef Id="1003353392"/>
 					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5D8A0D3B-B0DC-D923-99AC-7B5FB2DC6996}</FileHash>
+	<FileHash>{758CDD7E-DE60-4D93-6E29-A99978C862F6}</FileHash>
 </SoundBanksInfo>

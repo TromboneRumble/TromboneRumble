@@ -286,7 +286,7 @@
 								<Action Name="" ID="{4E4E4F69-5CEC-45AD-892D-F31D6479CC46}" ShortID="785128589">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Object_Light" ID="{9681D325-9502-40AB-8219-8E6F1C1BF842}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+											<ObjectRef Name="Object_Light" ID="{0AD2263C-2911-417E-847B-FA51F9F3B0EA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -298,6 +298,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Object_Splash" ID="{8316B0FD-4627-4B60-A1AE-4322014D99FD}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Party_On" ID="{B0C36204-52E2-4794-8556-4F4C7B718AEC}">
+							<ChildrenList>
+								<Action Name="" ID="{C6D88353-CDE9-4D03-A61D-8BBB223AAF6A}" ShortID="104540388">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Party" ID="{254D3463-A552-4799-B16B-E972FA9DEEC0}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -324,6 +335,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Player_Trombone_Attack" ID="{0A645A61-80E0-49C2-BF1D-AEE0B425635A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Voice_Attack" ID="{B494B516-A132-49D9-AE89-08E53A55920A}">
+							<ChildrenList>
+								<Action Name="" ID="{A2ECCD76-D509-4BE2-B4DD-9501BC5F911F}" ShortID="46296582">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Attack_Voice" ID="{D23E0181-AAA5-4AC3-AF9A-D16421CFF630}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

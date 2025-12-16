@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{E82916D4-1F78-85D0-EC0C-C74B01BC9C56}">
+			<ObjectPath>Play_Voice_Attack</ObjectPath>
+			<ShortName>Play_Voice_Attack</ShortName>
+			<Path>Event/Play_Voice_Attack.bnk</Path>
+			<Media>
+				<File Id="58884900" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_1.wav</ShortName>
+					<Path>Media/58884900.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="104383533" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_2.wav</ShortName>
+					<Path>Media/104383533.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="438912652" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_3.wav</ShortName>
+					<Path>Media/438912652.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="444341275" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_4.wav</ShortName>
+					<Path>Media/444341275.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="717956438" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_5.wav</ShortName>
+					<Path>Media/717956438.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="820887562" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_6.wav</ShortName>
+					<Path>Media/820887562.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_6_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3792786383" Name="Play_Voice_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Voice_Attack" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.238" DurationMax="0.35933334">
+					<MediaRefs>
+						<MediaRef Id="58884900"/>
+						<MediaRef Id="104383533"/>
+						<MediaRef Id="438912652"/>
+						<MediaRef Id="444341275"/>
+						<MediaRef Id="717956438"/>
+						<MediaRef Id="820887562"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{6BB69DD5-56E6-6C0F-66D3-3BED27AA0766}</FileHash>
+</SoundBanksInfo>

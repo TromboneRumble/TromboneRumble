@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3557138646" Type="Event" GUID="{B0C36204-52E2-4794-8556-4F4C7B718AEC}" Language="SFX" Hash="{7360A512-FD4F-930E-F45A-77AFAE152570}">
+			<ObjectPath>Play_Party_On</ObjectPath>
+			<ShortName>Play_Party_On</ShortName>
+			<Path>Event/Play_Party_On.bnk</Path>
+			<Media>
+				<File Id="961276031" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Light_Party_2.wav</ShortName>
+					<Path>Media/961276031.wem</Path>
+					<CachePath>SFX/Light_Party_2_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3557138646" Name="Play_Party_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Party_On" GUID="{B0C36204-52E2-4794-8556-4F4C7B718AEC}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.1223333" DurationMax="1.1223333">
+					<MediaRefs>
+						<MediaRef Id="961276031"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{50E8FDFC-0541-DED9-A23F-CA9439D57EB6}</FileHash>
+</SoundBanksInfo>
