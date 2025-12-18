@@ -6,6 +6,7 @@
 #include "ActiveGameplayEffectHandle.h"
 #include "Interfaces/Equipable.h"
 #include "Items/ItemBase.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "InstrumentBase.generated.h"
 
 class UAttackDataAsset;
@@ -20,14 +21,15 @@ class TROMBONERUMBLE_API AInstrumentBase : public AItemBase, public IEquipable
 public:
 	AInstrumentBase();
 
-	// Interfaces
+	// ~ Begin IInteractable Interfaces
 	virtual bool CanInteract_Implementation(AActor* InstigatorActor) const override; 
 	virtual void Interact_Implementation(AActor* InstigatorActor) override;
+	// ~ End IInteractable Interfaces
+	
+	// ~ Begin IEquipable Interfaces
 	virtual void Equip_Implementation(AActor* OwnerActor) override;
 	virtual void Unequip_Implementation(AActor* OwnerActor) override;
-	// ~Interfaces
-
-	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
+	// ~ End IEquipable Interfaces
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -46,7 +48,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAttackDataAsset> AttackData;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	EInstrumentType InstrumentType = EInstrumentType::Invalid;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Movement")
@@ -56,15 +58,17 @@ protected:
 	FActiveGameplayEffectHandle EquipMoveSpeedEffectHandle;
 
 private:
-	UPROPERTY(EditAnywhere, Category="Config")
+	UPROPERTY(EditAnywhere, Category = "Instrument|Config")
 	float ForwardImpulse = 500.0f;
 
-	UPROPERTY(EditAnywhere, Category="Config")
+	UPROPERTY(EditAnywhere, Category = "Instrument|Config")
 	float UpwardImpulse = 300.0f;
 	
 	FName TromboneSocketName = TEXT("socket_hand_l");
 
 public:
-	//getter setter
+	// ~ Begin Getters & Setters
 	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
+	FORCEINLINE TObjectPtr<UAttackDataAsset> GetAttackData() const { return AttackData; }
+	// ~ End Getters & Setters
 };
