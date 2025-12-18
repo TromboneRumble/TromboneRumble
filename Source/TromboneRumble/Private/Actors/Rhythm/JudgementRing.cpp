@@ -1,0 +1,230 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Actors/Rhythm/JudgementRing.h"
+#include "Subsystems/RhythmNoteChannelSubsystem.h"
+#include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/ActorPoolSubsystem.h"
+#include "Characters/DefaultTromboneCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
+AJudgementRing::AJudgementRing()
+{
+	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = false;
+
+	RingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RingMesh"));
+	if (RingMesh)
+	{
+		SetRootComponent(RingMesh);
+		RingMesh->SetCastShadow(false);
+		RingMesh->bReceivesDecals = false;
+		RingMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		RingMesh->SetSimulatePhysics(false);
+		RingMesh->SetGenerateOverlapEvents(false);
+	}
+	
+
+}
+
+void AJudgementRing::Init(const FNoteHandle& InNoteHandle, const EInstrumentType& InType, const EInstrumentType& HeldType)
+{
+	NoteHandle = InNoteHandle;
+	InstrumentType = InType;
+	if (InType == HeldType && EInstrumentType::Background < InstrumentType && InstrumentType < EInstrumentType::None && RingMesh)
+	{
+		ShowRing(true);
+	}
+	else
+	{
+		ShowRing(false);
+	}
+	if (!CachedPlayerCharacter.IsValid() || !IsAttachedTo(CachedPlayerCharacter.Get()))
+	{
+		FindPlayerCharacterAndAttach();
+	}
+	UnBindChannel();
+	BindChannel();
+}
+
+
+
+void AJudgementRing::OnTakenFromPool_Implementation()
+{
+	IPoolable::OnTakenFromPool_Implementation();
+	EnsureMID();
+	Alpha = 0.f;	
+}
+
+void AJudgementRing::OnReturnToPool_Implementation()
+{
+	IPoolable::OnReturnToPool_Implementation();
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	CachedPlayerCharacter.Reset();
+	ShowRing(false);
+}
+
+void AJudgementRing::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	EnsureMID();
+	ApplyMaterialParams();
+}
+
+void AJudgementRing::BeginPlay()
+{
+	Super::BeginPlay();
+	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+	{
+		RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::HandleOnInstrumentPicked);
+	}
+	EnsureMID();
+	ApplyMaterialParams();
+}
+
+void AJudgementRing::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	UnBindChannel();
+	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+	{
+		RhythmSubsystem->OnInstrumentPicked.RemoveDynamic(this, &ThisClass::HandleOnInstrumentPicked);
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
+
+void AJudgementRing::SetAlpha(float InAlpha)
+{
+	Alpha = FMath::Clamp(InAlpha, 0.0f, 1.0f);
+
+	EnsureMID();
+	if (MID)
+	{
+		MID->SetScalarParameterValue(ParamName_Alpha, Alpha);
+	}
+}
+
+void AJudgementRing::ApplyMaterialParams()
+{
+	if (!MID) return;
+
+	MID->SetScalarParameterValue(ParamName_Alpha, Alpha);
+	MID->SetScalarParameterValue(ParamName_StartOuter, StartOuterRadius);
+	MID->SetScalarParameterValue(ParamName_StartInner, StartInnerRadius);
+	MID->SetScalarParameterValue(ParamName_EndOuter, EndOuterRadius);
+	MID->SetScalarParameterValue(ParamName_EndInner, EndInnerRadius);
+}
+
+void AJudgementRing::BindChannel()
+{
+	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
+	{
+		if (FNoteChannel* Channel = RhythmNoteChannelSubsystem->GetChannelById(NoteHandle.Id))
+		{
+			ProgressHandle = Channel->OnProgress.AddWeakLambda(this, [this](float Alpha)
+				{
+					SetAlpha(Alpha);
+				});
+			DespawnHandle = Channel->OnDespawn.AddWeakLambda(this, [this]()
+				{
+					ShowRing(false);
+					if (UActorPoolSubsystem* Subsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>())
+					{
+						Subsystem->Release(this);
+					}
+				});
+		}
+	}
+}
+
+void AJudgementRing::UnBindChannel()
+{
+	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
+	{
+		if (FNoteChannel* Channel = RhythmNoteChannelSubsystem->GetChannelById(NoteHandle.Id))
+		{
+			if (ProgressHandle.IsValid())
+			{
+				Channel->OnProgress.Remove(ProgressHandle);
+				ProgressHandle.Reset();
+			}
+			if (DespawnHandle.IsValid())
+			{
+				Channel->OnDespawn.Remove(DespawnHandle);
+				DespawnHandle.Reset();
+			}
+		}
+	}
+}
+
+void AJudgementRing::ShowRing(bool bShow)
+{
+	if (!RingMesh) return;
+	if (bShow)
+	{
+		RingMesh->SetHiddenInGame(false, true);
+		RingMesh->SetVisibility(true, true);
+	}
+	else
+	{
+		RingMesh->SetHiddenInGame(true, true);
+		RingMesh->SetVisibility(false, true);
+	}
+
+}
+
+void AJudgementRing::FindPlayerCharacterAndAttach()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	if (!PC || !PC->IsLocalController())
+	{
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	if (!Pawn)
+	{
+		return;
+	}
+
+	ADefaultTromboneCharacter* PlayerCharacter =
+		Cast<ADefaultTromboneCharacter>(PC->GetPawn());
+
+	if (!PlayerCharacter || !PlayerCharacter->IsLocallyControlled())
+	{
+		return;
+	}
+	if (UStaticMeshComponent* AnchorComp = PlayerCharacter->GetJudgementRingComponent())
+	{
+		AttachToComponent(
+			AnchorComp,
+			FAttachmentTransformRules::SnapToTargetNotIncludingScale
+		);
+	}
+
+	CachedPlayerCharacter = PlayerCharacter;
+}
+
+void AJudgementRing::HandleOnInstrumentPicked(EInstrumentType OldType, EInstrumentType NewType)
+{
+	if (!RingMesh) return;
+	if (NewType == InstrumentType)
+	{
+		ShowRing(true);
+	}
+	else
+	{
+		ShowRing(false);
+	}
+}
+
+void AJudgementRing::EnsureMID()
+{
+	if (!RingMesh) return;
+
+	// 이미 만들어져 있으면 재사용
+	if (MID) return;
+
+	// Element 0에 이미 Material/MI가 들어있으면 Source Material 안 넣어도 됨
+	MID = RingMesh->CreateDynamicMaterialInstance(0);
+}

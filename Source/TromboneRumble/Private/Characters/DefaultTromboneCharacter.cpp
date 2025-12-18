@@ -49,11 +49,23 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
+	JudgementRingComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("JudgementRingComponent"));
 
 	if (AkSoundComponent)
 	{
 		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
+	}
+
+	if (JudgementRingComponent)
+	{
+		JudgementRingComponent->SetVisibility(false);
+		JudgementRingComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		JudgementRingComponent->SetGenerateOverlapEvents(false);
+		JudgementRingComponent->CanCharacterStepUpOn = ECB_No;
+		JudgementRingComponent->bReceivesDecals = false;
+		JudgementRingComponent->SetCastShadow(false);
+		JudgementRingComponent->SetupAttachment(RootComponent);
 	}
 }
 
@@ -185,6 +197,8 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
+
+		JudgementRingComponent->SetVisibility(true);
 	}
 }
 

@@ -15,6 +15,7 @@
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
+#include "Actors/Rhythm/JudgementRing.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -61,7 +62,8 @@ void ARhythmNoteSpawner::BeginPlay()
 		SpawnTransform.SetLocation(GetActorLocation());
 		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
 		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
-		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 100, SpawnTransform);
+		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 10, SpawnTransform);
+		CachedActorPoolSubsystem->Prewarm(JudgementRingClass, 10, SpawnTransform);
 	}
 	if (ARhythmActor* OwnerActor = Cast<ARhythmActor>(GetOwner()))
 	{
@@ -88,7 +90,7 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
 		
-		PooledNote->InitNote(CachedRhythmActor.Get(), this, TimeToComplete, InUserCueName);
+		PooledNote->InitNote(CachedRhythmActor.Get(), this, JudgementRingClass, TimeToComplete, InUserCueName);
 
 		if (InUserCueName.StartsWith(TEXT("SS_")))
 		{
@@ -117,7 +119,7 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		//싱크가 맞는지 확인하는 디버그 코드
 		if (IsSyncTesting)
 		{
-			float Delay = 5.0f;
+			float Delay = TimeToComplete;
 			if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
 			{
 				PooledNote->StartSyncDebugTimer(OwnerRhythmActor, Delay);

@@ -83,6 +83,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> JudgementRingComponent;
 	// ~Components
 	
 	UPROPERTY(Transient)
@@ -121,5 +124,6 @@ public:
 	//getter setter
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
+	FORCEINLINE UStaticMeshComponent* GetJudgementRingComponent() { return JudgementRingComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 };
