@@ -186,7 +186,7 @@ void ARhythmActor::StartRhythmGame()
 		TimerHandle,
 		this,
 		&ThisClass::PlayMusic,
-		2.9f,
+		3.0f,
 		false
 	);
 
