@@ -137,7 +137,10 @@ void AGarbageBase::HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	}
 
 	//TODO : 플레이어 래그돌 로직 삽입
-
+	if (OtherActor->IsA<ACharacter>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Collided Actor : %s"), *OtherActor->GetName());
+	}
 
 
 	// 땅 또는 플레이어에 부딪힌 시점부터 삭제 타이머 시작
