@@ -109,10 +109,6 @@ void AJudgementRing::ApplyMaterialParams()
 	if (!MID) return;
 
 	MID->SetScalarParameterValue(ParamName_Alpha, Alpha);
-	MID->SetScalarParameterValue(ParamName_StartOuter, StartOuterRadius);
-	MID->SetScalarParameterValue(ParamName_StartInner, StartInnerRadius);
-	MID->SetScalarParameterValue(ParamName_EndOuter, EndOuterRadius);
-	MID->SetScalarParameterValue(ParamName_EndInner, EndInnerRadius);
 }
 
 void AJudgementRing::BindChannel()

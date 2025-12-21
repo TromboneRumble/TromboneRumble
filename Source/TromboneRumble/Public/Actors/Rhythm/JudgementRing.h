@@ -65,34 +65,10 @@ private:
 	EInstrumentType InstrumentType;
 
 	// Parameters
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	float StartOuterRadius = 1.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	float StartInnerRadius = 0.8f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	float EndOuterRadius = 0.5f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	float EndInnerRadius = 0.45f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0", AllowPrivateAccess = "true"))
 	float Alpha = 0.0f;
 
 	// 머티리얼 파라미터 이름
 	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
 	FName ParamName_Alpha = "Alpha";
-
-	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	FName ParamName_StartOuter = "StartOuterRadius";
-
-	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	FName ParamName_StartInner = "StartInnerRadius";
-
-	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	FName ParamName_EndOuter = "EndOuterRadius";
-
-	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	FName ParamName_EndInner = "EndInnerRadius";
 };
