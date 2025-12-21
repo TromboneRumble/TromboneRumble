@@ -12,7 +12,7 @@
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
-#include "Actors/Rhythm/JudgementRing.h"
+#include "Actors/Rhythm/NoteVisualizer.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
@@ -63,7 +63,7 @@ void ARhythmNote::OnReturnToPool_Implementation()
 	CancelSyncDebugTimer();
 }
 
-void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<AJudgementRing>& InJudgementRingClass, float InTimeToComplete, const FString& InUserCueName)
+void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InNoteVisualizerClass, float InTimeToComplete, const FString& InUserCueName)
 {
 	checkf(InRhythmActor, TEXT("RhythmActor not Valid in %s"), *GetName());
 	checkf(InSpawner, TEXT("Spawner not Valid in %s"), *GetName());
@@ -72,18 +72,18 @@ void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteS
 	NoteType = InSpawner->GetSpawnerType();
 	TimeToComplete = InTimeToComplete;
 
-	CachedJudgementRingClass = InJudgementRingClass;
+	CachedNoteVisualizerClass = InNoteVisualizerClass;
 
-	if (CachedActorPoolSubsystem.Get() && CachedJudgementRingClass)
+	if (CachedActorPoolSubsystem.Get() && CachedNoteVisualizerClass)
 	{
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetActorLocation());
 		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
 		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
-		if (AJudgementRing* FindJudgementRing = Cast<AJudgementRing>(CachedActorPoolSubsystem->Acquire(CachedJudgementRingClass, SpawnTransform)))
+		if (ANoteVisualizer* FindJudgementRing = Cast<ANoteVisualizer>(CachedActorPoolSubsystem->Acquire(CachedNoteVisualizerClass, SpawnTransform)))
 		{
-			CachedJudgementRing = FindJudgementRing;
-			CachedJudgementRing->Init(NoteHandle, NoteType, InRhythmActor->GetFocusedInstrumentType());
+			CachedNoteVisualizer = FindJudgementRing;
+			CachedNoteVisualizer->Init(NoteHandle, NoteType, InRhythmActor->GetFocusedInstrumentType());
 		}
 	}
 

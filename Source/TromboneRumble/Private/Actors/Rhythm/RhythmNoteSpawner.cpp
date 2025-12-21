@@ -15,7 +15,7 @@
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
-#include "Actors/Rhythm/JudgementRing.h"
+#include "Actors/Rhythm/NoteVisualizer.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -63,7 +63,7 @@ void ARhythmNoteSpawner::BeginPlay()
 		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
 		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
 		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 10, SpawnTransform);
-		CachedActorPoolSubsystem->Prewarm(JudgementRingClass, 10, SpawnTransform);
+		CachedActorPoolSubsystem->Prewarm(NoteVisualizerClass, 10, SpawnTransform);
 	}
 	if (ARhythmActor* OwnerActor = Cast<ARhythmActor>(GetOwner()))
 	{
@@ -90,7 +90,7 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
 		
-		PooledNote->InitNote(CachedRhythmActor.Get(), this, JudgementRingClass, TimeToComplete, InUserCueName);
+		PooledNote->InitNote(CachedRhythmActor.Get(), this, NoteVisualizerClass, TimeToComplete, InUserCueName);
 
 		if (InUserCueName.StartsWith(TEXT("SS_")))
 		{

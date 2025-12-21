@@ -6,19 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "Interfaces/Poolable.h"
 #include "Utilities/Defines.h"
-#include "JudgementRing.generated.h"
+#include "NoteVisualizer.generated.h"
 
 class ADefaultTromboneCharacter;
 class UStaticMeshComponent;
 class UMaterialInstanceDynamic;
 
 UCLASS(Abstract)
-class TROMBONERUMBLE_API AJudgementRing : public AActor, public IPoolable
+class TROMBONERUMBLE_API ANoteVisualizer : public AActor, public IPoolable
 {
 	GENERATED_BODY()
 	
 public:
-	AJudgementRing();
+	ANoteVisualizer();
 	void Init(const FNoteHandle& InNoteHandle, const EInstrumentType& InType, const EInstrumentType& HeldType);
 	
 	// IPoolable interface
@@ -66,9 +66,9 @@ private:
 
 	// Parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0", AllowPrivateAccess = "true"))
-	float Alpha = 0.0f;
+	float SizeAlpha = 0.0f;
 
 	// 머티리얼 파라미터 이름
 	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
-	FName ParamName_Alpha = "Alpha";
+	FName ParamName_SizeAlpha = "SizeAlpha";
 };

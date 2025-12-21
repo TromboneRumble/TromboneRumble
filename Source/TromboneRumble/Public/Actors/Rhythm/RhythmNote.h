@@ -9,7 +9,7 @@
 #include "RhythmNote.generated.h"
 
 class UActorPoolSubsystem;
-class AJudgementRing;
+class ANoteVisualizer;
 class ARhythmActor;
 class ARhythmNoteSpawner;
 class URhythmNoteChannelSubsystem;
@@ -34,7 +34,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<AJudgementRing>& InJudgementRingClass, float InTimeToComplete, const FString& InUserCueName);
+	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InJudgementRingClass, float InTimeToComplete, const FString& InUserCueName);
 	void SetToShortNote();
 	void SetToLongNoteStart();
 	void SetToLongNoteEnd();
@@ -79,10 +79,10 @@ private:
 	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
 
 	UPROPERTY(Transient)
-	TSubclassOf<AJudgementRing> CachedJudgementRingClass = nullptr;
+	TSubclassOf<ANoteVisualizer> CachedNoteVisualizerClass = nullptr;
 
 	UPROPERTY(Transient)
-	TWeakObjectPtr<AJudgementRing> CachedJudgementRing = nullptr;
+	TWeakObjectPtr<ANoteVisualizer> CachedNoteVisualizer = nullptr;
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ARhythmActor> CachedRhythmActor = nullptr;

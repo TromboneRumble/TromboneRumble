@@ -8,7 +8,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
-class AJudgementRing;
+class ANoteVisualizer;
 class URhythmSubsystem;
 class URhythmNoteChannelSubsystem;
 class UActorPoolSubsystem;
@@ -81,7 +81,7 @@ private:
 	TSubclassOf<ARhythmNote> RhythmNoteClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AJudgementRing> JudgementRingClass;
+	TSubclassOf<ANoteVisualizer> NoteVisualizerClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;

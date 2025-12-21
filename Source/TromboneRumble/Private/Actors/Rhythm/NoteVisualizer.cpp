@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/Rhythm/JudgementRing.h"
+#include "Actors/Rhythm/NoteVisualizer.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Subsystems/ActorPoolSubsystem.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
-AJudgementRing::AJudgementRing()
+ANoteVisualizer::ANoteVisualizer()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = false;
@@ -27,7 +27,7 @@ AJudgementRing::AJudgementRing()
 
 }
 
-void AJudgementRing::Init(const FNoteHandle& InNoteHandle, const EInstrumentType& InType, const EInstrumentType& HeldType)
+void ANoteVisualizer::Init(const FNoteHandle& InNoteHandle, const EInstrumentType& InType, const EInstrumentType& HeldType)
 {
 	NoteHandle = InNoteHandle;
 	InstrumentType = InType;
@@ -49,14 +49,14 @@ void AJudgementRing::Init(const FNoteHandle& InNoteHandle, const EInstrumentType
 
 
 
-void AJudgementRing::OnTakenFromPool_Implementation()
+void ANoteVisualizer::OnTakenFromPool_Implementation()
 {
 	IPoolable::OnTakenFromPool_Implementation();
 	EnsureMID();
-	Alpha = 0.f;	
+	SizeAlpha = 0.f;	
 }
 
-void AJudgementRing::OnReturnToPool_Implementation()
+void ANoteVisualizer::OnReturnToPool_Implementation()
 {
 	IPoolable::OnReturnToPool_Implementation();
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
@@ -64,14 +64,14 @@ void AJudgementRing::OnReturnToPool_Implementation()
 	ShowRing(false);
 }
 
-void AJudgementRing::OnConstruction(const FTransform& Transform)
+void ANoteVisualizer::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	EnsureMID();
 	ApplyMaterialParams();
 }
 
-void AJudgementRing::BeginPlay()
+void ANoteVisualizer::BeginPlay()
 {
 	Super::BeginPlay();
 	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
@@ -82,7 +82,7 @@ void AJudgementRing::BeginPlay()
 	ApplyMaterialParams();
 }
 
-void AJudgementRing::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void ANoteVisualizer::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	UnBindChannel();
 	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
@@ -93,25 +93,25 @@ void AJudgementRing::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 
-void AJudgementRing::SetAlpha(float InAlpha)
+void ANoteVisualizer::SetAlpha(float InAlpha)
 {
-	Alpha = FMath::Clamp(InAlpha, 0.0f, 1.0f);
+	SizeAlpha = FMath::Clamp(InAlpha, 0.0f, 1.0f);
 
 	EnsureMID();
 	if (MID)
 	{
-		MID->SetScalarParameterValue(ParamName_Alpha, Alpha);
+		MID->SetScalarParameterValue(ParamName_SizeAlpha, SizeAlpha);
 	}
 }
 
-void AJudgementRing::ApplyMaterialParams()
+void ANoteVisualizer::ApplyMaterialParams()
 {
 	if (!MID) return;
 
-	MID->SetScalarParameterValue(ParamName_Alpha, Alpha);
+	MID->SetScalarParameterValue(ParamName_SizeAlpha, SizeAlpha);
 }
 
-void AJudgementRing::BindChannel()
+void ANoteVisualizer::BindChannel()
 {
 	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
 	{
@@ -133,7 +133,7 @@ void AJudgementRing::BindChannel()
 	}
 }
 
-void AJudgementRing::UnBindChannel()
+void ANoteVisualizer::UnBindChannel()
 {
 	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
 	{
@@ -153,7 +153,7 @@ void AJudgementRing::UnBindChannel()
 	}
 }
 
-void AJudgementRing::ShowRing(bool bShow)
+void ANoteVisualizer::ShowRing(bool bShow)
 {
 	if (!RingMesh) return;
 	if (bShow)
@@ -169,7 +169,7 @@ void AJudgementRing::ShowRing(bool bShow)
 
 }
 
-void AJudgementRing::FindPlayerCharacterAndAttach()
+void ANoteVisualizer::FindPlayerCharacterAndAttach()
 {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	if (!PC || !PC->IsLocalController())
@@ -201,7 +201,7 @@ void AJudgementRing::FindPlayerCharacterAndAttach()
 	CachedPlayerCharacter = PlayerCharacter;
 }
 
-void AJudgementRing::HandleOnInstrumentPicked(EInstrumentType OldType, EInstrumentType NewType)
+void ANoteVisualizer::HandleOnInstrumentPicked(EInstrumentType OldType, EInstrumentType NewType)
 {
 	if (!RingMesh) return;
 	if (NewType == InstrumentType)
@@ -214,7 +214,7 @@ void AJudgementRing::HandleOnInstrumentPicked(EInstrumentType OldType, EInstrume
 	}
 }
 
-void AJudgementRing::EnsureMID()
+void ANoteVisualizer::EnsureMID()
 {
 	if (!RingMesh) return;
 
