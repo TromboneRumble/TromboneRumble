@@ -6,12 +6,13 @@
 #include "Components/ActorComponent.h"
 #include "AttackComponent.generated.h"
 
-class AInstrumentBase;
+enum class EWeaponType : uint8;
+class AWeaponBase;
 enum class EEquipmentSlotType : uint8;
 class AItemBase;
 class UCapsuleComponent;
 class UCharacterAnimInstance;
-class UAttackDataAsset;
+class UWeaponDataAsset;
 
 UCLASS()
 class TROMBONERUMBLE_API UAttackComponent : public UActorComponent
@@ -21,8 +22,6 @@ class TROMBONERUMBLE_API UAttackComponent : public UActorComponent
 public:	
 	UAttackComponent();
 	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void Attack();
 
 protected:
@@ -41,55 +40,40 @@ protected:
 	void PlayAttackEffects() const;
 	void ResetAttackCooldown();
 	void StartAttackCooldown();
-	void SetIsAttacking(const bool bNewIsAttacking);
-	void SetCanAttack(const bool bNewCanAttack) { bCanAttack = bNewCanAttack; }
+	void UpdateAttackDelegateBinding(const bool bIsAttack);
 	
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
+	
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCharacterAnimInstance> CharacterAnimInstance = nullptr;
 	
-	UPROPERTY()
-	TObjectPtr<AInstrumentBase> CurrentInstrument = nullptr;
-	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UAttackDataAsset> CurrentAttackData = nullptr;
+	TObjectPtr<AWeaponBase> CurrentWeapon = nullptr;
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UPrimitiveComponent> CurrentCollisionComponent = nullptr;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UCapsuleComponent> HeadbuttCollisionComponent = nullptr;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UAttackDataAsset> HeadbuttAttackData = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
+	TSubclassOf<AWeaponBase> HeadbuttWeaponClass = nullptr;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
 	FName HeadSocketName = FName("head");
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
 	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
 	float AttackCooldownTolerance = 0.2f;
-
-	FTransform PreviousFrameTransform;
 	
-	UPROPERTY(Replicated)
-	bool bIsAttacking = false;
-	bool bCanAttack = true;
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
+	TMap<EWeaponType, TObjectPtr<UAnimMontage>> AttackMontageMap;
 
 private:
-	bool IsCanSweep() const;
-
-	UPROPERTY()
-	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
-
-	UPROPERTY()
-	TArray<TObjectPtr<AActor>> AlreadyHitActors;
+	UPROPERTY(Transient)
+	TObjectPtr<AWeaponBase> HeadbuttWeaponInstance = nullptr;
 	
 	FTimerHandle AttackCooldownTimerHandle;
 };

@@ -24,14 +24,10 @@ class UNiagaraSystem;
 
 class ARhythmActor;
 class UCharacterDataAsset;
-class UAttackDataAsset;
+class UWeaponDataAsset;
 class UCharacterAttributeSet;
 
 class AItemBase;
-class AInstrumentBase;
-
-
-
 
 UCLASS()
 class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase, public IAbilitySystemInterface

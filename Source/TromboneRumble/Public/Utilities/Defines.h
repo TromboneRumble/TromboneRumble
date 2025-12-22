@@ -6,7 +6,7 @@
 UENUM()
 enum class EEquipmentSlotType : uint8
 {
-	Instrument,
+	Weapon,
 	MAX_SLOTS
 };
 
@@ -47,6 +47,16 @@ enum class EHitType : uint8
 	Cymbals,
 	Violin,
 	Audience,
+	Invalid		= 255	UMETA(Hidden)
+};
+
+UENUM()
+enum class EWeaponType : uint8
+{
+	Headbutt,
+	Trombone,
+	Cymbals,
+	Violin,
 	Invalid		= 255	UMETA(Hidden)
 };
 

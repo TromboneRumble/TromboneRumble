@@ -6,8 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Interfaces/Equipable.h"
 #include "Interfaces/ItemEquipHandler.h"
-#include "Items/InstrumentBase.h"
 #include "Items/ItemBase.h"
+#include "Items/WeaponBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Utilities/Defines.h"
 
@@ -79,7 +79,7 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 	if (!OwnerCharacter || !ItemToEquip) return;
 
 	// TODO: ItemToEquip의 슬롯 타입을 가져오는 로직 필요
-	EEquipmentSlotType Slot = EEquipmentSlotType::Instrument;
+	EEquipmentSlotType Slot = EEquipmentSlotType::Weapon;
     
 	const int32 SlotIndex = static_cast<int32>(Slot);
 	if (!EquippedItems.IsValidIndex(SlotIndex)) return;
@@ -87,20 +87,20 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 	AItemBase* OldItem = EquippedItems[SlotIndex];
 	if (OldItem)
 	{
-		if (OldItem->Implements<UEquipable>())
+		if (IEquipable* EquipableOldItem = Cast<IEquipable>(OldItem))
 		{
-			IEquipable::Execute_Unequip(OldItem, OwnerCharacter);
+			EquipableOldItem->Unequip(OwnerCharacter);
 		}
 	}
 
 	EquippedItems[SlotIndex] = ItemToEquip;
-	if (ItemToEquip->Implements<UEquipable>())
+	if (IEquipable* EquipableNewItem = Cast<IEquipable>(ItemToEquip))
 	{
-		IEquipable::Execute_Equip(ItemToEquip, OwnerCharacter);
+		EquipableNewItem->Equip(OwnerCharacter);
 
 		if (ADefaultPlayerState* PS = OwnerCharacter->GetPlayerState<ADefaultPlayerState>())
 		{
-			PS->EquippedInstrumentClass = ItemToEquip->GetClass();
+			PS->EquippedWeaponClass = ItemToEquip->GetClass();
 		}
 
 		if (IItemEquipHandler* EquipHandler = GetGameModeItemEquipHandler())
@@ -122,15 +122,15 @@ void UEquipmentComponent::Server_UnequipItem_Implementation(EEquipmentSlotType S
 	AItemBase* OldItem = EquippedItems[SlotIndex];
 	if (OldItem)
 	{
-		if (OldItem->Implements<UEquipable>())
+		if (IEquipable* EquipableOldItem = Cast<IEquipable>(OldItem))
 		{
-			IEquipable::Execute_Unequip(OldItem, OwnerCharacter);
+			EquipableOldItem->Unequip(OwnerCharacter);
 
 			if (ADefaultPlayerState* PS = OwnerCharacter->GetPlayerState<ADefaultPlayerState>())
 			{
-				if (PS->EquippedInstrumentClass == OldItem->GetClass())
+				if (PS->EquippedWeaponClass == OldItem->GetClass())
 				{
-					PS->EquippedInstrumentClass = nullptr;
+					PS->EquippedWeaponClass = nullptr;
 				}
 			}
 
