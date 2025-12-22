@@ -9,6 +9,7 @@
 #include "Items/ItemBase.h"
 #include "Items/WeaponBase.h"
 #include "Net/UnrealNetwork.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 UEquipmentComponent::UEquipmentComponent()
@@ -16,16 +17,6 @@ UEquipmentComponent::UEquipmentComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 	SetIsReplicatedByDefault(true);
 	EquippedItems.SetNumZeroed(static_cast<int32>(EEquipmentSlotType::MAX_SLOTS));
-}
-
-void UEquipmentComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (!OwnerCharacter)
-	{
-		OwnerCharacter = Cast<ACharacter>(GetOwner());
-	}
 }
 
 void UEquipmentComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -37,9 +28,9 @@ void UEquipmentComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 void UEquipmentComponent::TryEquipItem(AItemBase* ItemToEquip)
 {
-	if (!OwnerCharacter || !ItemToEquip) return;
+	if (!ItemToEquip) return;
 
-	if (OwnerCharacter->HasAuthority())
+	if (GetOwnerCharacter()->HasAuthority())
 	{
 		Server_EquipItem_Implementation(ItemToEquip);
 	}
@@ -51,9 +42,7 @@ void UEquipmentComponent::TryEquipItem(AItemBase* ItemToEquip)
 
 void UEquipmentComponent::TryUnequipItem(const EEquipmentSlotType Slot)
 {
-	if (!OwnerCharacter) return;
-    
-	if (OwnerCharacter->HasAuthority())
+	if (GetOwnerCharacter()->HasAuthority())
 	{
 		Server_UnequipItem_Implementation(Slot);
 	}
@@ -65,9 +54,8 @@ void UEquipmentComponent::TryUnequipItem(const EEquipmentSlotType Slot)
 
 TObjectPtr<AItemBase> UEquipmentComponent::GetItemInSlot(EEquipmentSlotType Slot) const
 {
-
 	const int32 SlotIndex = static_cast<int32>(Slot);
-	if (EquippedItems.IsValidIndex(SlotIndex))
+	if (EquippedItems.IsValidIndex(SlotIndex) && EquippedItems[SlotIndex])
 	{
 		return EquippedItems[SlotIndex];
 	}
@@ -76,10 +64,11 @@ TObjectPtr<AItemBase> UEquipmentComponent::GetItemInSlot(EEquipmentSlotType Slot
 
 void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip)
 {
-	if (!OwnerCharacter || !ItemToEquip) return;
-
+	if (!ItemToEquip) return;
+	
 	// TODO: ItemToEquip의 슬롯 타입을 가져오는 로직 필요
 	EEquipmentSlotType Slot = EEquipmentSlotType::Weapon;
+	const TObjectPtr<ACharacter> OwnerChar = GetOwnerCharacter();
     
 	const int32 SlotIndex = static_cast<int32>(Slot);
 	if (!EquippedItems.IsValidIndex(SlotIndex)) return;
@@ -89,23 +78,23 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 	{
 		if (IEquipable* EquipableOldItem = Cast<IEquipable>(OldItem))
 		{
-			EquipableOldItem->Unequip(OwnerCharacter);
+			EquipableOldItem->Unequip(OwnerChar);
 		}
 	}
 
 	EquippedItems[SlotIndex] = ItemToEquip;
 	if (IEquipable* EquipableNewItem = Cast<IEquipable>(ItemToEquip))
 	{
-		EquipableNewItem->Equip(OwnerCharacter);
+		EquipableNewItem->Equip(OwnerChar);
 
-		if (ADefaultPlayerState* PS = OwnerCharacter->GetPlayerState<ADefaultPlayerState>())
+		if (ADefaultPlayerState* PS = OwnerChar->GetPlayerState<ADefaultPlayerState>())
 		{
 			PS->EquippedWeaponClass = ItemToEquip->GetClass();
 		}
 
 		if (IItemEquipHandler* EquipHandler = GetGameModeItemEquipHandler())
 		{
-			EquipHandler->HandleItemEquipped(OwnerCharacter, ItemToEquip);
+			EquipHandler->HandleItemEquipped(OwnerChar, ItemToEquip);
 		}
 	}
 
@@ -114,8 +103,7 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 
 void UEquipmentComponent::Server_UnequipItem_Implementation(EEquipmentSlotType SlotToUnequip)
 {
-	if (!OwnerCharacter) return;
-
+	const TObjectPtr<ACharacter> OwnerChar = GetOwnerCharacter();
 	const int32 SlotIndex = static_cast<int32>(SlotToUnequip);
 	if (!EquippedItems.IsValidIndex(SlotIndex)) return;
     
@@ -124,9 +112,9 @@ void UEquipmentComponent::Server_UnequipItem_Implementation(EEquipmentSlotType S
 	{
 		if (IEquipable* EquipableOldItem = Cast<IEquipable>(OldItem))
 		{
-			EquipableOldItem->Unequip(OwnerCharacter);
+			EquipableOldItem->Unequip(OwnerChar);
 
-			if (ADefaultPlayerState* PS = OwnerCharacter->GetPlayerState<ADefaultPlayerState>())
+			if (ADefaultPlayerState* PS = OwnerChar->GetPlayerState<ADefaultPlayerState>())
 			{
 				if (PS->EquippedWeaponClass == OldItem->GetClass())
 				{
@@ -136,7 +124,7 @@ void UEquipmentComponent::Server_UnequipItem_Implementation(EEquipmentSlotType S
 
 			if (IItemEquipHandler* EquipHandler = GetGameModeItemEquipHandler())
 			{
-				EquipHandler->HandleItemUnequipped(OwnerCharacter, OldItem);
+				EquipHandler->HandleItemUnequipped(OwnerChar, OldItem);
 			}
 		}
 		EquippedItems[SlotIndex] = nullptr;
@@ -168,4 +156,13 @@ IItemEquipHandler* UEquipmentComponent::GetGameModeItemEquipHandler() const
 {
 	AGameModeBase* GM = GetWorld()->GetAuthGameMode();
 	return Cast<IItemEquipHandler>(GM);
+}
+
+TObjectPtr<ACharacter> UEquipmentComponent::GetOwnerCharacter()
+{
+	if (!OwnerCharacter)
+	{
+		OwnerCharacter = Cast<ACharacter>(GetOwner());
+	}
+	return OwnerCharacter;
 }

@@ -2,7 +2,6 @@
 
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Animation/CharacterAnimInstance.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/WeaponDataAsset.h"
 #include "GameFramework/Character.h"

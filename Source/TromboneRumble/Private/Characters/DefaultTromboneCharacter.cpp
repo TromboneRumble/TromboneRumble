@@ -20,6 +20,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -104,9 +105,9 @@ void ADefaultTromboneCharacter::TryInteract()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
 	
-	if (AttackComponent && Instrument) AttackComponent->Attack();
+	if (AttackComponent && Weapon) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::StartSprint()
@@ -130,8 +131,17 @@ void ADefaultTromboneCharacter::StopSprint()
 void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 {
 	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	if (!Instrument) return;
+	
+	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Instrument))
+	{
+		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
+		{
+			return;
+		}
+	}
 
-	if (!GetCachedRhythmActor() || !Instrument) return;
+	if (!GetCachedRhythmActor()) return;
 
 	if (bIsPressed)
 	{

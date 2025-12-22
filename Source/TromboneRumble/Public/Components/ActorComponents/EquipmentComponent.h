@@ -27,7 +27,6 @@ public:
 	FOnEquipmentChangedSignature OnEquipmentChangedDelegate;
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(Server, Reliable)
@@ -46,6 +45,7 @@ protected:
 
 private:
 	IItemEquipHandler* GetGameModeItemEquipHandler() const;
+	TObjectPtr<ACharacter> GetOwnerCharacter();
 	
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
