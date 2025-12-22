@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{CC806B23-40C7-4F04-556D-7F149240ABF7}">
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{39102A09-69F4-45D3-9B30-ED8984537D4A}">
 			<ObjectPath>Play_Player_Foot</ObjectPath>
 			<ShortName>Play_Player_Foot</ShortName>
 			<Path>Event/Play_Player_Foot.bnk</Path>
@@ -58,7 +58,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" DurationType="OneShot" DurationMin="0.28835043" DurationMax="0.45528895">
+				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.28835043" DurationMax="0.45528895">
 					<SwitchContainers>
 						<SwitchContainer>
 							<SwitchValue GroupType="Switch" GroupId="3031504797" Id="2058049674" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}" Default="true"/>
@@ -93,5 +93,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F5E9B0FE-B9D9-895A-2122-F750834F0CCA}</FileHash>
+	<FileHash>{33199B53-8D2B-1F81-55F2-F0FDC9897D12}</FileHash>
 </SoundBanksInfo>

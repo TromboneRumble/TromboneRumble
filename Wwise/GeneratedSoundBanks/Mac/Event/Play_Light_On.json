@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
     "Language": "SFX",
-    "Hash": "{431C46F2-3B1C-C7AA-F543-61117BFAFA60}",
+    "Hash": "{A25BA8C1-301A-6597-20EB-5B6AA10C5CBE}",
     "ObjectPath": "Play_Light_On",
     "ShortName": "Play_Light_On",
     "Path": "Event/Play_Light_On.bnk",
@@ -80,6 +80,6 @@
     ]
    }
   ],
-  "FileHash": "{8810B282-49EF-2B50-EA03-CB54B0DC8509}"
+  "FileHash": "{BB28B2E3-7D01-E370-8718-9F3CBB8D1145}"
  }
 }
