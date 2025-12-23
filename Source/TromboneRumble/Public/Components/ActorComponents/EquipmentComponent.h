@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "EquipmentComponent.generated.h"
 
+class AWeaponBase;
 class IItemEquipHandler;
 class AItemBase;
 enum class EEquipmentSlotType : uint8;
@@ -23,7 +24,6 @@ public:
 	void TryUnequipItem(EEquipmentSlotType Slot);
 	TObjectPtr<AItemBase> GetItemInSlot(EEquipmentSlotType Slot) const;
 
-	FORCEINLINE void InitializeOwner(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FOnEquipmentChangedSignature OnEquipmentChangedDelegate;
 
 protected:
@@ -42,6 +42,9 @@ protected:
 	TArray<AItemBase*> EquippedItems;
 	
 	void BroadcastEquipmentChange(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem) const;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "BaseWeapon")
+	TSubclassOf<AWeaponBase> HeadbuttWeaponClass = nullptr;
 
 private:
 	IItemEquipHandler* GetGameModeItemEquipHandler() const;

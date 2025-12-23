@@ -57,9 +57,6 @@ protected:
 	TObjectPtr<AWeaponBase> CurrentWeapon = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
-	TSubclassOf<AWeaponBase> HeadbuttWeaponClass = nullptr;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
 	FName HeadSocketName = FName("head");
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
@@ -76,4 +73,10 @@ private:
 	TObjectPtr<AWeaponBase> HeadbuttWeaponInstance = nullptr;
 	
 	FTimerHandle AttackCooldownTimerHandle;
+	
+public:
+	// ~ Begin Getters / Setters
+	void SetHeadbuttInstance(AWeaponBase* HeadbuttInstance) { HeadbuttWeaponInstance = HeadbuttInstance; }
+	// ~ End Getters / Setters
+
 };

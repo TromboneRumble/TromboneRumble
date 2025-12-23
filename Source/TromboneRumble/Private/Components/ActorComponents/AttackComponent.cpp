@@ -26,19 +26,6 @@ void UAttackComponent::BeginPlay()
 
 	if (UEquipmentComponent* EquipmentComp = OwnerCharacter->FindComponentByClass<UEquipmentComponent>())
 	{
-		if (GetOwner()->HasAuthority() && HeadbuttWeaponClass)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = GetOwner();
-			SpawnParams.Instigator = OwnerCharacter->GetInstigator();
-        
-			HeadbuttWeaponInstance = GetWorld()->SpawnActor<AWeaponBase>(HeadbuttWeaponClass, SpawnParams);
-			if (HeadbuttWeaponInstance)
-			{
-				EquipmentComp->TryEquipItem(HeadbuttWeaponInstance);
-			}
-		}
-		
 		EquipmentComp->OnEquipmentChangedDelegate.AddDynamic(this, &UAttackComponent::HandleOnEquipmentChanged);
 		
 		AItemBase* CurrentEquippedWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Weapon);

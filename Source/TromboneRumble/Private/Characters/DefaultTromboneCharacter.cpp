@@ -222,28 +222,9 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	if (!HasAuthority()) return;
-
-	if (EquipmentComponent)
-	{
-		EquipmentComponent->InitializeOwner(this);
-	}
 	
-	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
-	if (PS && PS->EquippedWeaponClass)
-	{
-		UWorld* World = GetWorld();
-		if (!World) return;
-		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = this;
-
-		AWeaponBase* NewInstrument = World->SpawnActor<AWeaponBase>(PS->EquippedWeaponClass, GetActorLocation(), GetActorRotation(), SpawnParams);
-		if (NewInstrument)
-		{
-			EquipmentComponent->TryEquipItem(NewInstrument);
-		}
-	}
+	SpawnAndEquipDefaultWeapon();
+	SpawnAndEquipPreviouslyEquippedWeapon();
 }
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
@@ -344,4 +325,36 @@ ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 		return CachedRhythmActor.Get();
 	}
 	return nullptr;
+}
+
+void ADefaultTromboneCharacter::SpawnAndEquipDefaultWeapon()
+{
+	if (!HeadbuttWeaponClass) return;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = this;
+	
+	if (AWeaponBase* Headbutt = GetWorld()->SpawnActor<AWeaponBase>(HeadbuttWeaponClass, SpawnParams))
+	{
+		AttackComponent->SetHeadbuttInstance(Headbutt); 
+		EquipmentComponent->TryEquipItem(Headbutt);
+	}
+}
+
+void ADefaultTromboneCharacter::SpawnAndEquipPreviouslyEquippedWeapon()
+{
+	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
+	
+	if (PS && PS->EquippedWeaponClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
+
+		if (AWeaponBase* EquippedWeapon = GetWorld()->SpawnActor<AWeaponBase>(PS->EquippedWeaponClass, GetActorLocation(), GetActorRotation(), SpawnParams))
+		{
+			EquipmentComponent->TryEquipItem(EquippedWeapon);
+		}
+	}
 }

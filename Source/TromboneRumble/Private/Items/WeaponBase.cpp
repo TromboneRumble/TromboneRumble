@@ -52,24 +52,28 @@ void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 bool AWeaponBase::CanInteract_Implementation(AActor* InstigatorActor) const
 {
-	//플레이어의 악기 스위칭이 가능하면 현재 악기가 누군가에게 장착됐는지 여부만 확인
 	if (CanBeSwitched)
 	{
 		return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
 	}
-	// 악기 스위칭이 불가하면 플레이어가 악기를 들고있는지 확인
-	else
+	
+	if (const UEquipmentComponent* EquipComp = InstigatorActor->FindComponentByClass<UEquipmentComponent>())
 	{
-		//플레이어가 악기를 들고있으면 false반환
-		if (UEquipmentComponent* EquipComp = InstigatorActor->FindComponentByClass<UEquipmentComponent>())
+		if (const TObjectPtr<AItemBase> Item = EquipComp->GetItemInSlot(EEquipmentSlotType::Weapon))
 		{
-			if (EquipComp->GetItemInSlot(EEquipmentSlotType::Weapon))
+			if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Item))
 			{
-				return false;
+				if (Weapon->GetWeaponType() == EWeaponType::Cymbals ||
+					Weapon->GetWeaponType() == EWeaponType::Violin ||
+					Weapon->GetWeaponType() == EWeaponType::Trombone)
+				{
+					return false;
+				}
 			}
 		}
-		return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
 	}
+	
+	return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
 }
 
 void AWeaponBase::Interact_Implementation(AActor* InstigatorActor)

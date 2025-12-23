@@ -8,7 +8,7 @@
 #include "DefaultTromboneCharacter.generated.h"
 
 
-
+class AWeaponBase;
 struct FInputActionValue;
 class ADefaultPlayerController;
 
@@ -84,6 +84,9 @@ protected:
 	TObjectPtr<UStaticMeshComponent> JudgementRingComponent;
 	// ~Components
 	
+	UPROPERTY(EditDefaultsOnly, Category = "BaseWeapon")
+	TSubclassOf<AWeaponBase> HeadbuttWeaponClass = nullptr;
+	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
 
@@ -112,6 +115,8 @@ private:
 	// ~Delegate Callback Handlers
 
 	ARhythmActor* GetCachedRhythmActor();
+	void SpawnAndEquipDefaultWeapon();
+	void SpawnAndEquipPreviouslyEquippedWeapon();
 	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
