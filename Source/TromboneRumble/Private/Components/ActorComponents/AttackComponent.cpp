@@ -161,11 +161,8 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 
 	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
 	
-	if (CurrentWeapon && CurrentWeapon->GetIsAttacking())
-	{
-		OwnerCharacter->StopAnimMontage();
-		Server_ExecuteAttackEnd();
-	}
+	OwnerCharacter->StopAnimMontage();
+	Server_ExecuteAttackEnd();
 
 	if (NewItem)
 	{

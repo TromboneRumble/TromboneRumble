@@ -89,7 +89,6 @@ public:
 	FORCEINLINE UPrimitiveComponent* GetCollisionComponent() const { return CapsuleComponent; }
 	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
 	FORCEINLINE TObjectPtr<UWeaponDataAsset> GetAttackData() const { return WeaponData; }
-	FORCEINLINE void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
 	FORCEINLINE bool GetIsAttacking() const { return bIsAttacking; }
 	FORCEINLINE void SetCanAttack(const bool bNewCanAttack) { bCanAttack = bNewCanAttack; }
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponData ? WeaponData->WeaponType : EWeaponType::Invalid; }
