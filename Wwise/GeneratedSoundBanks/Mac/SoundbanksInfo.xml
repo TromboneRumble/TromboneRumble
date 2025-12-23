@@ -95,7 +95,7 @@
 				<Event Id="3948599171" Name="Stop_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Test\Stop_Lobby_BGM" GUID="{A593B12B-6676-4295-9E55-E2E6FC49D923}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="562256996" Type="Event" GUID="{9A720635-720F-4279-A256-D1A0C4C248B2}" Language="SFX" Hash="{09EB7931-A278-86D7-CB90-EFC52FFB94D3}">
+		<SoundBank Id="562256996" Type="Event" GUID="{9A720635-720F-4279-A256-D1A0C4C248B2}" Language="SFX" Hash="{4D45893C-8138-EDEF-2EA9-4B5987FE6187}">
 			<ObjectPath>Play_Player_Jump</ObjectPath>
 			<ShortName>Play_Player_Jump</ShortName>
 			<Path>Event/Play_Player_Jump.bnk</Path>
@@ -120,7 +120,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{431C46F2-3B1C-C7AA-F543-61117BFAFA60}">
+		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{A25BA8C1-301A-6597-20EB-5B6AA10C5CBE}">
 			<ObjectPath>Play_Light_On</ObjectPath>
 			<ShortName>Play_Light_On</ShortName>
 			<Path>Event/Play_Light_On.bnk</Path>
@@ -342,7 +342,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{CC806B23-40C7-4F04-556D-7F149240ABF7}">
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{39102A09-69F4-45D3-9B30-ED8984537D4A}">
 			<ObjectPath>Play_Player_Foot</ObjectPath>
 			<ShortName>Play_Player_Foot</ShortName>
 			<Path>Event/Play_Player_Foot.bnk</Path>
@@ -399,7 +399,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" DurationType="OneShot" DurationMin="0.28835043" DurationMax="0.45528895">
+				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.28835043" DurationMax="0.45528895">
 					<SwitchContainers>
 						<SwitchContainer>
 							<SwitchValue GroupType="Switch" GroupId="3031504797" Id="2058049674" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}" Default="true"/>
@@ -748,7 +748,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{4B4EF19B-BE9F-7909-2367-FC84A3E01656}">
+		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{2ADDCF67-2809-C524-619D-D524423EE1E8}">
 			<ObjectPath>Play_Splash_On</ObjectPath>
 			<ShortName>Play_Splash_On</ShortName>
 			<Path>Event/Play_Splash_On.bnk</Path>
@@ -1010,40 +1010,56 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{982552FF-7D04-0617-E083-E3E82304EB8F}">
+		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{3556ACCB-F740-E669-E14D-D3BF687C7542}">
 			<ObjectPath>Play_Trombone_Attack</ObjectPath>
 			<ShortName>Play_Trombone_Attack</ShortName>
 			<Path>Event/Play_Trombone_Attack.bnk</Path>
 			<Media>
-				<File Id="451014174" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_4.wav</ShortName>
-					<Path>Media/451014174.wem</Path>
-					<CachePath>SFX/Attack_T_4_818F3B66.wem</CachePath>
+				<File Id="108887632" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_5.wav</ShortName>
+					<Path>Media/108887632.wem</Path>
+					<CachePath>SFX/Trombone_Attack_5_818F3B66.wem</CachePath>
 				</File>
-				<File Id="941583466" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_1.wav</ShortName>
-					<Path>Media/941583466.wem</Path>
-					<CachePath>SFX/Attack_T_1_818F3B66.wem</CachePath>
+				<File Id="354742721" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_2.wav</ShortName>
+					<Path>Media/354742721.wem</Path>
+					<CachePath>SFX/Trombone_Attack_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="952668855" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_2.wav</ShortName>
-					<Path>Media/952668855.wem</Path>
-					<CachePath>SFX/Attack_T_2_818F3B66.wem</CachePath>
+				<File Id="613939357" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_4.wav</ShortName>
+					<Path>Media/613939357.wem</Path>
+					<CachePath>SFX/Trombone_Attack_4_818F3B66.wem</CachePath>
 				</File>
-				<File Id="968238248" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_3.wav</ShortName>
-					<Path>Media/968238248.wem</Path>
-					<CachePath>SFX/Attack_T_3_818F3B66.wem</CachePath>
+				<File Id="837375732" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_1.wav</ShortName>
+					<Path>Media/837375732.wem</Path>
+					<CachePath>SFX/Trombone_Attack_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="935808935" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_3.wav</ShortName>
+					<Path>Media/935808935.wem</Path>
+					<CachePath>SFX/Trombone_Attack_3_818F3B66.wem</CachePath>
 				</File>
 			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
 			<Events>
-				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" DurationType="OneShot" DurationMin="0.770625" DurationMax="0.770625">
+				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" DurationType="OneShot" DurationMin="0.7835627" DurationMax="0.7835627">
 					<MediaRefs>
-						<MediaRef Id="451014174"/>
-						<MediaRef Id="941583466"/>
-						<MediaRef Id="952668855"/>
-						<MediaRef Id="968238248"/>
+						<MediaRef Id="108887632"/>
+						<MediaRef Id="354742721"/>
+						<MediaRef Id="613939357"/>
+						<MediaRef Id="837375732"/>
+						<MediaRef Id="935808935"/>
 					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
+						</ShareSets>
+					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
@@ -1148,7 +1164,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3557138646" Type="Event" GUID="{B0C36204-52E2-4794-8556-4F4C7B718AEC}" Language="SFX" Hash="{7360A512-FD4F-930E-F45A-77AFAE152570}">
+		<SoundBank Id="3557138646" Type="Event" GUID="{B0C36204-52E2-4794-8556-4F4C7B718AEC}" Language="SFX" Hash="{F3B995DF-A1A6-0FE9-00A2-05D05CAE4F2F}">
 			<ObjectPath>Play_Party_On</ObjectPath>
 			<ShortName>Play_Party_On</ShortName>
 			<Path>Event/Play_Party_On.bnk</Path>
@@ -1221,7 +1237,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{E82916D4-1F78-85D0-EC0C-C74B01BC9C56}">
+		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{35BDF7A8-C1C5-0DD0-B2E3-0B1ABF5E2017}">
 			<ObjectPath>Play_Voice_Attack</ObjectPath>
 			<ShortName>Play_Voice_Attack</ShortName>
 			<Path>Event/Play_Voice_Attack.bnk</Path>
@@ -1312,5 +1328,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{CF209B6C-41D3-1901-E22F-584BD45B4C21}</FileHash>
+	<FileHash>{02DE471C-5062-E10E-F0B3-CF6C33D4CC0C}</FileHash>
 </SoundBanksInfo>

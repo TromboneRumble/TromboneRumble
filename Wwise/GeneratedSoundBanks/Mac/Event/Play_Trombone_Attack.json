@@ -10,48 +10,69 @@
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
     "Language": "SFX",
-    "Hash": "{982552FF-7D04-0617-E083-E3E82304EB8F}",
+    "Hash": "{3556ACCB-F740-E669-E14D-D3BF687C7542}",
     "ObjectPath": "Play_Trombone_Attack",
     "ShortName": "Play_Trombone_Attack",
     "Path": "Event/Play_Trombone_Attack.bnk",
     "Media": [
      {
-      "Id": "451014174",
+      "Id": "108887632",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Attack_T_4.wav",
-      "Path": "Media/451014174.wem",
-      "CachePath": "SFX/Attack_T_4_818F3B66.wem"
+      "ShortName": "Trombone_Attack_5.wav",
+      "Path": "Media/108887632.wem",
+      "CachePath": "SFX/Trombone_Attack_5_818F3B66.wem"
      },
      {
-      "Id": "941583466",
+      "Id": "354742721",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Attack_T_1.wav",
-      "Path": "Media/941583466.wem",
-      "CachePath": "SFX/Attack_T_1_818F3B66.wem"
+      "ShortName": "Trombone_Attack_2.wav",
+      "Path": "Media/354742721.wem",
+      "CachePath": "SFX/Trombone_Attack_2_818F3B66.wem"
      },
      {
-      "Id": "952668855",
+      "Id": "613939357",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Attack_T_2.wav",
-      "Path": "Media/952668855.wem",
-      "CachePath": "SFX/Attack_T_2_818F3B66.wem"
+      "ShortName": "Trombone_Attack_4.wav",
+      "Path": "Media/613939357.wem",
+      "CachePath": "SFX/Trombone_Attack_4_818F3B66.wem"
      },
      {
-      "Id": "968238248",
+      "Id": "837375732",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Attack_T_3.wav",
-      "Path": "Media/968238248.wem",
-      "CachePath": "SFX/Attack_T_3_818F3B66.wem"
+      "ShortName": "Trombone_Attack_1.wav",
+      "Path": "Media/837375732.wem",
+      "CachePath": "SFX/Trombone_Attack_1_818F3B66.wem"
+     },
+     {
+      "Id": "935808935",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trombone_Attack_3.wav",
+      "Path": "Media/935808935.wem",
+      "CachePath": "SFX/Trombone_Attack_3_818F3B66.wem"
      }
     ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "2751601189",
@@ -59,26 +80,36 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Trombone_Attack",
       "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
       "DurationType": "OneShot",
-      "DurationMin": "0.770625",
-      "DurationMax": "0.770625",
+      "DurationMin": "0.7835627",
+      "DurationMax": "0.7835627",
       "MediaRefs": [
        {
-        "Id": "451014174"
+        "Id": "108887632"
        },
        {
-        "Id": "941583466"
+        "Id": "354742721"
        },
        {
-        "Id": "952668855"
+        "Id": "613939357"
        },
        {
-        "Id": "968238248"
+        "Id": "837375732"
+       },
+       {
+        "Id": "935808935"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
      }
     ]
    }
   ],
-  "FileHash": "{F1167A51-788C-5DF0-D8CF-7DA67C64C5ED}"
+  "FileHash": "{7EEC3308-55C7-0754-3018-6992068205A9}"
  }
 }

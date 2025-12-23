@@ -549,8 +549,8 @@
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Attenuation">
-									<Custom>
-										<Attenuation Name="Attenuation (Custom)" ID="{4F4AAAC2-4F62-4912-929B-ABF604B6ED26}" ShortID="764810512">
+									<Custom CreatedFrom="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}">
+										<Attenuation Name="Light (Custom)" ID="{F263541A-3FF7-4DCD-8B2E-6E505105D29D}" ShortID="1054161662">
 											<PropertyList>
 												<Property Name="ConeUse" Type="bool">
 													<ValueList>
@@ -562,7 +562,7 @@
 											<CurveUsageInfoList>
 												<VolumeDryUsage>
 													<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
-														<Curve Name="VolumeDry" ID="{88341A52-A15F-4941-82E3-2460D59ED167}">
+														<Curve Name="VolumeDry" ID="{C387F718-C37D-4213-9EC3-665825CC42DD}">
 															<PropertyList>
 																<Property Name="Flags" Type="int32" Value="3"/>
 															</PropertyList>
@@ -571,6 +571,18 @@
 																	<XPos>0</XPos>
 																	<YPos>0</YPos>
 																	<Flags>5</Flags>
+																	<SegmentShape>Exp2</SegmentShape>
+																</Point>
+																<Point>
+																	<XPos>725.6894</XPos>
+																	<YPos>-4.11698</YPos>
+																	<Flags>0</Flags>
+																	<SegmentShape>Log2</SegmentShape>
+																</Point>
+																<Point>
+																	<XPos>999.999</XPos>
+																	<YPos>-200</YPos>
+																	<Flags>0</Flags>
 																</Point>
 																<Point>
 																	<XPos>1000</XPos>
@@ -588,7 +600,37 @@
 													<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
 												</VolumeWetUserUsage>
 												<LowPassFilterUsage>
-													<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+													<CurveUsageInfo Platform="Linked" CurveToUse="None">
+														<Curve Name="LowPassFilter" ID="{51CC43FA-F831-451C-A09D-1C4B3D45B3DE}">
+															<PropertyList>
+																<Property Name="Flags" Type="int32" Value="65537"/>
+															</PropertyList>
+															<PointList>
+																<Point>
+																	<XPos>0</XPos>
+																	<YPos>0</YPos>
+																	<Flags>5</Flags>
+																	<SegmentShape>Exp1</SegmentShape>
+																</Point>
+																<Point>
+																	<XPos>731.49492</XPos>
+																	<YPos>36</YPos>
+																	<Flags>0</Flags>
+																	<SegmentShape>Log1</SegmentShape>
+																</Point>
+																<Point>
+																	<XPos>999.999</XPos>
+																	<YPos>100</YPos>
+																	<Flags>0</Flags>
+																</Point>
+																<Point>
+																	<XPos>1000</XPos>
+																	<YPos>100</YPos>
+																	<Flags>37</Flags>
+																</Point>
+															</PointList>
+														</Curve>
+													</CurveUsageInfo>
 												</LowPassFilterUsage>
 												<HighPassFilterUsage>
 													<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
@@ -932,6 +974,7 @@
 					<ChildrenList>
 						<SwitchContainer Name="Player_Foot" ID="{6C6B7ACD-6F90-407B-A6E0-759EB5180DA4}" ShortID="716347646">
 							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
 								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
@@ -940,6 +983,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 								</Reference>
@@ -1454,7 +1500,13 @@
 						<RandomSequenceContainer Name="Player_Trombone_Attack" ID="{0A645A61-80E0-49C2-BF1D-AEE0B425635A}" ShortID="709268249">
 							<PropertyList>
 								<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
+								<Property Name="Pitch" Type="int32">
+									<ValueList>
+										<Value>130</Value>
+									</ValueList>
+								</Property>
 								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-11</Value>
@@ -1470,7 +1522,7 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<Sound Name="Attack_T_1" ID="{1364B767-219F-48DA-9F4D-343242825D80}" ShortID="214941210">
+								<Sound Name="Trombone_Attack_1" ID="{7FAD6566-D247-4324-B542-E46573C40A54}" ShortID="767827568">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1480,19 +1532,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Attack_T_1" ID="{945FEA0F-1C6F-4907-B8F2-A8DA43263560}">
+										<AudioFileSource Name="Trombone_Attack_1" ID="{8B0C18E1-89A2-4557-BE68-F8D34C59B672}">
 											<Language>SFX</Language>
-											<AudioFile>Attack_T_1.wav</AudioFile>
+											<AudioFile>Trombone_Attack_1.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="941583466"/>
+												<MediaID ID="837375732"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Attack_T_1" ID="{945FEA0F-1C6F-4907-B8F2-A8DA43263560}" Platform="Linked"/>
+										<ActiveSource Name="Trombone_Attack_1" ID="{8B0C18E1-89A2-4557-BE68-F8D34C59B672}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Attack_T_2" ID="{DB58621C-E566-4C51-B64B-0809CBBDFB01}" ShortID="603497342">
+								<Sound Name="Trombone_Attack_2" ID="{A67AB367-9D32-4D2E-9452-2A0650BC96B8}" ShortID="1002366663">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1502,19 +1554,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Attack_T_2" ID="{C0C2A24C-CA8D-4807-9501-9EE5FBB2C6B5}">
+										<AudioFileSource Name="Trombone_Attack_2" ID="{DBDECDA7-4F6D-45D8-A58C-979481B9B8DD}">
 											<Language>SFX</Language>
-											<AudioFile>Attack_T_2.wav</AudioFile>
+											<AudioFile>Trombone_Attack_2.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="952668855"/>
+												<MediaID ID="354742721"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Attack_T_2" ID="{C0C2A24C-CA8D-4807-9501-9EE5FBB2C6B5}" Platform="Linked"/>
+										<ActiveSource Name="Trombone_Attack_2" ID="{DBDECDA7-4F6D-45D8-A58C-979481B9B8DD}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Attack_T_3" ID="{00B291B3-38A9-44C1-BC10-14E0CAA03780}" ShortID="47991351">
+								<Sound Name="Trombone_Attack_3" ID="{93926068-84D9-4784-9410-78B16792DC7C}" ShortID="652552272">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1524,19 +1576,19 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Attack_T_3" ID="{599BB284-F07E-4DDA-82A5-221003F2E693}">
+										<AudioFileSource Name="Trombone_Attack_3" ID="{070E64C8-85BE-4B4D-94A4-88A33E549236}">
 											<Language>SFX</Language>
-											<AudioFile>Attack_T_3.wav</AudioFile>
+											<AudioFile>Trombone_Attack_3.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="968238248"/>
+												<MediaID ID="935808935"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Attack_T_3" ID="{599BB284-F07E-4DDA-82A5-221003F2E693}" Platform="Linked"/>
+										<ActiveSource Name="Trombone_Attack_3" ID="{070E64C8-85BE-4B4D-94A4-88A33E549236}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<Sound Name="Attack_T_4" ID="{2DD39A75-268E-4D3E-9422-B471ACEC307E}" ShortID="523826165">
+								<Sound Name="Trombone_Attack_4" ID="{20C6EF5F-98CF-4793-A187-C37B885136BE}" ShortID="5943374">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1546,19 +1598,56 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="Attack_T_4" ID="{A735B282-8087-47DD-B614-C99CF3F3FF36}">
+										<AudioFileSource Name="Trombone_Attack_4" ID="{C1D7D55F-C3FC-4CD3-B69E-4C56581AF703}">
 											<Language>SFX</Language>
-											<AudioFile>Attack_T_4.wav</AudioFile>
+											<AudioFile>Trombone_Attack_4.wav</AudioFile>
 											<MediaIDList>
-												<MediaID ID="451014174"/>
+												<MediaID ID="613939357"/>
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
-										<ActiveSource Name="Attack_T_4" ID="{A735B282-8087-47DD-B614-C99CF3F3FF36}" Platform="Linked"/>
+										<ActiveSource Name="Trombone_Attack_4" ID="{C1D7D55F-C3FC-4CD3-B69E-4C56581AF703}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Trombone_Attack_5" ID="{148F75D8-954D-4972-BD99-E000C5BE9421}" ShortID="518840531">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Trombone_Attack_5" ID="{903693F7-B688-4A08-A450-88B6FC6AA3DC}">
+											<Language>SFX</Language>
+											<AudioFile>Trombone_Attack_5.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="108887632"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Trombone_Attack_5" ID="{903693F7-B688-4A08-A450-88B6FC6AA3DC}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{90258293-D436-44DF-955F-38DDED2D0DCC}" ShortID="796107655">
+												<ReferenceList>
+													<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+														<ObjectRef Name="High_Pass_60Hz" ID="{F9627628-0B10-4272-BC30-D4C20423CB38}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 						</RandomSequenceContainer>
 						<RandomSequenceContainer Name="Player_Attack_Voice" ID="{D23E0181-AAA5-4AC3-AF9A-D16421CFF630}" ShortID="307415182">
 							<PropertyList>
@@ -1566,6 +1655,12 @@
 								<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
 								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
 								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-6</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Attenuation">
@@ -1714,6 +1809,82 @@
 							</ChildrenList>
 							<PositioningInfo>
 								<Panner Name="" ID="{A2468695-96F0-4EBF-B969-1DA9BFF4B483}"/>
+							</PositioningInfo>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Player_Jump_Voice" ID="{F388E21F-1303-43DA-B9C1-04E78004A0CE}" ShortID="24898591">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
+								<Property Name="Pitch" Type="int32">
+									<ValueList>
+										<Value>30</Value>
+									</ValueList>
+								</Property>
+								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>2</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Light" ID="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Player_Jump_1" ID="{E6CF7249-0761-48A7-A297-7B9689C13233}" ShortID="283377211">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Jump_1" ID="{0D237E03-CD1E-4D49-AC16-CE51E34695A7}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Jump\Player_Jump_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="366445495"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Jump_1" ID="{0D237E03-CD1E-4D49-AC16-CE51E34695A7}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Player_Jump_2" ID="{F328FA76-1B6D-4A6E-ACC3-ACCAA9C186EF}" ShortID="381432818">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Player_Jump_2" ID="{021F4354-0B05-49C9-B6A9-CEA84EAA7EDD}">
+											<Language>SFX</Language>
+											<AudioFile>Player_Jump\Player_Jump_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="211994488"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Player_Jump_2" ID="{021F4354-0B05-49C9-B6A9-CEA84EAA7EDD}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<PositioningInfo>
+								<Panner Name="" ID="{46B71AA8-EDC5-4742-913B-BFDBC242CD32}"/>
 							</PositioningInfo>
 						</RandomSequenceContainer>
 					</ChildrenList>

@@ -1,43 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{982552FF-7D04-0617-E083-E3E82304EB8F}">
+		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{3556ACCB-F740-E669-E14D-D3BF687C7542}">
 			<ObjectPath>Play_Trombone_Attack</ObjectPath>
 			<ShortName>Play_Trombone_Attack</ShortName>
 			<Path>Event/Play_Trombone_Attack.bnk</Path>
 			<Media>
-				<File Id="451014174" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_4.wav</ShortName>
-					<Path>Media/451014174.wem</Path>
-					<CachePath>SFX/Attack_T_4_818F3B66.wem</CachePath>
+				<File Id="108887632" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_5.wav</ShortName>
+					<Path>Media/108887632.wem</Path>
+					<CachePath>SFX/Trombone_Attack_5_818F3B66.wem</CachePath>
 				</File>
-				<File Id="941583466" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_1.wav</ShortName>
-					<Path>Media/941583466.wem</Path>
-					<CachePath>SFX/Attack_T_1_818F3B66.wem</CachePath>
+				<File Id="354742721" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_2.wav</ShortName>
+					<Path>Media/354742721.wem</Path>
+					<CachePath>SFX/Trombone_Attack_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="952668855" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_2.wav</ShortName>
-					<Path>Media/952668855.wem</Path>
-					<CachePath>SFX/Attack_T_2_818F3B66.wem</CachePath>
+				<File Id="613939357" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_4.wav</ShortName>
+					<Path>Media/613939357.wem</Path>
+					<CachePath>SFX/Trombone_Attack_4_818F3B66.wem</CachePath>
 				</File>
-				<File Id="968238248" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Attack_T_3.wav</ShortName>
-					<Path>Media/968238248.wem</Path>
-					<CachePath>SFX/Attack_T_3_818F3B66.wem</CachePath>
+				<File Id="837375732" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_1.wav</ShortName>
+					<Path>Media/837375732.wem</Path>
+					<CachePath>SFX/Trombone_Attack_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="935808935" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Trombone_Attack_3.wav</ShortName>
+					<Path>Media/935808935.wem</Path>
+					<CachePath>SFX/Trombone_Attack_3_818F3B66.wem</CachePath>
 				</File>
 			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
 			<Events>
-				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" DurationType="OneShot" DurationMin="0.770625" DurationMax="0.770625">
+				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" DurationType="OneShot" DurationMin="0.7835627" DurationMax="0.7835627">
 					<MediaRefs>
-						<MediaRef Id="451014174"/>
-						<MediaRef Id="941583466"/>
-						<MediaRef Id="952668855"/>
-						<MediaRef Id="968238248"/>
+						<MediaRef Id="108887632"/>
+						<MediaRef Id="354742721"/>
+						<MediaRef Id="613939357"/>
+						<MediaRef Id="837375732"/>
+						<MediaRef Id="935808935"/>
 					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
+						</ShareSets>
+					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{CE7DBC55-2C3C-A4EF-0CE0-729520FC648E}</FileHash>
+	<FileHash>{CFF2F595-1DEF-F24D-97EA-C502A5C2321E}</FileHash>
 </SoundBanksInfo>

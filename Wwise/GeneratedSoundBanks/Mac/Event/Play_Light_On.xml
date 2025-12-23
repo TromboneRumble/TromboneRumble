@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{431C46F2-3B1C-C7AA-F543-61117BFAFA60}">
+		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{A25BA8C1-301A-6597-20EB-5B6AA10C5CBE}">
 			<ObjectPath>Play_Light_On</ObjectPath>
 			<ShortName>Play_Light_On</ShortName>
 			<Path>Event/Play_Light_On.bnk</Path>
@@ -39,5 +39,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{DB3F55D4-1B41-E800-550A-A6912E40A605}</FileHash>
+	<FileHash>{A2886315-DA0C-0A62-DAEE-13484E855F5D}</FileHash>
 </SoundBanksInfo>
