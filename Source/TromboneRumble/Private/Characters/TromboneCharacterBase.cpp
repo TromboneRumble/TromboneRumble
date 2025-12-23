@@ -95,6 +95,7 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 			OnStun();
 			break;
 		case EHitType::Audience:
+			OnRagdoll();
 			break;
 		default:
 			break;

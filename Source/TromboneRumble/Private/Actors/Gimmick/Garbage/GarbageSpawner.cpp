@@ -10,10 +10,8 @@
 AGarbageSpawner::AGarbageSpawner()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	// 스폰 로직은 서버에서만 동작
 	bReplicates = true;
-	SetReplicateMovement(false);
+	AActor::SetReplicateMovement(false);
 }
 
 
@@ -35,18 +33,11 @@ void AGarbageSpawner::SpawnGarbageOnce_Server()
 		return;
 	}
 
-	// Garbage 클래스가 없으면 스폰 불가
-	if (GarbageClasses.Num() == 0)
+	if (GarbageClasses.Num() == 0 || SpawnPointActors.Num() == 0)
 	{
 		return;
 	}
-
-	// SpawnPoint가 없으면 바로 종료
-	if (SpawnPointActors.Num() == 0)
-	{
-		return;
-	}
-
+	
 	AActor* TargetPawn = PickRandomPlayerPawn();
 	if (!IsValid(TargetPawn))
 	{
@@ -73,6 +64,8 @@ void AGarbageSpawner::StartAutoSpawn_Server()
 	{
 		return;
 	}
+	
+	const float SpawnInterval = UKismetMathLibrary::RandomFloatInRange(SpawnIntervalMin, SpawnIntervalMax);
 
 	GetWorldTimerManager().SetTimer(
 		AutoSpawnTimer,
@@ -190,7 +183,6 @@ void AGarbageSpawner::SpawnAndThrow_Server(const FTransform& SpawnTransform, AAc
 
 	const FVector StartLocation = SpawnTransform.GetLocation();
 
-	// 타겟 위치에 랜덤 오프셋 적용
 	const FVector TargetBase = TargetPawn->GetActorLocation();
 	const FVector TargetOffset(
 		FMath::FRandRange(-TargetRandomRadius, TargetRandomRadius),

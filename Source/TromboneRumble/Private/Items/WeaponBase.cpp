@@ -185,11 +185,7 @@ void AWeaponBase::DetectHit()
     		{
     			AlreadyHitActors.Add(HitActor);
 
-    			ACharacter* OwnerCharacter = Cast<ACharacter>(CurrentOwner);
-    			if (!OwnerCharacter) continue;
-    			
     			FHitData HitData;
-    			HitData.Initiator = OwnerCharacter;
     			HitData.HitDirection = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
     			HitData.HitType = WeaponData->HitType;
 

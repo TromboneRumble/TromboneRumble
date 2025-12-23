@@ -17,7 +17,7 @@ class TROMBONERUMBLE_API AGarbageBase : public AActor
 public:	
 	AGarbageBase();
 
-	UFUNCTION(BlueprintCallable, Category = "Garbage")
+	UFUNCTION(Category = "Garbage")
 	void InitThrow_Server(const FVector& InStart, const FVector& InTarget);
 
 protected:
@@ -25,30 +25,29 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Garbage|Components")
+	UPROPERTY(VisibleAnywhere, Category = "Garbage|Components")
 	TObjectPtr<UStaticMeshComponent> MeshComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Garbage|Components")
+	UPROPERTY(VisibleAnywhere, Category = "Garbage|Components")
 	TObjectPtr<UNiagaraComponent> TrailComp;
 	// ~Components
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Garbage|Throw")
+	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
 	float MinExtraApexHeight = 150.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Garbage|Throw")
+	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
 	float MaxExtraApexHeight = 450.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Garbage|Throw")
+	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
 	float MinSpinDegPerSec = 180.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Garbage|Throw")
+	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
 	float MaxSpinDegPerSec = 900.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Garbage|Lifetime")
-	float DestroyDelayAfterLand = 2.0f;
+	UPROPERTY(EditAnywhere, Category = "Garbage|Lifetime")
+	float DestroyDelayAfterLand = 5.0f;
 
-	// 땅 또는 플레이어와 처음 충돌한 시점부터 N초 후 삭제
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Garbage|Lifetime")
+	UPROPERTY(EditAnywhere, Category = "Garbage|Lifetime")
 	float DestroyDelayAfterImpact = 2.0f;
 
 protected:
@@ -77,9 +76,8 @@ protected:
 		FVector NormalImpulse, const FHitResult& Hit);
 
 	FVector ComputeBallisticInitialVelocity(const FVector& InStart, const FVector& InTarget, float ExtraApexHeight) const;
-	void StartDestroyTimer_Server();
+	void StartDestroyTimer_Server(float Delay);
 
 private:
 	bool bDestroyTimerStarted = false;
-
 };
