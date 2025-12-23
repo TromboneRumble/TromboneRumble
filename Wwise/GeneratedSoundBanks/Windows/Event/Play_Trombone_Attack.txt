@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	2751601189	Play_Trombone_Attack			\Default Work Unit\Player_SFX\Play_Trombone_Attack	
+
+Effect plug-ins	ID	Name	Type				Notes
+	3604890626	High_Pass_60Hz	Wwise Parametric EQ			
+

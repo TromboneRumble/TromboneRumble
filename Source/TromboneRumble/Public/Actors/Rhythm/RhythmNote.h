@@ -8,6 +8,8 @@
 #include "Utilities/Defines.h"
 #include "RhythmNote.generated.h"
 
+class UActorPoolSubsystem;
+class ANoteVisualizer;
 class ARhythmActor;
 class ARhythmNoteSpawner;
 class URhythmNoteChannelSubsystem;
@@ -32,7 +34,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, float InTimeToComplete, const FString& InUserCueName);
+	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InJudgementRingClass, float InTimeToComplete, const FString& InUserCueName);
 	void SetToShortNote();
 	void SetToLongNoteStart();
 	void SetToLongNoteEnd();
@@ -54,6 +56,10 @@ protected:
 
 private:
 
+	UFUNCTION()
+	void OnMusicUserCueHandler(FName CueName);
+
+
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USphereComponent> OuterSphere = nullptr;
@@ -68,10 +74,22 @@ private:
 	// Cached References
 	UPROPERTY()
 	TWeakObjectPtr<URhythmNoteChannelSubsystem> CachedRhythmNoteChannelSubsystem = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<UActorPoolSubsystem> CachedActorPoolSubsystem = nullptr;
+
+	UPROPERTY(Transient)
+	TSubclassOf<ANoteVisualizer> CachedNoteVisualizerClass = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ANoteVisualizer> CachedNoteVisualizer = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ARhythmActor> CachedRhythmActor = nullptr;
 	// ~Cached References
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	float TimeToComplete = 5.f;
+	float TimeToComplete = 3.f;
 
 	bool bIsMoving = false;
 

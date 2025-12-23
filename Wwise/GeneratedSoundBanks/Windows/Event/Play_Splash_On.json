@@ -1,0 +1,104 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1556462077",
+    "Type": "Event",
+    "GUID": "{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}",
+    "Language": "SFX",
+    "Hash": "{2ADDCF67-2809-C524-619D-D524423EE1E8}",
+    "ObjectPath": "Play_Splash_On",
+    "ShortName": "Play_Splash_On",
+    "Path": "Event/Play_Splash_On.bnk",
+    "Media": [
+     {
+      "Id": "4251908",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Splash_4.wav",
+      "Path": "Media/4251908.wem",
+      "CachePath": "SFX/Splash_4_9756B083.wem"
+     },
+     {
+      "Id": "255748029",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Splash_3.wav",
+      "Path": "Media/255748029.wem",
+      "CachePath": "SFX/Splash_3_31C1040B.wem"
+     },
+     {
+      "Id": "375473682",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Splash_1.wav",
+      "Path": "Media/375473682.wem",
+      "CachePath": "SFX/Splash_1_B9309F80.wem"
+     },
+     {
+      "Id": "699976713",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Splash_2.wav",
+      "Path": "Media/699976713.wem",
+      "CachePath": "SFX/Splash_2_8161D7BB.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1556462077",
+      "Name": "Play_Splash_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Splash_On",
+      "GUID": "{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.77579165",
+      "DurationMax": "1.0090417",
+      "MediaRefs": [
+       {
+        "Id": "4251908"
+       },
+       {
+        "Id": "255748029"
+       },
+       {
+        "Id": "375473682"
+       },
+       {
+        "Id": "699976713"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{88C7B3CD-9D80-BA80-5BA1-5DF6BE4B545D}"
+ }
+}

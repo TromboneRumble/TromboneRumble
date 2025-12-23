@@ -9,13 +9,13 @@
 #include "Framework/LobbyGameState.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
-#include "Items/InstrumentBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
+#include "Items/WeaponBase.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -31,6 +31,14 @@ ALobbyGameMode::ALobbyGameMode()
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
 	if (!EquippedPlayer || !EquippedItem) return;
+	
+	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(EquippedItem))
+	{
+		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
+		{
+			return;
+		}
+	}
 	
 	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
 	{
@@ -124,10 +132,10 @@ void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 				PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
 				break;
 			case EGameState::Lobby:
-				RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::Lobby));
+				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
 				break;
 			case EGameState::InGame:
-				RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::InGame));
+				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
 				break;
 			default:
 				PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
@@ -197,9 +205,9 @@ void ALobbyGameMode::InitializeInstruments() const
 		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 
 		const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
-		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
+		TSubclassOf<AWeaponBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
 
-		GetWorld()->SpawnActor<AInstrumentBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
+		GetWorld()->SpawnActor<AWeaponBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
 	}
 }
 
@@ -220,7 +228,7 @@ void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 				{
 					GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 				}
-				RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::Lobby));
+				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
 				break;
 
 			case ELobbyState::CountdownToScramble:
@@ -236,7 +244,8 @@ void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 
 			case ELobbyState::CountdownToTravel:
 				RequestSetTimer([this, GameStateSubsystem]() { 
-					RequestServerTravel(GameStateSubsystem->GetMapNameForGameState(EGameState::InGame)); });
+					RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
+				});
 				break;
 
 			default:;

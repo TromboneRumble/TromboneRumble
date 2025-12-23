@@ -46,8 +46,14 @@ public:
 
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
+
+	UFUNCTION()
+	virtual void OnFadeInFinished() { isShown = true; }
+	UFUNCTION()
+	virtual void OnFadeOutFinished() { isShown = false; }
 
 	UFUNCTION()
 	void OnInstrumentChangedHandler(EInstrumentType PrevType, EInstrumentType NewType);
@@ -58,6 +64,13 @@ protected:
 	// 각 악기별 NoteWidget을 담을 CanvasPanel
 	UPROPERTY(Transient)
 	TMap<EInstrumentType, TObjectPtr<UPanelWidget>> InstrumentContainers;
+
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeOutAnim;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	UWidgetAnimation* FadeInAnim;
 
 	bool isShown = false;
 

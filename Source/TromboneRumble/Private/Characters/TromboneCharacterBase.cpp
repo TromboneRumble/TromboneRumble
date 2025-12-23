@@ -95,6 +95,7 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 			OnStun();
 			break;
 		case EHitType::Audience:
+			OnRagdoll();
 			break;
 		default:
 			break;
@@ -155,7 +156,7 @@ void ATromboneCharacterBase::SetupCapsuleComponent()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block); // Object Channel 1 : Weapon
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap); // Object Channel 1 : Weapon
 }
 
 void ATromboneCharacterBase::SetupSkeletalMeshComponent()

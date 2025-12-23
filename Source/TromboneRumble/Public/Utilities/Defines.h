@@ -6,19 +6,8 @@
 UENUM()
 enum class EEquipmentSlotType : uint8
 {
-	Instrument,
+	Weapon,
 	MAX_SLOTS
-};
-
-USTRUCT()
-struct FInteractionContext
-{
-	GENERATED_BODY()
-
-public:
-	bool bIsEquipped = false;
-
-	FInteractionContext() {}
 };
 
 // TODO : 추후 팀전 고려.
@@ -58,6 +47,16 @@ enum class EHitType : uint8
 	Cymbals,
 	Violin,
 	Audience,
+	Invalid		= 255	UMETA(Hidden)
+};
+
+UENUM()
+enum class EWeaponType : uint8
+{
+	Headbutt,
+	Trombone,
+	Cymbals,
+	Violin,
 	Invalid		= 255	UMETA(Hidden)
 };
 

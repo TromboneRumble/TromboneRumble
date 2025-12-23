@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="562256996" Type="Event" GUID="{9A720635-720F-4279-A256-D1A0C4C248B2}" Language="SFX" Hash="{4D45893C-8138-EDEF-2EA9-4B5987FE6187}">
+			<ObjectPath>Play_Player_Jump</ObjectPath>
+			<ShortName>Play_Player_Jump</ShortName>
+			<Path>Event/Play_Player_Jump.bnk</Path>
+			<Media>
+				<File Id="211994488" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Jump\Player_Jump_2.wav</ShortName>
+					<Path>Media/211994488.wem</Path>
+					<CachePath>SFX/Player_Jump/Player_Jump_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="366445495" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Jump\Player_Jump_1.wav</ShortName>
+					<Path>Media/366445495.wem</Path>
+					<CachePath>SFX/Player_Jump/Player_Jump_1_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="562256996" Name="Play_Player_Jump" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Jump" GUID="{9A720635-720F-4279-A256-D1A0C4C248B2}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.36720636" DurationMax="0.38755894">
+					<MediaRefs>
+						<MediaRef Id="211994488"/>
+						<MediaRef Id="366445495"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{0FD3613E-5919-C3FB-0419-A1B4458B6CAC}</FileHash>
+</SoundBanksInfo>

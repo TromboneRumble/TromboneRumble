@@ -12,7 +12,6 @@ void AInGameState::AddPlayerState(APlayerState* PlayerState)
 	Super::AddPlayerState(PlayerState);
     if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(PlayerState))
     {
-        Debug::Print(TEXT("called"));
         DefaultPS->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleLocalScoreChanged);
         OnScoreChanged.Broadcast(DefaultPS);
     }

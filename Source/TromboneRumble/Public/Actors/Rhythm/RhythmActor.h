@@ -134,6 +134,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	float RhythmDestroyerBoxExtent = 30.f;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	bool IsSyncTesting = false;
 	// ~Rhythm Game
 
 

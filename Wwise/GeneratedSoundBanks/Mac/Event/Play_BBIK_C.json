@@ -10,46 +10,46 @@
     "Type": "Event",
     "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
     "Language": "SFX",
-    "Hash": "{7E7D5B63-B671-4626-AB9E-582C922F6C75}",
+    "Hash": "{1A58B194-E80D-E0F5-8D6D-CFEE25074A52}",
     "ObjectPath": "Play_BBIK_C",
     "ShortName": "Play_BBIK_C",
     "Path": "Event/Play_BBIK_C.bnk",
     "Media": [
      {
-      "Id": "716964804",
+      "Id": "445099123",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_2.wav",
-      "Path": "Media/716964804.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_2_818F3B66.wem"
+      "ShortName": "BBIK_C_2.wav",
+      "Path": "Media/445099123.wem",
+      "CachePath": "SFX/BBIK_C_2_818F3B66.wem"
      },
      {
-      "Id": "837988067",
+      "Id": "702903757",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_4.wav",
-      "Path": "Media/837988067.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_4_818F3B66.wem"
+      "ShortName": "BBIK_C_3.wav",
+      "Path": "Media/702903757.wem",
+      "CachePath": "SFX/BBIK_C_3_818F3B66.wem"
      },
      {
-      "Id": "869664519",
+      "Id": "721172056",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_1.wav",
-      "Path": "Media/869664519.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_1_818F3B66.wem"
+      "ShortName": "BBIK_C_1.wav",
+      "Path": "Media/721172056.wem",
+      "CachePath": "SFX/BBIK_C_1_818F3B66.wem"
      },
      {
-      "Id": "947817868",
+      "Id": "736509684",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "BBIK_C\\BBIK_C_3.wav",
-      "Path": "Media/947817868.wem",
-      "CachePath": "SFX/BBIK_C/BBIK_C_3_818F3B66.wem"
+      "ShortName": "BBIK_C_4.wav",
+      "Path": "Media/736509684.wem",
+      "CachePath": "SFX/BBIK_C_4_818F3B66.wem"
      }
     ],
     "Plugins": {
@@ -75,16 +75,16 @@
       "DurationMax": "0.916875",
       "MediaRefs": [
        {
-        "Id": "716964804"
+        "Id": "445099123"
        },
        {
-        "Id": "837988067"
+        "Id": "702903757"
        },
        {
-        "Id": "869664519"
+        "Id": "721172056"
        },
        {
-        "Id": "947817868"
+        "Id": "736509684"
        }
       ],
       "PluginRefs": {
@@ -98,6 +98,6 @@
     ]
    }
   ],
-  "FileHash": "{737D7A7F-54B9-11BC-329B-C1099BC6514E}"
+  "FileHash": "{BF857549-E0BD-34BC-0D1A-EC0B8C0C6014}"
  }
 }

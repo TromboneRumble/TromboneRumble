@@ -30,10 +30,4 @@ private:
 	UFUNCTION()
 	void PlayFadeAnimation(EInstrumentType OldType, EInstrumentType NewType);
 
-	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	UWidgetAnimation* FadeOutAnim;
-
-	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	UWidgetAnimation* FadeInAnim;
-
 };

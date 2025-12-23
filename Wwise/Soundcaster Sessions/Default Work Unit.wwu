@@ -18,6 +18,10 @@
 							<Position X="1" Y="0"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Object_Splash" ID="{8316B0FD-4627-4B60-A1AE-4322014D99FD}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+							<Position X="1" Y="1"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="BBIK_C" ID="{9CFD72A2-7318-4ADA-A9E1-D926382C58A9}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 							<Position X="2" Y="0"/>
 						</Module>
@@ -38,7 +42,8 @@
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="SW_V" ID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<CurrentSwitchRef Name="Wood" ID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>

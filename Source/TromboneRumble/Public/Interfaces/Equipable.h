@@ -22,9 +22,6 @@ class TROMBONERUMBLE_API IEquipable
 
 
 public:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Equip")
-	void Equip(AActor* OwnerActor);
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Equip")
-	void Unequip(AActor* OwnerActor);
+	virtual void Equip(AActor* OwnerActor) = 0;
+	virtual void Unequip(AActor* OwnerActor) = 0;
 };

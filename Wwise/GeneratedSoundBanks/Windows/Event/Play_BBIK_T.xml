@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1436785871" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{831331CA-50A1-BFFC-D3C9-A73E0F732BA8}">
+		<SoundBank Id="1436785871" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{EAC3B107-7DE3-2D03-FC53-3B6B7576C3EF}">
 			<ObjectPath>Play_BBIK_T</ObjectPath>
 			<ShortName>Play_BBIK_T</ShortName>
 			<Path>Event/Play_BBIK_T.bnk</Path>
 			<Media>
-				<File Id="716964804" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>BBIK_C\BBIK_C_2.wav</ShortName>
-					<Path>Media/716964804.wem</Path>
-					<CachePath>SFX/BBIK_C/BBIK_C_2_818F3B66.wem</CachePath>
+				<File Id="445099123" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C_2.wav</ShortName>
+					<Path>Media/445099123.wem</Path>
+					<CachePath>SFX/BBIK_C_2_818F3B66.wem</CachePath>
 				</File>
-				<File Id="837988067" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>BBIK_C\BBIK_C_4.wav</ShortName>
-					<Path>Media/837988067.wem</Path>
-					<CachePath>SFX/BBIK_C/BBIK_C_4_818F3B66.wem</CachePath>
+				<File Id="702903757" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C_3.wav</ShortName>
+					<Path>Media/702903757.wem</Path>
+					<CachePath>SFX/BBIK_C_3_818F3B66.wem</CachePath>
 				</File>
-				<File Id="869664519" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>BBIK_C\BBIK_C_1.wav</ShortName>
-					<Path>Media/869664519.wem</Path>
-					<CachePath>SFX/BBIK_C/BBIK_C_1_818F3B66.wem</CachePath>
+				<File Id="721172056" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C_1.wav</ShortName>
+					<Path>Media/721172056.wem</Path>
+					<CachePath>SFX/BBIK_C_1_818F3B66.wem</CachePath>
 				</File>
-				<File Id="947817868" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>BBIK_C\BBIK_C_3.wav</ShortName>
-					<Path>Media/947817868.wem</Path>
-					<CachePath>SFX/BBIK_C/BBIK_C_3_818F3B66.wem</CachePath>
+				<File Id="736509684" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BBIK_C_4.wav</ShortName>
+					<Path>Media/736509684.wem</Path>
+					<CachePath>SFX/BBIK_C_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Plugins>
@@ -35,10 +35,10 @@
 			<Events>
 				<Event Id="1436785871" Name="Play_BBIK_T" ObjectPath="\Events\Default Work Unit\BBIK\Play_BBIK_T" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" DurationType="OneShot" DurationMin="0.15951025" DurationMax="1.2582892">
 					<MediaRefs>
-						<MediaRef Id="716964804"/>
-						<MediaRef Id="837988067"/>
-						<MediaRef Id="869664519"/>
-						<MediaRef Id="947817868"/>
+						<MediaRef Id="445099123"/>
+						<MediaRef Id="702903757"/>
+						<MediaRef Id="721172056"/>
+						<MediaRef Id="736509684"/>
 					</MediaRefs>
 					<PluginRefs>
 						<ShareSets>
@@ -49,5 +49,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{AAF010A0-F808-B878-A6E7-BB059925DC0D}</FileHash>
+	<FileHash>{6845F354-FC31-5C56-ED80-5957DDDBC0F2}</FileHash>
 </SoundBanksInfo>

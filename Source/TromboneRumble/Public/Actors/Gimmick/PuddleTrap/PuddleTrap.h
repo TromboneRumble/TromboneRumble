@@ -7,6 +7,8 @@
 #include "GameplayEffectTypes.h"  
 #include "PuddleTrap.generated.h"
 
+class UAkAudioEvent;
+class UAkComponent;
 class UGameplayEffect;
 class UBoxComponent;
 class UDecalComponent;
@@ -49,6 +51,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UDecalComponent> DecalComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UAkComponent> AkComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Puddle|GAS")
 	TSubclassOf<UGameplayEffect> PuddleSlowEffectClass;
 	//~Components
@@ -70,6 +75,9 @@ private:
 	bool bGrowing = false;
 
 	FTimerHandle LifetimeTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkAudioEvent> PuddleSpawnSFX;
 
 	/** 이 웅덩이가 각 캐릭터에게 건 Slow GE 핸들 */
 	UPROPERTY()

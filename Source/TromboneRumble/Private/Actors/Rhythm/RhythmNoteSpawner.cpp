@@ -15,6 +15,7 @@
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
+#include "Actors/Rhythm/NoteVisualizer.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -31,12 +32,13 @@ ARhythmNoteSpawner::ARhythmNoteSpawner()
 }
 
 void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent, UAkSwitchValue* InChangeSwitch,
-	UAkAudioEvent* InFailEvent)
+	UAkAudioEvent* InFailEvent, bool InIsSyncTesting)
 {
 	SpawnerType = InType;
 	SpawnNoteEvent = InNoteEvent;
 	ChangeSwitch = InChangeSwitch;
 	FailEvent = InFailEvent;
+	IsSyncTesting = InIsSyncTesting;
 }
 
 void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
@@ -60,7 +62,8 @@ void ARhythmNoteSpawner::BeginPlay()
 		SpawnTransform.SetLocation(GetActorLocation());
 		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
 		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
-		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 100, SpawnTransform);
+		CachedActorPoolSubsystem->Prewarm(RhythmNoteClass, 10, SpawnTransform);
+		CachedActorPoolSubsystem->Prewarm(NoteVisualizerClass, 10, SpawnTransform);
 	}
 	if (ARhythmActor* OwnerActor = Cast<ARhythmActor>(GetOwner()))
 	{
@@ -87,7 +90,7 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 	if (ARhythmNote* PooledNote = Cast<ARhythmNote>(CachedActorPoolSubsystem->Acquire(RhythmNoteClass, SpawnTransform)))
 	{
 		
-		PooledNote->InitNote(CachedRhythmActor.Get(), this, TimeToComplete, InUserCueName);
+		PooledNote->InitNote(CachedRhythmActor.Get(), this, NoteVisualizerClass, TimeToComplete, InUserCueName);
 
 		if (InUserCueName.StartsWith(TEXT("SS_")))
 		{
@@ -114,9 +117,9 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		PooledNote->MoveNotes();
 
 		//싱크가 맞는지 확인하는 디버그 코드
-		if (isSyncTesting)
+		if (IsSyncTesting)
 		{
-			float Delay = 4.5f;
+			float Delay = TimeToComplete;
 			if (ARhythmActor* OwnerRhythmActor = Cast<ARhythmActor>(GetOwner()))
 			{
 				PooledNote->StartSyncDebugTimer(OwnerRhythmActor, Delay);

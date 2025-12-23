@@ -8,6 +8,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
+class ANoteVisualizer;
 class URhythmSubsystem;
 class URhythmNoteChannelSubsystem;
 class UActorPoolSubsystem;
@@ -29,14 +30,14 @@ public:
 	ARhythmNoteSpawner();
 
 	void InitSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
-		UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent);
+		UAkSwitchValue* InChangeSwitch, UAkAudioEvent* InFailEvent, bool InIsSyncTesting);
 
 	UFUNCTION()
 	void OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 public:
 
 	UPROPERTY()
-	float TimeToComplete = 5.f;
+	float TimeToComplete = 3.f;
 
 	
 protected:
@@ -79,11 +80,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ARhythmNote> RhythmNoteClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ANoteVisualizer> NoteVisualizerClass;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;
 
-	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
-	bool isSyncTesting = false;
+	UPROPERTY(EditAnywhere, Category = "Rhythm")
+	bool IsSyncTesting = false;
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")

@@ -86,28 +86,30 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
     
     const EPhysicalSurface SurfaceType = UGameplayStatics::GetSurfaceType(HitResult);
 
-    UAkAudioEvent* EventToPost = FootstepAkEvent;
+    UAkSwitchValue* SwitchValue = NormalFootstepSwitch;
 
     switch (SurfaceType)
     {
     case SurfaceType_Default:
-        EventToPost = FootstepAkEvent;
+        SwitchValue = NormalFootstepSwitch;
         break;
     case SurfaceType1:
-        EventToPost = FootstepWaterAkEvent ? FootstepWaterAkEvent : FootstepAkEvent;
+        SwitchValue = WaterFootstepSwitch ? WaterFootstepSwitch : NormalFootstepSwitch;
         break;
     default:
-        EventToPost = FootstepAkEvent;
+        SwitchValue = NormalFootstepSwitch;
         break;
     }
 
-    if (!EventToPost)
+    if (!SwitchValue)
     {
         return;
     }
 
+    OwnerAkSoundComponent->SetSwitch(SwitchValue, FString(TEXT("")), FString(TEXT("")));
+
     OwnerAkSoundComponent->PostAkEvent(
-        EventToPost,
+        FootstepAkEvent,
         0,                                  
         FOnAkPostEventCallback() 
     );

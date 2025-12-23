@@ -26,7 +26,7 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> NoteCanvas = nullptr;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<URhythmSpawnWidgetBase> RhythmSpawnWidget = nullptr;
 
 };
