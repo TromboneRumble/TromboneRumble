@@ -3,8 +3,6 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Interfaces/Interactable.h"
-#include "Items/InstrumentBase.h"
-#include "Utilities/Defines.h"
 
 UInteractorComponent::UInteractorComponent()
 {

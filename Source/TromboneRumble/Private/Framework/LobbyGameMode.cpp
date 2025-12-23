@@ -9,13 +9,13 @@
 #include "Framework/LobbyGameState.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
-#include "Items/InstrumentBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
+#include "Items/WeaponBase.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -31,6 +31,14 @@ ALobbyGameMode::ALobbyGameMode()
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
 	if (!EquippedPlayer || !EquippedItem) return;
+	
+	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(EquippedItem))
+	{
+		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
+		{
+			return;
+		}
+	}
 	
 	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
 	{
@@ -197,9 +205,9 @@ void ALobbyGameMode::InitializeInstruments() const
 		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 
 		const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
-		TSubclassOf<AInstrumentBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
+		TSubclassOf<AWeaponBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
 
-		GetWorld()->SpawnActor<AInstrumentBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
+		GetWorld()->SpawnActor<AWeaponBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
 	}
 }
 

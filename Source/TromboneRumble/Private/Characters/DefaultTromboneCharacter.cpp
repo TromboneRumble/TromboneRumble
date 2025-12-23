@@ -4,7 +4,6 @@
 #include "Characters/DefaultPlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AkComponent.h"
 #include "InputActionValue.h"
@@ -16,7 +15,7 @@
 #include "Data/CharacterAttributeSet.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
-#include "Items/InstrumentBase.h"
+#include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -71,7 +70,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 
 void ADefaultTromboneCharacter::Jump()
 {
-	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
 	
 	if (bIsSprinting && !Instrument)
 	{
@@ -106,9 +105,9 @@ void ADefaultTromboneCharacter::TryInteract()
 
 void ADefaultTromboneCharacter::Attack()
 {
-	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
 	
-	if (AttackComponent && Instrument) AttackComponent->Attack();
+	if (AttackComponent && Weapon) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::StartSprint()
@@ -131,9 +130,18 @@ void ADefaultTromboneCharacter::StopSprint()
 
 void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 {
-	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument);
+	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
+	if (!Instrument) return;
+	
+	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Instrument))
+	{
+		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
+		{
+			return;
+		}
+	}
 
-	if (!GetCachedRhythmActor() || !Instrument) return;
+	if (!GetCachedRhythmActor()) return;
 
 	if (bIsPressed)
 	{
@@ -147,9 +155,9 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 
 EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
 {
-	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Instrument))
+	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon))
 	{
-		if (const AInstrumentBase* InstrumentBase = Cast<AInstrumentBase>(Instrument))
+		if (const AWeaponBase* InstrumentBase = Cast<AWeaponBase>(Instrument))
 		{
 			return InstrumentBase->GetInstrumentType();
 		}
@@ -164,7 +172,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 	
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
-	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Instrument;
+	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Weapon;
 	if (AItemBase* AlreadyEquippedItem = EquipmentComponent->GetItemInSlot(TargetSlot))
 	{
 		HandleOnEquipmentChanged(TargetSlot, AlreadyEquippedItem, nullptr);
@@ -222,28 +230,9 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	if (!HasAuthority()) return;
-
-	if (EquipmentComponent)
-	{
-		EquipmentComponent->InitializeOwner(this);
-	}
 	
-	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
-	if (PS && PS->EquippedInstrumentClass)
-	{
-		UWorld* World = GetWorld();
-		if (!World) return;
-		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = this;
-
-		AInstrumentBase* NewInstrument = World->SpawnActor<AInstrumentBase>(PS->EquippedInstrumentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
-		if (NewInstrument)
-		{
-			EquipmentComponent->TryEquipItem(NewInstrument);
-		}
-	}
+	SpawnAndEquipDefaultWeapon();
+	SpawnAndEquipPreviouslyEquippedWeapon();
 }
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
@@ -301,17 +290,20 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Instrument);
+	if (!DefaultWeaponInstance) return;
+	
+	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+	EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (Slot == EEquipmentSlotType::Instrument)
+	if (Slot == EEquipmentSlotType::Weapon)
 	{
 		EInstrumentType NewType = EInstrumentType::Background;
 		if (NewItem)
 		{
-			if (const AInstrumentBase* Instrument = Cast<AInstrumentBase>(NewItem))
+			if (const AWeaponBase* Instrument = Cast<AWeaponBase>(NewItem))
 			{
 				NewType = Instrument->GetInstrumentType();
 			}
@@ -320,7 +312,7 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 		if (IsLocallyControlled())
 		{
 			EInstrumentType OldType = EInstrumentType::None;
-			if (const AInstrumentBase* OldInstrument = Cast<AInstrumentBase>(OldItem))
+			if (const AWeaponBase* OldInstrument = Cast<AWeaponBase>(OldItem))
 			{
 				OldType = OldInstrument->GetInstrumentType();
 			}
@@ -344,4 +336,37 @@ ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 		return CachedRhythmActor.Get();
 	}
 	return nullptr;
+}
+
+void ADefaultTromboneCharacter::SpawnAndEquipDefaultWeapon()
+{
+	if (!DefaultWeaponClass) return;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = this;
+	
+	DefaultWeaponInstance = GetWorld()->SpawnActor<AWeaponBase>(DefaultWeaponClass, SpawnParams);
+	if (DefaultWeaponInstance)
+	{
+		AttackComponent->SetDefaultWeaponInstance(DefaultWeaponInstance); 
+		EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
+	}
+}
+
+void ADefaultTromboneCharacter::SpawnAndEquipPreviouslyEquippedWeapon()
+{
+	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
+	
+	if (PS && PS->EquippedWeaponClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
+
+		if (AWeaponBase* EquippedWeapon = GetWorld()->SpawnActor<AWeaponBase>(PS->EquippedWeaponClass, GetActorLocation(), GetActorRotation(), SpawnParams))
+		{
+			EquipmentComponent->TryEquipItem(EquippedWeapon);
+		}
+	}
 }

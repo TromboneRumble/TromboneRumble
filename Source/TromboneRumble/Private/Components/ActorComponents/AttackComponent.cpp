@@ -2,22 +2,15 @@
 
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Animation/CharacterAnimInstance.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
-#include "Data/AttackDataAsset.h"
+#include "Data/WeaponDataAsset.h"
 #include "GameFramework/Character.h"
-#include "Interfaces/CombatReceiver.h"
-#include "Items/InstrumentBase.h"
-#include "Net/UnrealNetwork.h"
-#include "Subsystems/GameStateSubsystem.h"
+#include "Items/WeaponBase.h"
 
 UAttackComponent::UAttackComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 	SetIsReplicatedByDefault(true);
-
-	HeadbuttCollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadbuttCapsuleComponent"));
-	HeadbuttCollisionComponent->SetCollisionObjectType(AttackTraceChannel) ; // Object Channel 1 : Weapon
 }
 
 void UAttackComponent::BeginPlay()
@@ -29,98 +22,22 @@ void UAttackComponent::BeginPlay()
 	if (USkeletalMeshComponent* Mesh = OwnerCharacter->GetMesh())
 	{
 		CharacterAnimInstance = Cast<UCharacterAnimInstance>(Mesh->GetAnimInstance());
-
-		if (HeadbuttCollisionComponent)
-		{
-			HeadbuttCollisionComponent->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, HeadSocketName);
-			HeadbuttCollisionComponent->SetRelativeLocation(FVector(0.0f, -20.f, 20.0f));
-			HeadbuttCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		}
 	}
 
 	if (UEquipmentComponent* EquipmentComp = OwnerCharacter->FindComponentByClass<UEquipmentComponent>())
 	{
 		EquipmentComp->OnEquipmentChangedDelegate.AddDynamic(this, &UAttackComponent::HandleOnEquipmentChanged);
 		
-		AItemBase* CurrentWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Instrument);
-		HandleOnEquipmentChanged(EEquipmentSlotType::Instrument, CurrentWeapon, nullptr);
+		AItemBase* CurrentEquippedWeapon = EquipmentComp->GetItemInSlot(EEquipmentSlotType::Weapon);
+		HandleOnEquipmentChanged(EEquipmentSlotType::Weapon, CurrentEquippedWeapon, nullptr);
 	}
-}
-
-void UAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (!bIsAttacking || !CurrentCollisionComponent || !OwnerCharacter->HasAuthority()) return;
-
-	if (!IsCanSweep()) return;
-
-	const FTransform CurrentTransform = CurrentCollisionComponent->GetComponentTransform();
-	const FVector Start = PreviousFrameTransform.GetLocation();
-	const FVector End = CurrentTransform.GetLocation();
-	const FRotator Rotation = CurrentTransform.GetRotation().Rotator();
-    
-	TArray<FHitResult> HitResults;
-	FComponentQueryParams Params;
-	Params.AddIgnoredActor(GetOwner());
-	Params.AddIgnoredActor(CurrentCollisionComponent->GetOwner());
-	
-	const FCollisionShape CapsuleShape = CurrentCollisionComponent->GetCollisionShape();
-	
-	const bool bHit = GetWorld()->SweepMultiByChannel(
-		HitResults,
-		Start,
-		End,
-		Rotation.Quaternion(),
-		AttackTraceChannel,
-		CapsuleShape,
-		Params
-	);
-	
-	if (!bHit) return;
-
-	for (const FHitResult& Hit : HitResults)
-	{
-		AActor* HitActor = Hit.GetActor();
-		if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != OwnerCharacter)
-		{
-			if (ICombatReceiver* CombatReceiver = Cast<ICombatReceiver>(HitActor))
-			{
-				AlreadyHitActors.Add(HitActor);
-
-				FHitData HitData;
-				HitData.Initiator = OwnerCharacter;
-				HitData.HitDirection = (Hit.ImpactPoint - OwnerCharacter->GetActorLocation()).GetSafeNormal();
-				HitData.HitType = CurrentAttackData->HitType;
-
-				CombatReceiver->OnHitReceived(HitData);
-			}
-			
-			if (ACharacter* HitCharacter = Cast<ACharacter>(HitActor))
-			{
-				FVector KnockbackDir = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
-				KnockbackDir.Z = 0.5f;
-				float KnockbackForce = 500.0f;
-				
-				HitCharacter->LaunchCharacter(KnockbackDir * KnockbackForce, true, true);
-			}
-		}
-	}
-
-	PreviousFrameTransform = CurrentTransform;
-}
-
-void UAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
-	DOREPLIFETIME(ThisClass, bIsAttacking);
 }
 
 void UAttackComponent::Attack()
 {
-	if (bIsAttacking || !bCanAttack) return;
+	if (!CurrentWeapon) return;
+	
+	if (CurrentWeapon->GetIsAttacking() || !CurrentWeapon->IsCanAttack()) return;
 	
 	if (!OwnerCharacter->HasAuthority())
 	{
@@ -137,13 +54,15 @@ void UAttackComponent::Attack()
 
 void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
-	if (bIsAttacking)
+	if (!CurrentWeapon) return;
+
+	if (CurrentWeapon->GetIsAttacking())
 	{
 		Client_OnAttackRejected();
 		return;
 	}
 	
-	if (!bCanAttack)
+	if (!CurrentWeapon->IsCanAttack())
 	{
 		const float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AttackCooldownTimerHandle);
 		if (RemainingTime > AttackCooldownTolerance)
@@ -153,17 +72,21 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 		}
         
 		GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
-		bCanAttack = true;
+		CurrentWeapon->SetCanAttack(true);
 	}
 	
+	CurrentWeapon->BeginAttack();
 	StartAttackCooldown();
-	SetIsAttacking(true);
+	UpdateAttackDelegateBinding(true);
 	Multicast_PlayAttackEffects();
 }
 
 void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 {
-	SetIsAttacking(false);
+	if (!CurrentWeapon) return;
+	
+	CurrentWeapon->EndAttack();
+	UpdateAttackDelegateBinding(false);
 }
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
@@ -175,40 +98,42 @@ void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 
 void UAttackComponent::Client_OnAttackRejected_Implementation()
 {
+	if (!CurrentWeapon) return;
+
 	if (OwnerCharacter && CharacterAnimInstance)
 	{
 		OwnerCharacter->StopAnimMontage();
 		CharacterAnimInstance->SetIsAttacking(false);
 	}
 
-	bIsAttacking = false;
-	AlreadyHitActors.Empty();
-
+	CurrentWeapon->EndAttack();
 	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
-	bCanAttack = true;
 }
 
 void UAttackComponent::PlayAttackEffects() const
 {
-	if (CurrentAttackData && CurrentAttackData->AttackAnimMontage)
+	if (!CurrentWeapon) return;
+	
+	const EWeaponType Type = CurrentWeapon->GetWeaponType();
+	if (UAnimMontage* MontageToPlay = AttackMontageMap.FindRef(Type))
 	{
+		OwnerCharacter->PlayAnimMontage(MontageToPlay);
 		CharacterAnimInstance->SetIsAttacking(true);
-		OwnerCharacter->PlayAnimMontage(CurrentAttackData->AttackAnimMontage);
 	}
 }
 
 void UAttackComponent::ResetAttackCooldown()
 {
-	bCanAttack = true;
+	if (!CurrentWeapon) return;
+
+	CurrentWeapon->SetCanAttack(true);
 }
 
 void UAttackComponent::StartAttackCooldown()
 {
-	if (!CurrentAttackData) return;
-	
-	bCanAttack = false;
-	
-	const float Cooldown = CurrentAttackData->AttackCooldown;
+	if (!CurrentWeapon) return;
+
+	const float Cooldown = CurrentWeapon->GetAttackCooldown();
 	
 	if (Cooldown <= 0.0f)
 	{
@@ -227,67 +152,37 @@ void UAttackComponent::StartAttackCooldown()
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (CurrentAttackData && Montage == CurrentAttackData->AttackAnimMontage)
-	{
-		Server_ExecuteAttackEnd();
-	}
+	Server_ExecuteAttackEnd();
 }
 
 void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (Slot != EEquipmentSlotType::Instrument) return;
+	if (Slot != EEquipmentSlotType::Weapon) return;
 
 	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
-	bCanAttack = true;
 	
-	if (bIsAttacking)
-	{
-		OwnerCharacter->StopAnimMontage();
-		Server_ExecuteAttackEnd();
-	}
+	OwnerCharacter->StopAnimMontage();
+	Server_ExecuteAttackEnd();
 
 	if (NewItem)
 	{
-		if (AInstrumentBase* NewInstrument = Cast<AInstrumentBase>(NewItem))
+		if (AWeaponBase* NewInstrument = Cast<AWeaponBase>(NewItem))
 		{
-			CurrentInstrument = NewInstrument;
-			CurrentCollisionComponent = NewInstrument->GetCapsuleComponent();
-			CurrentAttackData = NewInstrument->GetAttackData();
+			CurrentWeapon = NewInstrument;
 		}
 	}
 	else
 	{
-		CurrentInstrument = nullptr;
-		CurrentCollisionComponent = HeadbuttCollisionComponent;
-		CurrentAttackData = HeadbuttAttackData;
+		CurrentWeapon = DefaultWeaponInstance;
 	}
 }
 
-bool UAttackComponent::IsCanSweep() const
-{
-	const UGameInstance* GI = GetWorld()->GetGameInstance();
-	if (!GI) return false;
-
-	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
-	if (!GameStateSubsystem || GameStateSubsystem->GetGameState() != EGameState::InGame)
-	{
-		return false;
-	}
-	
-	return true;
-}
-
-void UAttackComponent::SetIsAttacking(const bool bNewIsAttacking)
+void UAttackComponent::UpdateAttackDelegateBinding(const bool bIsAttack)
 {
 	if (!CharacterAnimInstance) return;
 
-	bIsAttacking = bNewIsAttacking;
-	
-	if (bNewIsAttacking)
+	if (bIsAttack)
 	{
-		AlreadyHitActors.Empty();
-		PreviousFrameTransform = CurrentCollisionComponent->GetComponentTransform();
-
 		if (!CharacterAnimInstance->OnMontageEnded.IsAlreadyBound(this, &ThisClass::OnAttackMontageEnded))
 		{
 			CharacterAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
