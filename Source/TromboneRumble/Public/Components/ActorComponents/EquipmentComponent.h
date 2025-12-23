@@ -43,8 +43,8 @@ protected:
 	
 	void BroadcastEquipmentChange(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem) const;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "BaseWeapon")
-	TSubclassOf<AWeaponBase> HeadbuttWeaponClass = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
+	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
 
 private:
 	IItemEquipHandler* GetGameModeItemEquipHandler() const;

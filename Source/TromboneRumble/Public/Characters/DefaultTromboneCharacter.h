@@ -84,8 +84,11 @@ protected:
 	TObjectPtr<UStaticMeshComponent> JudgementRingComponent;
 	// ~Components
 	
-	UPROPERTY(EditDefaultsOnly, Category = "BaseWeapon")
-	TSubclassOf<AWeaponBase> HeadbuttWeaponClass = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
+	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;

@@ -70,13 +70,13 @@ protected:
 
 private:
 	UPROPERTY(Transient)
-	TObjectPtr<AWeaponBase> HeadbuttWeaponInstance = nullptr;
+	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	
 	FTimerHandle AttackCooldownTimerHandle;
 	
 public:
 	// ~ Begin Getters / Setters
-	void SetHeadbuttInstance(AWeaponBase* HeadbuttInstance) { HeadbuttWeaponInstance = HeadbuttInstance; }
+	void SetDefaultWeaponInstance(AWeaponBase* DefaultWeaponInst) { DefaultWeaponInstance = DefaultWeaponInst; }
 	// ~ End Getters / Setters
 
 };

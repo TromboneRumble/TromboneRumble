@@ -89,7 +89,7 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 
 		if (ADefaultPlayerState* PS = OwnerChar->GetPlayerState<ADefaultPlayerState>())
 		{
-			if (ItemToEquip->GetClass() != HeadbuttWeaponClass)
+			if (ItemToEquip->GetClass() != DefaultWeaponClass)
 			{
 				PS->EquippedWeaponClass = ItemToEquip->GetClass();
 			}

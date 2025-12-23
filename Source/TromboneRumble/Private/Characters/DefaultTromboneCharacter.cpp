@@ -282,7 +282,10 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
+	if (!DefaultWeaponInstance) return;
+	
 	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+	EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
@@ -329,16 +332,17 @@ ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 
 void ADefaultTromboneCharacter::SpawnAndEquipDefaultWeapon()
 {
-	if (!HeadbuttWeaponClass) return;
+	if (!DefaultWeaponClass) return;
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = this;
 	
-	if (AWeaponBase* Headbutt = GetWorld()->SpawnActor<AWeaponBase>(HeadbuttWeaponClass, SpawnParams))
+	DefaultWeaponInstance = GetWorld()->SpawnActor<AWeaponBase>(DefaultWeaponClass, SpawnParams);
+	if (DefaultWeaponInstance)
 	{
-		AttackComponent->SetHeadbuttInstance(Headbutt); 
-		EquipmentComponent->TryEquipItem(Headbutt);
+		AttackComponent->SetDefaultWeaponInstance(DefaultWeaponInstance); 
+		EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
 	}
 }
 

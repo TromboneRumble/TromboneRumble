@@ -173,7 +173,7 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 	}
 	else
 	{
-		CurrentWeapon = HeadbuttWeaponInstance;
+		CurrentWeapon = DefaultWeaponInstance;
 	}
 }
 
