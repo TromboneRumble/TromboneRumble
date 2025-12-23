@@ -199,6 +199,14 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 
 		JudgementRingComponent->SetVisibility(true);
+
+		// Sound Listener의 기본 설정을 카메라->Player로 변경
+		if (AkSoundComponent)
+		{
+			TArray<UAkComponent*> Listeners;
+			Listeners.Add(AkSoundComponent);
+			AkSoundComponent->SetListeners(Listeners);
+		}
 	}
 }
 
