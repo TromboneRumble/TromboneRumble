@@ -30,4 +30,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Attack")
 	EWeaponType WeaponType = EWeaponType::Invalid;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Attack")
+	FName EquipSocketName = TEXT("socket_hand_l");
 };

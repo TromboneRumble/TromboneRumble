@@ -260,7 +260,7 @@ void AWeaponBase::OnRep_Equipped()
 		if (!OwnerChar) return;
 		
 		SetPhysicsEnabled(false);
-		AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, EquipSocketName);
+		AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponData->EquipSocketName);
 		SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, true);
 		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);

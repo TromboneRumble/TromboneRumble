@@ -72,9 +72,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
 
-	UPROPERTY(EditDefaultsOnly)
-	FName EquipSocketName = TEXT("socket_hand_l");
-	
 private:
 	UPROPERTY(Replicated)
 	bool bIsAttacking = false;
