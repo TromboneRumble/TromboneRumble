@@ -460,7 +460,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{1AD263A7-3D86-B3A3-7BC7-2C9B76204AF3}",
+    "Hash": "{ECAFC722-9F1F-4FA4-98D2-023842304105}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -2139,7 +2139,7 @@
     "Type": "Event",
     "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
     "Language": "SFX",
-    "Hash": "{DF831D8E-48C2-FFAB-E297-A08867EC47A6}",
+    "Hash": "{AEC193FE-2376-B6D6-17D1-CFDD5ED754BC}",
     "ObjectPath": "MIDI_MapA_C",
     "ShortName": "MIDI_MapA_C",
     "Path": "Event/MIDI_MapA_C.bnk",
@@ -2979,6 +2979,6 @@
     ]
    }
   ],
-  "FileHash": "{E85357F1-349E-9C1A-F4E5-BDA0DE2A97D7}"
+  "FileHash": "{71B07D3C-C0A5-F611-4036-42AC3AC3F628}"
  }
 }
