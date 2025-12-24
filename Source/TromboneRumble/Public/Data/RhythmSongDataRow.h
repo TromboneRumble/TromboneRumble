@@ -8,7 +8,7 @@
 #include "TromboneGamePlayTags.h"
 #include "RhythmSongDataRow.generated.h"
 
-class AInstrumentBase;
+class AWeaponBase;
 class UAkAudioEvent;
 class UAkSwitchValue;
 
@@ -26,7 +26,7 @@ struct FRhythmInstrumentSound
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
 		ToolTip = "악기에 해당하는 Actor"
         ))
-    TSubclassOf<AInstrumentBase> SpawnInstrument;
+    TSubclassOf<AWeaponBase> SpawnInstrument;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (
         ToolTip = "노트 성공 시 재생할 이벤트"

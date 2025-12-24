@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
-#include "Utilities/Defines.h"
 #include "ItemBase.generated.h"
 
 class UInteractionTriggerComponent;
@@ -19,30 +18,34 @@ class TROMBONERUMBLE_API AItemBase : public AActor, public IInteractable
 	
 public:
 	AItemBase();
-	
-	FORCEINLINE TObjectPtr<UCapsuleComponent> GetCapsuleComponent() const { return CapsuleComponent; }
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	// Interfaces
+	// ~ Begin IInteractable Interfaces
 	virtual bool CanInteract_Implementation(AActor* InstigatorActor) const override; 
 	virtual void Interact_Implementation(AActor* InstigatorActor) override PURE_VIRTUAL(AItemBase::Interact_Implementation, );
-	// ~Interfaces
+	// ~ End IInteractable Interfaces
 
 	void SetPhysicsEnabled(bool bEnable) const;
 	
-	// Components
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USkeletalMeshComponent> ItemMeshComponent = nullptr;
+	// ~ Begin Components
+	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent = nullptr;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
 	TObjectPtr<UCapsuleComponent> CapsuleComponent = nullptr;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
 	TObjectPtr<UInteractionTriggerComponent> InteractTriggerComponent = nullptr;
-	// ~Components
+	// ~ End Components
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	TObjectPtr<AActor> CurrentOwner = nullptr;
+	
+public:
+	// ~ Begin Getters & Setters
+	FORCEINLINE TObjectPtr<UCapsuleComponent> GetCapsuleComponent() const { return CapsuleComponent; }
+	FORCEINLINE TObjectPtr<USkeletalMeshComponent> GetSkeletalMeshComponent() const { return SkeletalMeshComponent; }
+	// ~ End Getters & Setters
 };

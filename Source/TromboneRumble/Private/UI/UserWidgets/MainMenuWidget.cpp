@@ -26,7 +26,7 @@ bool UMainMenuWidget::Initialize()
 void UMainMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	const FString LobbyMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_LobbyMap);
+	const FString LobbyMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
 	checkf(!LobbyMapPath.IsEmpty(), TEXT("Lobby map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedLobbyMapPath = LobbyMapPath;
 

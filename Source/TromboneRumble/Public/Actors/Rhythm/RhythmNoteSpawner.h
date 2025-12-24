@@ -8,6 +8,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmNoteSpawner.generated.h"
 
+class ANoteVisualizer;
 class URhythmSubsystem;
 class URhythmNoteChannelSubsystem;
 class UActorPoolSubsystem;
@@ -36,7 +37,7 @@ public:
 public:
 
 	UPROPERTY()
-	float TimeToComplete = 5.f;
+	float TimeToComplete = 3.f;
 
 	
 protected:
@@ -78,6 +79,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ARhythmNote> RhythmNoteClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ANoteVisualizer> NoteVisualizerClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	EInstrumentType SpawnerType = EInstrumentType::Invalid;

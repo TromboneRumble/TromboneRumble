@@ -21,6 +21,7 @@ void URhythmNoteUIControllerComponent::InitSettings(URhythmSpawnWidgetBase* InSp
 	RhythmSpawnWidget = InSpawnWidget;
 	RhythmNoteWidget = InNoteWidget;
 	Handle = InHandle;
+	UnbindChannel();
 	BindChannel();
 }
 
@@ -75,8 +76,16 @@ void URhythmNoteUIControllerComponent::UnbindChannel()
 	{
 		if (FNoteChannel* Channel = RhythmNoteChannelSubsystem->GetChannelById(Handle.Id))
 		{
-			if (ProgressHandle.IsValid()) Channel->OnProgress.Remove(ProgressHandle);
-			if (DespawnHandle.IsValid())  Channel->OnDespawn.Remove(DespawnHandle);
+			if (ProgressHandle.IsValid())
+			{
+				Channel->OnProgress.Remove(ProgressHandle);
+				ProgressHandle.Reset();
+			}
+			if (DespawnHandle.IsValid())
+			{
+				Channel->OnDespawn.Remove(DespawnHandle);
+				DespawnHandle.Reset();
+			}
 		}
 	}
 }

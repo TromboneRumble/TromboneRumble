@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "EquipmentComponent.generated.h"
 
+class AWeaponBase;
 class IItemEquipHandler;
 class AItemBase;
 enum class EEquipmentSlotType : uint8;
@@ -23,11 +24,9 @@ public:
 	void TryUnequipItem(EEquipmentSlotType Slot);
 	TObjectPtr<AItemBase> GetItemInSlot(EEquipmentSlotType Slot) const;
 
-	FORCEINLINE void InitializeOwner(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FOnEquipmentChangedSignature OnEquipmentChangedDelegate;
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(Server, Reliable)
@@ -43,9 +42,13 @@ protected:
 	TArray<AItemBase*> EquippedItems;
 	
 	void BroadcastEquipmentChange(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem) const;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
+	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
 
 private:
 	IItemEquipHandler* GetGameModeItemEquipHandler() const;
+	TObjectPtr<ACharacter> GetOwnerCharacter();
 	
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;

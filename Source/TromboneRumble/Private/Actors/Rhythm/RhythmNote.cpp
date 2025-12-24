@@ -8,9 +8,12 @@
 #include "Components/ActorComponents/RhythmNoteUIControllerComponent.h"
 #include "Actors/Rhythm/RhythmNoteSpawner.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
+#include "Subsystems/ActorPoolSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
+#include "Actors/Rhythm/NoteVisualizer.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 ARhythmNote::ARhythmNote()
@@ -60,7 +63,7 @@ void ARhythmNote::OnReturnToPool_Implementation()
 	CancelSyncDebugTimer();
 }
 
-void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner,  float InTimeToComplete, const FString& InUserCueName)
+void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InNoteVisualizerClass, float InTimeToComplete, const FString& InUserCueName)
 {
 	checkf(InRhythmActor, TEXT("RhythmActor not Valid in %s"), *GetName());
 	checkf(InSpawner, TEXT("Spawner not Valid in %s"), *GetName());
@@ -69,25 +72,38 @@ void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteS
 	NoteType = InSpawner->GetSpawnerType();
 	TimeToComplete = InTimeToComplete;
 
+	CachedNoteVisualizerClass = InNoteVisualizerClass;
+
+	if (CachedActorPoolSubsystem.Get() && CachedNoteVisualizerClass)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(FQuat(FRotator(0.f, 0.f, 0.f)));
+		SpawnTransform.SetScale3D(FVector(1.f, 1.f, 1.f));
+		if (ANoteVisualizer* FindJudgementRing = Cast<ANoteVisualizer>(CachedActorPoolSubsystem->Acquire(CachedNoteVisualizerClass, SpawnTransform)))
+		{
+			CachedNoteVisualizer = FindJudgementRing;
+			CachedNoteVisualizer->Init(NoteHandle, NoteType, InRhythmActor->GetFocusedInstrumentType());
+		}
+	}
+
 	StartLocation = InSpawner->GetActorLocation();
 	EndLocation = StartLocation + FVector(1000.f, 0.f, 0.f);
 
 	URhythmSpawnWidgetBase* RhythmSpawnWidget = InRhythmActor->GetRhythmUIRootWidget()->RhythmSpawnWidget;
-	if (!RhythmSpawnWidget)
+	if (RhythmSpawnWidget)
 	{
-		return;
+		URhythmNoteWidgetBase* PooledNoteWidget = RhythmSpawnWidget->SpawnPooledRhythmNoteWidget(NoteType);
+		if (PooledNoteWidget)
+		{
+			PooledNoteWidget->InitWithCueMessage(InUserCueName);
+		}
+		if (RhythmNoteUIControllerComponent && RhythmSpawnWidget && PooledNoteWidget)
+		{
+			RhythmNoteUIControllerComponent->InitSettings(RhythmSpawnWidget, PooledNoteWidget, NoteHandle);
+		}
 	}
-	URhythmNoteWidgetBase* PooledNoteWidget = RhythmSpawnWidget->SpawnPooledRhythmNoteWidget(NoteType);
-	if (!PooledNoteWidget)
-	{
-		return;
-	}
-	PooledNoteWidget->InitWithCueMessage(InUserCueName);
-
-	if (RhythmNoteUIControllerComponent)
-	{
-		RhythmNoteUIControllerComponent->InitSettings(RhythmSpawnWidget,PooledNoteWidget, NoteHandle);
-	}
+	
 }
 
 void ARhythmNote::SetToShortNote()
@@ -121,6 +137,17 @@ void ARhythmNote::StartSyncDebugTimer(ARhythmActor* RhythmActor, float InDelaySe
 	if (!World) return;
 
 	if (!IsValid(RhythmActor)) return;
+
+	//CachedRhythmActor = RhythmActor;
+	//if (CachedRhythmActor.Get())
+	//{
+	//	if (URhythmSubsystem* Subsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+	//	{
+	//		Subsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::OnMusicUserCueHandler);
+	//		Subsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::OnMusicUserCueHandler);
+	//	}
+	//}
+	//
 
 	// 타이머 덮어쓰기 전에 혹시 남아있으면 정리
 	World->GetTimerManager().ClearTimer(SyncDebugTimerHandle);
@@ -160,6 +187,17 @@ void ARhythmNote::CancelSyncDebugTimer()
 	bHasSyncDebugTimer = false;
 }
 
+void ARhythmNote::OnMusicUserCueHandler(FName CueName)
+{
+	if (CachedRhythmActor.Get())
+	{
+		if (CachedRhythmActor->GetFocusedInstrumentType() == NoteType)
+		{
+			CachedRhythmActor->DetectNotes();
+		}
+	}
+}
+
 void ARhythmNote::SpawnRhythmResultWidget(ENoteResult InNoteResult)
 {
 	if (RhythmNoteUIControllerComponent)
@@ -174,6 +212,11 @@ void ARhythmNote::BeginPlay()
 	if (URhythmNoteChannelSubsystem* RhythmNoteChannelSubsystem = GetWorld()->GetSubsystem<URhythmNoteChannelSubsystem>())
 	{
 		CachedRhythmNoteChannelSubsystem = RhythmNoteChannelSubsystem;
+	}
+
+	if (UActorPoolSubsystem* ActorPoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>())
+	{
+		CachedActorPoolSubsystem = ActorPoolSubsystem;
 	}
 }
 

@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "DefaultPlayerState.generated.h"
 
-class AInstrumentBase;
+class AWeaponBase;
 class URhythmSubsystem;
 class AInGameState;
 enum class ENoteResult : uint8;
@@ -40,7 +40,7 @@ public:
 	void HandleNoteDetected(ENoteResult InNoteResult);
 
 	UPROPERTY(VisibleInstanceOnly, Replicated)
-	TSubclassOf<AInstrumentBase> EquippedInstrumentClass;
+	TSubclassOf<AWeaponBase> EquippedWeaponClass;
 	
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)

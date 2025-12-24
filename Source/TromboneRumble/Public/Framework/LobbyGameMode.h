@@ -8,7 +8,6 @@
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
 
-class AInstrumentBase;
 class ADefaultTromboneCharacter;
 class ADefaultPlayerState;
 class ALobbyGameState;

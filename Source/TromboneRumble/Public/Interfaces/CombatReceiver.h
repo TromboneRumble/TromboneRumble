@@ -16,9 +16,6 @@ struct FHitData
 	FVector HitDirection = FVector::ZeroVector;
 
 	UPROPERTY()
-	TWeakObjectPtr<ACharacter> Initiator = nullptr;
-
-	UPROPERTY()
 	EHitType HitType = EHitType::Invalid;
 };
 

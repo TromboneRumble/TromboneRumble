@@ -8,7 +8,7 @@
 #include "DefaultTromboneCharacter.generated.h"
 
 
-
+class AWeaponBase;
 struct FInputActionValue;
 class ADefaultPlayerController;
 
@@ -24,14 +24,10 @@ class UNiagaraSystem;
 
 class ARhythmActor;
 class UCharacterDataAsset;
-class UAttackDataAsset;
+class UWeaponDataAsset;
 class UCharacterAttributeSet;
 
 class AItemBase;
-class AInstrumentBase;
-
-
-
 
 UCLASS()
 class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase, public IAbilitySystemInterface
@@ -83,7 +79,16 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> JudgementRingComponent;
 	// ~Components
+	
+	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
+	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
@@ -113,6 +118,8 @@ private:
 	// ~Delegate Callback Handlers
 
 	ARhythmActor* GetCachedRhythmActor();
+	void SpawnAndEquipDefaultWeapon();
+	void SpawnAndEquipPreviouslyEquippedWeapon();
 	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
@@ -121,5 +128,6 @@ public:
 	//getter setter
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
+	FORCEINLINE UStaticMeshComponent* GetJudgementRingComponent() { return JudgementRingComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 };
