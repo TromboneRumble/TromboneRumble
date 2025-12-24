@@ -6,6 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "GarbageSpawner.generated.h"
 
+UENUM(BlueprintType)
+enum class EGarbageTargetingMode : uint8
+{
+	Random UMETA(DisplayName = "Random Player"),
+	ScoreWeighted UMETA(DisplayName = "Score Weighted (Higher Rank = Higher Chance)")
+};
+
+
 class AGarbageBase;
 
 UCLASS()
@@ -27,7 +35,9 @@ public:
 protected:
 	TSubclassOf<AGarbageBase> PickRandomGarbageClass() const;
 	bool PickRandomSpawnTransform(FTransform& OutTransform) const;
+	AActor* PickTargetPawn() const;
 	AActor* PickRandomPlayerPawn() const;
+	AActor* PickScoreWeightedTargetPawn() const;
 
 	void SpawnAndThrow_Server(const FTransform& SpawnTransform, AActor* TargetPawn);
 
@@ -49,6 +59,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GarbageSpawner|Auto")
 	bool bAutoStart = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GarbageSpawner|Targeting")
+	EGarbageTargetingMode TargetingMode = EGarbageTargetingMode::ScoreWeighted;
+
 
 private:
 	FTimerHandle AutoSpawnTimer;
