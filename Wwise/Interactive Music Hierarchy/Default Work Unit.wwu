@@ -83,7 +83,7 @@
 										<Property Name="OverrideEffect" Type="bool" Value="True"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-2</Value>
+												<Value>3</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -248,6 +248,27 @@
 																				<Property Name="FadeOutDuration" Type="Real64" Value="2254.54446654243"/>
 																			</PropertyList>
 																			<AudioSourceRef Name="Map_A_Trombone" ID="{D0345CA8-D2FC-4841-B130-5D633E5B3985}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{D18A46D8-4BC2-45E6-8131-601245C2825C}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>-1.00068</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>168.633333333333</XPos>
+																								<YPos>-1.10739</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
 																		</MusicClip>
 																	</Local>
 																</Reference>
@@ -324,7 +345,7 @@
 																						<PointList>
 																							<Point>
 																								<XPos>8.37209</XPos>
-																								<YPos>0</YPos>
+																								<YPos>-0</YPos>
 																								<Flags>5</Flags>
 																							</Point>
 																							<Point>
