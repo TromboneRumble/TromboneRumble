@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "GarbageBase.generated.h"
 
+class UAkAudioEvent;
+class UAkComponent;
 class UStaticMeshComponent;
 class UNiagaraComponent;
 
@@ -30,7 +32,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Garbage|Components")
 	TObjectPtr<UNiagaraComponent> TrailComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Garbage|Components")
+	TObjectPtr<UAkComponent> AkComponent;
 	// ~Components
+
+	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Sound")
+	TObjectPtr<UAkAudioEvent> HitSoundEvent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
 	float MinExtraApexHeight = 150.f;
@@ -67,17 +75,23 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_ImpactStarted)
 	bool bImpactStarted = false;
 
+	UPROPERTY(ReplicatedUsing = OnRep_HitPawn)
+	bool bHitPawn = false;
+
 	UFUNCTION()
 	void OnRep_ImpactStarted();
+
+	UFUNCTION()
+	void OnRep_HitPawn();
 
 protected:
 	UFUNCTION()
 	void HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		FVector NormalImpulse, const FHitResult& Hit);
 
+private:
 	FVector ComputeBallisticInitialVelocity(const FVector& InStart, const FVector& InTarget, float ExtraApexHeight) const;
 	void StartDestroyTimer_Server(float Delay);
 
-private:
 	bool bDestroyTimerStarted = false;
 };

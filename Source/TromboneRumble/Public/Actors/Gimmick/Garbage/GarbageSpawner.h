@@ -32,7 +32,7 @@ protected:
 	void SpawnAndThrow_Server(const FTransform& SpawnTransform, AActor* TargetPawn);
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "GarbageSpawner|Garbage")
+	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Garbage")
 	TArray<TSubclassOf<AGarbageBase>> GarbageClasses;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GarbageSpawner|Spawn")
