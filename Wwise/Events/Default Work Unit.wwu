@@ -314,6 +314,27 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Trash_Hit" ID="{104CC78C-ED20-486F-A41E-73ABA09B5942}">
+							<ChildrenList>
+								<Action Name="" ID="{F576DC0A-7992-4106-BD25-8065E27BA4C5}" ShortID="72350038">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Trash" ID="{89D761D0-7E40-454F-968F-4BACF6BFDB40}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+								<Action Name="" ID="{FBD82061-25A9-47D8-A89C-5FBB2461800C}" ShortID="301246839">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Hit_Voice" ID="{C34E3972-D0BF-49A5-BB62-C85665086D03}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
@@ -357,6 +378,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Player_Jump_Voice" ID="{F388E21F-1303-43DA-B9C1-04E78004A0CE}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Player_Standup" ID="{15B274E4-CA5A-4B51-B7E2-219CDA599772}">
+							<ChildrenList>
+								<Action Name="" ID="{4AA88E08-947B-4A61-8CEF-E8150271AFD9}" ShortID="228721631">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Standup" ID="{530D89D7-8B38-435A-9826-FF4C2D00BC7D}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

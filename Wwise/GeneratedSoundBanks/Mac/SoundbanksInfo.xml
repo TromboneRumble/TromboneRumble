@@ -76,6 +76,49 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="418248778" Type="Event" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" Language="SFX" Hash="{8B05F426-AC56-F906-B6BD-5C9DAF264004}">
+			<ObjectPath>Play_Trash_Hit</ObjectPath>
+			<ShortName>Play_Trash_Hit</ShortName>
+			<Path>Event/Play_Trash_Hit.bnk</Path>
+			<Media>
+				<File Id="584871384" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Garbage_Hit_3.wav</ShortName>
+					<Path>Media/584871384.wem</Path>
+					<CachePath>SFX/Garbage_Hit_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="587109666" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Hit.wav</ShortName>
+					<Path>Media/587109666.wem</Path>
+					<CachePath>SFX/Player_Hit_818F3B66.wem</CachePath>
+				</File>
+				<File Id="837158884" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Garbage_Hit_4.wav</ShortName>
+					<Path>Media/837158884.wem</Path>
+					<CachePath>SFX/Garbage_Hit_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="863903836" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Garbage_Hit_2.wav</ShortName>
+					<Path>Media/863903836.wem</Path>
+					<CachePath>SFX/Garbage_Hit_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="1033341569" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Garbage_Hit_1.wav</ShortName>
+					<Path>Media/1033341569.wem</Path>
+					<CachePath>SFX/Garbage_Hit_1_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="418248778" Name="Play_Trash_Hit" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash_Hit" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" DurationType="OneShot" DurationMin="0.9142917" DurationMax="1.33225">
+					<MediaRefs>
+						<MediaRef Id="584871384"/>
+						<MediaRef Id="587109666"/>
+						<MediaRef Id="837158884"/>
+						<MediaRef Id="863903836"/>
+						<MediaRef Id="1033341569"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{C3C29873-363E-E1E1-AC15-118D256686BC}">
 			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
 			<ShortName>MainSoundBank</ShortName>
@@ -1116,6 +1159,25 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
+		<SoundBank Id="3013282479" Type="Event" GUID="{15B274E4-CA5A-4B51-B7E2-219CDA599772}" Language="SFX" Hash="{82DBF77C-3672-E17B-AE3D-52927D01EC1E}">
+			<ObjectPath>Play_Player_Standup</ObjectPath>
+			<ShortName>Play_Player_Standup</ShortName>
+			<Path>Event/Play_Player_Standup.bnk</Path>
+			<Media>
+				<File Id="1043513315" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Standup.wav</ShortName>
+					<Path>Media/1043513315.wem</Path>
+					<CachePath>SFX/Player_Standup_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3013282479" Name="Play_Player_Standup" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Standup" GUID="{15B274E4-CA5A-4B51-B7E2-219CDA599772}" DurationType="OneShot" DurationMin="1.1215056" DurationMax="1.50136">
+					<MediaRefs>
+						<MediaRef Id="1043513315"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="3199326751" Type="Event" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" Language="SFX" Hash="{EF29FA3D-F47E-87CF-5166-D2812EAA2E89}">
 			<ObjectPath>Note_Short_Start</ObjectPath>
 			<ShortName>Note_Short_Start</ShortName>
@@ -1237,51 +1299,21 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{3894D46A-FFD1-9AE4-09B2-AB808A5D8C88}">
+		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{3491EEC2-7C7F-2FD3-2A9B-429CE7BD7263}">
 			<ObjectPath>Play_Voice_Attack</ObjectPath>
 			<ShortName>Play_Voice_Attack</ShortName>
 			<Path>Event/Play_Voice_Attack.bnk</Path>
 			<Media>
-				<File Id="58884900" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_1.wav</ShortName>
-					<Path>Media/58884900.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_1_818F3B66.wem</CachePath>
-				</File>
-				<File Id="104383533" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_2.wav</ShortName>
-					<Path>Media/104383533.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_2_818F3B66.wem</CachePath>
-				</File>
-				<File Id="438912652" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_3.wav</ShortName>
-					<Path>Media/438912652.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_3_818F3B66.wem</CachePath>
-				</File>
-				<File Id="444341275" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_4.wav</ShortName>
-					<Path>Media/444341275.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_4_818F3B66.wem</CachePath>
-				</File>
-				<File Id="717956438" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_5.wav</ShortName>
-					<Path>Media/717956438.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_5_818F3B66.wem</CachePath>
-				</File>
-				<File Id="820887562" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_6.wav</ShortName>
-					<Path>Media/820887562.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_6_818F3B66.wem</CachePath>
+				<File Id="157274486" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Trombone_Voice.wav</ShortName>
+					<Path>Media/157274486.wem</Path>
+					<CachePath>SFX/Player_Attack_Trombone_Voice_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3792786383" Name="Play_Voice_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Voice_Attack" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.238" DurationMax="0.35933334">
+				<Event Id="3792786383" Name="Play_Voice_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Voice_Attack" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.8341114" DurationMax="1.2183923">
 					<MediaRefs>
-						<MediaRef Id="58884900"/>
-						<MediaRef Id="104383533"/>
-						<MediaRef Id="438912652"/>
-						<MediaRef Id="444341275"/>
-						<MediaRef Id="717956438"/>
-						<MediaRef Id="820887562"/>
+						<MediaRef Id="157274486"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -1328,5 +1360,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{D43C530F-37D4-1FF3-610E-9EC0E6DD3ADB}</FileHash>
+	<FileHash>{0C788DA9-5905-25F5-2966-B1D785668022}</FileHash>
 </SoundBanksInfo>

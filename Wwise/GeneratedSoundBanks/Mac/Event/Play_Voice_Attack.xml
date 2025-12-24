@@ -1,55 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{3894D46A-FFD1-9AE4-09B2-AB808A5D8C88}">
+		<SoundBank Id="3792786383" Type="Event" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" Language="SFX" Hash="{3491EEC2-7C7F-2FD3-2A9B-429CE7BD7263}">
 			<ObjectPath>Play_Voice_Attack</ObjectPath>
 			<ShortName>Play_Voice_Attack</ShortName>
 			<Path>Event/Play_Voice_Attack.bnk</Path>
 			<Media>
-				<File Id="58884900" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_1.wav</ShortName>
-					<Path>Media/58884900.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_1_818F3B66.wem</CachePath>
-				</File>
-				<File Id="104383533" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_2.wav</ShortName>
-					<Path>Media/104383533.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_2_818F3B66.wem</CachePath>
-				</File>
-				<File Id="438912652" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_3.wav</ShortName>
-					<Path>Media/438912652.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_3_818F3B66.wem</CachePath>
-				</File>
-				<File Id="444341275" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_4.wav</ShortName>
-					<Path>Media/444341275.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_4_818F3B66.wem</CachePath>
-				</File>
-				<File Id="717956438" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_5.wav</ShortName>
-					<Path>Media/717956438.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_5_818F3B66.wem</CachePath>
-				</File>
-				<File Id="820887562" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Player_Attack_Voice_6.wav</ShortName>
-					<Path>Media/820887562.wem</Path>
-					<CachePath>SFX/Player_Attack_Voice_6_818F3B66.wem</CachePath>
+				<File Id="157274486" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Trombone_Voice.wav</ShortName>
+					<Path>Media/157274486.wem</Path>
+					<CachePath>SFX/Player_Attack_Trombone_Voice_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3792786383" Name="Play_Voice_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Voice_Attack" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.238" DurationMax="0.35933334">
+				<Event Id="3792786383" Name="Play_Voice_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Voice_Attack" GUID="{B494B516-A132-49D9-AE89-08E53A55920A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.8341114" DurationMax="1.2183923">
 					<MediaRefs>
-						<MediaRef Id="58884900"/>
-						<MediaRef Id="104383533"/>
-						<MediaRef Id="438912652"/>
-						<MediaRef Id="444341275"/>
-						<MediaRef Id="717956438"/>
-						<MediaRef Id="820887562"/>
+						<MediaRef Id="157274486"/>
 					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{6CB4FEA0-5F8A-ACDD-D30F-9DB09D7A436D}</FileHash>
+	<FileHash>{AEEB5F80-7847-FEF7-8B31-5F92B0AB72D0}</FileHash>
 </SoundBanksInfo>
