@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Framework/InGameState.h"
 #include "GameFramework/PlayerState.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 AGarbageSpawner::AGarbageSpawner()
@@ -23,10 +24,18 @@ void AGarbageSpawner::BeginPlay()
 	Super::BeginPlay();
 	if (HasAuthority() && bAutoStart)
 	{
-		StartAutoSpawn_Server();
-	}
-	//TODO : Spotlight처럼 이벤트 큐 시작하면 그때 던지기
-	
+		if (bAutoStart)
+		{
+			StartAutoSpawn_Server();
+		}
+		else
+		{
+			if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+			{
+				MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::StartAutoSpawnFromMusicCue);
+			}
+		}
+	}	
 }
 
 void AGarbageSpawner::SpawnGarbageOnce_Server()
@@ -89,6 +98,14 @@ void AGarbageSpawner::StopAutoSpawn_Server()
 	if (AutoSpawnTimer.IsValid())
 	{
 		GetWorldTimerManager().ClearTimer(AutoSpawnTimer);
+	}
+}
+
+void AGarbageSpawner::StartAutoSpawnFromMusicCue(FName CueName)
+{
+	if (CueName == TEXT("Event_Spotlight_Start"))
+	{
+		StartAutoSpawn_Server();
 	}
 }
 
