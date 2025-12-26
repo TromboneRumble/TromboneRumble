@@ -460,7 +460,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{ECAFC722-9F1F-4FA4-98D2-023842304105}",
+    "Hash": "{6EE96303-AAD3-7B76-6D24-6C11B9F5677E}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -1979,7 +1979,7 @@
     "Type": "Event",
     "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
     "Language": "SFX",
-    "Hash": "{584CC1CF-DE5A-BB77-308B-CB5C20239734}",
+    "Hash": "{49F58605-A802-4B15-8ED8-51F2F072D61B}",
     "ObjectPath": "MIDI_MapA_V",
     "ShortName": "MIDI_MapA_V",
     "Path": "Event/MIDI_MapA_V.bnk",
@@ -2059,7 +2059,7 @@
     "Type": "Event",
     "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
     "Language": "SFX",
-    "Hash": "{7EA084A6-91C0-2709-77B5-2333CF1988C7}",
+    "Hash": "{DBF71B48-5DB3-799A-3D03-60EBFAC767AF}",
     "ObjectPath": "MIDI_MapA_T",
     "ShortName": "MIDI_MapA_T",
     "Path": "Event/MIDI_MapA_T.bnk",
@@ -2979,6 +2979,6 @@
     ]
    }
   ],
-  "FileHash": "{4CACE5FE-E866-3627-1349-7D313BCA2D4C}"
+  "FileHash": "{1FB62EF8-0E00-AC7F-B8D2-55A4DAB6D542}"
  }
 }

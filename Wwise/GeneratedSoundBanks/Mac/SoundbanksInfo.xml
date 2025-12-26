@@ -229,7 +229,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{ECAFC722-9F1F-4FA4-98D2-023842304105}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{6EE96303-AAD3-7B76-6D24-6C11B9F5677E}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -857,7 +857,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1909551205" Type="Event" GUID="{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}" Language="SFX" Hash="{584CC1CF-DE5A-BB77-308B-CB5C20239734}">
+		<SoundBank Id="1909551205" Type="Event" GUID="{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}" Language="SFX" Hash="{49F58605-A802-4B15-8ED8-51F2F072D61B}">
 			<ObjectPath>MIDI_MapA_V</ObjectPath>
 			<ShortName>MIDI_MapA_V</ShortName>
 			<Path>Event/MIDI_MapA_V.bnk</Path>
@@ -898,7 +898,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1909551207" Type="Event" GUID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}" Language="SFX" Hash="{7EA084A6-91C0-2709-77B5-2333CF1988C7}">
+		<SoundBank Id="1909551207" Type="Event" GUID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}" Language="SFX" Hash="{DBF71B48-5DB3-799A-3D03-60EBFAC767AF}">
 			<ObjectPath>MIDI_MapA_T</ObjectPath>
 			<ShortName>MIDI_MapA_T</ShortName>
 			<Path>Event/MIDI_MapA_T.bnk</Path>
@@ -1360,5 +1360,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0513D2EE-C229-F54F-90DD-14C21B0D4AAF}</FileHash>
+	<FileHash>{F3A84D65-F7FD-0417-5413-E4CCBE8C2592}</FileHash>
 </SoundBanksInfo>
