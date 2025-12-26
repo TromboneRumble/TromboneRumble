@@ -50,20 +50,20 @@ protected:
 	virtual void OnRep_Equipped();
 
 	//이 악기가 누군가에게 장착된 상태인지 여부
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Equipped)
+	UPROPERTY(VisibleAnywhere, Category = "Weapon", ReplicatedUsing = OnRep_Equipped)
 	uint8 bIsEquipped : 1 = 0;
 
 	//악기를 들고있는 상태에서 현재 악기로 바꿀 수 있는 경우
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Weapon")
 	bool CanBeSwitched = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Weapon")
 	TObjectPtr<UWeaponDataAsset> WeaponData;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	EInstrumentType InstrumentType = EInstrumentType::Background;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon|GAS|Movement")
 	TSubclassOf<UGameplayEffect> EquipMoveSpeedEffectClass;
 
 	// 이 악기가 현재 소유자에게 걸어둔 GE 핸들
