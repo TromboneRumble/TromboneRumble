@@ -47,22 +47,28 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GarbageSpawner|Spawn")
 	TArray<TObjectPtr<AActor>> SpawnPointActors;
-
-	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Target")
+	
+	/** 쓰레기가 목표 지점(플레이어 위치)에 정확히 떨어지지 않고 흩어지는 무작위 반경 (cm) */
+	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Config|Target", meta = (DisplayName = "타겟팅 오차 반경"))
 	float TargetRandomRadius = 80.f;
-	
-	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Auto")
+    
+	/** 자동 생성 시 다음 생성까지 걸리는 최소 대기 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Config|Auto", meta = (DisplayName = "최소 스폰 간격"))
 	float SpawnIntervalMin = 5.0f;
-	
-	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Auto")
+    
+	/** 자동 생성 시 다음 생성까지 걸리는 최대 대기 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "GarbageSpawner|Config|Auto", meta = (DisplayName = "최대 스폰 간격"))
 	float SpawnIntervalMax = 10.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GarbageSpawner|Auto")
+	/** 게임 시작 시 스포너가 자동으로 동작을 시작할지 여부 */
+	UPROPERTY(EditDefaultsOnly, Category = "GarbageSpawner|Config|Auto", meta = (DisplayName = "시작 시 자동 실행"))
 	bool bAutoStart = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GarbageSpawner|Targeting")
+	/** 쓰레기를 누구에게 던질 것인지 결정하는 방식입니다. 
+	 * 랜덤: 모든 플레이어 대상
+	 * 점수 가중치: 순위가 높을수록(점수가 높을수록) 더 자주 공격받음 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GarbageSpawner|Config|Target", meta = (DisplayName = "대상 타겟팅 방식"))
 	EGarbageTargetingMode TargetingMode = EGarbageTargetingMode::ScoreWeighted;
-
 
 private:
 	FTimerHandle AutoSpawnTimer;

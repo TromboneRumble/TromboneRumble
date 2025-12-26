@@ -40,22 +40,34 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Sound")
 	TObjectPtr<UAkAudioEvent> HitSoundEvent = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
+	/** 투척 시 최소 추가 높이 (cm) 
+	 * 시작점과 목표점 중 높은 곳을 기준으로, 최소한 이 값만큼은 더 위로 솟구쳤다가 떨어집니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Throw", meta = (DisplayName = "최소 추가 정점 높이"))
 	float MinExtraApexHeight = 150.f;
 
-	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
+	/** 투척 시 최대 추가 높이 (cm) 
+	 * 시작점과 목표점 중 높은 곳을 기준으로, 최대한 이 값까지 위로 솟구칠 수 있습니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Throw", meta = (DisplayName = "최대 추가 정점 높이"))
 	float MaxExtraApexHeight = 450.f;
 
-	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
+	/** 초당 최소 회전 속도 (도/sec) 
+	 * 날아가는 동안 무작위 축으로 회전할 최소 속도입니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Throw", meta = (DisplayName = "최소 회전 속도"))
 	float MinSpinDegPerSec = 180.f;
 
-	UPROPERTY(EditAnywhere, Category = "Garbage|Throw")
+	/** 초당 최대 회전 속도 (도/sec) 
+	 * 날아가는 동안 무작위 축으로 회전할 최대 속도입니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Throw", meta = (DisplayName = "최대 회전 속도"))
 	float MaxSpinDegPerSec = 900.f;
 
-	UPROPERTY(EditAnywhere, Category = "Garbage|Lifetime")
+	/** 착지 후 제거 대기 시간 (초) 
+	 * 바닥(WorldStatic/Dynamic)에 닿은 후 액터가 파괴될 때까지의 시간입니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Lifetime", meta = (DisplayName = "착지 후 제거 지연"))
 	float DestroyDelayAfterLand = 5.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Garbage|Lifetime")
+	/** 충돌 후 제거 대기 시간 (초) 
+	 * 캐릭터 등과 충돌한 후 액터가 파괴될 때까지의 시간입니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Lifetime", meta = (DisplayName = "충돌 후 제거 지연"))
 	float DestroyDelayAfterImpact = 2.0f;
 
 protected:
