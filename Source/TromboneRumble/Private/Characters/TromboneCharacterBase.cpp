@@ -55,13 +55,16 @@ void ATromboneCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMaterialInterface* BaseSkinMat = GetMesh()->GetMaterial(1);
-	SkinMID = GetMesh()->CreateDynamicMaterialInstance(1, BaseSkinMat);
-	GetMesh()->SetMaterial(1, SkinMID);
+	UMaterialInterface* BaseSkinMat = GetMesh()->GetMaterial(SkinMaterialIndex);
+	SkinMID = GetMesh()->CreateDynamicMaterialInstance(SkinMaterialIndex, BaseSkinMat);
+	GetMesh()->SetMaterial(SkinMaterialIndex, SkinMID);
 
-	UMaterialInterface* BaseFaceMat = GetMesh()->GetMaterial(2);
-	FaceMID = GetMesh()->CreateDynamicMaterialInstance(2, BaseFaceMat);
-	GetMesh()->SetMaterial(2, FaceMID);
+	UMaterialInterface* BaseFaceMat = GetMesh()->GetMaterial(FaceMaterialIndex);
+	FaceMID = GetMesh()->CreateDynamicMaterialInstance(FaceMaterialIndex, BaseFaceMat);
+	GetMesh()->SetMaterial(FaceMaterialIndex, FaceMID);
+
+	const float FirstBlinkDelay = FMath::FRandRange(EyeBlinkingIntervalMin, EyeBlinkingIntervalMax);
+	GetWorld()->GetTimerManager().SetTimer(BlinkingTimerHandle, this, &ATromboneCharacterBase::StartBlinking, FirstBlinkDelay, false);
 
 	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
 	
@@ -302,6 +305,7 @@ void ATromboneCharacterBase::UnapplyStun()
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	SetPlayerInput(true);
+	StartBlinking();
 }
 
 void ATromboneCharacterBase::ApplyRagdoll()
@@ -347,6 +351,54 @@ void ATromboneCharacterBase::UpdateSkinFromPlayerState()
 	}
 }
 
+void ATromboneCharacterBase::UpdateFaceExpression(EFaceExpressionType NewType)
+{
+	if (FaceMID)
+	{
+		if (NewType == EFaceExpressionType::Stun || NewType == EFaceExpressionType::Ragdoll)
+		{
+			GetWorld()->GetTimerManager().ClearTimer(BlinkStepTimerHandle);
+		}
+
+		FaceMID->SetScalarParameterValue(FaceExpressionParameterName, static_cast<float>(NewType));
+		CurrentExpressionType = NewType;
+	}
+}
+
+void ATromboneCharacterBase::StartBlinking()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(BlinkStepTimerHandle)) return;
+	
+	if (!bIsStun && !bIsRagdoll)
+	{
+		BlinkStep = 0;
+		ExecuteBlinkStep();
+	}
+	else
+	{
+		const float NextBlinkDelay = FMath::FRandRange(EyeBlinkingIntervalMin, EyeBlinkingIntervalMax);
+		GetWorld()->GetTimerManager().SetTimer(BlinkingTimerHandle, this, &ATromboneCharacterBase::StartBlinking, NextBlinkDelay, false);
+	}
+}
+
+void ATromboneCharacterBase::ExecuteBlinkStep()
+{
+	TArray BlinkSequence = { 0, 1, 2, 1, 0 };
+
+	if (BlinkStep < BlinkSequence.Num())
+	{
+		UpdateFaceExpression(static_cast<EFaceExpressionType>(BlinkSequence[BlinkStep]));
+		BlinkStep++;
+
+		GetWorld()->GetTimerManager().SetTimer(BlinkStepTimerHandle, this, &ATromboneCharacterBase::ExecuteBlinkStep, 0.07f, false);
+	}
+	else
+	{
+		const float NextBlinkDelay = FMath::FRandRange(EyeBlinkingIntervalMin, EyeBlinkingIntervalMax);
+		GetWorld()->GetTimerManager().SetTimer(BlinkingTimerHandle, this, &ATromboneCharacterBase::StartBlinking, NextBlinkDelay, false);
+	}
+}
+
 void ATromboneCharacterBase::InternalUnapplyRagdoll()
 {
 	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
@@ -362,6 +414,7 @@ void ATromboneCharacterBase::InternalUnapplyRagdoll()
 	AnimInst->SetIsRagdolling(false);
 
 	ApplyFlagPhysics();
+	StartBlinking();
 }
 
 bool ATromboneCharacterBase::IsFacingUp() const
@@ -437,6 +490,7 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	if (bIsRagdoll)
 	{
 		ApplyRagdoll();
+		UpdateFaceExpression(EFaceExpressionType::Ragdoll);
 		OnRagdollDelegate.Broadcast();
 	}
 	else
@@ -451,6 +505,7 @@ void ATromboneCharacterBase::OnRep_IsStun()
 	if (bIsStun)
 	{
 		ApplyStun();
+		UpdateFaceExpression(EFaceExpressionType::Stun);
 		OnStunDelegate.Broadcast();
 	}
 	else
