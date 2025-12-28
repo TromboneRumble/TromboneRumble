@@ -9,7 +9,6 @@
 #include "Net/UnrealNetwork.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
@@ -89,18 +88,12 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 
 	switch (HitData.HitType)
 	{
-		case EHitType::Headbutt:
+		case EHitReactionType::Ragdoll:
 			OnRagdoll();
-			break;
-		case EHitType::Instrument:
-		case EHitType::Trombone:
-		case EHitType::Cymbals:
-		case EHitType::Violin:
+		case EHitReactionType::Stun:
 			OnStun();
 			break;
-		case EHitType::Audience:
-			OnRagdoll();
-			break;
+		case EHitReactionType::None:
 		default:
 			break;
 	}

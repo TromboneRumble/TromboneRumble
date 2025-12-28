@@ -29,8 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "무기 드롭 상향 충격량"))
 	float WeaponDropUpwardImpulse = 300.0f;
     
-	UPROPERTY(EditDefaultsOnly, Category = "Develop")
-	EHitType HitType = EHitType::Invalid;
+	/** 무기 공격 적중 시 상대방에게 적용할 피격 유형 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (DisplayName = "피해 유형"))
+	EHitReactionType HitReactionType = EHitReactionType::None;
     
 	UPROPERTY(EditDefaultsOnly, Category = "Develop")
 	EWeaponType WeaponType = EWeaponType::Invalid;

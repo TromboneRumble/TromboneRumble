@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Utilities/Defines.h"
 #include "GarbageBase.generated.h"
 
 class UAkAudioEvent;
@@ -69,6 +70,11 @@ protected:
 	 * 캐릭터 등과 충돌한 후 액터가 파괴될 때까지의 시간입니다. */
 	UPROPERTY(EditAnywhere, Category = "Garbage|Config|Lifetime", meta = (DisplayName = "충돌 후 제거 지연"))
 	float DestroyDelayAfterImpact = 2.0f;
+	
+	/** 피해 유형 
+	 * 이 투척물이 캐릭터와 충돌했을 때 적용할 피해 유형입니다. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "피해 유형"))
+	EHitReactionType HitReactionType = EHitReactionType::None;
 
 protected:
 	// Replication

@@ -189,7 +189,7 @@ void AWeaponBase::DetectHit()
     			HitData.HitDirection = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
     			HitData.HitDirection.Z = 0.5f;
     			HitData.KnockbackForce = WeaponData->KnockbackForce;
-    			HitData.HitType = WeaponData->HitType;
+    			HitData.HitType = WeaponData->HitReactionType;
 
     			CombatReceiver->OnHitReceived(HitData);
     		}

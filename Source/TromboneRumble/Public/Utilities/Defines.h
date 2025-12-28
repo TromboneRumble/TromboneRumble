@@ -39,14 +39,11 @@ enum class ELobbyState : uint8
 };
 
 UENUM()
-enum class EHitType : uint8
+enum class EHitReactionType : uint8
 {
-	Headbutt,
-	Instrument,
-	Trombone,
-	Cymbals,
-	Violin,
-	Audience,
+	None,
+	Stun,
+	Ragdoll,
 	Invalid		= 255	UMETA(Hidden)
 };
 
