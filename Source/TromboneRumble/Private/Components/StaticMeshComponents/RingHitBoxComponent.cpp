@@ -2,6 +2,7 @@
 
 
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "GameFramework/Pawn.h"
 
 
@@ -15,7 +16,7 @@ URingHitBoxComponent::URingHitBoxComponent()
 	bReceivesDecals = false;
 	SetCastShadow(false);
 
-	SetVisibility(false, true);
+	SetVisibility(true, true);
 	SetHiddenInGame(true, true);
 }
 
@@ -25,6 +26,9 @@ void URingHitBoxComponent::OnRegister()
 
 	EnsureMID();
 	ApplyMaterialParams();
+
+	bHasBaseColor = false;
+	CacheBaseColorIfNeeded();
 }
 
 void URingHitBoxComponent::BeginPlay()
@@ -40,6 +44,13 @@ void URingHitBoxComponent::BeginPlay()
 
 	SetHiddenInGame(!bShow, true);
 	SetVisibility(bShow, true);
+	if (bShow)
+	{
+		if (URhythmSubsystem* RhythmSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		{
+			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
+		}
+	}
 }
 
 void URingHitBoxComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -47,6 +58,31 @@ void URingHitBoxComponent::PostEditChangeProperty(FPropertyChangedEvent& Propert
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	EnsureMID();
 	ApplyMaterialParams();
+
+	bHasBaseColor = false;
+	CacheBaseColorIfNeeded();
+
+	MarkRenderStateDirty();
+}
+
+void URingHitBoxComponent::OnNoteDetectedHandler(ENoteResult InNoteResult)
+{
+	switch (InNoteResult)
+	{
+	case ENoteResult::Bad:
+		FlashToColor(BadFlashColor);
+		break;
+	case ENoteResult::Good:
+		FlashToColor(GoodFlashColor);
+		break;
+	case ENoteResult::Excellent:
+		FlashToColor(ExcellentFlashColor);
+		break;
+	default:
+		break;
+	}
+	
+	
 }
 
 void URingHitBoxComponent::EnsureMID()
@@ -101,4 +137,71 @@ void URingHitBoxComponent::ApplyMaterialParams()
 	RingMID->SetScalarParameterValue(TEXT("EndInnerRadius"), EndInnerRadius);
 	RingMID->SetScalarParameterValue(TEXT("SizeAlpha"), SizeAlpha);
 	RingMID->SetScalarParameterValue(TEXT("FadePercent"), FadePercent);
+}
+
+void URingHitBoxComponent::CacheBaseColorIfNeeded()
+{
+	if (bHasBaseColor)
+	{
+		return;
+	}
+
+	EnsureMID();
+	if (!RingMID)
+	{
+		return;
+	}
+
+	// 머티리얼에서 현재 색을 읽어 원본색으로 사용
+	FLinearColor Current;
+	if (RingMID->GetVectorParameterValue(ColorParamName, Current))
+	{
+		CachedBaseColor = Current;
+	}
+	else
+	{
+		CachedBaseColor = FLinearColor::White;
+	}
+
+	bHasBaseColor = true;
+}
+
+void URingHitBoxComponent::FlashToColor(const FLinearColor& InColor)
+{
+	EnsureMID();
+	if (!RingMID)
+	{
+		return;
+	}
+
+	CacheBaseColorIfNeeded();
+
+	// 기존 복귀 타이머 제거(연타 대응)
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(FlashTimerHandle);
+	}
+
+	RingMID->SetVectorParameterValue(ColorParamName, InColor);
+	
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().SetTimer(
+			FlashTimerHandle,
+			this,
+			&URingHitBoxComponent::RestoreBaseColor,
+			FlashDuration,
+			false
+		);
+	}
+}
+
+void URingHitBoxComponent::RestoreBaseColor()
+{
+	if (!RingMID)
+	{
+		return;
+	}
+
+	RingMID->SetVectorParameterValue(ColorParamName, CachedBaseColor);
 }

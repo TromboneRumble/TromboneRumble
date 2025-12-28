@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "RingHitBoxComponent.generated.h"
 
+
+enum class ENoteResult : uint8;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TROMBONERUMBLE_API URingHitBoxComponent : public UStaticMeshComponent
@@ -22,6 +24,9 @@ protected:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
+
+	UFUNCTION()
+	void OnNoteDetectedHandler(ENoteResult InNoteResult);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Material", meta = (AllowPrivateAccess = "true"))
 	float StartOuterRadius = 0.5f;
@@ -41,6 +46,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Material", meta = (AllowPrivateAccess = "true"))
 	float FadePercent = 0.3f;
 
+	// 노트 결과에 따라 Flash
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Flash", meta = (AllowPrivateAccess = "true"))
+	FName ColorParamName = TEXT("CircleColor"); 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Flash",
+		meta = (AllowPrivateAccess = "true", ClampMin = "0.0", ToolTip = "판정 플래시가 유지되는 시간"))
+	float FlashDuration = 0.10f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Flash", meta = (AllowPrivateAccess = "true"))
+	FLinearColor BadFlashColor = FLinearColor(1.f, 0.f, 0.f, 1.f);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Flash", meta = (AllowPrivateAccess = "true"))
+	FLinearColor GoodFlashColor = FLinearColor(1.f, 1.f, 0.f, 1.f);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "JudgementRing|Flash", meta = (AllowPrivateAccess = "true"))
+	FLinearColor ExcellentFlashColor = FLinearColor(0.f, 1.f, 0.f, 1.f);
+
 private:
 
 	UPROPERTY(Transient)
@@ -49,8 +71,17 @@ private:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UMaterialInterface> CachedParentMat = nullptr;
 
+	FLinearColor CachedBaseColor = FLinearColor::White;
+	bool bHasBaseColor = false;
+
+	FTimerHandle FlashTimerHandle;
+
 private:
 	void EnsureMID();
 	void ApplyMaterialParams();
+
+	void CacheBaseColorIfNeeded();
+	void FlashToColor(const FLinearColor& InColor);
+	void RestoreBaseColor();
 		
 };
