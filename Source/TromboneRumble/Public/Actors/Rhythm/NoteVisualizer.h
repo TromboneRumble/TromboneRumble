@@ -8,7 +8,7 @@
 #include "Utilities/Defines.h"
 #include "NoteVisualizer.generated.h"
 
-class ADefaultTromboneCharacter;
+class URingHitBoxComponent;
 class UStaticMeshComponent;
 class UMaterialInstanceDynamic;
 
@@ -55,7 +55,7 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> MID;
 
 	UPROPERTY(Transient)
-	TWeakObjectPtr<ADefaultTromboneCharacter> CachedPlayerCharacter = nullptr;
+	TWeakObjectPtr<URingHitBoxComponent> CachedRingHitBoxComponent = nullptr;
 
 	UPROPERTY(Transient)
 	FNoteHandle NoteHandle;

@@ -20,6 +20,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
 class UAbilitySystemComponent;
+class URingHitBoxComponent;
 class UNiagaraSystem;
 
 class ARhythmActor;
@@ -81,7 +82,7 @@ protected:
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UStaticMeshComponent> JudgementRingComponent;
+	TObjectPtr<URingHitBoxComponent> RingHitBoxComponent;
 	// ~Components
 	
 	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
@@ -128,6 +129,5 @@ public:
 	//getter setter
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
-	FORCEINLINE UStaticMeshComponent* GetJudgementRingComponent() { return JudgementRingComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 };

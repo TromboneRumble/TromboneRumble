@@ -11,12 +11,14 @@
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
+#include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Data/CharacterAttributeSet.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
@@ -48,7 +50,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
-	JudgementRingComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("JudgementRingComponent"));
+	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
 
 	if (AkSoundComponent)
 	{
@@ -56,15 +58,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
 
-	if (JudgementRingComponent)
+	if (RingHitBoxComponent)
 	{
-		JudgementRingComponent->SetVisibility(false);
-		JudgementRingComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		JudgementRingComponent->SetGenerateOverlapEvents(false);
-		JudgementRingComponent->CanCharacterStepUpOn = ECB_No;
-		JudgementRingComponent->bReceivesDecals = false;
-		JudgementRingComponent->SetCastShadow(false);
-		JudgementRingComponent->SetupAttachment(RootComponent);
+		RingHitBoxComponent->SetupAttachment(RootComponent);
 	}
 }
 
@@ -205,8 +201,6 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
-
-		JudgementRingComponent->SetVisibility(true);
 
 		// Sound Listener의 기본 설정을 카메라->Player로 변경
 		if (AkSoundComponent)
