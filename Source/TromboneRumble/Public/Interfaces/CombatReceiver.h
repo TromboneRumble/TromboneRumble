@@ -14,6 +14,9 @@ struct FHitData
 
 	UPROPERTY()
 	FVector HitDirection = FVector::ZeroVector;
+	
+	UPROPERTY()
+	float KnockbackForce = 0.0f;
 
 	UPROPERTY()
 	EHitType HitType = EHitType::Invalid;

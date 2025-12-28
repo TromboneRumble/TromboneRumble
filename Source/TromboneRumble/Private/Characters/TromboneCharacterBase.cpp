@@ -9,6 +9,7 @@
 #include "Net/UnrealNetwork.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
@@ -76,12 +77,15 @@ void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	
 	DOREPLIFETIME(ThisClass, bIsRagdoll);
 	DOREPLIFETIME(ThisClass, bIsStun);
+	DOREPLIFETIME(ThisClass, bIsInvincible);
 	DOREPLIFETIME(ThisClass, SkinColor);
 }
 
 void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 {
 	if (!HasAuthority()) return;
+	
+	if (bIsInvincible || bIsStun || bIsRagdoll) return;
 
 	switch (HitData.HitType)
 	{
@@ -100,6 +104,8 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 		default:
 			break;
 	}
+	
+	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
 }
 
 void ATromboneCharacterBase::Tick(float DeltaSeconds)
@@ -107,6 +113,18 @@ void ATromboneCharacterBase::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	// TODO : Remove debug drawing
+	if (bIsInvincible)
+	{
+		DrawDebugString(
+			GetWorld(),
+			GetActorLocation() + FVector(0, 0, 150.0f),
+			TEXT("무적"),
+			nullptr,
+			FColor::Red,
+			0.0f,
+			true
+		);
+	}
 	if (bIsStun)
 	{
 		DrawDebugString(
@@ -195,6 +213,8 @@ void ATromboneCharacterBase::SetupCharacterData() const
 void ATromboneCharacterBase::OnRagdoll()
 {
 	if (!HasAuthority()) return;
+	
+	if (bIsRagdoll) return;
 
 	if (bIsStun)
 	{
@@ -221,6 +241,20 @@ void ATromboneCharacterBase::EndRagdoll()
 
 	bIsRagdoll = false;
 	OnRep_IsRagdoll();
+	
+	bIsInvincible = true;
+	OnRep_IsInvincible();
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		InvincibilityTimerHandle, 
+		[this]()
+		{
+			bIsInvincible = false;
+			OnRep_IsInvincible();
+		}, 
+		CharacterData->InvincibilityDurationAfterRagdoll, 
+		false
+	);
 }
 
 void ATromboneCharacterBase::OnStun()
@@ -247,6 +281,20 @@ void ATromboneCharacterBase::EndStun()
 
 	bIsStun = false;
 	OnRep_IsStun();
+	
+	bIsInvincible = true;
+	OnRep_IsInvincible();
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		InvincibilityTimerHandle, 
+		[this]()
+		{
+			bIsInvincible = false;
+			OnRep_IsInvincible();
+		}, 
+		CharacterData->InvincibilityDurationAfterStun, 
+		false
+	);
 }
 
 void ATromboneCharacterBase::ApplyStun()
@@ -401,6 +449,7 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	else
 	{
 		UnapplyRagdoll();
+		EndRagdollDelegate.Broadcast();
 	}
 }
 
@@ -414,5 +463,18 @@ void ATromboneCharacterBase::OnRep_IsStun()
 	else
 	{
 		UnapplyStun();
+		EndStunDelegate.Broadcast();
+	}
+}
+
+void ATromboneCharacterBase::OnRep_IsInvincible()
+{
+	if (bIsInvincible)
+	{
+		OnInvincibleDelegate.Broadcast();
+	}
+	else
+	{
+		EndInvincibleDelegate.Broadcast();
 	}
 }

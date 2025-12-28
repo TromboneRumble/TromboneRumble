@@ -12,7 +12,11 @@ class UCharacterDataAsset;
 class UInputComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRagdollSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStunSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndStunSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInvincibleSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndInvincibleSignature);
 
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
@@ -36,7 +40,11 @@ public:
 	void SetPlayerInput(const bool bShouldEnable);
 
 	FOnRagdollSignature OnRagdollDelegate;
+	FEndRagdollSignature EndRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
+	FEndStunSignature EndStunDelegate;
+	FOnInvincibleSignature OnInvincibleDelegate;
+	FEndInvincibleSignature EndInvincibleDelegate;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Data")
@@ -74,13 +82,18 @@ private:
 	UFUNCTION()
 	void OnRep_IsStun();
 	UFUNCTION()
+	void OnRep_IsInvincible();
+	UFUNCTION()
 	void OnRep_SkinColor();
 	// ~Replication Notifies
 
 	FTimerHandle OnHitTimerHandle;
+	FTimerHandle InvincibilityTimerHandle;
 
 	bool bIsCanProcessInput = true;
 	
+	UPROPERTY(ReplicatedUsing = OnRep_IsInvincible)
+	bool bIsInvincible = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsStun)

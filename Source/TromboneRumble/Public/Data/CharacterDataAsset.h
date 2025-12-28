@@ -63,6 +63,14 @@ public:
     /** 스턴 상태가 지속되는 시간입니다. (초) */
     UPROPERTY(EditAnywhere, Category = "Config|Reactions", meta = (DisplayName = "스턴 지속 시간"))
     float StunDuration = 1.5f;
+	
+    /** 래그돌 후 무적 시간입니다. 래그돌에서 일어나는 애니메이션 재생 시간 2초를 포함합니다. (초) */
+	UPROPERTY(EditAnywhere, Category = "Config|Reactions", meta = (DisplayName = "래그돌 후 무적 시간"))
+	float InvincibilityDurationAfterRagdoll = 3.0f;
+	
+	/** 스턴 후 무적 시간입니다. (초) */
+	UPROPERTY(EditAnywhere, Category = "Config|Reactions", meta = (DisplayName = "스턴 후 무적 시간"))
+	float InvincibilityDurationAfterStun = 0.5f;
 
     /** 카메라와 캐릭터 사이의 기본 거리입니다. */
     UPROPERTY(EditAnywhere, Category = "Config|Camera", meta = (DisplayName = "카메라 거리"))
