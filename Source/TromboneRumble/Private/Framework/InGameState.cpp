@@ -10,6 +10,7 @@
 void AInGameState::AddPlayerState(APlayerState* PlayerState)
 {
 	Super::AddPlayerState(PlayerState);
+    OnPlayerStateAdded.Broadcast(PlayerState);
     if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(PlayerState))
     {
         DefaultPS->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleLocalScoreChanged);
@@ -23,6 +24,7 @@ void AInGameState::RemovePlayerState(APlayerState* PlayerState)
     {
         DefaultPS->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleLocalScoreChanged);
     }
+    OnPlayerStateRemoved.Broadcast(PlayerState);
 	Super::RemovePlayerState(PlayerState);
     OnScoreChanged.Broadcast(PlayerState);
 }

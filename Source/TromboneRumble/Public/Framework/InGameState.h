@@ -11,6 +11,8 @@ class ADefaultPlayerState;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, APlayerState*, UpdatedPlayer);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLeaderChanged, APlayerState*, NewLeader, APlayerState*, OldLeader);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStateAdded, APlayerState*, PlayerState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStateRemoved, APlayerState*, PlayerState);
 
 UCLASS()
 class TROMBONERUMBLE_API AInGameState : public AGameStateBase
@@ -26,6 +28,12 @@ public:
 	// 1등이 바뀌었을때 호출됨
 	UPROPERTY(BlueprintAssignable)
 	FOnLeaderChanged OnLeaderChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerStateAdded OnPlayerStateAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerStateRemoved OnPlayerStateRemoved;
 
 	// 클라이언트의 PlayerState점수가 변경되었을 경우, 서버에서 실행해주는 delegate
 	UFUNCTION()

@@ -7,6 +7,7 @@
 #include "Utilities/Defines.h"
 #include "DefaultPlayerController.generated.h"
 
+class UOSI_RhythmRankWidget;
 class UAkAudioEvent;
 class UInteractorComponent;
 class UPT_UIInGame;
@@ -54,6 +55,21 @@ protected:
 
 	UFUNCTION()
 	void HandleGameStateChanged(EGameState NewState);
+
+	UFUNCTION()
+	void HandlePlayerStateAdded(APlayerState* InPlayerState);
+
+	UFUNCTION()
+	void HandlePlayerStateRemoved(APlayerState* InPlayerState);
+
+	UFUNCTION()
+	void HandleOnLeaderChanged(APlayerState* NewLeader, APlayerState* OldLeader);
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UOSI_RhythmRankWidget> RhythmRankWidgetClass;
+
+	UPROPERTY()
+	TMap<TObjectPtr<APlayerState>, TObjectPtr<UOSI_RhythmRankWidget>> PlayerStateToRhythmRankWidgetMap;
 private:
 	// Input handlers
 	void Handle_Move(const struct FInputActionValue& Value);
@@ -79,6 +95,10 @@ private:
 	void HandleLoadingScreenFinished();
 
 	bool bHasNotifiedLoadingFinished = false;
+
+	FTimerHandle RetryCreateRankWidgetsHandle;
+	bool bRetryTimerRunning = false;
+
 
 	TSubclassOf<UUserWidget> InGameUIClass;
 
