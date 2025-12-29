@@ -187,17 +187,11 @@ void AWeaponBase::DetectHit()
 
     			FHitData HitData;
     			HitData.HitDirection = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
-    			HitData.HitType = WeaponData->HitType;
+    			HitData.HitDirection.Z = 0.5f;
+    			HitData.KnockbackForce = WeaponData->KnockbackForce;
+    			HitData.HitType = WeaponData->HitReactionType;
 
     			CombatReceiver->OnHitReceived(HitData);
-    		}
-    		
-    		if (ACharacter* HitCharacter = Cast<ACharacter>(HitActor))
-    		{
-    			FVector KnockbackDir = (HitActor->GetActorLocation() - CurrentOwner->GetActorLocation()).GetSafeNormal();
-    			KnockbackDir.Z = 0.5f;
-    			
-    			HitCharacter->LaunchCharacter(KnockbackDir * WeaponData->KnockbackForce, true, true);
     		}
     	}
     }

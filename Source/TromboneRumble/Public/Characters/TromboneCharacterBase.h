@@ -12,7 +12,11 @@ class UCharacterDataAsset;
 class UInputComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRagdollSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStunSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndStunSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInvincibleSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndInvincibleSignature);
 
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
@@ -36,12 +40,32 @@ public:
 	void SetPlayerInput(const bool bShouldEnable);
 
 	FOnRagdollSignature OnRagdollDelegate;
+	FEndRagdollSignature EndRagdollDelegate;
 	FOnStunSignature OnStunDelegate;
+	FEndStunSignature EndStunDelegate;
+	FOnInvincibleSignature OnInvincibleDelegate;
+	FEndInvincibleSignature EndInvincibleDelegate;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	/** 눈 깜빡임 간격 범위 최소 값 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Eye Blinking", meta = (ClampMin = "0.1", ClampMax = "10.0", DisplayName = "눈 깜빡임 간격 최소값"))
+	float EyeBlinkingIntervalMin = 2.0f;
+	/** 눈 깜빡임 간격 범위 최대 값 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Eye Blinking", meta = (ClampMin = "0.1", ClampMax = "10.0", DisplayName = "눈 깜빡임 간격 최대값"))
+	float EyeBlinkingIntervalMax = 5.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
-
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
+	int32 SkinMaterialIndex = 1;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
+	int32 FaceMaterialIndex = 2;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
+	FName FaceExpressionParameterName = FName("ExpressionIndex");
+	
+	UPROPERTY(VisibleAnywhere)
+	EFaceExpressionType CurrentExpressionType = EFaceExpressionType::None;
+	
 private:
 	void InitCharacter();
 	void SetupCapsuleComponent();
@@ -60,6 +84,9 @@ private:
 	void UnapplyRagdoll();
 
 	void UpdateSkinFromPlayerState();
+	void UpdateFaceExpression(EFaceExpressionType NewType);
+	void StartBlinking();
+	void ExecuteBlinkStep();
 
 	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
@@ -74,13 +101,18 @@ private:
 	UFUNCTION()
 	void OnRep_IsStun();
 	UFUNCTION()
+	void OnRep_IsInvincible();
+	UFUNCTION()
 	void OnRep_SkinColor();
 	// ~Replication Notifies
 
 	FTimerHandle OnHitTimerHandle;
+	FTimerHandle InvincibilityTimerHandle;
 
 	bool bIsCanProcessInput = true;
 	
+	UPROPERTY(ReplicatedUsing = OnRep_IsInvincible)
+	bool bIsInvincible = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsStun)
@@ -96,6 +128,10 @@ private:
 	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
 
 	FName PelvisBoneName = "pelvis";
+	
+	FTimerHandle BlinkingTimerHandle;
+	FTimerHandle BlinkStepTimerHandle;
+	int32 BlinkStep = 0;
 
 public:
 	//~ Begin Setter
