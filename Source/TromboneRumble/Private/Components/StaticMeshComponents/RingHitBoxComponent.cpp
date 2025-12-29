@@ -87,41 +87,35 @@ void URingHitBoxComponent::OnNoteDetectedHandler(ENoteResult InNoteResult)
 
 void URingHitBoxComponent::EnsureMID()
 {
-	UMaterialInterface* CurrentMat = GetMaterial(0);
-	if (!CurrentMat)
-	{
-		RingMID = nullptr;
-		CachedParentMat = nullptr;
-		return;
-	}
+	// 이미 만들어져 있으면 재사용
+	if (RingMID) return;
 
-	// 슬롯 0에 MID가 이미 꽂혀있는 경우
-	if (UMaterialInstanceDynamic* CurrentMID = Cast<UMaterialInstanceDynamic>(CurrentMat))
-	{
-		UMaterialInterface* ParentMat = CurrentMID->Parent.Get();
-		if (!ParentMat)
-		{
-			ParentMat = CurrentMat; 
-		}
+	// Element 0에 이미 Material/MI가 들어있으면 Source Material 안 넣어도 됨
+	RingMID = CreateDynamicMaterialInstance(0);
 
-		// 이미 우리가 관리하는 MID면 그대로
-		if (RingMID == CurrentMID && CachedParentMat.Get() == ParentMat)
-		{
-			return;
-		}
+	//UMaterialInterface* OriginMat = RingMatOrigin.Get();
+	//if (!OriginMat)
+	//{
+	//	RingMID = nullptr;
+	//	CachedParentMat = nullptr;
+	//	return;
+	//}
 
-		// 슬롯에 꽂힌 MID를 채택
-		RingMID = CurrentMID;
-		CachedParentMat = ParentMat;
-		return;
-	}
+	//// 슬롯 0에 MID가 이미 꽂혀있는 경우
+	//if (RingMID && CachedParentMat.Get() == OriginMat)
+	//{
+	//	if (GetMaterial(0) == RingMID)
+	//	{
+	//		return;
+	//	}
 
-	// 슬롯 0이 Material/MIC 등(MID 아님) -> 자동으로 MID 생성해서 꽂기
-	if (!RingMID || CachedParentMat.Get() != CurrentMat)
-	{
-		RingMID = CreateAndSetMaterialInstanceDynamicFromMaterial(0, CurrentMat);
-		CachedParentMat = CurrentMat;
-	}
+	//	// 누가 슬롯 0을 바꿔버린 경우: 다시 꽂아 복구
+	//	SetMaterial(0, RingMID);
+	//	return;
+	//}
+
+	//RingMID = CreateAndSetMaterialInstanceDynamicFromMaterial(0, OriginMat);
+	//CachedParentMat = OriginMat;
 }
 
 void URingHitBoxComponent::ApplyMaterialParams()
