@@ -32,6 +32,9 @@ public:
 	void StartAutoSpawn_Server();
 	void StopAutoSpawn_Server();
 
+	UFUNCTION()
+	void StartAutoSpawnFromMusicCue(FName CueName);
+
 protected:
 	TSubclassOf<AGarbageBase> PickRandomGarbageClass() const;
 	bool PickRandomSpawnTransform(FTransform& OutTransform) const;

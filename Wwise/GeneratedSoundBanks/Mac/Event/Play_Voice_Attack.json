@@ -10,64 +10,19 @@
     "Type": "Event",
     "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
     "Language": "SFX",
-    "Hash": "{35BDF7A8-C1C5-0DD0-B2E3-0B1ABF5E2017}",
+    "Hash": "{3491EEC2-7C7F-2FD3-2A9B-429CE7BD7263}",
     "ObjectPath": "Play_Voice_Attack",
     "ShortName": "Play_Voice_Attack",
     "Path": "Event/Play_Voice_Attack.bnk",
     "Media": [
      {
-      "Id": "58884900",
+      "Id": "157274486",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Player_Attack_Voice_1.wav",
-      "Path": "Media/58884900.wem",
-      "CachePath": "SFX/Player_Attack_Voice_1_818F3B66.wem"
-     },
-     {
-      "Id": "104383533",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Player_Attack_Voice_2.wav",
-      "Path": "Media/104383533.wem",
-      "CachePath": "SFX/Player_Attack_Voice_2_818F3B66.wem"
-     },
-     {
-      "Id": "438912652",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Player_Attack_Voice_3.wav",
-      "Path": "Media/438912652.wem",
-      "CachePath": "SFX/Player_Attack_Voice_3_818F3B66.wem"
-     },
-     {
-      "Id": "444341275",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Player_Attack_Voice_4.wav",
-      "Path": "Media/444341275.wem",
-      "CachePath": "SFX/Player_Attack_Voice_4_818F3B66.wem"
-     },
-     {
-      "Id": "717956438",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Player_Attack_Voice_5.wav",
-      "Path": "Media/717956438.wem",
-      "CachePath": "SFX/Player_Attack_Voice_5_818F3B66.wem"
-     },
-     {
-      "Id": "820887562",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Player_Attack_Voice_6.wav",
-      "Path": "Media/820887562.wem",
-      "CachePath": "SFX/Player_Attack_Voice_6_818F3B66.wem"
+      "ShortName": "Player_Attack_Trombone_Voice.wav",
+      "Path": "Media/157274486.wem",
+      "CachePath": "SFX/Player_Attack_Trombone_Voice_818F3B66.wem"
      }
     ],
     "Events": [
@@ -78,32 +33,17 @@
       "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "0.238",
-      "DurationMax": "0.35933334",
+      "DurationMin": "0.8341114",
+      "DurationMax": "1.2183923",
       "MediaRefs": [
        {
-        "Id": "58884900"
-       },
-       {
-        "Id": "104383533"
-       },
-       {
-        "Id": "438912652"
-       },
-       {
-        "Id": "444341275"
-       },
-       {
-        "Id": "717956438"
-       },
-       {
-        "Id": "820887562"
+        "Id": "157274486"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{9AE5125D-56CB-DEE7-B63B-483137919F25}"
+  "FileHash": "{8738B5AE-C9D4-D310-3C96-B515AF212EAB}"
  }
 }

@@ -8,7 +8,7 @@
 #include "Utilities/Defines.h"
 #include "NoteVisualizer.generated.h"
 
-class ADefaultTromboneCharacter;
+class URingHitBoxComponent;
 class UStaticMeshComponent;
 class UMaterialInstanceDynamic;
 
@@ -55,7 +55,7 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> MID;
 
 	UPROPERTY(Transient)
-	TWeakObjectPtr<ADefaultTromboneCharacter> CachedPlayerCharacter = nullptr;
+	TWeakObjectPtr<URingHitBoxComponent> CachedRingHitBoxComponent = nullptr;
 
 	UPROPERTY(Transient)
 	FNoteHandle NoteHandle;
@@ -65,10 +65,10 @@ private:
 	EInstrumentType InstrumentType;
 
 	// Parameters
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JudgementRing|Params", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0", AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NoteVisualizer|Params", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0", AllowPrivateAccess = "true"))
 	float SizeAlpha = 0.0f;
 
 	// 머티리얼 파라미터 이름
-	UPROPERTY(EditDefaultsOnly, Category = "JudgementRing|Params", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "NoteVisualizer|Params", meta = (AllowPrivateAccess = "true"))
 	FName ParamName_SizeAlpha = "SizeAlpha";
 };

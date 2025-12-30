@@ -5,7 +5,7 @@
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Subsystems/ActorPoolSubsystem.h"
-#include "Characters/DefaultTromboneCharacter.h"
+#include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ANoteVisualizer::ANoteVisualizer()
@@ -39,10 +39,16 @@ void ANoteVisualizer::Init(const FNoteHandle& InNoteHandle, const EInstrumentTyp
 	{
 		ShowRing(false);
 	}
-	if (!CachedPlayerCharacter.IsValid() || !IsAttachedTo(CachedPlayerCharacter.Get()))
+	const bool bNeedAttach =
+		!CachedRingHitBoxComponent.IsValid()
+		|| !GetRootComponent()
+		|| GetRootComponent()->GetAttachParent() != CachedRingHitBoxComponent.Get();
+
+	if (bNeedAttach)
 	{
 		FindPlayerCharacterAndAttach();
 	}
+
 	UnBindChannel();
 	BindChannel();
 }
@@ -60,7 +66,7 @@ void ANoteVisualizer::OnReturnToPool_Implementation()
 {
 	IPoolable::OnReturnToPool_Implementation();
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	CachedPlayerCharacter.Reset();
+	CachedRingHitBoxComponent.Reset();
 	ShowRing(false);
 }
 
@@ -178,27 +184,25 @@ void ANoteVisualizer::FindPlayerCharacterAndAttach()
 	}
 
 	APawn* Pawn = PC->GetPawn();
-	if (!Pawn)
+	if (!Pawn || !Pawn->IsLocallyControlled())
 	{
 		return;
 	}
 
-	ADefaultTromboneCharacter* PlayerCharacter =
-		Cast<ADefaultTromboneCharacter>(PC->GetPawn());
+	URingHitBoxComponent* RingHitBox =
+		Pawn->FindComponentByClass<URingHitBoxComponent>();
 
-	if (!PlayerCharacter || !PlayerCharacter->IsLocallyControlled())
+	if (!RingHitBox)
 	{
 		return;
 	}
-	if (UStaticMeshComponent* AnchorComp = PlayerCharacter->GetJudgementRingComponent())
-	{
-		AttachToComponent(
-			AnchorComp,
-			FAttachmentTransformRules::SnapToTargetNotIncludingScale
-		);
-	}
 
-	CachedPlayerCharacter = PlayerCharacter;
+	AttachToComponent(
+		RingHitBox,
+		FAttachmentTransformRules::SnapToTargetNotIncludingScale
+	);
+
+	CachedRingHitBoxComponent = RingHitBox;
 }
 
 void ANoteVisualizer::HandleOnInstrumentPicked(EInstrumentType OldType, EInstrumentType NewType)
