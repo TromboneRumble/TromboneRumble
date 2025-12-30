@@ -15,6 +15,7 @@
 #include "Components/SpinBox.h"
 #include "Components/VerticalBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/UserWidgets/ConfirmationDialogueWidget.h"
 #include "Utilities/DebugHelper.h"
 
 bool UMainMenuWidget::Initialize()
@@ -97,6 +98,10 @@ void UMainMenuWidget::InitButtons()
 	if (MB_BackFromSettings)
 	{
 		MB_BackFromSettings->OnClicked().AddUObject(this, &ThisClass::HandleBackFromSettingsButtonClicked);
+	}
+	if (MB_Quit)
+	{
+		MB_Quit->OnClicked().AddUObject(this, &ThisClass::HandleQuitButtonClicked);
 	}
 }
 
@@ -330,6 +335,16 @@ void UMainMenuWidget::HandleOptionButtonClicked()
 void UMainMenuWidget::HandleBackFromSettingsButtonClicked()
 {
 	ChangePanel(VB_MainMenu);
+}
+
+void UMainMenuWidget::HandleQuitButtonClicked()
+{
+	APlayerController* PC = GetOwningPlayer();
+	UConfirmationDialogueWidget* Widget = CreateWidget<UConfirmationDialogueWidget>(PC, ConfirmationDialogueWidgetClass);
+
+	// TODO : 메세지 관리
+	const FText Message = FText::FromString(TEXT("Are you sure you want to quit the game?"));
+	Widget->ShowDialogue(Message);
 }
 
 FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length)

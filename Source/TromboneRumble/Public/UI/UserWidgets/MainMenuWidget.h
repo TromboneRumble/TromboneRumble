@@ -8,6 +8,7 @@
 #include "Utilities/Defines.h"
 #include "MainMenuWidget.generated.h"
 
+class UConfirmationDialogueWidget;
 class UVerticalBox;
 class UCommonAnimatedSwitcher;
 class UCommonButtonBase;
@@ -62,12 +63,19 @@ private:
 	
 	UFUNCTION()
 	void HandleOptionButtonClicked();
+	
 	UFUNCTION()
 	void HandleBackFromSettingsButtonClicked();
+	
+	UFUNCTION()
+	void HandleQuitButtonClicked();
 	// ~ EndButton Callbacks
 
 	FString GenerateRandomLobbyCode(int32 Length);
 	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> ConfirmationDialogueWidgetClass;
 
 	// ~ Start UMGs
 	UPROPERTY(meta = (BindWidget))
@@ -98,6 +106,9 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> MB_BackFromSettings;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> MB_Quit;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_MainMenu;

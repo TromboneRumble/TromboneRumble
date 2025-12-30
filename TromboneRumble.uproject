@@ -13,7 +13,8 @@
 				"UMG",
 				"DeveloperSettings",
 				"AkAudio",
-				"GameplayAbilities"
+				"GameplayAbilities",
+				"CommonUI"
 			]
 		}
 	],
