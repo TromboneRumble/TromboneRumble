@@ -55,6 +55,8 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
+	DOREPLIFETIME(ThisClass, CurrentCombo);
+	DOREPLIFETIME(ThisClass, bLastComboReset);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
@@ -103,6 +105,7 @@ void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount)
 void ADefaultPlayerState::HandleNoteDetected(ENoteResult InNoteResult)
 {
 	int32 ScoreToAdd = 0;
+	bool isComboAdded = true;
 
 	switch (InNoteResult)
 	{
@@ -113,26 +116,30 @@ void ADefaultPlayerState::HandleNoteDetected(ENoteResult InNoteResult)
 		ScoreToAdd = 5;
 		break;
 	case ENoteResult::Bad:
-	case ENoteResult::None:
-	default:
 		ScoreToAdd = 0;
+		isComboAdded = false;
+		break;
+	case ENoteResult::None:
+		ScoreToAdd = -1;
+		break;
+	default:
+		ScoreToAdd = -1;
 		break;
 	}
 
-	if (ScoreToAdd == 0)
-	{
-		return;
-	}
+	if (ScoreToAdd == -1) return;
 
 	// 클라이언트에서 서버로 점수 증가 요청
 	if (!HasAuthority())
 	{
 		Server_AddScore(ScoreToAdd);
+		isComboAdded ? Server_HandleCombo(false) : Server_HandleCombo(true);
 	}
 	else
 	{
 		// 서버에서 자기자신 점수 증가
 		AddScore(ScoreToAdd);
+		isComboAdded ? HandleCombo(false) : HandleCombo(true);
 	}
 }
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
@@ -148,6 +155,37 @@ void ADefaultPlayerState::OnRep_SkinColor()
 		if (const ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
 		{
 			TromboneCharacter->ApplySkinColor(SkinColor);
+		}
+	}
+}
+
+void ADefaultPlayerState::OnRep_ComboState()
+{
+	OnComboChanged.Broadcast(this, CurrentCombo, bLastComboReset);
+}
+
+void ADefaultPlayerState::HandleCombo(bool isReset)
+{
+	if (isReset)
+	{
+		CurrentCombo = 0;
+	}
+	else
+	{
+		++CurrentCombo;
+	}
+
+	bLastComboReset = isReset;
+}
+
+void ADefaultPlayerState::Server_HandleCombo_Implementation(bool isReset)
+{
+	HandleCombo(isReset);
+	if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
+	{
+		if (PC->IsLocalController())
+		{
+			OnComboChanged.Broadcast(this, CurrentCombo, bLastComboReset);
 		}
 	}
 }

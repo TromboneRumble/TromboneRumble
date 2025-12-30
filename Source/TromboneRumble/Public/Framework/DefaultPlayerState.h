@@ -12,6 +12,8 @@ class AInGameState;
 enum class ENoteResult : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLocalScoreChanged, APlayerState*, PlayerState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnComboChanged, APlayerState*,PlayerState, int32, ComboCount, bool, isComboReset);
+
 UCLASS()
 class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 {
@@ -33,6 +35,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnLocalScoreChanged OnLocalScoreChanged;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnComboChanged OnComboChanged;
+
 	void AddScore(int32 Amount);
 	UFUNCTION(Server, Reliable)
 	void Server_AddScore(int32 Amount);
@@ -49,6 +54,19 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
+	UPROPERTY(ReplicatedUsing = OnRep_ComboState)
+	int32 CurrentCombo = 0;
+
+	UPROPERTY(ReplicatedUsing = OnRep_ComboState)
+	bool bLastComboReset = false;
+
+	UFUNCTION()
+	void OnRep_ComboState();
+
+	void HandleCombo(bool bReset);
+
+	UFUNCTION(Server, Reliable)
+	void Server_HandleCombo(bool bReset);
 
 public:
 	//getter setter
