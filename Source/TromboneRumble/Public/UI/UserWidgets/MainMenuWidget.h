@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "CommonActivatableWidget.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Utilities/Defines.h"
 #include "MainMenuWidget.generated.h"
 
+class UVerticalBox;
+class UCommonAnimatedSwitcher;
+class UCommonButtonBase;
 class USpinBox;
 class USlider;
 class UButton;
@@ -15,7 +18,7 @@ class USessionSubsystem;
 class UEditableText;
 
 UCLASS()
-class TROMBONERUMBLE_API UMainMenuWidget : public UUserWidget
+class TROMBONERUMBLE_API UMainMenuWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	
@@ -25,7 +28,10 @@ protected:
 	virtual void NativeDestruct() override;
 
 private:
-	// SessionSubsystem Callbacks
+	void InitButtons();
+	void ChangePanel(UVerticalBox* TargetPanel);
+	
+	// ~ Begin SessionSubsystem Callbacks
 	void BindSubsystemCallbacks();
 	void RemoveSubsystemCallbacks();
 
@@ -39,7 +45,7 @@ private:
 	void OnSessionError(const FString& Reason);
 	UFUNCTION()
 	void OnStartSession(bool bWasSuccessful);
-	// ~ SessionSubsystem Callbacks
+	// ~ End SessionSubsystem Callbacks
 	
 	UFUNCTION()
 	void OnMaxPlayerSliderChanged(float Value);
@@ -47,17 +53,23 @@ private:
 	UFUNCTION()
 	void OnMaxPlayerSpinBoxChanged(float Value);
 
-	// Button Callbacks
+	// ~ Begin Button Callbacks
 	UFUNCTION()
 	void HostButtonClicked();
 
 	UFUNCTION()
 	void JoinButtonClicked();
-	// ~ Button Callbacks
+	
+	UFUNCTION()
+	void HandleOptionButtonClicked();
+	UFUNCTION()
+	void HandleBackFromSettingsButtonClicked();
+	// ~ EndButton Callbacks
 
 	FString GenerateRandomLobbyCode(int32 Length);
 	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
 
+	// ~ Start UMGs
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> HostButton;
 
@@ -72,6 +84,24 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USpinBox> MaxPlayerSpinBox;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UVerticalBox> VB_MainMenu;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UVerticalBox> VB_Settings;
+	// ~ End UMGs
+	
+	// ~ Start Common UIs
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> MB_Option;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> MB_BackFromSettings;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonAnimatedSwitcher> CAS_MainMenu;
+	// ~ End Common UIs
 	
 	int32 NumPublicConnections = 4;
 	int32 MaxLobbyCodeLength{ 5 };
