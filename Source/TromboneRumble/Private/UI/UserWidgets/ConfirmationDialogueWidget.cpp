@@ -1,19 +1,41 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/UserWidgets/ConfirmationDialogueWidget.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
+#include "Animation/WidgetAnimation.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UConfirmationDialogueWidget::ShowDialogue(const FText& Message)
 {
+	SetEnableButtons(true);
+	SetVisibility(ESlateVisibility::Visible);
+	
 	if (CT_Message)
 	{
 		CT_Message->SetText(Message);
 	}
 	
-	AddToViewport();
+	if (!IsInViewport())
+	{
+		AddToViewport();
+	}
+	ActivateWidget();
+	
+	if (FadeIn)
+	{
+		PlayAnimation(FadeIn);
+	}
+}
+
+void UConfirmationDialogueWidget::NativeOnActivated()
+{
+	Super::NativeOnActivated();
+		
+	if (FadeIn)
+	{
+		PlayAnimation(FadeIn);
+	}
 }
 
 void UConfirmationDialogueWidget::NativeConstruct()
@@ -35,6 +57,12 @@ void UConfirmationDialogueWidget::InitButtons()
 	}
 }
 
+void UConfirmationDialogueWidget::SetEnableButtons(bool bInIsEnabled)
+{
+	if (MB_Yes) MB_Yes->SetIsEnabled(bInIsEnabled);
+	if (MB_No) MB_No->SetIsEnabled(bInIsEnabled);
+}
+
 void UConfirmationDialogueWidget::HandleYesButtonClicked()
 {
 	APlayerController* PC = GetOwningPlayer();
@@ -43,5 +71,23 @@ void UConfirmationDialogueWidget::HandleYesButtonClicked()
 
 void UConfirmationDialogueWidget::HandleNoButtonClicked()
 {
-	RemoveFromParent();
+	SetEnableButtons(false);
+	SetVisibility(ESlateVisibility::HitTestInvisible);
+	
+	if (FadeIn)
+	{
+		PlayAnimationReverse(FadeIn);
+
+		const float AnimTime = FadeIn->GetEndTime();
+        
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+		{
+			DeactivateWidget();
+		}, AnimTime, false);
+	}
+	else
+	{
+		DeactivateWidget();
+	}
 }

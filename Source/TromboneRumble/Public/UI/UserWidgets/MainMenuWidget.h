@@ -123,4 +123,7 @@ private:
 
 	UPROPERTY(Transient)
 	FString CachedLobbyMapPath{ TEXT("") };
+	
+	UPROPERTY()
+	TObjectPtr<UConfirmationDialogueWidget> CachedQuitDialog;
 };

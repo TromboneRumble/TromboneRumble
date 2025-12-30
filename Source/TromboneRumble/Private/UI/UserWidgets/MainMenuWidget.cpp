@@ -339,12 +339,13 @@ void UMainMenuWidget::HandleBackFromSettingsButtonClicked()
 
 void UMainMenuWidget::HandleQuitButtonClicked()
 {
-	APlayerController* PC = GetOwningPlayer();
-	UConfirmationDialogueWidget* Widget = CreateWidget<UConfirmationDialogueWidget>(PC, ConfirmationDialogueWidgetClass);
-
+	if (!CachedQuitDialog)
+	{
+		CachedQuitDialog = CreateWidget<UConfirmationDialogueWidget>(GetOwningPlayer(), ConfirmationDialogueWidgetClass);
+	}
 	// TODO : 메세지 관리
 	const FText Message = FText::FromString(TEXT("Are you sure you want to quit the game?"));
-	Widget->ShowDialogue(Message);
+	CachedQuitDialog->ShowDialogue(Message);
 }
 
 FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length)
