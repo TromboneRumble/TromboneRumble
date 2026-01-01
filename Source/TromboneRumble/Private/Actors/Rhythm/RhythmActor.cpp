@@ -189,8 +189,6 @@ void ARhythmActor::StartRhythmGame()
 		3.0f,
 		false
 	);
-
-
 }
 
 

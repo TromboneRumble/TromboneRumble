@@ -55,8 +55,7 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
-	DOREPLIFETIME(ThisClass, CurrentCombo);
-	DOREPLIFETIME(ThisClass, bLastComboReset);
+	DOREPLIFETIME(ThisClass, ComboData);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
@@ -117,29 +116,25 @@ void ADefaultPlayerState::HandleNoteDetected(ENoteResult InNoteResult)
 		break;
 	case ENoteResult::Bad:
 		ScoreToAdd = 0;
-		isComboAdded = false;
 		break;
 	case ENoteResult::None:
-		ScoreToAdd = -1;
-		break;
+		return;
 	default:
-		ScoreToAdd = -1;
-		break;
+		return; 
 	}
 
-	if (ScoreToAdd == -1) return;
+	//콤보 UI 반영은 클라이언트에서 즉시 반영
+	HandleCombo(InNoteResult);
 
 	// 클라이언트에서 서버로 점수 증가 요청
-	if (!HasAuthority())
+	if (HasAuthority())
 	{
-		Server_AddScore(ScoreToAdd);
-		isComboAdded ? Server_HandleCombo(false) : Server_HandleCombo(true);
+		AddScore(ScoreToAdd);
 	}
 	else
 	{
-		// 서버에서 자기자신 점수 증가
-		AddScore(ScoreToAdd);
-		isComboAdded ? HandleCombo(false) : HandleCombo(true);
+		Server_HandleCombo(InNoteResult);
+		Server_AddScore(ScoreToAdd);
 	}
 }
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
@@ -159,33 +154,52 @@ void ADefaultPlayerState::OnRep_SkinColor()
 	}
 }
 
-void ADefaultPlayerState::OnRep_ComboState()
+void ADefaultPlayerState::OnRep_ComboData()
 {
-	OnComboChanged.Broadcast(this, CurrentCombo, bLastComboReset);
-}
-
-void ADefaultPlayerState::HandleCombo(bool isReset)
-{
-	if (isReset)
-	{
-		CurrentCombo = 0;
-	}
-	else
-	{
-		++CurrentCombo;
-	}
-
-	bLastComboReset = isReset;
-}
-
-void ADefaultPlayerState::Server_HandleCombo_Implementation(bool isReset)
-{
-	HandleCombo(isReset);
+	// 만약 이 PlayerState가 Local Player라면 HandleNoteDetected()에서 이미 UI를 띄웠음.
+	// 그러므로 Return
 	if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
 	{
 		if (PC->IsLocalController())
 		{
-			OnComboChanged.Broadcast(this, CurrentCombo, bLastComboReset);
+			return;
 		}
 	}
+
+	//다른 플레이어의 콤보가 바뀌었을때 UI 처리용
+	OnComboChanged.Broadcast(ComboData.LastNoteResult, ComboData.CurrentCombo);
+}
+
+void ADefaultPlayerState::HandleCombo(ENoteResult InResult)
+{
+	FComboData NewData = ComboData;
+
+	if (InResult == ENoteResult::Bad || InResult == ENoteResult::None)
+	{
+		NewData.CurrentCombo = 0;
+	}
+	else
+	{
+		NewData.CurrentCombo++;
+	}
+
+	NewData.LastNoteResult = InResult;
+
+	// Replication 트리거용은 서버에서만 관리
+	// 클라에선 단순히 개인 UI 갱신용으로 값을 바꾸지 않음.
+	if (HasAuthority())
+	{
+		NewData.TransactionID++;
+	}
+
+	if (!(ComboData == NewData))
+	{
+		ComboData = NewData;
+		OnComboChanged.Broadcast(ComboData.LastNoteResult, ComboData.CurrentCombo);
+	}
+}
+
+void ADefaultPlayerState::Server_HandleCombo_Implementation(ENoteResult InResult)
+{
+	HandleCombo(InResult);
 }

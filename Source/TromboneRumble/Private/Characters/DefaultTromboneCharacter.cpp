@@ -12,6 +12,7 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Data/CharacterAttributeSet.h"
 #include "Data/CharacterDataAsset.h"
@@ -47,20 +48,27 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
-	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
-	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
-
+	
+	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	if (AkSoundComponent)
 	{
 		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
 
+	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
 	if (RingHitBoxComponent)
 	{
 		RingHitBoxComponent->SetupAttachment(RootComponent);
+	}
+
+	ComboWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ComboWidgetComponent"));
+	if (ComboWidgetComponent)
+	{
+		ComboWidgetComponent->SetupAttachment(RootComponent);
+		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 	}
 }
 
@@ -189,7 +197,12 @@ void ADefaultTromboneCharacter::BeginPlay()
 		GetCharacterMovement()->MaxWalkSpeed = CharacterAttributes->GetMoveSpeed();
 	}
 	// ~GAS 초기화
-	
+
+	if (ComboWidgetComponent)
+	{
+		ComboWidgetComponent->SetVisibility(false);
+	}
+
 	if (IsLocallyControlled())
 	{
 		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
@@ -209,6 +222,8 @@ void ADefaultTromboneCharacter::BeginPlay()
 			Listeners.Add(AkSoundComponent);
 			AkSoundComponent->SetListeners(Listeners);
 		}
+
+		ComboWidgetComponent->SetVisibility(true);
 	}
 }
 

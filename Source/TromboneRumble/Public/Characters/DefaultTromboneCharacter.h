@@ -22,6 +22,7 @@ class UInteractorComponent;
 class UAbilitySystemComponent;
 class URingHitBoxComponent;
 class UNiagaraSystem;
+class UWidgetComponent;
 
 class ARhythmActor;
 class UCharacterDataAsset;
@@ -83,11 +84,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<URingHitBoxComponent> RingHitBoxComponent;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "UI")
+	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
 	// ~Components
 	
 	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
 	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
-	
+
 	UPROPERTY(Transient)
 	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	

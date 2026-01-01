@@ -4,15 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Utilities/Defines.h"
 #include "DefaultPlayerState.generated.h"
 
 class AWeaponBase;
 class URhythmSubsystem;
 class AInGameState;
-enum class ENoteResult : uint8;
+
+USTRUCT(BlueprintType)
+struct FComboData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentCombo = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	ENoteResult LastNoteResult = ENoteResult::None; 
+
+	//콤보가 0일때 Bad 판정 칠시 판단 용도로 패킷 구분
+	UPROPERTY()
+	uint8 TransactionID = 0;
+
+	bool operator==(const FComboData& Other) const
+	{
+		return CurrentCombo == Other.CurrentCombo &&
+			LastNoteResult == Other.LastNoteResult &&
+			TransactionID == Other.TransactionID;
+	}
+};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLocalScoreChanged, APlayerState*, PlayerState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnComboChanged, APlayerState*,PlayerState, int32, ComboCount, bool, isComboReset);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
 
 UCLASS()
 class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
@@ -54,19 +77,16 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
-	UPROPERTY(ReplicatedUsing = OnRep_ComboState)
-	int32 CurrentCombo = 0;
-
-	UPROPERTY(ReplicatedUsing = OnRep_ComboState)
-	bool bLastComboReset = false;
+	UPROPERTY(ReplicatedUsing = OnRep_ComboData)
+	FComboData ComboData;
 
 	UFUNCTION()
-	void OnRep_ComboState();
+	void OnRep_ComboData();
 
-	void HandleCombo(bool bReset);
+	void HandleCombo(ENoteResult InResult);
 
 	UFUNCTION(Server, Reliable)
-	void Server_HandleCombo(bool bReset);
+	void Server_HandleCombo(ENoteResult InResult);
 
 public:
 	//getter setter
