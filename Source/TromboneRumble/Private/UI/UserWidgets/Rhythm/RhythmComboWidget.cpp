@@ -25,31 +25,50 @@ void URhythmComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 Comb
     switch (InNoteResult)
     {
     case ENoteResult::Bad:
-        ComboText->SetText(FText::FromString(TEXT("Oops!")));
-        ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
-        if (MissAnim)
-        {
-            PlayAnimation(MissAnim);
-        }
+	    {
+	        static const TArray<FString> BadPhrases = {
+	            TEXT("Oops!"),
+	            TEXT("Meh"),
+	            TEXT("What?"),
+	            TEXT("No!"),
+	            TEXT("Miss...")
+	        };
+
+	        int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
+	        ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
+	        ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+	        if (MissAnim)
+	        {
+	            PlayAnimation(MissAnim);
+	        }
+	    }
         break;
 
     case ENoteResult::Good:
-        ComboText->SetText(FText::AsNumber(ComboCount));
-        ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
+	    {
+			FString ComboString = FString::FromInt(ComboCount) + TEXT(" Combo");
+			ComboText->SetText(FText::FromString(ComboString));
 
-        if (BounceAnim)
-        {
-            PlayAnimation(BounceAnim);
-        }
+			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
+
+			if (BounceAnim)
+			{
+				PlayAnimation(BounceAnim);
+			}
+	    }
         break;
 
     case ENoteResult::Excellent:
-        ComboText->SetText(FText::AsNumber(ComboCount));
-        ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
-        if (BounceAnim)
-        {
-            PlayAnimation(BounceAnim);
-        }
+	    {
+			FString ComboString = FString::FromInt(ComboCount) + TEXT(" Combo");
+			ComboText->SetText(FText::FromString(ComboString));
+
+			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
+			if (BounceAnim)
+			{
+				PlayAnimation(BounceAnim);
+			}
+	    }
         break;
 
     case ENoteResult::None:
