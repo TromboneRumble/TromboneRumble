@@ -1,0 +1,10 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1663244239	Play_Audience_Combo			\Default Work Unit\Audience_SFX\Play_Audience_Combo	
+
+Switch Group	ID	Name			Wwise Object Path	Notes
+	2854002871	Audience			\Default Work Unit\Audience	
+
+Switch	ID	Name	Switch Group			Notes
+	468800587	Combo_On	Audience			
+	1072145695	Combo_Off	Audience			
+

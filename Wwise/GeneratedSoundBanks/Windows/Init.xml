@@ -39,6 +39,12 @@
 						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
 					</Switches>
 				</SwitchGroup>
+				<SwitchGroup Id="2854002871" Name="Audience" ObjectPath="\Switches\Default Work Unit\Audience" GUID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
+					<Switches>
+						<Switch Id="468800587" Name="Combo_On" ObjectPath="\Switches\Default Work Unit\Audience\Combo_On" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
+						<Switch Id="1072145695" Name="Combo_Off" ObjectPath="\Switches\Default Work Unit\Audience\Combo_Off" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
+					</Switches>
+				</SwitchGroup>
 				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
 					<Switches>
 						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
@@ -176,5 +182,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{CF8430E9-29F1-1A56-4542-9F97FAE46F6A}</FileHash>
+	<FileHash>{7200E6AE-8C2A-3F8D-2DFD-701CC1B542A8}</FileHash>
 </SoundBanksInfo>

@@ -1080,6 +1080,26 @@
       ]
      },
      {
+      "Id": "2854002871",
+      "Name": "Audience",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Audience",
+      "GUID": "{A184C972-5F24-4E33-B4B9-AB1EE9F26252}",
+      "Switches": [
+       {
+        "Id": "468800587",
+        "Name": "Combo_On",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Audience\\Combo_On",
+        "GUID": "{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"
+       },
+       {
+        "Id": "1072145695",
+        "Name": "Combo_Off",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Audience\\Combo_Off",
+        "GUID": "{304E0349-B689-4754-ABC4-4355EA3A4F6D}"
+       }
+      ]
+     },
+     {
       "Id": "3031504797",
       "Name": "Foot",
       "ObjectPath": "\\Switches\\Default Work Unit\\Foot",
@@ -1931,6 +1951,95 @@
         }
        ]
       }
+     }
+    ]
+   },
+   {
+    "Id": "1663244239",
+    "Type": "Event",
+    "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
+    "Language": "SFX",
+    "Hash": "{68A60A6D-2DB3-6A07-28F3-68C6CB7188AD}",
+    "ObjectPath": "Play_Audience_Combo",
+    "ShortName": "Play_Audience_Combo",
+    "Path": "Event/Play_Audience_Combo.bnk",
+    "Media": [
+     {
+      "Id": "139820036",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SWITCH.cm.wav",
+      "Path": "Media/139820036.wem",
+      "CachePath": "SFX/SWITCH.cm_FBC78EF0.wem"
+     },
+     {
+      "Id": "858484202",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_A_None.wav",
+      "Path": "Media/858484202.wem",
+      "CachePath": "SFX/Map_A_None_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1663244239",
+      "Name": "Play_Audience_Combo",
+      "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Audience_Combo",
+      "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
+      "DurationType": "Infinite",
+      "SwitchContainers": [
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "2854002871",
+         "Id": "1072145695",
+         "GUID": "{304E0349-B689-4754-ABC4-4355EA3A4F6D}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "858484202"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "2854002871",
+         "Id": "468800587",
+         "GUID": "{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "139820036"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "2854002871",
+      "Name": "Audience",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Audience",
+      "GUID": "{A184C972-5F24-4E33-B4B9-AB1EE9F26252}",
+      "Switches": [
+       {
+        "Id": "468800587",
+        "Name": "Combo_On",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Audience\\Combo_On",
+        "GUID": "{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"
+       },
+       {
+        "Id": "1072145695",
+        "Name": "Combo_Off",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Audience\\Combo_Off",
+        "GUID": "{304E0349-B689-4754-ABC4-4355EA3A4F6D}"
+       }
+      ]
      }
     ]
    },
@@ -3199,7 +3308,7 @@
     "Type": "Event",
     "GUID": "{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}",
     "Language": "SFX",
-    "Hash": "{7BD25406-0C45-5841-EC57-5A5009FF2DC6}",
+    "Hash": "{C64EE069-2F93-9CC5-4F47-38DEDA68E08C}",
     "ObjectPath": "MIDI_MapB_Main",
     "ShortName": "MIDI_MapB_Main",
     "Path": "Event/MIDI_MapB_Main.bnk",
@@ -3392,8 +3501,69 @@
       }
      }
     ]
+   },
+   {
+    "Id": "4250244477",
+    "Type": "Event",
+    "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
+    "Language": "SFX",
+    "Hash": "{CC19E2C7-81E4-A2A7-C21F-C39567E3288F}",
+    "ObjectPath": "Play_Audience_Boo",
+    "ShortName": "Play_Audience_Boo",
+    "Path": "Event/Play_Audience_Boo.bnk",
+    "Media": [
+     {
+      "Id": "392038465",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Audience_Boo.wav",
+      "Path": "Media/392038465.wem",
+      "CachePath": "SFX/Audience_Boo_2748E109.wem"
+     },
+     {
+      "Id": "489322637",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Audience_Boo.wav",
+      "Path": "Media/489322637.wem",
+      "CachePath": "SFX/Audience_Boo_F43820DE.wem"
+     },
+     {
+      "Id": "534001193",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Audience_Boo.wav",
+      "Path": "Media/534001193.wem",
+      "CachePath": "SFX/Audience_Boo_2976580F.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "4250244477",
+      "Name": "Play_Audience_Boo",
+      "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Audience_Boo",
+      "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.9886227",
+      "DurationMax": "3.172538",
+      "MediaRefs": [
+       {
+        "Id": "392038465"
+       },
+       {
+        "Id": "489322637"
+       },
+       {
+        "Id": "534001193"
+       }
+      ]
+     }
+    ]
    }
   ],
-  "FileHash": "{291299B2-FA5E-0CC2-88AF-EE43B026C0E2}"
+  "FileHash": "{186CF1D9-BD70-E330-F696-D5D2A0EED512}"
  }
 }

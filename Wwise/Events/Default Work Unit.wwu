@@ -455,6 +455,32 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Audience_SFX" ID="{26952185-7075-4B42-B0F9-7C1C6F797820}" ShortID="396442691">
+					<ChildrenList>
+						<Event Name="Play_Audience_Boo" ID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}">
+							<ChildrenList>
+								<Action Name="" ID="{10B04589-FFCC-4507-8CA0-6D6AA506D4D4}" ShortID="101079089">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_Boo" ID="{975E59CE-3A3B-4A51-880E-84E3A35CA143}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Audience_Combo" ID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}">
+							<ChildrenList>
+								<Action Name="" ID="{D9FBB997-E313-4F4C-A8F2-2EAD8A1E0517}" ShortID="768952766">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_Combo" ID="{B40E2C4A-0983-45F3-B44D-F151DB5BBD64}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -514,6 +514,12 @@
 						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
 					</Switches>
 				</SwitchGroup>
+				<SwitchGroup Id="2854002871" Name="Audience" ObjectPath="\Switches\Default Work Unit\Audience" GUID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
+					<Switches>
+						<Switch Id="468800587" Name="Combo_On" ObjectPath="\Switches\Default Work Unit\Audience\Combo_On" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
+						<Switch Id="1072145695" Name="Combo_Off" ObjectPath="\Switches\Default Work Unit\Audience\Combo_Off" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
+					</Switches>
+				</SwitchGroup>
 				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
 					<Switches>
 						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
@@ -837,6 +843,49 @@
 					</PluginRefs>
 				</Event>
 			</Events>
+		</SoundBank>
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{68A60A6D-2DB3-6A07-28F3-68C6CB7188AD}">
+			<ObjectPath>Play_Audience_Combo</ObjectPath>
+			<ShortName>Play_Audience_Combo</ShortName>
+			<Path>Event/Play_Audience_Combo.bnk</Path>
+			<Media>
+				<File Id="139820036" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SWITCH.cm.wav</ShortName>
+					<Path>Media/139820036.wem</Path>
+					<CachePath>SFX/SWITCH.cm_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="858484202" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_None.wav</ShortName>
+					<Path>Media/858484202.wem</Path>
+					<CachePath>SFX/Map_A_None_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="Infinite">
+					<SwitchContainers>
+						<SwitchContainer>
+							<SwitchValue GroupType="Switch" GroupId="2854002871" Id="1072145695" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
+							<MediaRefs>
+								<MediaRef Id="858484202"/>
+							</MediaRefs>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="Switch" GroupId="2854002871" Id="468800587" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
+							<MediaRefs>
+								<MediaRef Id="139820036"/>
+							</MediaRefs>
+						</SwitchContainer>
+					</SwitchContainers>
+				</Event>
+			</Events>
+			<SwitchGroups>
+				<SwitchGroup Id="2854002871" Name="Audience" ObjectPath="\Switches\Default Work Unit\Audience" GUID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
+					<Switches>
+						<Switch Id="468800587" Name="Combo_On" ObjectPath="\Switches\Default Work Unit\Audience\Combo_On" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
+						<Switch Id="1072145695" Name="Combo_Off" ObjectPath="\Switches\Default Work Unit\Audience\Combo_Off" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
 		</SoundBank>
 		<SoundBank Id="1795670352" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{9398B9C5-03CC-C7AC-24E3-E74527502B00}">
 			<ObjectPath>Note_Long_End</ObjectPath>
@@ -1470,7 +1519,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3975618771" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{7BD25406-0C45-5841-EC57-5A5009FF2DC6}">
+		<SoundBank Id="3975618771" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{C64EE069-2F93-9CC5-4F47-38DEDA68E08C}">
 			<ObjectPath>MIDI_MapB_Main</ObjectPath>
 			<ShortName>MIDI_MapB_Main</ShortName>
 			<Path>Event/MIDI_MapB_Main.bnk</Path>
@@ -1564,6 +1613,37 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{CC19E2C7-81E4-A2A7-C21F-C39567E3288F}">
+			<ObjectPath>Play_Audience_Boo</ObjectPath>
+			<ShortName>Play_Audience_Boo</ShortName>
+			<Path>Event/Play_Audience_Boo.bnk</Path>
+			<Media>
+				<File Id="392038465" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Audience_Boo.wav</ShortName>
+					<Path>Media/392038465.wem</Path>
+					<CachePath>SFX/Audience_Boo_2748E109.wem</CachePath>
+				</File>
+				<File Id="489322637" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Audience_Boo.wav</ShortName>
+					<Path>Media/489322637.wem</Path>
+					<CachePath>SFX/Audience_Boo_F43820DE.wem</CachePath>
+				</File>
+				<File Id="534001193" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Audience_Boo.wav</ShortName>
+					<Path>Media/534001193.wem</Path>
+					<CachePath>SFX/Audience_Boo_2976580F.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="4250244477" Name="Play_Audience_Boo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Boo" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" DurationType="OneShot" DurationMin="2.9886227" DurationMax="3.172538">
+					<MediaRefs>
+						<MediaRef Id="392038465"/>
+						<MediaRef Id="489322637"/>
+						<MediaRef Id="534001193"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5F04EBDC-DA6C-92EB-2E9C-987ABA5215C0}</FileHash>
+	<FileHash>{15FDDFDC-B224-2C86-E2E5-8CDA8A6C4F2F}</FileHash>
 </SoundBanksInfo>
