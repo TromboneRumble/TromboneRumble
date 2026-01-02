@@ -1,0 +1,67 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2564452233",
+    "Type": "Event",
+    "GUID": "{750353A4-404D-47D8-92EF-B12E466A3BCE}",
+    "Language": "SFX",
+    "Hash": "{853B93DB-913F-A44B-8D68-A7BEF3C427CC}",
+    "ObjectPath": "MIDI_MapB_Object",
+    "ShortName": "MIDI_MapB_Object",
+    "Path": "Event/MIDI_MapB_Object.bnk",
+    "Media": [
+     {
+      "Id": "1754829",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MIDI_Object.mid",
+      "Path": "Media/1754829.wem",
+      "CachePath": "SFX/MIDI_Object_33C6D28E.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2564452233",
+      "Name": "MIDI_MapB_Object",
+      "ObjectPath": "\\Events\\Default Work Unit\\Map_B_Rhythm\\MIDI_MapB_Object",
+      "GUID": "{750353A4-404D-47D8-92EF-B12E466A3BCE}",
+      "DurationType": "OneShot",
+      "DurationMin": "233.34395",
+      "DurationMax": "233.34395",
+      "MediaRefs": [
+       {
+        "Id": "1754829"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{918ACDCE-AA58-ABA4-2814-D8EB9A8D4D0F}"
+ }
+}

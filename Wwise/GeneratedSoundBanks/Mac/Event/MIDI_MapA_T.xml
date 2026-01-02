@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1909551207" Type="Event" GUID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}" Language="SFX" Hash="{DBF71B48-5DB3-799A-3D03-60EBFAC767AF}">
+		<SoundBank Id="1909551207" Type="Event" GUID="{8276A4A2-5DB1-48BD-88DF-55AB751068C2}" Language="SFX" Hash="{16FA414B-D898-EF2E-1985-ECAC4945002F}">
 			<ObjectPath>MIDI_MapA_T</ObjectPath>
 			<ShortName>MIDI_MapA_T</ShortName>
 			<Path>Event/MIDI_MapA_T.bnk</Path>
@@ -9,7 +9,7 @@
 				<File Id="157812467" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>MIDI_T.mid</ShortName>
 					<Path>Media/157812467.wem</Path>
-					<CachePath>SFX/MIDI_T_2982EAA2.wem</CachePath>
+					<CachePath>SFX/MIDI_T_707D6309.wem</CachePath>
 				</File>
 				<File Id="378149048" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Map_A_Trombone.wav</ShortName>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{220CE276-5E89-86FE-8B58-5554B7B3014E}</FileHash>
+	<FileHash>{1398406D-A8DE-BB74-475A-FF0548C2137A}</FileHash>
 </SoundBanksInfo>
