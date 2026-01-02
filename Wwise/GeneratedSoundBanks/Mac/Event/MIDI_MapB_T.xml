@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1909403912" Type="Event" GUID="{B9083602-D386-4F6A-830D-FFEBBFA50FA7}" Language="SFX" Hash="{5DDAB525-B30B-87B1-129D-331638E45617}">
+			<ObjectPath>MIDI_MapB_T</ObjectPath>
+			<ShortName>MIDI_MapB_T</ShortName>
+			<Path>Event/MIDI_MapB_T.bnk</Path>
+			<Media>
+				<File Id="157812467" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_T.mid</ShortName>
+					<Path>Media/157812467.wem</Path>
+					<CachePath>SFX/MIDI_T_707D6309.wem</CachePath>
+				</File>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1063425767" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Trombone.wav</ShortName>
+					<Path>Media/1063425767.wem</Path>
+					<CachePath>SFX/Map_B_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1909403912" Name="MIDI_MapB_T" ObjectPath="\Events\Default Work Unit\Map_B_Rhythm\MIDI_MapB_T" GUID="{B9083602-D386-4F6A-830D-FFEBBFA50FA7}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="157812467"/>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="1063425767"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C96435C3-8BB8-5821-9149-1AA6FD438AE9}</FileHash>
+</SoundBanksInfo>
