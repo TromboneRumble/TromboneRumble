@@ -21,4 +21,5 @@ namespace TromboneGamePlayTags
 	//RhythmGame Songs
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_Airplane);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapA);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapB);
 }
