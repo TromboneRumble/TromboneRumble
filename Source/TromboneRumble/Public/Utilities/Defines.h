@@ -4,6 +4,18 @@
 #include "Defines.generated.h"
 
 UENUM()
+enum class EFaceExpressionType : uint8
+{
+	Normal0 = 0, // Blinking
+	Normal1 = 1, // Blinking
+	Normal2 = 2, // Blinking
+	Stun = 3,
+	Ragdoll = 3,
+	None = 254,
+	Invalid = 255 UMETA(Hidden)
+};
+
+UENUM()
 enum class EEquipmentSlotType : uint8
 {
 	Weapon,
@@ -39,14 +51,11 @@ enum class ELobbyState : uint8
 };
 
 UENUM()
-enum class EHitType : uint8
+enum class EHitReactionType : uint8
 {
-	Headbutt,
-	Instrument,
-	Trombone,
-	Cymbals,
-	Violin,
-	Audience,
+	None,
+	Stun,
+	Ragdoll,
 	Invalid		= 255	UMETA(Hidden)
 };
 

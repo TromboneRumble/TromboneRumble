@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{57290082-9155-1343-E4DF-28F23AF4A7CB}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{B319596E-8349-BCED-3630-D704FD8C3839}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -34,7 +34,7 @@
 			</Media>
 			<Plugins>
 				<Custom>
-					<Plugin Id="459372084" Name="Meter (Custom)" ObjectPath="\Interactive Music Hierarchy\Default Work Unit\MapA_Song\Map_A\Map_A_Inst\[Effect Slot [0]: (Meter)]\Meter (Custom)" GUID="{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}" LibName="Wwise Meter" LibId="8454147"/>
+					<Plugin Id="459372084" Name="Meter (Custom)" ObjectPath="\Interactive Music Hierarchy\Default Work Unit\MapA\MapA_Song\Map_A\Map_A_Inst\[Effect Slot [0]: (Meter)]\Meter (Custom)" GUID="{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}" LibName="Wwise Meter" LibId="8454147"/>
 				</Custom>
 			</Plugins>
 			<Events>
@@ -68,5 +68,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{12DFC5E2-7474-1A60-F43A-7701EA6BB1D0}</FileHash>
+	<FileHash>{5E3BA9A9-D00B-5D36-2AE6-B51904BC61AA}</FileHash>
 </SoundBanksInfo>

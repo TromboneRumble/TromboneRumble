@@ -94,25 +94,28 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UAkComponent> AkComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	/** 스포트라이트가 생성된 후 본격적으로 활성화되기 전까지의 대기 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "경고 상태 지속 시간"))
 	float WarningDuration = 1.5f;
 
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	/** 플레이어가 점수를 획득할 수 있는 실질적인 유지 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "활성 상태 지속 시간"))
 	float ActiveDuration = 3.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	/** 플레이어가 보너스 점수를 획득한 직후, 효과를 보여주기 위해 유지되는 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "점수 획득 후 유지 시간"))
 	float AwardedDuration = 2.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	/** 스포트라이트가 시간 초과 등으로 인해 서서히 사라지는 단계의 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "소멸 단계 지속 시간"))
 	float FadingDuration = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
+	/** 스포트라이트가 활성화(Active) 되었을 때 빛의 색상 */
+	UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "활성화 시 조명 색상"))
 	FLinearColor SpotlightActiveColor = FLinearColor(1, 0.98f, 0.64f);
-
-	UPROPERTY(EditAnywhere, Category = "Spotlight|Config")
-	int32 SpotlightBonusScore = 300;
-
+	
 	FTimerHandle LifecycleTimerHandle;
+	int32 SpotlightBonusScore = 300;
 
 	UPROPERTY(EditDefaultsOnly, Category = "VFX", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraSystem> SpotlightSuccessVFX;

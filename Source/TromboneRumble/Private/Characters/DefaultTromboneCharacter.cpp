@@ -11,12 +11,16 @@
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
+#include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Data/CharacterAttributeSet.h"
+#include "Data/RhythmScoreAttributeSet.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
@@ -45,26 +49,28 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
-	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
-	JudgementRingComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("JudgementRingComponent"));
-
+	RhythmScoreAttributes = CreateDefaultSubobject<URhythmScoreAttributeSet>(TEXT("ScoreAttributeSet"));
+	
+	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	if (AkSoundComponent)
 	{
 		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
 
-	if (JudgementRingComponent)
+	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
+	if (RingHitBoxComponent)
 	{
-		JudgementRingComponent->SetVisibility(false);
-		JudgementRingComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		JudgementRingComponent->SetGenerateOverlapEvents(false);
-		JudgementRingComponent->CanCharacterStepUpOn = ECB_No;
-		JudgementRingComponent->bReceivesDecals = false;
-		JudgementRingComponent->SetCastShadow(false);
-		JudgementRingComponent->SetupAttachment(RootComponent);
+		RingHitBoxComponent->SetupAttachment(RootComponent);
+	}
+
+	ComboWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ComboWidgetComponent"));
+	if (ComboWidgetComponent)
+	{
+		ComboWidgetComponent->SetupAttachment(RootComponent);
+		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 	}
 }
 
@@ -193,7 +199,12 @@ void ADefaultTromboneCharacter::BeginPlay()
 		GetCharacterMovement()->MaxWalkSpeed = CharacterAttributes->GetMoveSpeed();
 	}
 	// ~GAS 초기화
-	
+
+	if (ComboWidgetComponent)
+	{
+		ComboWidgetComponent->SetVisibility(false);
+	}
+
 	if (IsLocallyControlled())
 	{
 		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
@@ -206,8 +217,6 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 
-		JudgementRingComponent->SetVisibility(true);
-
 		// Sound Listener의 기본 설정을 카메라->Player로 변경
 		if (AkSoundComponent)
 		{
@@ -215,6 +224,8 @@ void ADefaultTromboneCharacter::BeginPlay()
 			Listeners.Add(AkSoundComponent);
 			AkSoundComponent->SetListeners(Listeners);
 		}
+
+		ComboWidgetComponent->SetVisibility(true);
 	}
 }
 

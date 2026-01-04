@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{57290082-9155-1343-E4DF-28F23AF4A7CB}",
+    "Hash": "{B319596E-8349-BCED-3630-D704FD8C3839}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -66,7 +66,7 @@
       {
        "Id": "459372084",
        "Name": "Meter (Custom)",
-       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\MapA_Song\\Map_A\\Map_A_Inst\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\MapA\\MapA_Song\\Map_A\\Map_A_Inst\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
        "GUID": "{0182542E-D4BB-4B1B-89A2-DE58DE130EA9}",
        "LibName": "Wwise Meter",
        "LibId": "8454147"
@@ -152,6 +152,6 @@
     ]
    }
   ],
-  "FileHash": "{0B50C01A-B42E-809E-3812-26959C59CC49}"
+  "FileHash": "{0486B1F4-1F56-A3B2-E22A-5B075D47668B}"
  }
 }

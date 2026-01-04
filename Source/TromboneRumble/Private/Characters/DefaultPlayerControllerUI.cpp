@@ -4,8 +4,12 @@
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/LobbyGameMode.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Framework/InGameState.h"
 #include "Prototype/PT_UIInGame.h"
+#include "UI/UserWidgets/OnScreenIndicator/OSI_RhythmRankWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "Subsystems/RhythmSubsystem.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultPlayerController::ADefaultPlayerController()
 {
@@ -50,12 +54,12 @@ void ADefaultPlayerController::BeginPlay()
 	
 	GameStateSubsystem->OnGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleGameStateChanged);
 	HandleGameStateChanged(GameStateSubsystem->GetGameState());
-	
+
+	//LoadingScreen
 	FAsyncLoadingScreenModule::OnLoadingScreenFinished().AddUObject(
 		this, &ADefaultPlayerController::HandleLoadingScreenFinished);
 
-	// 2) 🔥 Fallback: 이미 Lobby 맵 안에 있는데
-	//    AsyncLoadingScreen 쪽 이벤트가 안 올 수도 있는 상황(클라가 중간 합류) 대비.
+	//	이미 Lobby 맵 안에 있는데 AsyncLoadingScreen 쪽 이벤트가 안 올 수도 있는 상황(클라가 중간 합류) 대비.
 	if (GameStateSubsystem->GetGameState() == EGameState::Lobby)
 	{
 		// 여기서 한 번 직접 호출해 줌.
@@ -63,7 +67,14 @@ void ADefaultPlayerController::BeginPlay()
 		// HandleLoadingScreenFinished 안의 bHasNotifiedLoadingFinished 때문에 무시됨.
 		HandleLoadingScreenFinished();
 	}
+	//~LoadingScreen
 
+	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
+	{
+		InGameState->OnPlayerStateAdded.AddDynamic(this, &ThisClass::HandlePlayerStateAdded);
+		InGameState->OnPlayerStateRemoved.AddDynamic(this, &ThisClass::HandlePlayerStateRemoved);
+		InGameState->OnLeaderChanged.AddDynamic(this, &ThisClass::HandleOnLeaderChanged);
+	}
 }
 
 void ADefaultPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -72,6 +83,91 @@ void ADefaultPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	Super::EndPlay(EndPlayReason);
 }
+
+void ADefaultPlayerController::HandlePlayerStateAdded(APlayerState* InPlayerState)
+{
+	if (!IsLocalController() || !RhythmRankWidgetClass)
+	{
+		return;
+	}
+
+	AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr;
+	if (!GameState)
+	{
+		return;
+	}
+
+	bool bNeedRetryNextFrame = false;
+
+	for (APlayerState* PlayerStateInArray : GameState->PlayerArray)
+	{
+		// 나 자신 제외
+		if (!PlayerStateInArray || PlayerState == PlayerStateInArray)
+		{
+			continue; 
+		}
+
+		// 이미 위젯이 있으면 스킵
+		if (PlayerStateToRhythmRankWidgetMap.Contains(PlayerStateInArray))
+		{
+			continue;
+		}
+
+		// 멀티플레이어 환경에서 Pawn이 설정안돼있을수 있음
+		APawn* PlayerPawnInArray = PlayerStateInArray->GetPawn();
+		if (!PlayerPawnInArray)
+		{
+			bNeedRetryNextFrame = true;
+			continue;
+		}
+
+		UOSI_RhythmRankWidget* Widget =	CreateWidget<UOSI_RhythmRankWidget>(this, RhythmRankWidgetClass);
+		if (!Widget)
+		{
+			continue;
+		}
+
+		Widget->TargetComponent = PlayerPawnInArray->GetRootComponent();
+		PlayerStateToRhythmRankWidgetMap.Add(PlayerStateInArray, Widget);
+		Widget->AddToViewport();
+	}
+
+	if (bNeedRetryNextFrame && !bRetryTimerRunning)
+	{
+		bRetryTimerRunning = true;
+
+		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				bRetryTimerRunning = false;
+				HandlePlayerStateAdded(nullptr);
+			}));
+	}
+}
+
+void ADefaultPlayerController::HandlePlayerStateRemoved(APlayerState* InPlayerState)
+{
+	if (!InPlayerState) return;
+
+	if (UOSI_RhythmRankWidget* Widget = PlayerStateToRhythmRankWidgetMap.FindRef(InPlayerState))
+	{
+		Widget->RemoveFromParent();
+	}
+
+	PlayerStateToRhythmRankWidgetMap.Remove(InPlayerState);
+}
+
+void ADefaultPlayerController::HandleOnLeaderChanged(APlayerState* NewLeader, APlayerState* OldLeader)
+{
+	if (UOSI_RhythmRankWidget* Widget = PlayerStateToRhythmRankWidgetMap.FindRef(NewLeader))
+	{
+		Widget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	if (UOSI_RhythmRankWidget* Widget = PlayerStateToRhythmRankWidgetMap.FindRef(OldLeader))
+	{
+		Widget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
 
 void ADefaultPlayerController::InitializeLobbyUI()
 {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="562256996" Type="Event" GUID="{9A720635-720F-4279-A256-D1A0C4C248B2}" Language="SFX" Hash="{4D45893C-8138-EDEF-2EA9-4B5987FE6187}">
+		<SoundBank Id="562256996" Type="Event" GUID="{9A720635-720F-4279-A256-D1A0C4C248B2}" Language="SFX" Hash="{74A4459E-1FEE-923B-C41D-8D6FB7BA0CF3}">
 			<ObjectPath>Play_Player_Jump</ObjectPath>
 			<ShortName>Play_Player_Jump</ShortName>
 			<Path>Event/Play_Player_Jump.bnk</Path>
@@ -27,5 +27,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0FD3613E-5919-C3FB-0419-A1B4458B6CAC}</FileHash>
+	<FileHash>{5653DB48-328E-9456-EC4A-655E04BE6FBA}</FileHash>
 </SoundBanksInfo>

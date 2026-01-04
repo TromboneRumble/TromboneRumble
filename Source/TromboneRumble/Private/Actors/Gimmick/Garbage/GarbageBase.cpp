@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Actors/Gimmick/Garbage/GarbageBase.h"
+
+#include "AkComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -40,6 +42,13 @@ AGarbageBase::AGarbageBase()
 	{
 		TrailComp->SetupAttachment(RootComponent);
 		TrailComp->SetAutoActivate(true);
+	}
+
+	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
+	if (AkComponent)
+	{
+		AkComponent->SetupAttachment(RootComponent);
+		AkComponent->OcclusionRefreshInterval = 0.f;
 	}
 }
 
@@ -106,6 +115,18 @@ void AGarbageBase::OnRep_ImpactStarted()
 	}
 }
 
+void AGarbageBase::OnRep_HitPawn()
+{
+	if (bHitPawn)
+	{
+		if (AkComponent && HitSoundEvent)
+		{
+			FOnAkPostEventCallback DummyCallback;
+			AkComponent->PostAkEvent(HitSoundEvent, 0, DummyCallback);
+		}
+	}
+}
+
 void AGarbageBase::HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                  FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -123,19 +144,24 @@ void AGarbageBase::HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	{
 		FHitData HitData;
 		HitData.HitDirection = (GetActorLocation() - OtherActor->GetActorLocation()).GetSafeNormal();
-		HitData.HitType = EHitType::Audience;
+		HitData.HitType = HitReactionType;
+		HitData.KnockbackForce = 500.f; // TODO : 데이터화
 		
 		CombatReceiver->OnHitReceived(HitData);
 	}
-
-	const bool bHitPawn = OtherActor->IsA<ACharacter>();
 
 	const ECollisionChannel OtherObjType = OtherComp ? OtherComp->GetCollisionObjectType() : ECC_Visibility;
 	const bool bHitWorld = (OtherObjType == ECC_WorldStatic) || (OtherObjType == ECC_WorldDynamic);
 	const bool bOtherIsGarbage = OtherActor->IsA<AGarbageBase>();
 
-	if (bHitPawn)
+	if (OtherActor->IsA<ACharacter>())
 	{
+		if (AkComponent && HitSoundEvent)
+		{
+			FOnAkPostEventCallback DummyCallback;
+			AkComponent->PostAkEvent(HitSoundEvent, 0, DummyCallback);
+		}
+		bHitPawn = true;
 		StartDestroyTimer_Server(DestroyDelayAfterImpact);
 	}
 	else if (bHitWorld && !bOtherIsGarbage)

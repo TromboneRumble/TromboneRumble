@@ -20,12 +20,15 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInteractorComponent;
 class UAbilitySystemComponent;
+class URingHitBoxComponent;
 class UNiagaraSystem;
+class UWidgetComponent;
 
 class ARhythmActor;
 class UCharacterDataAsset;
 class UWeaponDataAsset;
 class UCharacterAttributeSet;
+class URhythmScoreAttributeSet;
 
 class AItemBase;
 
@@ -77,16 +80,22 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UCharacterAttributeSet> CharacterAttributes;
 
+	UPROPERTY()
+	TObjectPtr<URhythmScoreAttributeSet> RhythmScoreAttributes;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UStaticMeshComponent> JudgementRingComponent;
+	TObjectPtr<URingHitBoxComponent> RingHitBoxComponent;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "UI")
+	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
 	// ~Components
 	
 	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
 	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
-	
+
 	UPROPERTY(Transient)
 	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	
@@ -128,6 +137,5 @@ public:
 	//getter setter
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
-	FORCEINLINE UStaticMeshComponent* GetJudgementRingComponent() { return JudgementRingComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 };

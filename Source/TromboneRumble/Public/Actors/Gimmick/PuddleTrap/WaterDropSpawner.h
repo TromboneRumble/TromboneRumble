@@ -26,8 +26,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn")
 	TSubclassOf<AWaterDrop> WaterDropClass;
 
-	// 물방울 스폰 간격
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn")
+	/** 물방울이 생성되는 시간 간격 (초) 
+	 * 값이 작을수록 물방울이 더 자주 생성되어 떨어집니다. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaterDrop|Config", meta = (DisplayName = "물방울 생성 간격"))
 	float SpawnInterval = 10.f;
 
 	FTimerHandle SpawnTimerHandle;

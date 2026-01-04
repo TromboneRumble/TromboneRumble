@@ -6,6 +6,10 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Framework/InGameState.h"
+#include "GameFramework/PlayerState.h"
+#include "Subsystems/RhythmSubsystem.h"
+#include "Utilities/DebugHelper.h"
 
 AGarbageSpawner::AGarbageSpawner()
 {
@@ -20,10 +24,18 @@ void AGarbageSpawner::BeginPlay()
 	Super::BeginPlay();
 	if (HasAuthority() && bAutoStart)
 	{
-		StartAutoSpawn_Server();
-	}
-	//TODO : Spotlight처럼 이벤트 큐 시작하면 그때 던지기
-	
+		if (bAutoStart)
+		{
+			StartAutoSpawn_Server();
+		}
+		else
+		{
+			if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+			{
+				MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::StartAutoSpawnFromMusicCue);
+			}
+		}
+	}	
 }
 
 void AGarbageSpawner::SpawnGarbageOnce_Server()
@@ -38,7 +50,7 @@ void AGarbageSpawner::SpawnGarbageOnce_Server()
 		return;
 	}
 	
-	AActor* TargetPawn = PickRandomPlayerPawn();
+	AActor* TargetPawn = PickTargetPawn();
 	if (!IsValid(TargetPawn))
 	{
 		return;
@@ -89,6 +101,14 @@ void AGarbageSpawner::StopAutoSpawn_Server()
 	}
 }
 
+void AGarbageSpawner::StartAutoSpawnFromMusicCue(FName CueName)
+{
+	if (CueName == TEXT("Event_Spotlight_Start"))
+	{
+		StartAutoSpawn_Server();
+	}
+}
+
 TSubclassOf<AGarbageBase> AGarbageSpawner::PickRandomGarbageClass() const
 {
 	const int32 Index = FMath::RandRange(0, GarbageClasses.Num() - 1);
@@ -115,6 +135,21 @@ bool AGarbageSpawner::PickRandomSpawnTransform(FTransform& OutTransform) const
 	const int32 Index = FMath::RandRange(0, ValidPoints.Num() - 1);
 	OutTransform = ValidPoints[Index]->GetActorTransform();
 	return true;
+}
+
+AActor* AGarbageSpawner::PickTargetPawn() const
+{
+	switch (TargetingMode)
+	{
+	case EGarbageTargetingMode::Random:
+		return PickRandomPlayerPawn();
+
+	case EGarbageTargetingMode::ScoreWeighted:
+		return PickScoreWeightedTargetPawn();
+
+	default:
+		return PickRandomPlayerPawn();
+	}
 }
 
 AActor* AGarbageSpawner::PickRandomPlayerPawn() const
@@ -151,6 +186,60 @@ AActor* AGarbageSpawner::PickRandomPlayerPawn() const
 
 	const int32 Index = FMath::RandRange(0, Candidates.Num() - 1);
 	return Candidates[Index];
+}
+
+AActor* AGarbageSpawner::PickScoreWeightedTargetPawn() const
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return nullptr;
+	}
+
+	AInGameState* InGameState = World->GetGameState<AInGameState>();
+	if (!InGameState)
+	{
+		return nullptr;
+	}
+
+	TArray<APlayerState*> SortedPlayers;
+	InGameState->GetPlayersSortedByScore(SortedPlayers);
+
+	const int32 NumPlayers = SortedPlayers.Num();
+	if (NumPlayers == 0)
+	{
+		return nullptr;
+	}
+
+	// 가중치 합: 1 + 2 + ... + N = N(N+1)/2
+	const int32 TotalWeightInt = NumPlayers * (NumPlayers + 1) / 2;
+	const float TotalWeight = static_cast<float>(TotalWeightInt);
+	const float RandomPoint = FMath::FRand() * TotalWeight;
+
+	float Accumulated = 0.0f;
+	for (int32 Index = 0; Index < NumPlayers; ++Index)
+	{
+		APlayerState* PS = SortedPlayers[Index];
+		if (!IsValid(PS))
+		{
+			continue;
+		}
+
+		// Index 0 → 1등 → weight = NumPlayers
+		// Index 1 → 2등 → weight = NumPlayers - 1
+		const int32 WeightInt = NumPlayers - Index;
+		const float Weight = static_cast<float>(WeightInt);
+
+		Accumulated += Weight;
+
+		if (RandomPoint <= Accumulated)
+		{
+			APawn* SelectedPawn = PS->GetPawn();
+			return SelectedPawn;
+		}
+	}
+
+	return PickRandomPlayerPawn();
 }
 
 void AGarbageSpawner::SpawnAndThrow_Server(const FTransform& SpawnTransform, AActor* TargetPawn)

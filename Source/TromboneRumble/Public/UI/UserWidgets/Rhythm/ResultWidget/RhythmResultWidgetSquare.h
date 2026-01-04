@@ -37,6 +37,4 @@ private:
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<URhythmSpawnWidgetBase> OwnerSpawnWidget;
-public:
-	FORCEINLINE void SetOwnerSpawnWidget(URhythmSpawnWidgetBase* InWidget) { OwnerSpawnWidget = InWidget; }
 };

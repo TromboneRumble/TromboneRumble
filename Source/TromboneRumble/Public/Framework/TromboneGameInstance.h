@@ -20,7 +20,7 @@ public:
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
 
 private:
-    UPROPERTY(Transient)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "Trombone.Rhythm.Song"))
     FGameplayTag SelectedSongTag = TromboneGamePlayTags::Trombone_Rhythm_Song_MapA;
 
 public:
