@@ -5,9 +5,12 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Settings/OptionPanelBase.h"
 #include "Utilities/Defines.h"
 #include "MainMenuWidget.generated.h"
 
+class UVideoOptionPanel;
+class UAudioOptionPanel;
 class UConfirmationDialogueWidget;
 class UVerticalBox;
 class UCommonAnimatedSwitcher;
@@ -30,7 +33,7 @@ protected:
 
 private:
 	void InitButtons();
-	void ChangePanel(UVerticalBox* TargetPanel);
+	void ChangePanel(UWidget* TargetWidget);
 	
 	// ~ Begin SessionSubsystem Callbacks
 	void BindSubsystemCallbacks();
@@ -62,12 +65,6 @@ private:
 	void JoinButtonClicked();
 	
 	UFUNCTION()
-	void HandleOptionButtonClicked();
-	
-	UFUNCTION()
-	void HandleBackFromSettingsButtonClicked();
-	
-	UFUNCTION()
 	void HandleQuitButtonClicked();
 	// ~ EndButton Callbacks
 
@@ -94,13 +91,18 @@ private:
 	TObjectPtr<USpinBox> MaxPlayerSpinBox;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UVerticalBox> VB_MainMenu;
+	TObjectPtr<UWidget> VB_MainMenu;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UVerticalBox> VB_Settings;
+	TObjectPtr<UWidget> VB_Settings;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UAudioOptionPanel> Widget_AudioOptions;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
 	// ~ End UMGs
 	
-	// ~ Start Common UIs
+	// ~ Begin Common UIs
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> MB_Option;
 	
@@ -112,6 +114,11 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_MainMenu;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> MB_Audio;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> MB_Video;
 	// ~ End Common UIs
 	
 	int32 NumPublicConnections = 4;

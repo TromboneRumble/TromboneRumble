@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/UserWidgets/MainMenuWidget.h"
-
 #include "CommonAnimatedSwitcher.h"
 #include "CommonButtonBase.h"
 #include "Components/Button.h"
@@ -16,7 +15,11 @@
 #include "Components/VerticalBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/UserWidgets/ConfirmationDialogueWidget.h"
+#include "UI/UserWidgets/Settings/AudioOptionPanel.h"
+#include "UI/UserWidgets/Settings/VideoOptionPanel.h"
 #include "Utilities/DebugHelper.h"
+
+class UOptionPanelBase;
 
 bool UMainMenuWidget::Initialize()
 {
@@ -93,23 +96,39 @@ void UMainMenuWidget::InitButtons()
 	}
 	if (MB_Option)
 	{
-		MB_Option->OnClicked().AddUObject(this, &ThisClass::HandleOptionButtonClicked);
+		MB_Option->OnClicked().AddLambda([this] { ChangePanel(VB_Settings); });
 	}
 	if (MB_BackFromSettings)
 	{
-		MB_BackFromSettings->OnClicked().AddUObject(this, &ThisClass::HandleBackFromSettingsButtonClicked);
+		MB_BackFromSettings->OnClicked().AddLambda([this] { ChangePanel(VB_MainMenu); });
 	}
 	if (MB_Quit)
 	{
 		MB_Quit->OnClicked().AddUObject(this, &ThisClass::HandleQuitButtonClicked);
 	}
+	if (MB_Audio)
+	{
+		MB_Audio->OnClicked().AddLambda([this] { ChangePanel(Widget_AudioOptions); });
+	}
+	if (MB_Video)
+	{
+		MB_Video->OnClicked().AddLambda([this] { ChangePanel(Widget_VideoOptions); });
+	}
+	if (Widget_AudioOptions)
+	{
+		Widget_AudioOptions->Init([this] { ChangePanel(VB_Settings); });
+	}
+	if (Widget_VideoOptions)
+	{
+		Widget_VideoOptions->Init([this] { ChangePanel(VB_Settings); });
+	}
 }
 
-void UMainMenuWidget::ChangePanel(UVerticalBox* TargetPanel)
+void UMainMenuWidget::ChangePanel(UWidget* TargetWidget)
 {
 	if (CAS_MainMenu)
 	{
-		CAS_MainMenu->SetActiveWidget(TargetPanel);
+		CAS_MainMenu->SetActiveWidget(TargetWidget);
 	}	
 }
 
@@ -325,16 +344,6 @@ void UMainMenuWidget::JoinButtonClicked()
 	{
 		SessionsSubsystem->FindSessions(10000, LobbyCodeText->GetText().ToString().ToUpper());
 	}
-}
-
-void UMainMenuWidget::HandleOptionButtonClicked()
-{
-	ChangePanel(VB_Settings);
-}
-
-void UMainMenuWidget::HandleBackFromSettingsButtonClicked()
-{
-	ChangePanel(VB_MainMenu);
 }
 
 void UMainMenuWidget::HandleQuitButtonClicked()
