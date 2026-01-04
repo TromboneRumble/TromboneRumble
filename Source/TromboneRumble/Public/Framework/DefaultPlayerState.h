@@ -45,9 +45,6 @@ class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 public:
 	ADefaultPlayerState();
 
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_PlayerName() override;
 	virtual void OnRep_Score() override;
@@ -64,8 +61,10 @@ public:
 	void AddScore(int32 Amount);
 	UFUNCTION(Server, Reliable)
 	void Server_AddScore(int32 Amount);
-	UFUNCTION()
-	void HandleNoteDetected(ENoteResult InNoteResult);
+
+	void HandleCombo(ENoteResult InResult);
+	UFUNCTION(Server, Reliable)
+	void Server_HandleCombo(ENoteResult InResult);
 
 	UPROPERTY(VisibleInstanceOnly, Replicated)
 	TSubclassOf<AWeaponBase> EquippedWeaponClass;
@@ -83,15 +82,11 @@ protected:
 	UFUNCTION()
 	void OnRep_ComboData();
 
-	void HandleCombo(ENoteResult InResult);
-
-	UFUNCTION(Server, Reliable)
-	void Server_HandleCombo(ENoteResult InResult);
-
 public:
 	//getter setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
+	FORCEINLINE FComboData GetComboData() const { return ComboData; }
 	// ~getter setter
 };

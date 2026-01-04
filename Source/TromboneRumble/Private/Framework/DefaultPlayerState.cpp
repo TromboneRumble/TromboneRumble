@@ -12,42 +12,6 @@ ADefaultPlayerState::ADefaultPlayerState()
 	bReplicates = true;
 }
 
-void ADefaultPlayerState::BeginPlay()
-{
-	Super::BeginPlay();
-	if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
-	{
-		if (PC->IsLocalController())
-		{
-			if (UGameInstance* GI = GetGameInstance())
-			{
-				if (URhythmSubsystem* RhythmSubsystem = GI->GetSubsystem<URhythmSubsystem>())
-				{
-					RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ADefaultPlayerState::HandleNoteDetected);
-				}
-			}
-		}
-	}
-}
-
-void ADefaultPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
-	{
-		if (PC->IsLocalController())
-		{
-			if (UGameInstance* GI = GetGameInstance())
-			{
-				if (URhythmSubsystem* RhythmSubsystem = GI->GetSubsystem<URhythmSubsystem>())
-				{
-					RhythmSubsystem->OnNoteDetected.RemoveDynamic(this, &ADefaultPlayerState::HandleNoteDetected);
-				}
-			}
-		}
-	}
-	Super::EndPlay(EndPlayReason);
-}
-
 
 void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -85,9 +49,6 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 	}
 }
 
-
-
-
 void ADefaultPlayerState::AddScore(int32 Amount)
 {
 	if (!HasAuthority() || Amount == 0)	return;
@@ -101,42 +62,6 @@ void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount)
 	AddScore(Amount);
 }
 
-void ADefaultPlayerState::HandleNoteDetected(ENoteResult InNoteResult)
-{
-	int32 ScoreToAdd = 0;
-	bool isComboAdded = true;
-
-	switch (InNoteResult)
-	{
-	case ENoteResult::Excellent:
-		ScoreToAdd = 10;
-		break;
-	case ENoteResult::Good:
-		ScoreToAdd = 5;
-		break;
-	case ENoteResult::Bad:
-		ScoreToAdd = 0;
-		break;
-	case ENoteResult::None:
-		return;
-	default:
-		return; 
-	}
-
-	//콤보 UI 반영은 클라이언트에서 즉시 반영
-	HandleCombo(InNoteResult);
-
-	// 클라이언트에서 서버로 점수 증가 요청
-	if (HasAuthority())
-	{
-		AddScore(ScoreToAdd);
-	}
-	else
-	{
-		Server_HandleCombo(InNoteResult);
-		Server_AddScore(ScoreToAdd);
-	}
-}
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
 {
 	SkinColor = InSkinColor;

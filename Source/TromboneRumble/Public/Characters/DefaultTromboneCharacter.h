@@ -28,6 +28,7 @@ class ARhythmActor;
 class UCharacterDataAsset;
 class UWeaponDataAsset;
 class UCharacterAttributeSet;
+class URhythmScoreAttributeSet;
 
 class AItemBase;
 
@@ -78,6 +79,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UCharacterAttributeSet> CharacterAttributes;
+
+	UPROPERTY()
+	TObjectPtr<URhythmScoreAttributeSet> RhythmScoreAttributes;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;

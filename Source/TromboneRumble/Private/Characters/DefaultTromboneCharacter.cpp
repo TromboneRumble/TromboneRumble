@@ -15,6 +15,7 @@
 #include "Components/WidgetComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Data/CharacterAttributeSet.h"
+#include "Data/RhythmScoreAttributeSet.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Items/WeaponBase.h"
@@ -50,6 +51,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
+	RhythmScoreAttributes = CreateDefaultSubobject<URhythmScoreAttributeSet>(TEXT("ScoreAttributeSet"));
 	
 	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	if (AkSoundComponent)
