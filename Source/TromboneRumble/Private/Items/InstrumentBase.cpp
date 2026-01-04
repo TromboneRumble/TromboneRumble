@@ -14,24 +14,24 @@ AInstrumentBase::AInstrumentBase()
 {
 }
 
-void AInstrumentBase::Equip(AActor* OwnerActor)
+void AInstrumentBase::OnRep_Equipped()
 {
-	Super::Equip(OwnerActor);
-	Debug::Print(TEXT("Equip Called"));
-	if (IsOwnerLocallyControlled())
+	Super::OnRep_Equipped();
+	if (bIsEquipped)
 	{
-		BindToRhythmSubsystem(true);
+		if (IsOwnerLocallyControlled())
+		{
+			BindToRhythmSubsystem(true);
+		}
 	}
-}
-
-void AInstrumentBase::Unequip(AActor* OwnerActor)
-{
-	RemoveBuff();
-	if (IsOwnerLocallyControlled())
+	else
 	{
-		BindToRhythmSubsystem(false);
+		RemoveBuff();
+		if (IsOwnerLocallyControlled())
+		{
+			BindToRhythmSubsystem(false);
+		}
 	}
-	Super::Unequip(OwnerActor);
 }
 
 void AInstrumentBase::ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass)

@@ -80,6 +80,7 @@ void AWeaponBase::Interact_Implementation(AActor* InstigatorActor)
 {
 	if (!HasAuthority()) return;
 
+	//Equip은 EquipComponent를 통해서만
 	//Equip(InstigatorActor);
 }
 

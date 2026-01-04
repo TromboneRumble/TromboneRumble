@@ -25,15 +25,12 @@ class TROMBONERUMBLE_API AInstrumentBase : public AWeaponBase
 public:
 	AInstrumentBase();
 
-	// ~Begin IEquipable (WeaponBase Override)
-	virtual void Equip(AActor* OwnerActor) override;
-	virtual void Unequip(AActor* OwnerActor) override;
-	// ~End IEquipable
-
 	UPROPERTY(BlueprintAssignable, Category = "UI")
 	FOnInstrumentBuffStateChanged OnBuffStateChanged;
 
 protected:
+	virtual void OnRep_Equipped() override;
+
 	UPROPERTY(EditAnywhere, Category = "Instrument|Data")
 	TObjectPtr<UInstrumentScoreData> ScoreData;
 
