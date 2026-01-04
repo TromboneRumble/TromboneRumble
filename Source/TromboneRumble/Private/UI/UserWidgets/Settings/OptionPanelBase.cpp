@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/UserWidgets/Settings/OptionPanelBase.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "CommonButtonBase.h"
 
 void UOptionPanelBase::NativeConstruct()
@@ -13,8 +14,8 @@ void UOptionPanelBase::NativeConstruct()
 void UOptionPanelBase::Init(const TFunction<void()> BackAction)
 {
 	OnBackAction = BackAction;
+	SaveManagerSubsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
 }
-
 
 void UOptionPanelBase::InitButtons()
 {
@@ -30,4 +31,12 @@ void UOptionPanelBase::HandleBackButtonClicked()
 	{
 		OnBackAction();
 	}
+}
+
+void UOptionPanelBase::HandleApplyButtonClicked()
+{
+}
+
+void UOptionPanelBase::HandleResetButtonClicked()
+{
 }

@@ -6,12 +6,32 @@
 #include "OptionPanelBase.h"
 #include "AudioOptionPanel.generated.h"
 
+class USlider;
+
 UCLASS()
 class TROMBONERUMBLE_API UAudioOptionPanel : public UOptionPanelBase
 {
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeConstruct() override;
 	virtual void Init(TFunction<void()> BackAction) override;
 	
+protected:
+	virtual void HandleBackButtonClicked() override;
+	virtual void HandleApplyButtonClicked() override;
+	virtual void HandleResetButtonClicked() override;
+	
+private:
+	UFUNCTION()
+	void OnMasterVolumeChanged(float Value);
+	UFUNCTION()
+	void OnMusicVolumeChanged(float Value);
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> Slider_MasterVolume;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> Slider_MusicVolume;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> Slider_SFXVolume;
 };

@@ -6,6 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "OptionPanelBase.generated.h"
 
+class USaveManagerSubsystem;
 class UCommonTextBlock;
 class UCommonButtonBase;
 
@@ -22,6 +23,11 @@ protected:
 	virtual void InitButtons();
 	
 	virtual void HandleBackButtonClicked();
+	virtual void HandleApplyButtonClicked();
+	virtual void HandleResetButtonClicked();
+	
+	UPROPERTY()
+	TObjectPtr<USaveManagerSubsystem> SaveManagerSubsystem;
 	
 	TFunction<void()> OnBackAction;
 	
