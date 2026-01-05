@@ -26,6 +26,14 @@ void UAudioOptionPanel::Init(TFunction<void()> BackAction)
 	Super::Init(BackAction);
 	
 	Text_OptionPanelTitle->SetText(FText::FromString(TEXT("Audio Options")));
+	
+	if (SaveManagerSubsystem)
+	{
+		if (const UTromboneSaveGame* SavedSettings = SaveManagerSubsystem->GetCurrentCustomSettings())
+		{
+			UpdateUIFromSettings(SavedSettings->Audio);
+		}
+	}
 }
 
 void UAudioOptionPanel::HandleBackButtonClicked()
@@ -62,4 +70,11 @@ void UAudioOptionPanel::OnMasterVolumeChanged(float Value)
 void UAudioOptionPanel::OnMusicVolumeChanged(float Value)
 {
 	UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_MusicVolume")));
+}
+
+void UAudioOptionPanel::UpdateUIFromSettings(const FAudioSettingData& AudioData)
+{
+	if (Slider_MasterVolume) Slider_MasterVolume->SetValue(AudioData.MasterVolume);
+	if (Slider_MusicVolume) Slider_MusicVolume->SetValue(AudioData.MusicVolume);
+	if (Slider_SFXVolume) Slider_SFXVolume->SetValue(AudioData.SFXVolume);
 }

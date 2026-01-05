@@ -23,6 +23,14 @@ void UOptionPanelBase::InitButtons()
 	{
 		Button_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
 	}
+	if (Button_Apply)
+	{
+		Button_Apply->OnClicked().AddUObject(this, &ThisClass::HandleApplyButtonClicked);
+	}
+	if (Button_Reset)
+	{
+		Button_Reset->OnClicked().AddUObject(this, &ThisClass::HandleResetButtonClicked);
+	}
 }
 
 void UOptionPanelBase::HandleBackButtonClicked()

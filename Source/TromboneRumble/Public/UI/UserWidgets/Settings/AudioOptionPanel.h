@@ -6,6 +6,7 @@
 #include "OptionPanelBase.h"
 #include "AudioOptionPanel.generated.h"
 
+struct FAudioSettingData;
 class USlider;
 
 UCLASS()
@@ -27,6 +28,8 @@ private:
 	void OnMasterVolumeChanged(float Value);
 	UFUNCTION()
 	void OnMusicVolumeChanged(float Value);
+	
+	void UpdateUIFromSettings(const FAudioSettingData& AudioData);
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USlider> Slider_MasterVolume;
