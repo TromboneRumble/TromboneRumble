@@ -120,11 +120,14 @@ void UOSI_WidgetBase::UpdateSpriteAngle(bool IsOnScreen)
     if (IsOnScreen)
     {
         IndicatorIcon->SetBrushFromTexture(NonPointingIndicatorTex);
+        // 화면 내에 있을때 보이게 하고 싶으면 주석 풀기
+        IndicatorIcon->SetVisibility(ESlateVisibility::Collapsed);
         IndicatorIcon->SetRenderTransformAngle(0.0f);
     }
     else
     {
         IndicatorIcon->SetBrushFromTexture(PointingIndicatorTex);
+        IndicatorIcon->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 
         float ScreenMiddle2DMinVal = UKismetMathLibrary::FMin(ScreenMiddle2D.X, ScreenMiddle2D.Y);
         FVector StartVec(ScreenMiddle2DMinVal, ScreenMiddle2DMinVal, 0.f);

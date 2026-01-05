@@ -27,10 +27,7 @@ void AInstrumentBase::OnRep_Equipped()
 	else
 	{
 		RemoveBuff();
-		if (IsOwnerLocallyControlled())
-		{
-			BindToRhythmSubsystem(false);
-		}
+		BindToRhythmSubsystem(false);
 	}
 }
 
@@ -148,8 +145,8 @@ void AInstrumentBase::BindToRhythmSubsystem(bool bBind)
 	Debug::Print(TEXT("Bind Called"));
 	if (URhythmSubsystem* RhythmSys = GameInstance ? GameInstance->GetSubsystem<URhythmSubsystem>() : nullptr)
 	{
-		if (bBind) RhythmSys->OnNoteDetected.AddDynamic(this, &AInstrumentBase::HandleNoteDetected);
-		else RhythmSys->OnNoteDetected.RemoveDynamic(this, &AInstrumentBase::HandleNoteDetected);
+		if (bBind) RhythmSys->OnNoteDetected.AddDynamic(this, &ThisClass::HandleNoteDetected);
+		else RhythmSys->OnNoteDetected.RemoveDynamic(this, &ThisClass::HandleNoteDetected);
 	}
 }
 

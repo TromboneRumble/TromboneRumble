@@ -46,7 +46,7 @@ void URhythmComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 Comb
 
     case ENoteResult::Good:
 	    {
-			FString ComboString = FString::FromInt(ComboCount) + TEXT(" Combo");
+			FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
 			ComboText->SetText(FText::FromString(ComboString));
 
 			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
@@ -60,7 +60,7 @@ void URhythmComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 Comb
 
     case ENoteResult::Excellent:
 	    {
-			FString ComboString = FString::FromInt(ComboCount) + TEXT(" Combo");
+			FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
 			ComboText->SetText(FText::FromString(ComboString));
 
 			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
