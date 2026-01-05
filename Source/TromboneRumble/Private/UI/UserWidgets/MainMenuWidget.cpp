@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/UserWidgets/MainMenuWidget.h"
+
+#include "CommonAnimatedSwitcher.h"
+#include "CommonButtonBase.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
 #include "OnlineSessionSettings.h"
@@ -10,7 +13,9 @@
 #include "TromboneGamePlayTags.h"
 #include "Components/Slider.h"
 #include "Components/SpinBox.h"
+#include "Components/VerticalBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/UserWidgets/ConfirmationDialogueWidget.h"
 #include "Utilities/DebugHelper.h"
 
 bool UMainMenuWidget::Initialize()
@@ -31,15 +36,7 @@ void UMainMenuWidget::NativePreConstruct()
 	CachedLobbyMapPath = LobbyMapPath;
 
 	BindSubsystemCallbacks();
-
-	if (HostButton)
-	{
-		HostButton->OnClicked.AddDynamic(this, &ThisClass::HostButtonClicked);
-	}
-	if (JoinButton)
-	{
-		JoinButton->OnClicked.AddDynamic(this, &ThisClass::JoinButtonClicked);
-	}
+	InitButtons();
 
 	if (LobbyCodeText)
 	{
@@ -82,6 +79,38 @@ void UMainMenuWidget::NativeDestruct()
 	RemoveSubsystemCallbacks();
 
 	Super::NativeDestruct();
+}
+
+void UMainMenuWidget::InitButtons()
+{
+	if (HostButton)
+	{
+		HostButton->OnClicked.AddDynamic(this, &ThisClass::HostButtonClicked);
+	}
+	if (JoinButton)
+	{
+		JoinButton->OnClicked.AddDynamic(this, &ThisClass::JoinButtonClicked);
+	}
+	if (MB_Option)
+	{
+		MB_Option->OnClicked().AddUObject(this, &ThisClass::HandleOptionButtonClicked);
+	}
+	if (MB_BackFromSettings)
+	{
+		MB_BackFromSettings->OnClicked().AddUObject(this, &ThisClass::HandleBackFromSettingsButtonClicked);
+	}
+	if (MB_Quit)
+	{
+		MB_Quit->OnClicked().AddUObject(this, &ThisClass::HandleQuitButtonClicked);
+	}
+}
+
+void UMainMenuWidget::ChangePanel(UVerticalBox* TargetPanel)
+{
+	if (CAS_MainMenu)
+	{
+		CAS_MainMenu->SetActiveWidget(TargetPanel);
+	}	
 }
 
 void UMainMenuWidget::BindSubsystemCallbacks()
@@ -296,6 +325,26 @@ void UMainMenuWidget::JoinButtonClicked()
 	{
 		SessionsSubsystem->FindSessions(10000, LobbyCodeText->GetText().ToString().ToUpper());
 	}
+}
+
+void UMainMenuWidget::HandleOptionButtonClicked()
+{
+	ChangePanel(VB_Settings);
+}
+
+void UMainMenuWidget::HandleBackFromSettingsButtonClicked()
+{
+	ChangePanel(VB_MainMenu);
+}
+
+void UMainMenuWidget::HandleQuitButtonClicked()
+{
+	APlayerController* PC = GetOwningPlayer();
+	UConfirmationDialogueWidget* Widget = CreateWidget<UConfirmationDialogueWidget>(PC, ConfirmationDialogueWidgetClass);
+
+	// TODO : 메세지 관리
+	const FText Message = FText::FromString(TEXT("Are you sure you want to quit the game?"));
+	Widget->ShowDialogue(Message);
 }
 
 FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length)

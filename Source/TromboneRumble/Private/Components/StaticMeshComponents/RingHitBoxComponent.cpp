@@ -53,6 +53,7 @@ void URingHitBoxComponent::BeginPlay()
 	}
 }
 
+#if WITH_EDITOR
 void URingHitBoxComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -64,6 +65,7 @@ void URingHitBoxComponent::PostEditChangeProperty(FPropertyChangedEvent& Propert
 
 	MarkRenderStateDirty();
 }
+#endif
 
 void URingHitBoxComponent::OnNoteDetectedHandler(ENoteResult InNoteResult)
 {
