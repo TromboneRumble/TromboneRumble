@@ -6,6 +6,7 @@
 #include "OptionPanelBase.h"
 #include "AudioOptionPanel.generated.h"
 
+class USliderWidgetBase;
 struct FAudioSettingData;
 class USlider;
 
@@ -24,17 +25,13 @@ protected:
 	virtual void HandleResetButtonClicked() override;
 	
 private:
-	UFUNCTION()
-	void OnMasterVolumeChanged(float Value);
-	UFUNCTION()
-	void OnMusicVolumeChanged(float Value);
-	
-	void UpdateUIFromSettings(const FAudioSettingData& AudioData);
+	void InitSliders() const;
+	void UpdateUIFromSettings(const FAudioSettingData& AudioData) const;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USlider> Slider_MasterVolume;
+	TObjectPtr<USliderWidgetBase> WBP_MasterSlider;
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USlider> Slider_MusicVolume;
+	TObjectPtr<USliderWidgetBase> WBP_MusicSlider;
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USlider> Slider_SFXVolume;
+	TObjectPtr<USliderWidgetBase> WBP_SFXSlider;
 };

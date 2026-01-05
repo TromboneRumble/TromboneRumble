@@ -3,25 +3,18 @@
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "AkGameplayStatics.h"
 #include "CommonTextBlock.h"
-#include "Components/Slider.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "UI/UserWidgets/Settings/SliderWidgetBase.h"
 
 void UAudioOptionPanel::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	if (Slider_MasterVolume)
-	{
-		Slider_MasterVolume->OnValueChanged.AddDynamic(this, &ThisClass::OnMasterVolumeChanged);
-	}
-	if (Slider_MusicVolume)
-	{
-		Slider_MusicVolume->OnValueChanged.AddDynamic(this, &ThisClass::OnMusicVolumeChanged);
-	}
+	InitSliders();
 }
 
-void UAudioOptionPanel::Init(TFunction<void()> BackAction)
+void UAudioOptionPanel::Init(const TFunction<void()> BackAction)
 {
 	Super::Init(BackAction);
 	
@@ -48,9 +41,9 @@ void UAudioOptionPanel::HandleApplyButtonClicked()
 	Super::HandleApplyButtonClicked();
 	
 	FAudioSettingData NewAudio;
-	NewAudio.MasterVolume = Slider_MasterVolume->GetValue();
-	NewAudio.MusicVolume = Slider_MusicVolume->GetValue();
-	NewAudio.SFXVolume = Slider_SFXVolume->GetValue();
+	NewAudio.MasterVolume = WBP_MasterSlider->GetValue();
+	NewAudio.MusicVolume = WBP_MusicSlider->GetValue();
+	NewAudio.SFXVolume = WBP_SFXSlider->GetValue();
 
 	SaveManagerSubsystem->SaveAudioSettings(NewAudio);
 }
@@ -62,19 +55,22 @@ void UAudioOptionPanel::HandleResetButtonClicked()
 	SaveManagerSubsystem->InitializeSettings();
 }
 
-void UAudioOptionPanel::OnMasterVolumeChanged(float Value)
+void UAudioOptionPanel::InitSliders() const
 {
-	UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_MasterVolume")));
+	WBP_MasterSlider->Init([this](const float Value)
+	{
+		UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_MasterVolume")));
+	});
+	
+	WBP_MusicSlider->Init([this](const float Value)
+	{
+		UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_MusicVolume")));
+	});
 }
 
-void UAudioOptionPanel::OnMusicVolumeChanged(float Value)
+void UAudioOptionPanel::UpdateUIFromSettings(const FAudioSettingData& AudioData) const
 {
-	UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_MusicVolume")));
-}
-
-void UAudioOptionPanel::UpdateUIFromSettings(const FAudioSettingData& AudioData)
-{
-	if (Slider_MasterVolume) Slider_MasterVolume->SetValue(AudioData.MasterVolume);
-	if (Slider_MusicVolume) Slider_MusicVolume->SetValue(AudioData.MusicVolume);
-	if (Slider_SFXVolume) Slider_SFXVolume->SetValue(AudioData.SFXVolume);
+	if (WBP_MasterSlider) WBP_MasterSlider->SetValue(AudioData.MasterVolume);
+	if (WBP_MusicSlider) WBP_MusicSlider->SetValue(AudioData.MusicVolume);
+	if (WBP_SFXSlider) WBP_SFXSlider->SetValue(AudioData.SFXVolume);
 }
