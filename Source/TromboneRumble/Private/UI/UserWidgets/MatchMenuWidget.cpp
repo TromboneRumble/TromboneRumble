@@ -99,14 +99,17 @@ void UMatchMenuWidget::InitButtons()
 {
 	if (CB_Host)
 	{
+		CB_Host->OnClicked().RemoveAll(this);
 		CB_Host->OnClicked().AddUObject(this, &ThisClass::HostButtonClicked);
 	}
 	if (CB_Join)
 	{
+		CB_Join->OnClicked().RemoveAll(this);
 		CB_Join->OnClicked().AddUObject(this, &ThisClass::JoinButtonClicked);
 	}
 	if (CB_Back)
 	{
+		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddLambda([this]
 		{
 			if (OnMenuClosed) OnMenuClosed();
