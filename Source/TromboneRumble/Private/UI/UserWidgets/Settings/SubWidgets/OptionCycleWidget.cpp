@@ -33,6 +33,24 @@ void UOptionCycleWidget::Init(const FText InName, const TArray<FText> InOptions,
 	InitButtons();
 }
 
+int32 UOptionCycleWidget::GetCurrentIndex() const
+{
+	return WBP_OptionRotator ? WBP_OptionRotator->GetSelectedIndex() : -1;
+}
+
+void UOptionCycleWidget::SetSelectedIndex(int32 NewIndex)
+{
+	if (!OptionsArray.IsValidIndex(NewIndex)) 
+	{
+		NewIndex = (DefaultSelectedIndex != -1) ? DefaultSelectedIndex : 0;
+	}
+
+	if (WBP_OptionRotator)
+	{
+		WBP_OptionRotator->SetSelectedItem(NewIndex);
+	}
+}
+
 void UOptionCycleWidget::InitButtons()
 {
 	if (CB_Prev && WBP_OptionRotator)
@@ -40,6 +58,7 @@ void UOptionCycleWidget::InitButtons()
 		CB_Prev->OnClicked().AddLambda([this]
 		{
 			WBP_OptionRotator->ShiftTextLeft();
+			OnOptionChanged.Broadcast(WBP_OptionRotator->GetSelectedIndex());
 		});
 	}
 	if (CB_Next && WBP_OptionRotator)
@@ -47,6 +66,7 @@ void UOptionCycleWidget::InitButtons()
 		CB_Next->OnClicked().AddLambda([this]
 		{
 			WBP_OptionRotator->ShiftTextRight();
+			OnOptionChanged.Broadcast(WBP_OptionRotator->GetSelectedIndex());
 		});
 	}
 }

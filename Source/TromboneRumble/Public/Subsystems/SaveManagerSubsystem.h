@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SaveManagerSubsystem.generated.h"
 
+struct FGraphicsSettingData;
 struct FGameplaySettingData;
 struct FAudioSettingData;
 class UTromboneSaveGame;
@@ -21,7 +22,7 @@ public:
     
 	void SaveAudioSettings(const FAudioSettingData& NewSettings);
 	void SaveGameplaySettings(const FGameplaySettingData& NewSettings);
-	void SaveVideoSettings(int32 QualityLevel, EWindowMode::Type WindowMode, FIntPoint Resolution);
+	void SaveVideoSettings(const FGraphicsSettingData& NewSettings);
 
 	void ApplyAudio(const FAudioSettingData& Settings);
 	void ApplyGameplay(const FGameplaySettingData& Settings);

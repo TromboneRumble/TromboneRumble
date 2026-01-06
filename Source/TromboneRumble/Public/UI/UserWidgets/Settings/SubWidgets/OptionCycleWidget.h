@@ -10,6 +10,8 @@ class UCommonTextBlock;
 class UCommonRotator;
 class UCommonButtonBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOptionChanged, int32, NewIndex);
+
 UCLASS()
 class TROMBONERUMBLE_API UOptionCycleWidget : public UCommonUserWidget
 {
@@ -18,6 +20,11 @@ class TROMBONERUMBLE_API UOptionCycleWidget : public UCommonUserWidget
 public:
 	virtual void NativePreConstruct() override;
 	virtual void Init(FText InName, TArray<FText> InOptions, int32 DefaultIndex);
+	int32 GetCurrentIndex() const;
+	void SetSelectedIndex(int32 NewIndex);
+	const TArray<FText>& GetOptionsArray() const { return OptionsArray; }
+	
+	FOnOptionChanged OnOptionChanged;
 	
 protected:
 	virtual void InitButtons();

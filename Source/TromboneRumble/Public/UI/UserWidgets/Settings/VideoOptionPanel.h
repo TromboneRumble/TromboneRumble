@@ -13,11 +13,15 @@ UENUM()
 enum class EGraphicsOptionType : uint8
 {
 	OverallQuality,
-	Resolution,
+	ViewDistance,
 	AntiAliasing,
-	Shadow,
-	Texture,
 	PostProcess,
+	Shadow,
+	GlobalIllumination,
+	Reflections,
+	Texture,
+	Effects,
+	Resolution,
 	VSync
 };
 
@@ -28,13 +32,19 @@ struct FGraphicsOptionRow : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EGraphicsOptionType OptionType;
+	EGraphicsOptionType OptionType = EGraphicsOptionType::OverallQuality;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText DisplayName;
+	FText DisplayName = FText::FromString(TEXT("Option Name"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FText> OptionLabels;
+	TArray<FText> OptionLabels = {
+		FText::FromString(TEXT("Low")),
+		FText::FromString(TEXT("Medium")),
+		FText::FromString(TEXT("High")),
+		FText::FromString(TEXT("Epic")),
+		FText::FromString(TEXT("Cinematic"))
+	};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 DefaultIndex = 0;
@@ -47,6 +57,7 @@ class TROMBONERUMBLE_API UVideoOptionPanel : public UOptionPanelBase
 	
 public:
 	virtual void NativePreConstruct() override;
+	virtual void NativeConstruct() override;
 	virtual void Init(TFunction<void()> BackAction) override;
 	
 protected:
@@ -67,4 +78,10 @@ protected:
 	TMap<EGraphicsOptionType, UOptionCycleWidget*> CreatedWidgets;
 	
 	void BuildOptions();
+	void UpdateUIFromEngineSettings();
+	
+	UFUNCTION()
+	void OnOverallQualityChanged(int32 NewIndex);
+	UFUNCTION()
+	void OnSubOptionChanged(int32 NewIndex);
 };

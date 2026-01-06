@@ -15,7 +15,7 @@ void USaveManagerSubsystem::InitializeSettings()
     if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
     {
         VideoSettings->LoadSettings();
-        VideoSettings->ApplySettings(false);
+        VideoSettings->ApplySettings(true);
     }
 }
 
@@ -44,17 +44,28 @@ void USaveManagerSubsystem::SaveGameplaySettings(const FGameplaySettingData& New
     ApplyGameplay(NewSettings);
 }
 
-void USaveManagerSubsystem::SaveVideoSettings(int32 QualityLevel, EWindowMode::Type WindowMode, FIntPoint Resolution)
+void USaveManagerSubsystem::SaveVideoSettings(const FGraphicsSettingData& NewSettings)
 {
     if (!GEngine) return;
     
     if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
     {
-        VideoSettings->SetOverallScalabilityLevel(QualityLevel);
-        VideoSettings->SetFullscreenMode(WindowMode);
-        VideoSettings->SetScreenResolution(Resolution);
+        VideoSettings->SetOverallScalabilityLevel(NewSettings.OverallQuality);
         
-        VideoSettings->ApplySettings(false);
+        VideoSettings->SetViewDistanceQuality(NewSettings.ViewDistance);
+        VideoSettings->SetAntiAliasingQuality(NewSettings.AntiAliasing);
+        VideoSettings->SetPostProcessingQuality(NewSettings.PostProcess);
+        VideoSettings->SetShadowQuality(NewSettings.Shadow);
+        VideoSettings->SetGlobalIlluminationQuality(NewSettings.GlobalIllumination);
+        VideoSettings->SetReflectionQuality(NewSettings.Reflections);
+        VideoSettings->SetTextureQuality(NewSettings.Texture);
+        VideoSettings->SetVisualEffectQuality(NewSettings.Effects);
+        
+        VideoSettings->SetScreenResolution(NewSettings.Resolution);
+        VideoSettings->SetVSyncEnabled(NewSettings.bVSync);
+        VideoSettings->SetFullscreenMode(NewSettings.WindowMode);
+        
+        VideoSettings->ApplySettings(true);
         VideoSettings->SaveSettings();
     }
 }
