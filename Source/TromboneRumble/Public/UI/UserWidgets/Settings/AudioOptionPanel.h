@@ -16,7 +16,7 @@ class TROMBONERUMBLE_API UAudioOptionPanel : public UOptionPanelBase
 	GENERATED_BODY()
 	
 public:
-	virtual void NativeConstruct() override;
+	virtual void NativePreConstruct() override;
 	virtual void Init(TFunction<void()> BackAction) override;
 	
 protected:

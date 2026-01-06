@@ -7,18 +7,18 @@
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/Settings/SliderWidgetBase.h"
 
-void UAudioOptionPanel::NativeConstruct()
+void UAudioOptionPanel::NativePreConstruct()
 {
-	Super::NativeConstruct();
+	Super::NativePreConstruct();
 	
-	InitSliders();
+	Text_OptionPanelTitle->SetText(FText::FromString(TEXT("오디오 옵션")));
 }
 
 void UAudioOptionPanel::Init(const TFunction<void()> BackAction)
 {
 	Super::Init(BackAction);
 	
-	Text_OptionPanelTitle->SetText(FText::FromString(TEXT("Audio Options")));
+	InitSliders();
 	
 	if (SaveManagerSubsystem)
 	{
