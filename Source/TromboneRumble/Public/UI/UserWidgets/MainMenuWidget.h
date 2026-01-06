@@ -4,22 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "Settings/OptionPanelBase.h"
-#include "Utilities/Defines.h"
 #include "MainMenuWidget.generated.h"
 
+
+class UMatchMenuWidget;
+class UConfirmationDialogueWidget;
+class UCommonAnimatedSwitcher;
 class UVideoOptionPanel;
 class UAudioOptionPanel;
-class UConfirmationDialogueWidget;
-class UVerticalBox;
-class UCommonAnimatedSwitcher;
-class UCommonButtonBase;
-class USpinBox;
-class USlider;
-class UButton;
-class USessionSubsystem;
-class UEditableText;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UCommonActivatableWidget
@@ -27,7 +20,6 @@ class TROMBONERUMBLE_API UMainMenuWidget : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 protected:
-	virtual bool Initialize() override;
 	virtual void NativePreConstruct() override;
 	virtual void NativeDestruct() override;
 
@@ -35,101 +27,46 @@ private:
 	void InitButtons();
 	void ChangePanel(UWidget* TargetWidget);
 	
-	// ~ Begin SessionSubsystem Callbacks
-	void BindSubsystemCallbacks();
-	void RemoveSubsystemCallbacks();
-
-	UFUNCTION()
-	void OnCreateSession(bool bWasSuccessful);
-	void OnFindSession(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
-	void OnJoinSession(EOnJoinSessionCompleteResult::Type Result);
-	UFUNCTION()
-	void OnDestroySession(bool bWasSuccessful);
-	UFUNCTION()
-	void OnSessionError(const FString& Reason);
-	UFUNCTION()
-	void OnStartSession(bool bWasSuccessful);
-	// ~ End SessionSubsystem Callbacks
-	
-	UFUNCTION()
-	void OnMaxPlayerSliderChanged(float Value);
-	
-	UFUNCTION()
-	void OnMaxPlayerSpinBoxChanged(float Value);
-
 	// ~ Begin Button Callbacks
-	UFUNCTION()
-	void HostButtonClicked();
-
-	UFUNCTION()
-	void JoinButtonClicked();
-	
 	UFUNCTION()
 	void HandleQuitButtonClicked();
 	// ~ EndButton Callbacks
-
-	FString GenerateRandomLobbyCode(int32 Length);
-	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> ConfirmationDialogueWidgetClass;
 
 	// ~ Start UMGs
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> HostButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> JoinButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UEditableText> LobbyCodeText;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USlider> MaxPlayerSlider;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USpinBox> MaxPlayerSpinBox;
-	
-	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidget> VB_MainMenu;
-	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidget> VB_Settings;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UAudioOptionPanel> Widget_AudioOptions;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
 	// ~ End UMGs
 	
 	// ~ Begin Common UIs
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> MB_Option;
+	TObjectPtr<UAudioOptionPanel> Widget_AudioOptions;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMatchMenuWidget> Widget_MatchMenu;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> MB_BackFromSettings;
+	TObjectPtr<UCommonButtonBase> CB_Play;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Option;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_BackFromSettings;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Quit;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> MB_Quit;
+	TObjectPtr<UCommonButtonBase> CB_Audio;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Video;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_MainMenu;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> MB_Audio;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> MB_Video;
 	// ~ End Common UIs
-	
-	int32 NumPublicConnections = 4;
-	int32 MaxLobbyCodeLength{ 5 };
-	EMatchState State{ EMatchState::Invalid };
-
-	UPROPERTY(Transient)
-	TObjectPtr<USessionSubsystem> SessionsSubsystem;
-
-	UPROPERTY(Transient)
-	FString CachedLobbyMapPath{ TEXT("") };
 	
 	UPROPERTY()
 	TObjectPtr<UConfirmationDialogueWidget> CachedQuitDialog;
