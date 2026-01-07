@@ -142,7 +142,6 @@ ADefaultPlayerState* AInstrumentBase::GetOwnerPlayerState() const
 void AInstrumentBase::BindToRhythmSubsystem(bool bBind)
 {
 	UGameInstance* GameInstance = GetWorld()->GetGameInstance();
-	Debug::Print(TEXT("Bind Called"));
 	if (URhythmSubsystem* RhythmSys = GameInstance ? GameInstance->GetSubsystem<URhythmSubsystem>() : nullptr)
 	{
 		if (bBind) RhythmSys->OnNoteDetected.AddDynamic(this, &ThisClass::HandleNoteDetected);

@@ -63,13 +63,13 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
 	if (RingHitBoxComponent)
 	{
-		RingHitBoxComponent->SetupAttachment(RootComponent);
+		RingHitBoxComponent->SetupAttachment(GetMesh());
 	}
 
 	ComboWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ComboWidgetComponent"));
 	if (ComboWidgetComponent)
 	{
-		ComboWidgetComponent->SetupAttachment(RootComponent);
+		ComboWidgetComponent->SetupAttachment(GetMesh());
 		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 	}
 }
