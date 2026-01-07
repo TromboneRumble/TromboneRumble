@@ -6,6 +6,35 @@
 #include "Engine/DataAsset.h"
 #include "CharacterDataAsset.generated.h"
 
+enum class ECharacterFaceState : uint8;
+enum class ECharacterFaceType : uint8;
+
+USTRUCT(BlueprintType)
+struct FCharacterFaceAnimationSequence
+{
+	GENERATED_BODY()
+
+	/** 표정 시퀀스 배열 */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "표정 시퀀스"))
+	TArray<ECharacterFaceType> Sequence;
+
+	/** 각 표정이 지속되는 간격 (초) */
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.05", ClampMax = "3.0", DisplayName = "표정 간격"))
+	float Interval = 0.1f;
+
+	/** 시퀀스 반복 여부 */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "반복 여부"))
+	bool bLoop = false;
+	
+	/** 루프 시 다음 반복까지의 최소 지연 시간 (초) */
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "bLoop", ClampMin = "0.0", ClampMax = "5.0", DisplayName = "최소 루프 지연 시간"))
+	float MinLoopDelay = 0.0f;
+	
+	/** 루프 시 다음 반복까지의 최대 지연 시간 (초) */
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "bLoop", ClampMin = "0.0", ClampMax = "5.0", DisplayName = "최대 루프 지연 시간"))
+	float MaxLoopDelay = 0.0f;
+};
+
 /*
  * DataAsset 형태로 캐릭터 초기 설정값 보관
  * 인게임에서 변경될 값(Health, Stamina 등)은 CharacterAttributeSet에서 관리
@@ -83,4 +112,8 @@ public:
     /** 카메라 붐(스프링 암)이 부착되는 높이입니다. */
     UPROPERTY(EditAnywhere, Category = "Config|Camera", meta = (DisplayName = "카메라 부착 높이"))
     float CameraRelativeLocationZ = 60.0f;
+	
+	/** 얼굴 표정 애니메이션 시퀀스 맵 */
+	UPROPERTY(EditAnywhere, Category = "Config|Facial Expressions", meta = (DisplayName = "얼굴 표정 애니메이션 시퀀스"))
+	TMap<ECharacterFaceState, FCharacterFaceAnimationSequence> FaceSequences;
 };

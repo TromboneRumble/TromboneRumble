@@ -63,8 +63,7 @@ void ATromboneCharacterBase::BeginPlay()
 	FaceMID = GetMesh()->CreateDynamicMaterialInstance(FaceMaterialIndex, BaseFaceMat);
 	GetMesh()->SetMaterial(FaceMaterialIndex, FaceMID);
 
-	const float FirstBlinkDelay = FMath::FRandRange(EyeBlinkingIntervalMin, EyeBlinkingIntervalMax);
-	GetWorld()->GetTimerManager().SetTimer(BlinkingTimerHandle, this, &ATromboneCharacterBase::StartBlinking, FirstBlinkDelay, false);
+	PlayFaceSequence(ECharacterFaceState::Blink);
 
 	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
 	
@@ -102,42 +101,6 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 	}
 	
 	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
-}
-
-void ATromboneCharacterBase::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	// TODO : Remove debug drawing
-	if (bIsInvincible)
-	{
-		DrawDebugString(
-			GetWorld(),
-			GetActorLocation() + FVector(0, 0, 150.0f),
-			TEXT("무적"),
-			nullptr,
-			FColor::Red,
-			0.0f,
-			true
-		);
-	}
-	if (bIsStun)
-	{
-		DrawDebugString(
-			GetWorld(),
-			GetActorLocation() + FVector(0, 0, 100.0f),
-			TEXT("STUNNED"),
-			nullptr,
-			FColor::Red,
-			0.0f,
-			true
-		);
-	}
-
-	if (bIsRagdoll)
-	{
-		RagdollUpdate();
-	}
 }
 
 void ATromboneCharacterBase::PossessedBy(AController* NewController)
@@ -305,41 +268,92 @@ void ATromboneCharacterBase::UnapplyStun()
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	SetPlayerInput(true);
-	StartBlinking();
 }
 
 void ATromboneCharacterBase::ApplyRagdoll()
 {
 	SetPlayerInput(false);
 
+    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+    
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 
-	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
-	AnimInst->SetIsRagdolling(true);
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->SetIsRagdolling(true);
+	}
 }
 
 void ATromboneCharacterBase::UnapplyRagdoll()
 {
-	GetMesh()->SetSimulatePhysics(false);
+    const FVector PelvisLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
+    const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
 
-	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
-	
-	const FName SnapshotName = TEXT("RagdollSnapshot");
-	AnimInst->SavePoseSnapshot(SnapshotName);
-	AnimInst->SetRagdollSnapshotName(SnapshotName);
-	AnimInst->SetIsRagdollBlending(true);
+    FVector TargetCapsuleLocation = PelvisLocation;
+    const FRotator TargetCapsuleRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
+
+    const float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+    FHitResult HitResult;
+    FVector Start = PelvisLocation;
+    FVector End = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+    
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
+    {
+       TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
+    }
+
+    SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation);
+    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
+
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(
+		Handle, 
+		this, 
+		&ThisClass::DelayedSavePoseSnapshot, 
+		PoseSnapshotInterval,
+		false
+	);
+}
+
+void ATromboneCharacterBase::DelayedSavePoseSnapshot()
+{
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->SaveRagdollPoseSnapshot();
+	}
 
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(
 		Handle, 
 		this, 
 		&ThisClass::InternalUnapplyRagdoll, 
-		0.2f,
+		PoseSnapshotInterval,
 		false
 	);
+}
+void ATromboneCharacterBase::InternalUnapplyRagdoll()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->PlayGetUpMontage(IsFacingUp());
+	}
+
+	ApplyFlagPhysics();
 }
 
 void ATromboneCharacterBase::UpdateSkinFromPlayerState()
@@ -351,70 +365,88 @@ void ATromboneCharacterBase::UpdateSkinFromPlayerState()
 	}
 }
 
-void ATromboneCharacterBase::UpdateFaceExpression(EFaceExpressionType NewType)
+void ATromboneCharacterBase::UpdateFaceExpression(ECharacterFaceType NewType)
 {
 	if (FaceMID)
 	{
-		if (NewType == EFaceExpressionType::Stun || NewType == EFaceExpressionType::Ragdoll)
-		{
-			GetWorld()->GetTimerManager().ClearTimer(BlinkStepTimerHandle);
-		}
-
 		FaceMID->SetScalarParameterValue(FaceExpressionParameterName, static_cast<float>(NewType));
-		CurrentExpressionType = NewType;
 	}
 }
 
-void ATromboneCharacterBase::StartBlinking()
+void ATromboneCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	if (GetWorld()->GetTimerManager().IsTimerActive(BlinkStepTimerHandle)) return;
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
-	if (!bIsStun && !bIsRagdoll)
+#if !UE_BUILD_SHIPPING
+	PlayerInputComponent->BindKey(EKeys::R, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugRagdoll);
+	PlayerInputComponent->BindKey(EKeys::T, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugStun);
+#endif
+}
+
+void ATromboneCharacterBase::Server_DebugStun_Implementation()
+{
+	if (bIsStun)
 	{
-		BlinkStep = 0;
-		ExecuteBlinkStep();
+		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
+		EndStun();
 	}
 	else
 	{
-		const float NextBlinkDelay = FMath::FRandRange(EyeBlinkingIntervalMin, EyeBlinkingIntervalMax);
-		GetWorld()->GetTimerManager().SetTimer(BlinkingTimerHandle, this, &ATromboneCharacterBase::StartBlinking, NextBlinkDelay, false);
+		OnStun();
 	}
 }
 
-void ATromboneCharacterBase::ExecuteBlinkStep()
+void ATromboneCharacterBase::Server_DebugRagdoll_Implementation()
 {
-	TArray BlinkSequence = { 0, 1, 2, 1, 0 };
-
-	if (BlinkStep < BlinkSequence.Num())
+	if (bIsRagdoll)
 	{
-		UpdateFaceExpression(static_cast<EFaceExpressionType>(BlinkSequence[BlinkStep]));
-		BlinkStep++;
-
-		GetWorld()->GetTimerManager().SetTimer(BlinkStepTimerHandle, this, &ATromboneCharacterBase::ExecuteBlinkStep, 0.07f, false);
+		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
+		EndRagdoll();
 	}
 	else
 	{
-		const float NextBlinkDelay = FMath::FRandRange(EyeBlinkingIntervalMin, EyeBlinkingIntervalMax);
-		GetWorld()->GetTimerManager().SetTimer(BlinkingTimerHandle, this, &ATromboneCharacterBase::StartBlinking, NextBlinkDelay, false);
+		OnRagdoll();
 	}
 }
 
-void ATromboneCharacterBase::InternalUnapplyRagdoll()
+void ATromboneCharacterBase::PlayFaceSequence(const ECharacterFaceState TargetState)
 {
-	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
+	if (!CharacterData) return;
 
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	AnimInst->PlayGetUpMontage(IsFacingUp());
-	
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetMesh()->SetCollisionObjectType(ECC_Pawn);
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	AnimInst->SetIsRagdollBlending(false);
-	AnimInst->SetIsRagdolling(false);
+	if (const FCharacterFaceAnimationSequence* FaceAnimData = CharacterData->FaceSequences.Find(TargetState))
+	{
+		InternalPlayFaceSequence(FaceAnimData);
+	}
+}
 
-	ApplyFlagPhysics();
-	StartBlinking();
+void ATromboneCharacterBase::InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence)
+{
+	GetWorld()->GetTimerManager().ClearTimer(FaceSequenceTimerHandle);
+	CurrentActiveSequence = *InSequence;
+	CurrentSequenceStep = 0;
+	ExecuteFaceStep();
+}
+
+void ATromboneCharacterBase::ExecuteFaceStep()
+{
+	if (CurrentActiveSequence.Sequence.Num() == 0) return;
+
+	UpdateFaceExpression(CurrentActiveSequence.Sequence[CurrentSequenceStep]);
+	CurrentSequenceStep++;
+
+	if (CurrentSequenceStep < CurrentActiveSequence.Sequence.Num())
+	{
+		GetWorld()->GetTimerManager().SetTimer(FaceSequenceTimerHandle, this, &ThisClass::ExecuteFaceStep, CurrentActiveSequence.Interval, false);
+	}
+	else if (CurrentActiveSequence.bLoop)
+	{
+		CurrentSequenceStep = 0;
+		
+		float NextDelay = FMath::FRandRange(CurrentActiveSequence.MinLoopDelay, CurrentActiveSequence.MaxLoopDelay);
+		if (NextDelay <= 0.0f) NextDelay = CurrentActiveSequence.Interval;
+
+		GetWorld()->GetTimerManager().SetTimer(FaceSequenceTimerHandle, this, &ThisClass::ExecuteFaceStep, NextDelay, false);
+	}
 }
 
 bool ATromboneCharacterBase::IsFacingUp() const
@@ -425,40 +457,6 @@ bool ATromboneCharacterBase::IsFacingUp() const
 	const FVector PelvisUp = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::Z);
     
 	return (FVector::DotProduct(PelvisUp, FVector::UpVector) > 0.0f);
-}
-
-void ATromboneCharacterBase::RagdollUpdate()
-{
-	const FVector LastRagdollVelocity = GetMesh()->GetPhysicsLinearVelocity(TEXT("root"));
-	GetMesh()->SetEnableGravity(LastRagdollVelocity.Z > -4000.0f);
-	SetActorLocationAndRotationDuringRagdoll();
-}
-
-void ATromboneCharacterBase::SetActorLocationAndRotationDuringRagdoll()
-{
-	const FVector TargetRagdollLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
-	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
-
-	const FRotator TargetRagdollRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
-
-	const float MeshHeightOffset = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	const FVector TraceEnd = TargetRagdollLocation - FVector(0.0f, 0.0f, MeshHeightOffset);
-
-	FHitResult HitResult;
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
-
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, TargetRagdollLocation, TraceEnd, ECC_Visibility, QueryParams))
-	{
-		const float Offset = MeshHeightOffset - abs(HitResult.ImpactPoint.Z - HitResult.TraceStart.Z) + 2.0f;
-		SetActorLocation(TargetRagdollLocation + FVector(0.0f, 0.0f, Offset));
-	}
-	else
-	{
-		SetActorLocation(TargetRagdollLocation);
-	}
-	
-	SetActorRotation(TargetRagdollRotation);
 }
 
 void ATromboneCharacterBase::ApplyFlagPhysics()
@@ -490,12 +488,13 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	if (bIsRagdoll)
 	{
 		ApplyRagdoll();
-		UpdateFaceExpression(EFaceExpressionType::Ragdoll);
+		PlayFaceSequence(ECharacterFaceState::Ragdoll);
 		OnRagdollDelegate.Broadcast();
 	}
 	else
 	{
 		UnapplyRagdoll();
+		PlayFaceSequence(ECharacterFaceState::Blink);
 		EndRagdollDelegate.Broadcast();
 	}
 }
@@ -505,12 +504,13 @@ void ATromboneCharacterBase::OnRep_IsStun()
 	if (bIsStun)
 	{
 		ApplyStun();
-		UpdateFaceExpression(EFaceExpressionType::Stun);
+		PlayFaceSequence(ECharacterFaceState::Stun);
 		OnStunDelegate.Broadcast();
 	}
 	else
 	{
 		UnapplyStun();
+		PlayFaceSequence(ECharacterFaceState::Blink);
 		EndStunDelegate.Broadcast();
 	}
 }

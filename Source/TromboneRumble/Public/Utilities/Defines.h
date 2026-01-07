@@ -4,15 +4,29 @@
 #include "Defines.generated.h"
 
 UENUM()
-enum class EFaceExpressionType : uint8
+enum class ECharacterFaceState : uint8
 {
-	Normal0 = 0, // Blinking
-	Normal1 = 1, // Blinking
-	Normal2 = 2, // Blinking
+	Blink,
+	Stun,
+	Ragdoll,
+	Victory,
+	Lose,
+	Hit,
+	None = 255,
+};
+
+UENUM()
+enum class ECharacterFaceType : uint8
+{
+	Blink0 = 0,
+	Blink1 = 1,
+	Blink2 = 2,
 	Stun = 3,
-	Ragdoll = 3,
-	None = 254,
-	Invalid = 255 UMETA(Hidden)
+	Ragdoll0 = 4,
+	Ragdoll1 = 5,
+	Ragdoll2 = 6,
+	Ragdoll3 = 7,
+	None = 255,
 };
 
 UENUM()
