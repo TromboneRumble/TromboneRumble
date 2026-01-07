@@ -127,6 +127,14 @@ private:
 	FCharacterFaceAnimationSequence CurrentActiveSequence;
 	FTimerHandle FaceSequenceTimerHandle;
 	// ~ End Face Expression Region
+	
+	// TODO : For Debugging
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	UFUNCTION(Server, Reliable)
+	void Server_DebugStun();
+
+	UFUNCTION(Server, Reliable)
+	void Server_DebugRagdoll();
 
 public:
 	//~ Begin Setter
