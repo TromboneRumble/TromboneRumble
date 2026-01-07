@@ -30,7 +30,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
-	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnRep_PlayerState() override;
 
 	// ~ Begin ICombatReceiver Interfaces
@@ -73,10 +72,10 @@ private:
 	
 	void ApplyRagdoll();
 	void UnapplyRagdoll();
+	void DelayedSavePoseSnapshot();
 	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
-	void RagdollUpdate();
-	void SetActorLocationAndRotationDuringRagdoll();
+	float PoseSnapshotInterval = 0.1f;
 
 	void UpdateSkinFromPlayerState();
 	

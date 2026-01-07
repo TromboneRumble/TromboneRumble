@@ -103,16 +103,6 @@ void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
 	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
 }
 
-void ATromboneCharacterBase::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (bIsRagdoll)
-	{
-		RagdollUpdate();
-	}
-}
-
 void ATromboneCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -284,18 +274,55 @@ void ATromboneCharacterBase::ApplyRagdoll()
 {
 	SetPlayerInput(false);
 
+    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+    
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 
-	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
-	AnimInst->SetIsRagdolling(true);
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->SetIsRagdolling(true);
+	}
 }
 
 void ATromboneCharacterBase::UnapplyRagdoll()
 {
-	GetMesh()->SetSimulatePhysics(false);
+    const FVector PelvisLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
+    const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
 
+    FVector TargetCapsuleLocation = PelvisLocation;
+    const FRotator TargetCapsuleRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
+
+    const float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+    FHitResult HitResult;
+    FVector Start = PelvisLocation;
+    FVector End = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+    
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
+    {
+       TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
+    }
+
+    SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation);
+    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
+
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(
+		Handle, 
+		this, 
+		&ThisClass::DelayedSavePoseSnapshot, 
+		PoseSnapshotInterval,
+		false
+	);
+}
+
+void ATromboneCharacterBase::DelayedSavePoseSnapshot()
+{
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		AnimInst->SaveRagdollPoseSnapshot();
@@ -306,24 +333,18 @@ void ATromboneCharacterBase::UnapplyRagdoll()
 		Handle, 
 		this, 
 		&ThisClass::InternalUnapplyRagdoll, 
-		0.1f,
+		PoseSnapshotInterval,
 		false
 	);
 }
-
 void ATromboneCharacterBase::InternalUnapplyRagdoll()
 {
-	FRotator CurrentRotation = GetActorRotation();
-	CurrentRotation.Pitch = 0.0f;
-	CurrentRotation.Roll = 0.0f;
-	SetActorRotation(CurrentRotation);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetCharacterMovement()->Velocity = FVector::ZeroVector;
 	
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
-	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	GetMesh()->SetSimulatePhysics(false);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	
@@ -436,40 +457,6 @@ bool ATromboneCharacterBase::IsFacingUp() const
 	const FVector PelvisUp = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::Z);
     
 	return (FVector::DotProduct(PelvisUp, FVector::UpVector) > 0.0f);
-}
-
-void ATromboneCharacterBase::RagdollUpdate()
-{
-	const FVector LastRagdollVelocity = GetMesh()->GetPhysicsLinearVelocity(TEXT("root"));
-	GetMesh()->SetEnableGravity(LastRagdollVelocity.Z > -4000.0f);
-	SetActorLocationAndRotationDuringRagdoll();
-}
-
-void ATromboneCharacterBase::SetActorLocationAndRotationDuringRagdoll()
-{
-	const FVector TargetRagdollLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
-	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
-
-	const FRotator TargetRagdollRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
-
-	const float MeshHeightOffset = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	const FVector TraceEnd = TargetRagdollLocation - FVector(0.0f, 0.0f, MeshHeightOffset);
-
-	FHitResult HitResult;
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
-
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, TargetRagdollLocation, TraceEnd, ECC_Visibility, QueryParams))
-	{
-		const float Offset = MeshHeightOffset - abs(HitResult.ImpactPoint.Z - HitResult.TraceStart.Z) + 2.0f;
-		SetActorLocation(TargetRagdollLocation + FVector(0.0f, 0.0f, Offset));
-	}
-	else
-	{
-		SetActorLocation(TargetRagdollLocation);
-	}
-	
-	SetActorRotation(TargetRagdollRotation);
 }
 
 void ATromboneCharacterBase::ApplyFlagPhysics()
