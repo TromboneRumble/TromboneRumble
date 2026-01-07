@@ -7,15 +7,12 @@
 
 float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {
-	// --- 버프 관리 로직 ---
 	if (CurrentCombo >= ScoreData->TromboneBuffComboThreshold)
 	{
-		// 조건 만족 시 버프 적용 (이미 있으면 ApplyBuff 내부에서 무시됨)
 		ApplyBuff(ScoreData->TromboneBuffEffectClass);
 	}
 	else
 	{
-		// 조건 불만족 시 버프 해제
 		RemoveBuff();
 	}
 
@@ -40,9 +37,6 @@ float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 Curren
 			ComboMultiplier,
 			FinalScore
 		);
-
-		// 요청하신 함수 시그니처에 맞춰 호출
-		Debug::Print(DebugMsg);
 	}
 	
 	return FinalScore;
