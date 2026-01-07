@@ -73,10 +73,10 @@ private:
 	
 	void ApplyRagdoll();
 	void UnapplyRagdoll();
+	void InternalUnapplyRagdoll();
 
 	void UpdateSkinFromPlayerState();
 
-	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
 	void RagdollUpdate();
 	void SetActorLocationAndRotationDuringRagdoll();
