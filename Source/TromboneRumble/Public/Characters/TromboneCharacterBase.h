@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/CharacterDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
@@ -47,13 +48,6 @@ public:
 	FEndInvincibleSignature EndInvincibleDelegate;
 
 protected:
-	/** 눈 깜빡임 간격 범위 최소 값 */
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Eye Blinking", meta = (ClampMin = "0.1", ClampMax = "10.0", DisplayName = "눈 깜빡임 간격 최소값"))
-	float EyeBlinkingIntervalMin = 2.0f;
-	/** 눈 깜빡임 간격 범위 최대 값 */
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Eye Blinking", meta = (ClampMin = "0.1", ClampMax = "10.0", DisplayName = "눈 깜빡임 간격 최대값"))
-	float EyeBlinkingIntervalMax = 5.0f;
-	
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
@@ -62,10 +56,7 @@ protected:
 	int32 FaceMaterialIndex = 2;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
 	FName FaceExpressionParameterName = FName("ExpressionIndex");
-	
-	UPROPERTY(VisibleAnywhere)
-	EFaceExpressionType CurrentExpressionType = EFaceExpressionType::None;
-	
+
 private:
 	void InitCharacter();
 	void SetupCapsuleComponent();
@@ -84,9 +75,6 @@ private:
 	void UnapplyRagdoll();
 
 	void UpdateSkinFromPlayerState();
-	void UpdateFaceExpression(EFaceExpressionType NewType);
-	void StartBlinking();
-	void ExecuteBlinkStep();
 
 	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
@@ -129,9 +117,16 @@ private:
 
 	FName PelvisBoneName = "pelvis";
 	
-	FTimerHandle BlinkingTimerHandle;
-	FTimerHandle BlinkStepTimerHandle;
-	int32 BlinkStep = 0;
+	// ~ Begin Face Expression Region
+	void PlayFaceSequence(ECharacterFaceState TargetState);
+	void InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence);
+	void ExecuteFaceStep();
+	void UpdateFaceExpression(ECharacterFaceType NewType);
+	
+	int32 CurrentSequenceStep = 0;
+	FCharacterFaceAnimationSequence CurrentActiveSequence;
+	FTimerHandle FaceSequenceTimerHandle;
+	// ~ End Face Expression Region
 
 public:
 	//~ Begin Setter
