@@ -41,6 +41,7 @@ void UMainMenuWidget::InitButtons()
 {
 	if (CB_Play)
 	{
+		CB_Play->OnClicked().RemoveAll(this);
 		CB_Play->OnClicked().AddLambda([this] { ChangePanel(Widget_MatchMenu); });
 	}
 	if (Widget_MatchMenu)
@@ -49,22 +50,27 @@ void UMainMenuWidget::InitButtons()
 	}
 	if (CB_Option)
 	{
+		CB_Option->OnClicked().RemoveAll(this);
 		CB_Option->OnClicked().AddLambda([this] { ChangePanel(VB_Settings); });
 	}
 	if (CB_BackFromSettings)
 	{
+		CB_BackFromSettings->OnClicked().RemoveAll(this);
 		CB_BackFromSettings->OnClicked().AddLambda([this] { ChangePanel(VB_MainMenu); });
 	}
 	if (CB_Quit)
 	{
+		CB_Quit->OnClicked().RemoveAll(this);
 		CB_Quit->OnClicked().AddUObject(this, &ThisClass::HandleQuitButtonClicked);
 	}
 	if (CB_Audio)
 	{
+		CB_Audio->OnClicked().RemoveAll(this);
 		CB_Audio->OnClicked().AddLambda([this] { ChangePanel(Widget_AudioOptions); });
 	}
 	if (CB_Video)
 	{
+		CB_Video->OnClicked().RemoveAll(this);
 		CB_Video->OnClicked().AddLambda([this] { ChangePanel(Widget_VideoOptions); });
 	}
 	if (Widget_AudioOptions)
