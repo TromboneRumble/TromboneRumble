@@ -27,12 +27,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UImage> IndicatorIcon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetOptional))
+	TObjectPtr<UImage> TargetIcon = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UTexture2D> NonPointingIndicatorTex = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UTexture2D> PointingIndicatorTex = nullptr;
 
+	bool bShowWidgetWhenInScreen = true;
 
 private:
 	void UpdateViewportSize();
