@@ -411,8 +411,17 @@ void ATromboneCharacterBase::InternalUnapplyRagdoll()
 {
 	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInst) return;
+	
+	FRotator CurrentRotation = GetActorRotation();
+	CurrentRotation.Pitch = 0.0f;
+	CurrentRotation.Roll = 0.0f;
+	SetActorRotation(CurrentRotation);
+
+	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	
 	AnimInst->PlayGetUpMontage(IsFacingUp());
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
