@@ -74,13 +74,12 @@ private:
 	void ApplyRagdoll();
 	void UnapplyRagdoll();
 	void InternalUnapplyRagdoll();
-
-	void UpdateSkinFromPlayerState();
-
 	bool IsFacingUp() const;
 	void RagdollUpdate();
 	void SetActorLocationAndRotationDuringRagdoll();
 
+	void UpdateSkinFromPlayerState();
+	
 	void ApplyFlagPhysics();
 
 	// Replication Notifies

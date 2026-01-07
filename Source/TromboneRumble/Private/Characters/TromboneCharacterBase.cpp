@@ -296,46 +296,41 @@ void ATromboneCharacterBase::UnapplyRagdoll()
 {
 	GetMesh()->SetSimulatePhysics(false);
 
-	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
-	
-	const FName SnapshotName = TEXT("RagdollSnapshot");
-	AnimInst->SavePoseSnapshot(SnapshotName);
-	AnimInst->SetRagdollSnapshotName(SnapshotName);
-	AnimInst->SetIsRagdollBlending(true);
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->SaveRagdollPoseSnapshot();
+	}
 
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(
 		Handle, 
 		this, 
 		&ThisClass::InternalUnapplyRagdoll, 
-		0.2f,
+		0.1f,
 		false
 	);
 }
 
 void ATromboneCharacterBase::InternalUnapplyRagdoll()
 {
-	UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
-	
 	FRotator CurrentRotation = GetActorRotation();
 	CurrentRotation.Pitch = 0.0f;
 	CurrentRotation.Roll = 0.0f;
 	SetActorRotation(CurrentRotation);
-
-	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-
+	
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetCharacterMovement()->Velocity = FVector::ZeroVector;
 	
-	AnimInst->PlayGetUpMontage(IsFacingUp());
-	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
+	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	AnimInst->SetIsRagdollBlending(false);
-	AnimInst->SetIsRagdolling(false);
+	
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->PlayGetUpMontage(IsFacingUp());
+	}
 
 	ApplyFlagPhysics();
 }
