@@ -107,32 +107,6 @@ void ATromboneCharacterBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// TODO : Remove debug drawing
-	if (bIsInvincible)
-	{
-		DrawDebugString(
-			GetWorld(),
-			GetActorLocation() + FVector(0, 0, 150.0f),
-			TEXT("무적"),
-			nullptr,
-			FColor::Red,
-			0.0f,
-			true
-		);
-	}
-	if (bIsStun)
-	{
-		DrawDebugString(
-			GetWorld(),
-			GetActorLocation() + FVector(0, 0, 100.0f),
-			TEXT("STUNNED"),
-			nullptr,
-			FColor::Red,
-			0.0f,
-			true
-		);
-	}
-
 	if (bIsRagdoll)
 	{
 		RagdollUpdate();
