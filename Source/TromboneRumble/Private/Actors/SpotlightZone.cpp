@@ -36,7 +36,6 @@ ASpotlightZone::ASpotlightZone()
 	SpotLightComponent->SetOuterConeAngle(25.0f);
 	SpotLightComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f)); 
 	SpotLightComponent->SetVisibility(false);
-	SpotLightComponent->SetLightColor(FLinearColor::White);
 	
 	LightBeamMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightBeamMesh"));
 	LightBeamMesh->SetupAttachment(RootComponent);
@@ -336,7 +335,6 @@ void ASpotlightZone::OnRep_CurrentState()
 	{
 		case ESpotlightState::Warning:
 			SpotLightComponent->SetVisibility(true);
-			SpotLightComponent->SetLightColor(FLinearColor::White);
 			LightBeamMesh->SetVisibility(false);
 
 			break;
