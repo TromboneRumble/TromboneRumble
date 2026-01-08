@@ -12,6 +12,7 @@
 #include "Components/EditableText.h"
 #include "Components/Slider.h"
 #include "Components/SpinBox.h"
+#include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/SessionSubsystem.h"
 #include "Utilities/DebugHelper.h"
@@ -328,7 +329,7 @@ void UMatchMenuWidget::JoinButtonClicked()
 	}
 }
 
-FString UMatchMenuWidget::GenerateRandomLobbyCode(int32 Length)
+FString UMatchMenuWidget::GenerateRandomLobbyCode(const int32 Length) const
 {
 	const FString Chars = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 	FString RandomCode;
@@ -336,6 +337,10 @@ FString UMatchMenuWidget::GenerateRandomLobbyCode(int32 Length)
 	{
 		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
 	}
+	
+	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Lobby Code copied to Clipboard: %s"), *RandomCode));
+	
 	return RandomCode;
 }
 

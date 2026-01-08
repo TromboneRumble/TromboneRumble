@@ -63,7 +63,7 @@ private:
 	void JoinButtonClicked();
 	// ~ EndButton Callbacks
 	
-	FString GenerateRandomLobbyCode(int32 Length);
+	FString GenerateRandomLobbyCode(int32 Length) const;
 	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
 	
 	UPROPERTY(meta = (BindWidget))
@@ -83,7 +83,7 @@ private:
 	TObjectPtr<USpinBox> MaxPlayerSpinBox;
 	
 	int32 NumPublicConnections = 4;
-	int32 MaxLobbyCodeLength = 4;
+	int32 MaxLobbyCodeLength = 5;
 	EMatchState State = EMatchState::Invalid;
 
 	UPROPERTY(Transient)
