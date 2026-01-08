@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "Audience_Boo.wav",
       "Path": "Media/392038465.wem",
-      "CachePath": "SFX/Audience_Boo_2748E109.wem"
+      "CachePath": "SFX/Audience_Boo_C1611F78.wem"
      },
      {
       "Id": "489322637",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "Audience_Boo.wav",
       "Path": "Media/489322637.wem",
-      "CachePath": "SFX/Audience_Boo_F43820DE.wem"
+      "CachePath": "SFX/Audience_Boo_2D6A4980.wem"
      },
      {
       "Id": "534001193",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "Audience_Boo.wav",
       "Path": "Media/534001193.wem",
-      "CachePath": "SFX/Audience_Boo_2976580F.wem"
+      "CachePath": "SFX/Audience_Boo_DBD1B287.wem"
      }
     ],
     "Events": [
@@ -67,6 +67,6 @@
     ]
    }
   ],
-  "FileHash": "{1D5E9B2E-EC7F-E083-4F55-567C88574AFE}"
+  "FileHash": "{5674B3BF-0900-8160-ED5F-6F5AECDBA3A2}"
  }
 }

@@ -431,7 +431,7 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Event Name="MIDI_MapB_Main" ID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}">
+						<Event Name="Play_MapB_Main" ID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}">
 							<ChildrenList>
 								<Action Name="" ID="{D333DE97-0DF4-4955-BD90-D6A8A99249F0}" ShortID="266063905">
 									<ReferenceList>
@@ -474,6 +474,54 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Audience_Combo" ID="{B40E2C4A-0983-45F3-B44D-F151DB5BBD64}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Map_C_Rhythm" ID="{1CAEC7A9-3A43-485B-80D2-ACEDE9F320D6}" ShortID="443864184">
+					<ChildrenList>
+						<Event Name="Play_MapC_Main" ID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}">
+							<ChildrenList>
+								<Action Name="" ID="{8FF4E47D-B568-4B31-8974-39FE344055FA}" ShortID="496597490">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Map_C_Main" ID="{0CC37F78-CB2E-4890-9CAA-26477900D4C6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapC_V" ID="{DFB1246C-F909-4AF4-B2C2-C3272AFB6E60}">
+							<ChildrenList>
+								<Action Name="" ID="{36A6E157-CD32-4163-B189-DAA832327089}" ShortID="864165390">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapC_Violin_MIDI" ID="{9F0513A1-00F3-444C-96D3-FE4D97A0BB2A}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapC_T" ID="{44719AFF-6180-42E7-86D2-E6F816D0C1B6}">
+							<ChildrenList>
+								<Action Name="" ID="{DFEA8605-3ABD-4514-8504-96745E5DE4CF}" ShortID="46731414">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapC_Trombone_MIDI" ID="{5B108D6B-3E88-4521-B592-CCA7126A7FC9}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapC_C" ID="{BC1D7B76-D48E-4A6F-AC80-24A36425213E}">
+							<ChildrenList>
+								<Action Name="" ID="{64F2A316-CFD3-44A4-A4C0-E6338F7B8EBE}" ShortID="853304914">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapC_Cymbal_MIDI" ID="{4B9E75CF-BCB1-4CAB-9BF9-03B7E86A6986}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

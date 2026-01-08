@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2983024595" Type="Event" GUID="{DFB1246C-F909-4AF4-B2C2-C3272AFB6E60}" Language="SFX" Hash="{05E2C02B-1E46-4266-DD71-B27F26CD2D06}">
+			<ObjectPath>MIDI_MapC_V</ObjectPath>
+			<ShortName>MIDI_MapC_V</ShortName>
+			<Path>Event/MIDI_MapC_V.bnk</Path>
+			<Media>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="256784692" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Violin.wav</ShortName>
+					<Path>Media/256784692.wem</Path>
+					<CachePath>SFX/Map_C_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="626910662" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_V.mid</ShortName>
+					<Path>Media/626910662.wem</Path>
+					<CachePath>SFX/MapC_MIDI_V_B8CEAB03.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="2983024595" Name="MIDI_MapC_V" ObjectPath="\Events\Default Work Unit\Map_C_Rhythm\MIDI_MapC_V" GUID="{DFB1246C-F909-4AF4-B2C2-C3272AFB6E60}" DurationType="OneShot" DurationMin="463.38947" DurationMax="463.38947">
+					<MediaRefs>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="256784692"/>
+						<MediaRef Id="626910662"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{F33B518B-7DDD-705B-0F62-92B687AB53FC}</FileHash>
+</SoundBanksInfo>

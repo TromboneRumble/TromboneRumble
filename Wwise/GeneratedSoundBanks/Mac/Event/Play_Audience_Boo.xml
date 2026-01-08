@@ -9,17 +9,17 @@
 				<File Id="392038465" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Audience_Boo.wav</ShortName>
 					<Path>Media/392038465.wem</Path>
-					<CachePath>SFX/Audience_Boo_2748E109.wem</CachePath>
+					<CachePath>SFX/Audience_Boo_C1611F78.wem</CachePath>
 				</File>
 				<File Id="489322637" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Audience_Boo.wav</ShortName>
 					<Path>Media/489322637.wem</Path>
-					<CachePath>SFX/Audience_Boo_F43820DE.wem</CachePath>
+					<CachePath>SFX/Audience_Boo_2D6A4980.wem</CachePath>
 				</File>
 				<File Id="534001193" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Audience_Boo.wav</ShortName>
 					<Path>Media/534001193.wem</Path>
-					<CachePath>SFX/Audience_Boo_2976580F.wem</CachePath>
+					<CachePath>SFX/Audience_Boo_DBD1B287.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
@@ -33,5 +33,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4E616448-7912-5A5E-63BC-5582B27688D8}</FileHash>
+	<FileHash>{0D229DAB-8E4A-35CB-3CF1-DF1EF9F91301}</FileHash>
 </SoundBanksInfo>
