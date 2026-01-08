@@ -3,6 +3,16 @@
 
 #include "Items/InstrumentViolin.h"
 #include "Data/InstrumentScoreData.h"
+#include "Utilities/DebugHelper.h"
+
+void AInstrumentViolin::OnRep_Equipped()
+{
+	Super::OnRep_Equipped();
+	if (IsOwnerLocallyControlled())
+	{
+		TotalNoteCount = 0;
+	}
+}
 
 float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {
@@ -26,12 +36,33 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		if (TotalNoteCount > 0 && (TotalNoteCount % ScoreData->ViolinBuffActivationCount == 0))
 		{
 			ApplyBuff(ScoreData->ViolinBuffEffectClass);
-			BuffRemainingCount = ScoreData->ViolinBuffActivationCount;
+			BuffRemainingCount = ScoreData->ViolinBuffDurationCount;
 		}
 	}
 
 	float BaseScore = (InNoteResult == ENoteResult::Excellent) ? ScoreData->PerfectScore : ScoreData->GoodScore;
-	float Multiplier = GetGradeMultiplier();
+	float GradeMultiplier = GetGradeMultiplier();
 
-	return (BaseScore * Multiplier) + ScoreData->ComboBasePoint;
+
+	// 등급 점수*배율 + 콤보 점수
+	float FinalScore = (BaseScore * GradeMultiplier) + ScoreData->ComboBasePoint;
+
+	if (IsOwnerLocallyControlled())
+	{
+		FString NoteResultStr = UEnum::GetValueAsString(InNoteResult); // Enum을 문자열로 변환
+
+		FString DebugMsg = FString::Printf(
+			TEXT("[Violin] Result: %s | (Base: %.0f * Mult:%.1f) + ComboBonus: %.0f = Final: %.0f"),
+			*NoteResultStr,
+			BaseScore,
+			GradeMultiplier,
+			ScoreData->ComboBasePoint,
+			FinalScore
+		);
+
+		Debug::Print(DebugMsg);
+	}
+
+
+	return FinalScore;
 }

@@ -37,6 +37,8 @@ float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 Curren
 			ComboMultiplier,
 			FinalScore
 		);
+
+		Debug::Print(DebugMsg);
 	}
 	
 	return FinalScore;

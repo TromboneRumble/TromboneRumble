@@ -14,6 +14,7 @@ class TROMBONERUMBLE_API AInstrumentViolin : public AInstrumentBase
 {
 	GENERATED_BODY()
 protected:
+	virtual void OnRep_Equipped() override;
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) override;
 private:
 	int32 TotalNoteCount = 0;       // 전체 누적 노트
