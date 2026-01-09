@@ -47,3 +47,9 @@ void UFloatingRotatingComponent::ResetBaseLocation()
 	}
 }
 
+void UFloatingRotatingComponent::ResetBaseLocation(const FVector& InLocation)
+{
+	BaseRelativeLocation = InLocation;
+	bIsBaseLocationSet = true;
+}
+

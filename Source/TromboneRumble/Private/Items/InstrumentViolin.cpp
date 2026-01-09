@@ -3,11 +3,66 @@
 
 #include "Items/InstrumentViolin.h"
 #include "Data/InstrumentScoreData.h"
+#include "GameFramework/Character.h"
 #include "Utilities/DebugHelper.h"
 
 void AInstrumentViolin::OnRep_Equipped()
 {
 	Super::OnRep_Equipped();
+	checkf(ViolinBodyMesh, TEXT("ViolinBodyMesh not valid Actor: %s"), *GetName());
+	checkf(ViolinBowMesh, TEXT("ViolinBowMesh not valid Actor: %s"), *GetName());
+
+	if (bIsEquipped)
+	{
+		SkeletalMeshComponent->SetSkeletalMesh(ViolinBowMesh);
+		
+		if (!ViolinBodyActor)
+		{
+			if (IsValid(ViolinBodyClass))
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				ViolinBodyActor = GetWorld()->SpawnActor<AActor>(ViolinBodyClass, GetActorTransform(), SpawnParams);
+
+				if (ViolinBodyActor)
+				{
+					TArray<UPrimitiveComponent*> Comps;
+					ViolinBodyActor->GetComponents(Comps);
+
+					for (UPrimitiveComponent* Comp : Comps)
+					{
+						Comp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+						Comp->SetReceivesDecals(false);
+					}
+				}
+			}
+		}
+		if (IsValid(ViolinBodyActor) && CurrentOwner)
+		{
+			const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner);
+			if (OwnerChar)
+			{
+				ViolinBodyActor->SetActorHiddenInGame(false);
+				ViolinBodyActor->AttachToComponent(
+					OwnerChar->GetMesh(),
+					FAttachmentTransformRules::SnapToTargetIncludingScale,
+					FName(TEXT("socket_Violin"))
+				);
+			}
+		}
+	}
+	else if (!bIsEquipped)
+	{
+		SkeletalMeshComponent->SetSkeletalMesh(ViolinBodyMesh);
+		if (IsValid(ViolinBodyActor))
+		{
+			ViolinBodyActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			ViolinBodyActor->SetActorHiddenInGame(true);
+		}
+	}
+
 	if (IsOwnerLocallyControlled())
 	{
 		TotalNoteCount = 0;
