@@ -43,6 +43,7 @@ public:
 	// ~ End IWeapon Interface
 	
 	virtual void DetectHit();
+	virtual void OnHitSuccess(AActor* HitActor) {}
 	virtual bool IsCanSweep() const;
 
 protected:

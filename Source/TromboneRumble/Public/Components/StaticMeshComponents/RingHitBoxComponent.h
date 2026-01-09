@@ -7,6 +7,7 @@
 #include "RingHitBoxComponent.generated.h"
 
 
+enum class EInstrumentType : uint8;
 enum class ENoteResult : uint8;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -27,6 +28,9 @@ protected:
 
 	UFUNCTION()
 	void OnNoteDetectedHandler(ENoteResult InNoteResult);
+
+	UFUNCTION()
+	void OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Material", meta = (AllowPrivateAccess = "true"))
 	float StartOuterRadius = 0.5f;

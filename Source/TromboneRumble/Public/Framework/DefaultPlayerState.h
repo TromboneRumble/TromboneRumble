@@ -4,14 +4,39 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Utilities/Defines.h"
 #include "DefaultPlayerState.generated.h"
 
 class AWeaponBase;
 class URhythmSubsystem;
 class AInGameState;
-enum class ENoteResult : uint8;
+
+USTRUCT(BlueprintType)
+struct FComboData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentCombo = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	ENoteResult LastNoteResult = ENoteResult::None; 
+
+	//콤보가 0일때 Bad 판정 칠시 판단 용도로 패킷 구분
+	UPROPERTY()
+	uint8 TransactionID = 0;
+
+	bool operator==(const FComboData& Other) const
+	{
+		return CurrentCombo == Other.CurrentCombo &&
+			LastNoteResult == Other.LastNoteResult &&
+			TransactionID == Other.TransactionID;
+	}
+};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLocalScoreChanged, APlayerState*, PlayerState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
+
 UCLASS()
 class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 {
@@ -19,9 +44,6 @@ class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 
 public:
 	ADefaultPlayerState();
-
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_PlayerName() override;
@@ -33,11 +55,16 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnLocalScoreChanged OnLocalScoreChanged;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnComboChanged OnComboChanged;
+
 	void AddScore(int32 Amount);
 	UFUNCTION(Server, Reliable)
 	void Server_AddScore(int32 Amount);
-	UFUNCTION()
-	void HandleNoteDetected(ENoteResult InNoteResult);
+
+	void HandleCombo(ENoteResult InResult);
+	UFUNCTION(Server, Reliable)
+	void Server_HandleCombo(ENoteResult InResult);
 
 	UPROPERTY(VisibleInstanceOnly, Replicated)
 	TSubclassOf<AWeaponBase> EquippedWeaponClass;
@@ -49,11 +76,17 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
+	UPROPERTY(ReplicatedUsing = OnRep_ComboData)
+	FComboData ComboData;
+
+	UFUNCTION()
+	void OnRep_ComboData();
 
 public:
 	//getter setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
+	FORCEINLINE FComboData GetComboData() const { return ComboData; }
 	// ~getter setter
 };

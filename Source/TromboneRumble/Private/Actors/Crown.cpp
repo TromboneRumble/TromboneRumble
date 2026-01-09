@@ -23,14 +23,15 @@ void ACrown::BeginPlay()
 		{
 			InGameState->OnLeaderChanged.AddDynamic(this, &ThisClass::HandleLeaderChanged);
 		}
-		World->GetTimerManager().SetTimer(
+		//게임 시작했을때 0점인 상태인 사람에게도 왕관 붙히고 싶으면 Timer 쓰기
+		/*World->GetTimerManager().SetTimer(
 			InitialLeaderTimerHandle,
 			this,
 			&ThisClass::TryAttachToInitialLeader,
 			0.1f,    
 			true,    
 			0.0f     
-		);
+		);*/
 	}
 }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{CC19E2C7-81E4-A2A7-C21F-C39567E3288F}">
+			<ObjectPath>Play_Audience_Boo</ObjectPath>
+			<ShortName>Play_Audience_Boo</ShortName>
+			<Path>Event/Play_Audience_Boo.bnk</Path>
+			<Media>
+				<File Id="392038465" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Audience_Boo.wav</ShortName>
+					<Path>Media/392038465.wem</Path>
+					<CachePath>SFX/Audience_Boo_2748E109.wem</CachePath>
+				</File>
+				<File Id="489322637" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Audience_Boo.wav</ShortName>
+					<Path>Media/489322637.wem</Path>
+					<CachePath>SFX/Audience_Boo_F43820DE.wem</CachePath>
+				</File>
+				<File Id="534001193" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Audience_Boo.wav</ShortName>
+					<Path>Media/534001193.wem</Path>
+					<CachePath>SFX/Audience_Boo_2976580F.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="4250244477" Name="Play_Audience_Boo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Boo" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" DurationType="OneShot" DurationMin="2.9886227" DurationMax="3.172538">
+					<MediaRefs>
+						<MediaRef Id="392038465"/>
+						<MediaRef Id="489322637"/>
+						<MediaRef Id="534001193"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{4E616448-7912-5A5E-63BC-5582B27688D8}</FileHash>
+</SoundBanksInfo>

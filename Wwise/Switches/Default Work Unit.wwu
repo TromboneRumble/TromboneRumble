@@ -17,6 +17,12 @@
 						<Switch Name="Water" ID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
 					</ChildrenList>
 				</SwitchGroup>
+				<SwitchGroup Name="Audience" ID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
+					<ChildrenList>
+						<Switch Name="Combo_On" ID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
+						<Switch Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
+					</ChildrenList>
+				</SwitchGroup>
 			</ChildrenList>
 		</WorkUnit>
 	</Switches>

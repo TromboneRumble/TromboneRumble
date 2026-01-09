@@ -2,6 +2,8 @@
 
 
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+
+#include "SSearchToggleButton.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "GameFramework/Pawn.h"
 
@@ -16,8 +18,7 @@ URingHitBoxComponent::URingHitBoxComponent()
 	bReceivesDecals = false;
 	SetCastShadow(false);
 
-	SetVisibility(true, true);
-	SetHiddenInGame(true, true);
+	SetVisibility(false, false);
 }
 
 void URingHitBoxComponent::OnRegister()
@@ -42,13 +43,13 @@ void URingHitBoxComponent::BeginPlay()
 	const APawn* PawnOwner = Cast<APawn>(GetOwner());
 	const bool bShow = PawnOwner && PawnOwner->IsLocallyControlled();
 
-	SetHiddenInGame(!bShow, true);
 	SetVisibility(bShow, true);
 	if (bShow)
 	{
 		if (URhythmSubsystem* RhythmSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 		{
 			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
+			RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 		}
 	}
 }
@@ -85,6 +86,23 @@ void URingHitBoxComponent::OnNoteDetectedHandler(ENoteResult InNoteResult)
 	}
 	
 	
+}
+
+void URingHitBoxComponent::OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType)
+{
+	const APawn* PawnOwner = Cast<APawn>(GetOwner());
+	const bool bShow = PawnOwner && PawnOwner->IsLocallyControlled();
+	if (PawnOwner && bShow)
+	{
+		if (NewType == EInstrumentType::Background || EInstrumentType::None<=NewType)
+		{
+			SetVisibility(false, true);
+		}
+		else
+		{
+			SetVisibility(true, true);
+		}
+	}
 }
 
 void URingHitBoxComponent::EnsureMID()

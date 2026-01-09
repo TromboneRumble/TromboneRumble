@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
     "Language": "SFX",
-    "Hash": "{49F58605-A802-4B15-8ED8-51F2F072D61B}",
+    "Hash": "{75039D28-1BE9-C403-D9AF-63BE9A5C0736}",
     "ObjectPath": "MIDI_MapA_V",
     "ShortName": "MIDI_MapA_V",
     "Path": "Event/MIDI_MapA_V.bnk",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "MIDI_V.mid",
       "Path": "Media/1052433117.wem",
-      "CachePath": "SFX/MIDI_V_DD9D0199.wem"
+      "CachePath": "SFX/MIDI_V_707D6309.wem"
      }
     ],
     "Plugins": {
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{9583C238-0E38-80AA-8B54-4FC2EF88207A}"
+  "FileHash": "{5E86BFF0-31E0-8D24-8691-D8A2A65CEB11}"
  }
 }

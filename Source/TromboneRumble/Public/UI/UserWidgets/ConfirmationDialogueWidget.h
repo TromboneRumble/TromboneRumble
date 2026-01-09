@@ -18,10 +18,12 @@ public:
 	void ShowDialogue(const FText& Message);
 	
 protected:
+	virtual void NativeOnActivated() override;
 	virtual void NativeConstruct() override;
 	
 private:
 	void InitButtons();
+	void SetEnableButtons(bool bInIsEnabled);
 	
 	// ~ Begin Button Callbacks
 	UFUNCTION()
@@ -41,4 +43,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Message;
 	// ~ End Common UIs
+	
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	TObjectPtr<UWidgetAnimation> FadeIn;
 };

@@ -23,6 +23,7 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
 	void PlayGetUpMontage(bool bIsFacingUp);
+	void SaveRagdollPoseSnapshot();
 	
 protected:
 	UFUNCTION()
@@ -93,8 +94,6 @@ private:
 public:
 	//~ Begin Setters
 	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
-	void SetRagdollSnapshotName(const FName& NewSnapshotName) { RagdollSnapshotName = NewSnapshotName; }
 	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
-	void SetIsRagdollBlending(const bool bNewIsRagdollBlending) { bIsRagdollBlending = bNewIsRagdollBlending; }
 	//~ End Setters
 };

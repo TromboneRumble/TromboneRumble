@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1909403914" Type="Event" GUID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}" Language="SFX" Hash="{8D7C8056-1D86-46C7-56C2-C0A94BBF3157}">
+			<ObjectPath>MIDI_MapB_V</ObjectPath>
+			<ShortName>MIDI_MapB_V</ShortName>
+			<Path>Event/MIDI_MapB_V.bnk</Path>
+			<Media>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="409495629" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Violin.wav</ShortName>
+					<Path>Media/409495629.wem</Path>
+					<CachePath>SFX/Map_B_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1052433117" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_V.mid</ShortName>
+					<Path>Media/1052433117.wem</Path>
+					<CachePath>SFX/MIDI_V_707D6309.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1909403914" Name="MIDI_MapB_V" ObjectPath="\Events\Default Work Unit\Map_B_Rhythm\MIDI_MapB_V" GUID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="409495629"/>
+						<MediaRef Id="1052433117"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{2CF2B74A-7BA9-2D7A-E20E-C3C536889CDE}</FileHash>
+</SoundBanksInfo>

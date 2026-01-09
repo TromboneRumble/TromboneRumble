@@ -1,0 +1,72 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "4250244477",
+    "Type": "Event",
+    "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
+    "Language": "SFX",
+    "Hash": "{CC19E2C7-81E4-A2A7-C21F-C39567E3288F}",
+    "ObjectPath": "Play_Audience_Boo",
+    "ShortName": "Play_Audience_Boo",
+    "Path": "Event/Play_Audience_Boo.bnk",
+    "Media": [
+     {
+      "Id": "392038465",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Audience_Boo.wav",
+      "Path": "Media/392038465.wem",
+      "CachePath": "SFX/Audience_Boo_2748E109.wem"
+     },
+     {
+      "Id": "489322637",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Audience_Boo.wav",
+      "Path": "Media/489322637.wem",
+      "CachePath": "SFX/Audience_Boo_F43820DE.wem"
+     },
+     {
+      "Id": "534001193",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Audience_Boo.wav",
+      "Path": "Media/534001193.wem",
+      "CachePath": "SFX/Audience_Boo_2976580F.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "4250244477",
+      "Name": "Play_Audience_Boo",
+      "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Audience_Boo",
+      "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.9886227",
+      "DurationMax": "3.172538",
+      "MediaRefs": [
+       {
+        "Id": "392038465"
+       },
+       {
+        "Id": "489322637"
+       },
+       {
+        "Id": "534001193"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{27B2C37D-D946-00E6-92FA-399F53B722B2}"
+ }
+}

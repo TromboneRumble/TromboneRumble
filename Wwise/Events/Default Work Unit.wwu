@@ -396,6 +396,91 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Map_B_Rhythm" ID="{D70B1B4F-E522-4EBF-8228-2F831A44975E}" ShortID="263223851">
+					<ChildrenList>
+						<Event Name="MIDI_MapB_C" ID="{6118A959-933C-4BE5-B35D-980A18CAFC6A}">
+							<ChildrenList>
+								<Action Name="" ID="{C7BE7C84-8A3E-40E5-8740-BA44466EAA12}" ShortID="691755592">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapB_Cymbal_MIDI" ID="{86D0FCFB-7894-413A-AB12-640B6E95A594}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapB_T" ID="{B9083602-D386-4F6A-830D-FFEBBFA50FA7}">
+							<ChildrenList>
+								<Action Name="" ID="{0E72260B-F429-4788-85CE-5025F9085303}" ShortID="686694475">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapB_Trombone_MIDI" ID="{95F0E65F-EA62-4F96-8D9F-38A4119C3585}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapB_V" ID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}">
+							<ChildrenList>
+								<Action Name="" ID="{8B0EC095-DAA6-4ABF-9291-95BEDCDF0212}" ShortID="668952294">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapB_Violin_MIDI" ID="{09C03753-609F-487E-8E23-9EF321C06DDC}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapB_Main" ID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}">
+							<ChildrenList>
+								<Action Name="" ID="{D333DE97-0DF4-4955-BD90-D6A8A99249F0}" ShortID="266063905">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Map_B" ID="{3AE454D3-86B2-4E15-A6DC-0A12ABFE1E66}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MIDI_MapB_Object" ID="{750353A4-404D-47D8-92EF-B12E466A3BCE}">
+							<ChildrenList>
+								<Action Name="" ID="{DA9C26B8-B56E-4987-B7AC-D6B8928DAC4D}" ShortID="928863529">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MapB_Object_MIDI" ID="{D062C1DC-9867-4B52-8189-DC864C82121B}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Audience_SFX" ID="{26952185-7075-4B42-B0F9-7C1C6F797820}" ShortID="396442691">
+					<ChildrenList>
+						<Event Name="Play_Audience_Boo" ID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}">
+							<ChildrenList>
+								<Action Name="" ID="{10B04589-FFCC-4507-8CA0-6D6AA506D4D4}" ShortID="101079089">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_Boo" ID="{975E59CE-3A3B-4A51-880E-84E3A35CA143}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Audience_Combo" ID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}">
+							<ChildrenList>
+								<Action Name="" ID="{D9FBB997-E313-4F4C-A8F2-2EAD8A1E0517}" ShortID="768952766">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_Combo" ID="{B40E2C4A-0983-45F3-B44D-F151DB5BBD64}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

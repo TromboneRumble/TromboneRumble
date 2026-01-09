@@ -80,7 +80,8 @@ void AWeaponBase::Interact_Implementation(AActor* InstigatorActor)
 {
 	if (!HasAuthority()) return;
 
-	Equip(InstigatorActor);
+	//Equip은 EquipComponent를 통해서만
+	//Equip(InstigatorActor);
 }
 
 void AWeaponBase::Equip(AActor* OwnerActor)
@@ -191,6 +192,7 @@ void AWeaponBase::DetectHit()
     			HitData.KnockbackForce = WeaponData->KnockbackForce;
     			HitData.HitType = WeaponData->HitReactionType;
 
+				OnHitSuccess(HitActor);
     			CombatReceiver->OnHitReceived(HitData);
     		}
     	}

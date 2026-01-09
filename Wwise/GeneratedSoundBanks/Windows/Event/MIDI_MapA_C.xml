@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1909551216" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{AEC193FE-2376-B6D6-17D1-CFDD5ED754BC}">
+		<SoundBank Id="1909551216" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{D87D24CC-3453-7F1D-8453-D34D5866818B}">
 			<ObjectPath>MIDI_MapA_C</ObjectPath>
 			<ShortName>MIDI_MapA_C</ShortName>
 			<Path>Event/MIDI_MapA_C.bnk</Path>
@@ -9,7 +9,7 @@
 				<File Id="134442568" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>MIDI_C.mid</ShortName>
 					<Path>Media/134442568.wem</Path>
-					<CachePath>SFX/MIDI_C_59E86301.wem</CachePath>
+					<CachePath>SFX/MIDI_C_CA4283DA.wem</CachePath>
 				</File>
 				<File Id="292465416" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Map_A_Cymbal.wav</ShortName>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{A6C72D64-90D2-8E7C-9769-D5105F21454F}</FileHash>
+	<FileHash>{E0F1921E-86DB-A9C9-C5D6-3374DF70463A}</FileHash>
 </SoundBanksInfo>
