@@ -15,8 +15,9 @@ class TROMBONERUMBLE_API UFloatingRotatingComponent : public UActorComponent
 public:
 	UFloatingRotatingComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UFUNCTION(BlueprintCallable, Category = "Floating")
+
 	void ResetBaseLocation();
+	void ResetBaseLocation(const FVector& InLocation);
 public:
 	UPROPERTY(EditAnywhere, Category = "Floating")
 	float FloatSpeed = 4.0f; // 위아래 왕복 속도

@@ -8,10 +8,65 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "Data/RhythmScoreAttributeSet.h"
+#include "Actors/InstrumentIndicator.h"
+#include "UI/UserWidgets/OnScreenIndicator/OSI_WidgetBase.h"
 #include "Utilities/DebugHelper.h"
 
 AInstrumentBase::AInstrumentBase()
 {
+}
+
+void AInstrumentBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (IsValid(IndicatorInstance))
+	{
+		FVector NewLocation = GetActorLocation() + IndicatorOffset;
+		IndicatorInstance->ResetBaseLocation(NewLocation);
+	}
+}
+
+void AInstrumentBase::BeginPlay()
+{
+	Super::BeginPlay();
+	if (IndicatorClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		IndicatorInstance = GetWorld()->SpawnActor<AInstrumentIndicator>(IndicatorClass, GetActorLocation() + IndicatorOffset, FRotator::ZeroRotator, SpawnParams);
+	}
+	if (IndicatorWidgetClass)
+	{
+		APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
+		if (LocalPC && LocalPC->IsLocalController())
+		{
+			IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
+
+			if (IndicatorWidgetInstance.Get())
+			{
+				IndicatorWidgetInstance->TargetComponent = GetRootComponent();
+				IndicatorWidgetInstance->AddToViewport();
+			}
+		}
+		
+	}
+}
+
+void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	if (IsValid(IndicatorInstance))
+	{
+		IndicatorInstance->Destroy();
+		IndicatorInstance = nullptr;
+	}
+	if (IndicatorWidgetInstance.Get())
+	{
+		IndicatorWidgetInstance->RemoveFromParent();
+		IndicatorWidgetInstance = nullptr;
+	}
 }
 
 void AInstrumentBase::OnRep_Equipped()
@@ -23,11 +78,27 @@ void AInstrumentBase::OnRep_Equipped()
 		{
 			BindToRhythmSubsystem(true);
 		}
+		if (IndicatorInstance)
+		{
+			IndicatorInstance->SetActorHiddenInGame(true);
+		}
+		if (IndicatorWidgetInstance.Get())
+		{
+			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
 	}
 	else
 	{
 		RemoveBuff();
 		BindToRhythmSubsystem(false);
+		if (IndicatorInstance)
+		{
+			IndicatorInstance->SetActorHiddenInGame(false);
+		}
+		if (IndicatorWidgetInstance.Get())
+		{
+			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
+		}
 	}
 }
 
