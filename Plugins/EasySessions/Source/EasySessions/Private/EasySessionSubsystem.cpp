@@ -254,6 +254,7 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
         {
             JoinSessionCompleteDelegateHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
             Sessions->JoinSession(*Helper.UserID, NAME_GameSession, SessionResult);
+            return;
         }
         else
         {
@@ -363,4 +364,34 @@ FString UEasySessionSubsystem::GetCurrentSessionProperty(const FString& Key)
     }
 
     return FString();
+}
+
+bool UEasySessionSubsystem::IsServer() const
+{
+    if (const UWorld* World = GetWorld())
+    {
+        return World->GetNetMode() < NM_Client;
+    }
+    
+    return false;
+}
+
+bool UEasySessionSubsystem::IsAdmin()
+{
+    if (IsServer())
+    {
+        return true;
+    }
+
+    const IOnlineSessionPtr Sessions = Online::GetSessionInterface(GetWorld());
+    if (Sessions.IsValid())
+    {
+        const FNamedOnlineSession* NamedSession = Sessions->GetNamedSession(NAME_GameSession);
+        if (NamedSession && NamedSession->bHosting)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

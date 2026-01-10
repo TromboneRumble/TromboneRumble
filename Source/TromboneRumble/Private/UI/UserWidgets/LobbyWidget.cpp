@@ -1,10 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/UserWidgets/LobbyWidget.h"
+#include "EasySessionSubsystem.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-#include "OnlineSessionSettings.h"
-#include "Subsystems/SessionSubsystem.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
 #include "Framework/LobbyGameState.h"
@@ -26,8 +25,6 @@ bool ULobbyWidget::Initialize()
 	const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
 	checkf(!MainMenuMapPath.IsEmpty(), TEXT("MainMenu map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedMainMenuMapPath = MainMenuMapPath;
-
-	BindSubsystemCallbacks();
 	
 	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
 	{
@@ -42,27 +39,24 @@ void ULobbyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	if (!GetWorld()) return;
-	
-	checkf(SessionsSubsystem, TEXT("SessionsSubsystem is null from [NativeConstruct]"));
-	
+	BindSubsystemCallbacks();
+
 	if (CountdownText)
 	{
 		CountdownText->SetVisibility(ESlateVisibility::Hidden);
 	}
 
-	FString LobbyCode;
-	if (SessionsSubsystem->TryGetCurrentLobbyCode(LobbyCode))
+	const FString LobbyCode = SessionsSubsystem->GetCurrentSessionProperty(GKey_Lobby_Code.ToString());
+	if (!LobbyCode.IsEmpty())
 	{
 		LobbyText->SetText(FText::FromString(LobbyCode));
 	}
 	else
 	{
-		Debug::Print(TEXT("Failed to get LobbyCode from [NativeConstruct]"));
-		LobbyText->SetText(FText::FromString(TEXT("ERROR")));
+		LobbyText->SetText(FText::FromString(TEXT("No Lobby Code")));
 	}
 
-	if (SessionsSubsystem->IsLocalHost())
+	if (SessionsSubsystem->IsAdmin())
 	{
 		IsHostText->SetText(FText::FromString(TEXT("Host")));
 	}
@@ -81,52 +75,31 @@ void ULobbyWidget::NativeDestruct()
 
 void ULobbyWidget::BindSubsystemCallbacks()
 {
-	if (IsDesignTime()) return;
-	UGameInstance* GameInstance = GetGameInstance();
-	SessionsSubsystem = GameInstance->GetSubsystem<USessionSubsystem>();
+	const UGameInstance* GameInstance = GetGameInstance();
+	SessionsSubsystem = GameInstance->GetSubsystem<UEasySessionSubsystem>();
 
+	RemoveSubsystemCallbacks();
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->OnSessionCreateComplete.AddDynamic(this, &ThisClass::OnCreateSession);
-		SessionsSubsystem->OnSessionSearchFinished.AddUObject(this, &ThisClass::OnFindSession);
-		SessionsSubsystem->OnSessionJoinComplete.AddUObject(this, &ThisClass::OnJoinSession);
-		SessionsSubsystem->OnSessionDestroyComplete.AddDynamic(this, &ThisClass::OnDestroySession);
-		SessionsSubsystem->OnSessionError.AddDynamic(this, &ThisClass::OnSessionError);
-		SessionsSubsystem->OnSessionStart.AddDynamic(this, &ThisClass::OnStartSession);
-		SessionsSubsystem->OnPlayerListUpdated.AddDynamic(this, &ThisClass::OnPlayerListUpdated);
+		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
+		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
+		// SessionsSubsystem->OnPlayerListUpdated.AddDynamic(this, &ThisClass::OnPlayerListUpdated);
 	}
 }
 
 void ULobbyWidget::RemoveSubsystemCallbacks()
 {
-	if (IsDesignTime()) return;
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->OnSessionCreateComplete.RemoveDynamic(this, &ThisClass::OnCreateSession);
-		SessionsSubsystem->OnSessionDestroyComplete.RemoveDynamic(this, &ThisClass::OnDestroySession);
-		SessionsSubsystem->OnSessionError.RemoveDynamic(this, &ThisClass::OnSessionError);
-		SessionsSubsystem->OnSessionStart.RemoveDynamic(this, &ThisClass::OnStartSession);
-		SessionsSubsystem->OnSessionSearchFinished.RemoveAll(this); // AddUObject는 RemoveAll/Handle 필요
-		SessionsSubsystem->OnSessionJoinComplete.RemoveAll(this);
-		SessionsSubsystem->OnPlayerListUpdated.RemoveDynamic(this, &ThisClass::OnPlayerListUpdated);
+		SessionsSubsystem->OnDestroySessionSuccess.RemoveAll(this);
+		SessionsSubsystem->OnDestroySessionFailure.RemoveAll(this);
+		// SessionsSubsystem->OnPlayerListUpdated.RemoveAll(this);
 	}
 }
 
-
-void ULobbyWidget::OnCreateSession(bool bWasSuccessful)
+void ULobbyWidget::OnDestroySessionSuccess()
 {
-}
-
-void ULobbyWidget::OnFindSession(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful)
-{
-}
-
-void ULobbyWidget::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
-{
-}
-
-void ULobbyWidget::OnDestroySession(bool bWasSuccessful)
-{
+	PRINT_WITH_CURRENT_CONTEXT("Session destroyed successfully, returning to Main Menu");
 	FString PackagePath = CachedMainMenuMapPath;
 	if (PackagePath.Contains(TEXT(".")))
 	{
@@ -140,13 +113,9 @@ void ULobbyWidget::OnDestroySession(bool bWasSuccessful)
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*PackagePath), true);
 }
 
-void ULobbyWidget::OnSessionError(const FString& Reason)
+void ULobbyWidget::OnDestroySessionFailure()
 {
-	Debug::Print(FString::Printf(TEXT("Session Error: %s from [OnSessionError]"), *Reason));
-}
-
-void ULobbyWidget::OnStartSession(bool bWasSuccessful)
-{
+	PRINT_WITH_CURRENT_CONTEXT("Failed to destroy session");
 }
 
 void ULobbyWidget::OnPlayerListUpdated(const TArray<FString>& PlayerNames)

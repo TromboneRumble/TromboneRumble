@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "EasySessionSettings.generated.h"
 
+static FName GKey_Lobby_Code = FName("LOBBY_CODE");
+
 USTRUCT()
 struct FEasySessionSettings
 {

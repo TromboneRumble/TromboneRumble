@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "LobbyWidget.generated.h"
 
+class UEasySessionSubsystem;
 enum class ELobbyState : uint8;
 class UButton;
-class USessionSubsystem;
 class UTextBlock;
 
 UCLASS()
@@ -23,58 +22,49 @@ protected:
 	virtual void NativeDestruct() override;
 
 private:
-	// SessionSubsystem Callbacks
+	// ~ Begin SessionSubsystem Callbacks
 	void BindSubsystemCallbacks();
 	void RemoveSubsystemCallbacks();
 
-	UFUNCTION()
-	void OnCreateSession(bool bWasSuccessful);
-	void OnFindSession(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
-	void OnJoinSession(EOnJoinSessionCompleteResult::Type Result);
-	UFUNCTION()
-	void OnDestroySession(bool bWasSuccessful);
-	UFUNCTION()
-	void OnSessionError(const FString& Reason);
-	UFUNCTION()
-	void OnStartSession(bool bWasSuccessful);
+	void OnDestroySessionSuccess();
+	void OnDestroySessionFailure();
+	
 	UFUNCTION()
 	void OnPlayerListUpdated(const TArray<FString>& PlayerNames);
-	// ~ SessionSubsystem Callbacks
+	// ~ End SessionSubsystem Callbacks
 
-	// Button Callbacks
+	// ~ Begin Button Callbacks
 	UFUNCTION()
 	void StartGameButtonClicked();
 
 	UFUNCTION()
 	void BackToMainMenuButtonClicked();
-	// ~ Button Callbacks
+	// ~ End Button Callbacks
 
 	UFUNCTION()
 	void OnLobbyStateUpdated(ELobbyState NewState);
 
 	void UpdateCountdown();
 
+	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> LobbyText;
-
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> IsHostText;
-
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> PlayerListText;
-
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CountdownText;
+	// ~ End UIs
 
 	UPROPERTY(Transient)
-	TObjectPtr<USessionSubsystem> SessionsSubsystem;
+	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
 
 	UPROPERTY(Transient)
-	FString CachedMainMenuMapPath{ TEXT("") };
-
+	FString CachedMainMenuMapPath = TEXT("");
 	UPROPERTY(Transient)
-	FString CachedInGameMapPath{ TEXT("") };
-
+	FString CachedInGameMapPath = TEXT("");
+	
 	FTimerHandle CountdownTimerHandle;
 	int32 CountdownSeconds = 5;
 };

@@ -91,8 +91,6 @@ private:
 
 	UPROPERTY(Transient)
 	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
-	
-	FName KEY_LOBBY_CODE = FName("LOBBY_CODE");
 
 	UPROPERTY(Transient)
 	FString CachedLobbyMapPath = "";

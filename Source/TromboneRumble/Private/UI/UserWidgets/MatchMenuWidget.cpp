@@ -178,13 +178,13 @@ void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchRe
 	{
 		FString SettingsValue;
 		FString Code;
-		Result.Session.SessionSettings.Get(KEY_LOBBY_CODE, Code);
+		Result.Session.SessionSettings.Get(GKey_Lobby_Code, Code);
 		const FString Owner = Result.Session.OwningUserName;
 		const int32   Ping = Result.PingInMs;
 
 		Debug::Print(FString::Printf(TEXT("Code=%s Owner=%s Ping=%d"), *Code, *Owner, Ping));
 
-		Result.Session.SessionSettings.Get(KEY_LOBBY_CODE, SettingsValue);
+		Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
 		if (SettingsValue == LobbyCode)
 		{
 			Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
@@ -259,7 +259,7 @@ void UMatchMenuWidget::HostButtonClicked()
 
 		FEasySessionSettings Settings;
 		Settings.NumPublicConnections = FMath::RoundToInt(MaxPlayerSlider->GetValue());
-		Settings.CustomProperties.Add(KEY_LOBBY_CODE.ToString(), LobbyCode);
+		Settings.CustomProperties.Add(GKey_Lobby_Code.ToString(), LobbyCode);
 		SessionsSubsystem->CreateSession(Settings);
 	}
 }
@@ -277,7 +277,7 @@ void UMatchMenuWidget::JoinButtonClicked()
 		MatchButtonsSetEnabled(false);
 
 		FEasySearchSettings SearchSettings;
-		SearchSettings.QuerySettings.Add(KEY_LOBBY_CODE.ToString(), LobbyCodeText->GetText().ToString().ToUpper());
+		SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), LobbyCodeText->GetText().ToString().ToUpper());
 		SessionsSubsystem->FindSessions(SearchSettings);
 	}
 }

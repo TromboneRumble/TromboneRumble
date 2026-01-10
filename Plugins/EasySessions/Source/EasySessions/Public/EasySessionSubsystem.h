@@ -23,7 +23,6 @@ public:
 	void FindSessions(const FEasySearchSettings& InSettings);
 	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
 	void DestroySession();
-
 	
 	FOnStartSessionSuccess OnStartSessionSuccess;
 	FOnStartSessionFailure OnStartSessionFailure;
@@ -44,6 +43,8 @@ public:
 
 public:
 	FString GetCurrentSessionProperty(const FString& Key);
+	bool IsServer() const;
+	bool IsAdmin();
 
 private:
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
