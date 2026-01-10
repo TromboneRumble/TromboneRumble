@@ -283,10 +283,6 @@ void ADefaultTromboneCharacter::UpdateMaxWalkSpeed()
 
 void ADefaultTromboneCharacter::HandleInteractableAvailableChanged(bool bAvailable)
 {
-	if (ADefaultPlayerController* PC = CachedCharacterController.Get())
-	{
-		PC->ShowInteractionUI(bAvailable);
-	}
 }
 
 void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)

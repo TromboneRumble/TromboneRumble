@@ -22,9 +22,6 @@ class TROMBONERUMBLE_API ADefaultPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	ADefaultPlayerController();
-	void ShowInteractionUI(bool bShow) const;
-
 	// InputActions
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> LobbyMappingContext;
@@ -84,11 +81,6 @@ private:
 
 	bool CanProcessInput();
 	
-	// UI
-	void InitializeLobbyUI();
-	void InitializeInGameUI();
-	// ~UI
-
 	UFUNCTION(Server, Reliable)
 	void Server_NotifyLoadingScreenFinished();
 
@@ -98,12 +90,6 @@ private:
 
 	FTimerHandle RetryCreateRankWidgetsHandle;
 	bool bRetryTimerRunning = false;
-
-
-	TSubclassOf<UUserWidget> InGameUIClass;
-
-	UPROPERTY(Transient)
-	TObjectPtr<UInGameWidget> InGameUI;
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;

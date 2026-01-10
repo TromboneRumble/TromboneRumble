@@ -24,4 +24,11 @@ void AInGameHUD::BeginPlay()
 			PerformanceWidget->AddToViewport();
 		}
 	}
+	
+	if (APlayerController* PC = GetOwningPlayerController())
+	{
+		const FInputModeGameOnly InputModeData;
+		PC->SetInputMode(InputModeData);
+		PC->bShowMouseCursor = false;
+	}
 }

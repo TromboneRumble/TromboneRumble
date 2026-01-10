@@ -5,28 +5,9 @@
 #include "Framework/LobbyGameMode.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Framework/InGameState.h"
-#include "Prototype/InGameWidget.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_RhythmRankWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
-#include "Utilities/DebugHelper.h"
-
-ADefaultPlayerController::ADefaultPlayerController()
-{
-	//TODO : 하드 레퍼런싱에서 BP로 변경
-	static ConstructorHelpers::FClassFinder<UUserWidget> InGameWidgetClassFinder(TEXT("/Game/Blueprints/Prototype/WBP_PT_InGame.WBP_PT_InGame_C"));
-	if (InGameWidgetClassFinder.Succeeded())
-	{
-		InGameUIClass = InGameWidgetClassFinder.Class;
-	}
-}
-
-void ADefaultPlayerController::ShowInteractionUI(bool bShow) const
-{
-	if (!InGameUI) return;
-
-	// InGameUI->ShowInteractionHint(bShow);
-}
 
 void ADefaultPlayerController::BeginPlay()
 {
@@ -37,20 +18,6 @@ void ADefaultPlayerController::BeginPlay()
 
 	UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>();
 	if (!GameStateSubsystem) return;
-
-	switch (GameStateSubsystem->GetGameState())
-	{
-		case EGameState::MainMenu:
-			break;
-		case EGameState::Lobby:
-			InitializeLobbyUI();
-			break;
-		case EGameState::InGame:
-			InitializeInGameUI();
-			break;
-		case EGameState::Invalid:
-			break;
-	}
 	
 	GameStateSubsystem->OnGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleGameStateChanged);
 	HandleGameStateChanged(GameStateSubsystem->GetGameState());
@@ -166,25 +133,6 @@ void ADefaultPlayerController::HandleOnLeaderChanged(APlayerState* NewLeader, AP
 	{
 		Widget->SetVisibility(ESlateVisibility::Collapsed);
 	}
-}
-
-
-void ADefaultPlayerController::InitializeLobbyUI()
-{
-	// TODO : Lobby UI Load
-}
-
-void ADefaultPlayerController::InitializeInGameUI()
-{
-	if (!InGameUIClass) return;
-	
-	InGameUI = CreateWidget<UInGameWidget>(GetWorld(), InGameUIClass);
-	if (!InGameUI) return;
-	
-	InGameUI->AddToViewport();
-	const FInputModeGameOnly InputModeData;
-	SetInputMode(InputModeData);
-	bShowMouseCursor = false;
 }
 
 void ADefaultPlayerController::Server_NotifyLoadingScreenFinished_Implementation()
