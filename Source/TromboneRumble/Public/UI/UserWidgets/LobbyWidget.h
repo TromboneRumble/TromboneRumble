@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "CommonActivatableWidget.h"
 #include "LobbyWidget.generated.h"
 
 class UEasySessionSubsystem;
@@ -12,7 +12,7 @@ class UButton;
 class UTextBlock;
 
 UCLASS()
-class TROMBONERUMBLE_API ULobbyWidget : public UUserWidget
+class TROMBONERUMBLE_API ULobbyWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	

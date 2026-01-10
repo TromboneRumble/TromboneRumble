@@ -5,7 +5,7 @@
 #include "Framework/LobbyGameMode.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Framework/InGameState.h"
-#include "Prototype/PT_UIInGame.h"
+#include "Prototype/InGameWidget.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_RhythmRankWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -178,7 +178,7 @@ void ADefaultPlayerController::InitializeInGameUI()
 {
 	if (!InGameUIClass) return;
 	
-	InGameUI = CreateWidget<UPT_UIInGame>(GetWorld(), InGameUIClass);
+	InGameUI = CreateWidget<UInGameWidget>(GetWorld(), InGameUIClass);
 	if (!InGameUI) return;
 	
 	InGameUI->AddToViewport();

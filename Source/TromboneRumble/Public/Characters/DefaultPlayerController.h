@@ -10,7 +10,7 @@
 class UOSI_RhythmRankWidget;
 class UAkAudioEvent;
 class UInteractorComponent;
-class UPT_UIInGame;
+class UInGameWidget;
 class UInputMappingContext;
 class UInputAction;
 class ADefaultTromboneCharacter;
@@ -103,7 +103,7 @@ private:
 	TSubclassOf<UUserWidget> InGameUIClass;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UPT_UIInGame> InGameUI;
+	TObjectPtr<UInGameWidget> InGameUI;
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultTromboneCharacter> CachedOwnerCharacter = nullptr;
