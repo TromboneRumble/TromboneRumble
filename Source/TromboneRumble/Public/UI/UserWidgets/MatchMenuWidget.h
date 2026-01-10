@@ -8,12 +8,12 @@
 #include "Utilities/Defines.h"
 #include "MatchMenuWidget.generated.h"
 
+class UEasySessionSubsystem;
 class UCommonButtonBase;
 class UEditableText;
 class UButton;
 class USlider;
 class USpinBox;
-class USessionSubsystem;
 
 UCLASS()
 class TROMBONERUMBLE_API UMatchMenuWidget : public UCommonActivatableWidget
@@ -38,17 +38,18 @@ private:
 	// ~ Begin SessionSubsystem Callbacks
 	void BindSubsystemCallbacks();
 	void RemoveSubsystemCallbacks();
-
-	UFUNCTION()
-	void OnCreateSession(bool bWasSuccessful);
-	void OnFindSession(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
-	void OnJoinSession(EOnJoinSessionCompleteResult::Type Result);
-	UFUNCTION()
-	void OnDestroySession(bool bWasSuccessful);
-	UFUNCTION()
-	void OnSessionError(const FString& Reason);
-	UFUNCTION()
-	void OnStartSession(bool bWasSuccessful);
+	
+	void OnStartSessionSuccess();
+	void OnStartSessionFailure();
+    
+	void OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults);
+	void OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults);
+    
+	void OnJoinSessionSuccess();
+	void OnJoinSessionFailure();
+	
+	void OnDestroySessionSuccess();
+	void OnDestroySessionFailure();
 	// ~ End SessionSubsystem Callbacks
 	
 	UFUNCTION()
@@ -63,9 +64,11 @@ private:
 	void JoinButtonClicked();
 	// ~ EndButton Callbacks
 	
+	void MatchButtonsSetEnabled(const bool bEnabled);
 	FString GenerateRandomLobbyCode(int32 Length) const;
 	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
 	
+	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Back;
 	UPROPERTY(meta = (BindWidget))
@@ -81,13 +84,15 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USpinBox> MaxPlayerSpinBox;
+	// ~ End UIs
 	
-	int32 NumPublicConnections = 4;
 	int32 MaxLobbyCodeLength = 5;
 	EMatchState State = EMatchState::Invalid;
 
 	UPROPERTY(Transient)
-	TObjectPtr<USessionSubsystem> SessionsSubsystem;
+	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
+	
+	FName KEY_LOBBY_CODE = FName("LOBBY_CODE");
 
 	UPROPERTY(Transient)
 	FString CachedLobbyMapPath = "";
