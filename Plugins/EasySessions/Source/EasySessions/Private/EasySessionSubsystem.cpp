@@ -11,7 +11,7 @@
 
 UEasySessionSubsystem::UEasySessionSubsystem() :
     CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete)),
-    StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete)),
+    StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnStartSessionComplete)),
     FindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSessionsComplete)),
     JoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnJoinSessionComplete)),
     DestroySessionCompleteDelegate(FOnDestroySessionCompleteDelegate::CreateUObject(this, &ThisClass::OnDestroySessionComplete))
@@ -32,7 +32,7 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
 
             if (Sessions->GetNamedSession(NAME_GameSession))
             {
-                Sessions->DestroySession(NAME_GameSession);
+                DestroySession();
                 return;
             }
 
@@ -81,6 +81,8 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
             {
                 Sessions->CreateSession(0, NAME_GameSession, Settings);
             }
+            
+            return;
         }
         else
         {
