@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EasySessionSubsystem.h"
-
 #include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemUtils.h"
@@ -93,7 +92,7 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
     OnStartSessionFailure.Broadcast();
 }
 
-void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const bool bWasSuccessful)
 {
     const FEasyOnlineHelper Helper(TEXT("CreateSessionCallback"), GetWorld());
     
@@ -129,7 +128,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, bool bWas
     }
 }
 
-void UEasySessionSubsystem::OnStartSessionComplete(FName SessionName, bool bWasSuccessful)
+void UEasySessionSubsystem::OnStartSessionComplete(FName SessionName, const bool bWasSuccessful)
 {
     const FEasyOnlineHelper Helper(TEXT("StartSessionCallback"), GetWorld());
     
@@ -193,7 +192,7 @@ void UEasySessionSubsystem::FindSessions(const FEasySearchSettings& InSettings)
     OnFindSessionsFailure.Broadcast(Results);
 }
 
-void UEasySessionSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
+void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
 {
     // TODO : AdvancedSessions::FindSessionsCallbackProxyAdvanced 참고
     FEasyOnlineHelper Helper(TEXT("FindSessionsCallback"), GetWorld());
@@ -265,7 +264,7 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
     OnJoinSessionFailure.Broadcast();
 }
 
-void UEasySessionSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+void UEasySessionSubsystem::OnJoinSessionComplete(FName SessionName, const EOnJoinSessionCompleteResult::Type Result)
 {
     FEasyOnlineHelper Helper(TEXT("JoinSessionCallback"), GetWorld());
     Helper.GetUserID();
@@ -321,7 +320,7 @@ void UEasySessionSubsystem::DestroySession()
     OnDestroySessionFailure.Broadcast();
 }
 
-void UEasySessionSubsystem::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
+void UEasySessionSubsystem::OnDestroySessionComplete(FName SessionName, const bool bWasSuccessful)
 {
     FEasyOnlineHelper Helper(TEXT("DestroySessionCallback"), GetWorld());
     Helper.GetUserID();

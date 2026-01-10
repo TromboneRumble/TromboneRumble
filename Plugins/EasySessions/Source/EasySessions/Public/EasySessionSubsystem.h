@@ -53,6 +53,7 @@ private:
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
 
+	// The delegate handles to unregister delegates
 	FDelegateHandle CreateSessionCompleteDelegateHandle;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 	FDelegateHandle FindSessionsCompleteDelegateHandle;

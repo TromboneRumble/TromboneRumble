@@ -22,15 +22,20 @@ protected:
 	virtual void NativeDestruct() override;
 
 private:
+	// ~ Begin GameState Events
+	void BindGameStateEvents();
+	void RemoveGameStateEvents();
+
+	UFUNCTION()
+	void OnPlayerListChanged(const TArray<FString>& PlayerNames);
+	// ~ End GameState Events
+	
 	// ~ Begin SessionSubsystem Callbacks
 	void BindSubsystemCallbacks();
 	void RemoveSubsystemCallbacks();
 
 	void OnDestroySessionSuccess();
 	void OnDestroySessionFailure();
-	
-	UFUNCTION()
-	void OnPlayerListUpdated(const TArray<FString>& PlayerNames);
 	// ~ End SessionSubsystem Callbacks
 
 	// ~ Begin Button Callbacks

@@ -10,6 +10,7 @@
 enum class ELobbyState : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLobbyStateChangedSignature, ELobbyState, NewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListChangedSignature, const TArray<FString>&, PlayerNames);
 
 UCLASS()
 class TROMBONERUMBLE_API ALobbyGameState : public AGameStateBase
@@ -32,10 +33,11 @@ public:
 
 public:
 	FOnLobbyStateChangedSignature OnLobbyStateChanged;
+	FOnPlayerListChangedSignature OnPlayerListChanged;
 	
 private:
 	UFUNCTION()
-	void OnRep_SessionPlayerList() const;
+	void OnRep_PlayerList() const;
 
 	UFUNCTION()
 	void OnRep_LobbyState() const;
@@ -44,7 +46,7 @@ private:
 	void OnRep_SelectedSongTag();
 	
 private:
-	UPROPERTY(ReplicatedUsing = OnRep_SessionPlayerList)
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerList)
 	TArray<FString> PlayerList;
 
 	UPROPERTY(ReplicatedUsing = OnRep_LobbyState)
@@ -55,9 +57,10 @@ private:
 	FGameplayTag SelectedSongTag;
 
 public:
-	// Getter Setter
+	// ~ Begin Getter & Setter
 	FORCEINLINE TArray<FString> GetPlayerList() const { return PlayerList; }
 	FORCEINLINE ELobbyState GetCurrentLobbyState() const { return CurrentLobbyState; }
 	FORCEINLINE ELobbyState GetPreviousLobbyState() const { return PreviousLobbyState; }
 	FORCEINLINE bool IsInState(const ELobbyState State) const { return CurrentLobbyState == State; }
+	// ~ End Getter & Setter
 };

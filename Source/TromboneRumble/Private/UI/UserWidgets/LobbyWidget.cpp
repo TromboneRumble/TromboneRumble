@@ -29,7 +29,6 @@ bool ULobbyWidget::Initialize()
 	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
 	{
 		LobbyGameState->OnLobbyStateChanged.AddDynamic(this, &ThisClass::OnLobbyStateUpdated);
-		OnPlayerListUpdated(LobbyGameState->GetPlayerList());
 	}
 
 	return true;
@@ -40,6 +39,7 @@ void ULobbyWidget::NativeConstruct()
 	Super::NativeConstruct();
 	
 	BindSubsystemCallbacks();
+	BindGameStateEvents();
 
 	if (CountdownText)
 	{
@@ -69,8 +69,28 @@ void ULobbyWidget::NativeConstruct()
 void ULobbyWidget::NativeDestruct()
 {
 	RemoveSubsystemCallbacks();
+	RemoveGameStateEvents();
 
 	Super::NativeDestruct();
+}
+
+void ULobbyWidget::BindGameStateEvents()
+{
+	RemoveGameStateEvents();
+	
+	if (ALobbyGameState* LobbyGS = GetWorld()->GetGameState<ALobbyGameState>())
+	{
+		LobbyGS->OnPlayerListChanged.AddDynamic(this, &ThisClass::OnPlayerListChanged);
+		OnPlayerListChanged(LobbyGS->GetPlayerList());
+	}
+}
+
+void ULobbyWidget::RemoveGameStateEvents()
+{
+	if (ALobbyGameState* LobbyGS = GetWorld()->GetGameState<ALobbyGameState>())
+	{
+		LobbyGS->OnPlayerListChanged.RemoveAll(this);
+	}
 }
 
 void ULobbyWidget::BindSubsystemCallbacks()
@@ -83,7 +103,6 @@ void ULobbyWidget::BindSubsystemCallbacks()
 	{
 		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
 		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
-		// SessionsSubsystem->OnPlayerListUpdated.AddDynamic(this, &ThisClass::OnPlayerListUpdated);
 	}
 }
 
@@ -93,7 +112,6 @@ void ULobbyWidget::RemoveSubsystemCallbacks()
 	{
 		SessionsSubsystem->OnDestroySessionSuccess.RemoveAll(this);
 		SessionsSubsystem->OnDestroySessionFailure.RemoveAll(this);
-		// SessionsSubsystem->OnPlayerListUpdated.RemoveAll(this);
 	}
 }
 
@@ -118,7 +136,7 @@ void ULobbyWidget::OnDestroySessionFailure()
 	PRINT_WITH_CURRENT_CONTEXT("Failed to destroy session");
 }
 
-void ULobbyWidget::OnPlayerListUpdated(const TArray<FString>& PlayerNames)
+void ULobbyWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 {
 	if (!PlayerListText) return;
 
