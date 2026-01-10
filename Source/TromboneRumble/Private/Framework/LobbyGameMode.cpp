@@ -3,6 +3,8 @@
 #include "Framework/LobbyGameMode.h"
 #include "AkGameplayStatics.h"
 #include "OnlineSessionSettings.h"
+#include "OnlineSubsystemUtils.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/DefaultPlayerState.h"
@@ -11,7 +13,6 @@
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Subsystems/SessionSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
@@ -23,9 +24,6 @@ ALobbyGameMode::ALobbyGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bUseSeamlessTravel = true;
-	NumPublicConnections = 4;
-	CurrentEquippedInstruments = 0;
-	Timer = 5.0f; // TODO : delete magic number
 }
 
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
@@ -56,27 +54,27 @@ void ALobbyGameMode::BeginPlay()
 	
 	LobbyGameState = GetGameState<ALobbyGameState>();
 
-	const UWorld* World = GetWorld();
-	if (!World) return;
-	
-	const UGameInstance* GameInstance = World->GetGameInstance();
-	if (!GameInstance) return;
-	
-	const USessionSubsystem* SessionSubsystem = GameInstance->GetSubsystem<USessionSubsystem>();
-	if (!SessionSubsystem) return;
-
-	const TSharedPtr<FOnlineSessionSettings> LastSetting = SessionSubsystem->GetLastSessionSettings();
-	if (LastSetting.IsValid())
+	if (const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld()))
 	{
-		NumPublicConnections = LastSetting->NumPublicConnections;
+		const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+		if (SessionInterface.IsValid())
+		{
+			if (FNamedOnlineSession* Session = SessionInterface->GetNamedSession(NAME_GameSession))
+			{
+				NumPublicConnections = Session->SessionSettings.NumPublicConnections;
+			}
+		}
+	}
+    
+	if (NumPublicConnections <= 0) 
+	{
+		NumPublicConnections = 4; 
 	}
 
 	LobbyReadyPlayers.Empty();
 	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
-		GS->OnPlayerLoadingScreenFinished.AddUObject(
-			this, &ThisClass::HandlePlayerLoadingScreenFinished
-		);
+		GS->OnPlayerLoadingScreenFinished.AddUObject(this, &ThisClass::HandlePlayerLoadingScreenFinished);
 	}
 
 	SetLobbyState(ELobbyState::WaitingForPlayers);

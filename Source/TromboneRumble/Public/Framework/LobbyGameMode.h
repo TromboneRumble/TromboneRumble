@@ -55,7 +55,7 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> LobbyReadyPlayers;
 
-	int32 NumPublicConnections;
-	int32 CurrentEquippedInstruments;
-	float Timer;
+	int32 NumPublicConnections = 4;
+	int32 CurrentEquippedInstruments = 0;
+	float Timer = 5.0f;
 };
