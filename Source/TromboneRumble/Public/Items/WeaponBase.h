@@ -37,7 +37,7 @@ public:
 	// ~ End IEquipable Interfaces
 	
 	// ~ Begin IWeapon Interface
-	virtual bool IsCanAttack() const override;
+	virtual bool CanAttack() const override { return bCanAttack; };
 	virtual void BeginAttack() override;
 	virtual void EndAttack() override;
 	// ~ End IWeapon Interface
@@ -74,8 +74,8 @@ protected:
 	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
 
 private:
+	bool bIsDetectHit = false;
 	UPROPERTY(Replicated)
-	bool bIsAttacking = false;
 	bool bCanAttack = true;
 	
 	UPROPERTY()
@@ -87,7 +87,7 @@ public:
 	FORCEINLINE UPrimitiveComponent* GetCollisionComponent() const { return CapsuleComponent; }
 	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
 	FORCEINLINE TObjectPtr<UWeaponDataAsset> GetAttackData() const { return WeaponData; }
-	FORCEINLINE bool GetIsAttacking() const { return bIsAttacking; }
+	FORCEINLINE bool IsDetectHit() const { return bIsDetectHit; }
 	FORCEINLINE void SetCanAttack(const bool bNewCanAttack) { bCanAttack = bNewCanAttack; }
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponData ? WeaponData->WeaponType : EWeaponType::Invalid; }
 	FORCEINLINE float GetAttackCooldown() const { return WeaponData->AttackCooldown; }

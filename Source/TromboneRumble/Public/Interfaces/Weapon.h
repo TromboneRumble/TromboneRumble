@@ -19,7 +19,7 @@ class TROMBONERUMBLE_API IWeapon
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual bool IsCanAttack() const = 0;
+	virtual bool CanAttack() const = 0;
 	virtual void BeginAttack() = 0;
 	virtual void EndAttack() = 0;
 };

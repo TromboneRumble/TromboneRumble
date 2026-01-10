@@ -16,6 +16,7 @@ UAttackComponent::UAttackComponent()
 void UAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
 	if (!OwnerCharacter) return;
 
@@ -35,20 +36,13 @@ void UAttackComponent::BeginPlay()
 
 void UAttackComponent::Attack()
 {
-	if (!CurrentWeapon) return;
-	
-	if (CurrentWeapon->GetIsAttacking() || !CurrentWeapon->IsCanAttack()) return;
-	
-	if (!OwnerCharacter->HasAuthority())
-	{
-		StartAttackCooldown();
-	}
+	if (!CurrentWeapon || CurrentWeapon->IsDetectHit() || !CurrentWeapon->CanAttack()) return;
 	
 	if (OwnerCharacter->IsLocallyControlled())
 	{
 		PlayAttackEffects();
 	}
-
+	
 	Server_ExecuteAttack();
 }
 
@@ -56,27 +50,13 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
 	if (!CurrentWeapon) return;
 
-	if (CurrentWeapon->GetIsAttacking())
+	if (CurrentWeapon->IsDetectHit())
 	{
 		Client_OnAttackRejected();
 		return;
 	}
 	
-	if (!CurrentWeapon->IsCanAttack())
-	{
-		const float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AttackCooldownTimerHandle);
-		if (RemainingTime > AttackCooldownTolerance)
-		{
-			Client_OnAttackRejected(); 
-			return;
-		}
-        
-		GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
-		CurrentWeapon->SetCanAttack(true);
-	}
-	
-	CurrentWeapon->BeginAttack();
-	StartAttackCooldown();
+	CurrentWeapon->SetCanAttack(false);
 	UpdateAttackDelegateBinding(true);
 	Multicast_PlayAttackEffects();
 }
@@ -85,6 +65,7 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 {
 	if (!CurrentWeapon) return;
 	
+	CurrentWeapon->SetCanAttack(true);
 	CurrentWeapon->EndAttack();
 	UpdateAttackDelegateBinding(false);
 }
@@ -107,7 +88,7 @@ void UAttackComponent::Client_OnAttackRejected_Implementation()
 	}
 
 	CurrentWeapon->EndAttack();
-	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
+	CurrentWeapon->SetCanAttack(true);
 }
 
 void UAttackComponent::PlayAttackEffects() const
@@ -117,37 +98,10 @@ void UAttackComponent::PlayAttackEffects() const
 	const EWeaponType Type = CurrentWeapon->GetWeaponType();
 	if (UAnimMontage* MontageToPlay = AttackMontageMap.FindRef(Type))
 	{
+		CurrentWeapon->SetCanAttack(false);
 		OwnerCharacter->PlayAnimMontage(MontageToPlay);
 		CharacterAnimInstance->SetIsAttacking(true);
 	}
-}
-
-void UAttackComponent::ResetAttackCooldown()
-{
-	if (!CurrentWeapon) return;
-
-	CurrentWeapon->SetCanAttack(true);
-}
-
-void UAttackComponent::StartAttackCooldown()
-{
-	if (!CurrentWeapon) return;
-
-	const float Cooldown = CurrentWeapon->GetAttackCooldown();
-	
-	if (Cooldown <= 0.0f)
-	{
-		ResetAttackCooldown();
-		return;
-	}
-	
-	GetWorld()->GetTimerManager().SetTimer(
-		AttackCooldownTimerHandle,
-		this,
-		&ThisClass::ResetAttackCooldown,
-		Cooldown,
-		false
-	);
 }
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -158,10 +112,16 @@ void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
 	if (Slot != EEquipmentSlotType::Weapon) return;
-
-	GetWorld()->GetTimerManager().ClearTimer(AttackCooldownTimerHandle);
 	
 	OwnerCharacter->StopAnimMontage();
+	CharacterAnimInstance->SetIsAttacking(false);
+	
+	if (AWeaponBase* OldWeapon = Cast<AWeaponBase>(OldItem))
+	{
+		OldWeapon->SetCanAttack(true);
+		OldWeapon->EndAttack();
+	}
+	
 	Server_ExecuteAttackEnd();
 
 	if (NewItem)
@@ -169,6 +129,8 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 		if (AWeaponBase* NewInstrument = Cast<AWeaponBase>(NewItem))
 		{
 			CurrentWeapon = NewInstrument;
+			CurrentWeapon->SetCanAttack(true);
+			CurrentWeapon->EndAttack();
 		}
 	}
 	else

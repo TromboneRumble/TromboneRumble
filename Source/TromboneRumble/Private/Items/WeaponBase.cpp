@@ -36,7 +36,7 @@ void AWeaponBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if (bIsAttacking && HasAuthority())
+	if (bIsDetectHit && HasAuthority())
 	{
 		DetectHit();
 	}
@@ -47,7 +47,7 @@ void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, bIsEquipped);
-	DOREPLIFETIME(ThisClass, bIsAttacking);
+	DOREPLIFETIME(ThisClass, bCanAttack);
 }
 
 bool AWeaponBase::CanInteract_Implementation(AActor* InstigatorActor) const
@@ -215,29 +215,21 @@ bool AWeaponBase::IsCanSweep() const
 	return true;
 }
 
-bool AWeaponBase::IsCanAttack() const
-{
-	return bCanAttack;
-}
-
 void AWeaponBase::BeginAttack()
 {
-	bIsAttacking = true;
-	bCanAttack = false;
+	bIsDetectHit = true;
 	AlreadyHitActors.Empty();
-    
+	SetActorTickEnabled(true); 
+	
 	if (const UPrimitiveComponent* CollisionComp = GetCollisionComponent())
 	{
 		PreviousFrameTransform = CollisionComp->GetComponentTransform();
 	}
-    
-	SetActorTickEnabled(true); 
 }
 
 void AWeaponBase::EndAttack()
 {
-	bIsAttacking = false;
-	bCanAttack = true;
+	bIsDetectHit = false;
 	AlreadyHitActors.Empty();
 	SetActorTickEnabled(false); 
 }

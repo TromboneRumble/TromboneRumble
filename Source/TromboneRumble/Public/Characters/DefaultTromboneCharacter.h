@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Components/ActorComponents/AttackComponent.h"
 #include "DefaultTromboneCharacter.generated.h"
 
 
@@ -134,8 +135,10 @@ private:
 	uint8 bIsSprinting : 1 = 0;
 
 public:
-	//getter setter
+	// ~ Begin Getters / Setters
 	FORCEINLINE UClientToServerRelayComponent* GetClientToServerRelayComponent() const { return ServerRelayComponent; }
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
+	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
+	// ~ End Getters / Setters
 };

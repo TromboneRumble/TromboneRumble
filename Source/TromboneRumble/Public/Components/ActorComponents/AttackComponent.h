@@ -26,7 +26,7 @@ public:
 
 protected:
 	UFUNCTION(Server, Reliable)
-	virtual void Server_ExecuteAttack();
+	void Server_ExecuteAttack();
 
 	UFUNCTION(Server, Reliable)
 	void Server_ExecuteAttackEnd();
@@ -38,8 +38,6 @@ protected:
 	void Client_OnAttackRejected();
 	
 	void PlayAttackEffects() const;
-	void ResetAttackCooldown();
-	void StartAttackCooldown();
 	void UpdateAttackDelegateBinding(const bool bIsAttack);
 	
 	UFUNCTION()
@@ -47,6 +45,16 @@ protected:
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
+	FName HeadSocketName = FName("head");
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
+	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
+	TMap<EWeaponType, TObjectPtr<UAnimMontage>> AttackMontageMap;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
 	
@@ -56,27 +64,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AWeaponBase> CurrentWeapon = nullptr;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
-	FName HeadSocketName = FName("head");
-	
-	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
-	TEnumAsByte<ECollisionChannel> AttackTraceChannel = ECC_GameTraceChannel1;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
-	float AttackCooldownTolerance = 0.2f;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
-	TMap<EWeaponType, TObjectPtr<UAnimMontage>> AttackMontageMap;
-
-private:
 	UPROPERTY(Transient)
 	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	
-	FTimerHandle AttackCooldownTimerHandle;
-	
 public:
 	// ~ Begin Getters / Setters
-	void SetDefaultWeaponInstance(AWeaponBase* DefaultWeaponInst) { DefaultWeaponInstance = DefaultWeaponInst; }
+	FORCEINLINE void SetDefaultWeaponInstance(AWeaponBase* DefaultWeaponInst) { DefaultWeaponInstance = DefaultWeaponInst; }
+	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return CurrentWeapon; }
 	// ~ End Getters / Setters
-
 };
