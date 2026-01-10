@@ -67,6 +67,6 @@ private:
 	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate;
 	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate;
 	
-	FEasySessionSettings LastSettings;
+	TOptional<FEasySessionSettings> LastSettings;
 	TSharedPtr<FOnlineSessionSearch> LastSessionSearch;
 };

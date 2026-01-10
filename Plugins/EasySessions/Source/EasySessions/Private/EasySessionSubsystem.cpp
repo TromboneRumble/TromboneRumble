@@ -105,7 +105,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
             
             if (bWasSuccessful)
             {
-                if (LastSettings.bStartAfterCreate)
+                if (LastSettings.GetValue().bStartAfterCreate)
                 {
                     UE_LOG_ONLINE_SESSION(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
                     StartSessionCompleteDelegateHandle = Sessions->AddOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegate);
@@ -332,6 +332,11 @@ void UEasySessionSubsystem::OnDestroySessionComplete(FName SessionName, const bo
         {
             Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
             
+            if (bWasSuccessful && LastSettings.IsSet())
+            {
+                CreateSession(LastSettings.GetValue());
+                LastSettings.Reset();
+            }
         }
     }
     
