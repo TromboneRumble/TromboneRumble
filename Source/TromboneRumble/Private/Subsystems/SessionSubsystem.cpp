@@ -4,6 +4,7 @@
 #include "Subsystems/SessionSubsystem.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "OnlineSubsystemUtils.h"
 #include "Online/OnlineSessionNames.h"
 #include "Utilities/DebugHelper.h"
 
@@ -36,16 +37,11 @@ void USessionSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
-void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString& LobbyCode)
+void USessionSubsystem::CreateSession(const FCommonSessionSettings& InSettings)
 {
 	if (!IsValidSessionInterface())
 	{
 		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : IOnlineSessionPtr not valid from [CreateSession]"));
-		return;
-	}
-	if (LobbyCode.IsEmpty())
-	{
-		OnSessionError.Broadcast(TEXT("SessionSubsystem Error : LobbyCode is empty from [CreateSession]"));
 		return;
 	}
 
@@ -54,59 +50,54 @@ void USessionSubsystem::CreateSession(int32 NumPublicConnections, const FString&
 	const auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
 	if (ExistingSession != nullptr)
 	{
-		RecreateSessionRequest.Emplace(NumPublicConnections, LobbyCode);
+		LastSessionCreationSettings = InSettings;
 		DestroySession();
 		return;
 	}
-	const bool bLAN = IsLanEnvironment();
 
-	// Store the delegate in a FDelegateHandle so we can later remove it from the delegate list
 	CreateSessionCompleteDelegateHandle = SessionInterface->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
 
 	LastSessionSettings = MakeShareable(new FOnlineSessionSettings());
-	LastSessionSettings->bIsLANMatch = bLAN;
+	LastSessionSettings->NumPublicConnections = InSettings.MaxPlayerCount;
+	LastSessionSettings->bIsLANMatch = InSettings.bIsLAN;
+	LastSessionSettings->bAllowJoinInProgress = InSettings.bAllowJoinInProgress;
+	LastSessionSettings->bAllowJoinViaPresence = InSettings.bAllowJoinViaPresence;
+	LastSessionSettings->bShouldAdvertise = InSettings.bShouldAdvertise;
+	LastSessionSettings->bUsesPresence = !InSettings.bIsLAN;
+	LastSessionSettings->bUseLobbiesIfAvailable = !InSettings.bIsLAN;
 	LastSessionSettings->bIsDedicated = false;
-	LastSessionSettings->NumPublicConnections = NumPublicConnections;
-	LastSessionSettings->bAllowJoinInProgress = true;
-	LastSessionSettings->bAllowJoinViaPresence = true;
-	LastSessionSettings->bShouldAdvertise = true;
-	LastSessionSettings->bUsesPresence = !bLAN; //LAN 모드에서는 false
-	LastSessionSettings->bUseLobbiesIfAvailable = !bLAN; //LAN 모드에서는 false
+	
+	LastSessionSettings->Set(SETTING_MAPNAME, InSettings.MapName, EOnlineDataAdvertisementType::ViaOnlineService);
+	for (const auto& Pair : InSettings.CustomSettings)
+	{
+		LastSessionSettings->Set(FName(*Pair.Key), Pair.Value, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	}
 
 	/*맵 코드 광고시 주석 해제
 	 FString MapName = GetWorld()->GetMapName();
 	 MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 	 Settings.Set(SETTING_MAPNAME, MapName, EOnlineDataAdvertisementType::ViaOnlineService);
 	 */
-	LastSessionSettings->Set(KEY_LOBBY_CODE, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	//LastSessionSettings->BuildUniqueId = 1;
 
-	bool bStarted = false;
-
-	if (bLAN)
+	bool bIsCreated = false;
+	
+	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+	if (InSettings.bIsLAN || IsLanEnvironment())
 	{
-		// LAN(NULL) 모드: NetId 없이 LocalUserNum 경로
-		const int32 LocalUserNum = 0;
-		bStarted = SessionInterface->CreateSession(LocalUserNum, NAME_GameSession, *LastSessionSettings);
+		bIsCreated = SessionInterface->CreateSession(0, NAME_GameSession, *LastSessionSettings);
 	}
-	else
+	else if (LocalPlayer)
 	{
-		const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-		if (!LocalPlayer || !LocalPlayer->GetPreferredUniqueNetId().IsValid())
-		{
-			OnSessionError.Broadcast(TEXT("SessionSubsystem Error : No valid LocalPlayer/UniqueNetId for online host from [CreateSession_Internal]"));
-			return;
-		}
-		const FUniqueNetIdRepl NetId = LocalPlayer->GetPreferredUniqueNetId();
-		bStarted = SessionInterface->CreateSession(*NetId, NAME_GameSession, *LastSessionSettings);
+		bIsCreated = SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *LastSessionSettings);
 	}
-	if (!bStarted)
+	
+	if (!bIsCreated)
 	{
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
 		OnSessionCreateComplete.Broadcast(false);
 		OnSessionError.Broadcast(TEXT("CreateSession failed to start from [CreateSession_Internal]"));
 	}
-	
 }
 
 void USessionSubsystem::FindSessions(int32 MaxSearchResults, const FString& InLobbyCode)
@@ -340,11 +331,10 @@ void USessionSubsystem::HandleDestroySessionComplete(FName InSessionName, bool b
 		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
 	}
 	
-	if (bWasSuccessful && RecreateSessionRequest.IsSet())
+	if (bWasSuccessful && LastSessionCreationSettings.IsSet())
 	{
-		const FRecreateSessionRequest Request = RecreateSessionRequest.GetValue();
-		CreateSession(Request.NumPublicConnections, Request.LobbyCode);
-		RecreateSessionRequest.Reset();
+		CreateSession(LastSessionCreationSettings.GetValue());
+		LastSessionCreationSettings.Reset();
 	}
 	OnSessionDestroyComplete.Broadcast(bWasSuccessful);
 }
@@ -421,5 +411,5 @@ bool USessionSubsystem::IsLanEnvironment() const
 	}
 #endif
 	// 기본은 Online(= Steam)
-	return IOnlineSubsystem::Get()->GetSubsystemName() == "NULL" ? true : false;
+	return Online::GetSubsystem(GetWorld())->GetSubsystemName() == "NULL" ? true : false;
 }

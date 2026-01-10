@@ -304,13 +304,19 @@ void UMatchMenuWidget::HostButtonClicked()
 	{
 		LobbyCode = LobbyCodeText->GetText().ToString().ToUpper();
 	}
+	
 	CB_Host->SetIsEnabled(false);
 	CB_Join->SetIsEnabled(false);
+	
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->CreateSession(NumPublicConnections, LobbyCode);
+		FCommonSessionSettings Settings;
+		Settings.MaxPlayerCount = NumPublicConnections;
+		Settings.MapName = TEXT("LobbyMap");
+		Settings.CustomSettings.Add(USessionSubsystem::KEY_LOBBY_CODE.ToString(), LobbyCode);
+		
+		SessionsSubsystem->CreateSession(Settings);
 	}
-
 }
 
 void UMatchMenuWidget::JoinButtonClicked()

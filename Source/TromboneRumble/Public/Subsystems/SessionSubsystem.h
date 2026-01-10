@@ -15,12 +15,31 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionError, const FString&, Rea
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSessionStartComplete, bool, bWasSuccessful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListUpdated, const TArray<FString>&, PlayerNames);
 
-struct FRecreateSessionRequest
+USTRUCT(BlueprintType)
+struct FCommonSessionSettings
 {
-	int32 NumPublicConnections;
-	FString LobbyCode;
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	int32 MaxPlayerCount = 4;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	bool bIsLAN = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	bool bAllowJoinInProgress = true;
 	
-	FRecreateSessionRequest(const int32 InNumPublicConnections, const FString& InLobbyCode) : NumPublicConnections(InNumPublicConnections), LobbyCode(InLobbyCode) { }
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	bool bAllowJoinViaPresence = true;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	bool bShouldAdvertise = true;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	FString MapName = "LobbyMap";
+
+	UPROPERTY(BlueprintReadWrite, Category = "Session")
+	TMap<FString, FString> CustomSettings;
 };
 
 UCLASS()
@@ -33,7 +52,9 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
-	void CreateSession(int32 NumPublicConnections, const FString& LobbyCode);
+	UFUNCTION(BlueprintCallable, Category = "Session")
+	void CreateSession(const FCommonSessionSettings& InSettings);
+	
 	void FindSessions(int32 MaxSearchResults, const FString& InLobbyCode = FString(TEXT("")));
 	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
 	void DestroySession();
@@ -105,5 +126,5 @@ private:
 	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 
-	TOptional<FRecreateSessionRequest> RecreateSessionRequest;
+	TOptional<FCommonSessionSettings> LastSessionCreationSettings;
 };
