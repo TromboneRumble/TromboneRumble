@@ -66,6 +66,10 @@ void UAudioOptionPanel::InitSliders() const
 	{
 		UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_MusicVolume")));
 	});
+	WBP_SFXSlider->Init([this](const float Value)
+	{
+		UAkGameplayStatics::SetRTPCValue(nullptr, Value * 100.f, 0, nullptr, FName(TEXT("RTPC_SFXVolume")));
+	});
 }
 
 void UAudioOptionPanel::UpdateUIFromSettings(const FAudioSettingData& AudioData) const

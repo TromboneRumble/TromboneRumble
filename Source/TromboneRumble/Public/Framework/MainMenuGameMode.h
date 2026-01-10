@@ -6,14 +6,16 @@
 #include "GameFramework/GameModeBase.h"
 #include "MainMenuGameMode.generated.h"
 
-/**
- * 
- */
+class UAkAudioEvent;
+
 UCLASS(Abstract, BlueprintType)
 class TROMBONERUMBLE_API AMainMenuGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
-	AMainMenuGameMode();
+	virtual void BeginPlay() override;
 	
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "BGM")
+	TArray<UAkAudioEvent*> MenuBGMEvents;	
 };
