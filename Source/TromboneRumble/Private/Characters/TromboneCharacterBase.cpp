@@ -82,27 +82,6 @@ void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME(ThisClass, SkinColor);
 }
 
-void ATromboneCharacterBase::OnHitReceived(const FHitData& HitData)
-{
-	if (!HasAuthority()) return;
-	
-	if (bIsInvincible || bIsStun || bIsRagdoll) return;
-
-	switch (HitData.HitType)
-	{
-		case EHitReactionType::Ragdoll:
-			OnRagdoll();
-		case EHitReactionType::Stun:
-			OnStun();
-			break;
-		case EHitReactionType::None:
-		default:
-			break;
-	}
-	
-	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
-}
-
 void ATromboneCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -115,6 +94,27 @@ void ATromboneCharacterBase::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	UpdateSkinFromPlayerState();
+}
+
+void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitData)
+{
+	if (!HasAuthority()) return;
+
+	if (bIsInvincible || bIsStun || bIsRagdoll) return;
+
+	switch (HitData.HitType)
+	{
+	case EHitReactionType::Ragdoll:
+		OnRagdoll();
+	case EHitReactionType::Stun:
+		OnStun();
+		break;
+	case EHitReactionType::None:
+	default:
+		break;
+	}
+
+	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
 }
 
 void ATromboneCharacterBase::OnRep_SkinColor()

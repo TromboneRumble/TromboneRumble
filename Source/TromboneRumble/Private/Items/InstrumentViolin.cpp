@@ -61,6 +61,12 @@ void AInstrumentViolin::OnRep_Equipped()
 			ViolinBodyActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 			ViolinBodyActor->SetActorHiddenInGame(true);
 		}
+		if (ActiveBuffHandle.IsValid())
+		{
+			BuffRemainingCount = 0;
+			TotalNoteCount = 0;
+			RemoveBuff();
+		}
 	}
 
 	if (IsOwnerLocallyControlled())
@@ -71,8 +77,16 @@ void AInstrumentViolin::OnRep_Equipped()
 
 float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {
-	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None) return 0.f;
-
+	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None)
+	{
+		TotalNoteCount = 0;
+		if (ActiveBuffHandle.IsValid())
+		{
+			BuffRemainingCount = 0;
+			RemoveBuff();
+		}
+		return 0.f;
+	}
 	TotalNoteCount++;
 
 	// --- 버프 관리 로직 ---
@@ -84,6 +98,7 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		{
 			RemoveBuff(); // 횟수 소진 시 버프 해제
 		}
+		TotalNoteCount = 1;
 	}
 	else
 	{

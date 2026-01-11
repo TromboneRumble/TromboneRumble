@@ -51,6 +51,11 @@ protected:
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UOSI_WidgetBase> IndicatorWidgetInstance = nullptr;
+
+	UFUNCTION()
+	void TryUpdateIndicatorVisibility();
+
+	FTimerHandle IndicatorRetryTimerHandle;
 	// ~ Indicator
 
 	UPROPERTY(EditAnywhere, Category = "Instrument|Data")

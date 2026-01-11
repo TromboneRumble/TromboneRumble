@@ -33,7 +33,7 @@ public:
 	virtual void OnRep_PlayerState() override;
 
 	// ~ Begin ICombatReceiver Interfaces
-	virtual void OnHitReceived(const FHitData& HitData) override;
+	virtual void OnHitReceived_Implementation(const FHitData& HitData);
 	// ~ End ICombatReceiver Interfaces
 	
 	void ApplySkinColor(const FLinearColor InSkinColor) const;

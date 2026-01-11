@@ -37,6 +37,7 @@ void AInstrumentBase::BeginPlay()
 
 		IndicatorInstance = GetWorld()->SpawnActor<AInstrumentIndicator>(IndicatorClass, GetActorLocation() + IndicatorOffset, FRotator::ZeroRotator, SpawnParams);
 	}
+
 	if (IndicatorWidgetClass)
 	{
 		APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
@@ -78,27 +79,43 @@ void AInstrumentBase::OnRep_Equipped()
 		{
 			BindToRhythmSubsystem(true);
 		}
-		if (IndicatorInstance)
-		{
-			IndicatorInstance->SetActorHiddenInGame(true);
-		}
-		if (IndicatorWidgetInstance.Get())
-		{
-			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		}
 	}
 	else
 	{
 		RemoveBuff();
 		BindToRhythmSubsystem(false);
-		if (IndicatorInstance)
+	}
+	TryUpdateIndicatorVisibility();
+}
+
+void AInstrumentBase::TryUpdateIndicatorVisibility()
+{
+	bool bIsReady = IsValid(IndicatorInstance) && IndicatorWidgetInstance.Get();
+
+	if (!bIsReady)
+	{
+		if (GetWorld())
 		{
-			IndicatorInstance->SetActorHiddenInGame(false);
+			GetWorld()->GetTimerManager().SetTimer(
+				IndicatorRetryTimerHandle,
+				this,
+				&AInstrumentBase::TryUpdateIndicatorVisibility,
+				0.05f,
+				false
+			);
 		}
-		if (IndicatorWidgetInstance.Get())
-		{
-			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
-		}
+		return;
+	}
+
+	if (bIsEquipped)
+	{
+		IndicatorInstance->SetActorHiddenInGame(true);
+		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	else
+	{
+		IndicatorInstance->SetActorHiddenInGame(false);
+		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 

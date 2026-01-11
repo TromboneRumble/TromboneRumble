@@ -7,7 +7,7 @@
 #include "Utilities/Defines.h"
 #include "CombatReceiver.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FHitData
 {
 	GENERATED_BODY()
@@ -35,5 +35,6 @@ class TROMBONERUMBLE_API ICombatReceiver
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void OnHitReceived(const FHitData& HitData) = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
+	void OnHitReceived(const FHitData& HitData);
 };
