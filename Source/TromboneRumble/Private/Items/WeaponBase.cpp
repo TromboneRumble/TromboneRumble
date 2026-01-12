@@ -182,19 +182,20 @@ void AWeaponBase::DetectHit()
     	AActor* HitActor = Hit.GetActor();
     	if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != CurrentOwner)
     	{
-    		if (ICombatReceiver* CombatReceiver = Cast<ICombatReceiver>(HitActor))
-    		{
-    			AlreadyHitActors.Add(HitActor);
+			if (HitActor->Implements<UCombatReceiver>())
+			{
+				AlreadyHitActors.Add(HitActor);
 
-    			FHitData HitData;
-    			HitData.HitDirection = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
-    			HitData.HitDirection.Z = 0.5f;
-    			HitData.KnockbackForce = WeaponData->KnockbackForce;
-    			HitData.HitType = WeaponData->HitReactionType;
+				FHitData HitData;
+				FVector Direction = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
+				Direction.Z = 0.5f;
+				HitData.HitDirection = Direction.GetSafeNormal();
+				HitData.KnockbackForce = WeaponData->KnockbackForce;
+				HitData.HitType = WeaponData->HitReactionType;
 
 				OnHitSuccess(HitActor);
-    			CombatReceiver->OnHitReceived(HitData);
-    		}
+				ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
+			}
     	}
     }
 
