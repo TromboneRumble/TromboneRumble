@@ -12,7 +12,7 @@
 struct FGameplayTag;
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EGameState, NewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelStateChangedSignature, ELevelState, NewState);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerLoadingScreenFinishedSignature, APlayerController*);
 
 UCLASS()
@@ -24,29 +24,29 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
-	FOnGameStateChangedSignature OnGameStateChanged;
+	FOnLevelStateChangedSignature OnLevelStateChanged;
 	FOnPlayerLoadingScreenFinishedSignature OnPlayerLoadingScreenFinished;
 
 protected:
 	UFUNCTION()
 	void OnPostLoadMap(UWorld* InLoadedWorld);
 
-	void SetGameState(const EGameState& InNewState);
+	void SetLevelState(const ELevelState& InNewState);
 
 
 private:
-	void AddMapPathFromGameTag(const FGameplayTag& InTag, const EGameState& InGameState);
+	void AddMapPathFromGameTag(const FGameplayTag& InTag, const ELevelState& InLevelState);
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EGameState CurrentGameState;
+	ELevelState CurrentLevelState;
 
 	UPROPERTY(Transient)
 	TMap<FGameplayTag, FString> MapTagToMapNameMap;
 
 	UPROPERTY(Transient)
-	TMap<FGameplayTag, EGameState> MapTagToGameStateMap;
+	TMap<FGameplayTag, ELevelState> MapTagToLevelStateMap;
 public:
 	// Getter Setter
 	FString GetMapNameForTag(const FGameplayTag& MapTag) const;
-	FORCEINLINE EGameState GetGameState() const { return CurrentGameState; }
+	FORCEINLINE ELevelState GetLevelState() const { return CurrentLevelState; }
 };

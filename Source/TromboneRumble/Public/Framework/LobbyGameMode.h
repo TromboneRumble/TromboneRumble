@@ -29,7 +29,7 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* ExitedPlayer) override;
 
-	void RequestServerTravel(const EGameState& InGameState);
+	void RequestServerTravel(const ELevelState& InLevelState);
 
 private:
 	void HandlePlayerLoadingScreenFinished(APlayerController* PC);

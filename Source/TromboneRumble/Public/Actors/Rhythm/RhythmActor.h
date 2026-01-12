@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Iris/Core/IrisProfiler.h"
 #include "Utilities/Defines.h"
 #include "RhythmActor.generated.h"
 
@@ -75,6 +76,13 @@ private:
 
 	UFUNCTION()
 	void OnNoteDetectedHandler(ENoteResult InNoteResult);
+
+	UFUNCTION()
+	void OnInGameStateChangedHandler(EInGameState InGameState);
+
+	UFUNCTION()
+	void WaitForOtherPlayers();
+	FTimerHandle CheckPlayersTimerHandle;
 	// ~Rhythm Game Init
 
 	// Note Detection Logic
@@ -124,7 +132,7 @@ private:
 
 	UFUNCTION()
 	void PlayMusic();
-	FTimerHandle TimerHandle;
+	FTimerHandle PlayBackgroundMusicTimerHandle;
 
 	UPROPERTY()
 	EInstrumentType FocusedType = EInstrumentType::Background;
@@ -137,6 +145,12 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	bool IsSyncTesting = false;
+
+	UPROPERTY()
+	bool IsRhythmGameReady = false;
+
+	UPROPERTY()
+	bool AreOtherPlayersReady = false;
 	// ~Rhythm Game
 
 

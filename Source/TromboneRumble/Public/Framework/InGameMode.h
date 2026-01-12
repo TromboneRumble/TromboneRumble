@@ -19,4 +19,14 @@ public:
 	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
 	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
 	// ~IInstrumentEquipHandler Interfaces
+
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void HandlePlayerLoadingFinished(APlayerController* PC);
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<APlayerController>> InGameReadyPlayers;
+	int32 NumPublicConnections = 4;
 };

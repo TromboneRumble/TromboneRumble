@@ -26,7 +26,6 @@ class TROMBONERUMBLE_API AInstrumentBase : public AWeaponBase
 
 public:
 	AInstrumentBase();
-	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(BlueprintAssignable, Category = "UI")
 	FOnInstrumentBuffStateChanged OnBuffStateChanged;
@@ -49,13 +48,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Indicator|UI")
 	TSubclassOf<UOSI_WidgetBase> IndicatorWidgetClass;
 
-	UPROPERTY(Transient)
+	UPROPERTY()
 	TWeakObjectPtr<UOSI_WidgetBase> IndicatorWidgetInstance = nullptr;
+
+	FTimerHandle WidgetInitTimerHandle;
+
+	// 위젯 생성을 시도하는 함수
+	void TryCreateIndicatorWidget();
 
 	UFUNCTION()
 	void TryUpdateIndicatorVisibility();
 
 	FTimerHandle IndicatorRetryTimerHandle;
+
+	UFUNCTION()
+	void HandleInGameStateChanged(EInGameState InGameState);
 	// ~ Indicator
 
 	UPROPERTY(EditAnywhere, Category = "Instrument|Data")

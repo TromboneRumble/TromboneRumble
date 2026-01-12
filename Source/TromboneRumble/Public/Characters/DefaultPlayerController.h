@@ -51,7 +51,7 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	UFUNCTION()
-	void HandleGameStateChanged(EGameState NewState);
+	void HandleLevelStateChanged(ELevelState NewState);
 
 	UFUNCTION()
 	void HandlePlayerStateAdded(APlayerState* InPlayerState);
@@ -87,6 +87,9 @@ private:
 	void HandleLoadingScreenFinished();
 
 	bool bHasNotifiedLoadingFinished = false;
+
+	UFUNCTION(Server, Reliable)
+	void Server_NotifyLoadingFinishedToInGameMode();
 
 	FTimerHandle RetryCreateRankWidgetsHandle;
 	bool bRetryTimerRunning = false;

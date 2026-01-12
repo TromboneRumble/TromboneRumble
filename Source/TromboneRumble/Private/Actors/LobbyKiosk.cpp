@@ -46,6 +46,6 @@ void ALobbyKiosk::Server_RequestTravel_Implementation()
 {
 	if (ALobbyGameMode* LobbyGameMode = GetWorld()->GetAuthGameMode<ALobbyGameMode>())
 	{
-		LobbyGameMode->RequestServerTravel(EGameState::InGame);
+		LobbyGameMode->RequestServerTravel(ELevelState::InGame);
 	}
 }
