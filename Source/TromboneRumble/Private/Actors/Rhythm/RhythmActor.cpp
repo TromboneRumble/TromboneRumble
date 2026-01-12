@@ -14,6 +14,7 @@
 #include "Actors/Rhythm/RhythmNote.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
+#include "Framework/InGameState.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
@@ -183,7 +184,7 @@ void ARhythmActor::StartRhythmGame()
 	}
 
 	GetWorldTimerManager().SetTimer(
-		TimerHandle,
+		PlayBackgroundMusicTimerHandle,
 		this,
 		&ThisClass::PlayMusic,
 		3.0f,
@@ -207,15 +208,16 @@ void ARhythmActor::SpawnRhythmRootUI()
 void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
+	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
+	{
+		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::OnInGameStateChangedHandler);
+	}
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
-	
 	GetCachedActorPoolSubsystem();
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
-	PrepareRhythmGame();
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
-	StartRhythmGame();
-	EnableInput(GetWorld()->GetFirstPlayerController());
+	PrepareRhythmGame();
 }
 
 void ARhythmActor::PrepareRhythmGame()
@@ -245,6 +247,8 @@ void ARhythmActor::PrepareRhythmGame()
 			}
 		}
 	}
+	IsRhythmGameReady = true;
+	WaitForOtherPlayers();
 }
 
 ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)
@@ -347,6 +351,42 @@ void ARhythmActor::OnNoteDetectedHandler(ENoteResult InNoteResult)
 			}
 		}
 
+	}
+}
+
+void ARhythmActor::OnInGameStateChangedHandler(EInGameState InGameState)
+{
+	switch (InGameState) {
+	case EInGameState::Initializing:
+		break;
+	case EInGameState::Play:
+		{
+			AreOtherPlayersReady = true;
+		}
+		break;
+	case EInGameState::Paused:
+		break;
+	case EInGameState::Invalid:
+		break;
+	}
+}
+
+void ARhythmActor::WaitForOtherPlayers()
+{
+	if (IsRhythmGameReady && AreOtherPlayersReady)
+	{
+		StartRhythmGame();
+		EnableInput(GetWorld()->GetFirstPlayerController());
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			CheckPlayersTimerHandle,
+			this,
+			&ARhythmActor::WaitForOtherPlayers,
+			1.0f,
+			false
+		);
 	}
 }
 

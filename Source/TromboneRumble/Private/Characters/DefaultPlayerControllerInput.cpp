@@ -36,7 +36,7 @@ void ADefaultPlayerController::SetupInputComponent()
 	}
 }
 
-void ADefaultPlayerController::HandleGameStateChanged(EGameState NewState)
+void ADefaultPlayerController::HandleLevelStateChanged(ELevelState NewState)
 {
 	if (const ULocalPlayer* Lp = GetLocalPlayer())
 	{
@@ -46,10 +46,10 @@ void ADefaultPlayerController::HandleGameStateChanged(EGameState NewState)
 
 			switch (NewState)
 			{
-			case EGameState::Lobby:
+			case ELevelState::Lobby:
 				if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
 				break;
-			case EGameState::InGame:
+			case ELevelState::InGame:
 				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
 				break;
 			default:

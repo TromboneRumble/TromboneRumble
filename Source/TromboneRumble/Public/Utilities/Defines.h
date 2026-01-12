@@ -46,11 +46,20 @@ enum class EMatchState : uint8
 };
 
 UENUM()
-enum class EGameState : uint8
+enum class ELevelState : uint8
 {
 	MainMenu,
 	Lobby,
 	InGame,
+	Invalid = 255 UMETA(Hidden)
+};
+
+UENUM()
+enum class EInGameState : uint8
+{
+	Initializing,
+	Play,
+	Paused,
 	Invalid = 255 UMETA(Hidden)
 };
 

@@ -9,21 +9,12 @@
 #include "AbilitySystemInterface.h"
 #include "Data/RhythmScoreAttributeSet.h"
 #include "Actors/InstrumentIndicator.h"
+#include "Framework/InGameState.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_WidgetBase.h"
 #include "Utilities/DebugHelper.h"
 
 AInstrumentBase::AInstrumentBase()
 {
-}
-
-void AInstrumentBase::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	if (IsValid(IndicatorInstance))
-	{
-		FVector NewLocation = GetActorLocation() + IndicatorOffset;
-		IndicatorInstance->ResetBaseLocation(NewLocation);
-	}
 }
 
 void AInstrumentBase::BeginPlay()
@@ -36,22 +27,20 @@ void AInstrumentBase::BeginPlay()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		IndicatorInstance = GetWorld()->SpawnActor<AInstrumentIndicator>(IndicatorClass, GetActorLocation() + IndicatorOffset, FRotator::ZeroRotator, SpawnParams);
+		if (IndicatorInstance)
+		{
+			IndicatorInstance->InitInstrument(this, IndicatorOffset);
+		}
 	}
 
 	if (IndicatorWidgetClass)
 	{
-		APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
-		if (LocalPC && LocalPC->IsLocalController())
-		{
-			IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
+		TryCreateIndicatorWidget();
+	}
 
-			if (IndicatorWidgetInstance.Get())
-			{
-				IndicatorWidgetInstance->TargetComponent = GetRootComponent();
-				IndicatorWidgetInstance->AddToViewport();
-			}
-		}
-		
+	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
+	{
+		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
 	}
 }
 
@@ -88,10 +77,34 @@ void AInstrumentBase::OnRep_Equipped()
 	TryUpdateIndicatorVisibility();
 }
 
+void AInstrumentBase::TryCreateIndicatorWidget()
+{
+	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
+	if (LocalPC && LocalPC->IsLocalController())
+	{
+		IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
+		if (IndicatorWidgetInstance.Get())
+		{
+			IndicatorWidgetInstance->TargetComponent = GetRootComponent();
+			IndicatorWidgetInstance->AddToViewport();
+			GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
+			TryUpdateIndicatorVisibility();
+			return;
+		}
+	}
+	GetWorld()->GetTimerManager().SetTimer(
+		WidgetInitTimerHandle,
+		this,
+		&AInstrumentBase::TryCreateIndicatorWidget,
+		0.1f,
+		false
+	);
+}
+
 void AInstrumentBase::TryUpdateIndicatorVisibility()
 {
+	GetWorld()->GetTimerManager().ClearTimer(IndicatorRetryTimerHandle);
 	bool bIsReady = IsValid(IndicatorInstance) && IndicatorWidgetInstance.Get();
-
 	if (!bIsReady)
 	{
 		if (GetWorld())
@@ -109,13 +122,21 @@ void AInstrumentBase::TryUpdateIndicatorVisibility()
 
 	if (bIsEquipped)
 	{
-		IndicatorInstance->SetActorHiddenInGame(true);
-		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		IndicatorInstance->GetRootComponent()->SetVisibility(false, true);
+		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	else
 	{
-		IndicatorInstance->SetActorHiddenInGame(false);
-		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
+		IndicatorInstance->GetRootComponent()->SetVisibility(true, true);
+		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+}
+
+void AInstrumentBase::HandleInGameStateChanged(EInGameState InGameState)
+{
+	if (InGameState == EInGameState::Play)
+	{
+		TryUpdateIndicatorVisibility();
 	}
 }
 

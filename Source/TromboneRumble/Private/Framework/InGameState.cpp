@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 void AInGameState::AddPlayerState(APlayerState* PlayerState)
@@ -29,6 +30,12 @@ void AInGameState::RemovePlayerState(APlayerState* PlayerState)
     OnScoreChanged.Broadcast(PlayerState);
 }
 
+void AInGameState::Multicast_BroadCastInGameStateChanged_Implementation(EInGameState InGameState)
+{
+    CurrentGameState = InGameState;
+    OnInGameStateChanged.Broadcast(InGameState);
+}
+
 void AInGameState::HandleLocalScoreChanged(APlayerState* UpdatedPlayerState)
 {
 	OnScoreChanged.Broadcast(UpdatedPlayerState);
@@ -49,6 +56,7 @@ void AInGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AInGameState, CurrentLeader);
+    DOREPLIFETIME(AInGameState, CurrentGameState);
 }
 
 void AInGameState::RecalculateLeader()
@@ -58,7 +66,7 @@ void AInGameState::RecalculateLeader()
     APlayerState* OldLeader = CurrentLeader;
     APlayerState* NewLeader = GetTopScoringPlayer();
 
-    if (NewLeader != OldLeader)
+    if (NewLeader != OldLeader && NewLeader->GetScore()>0.f)
     {
         CurrentLeader = NewLeader;
         OnLeaderChanged.Broadcast(NewLeader, OldLeader);

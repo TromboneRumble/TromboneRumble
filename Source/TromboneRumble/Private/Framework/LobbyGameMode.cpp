@@ -113,7 +113,7 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	}
 }
 
-void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
+void ALobbyGameMode::RequestServerTravel(const ELevelState& InLevelState)
 {
 	if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
 	{
@@ -124,15 +124,15 @@ void ALobbyGameMode::RequestServerTravel(const EGameState& InGameState)
 	{
 		if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 		{
-			switch (InGameState)
+			switch (InLevelState)
 			{
-			case EGameState::MainMenu:
+			case ELevelState::MainMenu:
 				PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
 				break;
-			case EGameState::Lobby:
+			case ELevelState::Lobby:
 				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
 				break;
-			case EGameState::InGame:
+			case ELevelState::InGame:
 				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
 				break;
 			default:

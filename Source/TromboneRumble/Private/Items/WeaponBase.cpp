@@ -208,7 +208,7 @@ bool AWeaponBase::IsCanSweep() const
 	if (!GI) return false;
 
 	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
-	if (!GameStateSubsystem || GameStateSubsystem->GetGameState() != EGameState::InGame)
+	if (!GameStateSubsystem || GameStateSubsystem->GetLevelState() != ELevelState::InGame)
 	{
 		return false;
 	}
