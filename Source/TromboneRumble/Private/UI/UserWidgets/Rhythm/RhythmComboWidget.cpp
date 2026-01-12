@@ -4,7 +4,9 @@
 #include "UI/UserWidgets/Rhythm/RhythmComboWidget.h"
 
 #include "Components/TextBlock.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/Defines.h"
 
 void URhythmComboWidget::NativeConstruct()
@@ -78,17 +80,29 @@ void URhythmComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 Comb
     }
 }
 
+void URhythmComboWidget::HandleInstrumentChanged(EInstrumentType PrevType, EInstrumentType NewType)
+{
+	if (NewType == EInstrumentType::Background || EInstrumentType::None <= NewType)
+	{
+		ComboText->SetRenderOpacity(0.0f);
+		ComboText->SetText(FText::GetEmpty());
+	}
+}
+
 void URhythmComboWidget::BindDelegates()
 {
 	APlayerController* OwningPC = GetOwningPlayer();
 	if (!OwningPC) return;
 
 	ADefaultPlayerState* MyPS = OwningPC->GetPlayerState<ADefaultPlayerState>();
+	URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>();
 
-	if (MyPS)
+	if (MyPS && RhythmSubsystem)
 	{
 		MyPS->OnComboChanged.RemoveDynamic(this, &ThisClass::HandleComboChanged);
 		MyPS->OnComboChanged.AddDynamic(this, &ThisClass::HandleComboChanged);
+		RhythmSubsystem->OnInstrumentPicked.RemoveDynamic(this, &ThisClass::HandleInstrumentChanged);
+		RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::HandleInstrumentChanged);
 	}
 	else
 	{

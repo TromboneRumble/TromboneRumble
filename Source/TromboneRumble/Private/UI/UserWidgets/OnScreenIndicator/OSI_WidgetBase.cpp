@@ -111,6 +111,10 @@ void UOSI_WidgetBase::UpdateWidgetLocation(bool IsOnScreen)
     WidgetScreenLocation.X = UKismetMathLibrary::FClamp(WidgetScreenLocation.X, ClampMin.X, ClampMax.X);
     WidgetScreenLocation.Y = UKismetMathLibrary::FClamp(WidgetScreenLocation.Y, ClampMin.Y, ClampMax.Y);
     UWidgetLayoutLibrary::SlotAsCanvasSlot(IndicatorIcon)->SetPosition(WidgetScreenLocation);
+    if (TargetIcon)
+    {
+        UWidgetLayoutLibrary::SlotAsCanvasSlot(TargetIcon)->SetPosition(WidgetScreenLocation);
+    }
 
     UpdateSpriteAngle(IsOnScreen);
 }
@@ -120,14 +124,27 @@ void UOSI_WidgetBase::UpdateSpriteAngle(bool IsOnScreen)
     if (IsOnScreen)
     {
         IndicatorIcon->SetBrushFromTexture(NonPointingIndicatorTex);
-        // 화면 내에 있을때 보이게 하고 싶으면 주석 풀기
-        IndicatorIcon->SetVisibility(ESlateVisibility::Collapsed);
+
+        if (bShowWidgetWhenInScreen)
+        {
+            IndicatorIcon->SetVisibility(ESlateVisibility::Collapsed);
+            if (TargetIcon) TargetIcon->SetVisibility(ESlateVisibility::Collapsed);
+        }
+        else
+        {
+            IndicatorIcon->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+            if (TargetIcon) TargetIcon->SetVisibility(ESlateVisibility::HitTestInvisible);
+        }
         IndicatorIcon->SetRenderTransformAngle(0.0f);
     }
     else
     {
         IndicatorIcon->SetBrushFromTexture(PointingIndicatorTex);
         IndicatorIcon->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+        if (TargetIcon)
+        {
+            TargetIcon->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+        }
 
         float ScreenMiddle2DMinVal = UKismetMathLibrary::FMin(ScreenMiddle2D.X, ScreenMiddle2D.Y);
         FVector StartVec(ScreenMiddle2DMinVal, ScreenMiddle2DMinVal, 0.f);
@@ -139,7 +156,7 @@ void UOSI_WidgetBase::UpdateSpriteAngle(bool IsOnScreen)
         TargetY = UKismetMathLibrary::Lerp(UKismetMathLibrary::FMin(ClampMin.X, ClampMin.Y), UKismetMathLibrary::FMin(ClampMax.X, ClampMax.Y), TargetY);
 
 
-        FRotator ScreenMiddleToTargetRot =  UKismetMathLibrary::FindLookAtRotation(FVector(ScreenMiddle2DMinVal, ScreenMiddle2DMinVal, 0.f), FVector(TargetX, TargetY, 0.f));
+        FRotator ScreenMiddleToTargetRot = UKismetMathLibrary::FindLookAtRotation(FVector(ScreenMiddle2DMinVal, ScreenMiddle2DMinVal, 0.f), FVector(TargetX, TargetY, 0.f));
 
         IndicatorIcon->SetRenderTransformAngle(ScreenMiddleToTargetRot.Yaw + 90.0f);
     }

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmComboWidget.generated.h"
 
+enum class EInstrumentType : uint8;
 enum class ENoteResult : uint8;
 class UTextBlock;
 
@@ -23,6 +24,9 @@ protected:
 
 	UFUNCTION()
 	void HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount);
+
+	UFUNCTION()
+	void HandleInstrumentChanged(EInstrumentType PrevType, EInstrumentType NewType);
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	TObjectPtr<UTextBlock> ComboText;

@@ -5,12 +5,13 @@
 #include "Framework/InGameState.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/DefaultTromboneCharacter.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/ActorComponents/FloatingRotatingComponent.h"
 #include "Utilities/DebugHelper.h"
 
 ALeaderPointer::ALeaderPointer()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+	MovementComponent = CreateDefaultSubobject<UFloatingRotatingComponent>(TEXT("MovementComponent"));
 }
 
 void ALeaderPointer::BeginPlay()
@@ -22,31 +23,16 @@ void ALeaderPointer::BeginPlay()
 		{
 			InGameState->OnLeaderChanged.AddDynamic(this, &ThisClass::HandleLeaderChanged);
 		}
-		World->GetTimerManager().SetTimer(
+		//0점인 상태에서도 붙히게 하고 싶으면 이거 쓸것
+		/*World->GetTimerManager().SetTimer(
 			InitialLeaderTimerHandle,
 			this,
 			&ThisClass::TryAttachToInitialLeader,
 			0.1f,
 			true,
 			0.0f
-		);
+		);*/
 	}
-	BaseRelativeLocation = GetRootComponent()->GetRelativeLocation();
-}
-
-void ALeaderPointer::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	float Time = GetWorld()->GetTimeSeconds();
-	float ZOffset = FMath::Sin(Time * FloatSpeed) * FloatHeight;
-	FVector NewLocation = BaseRelativeLocation;
-	NewLocation.Z += ZOffset;
-
-	SetActorRelativeLocation(NewLocation);
-
-	FRotator DeltaRotation = FRotator(0.0f, RotationSpeed * DeltaTime, 0.0f);
-
-	AddActorLocalRotation(DeltaRotation);
 }
 
 void ALeaderPointer::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -97,7 +83,10 @@ void ALeaderPointer::HandleLeaderChanged(APlayerState* NewLeader, APlayerState* 
 				GetRootComponent()->SetVisibility(true, true);
 				SetActorRelativeLocation(OtherPlayerDistanceOffset);
 			}
-			BaseRelativeLocation = GetRootComponent()->GetRelativeLocation();
+			if (MovementComponent)
+			{
+				MovementComponent->ResetBaseLocation();
+			}
 		}
 	}
 }

@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Logic|Violin")
 	int32 ViolinBuffActivationCount = 10; // 몇 노트마다 버프?
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Logic|Violin")
+	int32 ViolinBuffDurationCount = 5;
+
 	UPROPERTY(EditAnywhere, Category = "Logic|Violin")
 	TSubclassOf<UGameplayEffect> ViolinBuffEffectClass;
 
