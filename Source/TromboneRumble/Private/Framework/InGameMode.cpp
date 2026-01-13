@@ -40,6 +40,10 @@ void AInGameMode::BeginPlay()
 
 	if (NumPublicConnections <= 0)
 	{
+		NumPublicConnections = 4;
+	}
+	if (GetWorld()->GetNetMode() == NM_Standalone)
+	{
 		NumPublicConnections = 1;
 	}
 }
