@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/TromboneCharacterBase.h"
+
+#include "NiagaraComponent.h"
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Data/CharacterDataAsset.h"
@@ -15,7 +17,13 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
-	
+	StunNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StunNiagaraComponent"));
+	if (StunNiagaraComponent)
+	{
+		StunNiagaraComponent->SetupAttachment(GetMesh());
+		StunNiagaraComponent->bAutoActivate = false;
+	}
+
 	InitCharacter();
 }
 
@@ -505,12 +513,21 @@ void ATromboneCharacterBase::OnRep_IsStun()
 	{
 		ApplyStun();
 		PlayFaceSequence(ECharacterFaceState::Stun);
+		if (StunNiagaraComponent)
+		{
+			StunNiagaraComponent->DeactivateImmediate();
+			StunNiagaraComponent->Activate(true);
+		}
 		OnStunDelegate.Broadcast();
 	}
 	else
 	{
 		UnapplyStun();
 		PlayFaceSequence(ECharacterFaceState::Blink);
+		if (StunNiagaraComponent)
+		{
+			StunNiagaraComponent->DeactivateImmediate();
+		}
 		EndStunDelegate.Broadcast();
 	}
 }

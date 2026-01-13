@@ -8,6 +8,7 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UNiagaraComponent;
 class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
 class UInputComponent;
@@ -55,6 +56,9 @@ protected:
 	int32 FaceMaterialIndex = 2;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
 	FName FaceExpressionParameterName = FName("ExpressionIndex");
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Niagara")
+	TObjectPtr<UNiagaraComponent> StunNiagaraComponent;
 
 private:
 	void InitCharacter();
