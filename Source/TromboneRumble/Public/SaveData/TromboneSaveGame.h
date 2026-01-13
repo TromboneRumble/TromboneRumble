@@ -64,7 +64,7 @@ public:
 	bool bVSync = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EWindowMode::Type> WindowMode = EWindowMode::Windowed;
+	TEnumAsByte<EWindowMode::Type> WindowMode = EWindowMode::Fullscreen;
 
 	FGraphicsSettingData() {}
 };
