@@ -67,6 +67,10 @@ private:
 	void MatchButtonsSetEnabled(const bool bEnabled);
 	FString GenerateRandomLobbyCode(int32 Length) const;
 	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
+	void ShowNoticePopup(const FString& Content);
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> NoticePopupWidgetClass;
 	
 	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget))

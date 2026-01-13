@@ -12,3 +12,17 @@ void UNoticePopupWidget::OnInit(const FString InContent)
 		Text_Content->SetText(FText::FromString(InContent));
 	}
 }
+
+void UNoticePopupWidget::OnInit(const FString InTitle, const FString InContent)
+{
+	Init();
+	
+	if (Text_Title)
+	{
+		Text_Title->SetText(FText::FromString(InTitle));
+	}
+	if (Text_Content)
+	{
+		Text_Content->SetText(FText::FromString(InContent));
+	}
+}

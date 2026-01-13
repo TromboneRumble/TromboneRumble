@@ -5,6 +5,11 @@
 
 void UPopupWidgetBase::Init()
 {
+	if (!IsInViewport())
+	{
+		AddToViewport();
+	}
+	ActivateWidget();
 }
 
 void UPopupWidgetBase::Refresh()
@@ -56,8 +61,10 @@ void UPopupWidgetBase::OnCloseAnimationFinished()
 void UPopupWidgetBase::ClosePopup(const bool bCloseImmediately)
 {
 	if (bIsClosing) return;
-
+	
 	OnBeforeCloseAction.Broadcast();
+	SetEnableButtons(false);
+	SetVisibility(ESlateVisibility::HitTestInvisible);
 
 	if (bCloseImmediately || !FadeIn)
 	{
@@ -70,4 +77,10 @@ void UPopupWidgetBase::ClosePopup(const bool bCloseImmediately)
 		BindToAnimationFinished(FadeIn, EndDelegate);
 		PlayAnimationReverse(FadeIn);
 	}
+}
+
+void UPopupWidgetBase::SetEnableButtons(bool bInIsEnabled)
+{
+	if (Button_Close) Button_Close->SetIsEnabled(bInIsEnabled);
+	if (Button_Dim)   Button_Dim->SetIsEnabled(bInIsEnabled);
 }

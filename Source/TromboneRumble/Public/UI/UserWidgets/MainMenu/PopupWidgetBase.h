@@ -46,6 +46,7 @@ protected:
 	// ~ End Events
 	
 	virtual void ClosePopup(bool bCloseImmediately = false);
+	virtual void SetEnableButtons(bool bInIsEnabled);
 	
 	// ~ Begin Widgets
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))

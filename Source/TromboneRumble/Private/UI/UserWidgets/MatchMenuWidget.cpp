@@ -12,6 +12,7 @@
 #include "Components/SpinBox.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/UserWidgets/MainMenu/NoticePopupWidget.h"
 #include "Utilities/DebugHelper.h"
 
 void UMatchMenuWidget::Init(const TFunction<void()> OnMenuClosedCallback)
@@ -167,7 +168,7 @@ void UMatchMenuWidget::OnStartSessionSuccess()
 void UMatchMenuWidget::OnStartSessionFailure()
 {
 	MatchButtonsSetEnabled(true);
-	PRINT_WITH_CURRENT_CONTEXT("Failed to Start Session");
+	ShowNoticePopup(TEXT("세션 생생에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults)
@@ -194,14 +195,14 @@ void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchRe
 		}
 	}
 	
-	Debug::Print(FString::Printf(TEXT("No matched lobby code among results (wanted=%s)"), *LobbyCode));
 	MatchButtonsSetEnabled(true);
+	ShowNoticePopup(FString::Printf(TEXT("'%s'에 해당하는 세션을 찾을 수 없습니다."), *LobbyCode));
 }
 
 void UMatchMenuWidget::OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults)
 {
 	MatchButtonsSetEnabled(true);
-	PRINT_WITH_CURRENT_CONTEXT("Failed to find sessions");
+	ShowNoticePopup(TEXT("세션 검색에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnJoinSessionSuccess()
@@ -212,7 +213,7 @@ void UMatchMenuWidget::OnJoinSessionSuccess()
 void UMatchMenuWidget::OnJoinSessionFailure()
 {
 	MatchButtonsSetEnabled(true);
-	PRINT_WITH_CURRENT_CONTEXT("Join Failed");
+	ShowNoticePopup(TEXT("세션 참가에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnDestroySessionSuccess()
@@ -222,7 +223,7 @@ void UMatchMenuWidget::OnDestroySessionSuccess()
 
 void UMatchMenuWidget::OnDestroySessionFailure()
 {
-	PRINT_WITH_CURRENT_CONTEXT("Failed to destroy session");
+	ShowNoticePopup(TEXT("세션 종료에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnMaxPlayerSliderChanged(const float Value)
@@ -268,7 +269,7 @@ void UMatchMenuWidget::JoinButtonClicked()
 {
 	if (LobbyCodeText->GetText().IsEmpty())
 	{
-		PRINT_WITH_CURRENT_CONTEXT("Lobby Code is Empty");
+		ShowNoticePopup(TEXT("로비 코드를 입력해주세요."));
 		return;
 	}
 	
@@ -298,7 +299,7 @@ FString UMatchMenuWidget::GenerateRandomLobbyCode(const int32 Length) const
 	}
 	
 	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Lobby Code copied to Clipboard: %s"), *RandomCode));
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("로비 코드 %s가 생성되어 클립보드에 복사되었습니다."), *RandomCode));
 	
 	return RandomCode;
 }
@@ -313,5 +314,14 @@ const TCHAR* UMatchMenuWidget::JoinSessionResultToText(const EOnJoinSessionCompl
 	case EOnJoinSessionCompleteResult::CouldNotRetrieveAddress:return TEXT("CouldNotRetrieveAddress");
 	case EOnJoinSessionCompleteResult::AlreadyInSession:      return TEXT("AlreadyInSession");
 	default:                                                  return TEXT("Unknown");
+	}
+}
+
+void UMatchMenuWidget::ShowNoticePopup(const FString& Content)
+{
+	if (NoticePopupWidgetClass)
+	{
+		UNoticePopupWidget* NoticePopup = CreateWidget<UNoticePopupWidget>(GetOwningPlayer(), NoticePopupWidgetClass);
+		NoticePopup->OnInit(Content);
 	}
 }
