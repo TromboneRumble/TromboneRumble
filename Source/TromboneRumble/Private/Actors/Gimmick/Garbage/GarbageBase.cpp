@@ -29,6 +29,8 @@ AGarbageBase::AGarbageBase()
 		MeshComp->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
 		MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
+		MeshComp->SetLinearDamping(0.0f);
+		MeshComp->SetAngularDamping(0.0f);
 		MeshComp->SetNotifyRigidBodyCollision(true);
 		MeshComp->SetGenerateOverlapEvents(false);
 		MeshComp->SetSimulatePhysics(false);
@@ -102,6 +104,7 @@ void AGarbageBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AGarbageBase, TargetLoc);
 	DOREPLIFETIME(AGarbageBase, ChosenExtraApexHeight);
 	DOREPLIFETIME(AGarbageBase, bImpactStarted);
+	DOREPLIFETIME(AGarbageBase, bHitPawn);
 }
 
 void AGarbageBase::OnRep_ImpactStarted()
