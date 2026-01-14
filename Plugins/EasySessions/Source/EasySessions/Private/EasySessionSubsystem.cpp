@@ -1,12 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EasySessionSubsystem.h"
+#include "EasySessionLog.h"
 #include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemUtils.h"
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Online/OnlineSessionNames.h"
+
+DEFINE_LOG_CATEGORY(LogEasySession);
 
 UEasySessionSubsystem::UEasySessionSubsystem() :
     CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete)),
@@ -85,7 +88,7 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot host session: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot host session: Session Interface is invalid"));
         }
     }
     
@@ -107,13 +110,13 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
             {
                 if (LastSettings.GetValue().bStartAfterCreate)
                 {
-                    UE_LOG_ONLINE_SESSION(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
+                    UE_LOG_EASY(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
                     StartSessionCompleteDelegateHandle = Sessions->AddOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegate);
                     Sessions->StartSession(NAME_GameSession);
                 }
                 else
                 {
-                    UE_LOG_ONLINE_SESSION(Display, TEXT("Session creation completed. Automatic start is turned off, to start the session call 'StartSession'."));
+                    UE_LOG_EASY(Display, TEXT("Session creation completed. Automatic start is turned off, to start the session call 'StartSession'."));
                     OnStartSessionSuccess.Broadcast();
                 }
             
@@ -184,7 +187,7 @@ void UEasySessionSubsystem::FindSessions(const FEasySearchSettings& InSettings)
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot find sessions: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot find sessions: Session Interface is invalid"));
         }
     }
     
@@ -257,7 +260,7 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot join session: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot join session: Session Interface is invalid"));
         }
     }
     
@@ -283,7 +286,7 @@ void UEasySessionSubsystem::OnJoinSessionComplete(FName SessionName, const EOnJo
                 {
                     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
                     {
-                        UE_LOG_ONLINE_SESSION(Log, TEXT("Join session: traveling to %s"), *ConnectString);
+                        UE_LOG_EASY(Log, TEXT("Join session: traveling to %s"), *ConnectString);
                         PC->ClientTravel(ConnectString, TRAVEL_Absolute);
                         OnJoinSessionSuccess.Broadcast();
                         return;
@@ -313,7 +316,7 @@ void UEasySessionSubsystem::DestroySession()
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot destroy session: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot destroy session: Session Interface is invalid"));
         }
     }
     
