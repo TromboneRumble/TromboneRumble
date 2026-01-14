@@ -14,26 +14,31 @@ AWaterDrop::AWaterDrop()
 	SetReplicateMovement(true);
 	
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
-	SetRootComponent(CollisionComponent);
-	CollisionComponent->SetCollisionObjectType(ECC_WorldDynamic);
-	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	// "땅" 을 WorldStatic으로 쓴다고 가정하고, 이것만 Block
-	CollisionComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	if (CollisionComponent)
+	{
+		SetRootComponent(CollisionComponent);
+		CollisionComponent->SetCollisionObjectType(ECC_WorldDynamic);
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		// "땅" 을 WorldStatic으로 쓴다고 가정하고, 이것만 Block
+		CollisionComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 
-	
-	CollisionComponent->SetSimulatePhysics(true);
-	CollisionComponent->SetEnableGravity(true);
+		CollisionComponent->SetSimulatePhysics(true);
+		CollisionComponent->SetEnableGravity(true);
+		CollisionComponent->CanCharacterStepUpOn = ECB_No;
 
-	// Hit 이벤트 받기
-	CollisionComponent->SetNotifyRigidBodyCollision(true);
+		// Hit 이벤트 받기
+		CollisionComponent->SetNotifyRigidBodyCollision(true);
+	}
 
 	// 시각용 메쉬
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
-	MeshComponent->SetupAttachment(CollisionComponent);
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-
+	if (MeshComponent)
+	{
+		MeshComponent->SetupAttachment(CollisionComponent);
+		MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		MeshComponent->CanCharacterStepUpOn = ECB_No;
+	}
 }
 
 void AWaterDrop::BeginPlay()

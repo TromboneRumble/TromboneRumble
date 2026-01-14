@@ -35,6 +35,7 @@ AGarbageBase::AGarbageBase()
 		MeshComp->SetGenerateOverlapEvents(false);
 		MeshComp->SetSimulatePhysics(false);
 		MeshComp->SetEnableGravity(true);
+		MeshComp->CanCharacterStepUpOn = ECB_No;
 
 		MeshComp->BodyInstance.bUseCCD = true;
 	}
