@@ -15,9 +15,13 @@ class TROMBONERUMBLE_API UNoticePopupWidget : public UPopupWidgetBase
 	
 public:
 	virtual void OnInit(FString InContent);
+	virtual void OnInit(FString InTitle, FString InContent);
 	
 protected:
 	// ~ Begin Widgets
+	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
+	TObjectPtr<UCommonTextBlock> Text_Title;
+	
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	TObjectPtr<UCommonTextBlock> Text_Content;
 	// ~ End Widgets

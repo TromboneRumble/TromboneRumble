@@ -66,7 +66,7 @@ void AInGameState::RecalculateLeader()
     APlayerState* OldLeader = CurrentLeader;
     APlayerState* NewLeader = GetTopScoringPlayer();
 
-    if (NewLeader != OldLeader && NewLeader->GetScore()>0.f)
+    if (NewLeader && NewLeader != OldLeader && NewLeader->GetScore()>0.f)
     {
         CurrentLeader = NewLeader;
         OnLeaderChanged.Broadcast(NewLeader, OldLeader);

@@ -2,8 +2,6 @@
 
 
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
-
-#include "SSearchToggleButton.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "GameFramework/Pawn.h"
 

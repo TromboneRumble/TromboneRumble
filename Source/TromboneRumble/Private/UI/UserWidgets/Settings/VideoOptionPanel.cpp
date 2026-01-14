@@ -88,6 +88,30 @@ void UVideoOptionPanel::HandleApplyButtonClicked()
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
        NewSettings.bVSync = CreatedWidgets[EGraphicsOptionType::VSync]->GetCurrentIndex() == 1;
+	
+	if (CreatedWidgets.Contains(EGraphicsOptionType::WindowMode))
+	{
+		const int32 WindowModeIdx = CreatedWidgets[EGraphicsOptionType::WindowMode]->GetCurrentIndex();
+    
+		EWindowMode::Type NewWindowMode;
+		switch (WindowModeIdx)
+		{
+			case 0: 
+				NewWindowMode = EWindowMode::Fullscreen;
+				break;
+			case 1:
+				NewWindowMode = EWindowMode::WindowedFullscreen;
+				break;
+			case 2:
+				NewWindowMode = EWindowMode::Windowed;
+				break;
+			default:
+				NewWindowMode = EWindowMode::WindowedFullscreen;
+				break;
+		}
+    
+		NewSettings.WindowMode = NewWindowMode;
+	}
 
     SaveManagerSubsystem->SaveVideoSettings(NewSettings);
 }
@@ -187,12 +211,6 @@ void UVideoOptionPanel::UpdateUIFromEngineSettings()
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::Effects))
         CreatedWidgets[EGraphicsOptionType::Effects]->SetSelectedIndex(VideoSettings->GetVisualEffectQuality());
-	
-    if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
-    {
-        const int32 VSyncIndex = VideoSettings->IsVSyncEnabled() ? 1 : 0;
-        CreatedWidgets[EGraphicsOptionType::VSync]->SetSelectedIndex(VSyncIndex);
-    }
 
 	if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
 	{
@@ -213,6 +231,36 @@ void UVideoOptionPanel::UpdateUIFromEngineSettings()
 		}
 
 		CreatedWidgets[EGraphicsOptionType::Resolution]->SetSelectedIndex(TargetIdx != -1 ? TargetIdx : 0);
+	}
+	
+	if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
+	{
+		const int32 VSyncIndex = VideoSettings->IsVSyncEnabled() ? 1 : 0;
+		CreatedWidgets[EGraphicsOptionType::VSync]->SetSelectedIndex(VSyncIndex);
+	}
+	
+	if (CreatedWidgets.Contains(EGraphicsOptionType::WindowMode))
+	{
+		EWindowMode::Type CurrentMode = VideoSettings->GetFullscreenMode();
+		int32 WindowModeIndex;
+	
+		switch (CurrentMode)
+		{
+			case EWindowMode::Fullscreen:
+				WindowModeIndex = 0;
+				break;
+			case EWindowMode::WindowedFullscreen:
+				WindowModeIndex = 1;
+				break;
+			case EWindowMode::Windowed:
+				WindowModeIndex = 2;
+				break;
+			default:
+				WindowModeIndex = 1;
+				break;
+		}
+	
+		CreatedWidgets[EGraphicsOptionType::WindowMode]->SetSelectedIndex(WindowModeIndex);
 	}
 }
 

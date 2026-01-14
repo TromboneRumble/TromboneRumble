@@ -22,7 +22,8 @@ enum class EGraphicsOptionType : uint8
 	Texture,
 	Effects,
 	Resolution,
-	VSync
+	VSync,
+	WindowMode,
 };
 
 USTRUCT()
