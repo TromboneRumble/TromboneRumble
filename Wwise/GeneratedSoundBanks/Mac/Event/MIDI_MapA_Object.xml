@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1985904344" Type="Event" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" Language="SFX" Hash="{74559EE6-AD3E-A490-53F6-3F83AD0D2E6C}">
+		<SoundBank Id="1985904344" Type="Event" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" Language="SFX" Hash="{C128F198-00BF-0985-AB36-34176687FC55}">
 			<ObjectPath>MIDI_MapA_Object</ObjectPath>
 			<ShortName>MIDI_MapA_Object</ShortName>
 			<Path>Event/MIDI_MapA_Object.bnk</Path>
@@ -18,7 +18,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="1985904344" Name="MIDI_MapA_Object" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\MIDI_MapA_Object" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" DurationType="OneShot" DurationMin="168.25934" DurationMax="168.25934">
+				<Event Id="1985904344" Name="MIDI_MapA_Object" ObjectPath="\Events\Default Work Unit\Music\Map_A_Rhythm\MIDI_MapA_Object" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" DurationType="OneShot" DurationMin="168.25934" DurationMax="168.25934">
 					<MediaRefs>
 						<MediaRef Id="622013022"/>
 					</MediaRefs>
@@ -31,5 +31,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{D19778D1-9B97-DB22-6C2F-32194459D601}</FileHash>
+	<FileHash>{8FDB0AF9-59E4-E285-0B7B-903AB96B1ED8}</FileHash>
 </SoundBanksInfo>

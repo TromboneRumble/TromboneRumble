@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="418248778" Type="Event" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" Language="SFX" Hash="{8B05F426-AC56-F906-B6BD-5C9DAF264004}">
+		<SoundBank Id="418248778" Type="Event" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" Language="SFX" Hash="{9C0CB278-DC78-A7ED-A7B8-13232B94AA30}">
 			<ObjectPath>Play_Trash_Hit</ObjectPath>
 			<ShortName>Play_Trash_Hit</ShortName>
 			<Path>Event/Play_Trash_Hit.bnk</Path>
@@ -33,7 +33,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="418248778" Name="Play_Trash_Hit" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash_Hit" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" DurationType="OneShot" DurationMin="0.9142917" DurationMax="1.33225">
+				<Event Id="418248778" Name="Play_Trash_Hit" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash\Play_Trash_Hit" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" DurationType="OneShot" DurationMin="0.9142917" DurationMax="1.33225">
 					<MediaRefs>
 						<MediaRef Id="584871384"/>
 						<MediaRef Id="587109666"/>
@@ -45,5 +45,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{11FD424D-FA26-C36F-451A-F87ED14E6AFA}</FileHash>
+	<FileHash>{23C9FE29-A475-1613-0E12-49AD2790540C}</FileHash>
 </SoundBanksInfo>

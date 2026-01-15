@@ -1,5 +1,5 @@
 Event	ID	Name			Wwise Object Path	Notes
-	3717157269	Play_Click_Test			\Default Work Unit\Play_Click_Test	
+	3717157269	Play_Click_Test			\Default Work Unit\Test\Play_Click_Test	
 
 Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
 	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	

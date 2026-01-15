@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1988723284	Play_Violin_Attack			\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Violin_Attack	
+
+Effect plug-ins	ID	Name	Type				Notes
+	3604890626	High_Pass_60Hz	Wwise Parametric EQ			
+

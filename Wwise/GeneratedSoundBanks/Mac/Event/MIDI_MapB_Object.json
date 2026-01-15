@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{750353A4-404D-47D8-92EF-B12E466A3BCE}",
     "Language": "SFX",
-    "Hash": "{198C4640-E0AB-F095-C713-CB27E8429274}",
+    "Hash": "{90F59E2A-A0F5-DFAA-99F6-6B4B095A9696}",
     "ObjectPath": "MIDI_MapB_Object",
     "ShortName": "MIDI_MapB_Object",
     "Path": "Event/MIDI_MapB_Object.bnk",
@@ -41,7 +41,7 @@
      {
       "Id": "2564452233",
       "Name": "MIDI_MapB_Object",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_B_Rhythm\\MIDI_MapB_Object",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_B_Rhythm\\MIDI_MapB_Object",
       "GUID": "{750353A4-404D-47D8-92EF-B12E466A3BCE}",
       "DurationType": "OneShot",
       "DurationMin": "233.34395",
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{F293F018-89DD-5E47-D17E-6A0D078D18AE}"
+  "FileHash": "{B1355C92-5EE1-45F7-805D-FDF577E7C080}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
     "Language": "SFX",
-    "Hash": "{9398B9C5-03CC-C7AC-24E3-E74527502B00}",
+    "Hash": "{FF613A78-BCAA-B79D-6CC3-9D0247AFDF45}",
     "ObjectPath": "Note_Long_End",
     "ShortName": "Note_Long_End",
     "Path": "Event/Note_Long_End.bnk",
@@ -46,6 +46,6 @@
     ]
    }
   ],
-  "FileHash": "{20020C50-FB80-E65F-8B60-CADF31702A92}"
+  "FileHash": "{97D13221-A207-6F4D-2A4D-912CBEE09954}"
  }
 }

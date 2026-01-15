@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B0C36204-52E2-4794-8556-4F4C7B718AEC}",
     "Language": "SFX",
-    "Hash": "{BA2391F7-CB44-72AB-57CF-CBA900AE59D2}",
+    "Hash": "{26432B78-87D1-FD42-90C5-3F1EF996BFF6}",
     "ObjectPath": "Play_Party_On",
     "ShortName": "Play_Party_On",
     "Path": "Event/Play_Party_On.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{BE7FB3F7-6A9F-4CA1-A52F-8976CC0290AF}"
+  "FileHash": "{A641F78E-6220-82E4-C26E-6AED2742241E}"
  }
 }

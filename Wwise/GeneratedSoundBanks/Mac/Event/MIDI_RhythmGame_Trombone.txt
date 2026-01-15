@@ -1,5 +1,5 @@
 Event	ID	Name			Wwise Object Path	Notes
-	890241682	MIDI_RhythmGame_Trombone			\Default Work Unit\Test_Rhythm_Game\MIDI_RhythmGame_Trombone	
+	890241682	MIDI_RhythmGame_Trombone			\Default Work Unit\Music\Test_Rhythm_Game\MIDI_RhythmGame_Trombone	
 
 Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
 	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	

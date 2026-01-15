@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
     "Language": "SFX",
-    "Hash": "{6A5A40D7-C908-22B1-58B6-0AD95A7B8106}",
+    "Hash": "{C31F60DE-C050-E4DC-128B-744E703B3311}",
     "ObjectPath": "MIDI_RhythmGame_Cymbal",
     "ShortName": "MIDI_RhythmGame_Cymbal",
     "Path": "Event/MIDI_RhythmGame_Cymbal.bnk",
@@ -41,7 +41,7 @@
      {
       "Id": "3440465348",
       "Name": "MIDI_RhythmGame_Cymbal",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Cymbal",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Test_Rhythm_Game\\MIDI_RhythmGame_Cymbal",
       "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
       "DurationType": "OneShot",
       "DurationMin": "42",
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{7BA70722-5C48-5909-743D-8A9DC657B9E3}"
+  "FileHash": "{7FDD41D9-FBE8-12A6-BD13-DE777A5AC938}"
  }
 }

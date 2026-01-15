@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3076746022	Play_Player_Dizzy			\Default Work Unit\Player_SFX\Play_Player_Dizzy	
+

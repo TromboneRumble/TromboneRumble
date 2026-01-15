@@ -1,0 +1,61 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "581556496",
+    "Type": "Event",
+    "GUID": "{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}",
+    "Language": "SFX",
+    "Hash": "{50C1098A-D6EF-3D51-D2C9-5E64D41DEB41}",
+    "ObjectPath": "Play_Head_Attack_Voice",
+    "ShortName": "Play_Head_Attack_Voice",
+    "Path": "Event/Play_Head_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "79128011",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_4.wav",
+      "Path": "Media/79128011.wem",
+      "CachePath": "SFX/Player_Attack_Voice_4_818F3B66.wem"
+     },
+     {
+      "Id": "598708220",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_3.wav",
+      "Path": "Media/598708220.wem",
+      "CachePath": "SFX/Player_Attack_Voice_3_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "581556496",
+      "Name": "Play_Head_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Head_Attack_Voice",
+      "GUID": "{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.29866666",
+      "DurationMax": "0.35933334",
+      "MediaRefs": [
+       {
+        "Id": "79128011"
+       },
+       {
+        "Id": "598708220"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{A185FD6D-3D27-2694-E38D-64726897CBD2}"
+ }
+}
