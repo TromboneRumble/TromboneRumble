@@ -91,6 +91,10 @@ void AGarbageBase::BeginPlay()
 	{
 		MeshComp->OnComponentHit.AddDynamic(this, &ThisClass::HandleMeshHit);
 	}
+	if (AkComponent && SpawnSoundEvent)
+	{
+		AkComponent->PostAkEvent(SpawnSoundEvent, 0, FOnAkPostEventCallback());
+	}
 	if (HasAuthority() && MeshComp)
 	{
 		MeshComp->SetSimulatePhysics(true);
