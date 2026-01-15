@@ -39,6 +39,14 @@
 							<GameParameterRef Name="RTPC_Fail_Volume" ID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
 							<Value>-89</Value>
 						</RTPCValue>
+						<RTPCValue>
+							<GameParameterRef Name="RTPC_SFXVolume" ID="{6BB75C83-4CCF-480B-88F5-B69F326C8A5F}"/>
+							<Value>100</Value>
+						</RTPCValue>
+						<RTPCValue>
+							<GameParameterRef Name="RTPC_MasterVolume" ID="{B27D731F-8A64-4DA0-B718-3CCB1E9C55E2}"/>
+							<Value>100</Value>
+						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">

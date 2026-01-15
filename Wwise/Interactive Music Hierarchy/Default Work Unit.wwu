@@ -7,146 +7,6 @@
 					<ChildrenList>
 						<Folder Name="Test_X" ID="{F252AA78-6606-4D89-87FD-CB84980FB714}" ShortID="521025885">
 							<ChildrenList>
-								<MusicPlaylistContainer Name="Test_BGM" ID="{55BE03C6-4690-4D44-B234-E181C9194207}" ShortID="873256501">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-										<Reference Name="PlaylistRoot">
-											<Custom>
-												<MusicPlaylistItem Name="" ID="{D28F8FFF-4FC6-4F13-84CD-FEF1EF5BA392}" ShortID="407966583">
-													<PropertyList>
-														<Property Name="LoopCount" Type="int16" Value="0"/>
-														<Property Name="PlayMode" Type="int16" Value="2"/>
-													</PropertyList>
-													<ChildrenList>
-														<MusicPlaylistItem Name="" ID="{6BDE89B2-A3C0-4F7F-83B2-2B1E3FB2C6EB}" ShortID="379455784">
-															<PropertyList>
-																<Property Name="PlaylistItemType" Type="int16" Value="1"/>
-															</PropertyList>
-															<ReferenceList>
-																<Reference Name="Segment">
-																	<ObjectRef Name="Trumbone Main Theme_4" ID="{575DE4D6-6BF9-4E09-8D6B-185E51122CD8}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
-																</Reference>
-															</ReferenceList>
-														</MusicPlaylistItem>
-													</ChildrenList>
-												</MusicPlaylistItem>
-											</Custom>
-										</Reference>
-										<Reference Name="TransitionRoot">
-											<Custom>
-												<MusicTransition Name="Root" ID="{51299EB8-AA6B-4D94-A2B9-D11E031493ED}">
-													<PropertyList>
-														<Property Name="IsFolder" Type="bool" Value="True"/>
-													</PropertyList>
-													<ChildrenList>
-														<MusicTransition Name="Transition" ID="{518D8C11-2DF8-4CDE-9A33-C01E35D52D7B}">
-															<TransitionInfo/>
-														</MusicTransition>
-													</ChildrenList>
-													<TransitionInfo/>
-												</MusicTransition>
-											</Custom>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<MusicSegment Name="Trumbone Main Theme_4" ID="{575DE4D6-6BF9-4E09-8D6B-185E51122CD8}" ShortID="968714475">
-											<PropertyList>
-												<Property Name="EndPosition" Type="Real64" Value="104000"/>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-12</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<MusicTrack Name="Trumbone Main Theme_4" ID="{B4933EE2-7F27-433D-AB44-2A49BE3BE055}" ShortID="928552881">
-													<ReferenceList>
-														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-														</Reference>
-														<Reference Name="TransitionRoot">
-															<Custom>
-																<MusicTransition Name="Root" ID="{3ABC3A83-ACC2-497A-9ADD-8D2403E91347}">
-																	<PropertyList>
-																		<Property Name="IsFolder" Type="bool" Value="True"/>
-																	</PropertyList>
-																	<TransitionInfo/>
-																</MusicTransition>
-															</Custom>
-														</Reference>
-													</ReferenceList>
-													<ChildrenList>
-														<AudioFileSource Name="Trumbone Main Theme_4" ID="{0C796017-2692-48DA-9641-9AC8593ED1C7}">
-															<Language>SFX</Language>
-															<AudioFile>Trumbone Main Theme_4.wav</AudioFile>
-															<MediaIDList>
-																<MediaID ID="759138717"/>
-															</MediaIDList>
-														</AudioFileSource>
-													</ChildrenList>
-													<ObjectLists>
-														<ObjectList Name="Sequences">
-															<Reference>
-																<Local>
-																	<MusicTrackSequence Name="" ID="{260C01BE-12FA-4C98-8D4A-0F6C15DBF0F9}">
-																		<ObjectLists>
-																			<ObjectList Name="Clips">
-																				<Reference>
-																					<Local>
-																						<MusicClip Name="Trumbone Main Theme_4" ID="{A684E5B5-480C-4A56-8719-D55E792561A3}">
-																							<PropertyList>
-																								<Property Name="EndTrimOffset" Type="Real64" Value="104000"/>
-																								<Property Name="FadeInMode" Type="int16" Value="0"/>
-																								<Property Name="FadeOutMode" Type="int16" Value="0"/>
-																							</PropertyList>
-																							<AudioSourceRef Name="Trumbone Main Theme_4" ID="{0C796017-2692-48DA-9641-9AC8593ED1C7}"/>
-																						</MusicClip>
-																					</Local>
-																				</Reference>
-																			</ObjectList>
-																		</ObjectLists>
-																	</MusicTrackSequence>
-																</Local>
-															</Reference>
-														</ObjectList>
-													</ObjectLists>
-												</MusicTrack>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="Cues">
-													<Reference>
-														<Local>
-															<MusicCue Name="Entry Cue" ID="{C1F9D6DB-1F3C-4086-963C-7A35C695CA91}"/>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<MusicCue Name="Exit Cue" ID="{3EC4FAFA-83C6-48FF-ABEC-17562587B195}">
-																<PropertyList>
-																	<Property Name="CueType" Type="int16" Value="1"/>
-																	<Property Name="TimeMs" Type="Real64" Value="104000"/>
-																</PropertyList>
-															</MusicCue>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-										</MusicSegment>
-									</ChildrenList>
-								</MusicPlaylistContainer>
 								<MusicSegment Name="Test_Rhythm" ID="{A7252FE0-4A6F-4958-8053-A6591FAB49BE}" ShortID="689795495">
 									<PropertyList>
 										<Property Name="EndPosition" Type="Real64" Value="478500"/>
@@ -6313,14 +6173,14 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
 												<MusicTrack Name="MIDI_C" ID="{0DD7EA41-13FA-443B-BCAA-60B3689070F2}" ShortID="398155773">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -6372,7 +6232,7 @@
 												<MusicTrack Name="MapA_Cymbal" ID="{58C8A023-CC8E-455B-8A1F-346C4018E562}" ShortID="237312429">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -6485,7 +6345,7 @@
 												<MusicTrack Name="MapA_BGM" ID="{B95F39B9-B703-44AB-AB02-109F46F7B4AF}" ShortID="803709039">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -9299,14 +9159,14 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
 												<MusicTrack Name="MIDI_T" ID="{16BF5985-7085-4E8E-B345-AA9C797F8730}" ShortID="238818389">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -9356,7 +9216,7 @@
 												<MusicTrack Name="MapA_BGM" ID="{8C8371E3-D174-4B1C-9602-5F611C0F00DE}" ShortID="361513084">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -9408,7 +9268,7 @@
 												<MusicTrack Name="MapA_Trombone" ID="{7BD4400D-B733-44C9-ADB9-FE7E07BB81D8}" ShortID="615420952">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -11692,14 +11552,14 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
 												<MusicTrack Name="MapA_BGM" ID="{8EB2B695-E4D9-4C04-B521-5E89B41375A5}" ShortID="4118637">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -11810,7 +11670,7 @@
 												<MusicTrack Name="MIDI_V" ID="{E8B331B4-AAA6-4BA8-8AF8-C34EE476FF72}" ShortID="926122923">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -11860,7 +11720,7 @@
 												<MusicTrack Name="Map_A_violin" ID="{01C090D5-E9EF-4CE4-8285-169EF3BACF95}" ShortID="472497729">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -14148,14 +14008,14 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
 												<MusicTrack Name="MIDI_O" ID="{A95431F4-ED70-404C-854B-912DABF35E79}" ShortID="191526240">
 													<ReferenceList>
 														<Reference Name="OutputBus">
-															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+															<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 														</Reference>
 														<Reference Name="TransitionRoot">
 															<Custom>
@@ -14245,14 +14105,14 @@
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 										</Reference>
 										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+											<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
 										<MusicTrack Name="Map_A_Main" ID="{F56A1408-E4C8-43E4-803A-69F2E353C538}" ShortID="593121812">
 											<ReferenceList>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 												<Reference Name="TransitionRoot">
 													<Custom>
@@ -14316,7 +14176,7 @@
 													<ObjectRef Name="SW_N" ID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 												<Reference Name="SwitchGroupOrStateGroup">
 													<ObjectRef Name="Inst" ID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
@@ -14884,7 +14744,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -17357,7 +17217,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -19850,7 +19710,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -22347,7 +22207,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -22444,14 +22304,14 @@
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 										</Reference>
 										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+											<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
 										<MusicTrack Name="Map_B_Main" ID="{9A43F7A2-12AA-4349-9D3D-7082C8C25703}" ShortID="813399868">
 											<ReferenceList>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 												<Reference Name="TransitionRoot">
 													<Custom>
@@ -22514,7 +22374,7 @@
 													<ObjectRef Name="SW_N" ID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 												<Reference Name="SwitchGroupOrStateGroup">
 													<ObjectRef Name="Inst" ID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
@@ -22840,7 +22700,7 @@
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 						</Reference>
 						<Reference Name="OutputBus">
-							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+							<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 						</Reference>
 						<Reference Name="TransitionRoot">
 							<Custom>
@@ -23175,7 +23035,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -26448,7 +26308,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -29739,7 +29599,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -33574,7 +33434,7 @@
 													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
@@ -33671,14 +33531,14 @@
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 										</Reference>
 										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+											<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
 										<MusicTrack Name="Map_C_Main" ID="{FDAF2C8A-8920-4258-AC8C-F169FF8099D1}" ShortID="245824788">
 											<ReferenceList>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 												<Reference Name="TransitionRoot">
 													<Custom>
@@ -33744,7 +33604,7 @@
 													<ObjectRef Name="SW_N" ID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
 												</Reference>
 												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 												</Reference>
 												<Reference Name="SwitchGroupOrStateGroup">
 													<ObjectRef Name="Inst" ID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
@@ -33982,6 +33842,146 @@
 						</Folder>
 					</ChildrenList>
 				</Folder>
+				<MusicPlaylistContainer Name="Main_BGM" ID="{55BE03C6-4690-4D44-B234-E181C9194207}" ShortID="873256501">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+						</Reference>
+						<Reference Name="PlaylistRoot">
+							<Custom>
+								<MusicPlaylistItem Name="" ID="{D28F8FFF-4FC6-4F13-84CD-FEF1EF5BA392}" ShortID="407966583">
+									<PropertyList>
+										<Property Name="LoopCount" Type="int16" Value="0"/>
+										<Property Name="PlayMode" Type="int16" Value="2"/>
+									</PropertyList>
+									<ChildrenList>
+										<MusicPlaylistItem Name="" ID="{6BDE89B2-A3C0-4F7F-83B2-2B1E3FB2C6EB}" ShortID="379455784">
+											<PropertyList>
+												<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Segment">
+													<ObjectRef Name="Trumbone Main Theme_4" ID="{575DE4D6-6BF9-4E09-8D6B-185E51122CD8}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+												</Reference>
+											</ReferenceList>
+										</MusicPlaylistItem>
+									</ChildrenList>
+								</MusicPlaylistItem>
+							</Custom>
+						</Reference>
+						<Reference Name="TransitionRoot">
+							<Custom>
+								<MusicTransition Name="Root" ID="{51299EB8-AA6B-4D94-A2B9-D11E031493ED}">
+									<PropertyList>
+										<Property Name="IsFolder" Type="bool" Value="True"/>
+									</PropertyList>
+									<ChildrenList>
+										<MusicTransition Name="Transition" ID="{518D8C11-2DF8-4CDE-9A33-C01E35D52D7B}">
+											<TransitionInfo/>
+										</MusicTransition>
+									</ChildrenList>
+									<TransitionInfo/>
+								</MusicTransition>
+							</Custom>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicSegment Name="Trumbone Main Theme_4" ID="{575DE4D6-6BF9-4E09-8D6B-185E51122CD8}" ShortID="968714475">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="104000"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-12</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="Trumbone Main Theme_4" ID="{B4933EE2-7F27-433D-AB44-2A49BE3BE055}" ShortID="928552881">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{3ABC3A83-ACC2-497A-9ADD-8D2403E91347}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Trumbone Main Theme_4" ID="{0C796017-2692-48DA-9641-9AC8593ED1C7}">
+											<Language>SFX</Language>
+											<AudioFile>Trumbone Main Theme_4.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="759138717"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{260C01BE-12FA-4C98-8D4A-0F6C15DBF0F9}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="Trumbone Main Theme_4" ID="{A684E5B5-480C-4A56-8719-D55E792561A3}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="104000"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="Trumbone Main Theme_4" ID="{0C796017-2692-48DA-9641-9AC8593ED1C7}"/>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Cues">
+									<Reference>
+										<Local>
+											<MusicCue Name="Entry Cue" ID="{C1F9D6DB-1F3C-4086-963C-7A35C695CA91}"/>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<MusicCue Name="Exit Cue" ID="{3EC4FAFA-83C6-48FF-ABEC-17562587B195}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="104000"/>
+												</PropertyList>
+											</MusicCue>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicSegment>
+					</ChildrenList>
+				</MusicPlaylistContainer>
 			</ChildrenList>
 		</WorkUnit>
 	</InteractiveMusic>
