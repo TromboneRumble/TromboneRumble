@@ -14,6 +14,75 @@
   "DialogueEvents": [],
   "SoundBanks": [
    {
+    "Id": "69437967",
+    "Type": "Event",
+    "GUID": "{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}",
+    "Language": "SFX",
+    "Hash": "{2273542A-1AA6-3BA3-DB95-B23843709F4B}",
+    "ObjectPath": "Play_Cymbal_Attack",
+    "ShortName": "Play_Cymbal_Attack",
+    "Path": "Event/Play_Cymbal_Attack.bnk",
+    "Media": [
+     {
+      "Id": "400530107",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Whoosh_3.wav",
+      "Path": "Media/400530107.wem",
+      "CachePath": "SFX/C_Whoosh_3_818F3B66.wem"
+     },
+     {
+      "Id": "828367315",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Whoosh_2.wav",
+      "Path": "Media/828367315.wem",
+      "CachePath": "SFX/C_Whoosh_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "69437967",
+      "Name": "Play_Cymbal_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Whoosh\\Play_Cymbal_Attack",
+      "GUID": "{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.35498422",
+      "DurationMax": "0.4242494",
+      "MediaRefs": [
+       {
+        "Id": "400530107"
+       },
+       {
+        "Id": "828367315"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "227036395",
     "Type": "Event",
     "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
@@ -206,7 +275,7 @@
      {
       "Id": "418248778",
       "Name": "Play_Trash_Hit",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Hit",
       "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
       "DurationType": "OneShot",
       "DurationMin": "0.9142917",
@@ -326,6 +395,56 @@
     ]
    },
    {
+    "Id": "581556496",
+    "Type": "Event",
+    "GUID": "{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}",
+    "Language": "SFX",
+    "Hash": "{50C1098A-D6EF-3D51-D2C9-5E64D41DEB41}",
+    "ObjectPath": "Play_Head_Attack_Voice",
+    "ShortName": "Play_Head_Attack_Voice",
+    "Path": "Event/Play_Head_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "79128011",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_4.wav",
+      "Path": "Media/79128011.wem",
+      "CachePath": "SFX/Player_Attack_Voice_4_818F3B66.wem"
+     },
+     {
+      "Id": "598708220",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_3.wav",
+      "Path": "Media/598708220.wem",
+      "CachePath": "SFX/Player_Attack_Voice_3_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "581556496",
+      "Name": "Play_Head_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Head_Attack_Voice",
+      "GUID": "{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.29866666",
+      "DurationMax": "0.35933334",
+      "MediaRefs": [
+       {
+        "Id": "79128011"
+       },
+       {
+        "Id": "598708220"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "816711006",
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
@@ -394,6 +513,44 @@
        },
        {
         "Id": "1003353392"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "836697457",
+    "Type": "Event",
+    "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
+    "Language": "SFX",
+    "Hash": "{D04E9100-8923-7EA0-6BA3-423D91F02923}",
+    "ObjectPath": "Play_Trash_Throw",
+    "ShortName": "Play_Trash_Throw",
+    "Path": "Event/Play_Trash_Throw.bnk",
+    "Media": [
+     {
+      "Id": "497327386",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trash_Throw.wav",
+      "Path": "Media/497327386.wem",
+      "CachePath": "SFX/Trash_Throw_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "836697457",
+      "Name": "Play_Trash_Throw",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Throw",
+      "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
+      "MaxAttenuation": "2000",
+      "DurationType": "OneShot",
+      "DurationMin": "9.744",
+      "DurationMax": "9.744",
+      "MediaRefs": [
+       {
+        "Id": "497327386"
        }
       ]
      }
@@ -789,6 +946,87 @@
     ]
    },
    {
+    "Id": "1078935374",
+    "Type": "Event",
+    "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
+    "Language": "SFX",
+    "Hash": "{2A4DE26F-D1AD-CF93-8846-5C92F348F888}",
+    "ObjectPath": "Play_Cymbal_Hit",
+    "ShortName": "Play_Cymbal_Hit",
+    "Path": "Event/Play_Cymbal_Hit.bnk",
+    "Media": [
+     {
+      "Id": "140050142",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Hit_1.wav",
+      "Path": "Media/140050142.wem",
+      "CachePath": "SFX/C_Hit_1_818F3B66.wem"
+     },
+     {
+      "Id": "734040310",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Hit_3.wav",
+      "Path": "Media/734040310.wem",
+      "CachePath": "SFX/C_Hit_3_818F3B66.wem"
+     },
+     {
+      "Id": "915385962",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Hit_2.wav",
+      "Path": "Media/915385962.wem",
+      "CachePath": "SFX/C_Hit_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1078935374",
+      "Name": "Play_Cymbal_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Cymbal_Hit",
+      "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.3441781",
+      "DurationMax": "1.4350886",
+      "MediaRefs": [
+       {
+        "Id": "140050142"
+       },
+       {
+        "Id": "734040310"
+       },
+       {
+        "Id": "915385962"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "1081190771",
     "Type": "Event",
     "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
@@ -897,6 +1135,56 @@
         }
        ]
       }
+     }
+    ]
+   },
+   {
+    "Id": "1296229240",
+    "Type": "Event",
+    "GUID": "{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}",
+    "Language": "SFX",
+    "Hash": "{45166D77-6F57-0BD5-EEE0-6230040F00B7}",
+    "ObjectPath": "Play_Cymbal_Attack_Voice",
+    "ShortName": "Play_Cymbal_Attack_Voice",
+    "Path": "Event/Play_Cymbal_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "291952171",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_2.wav",
+      "Path": "Media/291952171.wem",
+      "CachePath": "SFX/Player_Attack_Voice_2_818F3B66.wem"
+     },
+     {
+      "Id": "495387593",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_1.wav",
+      "Path": "Media/495387593.wem",
+      "CachePath": "SFX/Player_Attack_Voice_1_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1296229240",
+      "Name": "Play_Cymbal_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Cymbal_Attack_Voice",
+      "GUID": "{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.31033334",
+      "DurationMax": "0.31383333",
+      "MediaRefs": [
+       {
+        "Id": "291952171"
+       },
+       {
+        "Id": "495387593"
+       }
+      ]
      }
     ]
    },
@@ -2118,6 +2406,87 @@
     ]
    },
    {
+    "Id": "1494228982",
+    "Type": "Event",
+    "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
+    "Language": "SFX",
+    "Hash": "{B8C7131E-5E5B-0DC8-9F91-ED7BCBD800FB}",
+    "ObjectPath": "Play_Head_Hit",
+    "ShortName": "Play_Head_Hit",
+    "Path": "Event/Play_Head_Hit.bnk",
+    "Media": [
+     {
+      "Id": "18254192",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "H_Hit_2.wav",
+      "Path": "Media/18254192.wem",
+      "CachePath": "SFX/H_Hit_2_818F3B66.wem"
+     },
+     {
+      "Id": "46542412",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "H_Hit_1.wav",
+      "Path": "Media/46542412.wem",
+      "CachePath": "SFX/H_Hit_1_818F3B66.wem"
+     },
+     {
+      "Id": "475939155",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "H_Hit_3.wav",
+      "Path": "Media/475939155.wem",
+      "CachePath": "SFX/H_Hit_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1494228982",
+      "Name": "Play_Head_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Head_Hit",
+      "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.38691112",
+      "DurationMax": "0.42857853",
+      "MediaRefs": [
+       {
+        "Id": "18254192"
+       },
+       {
+        "Id": "46542412"
+       },
+       {
+        "Id": "475939155"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "1556462077",
     "Type": "Event",
     "GUID": "{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}",
@@ -2876,6 +3245,87 @@
     ]
    },
    {
+    "Id": "1988723284",
+    "Type": "Event",
+    "GUID": "{0381A057-351A-4EF9-865E-5FEBD569955A}",
+    "Language": "SFX",
+    "Hash": "{77BB690A-043A-012A-99DA-584F490D9291}",
+    "ObjectPath": "Play_Violin_Attack",
+    "ShortName": "Play_Violin_Attack",
+    "Path": "Event/Play_Violin_Attack.bnk",
+    "Media": [
+     {
+      "Id": "177119556",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "V_Whoosh_1.wav",
+      "Path": "Media/177119556.wem",
+      "CachePath": "SFX/V_Whoosh_1_818F3B66.wem"
+     },
+     {
+      "Id": "208679241",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "V_Whoosh_3.wav",
+      "Path": "Media/208679241.wem",
+      "CachePath": "SFX/V_Whoosh_3_818F3B66.wem"
+     },
+     {
+      "Id": "453954502",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "V_Whoosh_2.wav",
+      "Path": "Media/453954502.wem",
+      "CachePath": "SFX/V_Whoosh_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1988723284",
+      "Name": "Play_Violin_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Whoosh\\Play_Violin_Attack",
+      "GUID": "{0381A057-351A-4EF9-865E-5FEBD569955A}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.20454884",
+      "DurationMax": "0.2500041",
+      "MediaRefs": [
+       {
+        "Id": "177119556"
+       },
+       {
+        "Id": "208679241"
+       },
+       {
+        "Id": "453954502"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2075445586",
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
@@ -2964,6 +3414,87 @@
     ]
    },
    {
+    "Id": "2148039703",
+    "Type": "Event",
+    "GUID": "{B1E68E6A-B396-4520-A5DD-33CD5691FD01}",
+    "Language": "SFX",
+    "Hash": "{73817956-811A-73D5-A5FC-ED7F0DCF5D15}",
+    "ObjectPath": "Play_Violin_Hit",
+    "ShortName": "Play_Violin_Hit",
+    "Path": "Event/Play_Violin_Hit.bnk",
+    "Media": [
+     {
+      "Id": "175574624",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "V_Hit_2.wav",
+      "Path": "Media/175574624.wem",
+      "CachePath": "SFX/V_Hit_2_818F3B66.wem"
+     },
+     {
+      "Id": "221566478",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "V_Hit_3.wav",
+      "Path": "Media/221566478.wem",
+      "CachePath": "SFX/V_Hit_3_818F3B66.wem"
+     },
+     {
+      "Id": "369733286",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "V_Hit_1.wav",
+      "Path": "Media/369733286.wem",
+      "CachePath": "SFX/V_Hit_1_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2148039703",
+      "Name": "Play_Violin_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Violin_Hit",
+      "GUID": "{B1E68E6A-B396-4520-A5DD-33CD5691FD01}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.46104658",
+      "DurationMax": "0.6071529",
+      "MediaRefs": [
+       {
+        "Id": "175574624"
+       },
+       {
+        "Id": "221566478"
+       },
+       {
+        "Id": "369733286"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2564452233",
     "Type": "Event",
     "GUID": "{750353A4-404D-47D8-92EF-B12E466A3BCE}",
@@ -3024,7 +3555,7 @@
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
     "Language": "SFX",
-    "Hash": "{74E68FE3-89A1-CAF7-0D54-BE2A0A0E2419}",
+    "Hash": "{709FC1EE-4FB1-834C-8FC0-6D87E6DCA6B7}",
     "ObjectPath": "Play_Trombone_Attack",
     "ShortName": "Play_Trombone_Attack",
     "Path": "Event/Play_Trombone_Attack.bnk",
@@ -3091,8 +3622,9 @@
      {
       "Id": "2751601189",
       "Name": "Play_Trombone_Attack",
-      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Trombone_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Whoosh\\Play_Trombone_Attack",
       "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
+      "MaxAttenuation": "1000",
       "DurationType": "OneShot",
       "DurationMin": "0.7835627",
       "DurationMax": "0.7835627",
@@ -3483,6 +4015,44 @@
     ]
    },
    {
+    "Id": "2986199422",
+    "Type": "Event",
+    "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
+    "Language": "SFX",
+    "Hash": "{3B659B91-8696-73D4-5EBA-EED56B7FCD8B}",
+    "ObjectPath": "Play_Trombone_Attack_Voice",
+    "ShortName": "Play_Trombone_Attack_Voice",
+    "Path": "Event/Play_Trombone_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "157274486",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Trombone_Voice.wav",
+      "Path": "Media/157274486.wem",
+      "CachePath": "SFX/Player_Attack_Trombone_Voice_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2986199422",
+      "Name": "Play_Trombone_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Trombone_Attack_Voice",
+      "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.8341114",
+      "DurationMax": "1.2183923",
+      "MediaRefs": [
+       {
+        "Id": "157274486"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "3013282479",
     "Type": "Event",
     "GUID": "{15B274E4-CA5A-4B51-B7E2-219CDA599772}",
@@ -3514,6 +4084,43 @@
       "MediaRefs": [
        {
         "Id": "1043513315"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "3076746022",
+    "Type": "Event",
+    "GUID": "{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}",
+    "Language": "SFX",
+    "Hash": "{57D78F08-B111-AE41-27C0-3BB21398C10D}",
+    "ObjectPath": "Play_Player_Dizzy",
+    "ShortName": "Play_Player_Dizzy",
+    "Path": "Event/Play_Player_Dizzy.bnk",
+    "Media": [
+     {
+      "Id": "657118636",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Dizzy.wav",
+      "Path": "Media/657118636.wem",
+      "CachePath": "SFX/Player_Dizzy_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3076746022",
+      "Name": "Play_Player_Dizzy",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Dizzy",
+      "GUID": "{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}",
+      "DurationType": "OneShot",
+      "DurationMin": "8.447875",
+      "DurationMax": "8.447875",
+      "MediaRefs": [
+       {
+        "Id": "657118636"
        }
       ]
      }
@@ -3654,6 +4261,87 @@
     ]
    },
    {
+    "Id": "3712471672",
+    "Type": "Event",
+    "GUID": "{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}",
+    "Language": "SFX",
+    "Hash": "{B7178AC4-9C75-749D-A76F-E4C8A8746845}",
+    "ObjectPath": "Play_Trombone_Hit",
+    "ShortName": "Play_Trombone_Hit",
+    "Path": "Event/Play_Trombone_Hit.bnk",
+    "Media": [
+     {
+      "Id": "23342616",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "T_Hit_2.wav",
+      "Path": "Media/23342616.wem",
+      "CachePath": "SFX/T_Hit_2_818F3B66.wem"
+     },
+     {
+      "Id": "272658517",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "T_Hit_3.wav",
+      "Path": "Media/272658517.wem",
+      "CachePath": "SFX/T_Hit_3_818F3B66.wem"
+     },
+     {
+      "Id": "434541898",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "T_Hit_1.wav",
+      "Path": "Media/434541898.wem",
+      "CachePath": "SFX/T_Hit_1_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3712471672",
+      "Name": "Play_Trombone_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Trombone_Hit",
+      "GUID": "{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.38366434",
+      "DurationMax": "0.5930834",
+      "MediaRefs": [
+       {
+        "Id": "23342616"
+       },
+       {
+        "Id": "272658517"
+       },
+       {
+        "Id": "434541898"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "3717157269",
     "Type": "Event",
     "GUID": "{0FC8390B-5986-401E-A87F-7C9BD71357DB}",
@@ -3762,44 +4450,6 @@
     ]
    },
    {
-    "Id": "3792786383",
-    "Type": "Event",
-    "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
-    "Language": "SFX",
-    "Hash": "{2026183D-6E8A-EA8C-914A-E4FB5691858C}",
-    "ObjectPath": "Play_Voice_Attack",
-    "ShortName": "Play_Voice_Attack",
-    "Path": "Event/Play_Voice_Attack.bnk",
-    "Media": [
-     {
-      "Id": "157274486",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Player_Attack_Trombone_Voice.wav",
-      "Path": "Media/157274486.wem",
-      "CachePath": "SFX/Player_Attack_Trombone_Voice_818F3B66.wem"
-     }
-    ],
-    "Events": [
-     {
-      "Id": "3792786383",
-      "Name": "Play_Voice_Attack",
-      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Voice_Attack",
-      "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
-      "MaxAttenuation": "1000",
-      "DurationType": "OneShot",
-      "DurationMin": "0.8341114",
-      "DurationMax": "1.2183923",
-      "MediaRefs": [
-       {
-        "Id": "157274486"
-       }
-      ]
-     }
-    ]
-   },
-   {
     "Id": "4133920287",
     "Type": "Event",
     "GUID": "{C8064449-CDF0-4ECE-BC76-450128EC20F2}",
@@ -3880,6 +4530,56 @@
     ]
    },
    {
+    "Id": "4143360431",
+    "Type": "Event",
+    "GUID": "{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}",
+    "Language": "SFX",
+    "Hash": "{2CDAE844-12B0-5F42-5FA5-C3EC61CC29C8}",
+    "ObjectPath": "Play_Violin_Attack_Voice",
+    "ShortName": "Play_Violin_Attack_Voice",
+    "Path": "Event/Play_Violin_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "152618678",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_6.wav",
+      "Path": "Media/152618678.wem",
+      "CachePath": "SFX/Player_Attack_Voice_6_818F3B66.wem"
+     },
+     {
+      "Id": "971787748",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_5.wav",
+      "Path": "Media/971787748.wem",
+      "CachePath": "SFX/Player_Attack_Voice_5_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "4143360431",
+      "Name": "Play_Violin_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Violin_Attack_Voice",
+      "GUID": "{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.238",
+      "DurationMax": "0.336",
+      "MediaRefs": [
+       {
+        "Id": "152618678"
+       },
+       {
+        "Id": "971787748"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "4250244477",
     "Type": "Event",
     "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
@@ -3941,6 +4641,6 @@
     ]
    }
   ],
-  "FileHash": "{79E871A9-52EE-194F-35F5-8DC466DA1CA5}"
+  "FileHash": "{B0E15B47-5590-F8AD-62B5-B4DFCEAA1153}"
  }
 }

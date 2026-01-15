@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	581556496	Play_Head_Attack_Voice			\Default Work Unit\Player_SFX\Player_Attack\Attack_Voice\Play_Head_Attack_Voice	
+

@@ -159,27 +159,42 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Event Name="Play_Trash_Hit" ID="{104CC78C-ED20-486F-A41E-73ABA09B5942}">
+						<Folder Name="Play_Trash" ID="{656C996D-AEF3-48B7-B58F-6227931C6529}" ShortID="397306515">
 							<ChildrenList>
-								<Action Name="" ID="{F576DC0A-7992-4106-BD25-8065E27BA4C5}" ShortID="72350038">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Object_Trash" ID="{89D761D0-7E40-454F-968F-4BACF6BFDB40}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-								<Action Name="" ID="{FBD82061-25A9-47D8-A89C-5FBB2461800C}" ShortID="301246839">
-									<PropertyList>
-										<Property Name="Delay" Type="Real64" Value="0.1"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Player_Hit_Voice" ID="{C34E3972-D0BF-49A5-BB62-C85665086D03}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
+								<Event Name="Play_Trash_Throw" ID="{59761350-8076-4CC8-AC2A-13D68D711760}">
+									<ChildrenList>
+										<Action Name="" ID="{F047948D-54FE-40EF-A4A2-D7A60D0ED5F5}" ShortID="239689355">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Object_Trash_Throw" ID="{9EB4CC52-5BA0-4456-B9AB-AE5236CCEB77}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Trash_Hit" ID="{104CC78C-ED20-486F-A41E-73ABA09B5942}">
+									<ChildrenList>
+										<Action Name="" ID="{F576DC0A-7992-4106-BD25-8065E27BA4C5}" ShortID="72350038">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Object_Trash_Hit" ID="{89D761D0-7E40-454F-968F-4BACF6BFDB40}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+										<Action Name="" ID="{FBD82061-25A9-47D8-A89C-5FBB2461800C}" ShortID="301246839">
+											<PropertyList>
+												<Property Name="Delay" Type="Real64" Value="0.1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Player_Hit_Voice" ID="{C34E3972-D0BF-49A5-BB62-C85665086D03}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
 							</ChildrenList>
-						</Event>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
@@ -190,28 +205,6 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Player_Foot" ID="{6C6B7ACD-6F90-407B-A6E0-759EB5180DA4}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
-						<Event Name="Play_Trombone_Attack" ID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}">
-							<ChildrenList>
-								<Action Name="" ID="{EAD317D9-5052-4614-96D0-93A9B69D30A7}" ShortID="751975379">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Player_Trombone_Attack" ID="{0A645A61-80E0-49C2-BF1D-AEE0B425635A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
-						<Event Name="Play_Voice_Attack" ID="{B494B516-A132-49D9-AE89-08E53A55920A}">
-							<ChildrenList>
-								<Action Name="" ID="{A2ECCD76-D509-4BE2-B4DD-9501BC5F911F}" ShortID="46296582">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Player_Attack_Voice" ID="{D23E0181-AAA5-4AC3-AF9A-D16421CFF630}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -234,6 +227,154 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Player_Standup" ID="{530D89D7-8B38-435A-9826-FF4C2D00BC7D}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Folder Name="Player_Attack" ID="{F641950D-336E-4BF5-B53B-2411970BC132}" ShortID="910141376">
+							<ChildrenList>
+								<Folder Name="Attack_Voice" ID="{6CB81C2A-C771-4DDC-AAA4-743BCEFA2EF0}" ShortID="928619279">
+									<ChildrenList>
+										<Event Name="Play_Trombone_Attack_Voice" ID="{B494B516-A132-49D9-AE89-08E53A55920A}">
+											<ChildrenList>
+												<Action Name="" ID="{A2ECCD76-D509-4BE2-B4DD-9501BC5F911F}" ShortID="46296582">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Trombone_Attack_Voice" ID="{D23E0181-AAA5-4AC3-AF9A-D16421CFF630}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="Play_Cymbal_Attack_Voice" ID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}">
+											<ChildrenList>
+												<Action Name="" ID="{1C03FF2F-4658-4DCB-AE88-DBFC09EE0848}" ShortID="188677587">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Cymbal_Attack_Voice" ID="{E3330A9D-ADA7-477E-8756-E4C9203D0079}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="Play_Violin_Attack_Voice" ID="{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}">
+											<ChildrenList>
+												<Action Name="" ID="{694DE471-1636-4418-8C04-6D9CCF40D284}" ShortID="402360319">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Violin_Attack_Voice" ID="{8CAA2408-15BC-4287-8D77-52FE89D6EB88}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="Play_Head_Attack_Voice" ID="{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}">
+											<ChildrenList>
+												<Action Name="" ID="{A2258FF9-8503-4B60-9DD1-813D9B276733}" ShortID="361716250">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Head_Attack_Voice" ID="{9C291B1A-A5C0-4B46-B037-FA5C2B2EB03C}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+									</ChildrenList>
+								</Folder>
+								<Folder Name="Attack_Whoosh" ID="{279A22FF-3CCA-4AE4-B36B-C5646E2F38C3}" ShortID="572774375">
+									<ChildrenList>
+										<Event Name="Play_Cymbal_Attack" ID="{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}">
+											<ChildrenList>
+												<Action Name="" ID="{9C0CF8AE-F633-47DB-8B98-EEDDB4F17FB3}" ShortID="765549682">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Cymbal_Whoosh" ID="{A368B476-1815-4191-AEBA-85FD881C693E}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="Play_Trombone_Attack" ID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}">
+											<ChildrenList>
+												<Action Name="" ID="{EAD317D9-5052-4614-96D0-93A9B69D30A7}" ShortID="751975379">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Trombone_Whoosh" ID="{0A645A61-80E0-49C2-BF1D-AEE0B425635A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="Play_Violin_Attack" ID="{0381A057-351A-4EF9-865E-5FEBD569955A}">
+											<ChildrenList>
+												<Action Name="" ID="{E60C4784-F7FF-4999-A4DD-7342EA1BECDB}" ShortID="103571296">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Player_Violin_Whoosh" ID="{3F8D14C0-6687-44F8-A776-087ABBF16214}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+									</ChildrenList>
+								</Folder>
+							</ChildrenList>
+						</Folder>
+						<Folder Name="Player_Hit" ID="{C6DC4343-CEEE-481F-BE54-D4CB1AA78FA7}" ShortID="441975036">
+							<ChildrenList>
+								<Event Name="Play_Cymbal_Hit" ID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}">
+									<ChildrenList>
+										<Action Name="" ID="{244C8047-1D2D-4BED-B714-9A1B66F71F3C}" ShortID="337044781">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Player_Cymbal_Hit" ID="{CB368715-C5AE-42C3-957D-DE3EE39A629A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Trombone_Hit" ID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}">
+									<ChildrenList>
+										<Action Name="" ID="{9A11160F-7F28-4AA2-9518-DCD83F67D362}" ShortID="1037969901">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Player_Trombone_Hit" ID="{6FF2A80A-618B-45CE-8C35-9FF6E1F091CB}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Violin_Hit" ID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}">
+									<ChildrenList>
+										<Action Name="" ID="{B0DCFFCC-4F87-41AA-9EDA-3F709B616B6B}" ShortID="678763399">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Player_Violin_Hit" ID="{81C63445-8250-465D-9F8B-AC2E58EA44B3}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Head_Hit" ID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}">
+									<ChildrenList>
+										<Action Name="" ID="{0F948B2D-DDB9-47BB-88E1-81B3CE19D123}" ShortID="718832709">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Player_Head_Hit" ID="{FEF2B505-BD87-4AF0-AC06-318E67E2E725}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
+						<Event Name="Play_Player_Dizzy" ID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}">
+							<ChildrenList>
+								<Action Name="" ID="{68B2C51C-98A4-44B4-890B-D9BBDBC0AFC4}" ShortID="809814950">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Dizzy" ID="{70E4872F-4E23-4BE7-8BBD-CB5328313073}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

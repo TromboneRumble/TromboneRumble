@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1296229240" Type="Event" GUID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}" Language="SFX" Hash="{45166D77-6F57-0BD5-EEE0-6230040F00B7}">
+			<ObjectPath>Play_Cymbal_Attack_Voice</ObjectPath>
+			<ShortName>Play_Cymbal_Attack_Voice</ShortName>
+			<Path>Event/Play_Cymbal_Attack_Voice.bnk</Path>
+			<Media>
+				<File Id="291952171" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_2.wav</ShortName>
+					<Path>Media/291952171.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="495387593" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_1.wav</ShortName>
+					<Path>Media/495387593.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_1_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1296229240" Name="Play_Cymbal_Attack_Voice" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Voice\Play_Cymbal_Attack_Voice" GUID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.31033334" DurationMax="0.31383333">
+					<MediaRefs>
+						<MediaRef Id="291952171"/>
+						<MediaRef Id="495387593"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{882334AD-2344-DF8E-C2BF-2E6B0697B05F}</FileHash>
+</SoundBanksInfo>

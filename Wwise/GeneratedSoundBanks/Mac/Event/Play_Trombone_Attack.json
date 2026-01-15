@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
     "Language": "SFX",
-    "Hash": "{74E68FE3-89A1-CAF7-0D54-BE2A0A0E2419}",
+    "Hash": "{709FC1EE-4FB1-834C-8FC0-6D87E6DCA6B7}",
     "ObjectPath": "Play_Trombone_Attack",
     "ShortName": "Play_Trombone_Attack",
     "Path": "Event/Play_Trombone_Attack.bnk",
@@ -77,8 +77,9 @@
      {
       "Id": "2751601189",
       "Name": "Play_Trombone_Attack",
-      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Trombone_Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Whoosh\\Play_Trombone_Attack",
       "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
+      "MaxAttenuation": "1000",
       "DurationType": "OneShot",
       "DurationMin": "0.7835627",
       "DurationMax": "0.7835627",
@@ -110,6 +111,6 @@
     ]
    }
   ],
-  "FileHash": "{D41836F9-0BCC-C774-C6D9-F11AB72BF2BA}"
+  "FileHash": "{84CD58F5-B9A5-6061-7A03-4476C84039A0}"
  }
 }

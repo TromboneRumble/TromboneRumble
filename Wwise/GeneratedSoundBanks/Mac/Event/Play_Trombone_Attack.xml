@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{74E68FE3-89A1-CAF7-0D54-BE2A0A0E2419}">
+		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{709FC1EE-4FB1-834C-8FC0-6D87E6DCA6B7}">
 			<ObjectPath>Play_Trombone_Attack</ObjectPath>
 			<ShortName>Play_Trombone_Attack</ShortName>
 			<Path>Event/Play_Trombone_Attack.bnk</Path>
@@ -38,7 +38,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" DurationType="OneShot" DurationMin="0.7835627" DurationMax="0.7835627">
+				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.7835627" DurationMax="0.7835627">
 					<MediaRefs>
 						<MediaRef Id="108887632"/>
 						<MediaRef Id="354742721"/>
@@ -55,5 +55,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{A49B6A62-BC21-525D-795A-F5F52E9415C5}</FileHash>
+	<FileHash>{53A8B1AB-A942-BBFB-1970-10FB6843FE76}</FileHash>
 </SoundBanksInfo>

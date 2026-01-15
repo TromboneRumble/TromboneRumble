@@ -1,0 +1,61 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "4143360431",
+    "Type": "Event",
+    "GUID": "{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}",
+    "Language": "SFX",
+    "Hash": "{2CDAE844-12B0-5F42-5FA5-C3EC61CC29C8}",
+    "ObjectPath": "Play_Violin_Attack_Voice",
+    "ShortName": "Play_Violin_Attack_Voice",
+    "Path": "Event/Play_Violin_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "152618678",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_6.wav",
+      "Path": "Media/152618678.wem",
+      "CachePath": "SFX/Player_Attack_Voice_6_818F3B66.wem"
+     },
+     {
+      "Id": "971787748",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Voice_5.wav",
+      "Path": "Media/971787748.wem",
+      "CachePath": "SFX/Player_Attack_Voice_5_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "4143360431",
+      "Name": "Play_Violin_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Violin_Attack_Voice",
+      "GUID": "{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.238",
+      "DurationMax": "0.336",
+      "MediaRefs": [
+       {
+        "Id": "152618678"
+       },
+       {
+        "Id": "971787748"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{13B425DA-8A0C-BA65-AEEC-951C4030E90F}"
+ }
+}

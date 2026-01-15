@@ -1,0 +1,92 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1078935374",
+    "Type": "Event",
+    "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
+    "Language": "SFX",
+    "Hash": "{2A4DE26F-D1AD-CF93-8846-5C92F348F888}",
+    "ObjectPath": "Play_Cymbal_Hit",
+    "ShortName": "Play_Cymbal_Hit",
+    "Path": "Event/Play_Cymbal_Hit.bnk",
+    "Media": [
+     {
+      "Id": "140050142",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Hit_1.wav",
+      "Path": "Media/140050142.wem",
+      "CachePath": "SFX/C_Hit_1_818F3B66.wem"
+     },
+     {
+      "Id": "734040310",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Hit_3.wav",
+      "Path": "Media/734040310.wem",
+      "CachePath": "SFX/C_Hit_3_818F3B66.wem"
+     },
+     {
+      "Id": "915385962",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "C_Hit_2.wav",
+      "Path": "Media/915385962.wem",
+      "CachePath": "SFX/C_Hit_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1078935374",
+      "Name": "Play_Cymbal_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Cymbal_Hit",
+      "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.3441781",
+      "DurationMax": "1.4350886",
+      "MediaRefs": [
+       {
+        "Id": "140050142"
+       },
+       {
+        "Id": "734040310"
+       },
+       {
+        "Id": "915385962"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{A7B413FB-6C3E-FE8D-B923-0725E5DC2DE8}"
+ }
+}

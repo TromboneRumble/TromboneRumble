@@ -65,7 +65,7 @@
      {
       "Id": "418248778",
       "Name": "Play_Trash_Hit",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Hit",
       "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
       "DurationType": "OneShot",
       "DurationMin": "0.9142917",
@@ -91,6 +91,6 @@
     ]
    }
   ],
-  "FileHash": "{941858D2-04DC-9AA8-A6EE-CF479D0604D8}"
+  "FileHash": "{6C112A95-DE31-0A6E-3035-03BF9EF8AAC6}"
  }
 }
