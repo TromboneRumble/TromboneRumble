@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1909403914" Type="Event" GUID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}" Language="SFX" Hash="{8D7C8056-1D86-46C7-56C2-C0A94BBF3157}">
+		<SoundBank Id="1909403914" Type="Event" GUID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}" Language="SFX" Hash="{D7D6A240-3F0E-2D89-EA84-F0C6C3F09226}">
 			<ObjectPath>MIDI_MapB_V</ObjectPath>
 			<ShortName>MIDI_MapB_V</ShortName>
 			<Path>Event/MIDI_MapB_V.bnk</Path>
@@ -28,7 +28,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="1909403914" Name="MIDI_MapB_V" ObjectPath="\Events\Default Work Unit\Map_B_Rhythm\MIDI_MapB_V" GUID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+				<Event Id="1909403914" Name="MIDI_MapB_V" ObjectPath="\Events\Default Work Unit\Music\Map_B_Rhythm\MIDI_MapB_V" GUID="{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
 					<MediaRefs>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="409495629"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{AC152B4D-D907-65C0-6998-6543C4561900}</FileHash>
+	<FileHash>{F06C61F0-0BE6-D5F5-FB66-AAFF9F455F0C}</FileHash>
 </SoundBanksInfo>

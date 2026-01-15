@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{EE77BE56-FD7D-CD7C-FC06-303E8BA1CE78}">
+		<SoundBank Id="2075445586" Type="Event" GUID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}" Language="SFX" Hash="{D72C2515-718E-1995-C914-157A559B97D5}">
 			<ObjectPath>Play_MapA_BGM</ObjectPath>
 			<ShortName>Play_MapA_BGM</ShortName>
 			<Path>Event/Play_MapA_BGM.bnk</Path>
@@ -46,5 +46,5 @@
 			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{6B6B26A7-83E8-7C5D-F39F-C782A8488FA8}</FileHash>
+	<FileHash>{66D912C2-9410-C4C2-974B-67D6E059858D}</FileHash>
 </SoundBanksInfo>

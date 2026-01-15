@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{EE77BE56-FD7D-CD7C-FC06-303E8BA1CE78}",
+    "Hash": "{D72C2515-718E-1995-C914-157A559B97D5}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -94,6 +94,6 @@
     ]
    }
   ],
-  "FileHash": "{8F34FC1E-ECEB-8846-2550-D0B68F51197A}"
+  "FileHash": "{B6E98519-C67A-CF32-82BA-7549A36A3ABB}"
  }
 }

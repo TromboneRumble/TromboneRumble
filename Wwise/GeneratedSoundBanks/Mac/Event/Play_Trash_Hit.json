@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
     "Language": "SFX",
-    "Hash": "{8B05F426-AC56-F906-B6BD-5C9DAF264004}",
+    "Hash": "{9C0CB278-DC78-A7ED-A7B8-13232B94AA30}",
     "ObjectPath": "Play_Trash_Hit",
     "ShortName": "Play_Trash_Hit",
     "Path": "Event/Play_Trash_Hit.bnk",
@@ -91,6 +91,6 @@
     ]
    }
   ],
-  "FileHash": "{AF1D67D0-3E00-DFA9-FA14-7E13ADF0B5B0}"
+  "FileHash": "{71C498B3-47F1-CBAA-4E4E-E21B717FDC82}"
  }
 }

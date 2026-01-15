@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2983024593" Type="Event" GUID="{44719AFF-6180-42E7-86D2-E6F816D0C1B6}" Language="SFX" Hash="{BD997242-CC18-217E-AAD8-0C3134B457A1}">
+			<ObjectPath>MIDI_MapC_T</ObjectPath>
+			<ShortName>MIDI_MapC_T</ShortName>
+			<Path>Event/MIDI_MapC_T.bnk</Path>
+			<Media>
+				<File Id="94648847" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Trombone.wav</ShortName>
+					<Path>Media/94648847.wem</Path>
+					<CachePath>SFX/Map_C_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="528766811" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_T.mid</ShortName>
+					<Path>Media/528766811.wem</Path>
+					<CachePath>SFX/MapC_MIDI_T_B8CEAB03.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="2983024593" Name="MIDI_MapC_T" ObjectPath="\Events\Default Work Unit\Music\Map_C_Rhythm\MIDI_MapC_T" GUID="{44719AFF-6180-42E7-86D2-E6F816D0C1B6}" DurationType="OneShot" DurationMin="463.38947" DurationMax="463.38947">
+					<MediaRefs>
+						<MediaRef Id="94648847"/>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="528766811"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C95AD6EB-9B48-8B40-4DCE-8587134F7A8C}</FileHash>
+</SoundBanksInfo>

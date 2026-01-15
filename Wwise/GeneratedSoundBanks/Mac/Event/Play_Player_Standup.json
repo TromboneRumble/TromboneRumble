@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{15B274E4-CA5A-4B51-B7E2-219CDA599772}",
     "Language": "SFX",
-    "Hash": "{82DBF77C-3672-E17B-AE3D-52927D01EC1E}",
+    "Hash": "{02999061-BD29-0C28-7C83-4B13C3E875A2}",
     "ObjectPath": "Play_Player_Standup",
     "ShortName": "Play_Player_Standup",
     "Path": "Event/Play_Player_Standup.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{F440FD79-A004-2289-F509-C785BB4DA54E}"
+  "FileHash": "{09925C79-0D47-6744-B19D-21276EE3B94E}"
  }
 }

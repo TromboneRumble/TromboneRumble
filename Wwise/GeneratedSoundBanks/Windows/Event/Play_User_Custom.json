@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{A273AAA2-055F-49A7-9408-1319E08B5D90}",
     "Language": "SFX",
-    "Hash": "{EF6AC890-009E-CF42-7B7B-6E727E03252D}",
+    "Hash": "{E2A23A4A-CC5E-25E0-AFEC-34FE0346AC67}",
     "ObjectPath": "Play_User_Custom",
     "ShortName": "Play_User_Custom",
     "Path": "Event/Play_User_Custom.bnk",
@@ -118,6 +118,6 @@
     ]
    }
   ],
-  "FileHash": "{4C0741AC-0449-457F-990F-8FFC776DB1E7}"
+  "FileHash": "{FE686CEC-460B-BAE4-DEE0-6E4F5E40E3BC}"
  }
 }

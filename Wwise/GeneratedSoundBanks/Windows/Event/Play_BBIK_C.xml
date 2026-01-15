@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1436785880" Type="Event" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" Language="SFX" Hash="{1A58B194-E80D-E0F5-8D6D-CFEE25074A52}">
+		<SoundBank Id="1436785880" Type="Event" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" Language="SFX" Hash="{39E8D164-B69C-4EB2-4219-58AC209CBFA3}">
 			<ObjectPath>Play_BBIK_C</ObjectPath>
 			<ShortName>Play_BBIK_C</ShortName>
 			<Path>Event/Play_BBIK_C.bnk</Path>
@@ -33,7 +33,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1436785880" Name="Play_BBIK_C" ObjectPath="\Events\Default Work Unit\BBIK\Play_BBIK_C" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" DurationType="OneShot" DurationMin="0.5224583" DurationMax="0.916875">
+				<Event Id="1436785880" Name="Play_BBIK_C" ObjectPath="\Events\Default Work Unit\Music\BBIK\Play_BBIK_C" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" DurationType="OneShot" DurationMin="0.5224583" DurationMax="0.916875">
 					<MediaRefs>
 						<MediaRef Id="445099123"/>
 						<MediaRef Id="702903757"/>
@@ -49,5 +49,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{9AB38189-334F-4B57-352A-5CC5AA95C66B}</FileHash>
+	<FileHash>{FDB922CF-1A19-A3B0-C7B5-E104F2B8672D}</FileHash>
 </SoundBanksInfo>
