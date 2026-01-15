@@ -217,8 +217,17 @@ void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
             const int32 Ping = Result.PingInMs;
             const int32 CurrentPlayers = Result.Session.SessionSettings.NumPublicConnections - Result.Session.NumOpenPublicConnections;
             const int32 MaxSlots = Result.Session.SessionSettings.NumPublicConnections;
-            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d"), *OwnerName, Ping, CurrentPlayers, MaxSlots);
+            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d "), *OwnerName, Ping, CurrentPlayers, MaxSlots);
             UE_PRINT_EASY(Log, TEXT("%s"), *ResultText);
+            
+            for (const auto& SearchSetting : Result.Session.SessionSettings.Settings)
+            {
+                const FName Key = SearchSetting.Key;
+                const FOnlineSessionSetting& Value = SearchSetting.Value;
+                FString ValueAsString = Value.Data.ToString();
+
+                UE_PRINT_EASY(Log, TEXT("    -> [Key: %s] : [Value: %s]"), *Key.ToString(), *ValueAsString);
+            }
         }
         
         OnFindSessionsSuccess.Broadcast(SessionSearchResults);

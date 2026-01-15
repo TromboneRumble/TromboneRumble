@@ -64,9 +64,13 @@ private:
 	void JoinButtonClicked();
 	// ~ EndButton Callbacks
 	
-	void MatchButtonsSetEnabled(const bool bEnabled);
+	void StartHostValidation(const FString& Code);
+	void CreateSessionAfterValidation(const FString& ValidatedCode);
+	bool bIsSearchingForHostValidation = false;
+	FString PendingLobbyCode;
+	
+	void SetUIEnabled(const bool bEnabled);
 	FString GenerateRandomLobbyCode(int32 Length) const;
-	const TCHAR* JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const;
 	void ShowNoticePopup(const FString& Content);
 	
 	UPROPERTY(EditDefaultsOnly)

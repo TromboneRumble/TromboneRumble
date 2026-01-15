@@ -167,12 +167,41 @@ void UMatchMenuWidget::OnStartSessionSuccess()
 
 void UMatchMenuWidget::OnStartSessionFailure()
 {
-	MatchButtonsSetEnabled(true);
+	SetUIEnabled(true);
 	ShowNoticePopup(TEXT("세션 생성에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults)
 {
+	if (bIsSearchingForHostValidation)
+	{
+		bIsSearchingForHostValidation = false;
+		
+		for (auto Result : SessionResults)
+		{
+			FString SettingsValue;
+			Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
+	
+			if (SettingsValue == PendingLobbyCode)
+			{
+				if (LobbyCodeText->GetText().IsEmpty()) 
+				{
+					const FString NewCode = GenerateRandomLobbyCode(FMath::Max(2, MaxLobbyCodeLength));
+					StartHostValidation(NewCode);
+				}
+				else
+				{
+					SetUIEnabled(true);
+					ShowNoticePopup(TEXT("이미 사용 중인 코드입니다."));
+				}
+				return;
+			}
+		}
+		
+		CreateSessionAfterValidation(PendingLobbyCode);
+		return;
+	}
+	
 	const FString& LobbyCode = LobbyCodeText->GetText().ToString();
 
 	for (auto Result : SessionResults)
@@ -189,24 +218,32 @@ void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchRe
 		}
 	}
 	
-	MatchButtonsSetEnabled(true);
+	SetUIEnabled(true);
 	ShowNoticePopup(FString::Printf(TEXT("'%s'에 해당하는 세션을 찾을 수 없습니다."), *LobbyCode));
 }
 
 void UMatchMenuWidget::OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults)
 {
-	MatchButtonsSetEnabled(true);
+	if (bIsSearchingForHostValidation)
+	{
+		bIsSearchingForHostValidation = false;
+		SetUIEnabled(true);
+		ShowNoticePopup(TEXT("네트워크 상태가 불안정하여 중복 검사에 실패했습니다."));
+		return;
+	}
+	
+	SetUIEnabled(true);
 	ShowNoticePopup(TEXT("세션 검색에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnJoinSessionSuccess()
 {
-	MatchButtonsSetEnabled(true);
+	SetUIEnabled(true);
 }
 
 void UMatchMenuWidget::OnJoinSessionFailure()
 {
-	MatchButtonsSetEnabled(true);
+	SetUIEnabled(true);
 	ShowNoticePopup(TEXT("세션 참가에 실패했습니다. 다시 시도해주세요."));
 }
 
@@ -250,12 +287,8 @@ void UMatchMenuWidget::HostButtonClicked()
 	
 	if (SessionsSubsystem)
 	{
-		MatchButtonsSetEnabled(false);
-
-		FEasySessionSettings Settings;
-		Settings.NumPublicConnections = FMath::RoundToInt(MaxPlayerSlider->GetValue());
-		Settings.CustomProperties.Add(GKey_Lobby_Code.ToString(), LobbyCode);
-		SessionsSubsystem->CreateSession(Settings);
+		SetUIEnabled(false);
+		StartHostValidation(LobbyCode);
 	}
 }
 
@@ -269,7 +302,7 @@ void UMatchMenuWidget::JoinButtonClicked()
 	
 	if (SessionsSubsystem)
 	{
-		MatchButtonsSetEnabled(false);
+		SetUIEnabled(false);
 
 		FEasySearchSettings SearchSettings;
 		SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), LobbyCodeText->GetText().ToString().ToUpper());
@@ -277,10 +310,37 @@ void UMatchMenuWidget::JoinButtonClicked()
 	}
 }
 
-void UMatchMenuWidget::MatchButtonsSetEnabled(const bool bEnabled)
+void UMatchMenuWidget::StartHostValidation(const FString& Code)
+{
+	bIsSearchingForHostValidation = true;
+	PendingLobbyCode = Code;
+    
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Validating Lobby Code: %s"), *Code));
+
+	FEasySearchSettings SearchSettings;
+	SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), Code); 
+	SessionsSubsystem->FindSessions(SearchSettings);
+}
+
+void UMatchMenuWidget::CreateSessionAfterValidation(const FString& ValidatedCode)
+{
+	if (SessionsSubsystem)
+	{
+		FEasySessionSettings Settings;
+		Settings.NumPublicConnections = FMath::RoundToInt(MaxPlayerSlider->GetValue());
+		Settings.CustomProperties.Add(GKey_Lobby_Code.ToString(), ValidatedCode);
+		SessionsSubsystem->CreateSession(Settings);
+	}
+}
+
+void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 {
 	CB_Host->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
+	CB_Back->SetIsEnabled(bEnabled);
+	LobbyCodeText->SetIsEnabled(bEnabled);
+	MaxPlayerSlider->SetIsEnabled(bEnabled);
+	MaxPlayerSpinBox->SetIsEnabled(bEnabled);
 }
 
 FString UMatchMenuWidget::GenerateRandomLobbyCode(const int32 Length) const
@@ -296,19 +356,6 @@ FString UMatchMenuWidget::GenerateRandomLobbyCode(const int32 Length) const
 	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("로비 코드 %s가 생성되어 클립보드에 복사되었습니다."), *RandomCode));
 	
 	return RandomCode;
-}
-
-const TCHAR* UMatchMenuWidget::JoinSessionResultToText(const EOnJoinSessionCompleteResult::Type InResult) const
-{
-	switch (InResult)
-	{
-	case EOnJoinSessionCompleteResult::Success:               return TEXT("Success");
-	case EOnJoinSessionCompleteResult::SessionIsFull:         return TEXT("SessionIsFull");
-	case EOnJoinSessionCompleteResult::SessionDoesNotExist:   return TEXT("SessionDoesNotExist");
-	case EOnJoinSessionCompleteResult::CouldNotRetrieveAddress:return TEXT("CouldNotRetrieveAddress");
-	case EOnJoinSessionCompleteResult::AlreadyInSession:      return TEXT("AlreadyInSession");
-	default:                                                  return TEXT("Unknown");
-	}
 }
 
 void UMatchMenuWidget::ShowNoticePopup(const FString& Content)
