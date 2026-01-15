@@ -50,8 +50,9 @@
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Wood" ID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
-						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<CurrentSwitchRef Name="Water" ID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+						<CurrentSwitchRef Name="SW_V" ID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<CurrentSwitchRef Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
