@@ -132,6 +132,8 @@ private:
 	
 	// TODO : For Debugging
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+public:
 	UFUNCTION(Server, Reliable)
 	void Server_DebugStun();
 

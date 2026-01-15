@@ -75,4 +75,9 @@ protected:
 
 private:
 	FTimerHandle AutoSpawnTimer;
+	
+	// For Debugging & Cheat
+public:
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnGarbageForDebugging(const int32 Count);
 };

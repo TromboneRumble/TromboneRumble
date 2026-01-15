@@ -25,7 +25,11 @@ protected:
 private:
 	UFUNCTION()
 	void CheckSpotlightStart(FName CueName);
+	UFUNCTION()
+	void OnSpotlightZoneDestroyed(AActor* DestroyedActor);
+	
 	void TriggerSpotlightSpawn();
+	bool IsSpawnPointOccupied(const FVector& Location) const;
 	
     UPROPERTY(EditDefaultsOnly, Category = "Spotlight")
     TSubclassOf<ASpotlightZone> SpotlightZoneClass;
@@ -78,7 +82,15 @@ private:
     UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "성공 보너스 점수"))
     int32 SpotlightBonusScore = 300;
 	
+	UPROPERTY()
+	TSet<TObjectPtr<ASpotlightZone>> ActiveSpotlightZones;
+	
 	FTimerHandle SpawnTimerHandle;
 	bool bIsSpotlightActive = false;
 	bool bIsFeverTime = false;
+	
+	// For Debugging & Cheat
+public:
+	UFUNCTION(Server, Reliable)
+	void Server_TriggerAllSpotlightSpawn();
 };
