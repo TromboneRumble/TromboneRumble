@@ -33,7 +33,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="2848553920" Name="Play_RhythmGame_Main" ObjectPath="\Events\Default Work Unit\Test_Rhythm_Game\Play_RhythmGame_Main" GUID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" DurationType="OneShot" DurationMin="42" DurationMax="42">
+				<Event Id="2848553920" Name="Play_RhythmGame_Main" ObjectPath="\Events\Default Work Unit\Music\Test_Rhythm_Game\Play_RhythmGame_Main" GUID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" DurationType="OneShot" DurationMin="42" DurationMax="42">
 					<MediaRefs>
 						<MediaRef Id="561564156"/>
 						<MediaRef Id="807859594"/>
@@ -55,5 +55,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4145DC5E-F6F6-1861-558B-E4D0F5627CFE}</FileHash>
+	<FileHash>{8583464D-B9E9-3FE9-3BFB-D955A79BEB5B}</FileHash>
 </SoundBanksInfo>

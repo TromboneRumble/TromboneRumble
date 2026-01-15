@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="581556496" Type="Event" GUID="{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}" Language="SFX" Hash="{50C1098A-D6EF-3D51-D2C9-5E64D41DEB41}">
+			<ObjectPath>Play_Head_Attack_Voice</ObjectPath>
+			<ShortName>Play_Head_Attack_Voice</ShortName>
+			<Path>Event/Play_Head_Attack_Voice.bnk</Path>
+			<Media>
+				<File Id="79128011" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_4.wav</ShortName>
+					<Path>Media/79128011.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_4_818F3B66.wem</CachePath>
+				</File>
+				<File Id="598708220" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Attack_Voice_3.wav</ShortName>
+					<Path>Media/598708220.wem</Path>
+					<CachePath>SFX/Player_Attack_Voice_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="581556496" Name="Play_Head_Attack_Voice" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Voice\Play_Head_Attack_Voice" GUID="{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.29866666" DurationMax="0.35933334">
+					<MediaRefs>
+						<MediaRef Id="79128011"/>
+						<MediaRef Id="598708220"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{29495ACE-50E4-F602-0BA9-861782E76FE6}</FileHash>
+</SoundBanksInfo>

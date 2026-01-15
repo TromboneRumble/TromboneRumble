@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
     "Language": "SFX",
-    "Hash": "{E9DD993F-2433-315C-7190-6F062709ECB4}",
+    "Hash": "{20E27F04-103D-6E9C-6CA5-8084CB94755C}",
     "ObjectPath": "MIDI_RhythmGame_Violin",
     "ShortName": "MIDI_RhythmGame_Violin",
     "Path": "Event/MIDI_RhythmGame_Violin.bnk",
@@ -41,7 +41,7 @@
      {
       "Id": "387421697",
       "Name": "MIDI_RhythmGame_Violin",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\MIDI_RhythmGame_Violin",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Test_Rhythm_Game\\MIDI_RhythmGame_Violin",
       "GUID": "{25288945-2D05-4E74-8F4D-6EF0BA964007}",
       "DurationType": "OneShot",
       "DurationMin": "80",
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{D67CCA31-3FCC-E9B2-A0F2-F1A6540EA3D3}"
+  "FileHash": "{D6FDD606-228D-BB6B-3815-8B2C338B69C0}"
  }
 }

@@ -23,7 +23,7 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 		StunNiagaraComponent->SetupAttachment(GetMesh());
 		StunNiagaraComponent->bAutoActivate = false;
 	}
-
+	
 	InitCharacter();
 }
 
@@ -142,6 +142,7 @@ void ATromboneCharacterBase::SetupCapsuleComponent()
 	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap); // Object Channel 1 : Weapon
+	GetCapsuleComponent()->CanCharacterStepUpOn = ECB_No;
 }
 
 void ATromboneCharacterBase::SetupSkeletalMeshComponent()

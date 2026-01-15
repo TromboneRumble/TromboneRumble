@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
     "Language": "SFX",
-    "Hash": "{8B05F426-AC56-F906-B6BD-5C9DAF264004}",
+    "Hash": "{9C0CB278-DC78-A7ED-A7B8-13232B94AA30}",
     "ObjectPath": "Play_Trash_Hit",
     "ShortName": "Play_Trash_Hit",
     "Path": "Event/Play_Trash_Hit.bnk",
@@ -65,7 +65,7 @@
      {
       "Id": "418248778",
       "Name": "Play_Trash_Hit",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Hit",
       "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
       "DurationType": "OneShot",
       "DurationMin": "0.9142917",
@@ -91,6 +91,6 @@
     ]
    }
   ],
-  "FileHash": "{AF1D67D0-3E00-DFA9-FA14-7E13ADF0B5B0}"
+  "FileHash": "{D7141C66-F0FC-9750-4199-F7CDAC72AA44}"
  }
 }

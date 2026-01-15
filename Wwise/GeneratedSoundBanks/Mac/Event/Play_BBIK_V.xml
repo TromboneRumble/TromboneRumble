@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1436785869" Type="Event" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" Language="SFX" Hash="{5249D45A-6330-68BE-416F-479C6D185197}">
+		<SoundBank Id="1436785869" Type="Event" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" Language="SFX" Hash="{97DB2789-5CA3-0C9B-EC40-F8DCC335EEBC}">
 			<ObjectPath>Play_BBIK_V</ObjectPath>
 			<ShortName>Play_BBIK_V</ShortName>
 			<Path>Event/Play_BBIK_V.bnk</Path>
@@ -33,7 +33,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1436785869" Name="Play_BBIK_V" ObjectPath="\Events\Default Work Unit\BBIK\Play_BBIK_V" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" DurationType="OneShot" DurationMin="0.40170857" DurationMax="1.076586">
+				<Event Id="1436785869" Name="Play_BBIK_V" ObjectPath="\Events\Default Work Unit\Music\BBIK\Play_BBIK_V" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" DurationType="OneShot" DurationMin="0.40170857" DurationMax="1.076586">
 					<MediaRefs>
 						<MediaRef Id="445099123"/>
 						<MediaRef Id="702903757"/>
@@ -49,5 +49,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{BFF685F6-458B-301D-8D43-45353D025B04}</FileHash>
+	<FileHash>{881DC883-4CE1-C544-04BB-931441523A5F}</FileHash>
 </SoundBanksInfo>

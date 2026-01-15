@@ -77,7 +77,6 @@ void ASpotlightZone::HandleServerRPC(ACharacter* InstigatorCharacter)
 	{
 		TryAwardBonus(TromboneCharacter);
 	}
-	
 }
 
 
@@ -249,7 +248,10 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 			break;
 
 		case ESpotlightState::Active:
+		{
+			Multicast_PlaySpotlightTurnOnSFX();
 			StartLifecycleTimer(ActiveDuration, &ASpotlightZone::OnActiveFinished);
+		}
 			break;
 
 		case ESpotlightState::Awarded:
@@ -293,7 +295,6 @@ void ASpotlightZone::StartLifecycleTimer(const float InDuration, void(ASpotlight
 
 void ASpotlightZone::OnWarningFinished()
 {
-	Multicast_PlaySpotlightTurnOnSFX();
 	SetState(ESpotlightState::Active);
 }
 

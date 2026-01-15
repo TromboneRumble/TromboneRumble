@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
     "Language": "SFX",
-    "Hash": "{1A58B194-E80D-E0F5-8D6D-CFEE25074A52}",
+    "Hash": "{39E8D164-B69C-4EB2-4219-58AC209CBFA3}",
     "ObjectPath": "Play_BBIK_C",
     "ShortName": "Play_BBIK_C",
     "Path": "Event/Play_BBIK_C.bnk",
@@ -68,7 +68,7 @@
      {
       "Id": "1436785880",
       "Name": "Play_BBIK_C",
-      "ObjectPath": "\\Events\\Default Work Unit\\BBIK\\Play_BBIK_C",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\BBIK\\Play_BBIK_C",
       "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
       "DurationType": "OneShot",
       "DurationMin": "0.5224583",
@@ -98,6 +98,6 @@
     ]
    }
   ],
-  "FileHash": "{BD836569-2A03-C5AF-EB22-4AF16A78DFD8}"
+  "FileHash": "{AF13F705-BECE-A97D-00D2-24C2CA771543}"
  }
 }

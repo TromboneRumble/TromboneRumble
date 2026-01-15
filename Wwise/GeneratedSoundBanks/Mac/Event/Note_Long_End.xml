@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1795670352" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{9398B9C5-03CC-C7AC-24E3-E74527502B00}">
+		<SoundBank Id="1795670352" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{FF613A78-BCAA-B79D-6CC3-9D0247AFDF45}">
 			<ObjectPath>Note_Long_End</ObjectPath>
 			<ShortName>Note_Long_End</ShortName>
 			<Path>Event/Note_Long_End.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0BF55E57-4934-F45D-5D17-6CC1A654F108}</FileHash>
+	<FileHash>{D3F5801D-EB0A-5259-1658-5F006AAE5880}</FileHash>
 </SoundBanksInfo>

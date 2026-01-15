@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	836697457	Play_Trash_Throw			\Default Work Unit\Object_SFX\Play_Trash\Play_Trash_Throw	
+

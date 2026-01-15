@@ -35,6 +35,7 @@ AGarbageBase::AGarbageBase()
 		MeshComp->SetGenerateOverlapEvents(false);
 		MeshComp->SetSimulatePhysics(false);
 		MeshComp->SetEnableGravity(true);
+		MeshComp->CanCharacterStepUpOn = ECB_No;
 
 		MeshComp->BodyInstance.bUseCCD = true;
 	}
@@ -90,6 +91,10 @@ void AGarbageBase::BeginPlay()
 	{
 		MeshComp->OnComponentHit.AddDynamic(this, &ThisClass::HandleMeshHit);
 	}
+	if (AkComponent && SpawnSoundEvent)
+	{
+		SpawnMusicPlayingID = AkComponent->PostAkEvent(SpawnSoundEvent, 0, FOnAkPostEventCallback());
+	}
 	if (HasAuthority() && MeshComp)
 	{
 		MeshComp->SetSimulatePhysics(true);
@@ -115,6 +120,13 @@ void AGarbageBase::OnRep_ImpactStarted()
 		{
 			TrailComp->Deactivate();
 		}
+
+		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
+		if (AudioDevice && SpawnMusicPlayingID != 0)
+		{
+			AudioDevice->StopPlayingID(SpawnMusicPlayingID);
+			SpawnMusicPlayingID = 0;
+		}
 	}
 }
 
@@ -124,8 +136,7 @@ void AGarbageBase::OnRep_HitPawn()
 	{
 		if (AkComponent && HitSoundEvent)
 		{
-			FOnAkPostEventCallback DummyCallback;
-			AkComponent->PostAkEvent(HitSoundEvent, 0, DummyCallback);
+			AkComponent->PostAkEvent(HitSoundEvent, 0, FOnAkPostEventCallback());
 		}
 	}
 }
@@ -162,12 +173,8 @@ void AGarbageBase::HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 
 	if (OtherActor->IsA<ACharacter>())
 	{
-		if (AkComponent && HitSoundEvent)
-		{
-			FOnAkPostEventCallback DummyCallback;
-			AkComponent->PostAkEvent(HitSoundEvent, 0, DummyCallback);
-		}
 		bHitPawn = true;
+		OnRep_HitPawn();
 		StartDestroyTimer_Server(DestroyDelayAfterImpact);
 	}
 	else if (bHitWorld && !bOtherIsGarbage)
@@ -206,11 +213,6 @@ void AGarbageBase::StartDestroyTimer_Server(const float Delay)
 
 	bDestroyTimerStarted = true;
 	bImpactStarted = true;
-
-	if (TrailComp)
-	{
-		TrailComp->Deactivate();
-	}
-
+	OnRep_ImpactStarted();
 	SetLifeSpan(Delay);
 }

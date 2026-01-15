@@ -1,3 +1,0 @@
-Event	ID	Name			Wwise Object Path	Notes
-	3975618771	MIDI_MapB_Main			\Default Work Unit\Map_B_Rhythm\MIDI_MapB_Main	
-

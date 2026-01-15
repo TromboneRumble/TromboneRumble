@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1988723284" Type="Event" GUID="{0381A057-351A-4EF9-865E-5FEBD569955A}" Language="SFX" Hash="{77BB690A-043A-012A-99DA-584F490D9291}">
+			<ObjectPath>Play_Violin_Attack</ObjectPath>
+			<ShortName>Play_Violin_Attack</ShortName>
+			<Path>Event/Play_Violin_Attack.bnk</Path>
+			<Media>
+				<File Id="177119556" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>V_Whoosh_1.wav</ShortName>
+					<Path>Media/177119556.wem</Path>
+					<CachePath>SFX/V_Whoosh_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="208679241" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>V_Whoosh_3.wav</ShortName>
+					<Path>Media/208679241.wem</Path>
+					<CachePath>SFX/V_Whoosh_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="453954502" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>V_Whoosh_2.wav</ShortName>
+					<Path>Media/453954502.wem</Path>
+					<CachePath>SFX/V_Whoosh_2_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
+			<Events>
+				<Event Id="1988723284" Name="Play_Violin_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Violin_Attack" GUID="{0381A057-351A-4EF9-865E-5FEBD569955A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.20454884" DurationMax="0.2500041">
+					<MediaRefs>
+						<MediaRef Id="177119556"/>
+						<MediaRef Id="208679241"/>
+						<MediaRef Id="453954502"/>
+					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
+						</ShareSets>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{D424F521-2472-D8C7-4E9B-6E3F9F98DD3C}</FileHash>
+</SoundBanksInfo>

@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2986199422",
+    "Type": "Event",
+    "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
+    "Language": "SFX",
+    "Hash": "{3B659B91-8696-73D4-5EBA-EED56B7FCD8B}",
+    "ObjectPath": "Play_Trombone_Attack_Voice",
+    "ShortName": "Play_Trombone_Attack_Voice",
+    "Path": "Event/Play_Trombone_Attack_Voice.bnk",
+    "Media": [
+     {
+      "Id": "157274486",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Attack_Trombone_Voice.wav",
+      "Path": "Media/157274486.wem",
+      "CachePath": "SFX/Player_Attack_Trombone_Voice_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2986199422",
+      "Name": "Play_Trombone_Attack_Voice",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Voice\\Play_Trombone_Attack_Voice",
+      "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.8341114",
+      "DurationMax": "1.2183923",
+      "MediaRefs": [
+       {
+        "Id": "157274486"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{8D93A4C1-CE61-68A7-2E8A-A94CD8AF901C}"
+ }
+}

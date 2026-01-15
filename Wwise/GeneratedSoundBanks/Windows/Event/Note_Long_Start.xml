@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="227036395" Type="Event" GUID="{6732E650-3454-485A-A78F-562325A063B8}" Language="SFX" Hash="{BB322BBF-ED93-A0B3-5AC5-7162F979D879}">
+		<SoundBank Id="227036395" Type="Event" GUID="{6732E650-3454-485A-A78F-562325A063B8}" Language="SFX" Hash="{6F97BAB5-829F-53A3-FD5D-0DE6C1C35DA4}">
 			<ObjectPath>Note_Long_Start</ObjectPath>
 			<ShortName>Note_Long_Start</ShortName>
 			<Path>Event/Note_Long_Start.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{94C8746F-9212-CCC8-DC20-438EA938A7D1}</FileHash>
+	<FileHash>{63FA05E1-2691-65CB-38F5-B934CD9B6760}</FileHash>
 </SoundBanksInfo>
