@@ -65,7 +65,7 @@
      {
       "Id": "2848553920",
       "Name": "Play_RhythmGame_Main",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test_Rhythm_Game\\Play_RhythmGame_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Test_Rhythm_Game\\Play_RhythmGame_Main",
       "GUID": "{FA134D79-95A6-438E-B236-82CD5B5E4B5C}",
       "DurationType": "OneShot",
       "DurationMin": "42",
@@ -125,6 +125,6 @@
     ]
    }
   ],
-  "FileHash": "{4217EB84-482D-8A29-A491-716707112510}"
+  "FileHash": "{FFEC6E56-CA7B-3E18-DD67-5887D011D080}"
  }
 }

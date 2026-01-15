@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{33F02563-A654-4D79-8340-8F01CF66D217}",
     "Language": "SFX",
-    "Hash": "{93B3DAF7-90BC-8A38-5F09-E1635E13515B}",
+    "Hash": "{080323AB-CAC8-D47B-13F6-DB02C75B3184}",
     "ObjectPath": "Play_Note_Length",
     "ShortName": "Play_Note_Length",
     "Path": "Event/Play_Note_Length.bnk",
@@ -74,6 +74,6 @@
     ]
    }
   ],
-  "FileHash": "{77FF3935-E8DE-0B1C-7ED1-3A5500A557B7}"
+  "FileHash": "{7637FDF3-0C67-6306-664A-1C73365BB36C}"
  }
 }

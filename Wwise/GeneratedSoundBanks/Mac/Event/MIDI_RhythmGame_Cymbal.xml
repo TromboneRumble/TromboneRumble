@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{6A5A40D7-C908-22B1-58B6-0AD95A7B8106}">
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{C31F60DE-C050-E4DC-128B-744E703B3311}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -18,7 +18,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="3440465348" Name="MIDI_RhythmGame_Cymbal" ObjectPath="\Events\Default Work Unit\Test_Rhythm_Game\MIDI_RhythmGame_Cymbal" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" DurationType="OneShot" DurationMin="42" DurationMax="42">
+				<Event Id="3440465348" Name="MIDI_RhythmGame_Cymbal" ObjectPath="\Events\Default Work Unit\Music\Test_Rhythm_Game\MIDI_RhythmGame_Cymbal" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" DurationType="OneShot" DurationMin="42" DurationMax="42">
 					<MediaRefs>
 						<MediaRef Id="262266910"/>
 					</MediaRefs>
@@ -31,5 +31,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{B194DA46-5D2C-F081-980C-A834694D073E}</FileHash>
+	<FileHash>{066DB3E6-ACF9-5E8A-18A6-5F6FD7519CBB}</FileHash>
 </SoundBanksInfo>

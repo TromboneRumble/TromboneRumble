@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1909551216" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{D87D24CC-3453-7F1D-8453-D34D5866818B}">
+		<SoundBank Id="1909551216" Type="Event" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" Language="SFX" Hash="{7B15FE0A-0CFE-3C18-5676-5FB080D1DA45}">
 			<ObjectPath>MIDI_MapA_C</ObjectPath>
 			<ShortName>MIDI_MapA_C</ShortName>
 			<Path>Event/MIDI_MapA_C.bnk</Path>
@@ -28,7 +28,7 @@
 				</Custom>
 			</Plugins>
 			<Events>
-				<Event Id="1909551216" Name="MIDI_MapA_C" ObjectPath="\Events\Default Work Unit\Map_A_Rhythm\MIDI_MapA_C" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
+				<Event Id="1909551216" Name="MIDI_MapA_C" ObjectPath="\Events\Default Work Unit\Music\Map_A_Rhythm\MIDI_MapA_C" GUID="{9DC98120-8FE4-4F27-804A-CBA302540B7B}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
 					<MediaRefs>
 						<MediaRef Id="134442568"/>
 						<MediaRef Id="292465416"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E0F1921E-86DB-A9C9-C5D6-3374DF70463A}</FileHash>
+	<FileHash>{51F69684-DAAC-85D7-EC14-0A2C4D364833}</FileHash>
 </SoundBanksInfo>

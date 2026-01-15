@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{C3C29873-363E-E1E1-AC15-118D256686BC}">
+		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{A67846F9-DC18-DACC-33E7-37581A0F450F}">
 			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
 			<ShortName>MainSoundBank</ShortName>
 			<Path>MainSoundBank.bnk</Path>
@@ -12,7 +12,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3666185889" Name="Play_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Test\Play_Lobby_BGM" GUID="{94227083-3159-4322-BF3A-0D7AB2913647}" DurationType="Infinite">
+				<Event Id="3666185889" Name="Play_Lobby_BGM" ObjectPath="\Events\Default Work Unit\Music\Play_Lobby_BGM" GUID="{94227083-3159-4322-BF3A-0D7AB2913647}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="759138717"/>
 					</MediaRefs>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{9EC6F21E-119F-AA48-5E08-611D35DF7E1C}</FileHash>
+	<FileHash>{66005D0B-9D4C-4095-0FA5-12895192CFA1}</FileHash>
 </SoundBanksInfo>

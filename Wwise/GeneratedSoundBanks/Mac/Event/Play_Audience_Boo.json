@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
     "Language": "SFX",
-    "Hash": "{CC19E2C7-81E4-A2A7-C21F-C39567E3288F}",
+    "Hash": "{FA80645F-2D6B-2048-8BB9-CDD1DE770A06}",
     "ObjectPath": "Play_Audience_Boo",
     "ShortName": "Play_Audience_Boo",
     "Path": "Event/Play_Audience_Boo.bnk",
@@ -67,6 +67,6 @@
     ]
    }
   ],
-  "FileHash": "{62507932-6D1F-D177-891A-49FB3019540A}"
+  "FileHash": "{7B97C0E7-9F7A-0BF7-387A-63917B690FC0}"
  }
 }

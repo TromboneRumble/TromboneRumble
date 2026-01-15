@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{53F9899E-CC11-4622-84BA-C537EC0CB1EC}",
     "Language": "SFX",
-    "Hash": "{32A28A24-DF2F-6AD1-D1B0-EB1145127E88}",
+    "Hash": "{6508ECC6-A934-F59D-4458-E0A3473AF1C0}",
     "ObjectPath": "Play_MapC_Main",
     "ShortName": "Play_MapC_Main",
     "Path": "Event/Play_MapC_Main.bnk",
@@ -56,7 +56,7 @@
      {
       "Id": "1297263081",
       "Name": "Play_MapC_Main",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_C_Rhythm\\Play_MapC_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_C_Rhythm\\Play_MapC_Main",
       "GUID": "{53F9899E-CC11-4622-84BA-C537EC0CB1EC}",
       "DurationType": "OneShot",
       "DurationMin": "205.48332",
@@ -113,6 +113,6 @@
     ]
    }
   ],
-  "FileHash": "{6401F64E-A5F0-B838-850B-04A9A43B2A0E}"
+  "FileHash": "{DF1EF9A4-1C66-6DA4-580B-820BD6071B20}"
  }
 }

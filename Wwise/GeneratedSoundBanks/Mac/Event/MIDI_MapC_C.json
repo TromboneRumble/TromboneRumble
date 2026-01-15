@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{BC1D7B76-D48E-4A6F-AC80-24A36425213E}",
     "Language": "SFX",
-    "Hash": "{073436A9-A434-FD33-C958-0B40317202DF}",
+    "Hash": "{3CD2038C-FBBB-BC3D-F2B6-6EEF5A4EA7A3}",
     "ObjectPath": "MIDI_MapC_C",
     "ShortName": "MIDI_MapC_C",
     "Path": "Event/MIDI_MapC_C.bnk",
@@ -59,7 +59,7 @@
      {
       "Id": "2983024582",
       "Name": "MIDI_MapC_C",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_C_Rhythm\\MIDI_MapC_C",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_C_Rhythm\\MIDI_MapC_C",
       "GUID": "{BC1D7B76-D48E-4A6F-AC80-24A36425213E}",
       "DurationType": "OneShot",
       "DurationMin": "316.7991",
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{A407E2FA-8491-C9D6-3F8E-4B517D9FA945}"
+  "FileHash": "{E062D6D8-9B4C-5C9C-E6EA-BF7E011AE92B}"
  }
 }

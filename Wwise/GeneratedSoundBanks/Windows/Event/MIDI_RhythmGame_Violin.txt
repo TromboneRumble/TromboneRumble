@@ -1,5 +1,5 @@
 Event	ID	Name			Wwise Object Path	Notes
-	387421697	MIDI_RhythmGame_Violin			\Default Work Unit\Test_Rhythm_Game\MIDI_RhythmGame_Violin	
+	387421697	MIDI_RhythmGame_Violin			\Default Work Unit\Music\Test_Rhythm_Game\MIDI_RhythmGame_Violin	
 
 Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
 	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	

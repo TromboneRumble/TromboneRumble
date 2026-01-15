@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}",
     "Language": "SFX",
-    "Hash": "{0B8338F1-BE9C-92BE-0464-CE99CB90DC33}",
+    "Hash": "{9E1E9A53-1D30-E94E-AFDB-45BBE0F6F90F}",
     "ObjectPath": "Play_MapB_Main",
     "ShortName": "Play_MapB_Main",
     "Path": "Event/Play_MapB_Main.bnk",
@@ -65,7 +65,7 @@
      {
       "Id": "911001902",
       "Name": "Play_MapB_Main",
-      "ObjectPath": "\\Events\\Default Work Unit\\Map_B_Rhythm\\Play_MapB_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_B_Rhythm\\Play_MapB_Main",
       "GUID": "{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}",
       "DurationType": "OneShot",
       "DurationMin": "163.43333",
@@ -125,6 +125,6 @@
     ]
    }
   ],
-  "FileHash": "{2E5D6497-A1FE-B2F5-68A9-21B978DE2D2A}"
+  "FileHash": "{D02E365C-5784-B988-367F-C10D2E047464}"
  }
 }
