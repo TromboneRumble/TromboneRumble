@@ -6,8 +6,6 @@
 #include "Engine/LocalPlayer.h"
 #include "EasySessionLog.h"
 
-DEFINE_LOG_CATEGORY(LogEasySession);
-
 FEasyOnlineHelper::FEasyOnlineHelper(const FString& InContextName, UWorld* InWorld, FName SystemName)
     : OnlineSub(Online::GetSubsystem(InWorld)),
     ContextName(InContextName),
