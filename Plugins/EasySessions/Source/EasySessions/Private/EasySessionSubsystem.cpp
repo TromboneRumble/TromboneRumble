@@ -165,22 +165,23 @@ void UEasySessionSubsystem::FindSessions(const FEasySearchSettings& InSettings)
         {
             FindSessionsCompleteDelegateHandle = Sessions->AddOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegate);
 
-            LastSessionSearch = MakeShareable(new FOnlineSessionSearch());
-            LastSessionSearch->MaxSearchResults = InSettings.MaxSearchResults;
-            LastSessionSearch->bIsLanQuery = InSettings.bIsLAN;
+            SearchObject = MakeShareable(new FOnlineSessionSearch());
+            SearchObject->MaxSearchResults = InSettings.MaxSearchResults;
+            SearchObject->bIsLanQuery = InSettings.bIsLAN;
     
             if (!InSettings.bIsLAN)
             {
                 // TODO : AdvancedSessions::FOnlineSeacrhSettingsEx 참고
-                LastSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+                
+                SearchObject->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
             }
 
             for (const auto& Pair : InSettings.QuerySettings)
             {
-                LastSessionSearch->QuerySettings.Set(FName(*Pair.Key), Pair.Value, EOnlineComparisonOp::Equals);
+                SearchObject->QuerySettings.Set(FName(*Pair.Key), Pair.Value, EOnlineComparisonOp::Equals);
             }
     
-            Sessions->FindSessions(*Helper.UserID, LastSessionSearch.ToSharedRef());
+            Sessions->FindSessions(*Helper.UserID, SearchObject.ToSharedRef());
             return;
         }
         else
@@ -189,8 +190,7 @@ void UEasySessionSubsystem::FindSessions(const FEasySearchSettings& InSettings)
         }
     }
     
-    TArray<FOnlineSessionSearchResult> Results;
-    OnFindSessionsFailure.Broadcast(Results);
+    OnFindSessionsFailure.Broadcast(SessionSearchResults);
 }
 
 void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
@@ -208,15 +208,24 @@ void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
         }
     }
     
-    TArray<FOnlineSessionSearchResult> Results;
-    if (bWasSuccessful && LastSessionSearch.IsValid())
+    if (bWasSuccessful && SearchObject.IsValid())
     {
-        Results = LastSessionSearch->SearchResults;
-        OnFindSessionsSuccess.Broadcast(Results);
+        SessionSearchResults = SearchObject->SearchResults;
+        for (const FOnlineSessionSearchResult& Result : SessionSearchResults)
+        {
+            const FString OwnerName = Result.Session.OwningUserName;
+            const int32 Ping = Result.PingInMs;
+            const int32 CurrentPlayers = Result.Session.SessionSettings.NumPublicConnections - Result.Session.NumOpenPublicConnections;
+            const int32 MaxSlots = Result.Session.SessionSettings.NumPublicConnections;
+            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d"), *OwnerName, Ping, CurrentPlayers, MaxSlots);
+            UE_PRINT_EASY(Log, TEXT("%s"), *ResultText);
+        }
+        
+        OnFindSessionsSuccess.Broadcast(SessionSearchResults);
     }
     else
     {
-        OnFindSessionsFailure.Broadcast(Results);
+        OnFindSessionsFailure.Broadcast(SessionSearchResults);
     }
 }
 

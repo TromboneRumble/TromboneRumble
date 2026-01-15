@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EasySessionSettings.h"
+#include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Subsystems/GameInstanceSubsystem.h"
@@ -68,5 +69,7 @@ private:
 	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate;
 	
 	TOptional<FEasySessionSettings> LastSettings;
-	TSharedPtr<FOnlineSessionSearch> LastSessionSearch;
+	TSharedPtr<FOnlineSessionSearch> SearchObject;
+	
+	TArray<FOnlineSessionSearchResult> SessionSearchResults;
 };

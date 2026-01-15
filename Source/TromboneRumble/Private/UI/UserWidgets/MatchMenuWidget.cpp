@@ -168,7 +168,7 @@ void UMatchMenuWidget::OnStartSessionSuccess()
 void UMatchMenuWidget::OnStartSessionFailure()
 {
 	MatchButtonsSetEnabled(true);
-	ShowNoticePopup(TEXT("세션 생생에 실패했습니다. 다시 시도해주세요."));
+	ShowNoticePopup(TEXT("세션 생성에 실패했습니다. 다시 시도해주세요."));
 }
 
 void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults)
@@ -178,14 +178,8 @@ void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchRe
 	for (auto Result : SessionResults)
 	{
 		FString SettingsValue;
-		FString Code;
-		Result.Session.SessionSettings.Get(GKey_Lobby_Code, Code);
-		const FString Owner = Result.Session.OwningUserName;
-		const int32   Ping = Result.PingInMs;
-
-		Debug::Print(FString::Printf(TEXT("Code=%s Owner=%s Ping=%d"), *Code, *Owner, Ping));
-
 		Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
+		
 		if (SettingsValue == LobbyCode)
 		{
 			Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
