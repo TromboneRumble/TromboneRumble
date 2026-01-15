@@ -115,4 +115,6 @@ private:
 	void StartDestroyTimer_Server(float Delay);
 
 	bool bDestroyTimerStarted = false;
+
+	int32 SpawnMusicPlayingID = 0;
 };
