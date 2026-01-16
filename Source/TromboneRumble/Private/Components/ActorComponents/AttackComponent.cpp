@@ -72,7 +72,7 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
-	if (OwnerCharacter->IsLocallyControlled()) return;
+	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled()) return;
 
 	PlayAttackEffects();
 }

@@ -71,6 +71,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	{
 		ComboWidgetComponent->SetupAttachment(GetMesh());
 		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		ComboWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
