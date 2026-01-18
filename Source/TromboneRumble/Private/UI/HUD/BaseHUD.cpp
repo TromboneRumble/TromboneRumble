@@ -23,7 +23,6 @@ void ABaseHUD::BeginPlay()
 				case EInputModeType::UIOnly:
 					{
 						FInputModeUIOnly InputModeData;
-						if (RootLayout) InputModeData.SetWidgetToFocus(RootLayout->TakeWidget());
 						InputModeData.SetLockMouseToViewportBehavior(MouseLockMode);
 						PC->SetInputMode(InputModeData);
 					}
@@ -39,7 +38,6 @@ void ABaseHUD::BeginPlay()
 				case EInputModeType::GameAndUI:
 					{
 						FInputModeGameAndUI InputModeData;
-						if (RootLayout) InputModeData.SetWidgetToFocus(RootLayout->TakeWidget());
 						InputModeData.SetLockMouseToViewportBehavior(MouseLockMode);
 						InputModeData.SetHideCursorDuringCapture(false);
 						PC->SetInputMode(InputModeData);
