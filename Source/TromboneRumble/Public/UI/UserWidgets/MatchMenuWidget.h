@@ -16,20 +16,14 @@ class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
 {
 	GENERATED_BODY()
 	
-public:
-	virtual void Init(TFunction<void()> OnMenuClosedCallback);
-
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
-	virtual void NativeOnDeactivated() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 	virtual void Init() override;
-	
-	TFunction<void()> OnMenuClosed;
 	
 private:
 	UFUNCTION()

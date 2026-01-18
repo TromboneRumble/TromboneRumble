@@ -13,13 +13,9 @@
 #include "Components/EditableText.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
-
-void UMatchMenuWidget::Init(const TFunction<void()> OnMenuClosedCallback)
-{
-	OnMenuClosed = OnMenuClosedCallback;
-}
 
 void UMatchMenuWidget::NativePreConstruct()
 {
@@ -87,13 +83,6 @@ void UMatchMenuWidget::NativeOnActivated()
 	}
 }
 
-void UMatchMenuWidget::NativeOnDeactivated()
-{
-	Super::NativeOnDeactivated();
-	
-	if (OnMenuClosed) OnMenuClosed();
-}
-
 UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
 {
 	if (CB_Start)
@@ -115,7 +104,9 @@ void UMatchMenuWidget::Init()
 		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddLambda([this]
 		{
-			if (OnMenuClosed) OnMenuClosed();
+			const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
+			const FString URL = MainMenuPkg;
+			UGameplayStatics::OpenLevel(this, FName(*URL), true);
 		});
 	}
 }
