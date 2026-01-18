@@ -12,6 +12,7 @@
 #include "Components/Button.h"
 #include "Components/EditableText.h"
 #include "Framework/TromboneGameInstance.h"
+#include "Framework/GameState/MatchMenuGameState.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
@@ -31,6 +32,8 @@ void UMatchMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	BindGameStateEvents();
+	
 	const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
 	checkf(!MainMenuMapPath.IsEmpty(), TEXT("Main menu map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedMainMenuMapPath = MainMenuMapPath;
@@ -42,17 +45,8 @@ void UMatchMenuWidget::NativeConstruct()
 
 void UMatchMenuWidget::NativeDestruct()
 {
-	RemoveFromParent();
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeGameOnly InputModeData;
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(false);
-		}
-	}
 	RemoveSubsystemCallbacks();
+	RemoveGameStateEvents();
 
 	Super::NativeDestruct();
 }
@@ -109,6 +103,39 @@ void UMatchMenuWidget::Init()
 			UGameplayStatics::OpenLevel(this, FName(*URL), true);
 		});
 	}
+}
+
+void UMatchMenuWidget::BindGameStateEvents()
+{
+	RemoveGameStateEvents();
+	
+	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
+	{
+		MatchMenuGS->OnPlayerListChanged.AddDynamic(this, &ThisClass::OnPlayerListChanged);
+		OnPlayerListChanged(MatchMenuGS->GetPlayerList());
+	}
+}
+
+void UMatchMenuWidget::RemoveGameStateEvents()
+{
+	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
+	{
+		MatchMenuGS->OnPlayerListChanged.RemoveAll(this);
+	}
+}
+
+void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
+{
+	if (!CT_PlayerList) return;
+
+	FString FormattedPlayerList = TEXT("Players:\n");
+
+	for (int32 i = 0; i < PlayerNames.Num(); ++i)
+	{
+		FormattedPlayerList.Append(FString::Printf(TEXT("%d. %s\n"), i + 1, *PlayerNames[i]));
+	}
+	
+	CT_PlayerList->SetText(FText::FromString(FormattedPlayerList));
 }
 
 void UMatchMenuWidget::HandleStartButtonClicked()

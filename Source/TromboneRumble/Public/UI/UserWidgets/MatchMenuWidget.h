@@ -26,6 +26,14 @@ protected:
 	virtual void Init() override;
 	
 private:
+	// ~ Begin GameState Events
+	void BindGameStateEvents();
+	void RemoveGameStateEvents();
+	
+	UFUNCTION()
+	void OnPlayerListChanged(const TArray<FString>& PlayerNames);
+	// ~ End GameState Events
+	
 	UFUNCTION()
 	void HandleStartButtonClicked();
 
@@ -39,6 +47,9 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Code;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonTextBlock> CT_PlayerList;
 	// ~ End UIs
 	
 	UPROPERTY(Transient)

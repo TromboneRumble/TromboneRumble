@@ -3,9 +3,9 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Framework/LobbyGameState.h"
+#include "Framework/GameState/MatchMenuGameState.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
-#include "Utilities/DebugHelper.h"
 
 ADefaultPlayerState::ADefaultPlayerState()
 {
@@ -29,6 +29,10 @@ void ADefaultPlayerState::OnRep_PlayerName()
 	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
 	{
 		LobbyGameState->UpdatePlayerList();
+	}
+	else if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
+	{
+		MatchMenuGameState->UpdatePlayerList();
 	}
 }
 
