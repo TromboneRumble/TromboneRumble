@@ -49,6 +49,30 @@ void UBaseMenuWidget::SetUIEnabled(const bool bEnabled)
 {
 }
 
+void UBaseMenuWidget::ShowLoadingOverlay()
+{
+	if (const TObjectPtr<UMainUIRoot> Root = GetRootLayout())
+	{
+		Root->PushLoadingOverlay();
+	}
+}
+
+void UBaseMenuWidget::ShowLoadingOverlay(FString InContent)
+{
+	if (const TObjectPtr<UMainUIRoot> Root = GetRootLayout())
+	{
+		Root->PushLoadingOverlay(InContent);
+	}
+}
+
+void UBaseMenuWidget::HideLoadingOverlay()
+{
+	if (const TObjectPtr<UMainUIRoot> Root = GetRootLayout())
+	{
+		Root->PopLoadingOverlay();
+	}
+}
+
 void UBaseMenuWidget::SwitchMenu(EMainMenuType InType)
 {
 	if (const UMainUIRoot* Root = GetRootLayout())

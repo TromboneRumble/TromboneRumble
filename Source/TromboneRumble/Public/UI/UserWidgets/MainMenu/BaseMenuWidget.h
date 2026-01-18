@@ -30,6 +30,10 @@ protected:
 	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);
 	
+	virtual void ShowLoadingOverlay();
+	virtual void ShowLoadingOverlay(FString InContent);
+	virtual void HideLoadingOverlay();
+	
 	void SwitchMenu(EMainMenuType InType);
 	TObjectPtr<UMainUIRoot> GetRootLayout() const;
 	

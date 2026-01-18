@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUserWidget.h"
+#include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "MatchUIRoot.generated.h"
 
 class UCommonActivatableWidget;
@@ -16,19 +16,10 @@ enum class EMatchMenuType : uint8
 };
 
 UCLASS()
-class TROMBONERUMBLE_API UMatchUIRoot : public UCommonUserWidget
+class TROMBONERUMBLE_API UMatchUIRoot : public UBaseUIRoot
 {
 	GENERATED_BODY()
 	
 public:
-	virtual void NativePreConstruct() override;
-	virtual void NativeDestruct() override;
 	void PushMenu(EMatchMenuType InType) const;
-	
-protected:
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	TObjectPtr<UCommonActivatableWidgetStack> MenuStack;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> MatchMenuWidgetClass;
 };

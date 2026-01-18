@@ -114,6 +114,8 @@ void UMainMenuWidget::HandleOnlineButtonClicked()
 	{
 		SetUIEnabled(false);
 		StartHostValidation(LobbyCode);
+		
+		ShowLoadingOverlay();
 	}
 }
 
@@ -132,6 +134,8 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 		FEasySearchSettings SearchSettings;
 		SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), ET_Code->GetText().ToString().ToUpper());
 		SessionsSubsystem->FindSessions(SearchSettings);
+		
+		ShowLoadingOverlay();
 	}
 }
 
@@ -148,6 +152,8 @@ void UMainMenuWidget::HandleQuitButtonClicked()
 
 void UMainMenuWidget::OnStartSessionSuccess()
 {
+	HideLoadingOverlay();
+	
 	const FString MatchMenuPkg = FPackageName::ObjectPathToPackageName(CachedMatchMenuMapPath);
 	const FString URL = MatchMenuPkg + TEXT("?listen");
 	UGameplayStatics::OpenLevel(this, FName(*URL), true);
@@ -155,6 +161,8 @@ void UMainMenuWidget::OnStartSessionSuccess()
 
 void UMainMenuWidget::OnStartSessionFailure()
 {
+	HideLoadingOverlay();
+	
 	SetUIEnabled(true);
 	ShowNoticePopup(TEXT("세션 생성에 실패했습니다. 다시 시도해주세요."));
 }
@@ -198,6 +206,8 @@ void UMainMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchRes
 		}
 	}
 	
+	HideLoadingOverlay();
+	
 	SetUIEnabled(true);
 	ShowNoticePopup(FString::Printf(TEXT("'%s'에 해당하는 세션을 찾을 수 없습니다."), *LobbyCode));
 }
@@ -209,22 +219,26 @@ void UMainMenuWidget::OnFindSessionsFailure(const TArray<FOnlineSessionSearchRes
 		bIsSearchingForHostValidation = false;
 		SetUIEnabled(true);
 		ShowNoticePopup(TEXT("네트워크 상태가 불안정하여 중복 검사에 실패했습니다."));
+		HideLoadingOverlay();
 		return;
 	}
 	
 	SetUIEnabled(true);
 	ShowNoticePopup(TEXT("세션 검색에 실패했습니다. 다시 시도해주세요."));
+	HideLoadingOverlay();
 }
 
 void UMainMenuWidget::OnJoinSessionSuccess()
 {
 	SetUIEnabled(true);
+	HideLoadingOverlay();
 }
 
 void UMainMenuWidget::OnJoinSessionFailure()
 {
 	SetUIEnabled(true);
 	ShowNoticePopup(TEXT("세션 참가에 실패했습니다. 다시 시도해주세요."));
+	HideLoadingOverlay();
 }
 
 void UMainMenuWidget::OnDestroySessionSuccess()
@@ -257,8 +271,6 @@ void UMainMenuWidget::StartHostValidation(const FString& Code)
 	bIsSearchingForHostValidation = true;
 	PendingLobbyCode = Code;
     
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Validating Lobby Code: %s"), *Code));
-
 	FEasySearchSettings SearchSettings;
 	SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), Code); 
 	SessionsSubsystem->FindSessions(SearchSettings);

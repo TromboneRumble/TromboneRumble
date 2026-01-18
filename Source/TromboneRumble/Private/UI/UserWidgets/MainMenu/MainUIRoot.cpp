@@ -4,33 +4,13 @@
 #include "CommonActivatableWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
-void UMainUIRoot::NativePreConstruct()
-{
-	Super::NativeConstruct();
-	
-	if (MainMenuWidgetClass && MenuStack)
-	{
-		MenuStack->AddWidget(MainMenuWidgetClass);
-	}
-}
-
-void UMainUIRoot::NativeDestruct()
-{
-	if (MenuStack)
-	{
-		MenuStack->ClearWidgets();
-	}
-	
-	Super::NativeDestruct();
-}
-
 void UMainUIRoot::PushMenu(const EMainMenuType InType) const
 {
 	TSubclassOf<UCommonActivatableWidget> TargetWidgetClass = nullptr;
 	switch (InType)
 	{
 		case EMainMenuType::MainMenu:
-			TargetWidgetClass = MainMenuWidgetClass;
+			TargetWidgetClass = DefaultWidgetClass;
 			break;
 		case EMainMenuType::Settings:
 			TargetWidgetClass = SettingMenuWidgetClass;
@@ -41,6 +21,6 @@ void UMainUIRoot::PushMenu(const EMainMenuType InType) const
 	
 	if (TargetWidgetClass)
 	{
-		MenuStack->AddWidget(TargetWidgetClass);
+		UIStack->AddWidget(TargetWidgetClass);
 	}
 }
