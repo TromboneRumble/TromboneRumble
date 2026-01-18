@@ -4,19 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
-#include "Interfaces/OnlineSessionInterface.h"
-#include "Utilities/Defines.h"
+#include "MainMenu/BaseMenuWidget.h"
 #include "MatchMenuWidget.generated.h"
 
+class UCommonTextBlock;
 class UEasySessionSubsystem;
 class UCommonButtonBase;
-class UEditableText;
-class UButton;
-class USlider;
-class USpinBox;
 
 UCLASS()
-class TROMBONERUMBLE_API UMatchMenuWidget : public UCommonActivatableWidget
+class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
 {
 	GENERATED_BODY()
 	
@@ -27,79 +23,32 @@ protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+	virtual void NativeOnActivated() override;
 	virtual void NativeOnDeactivated() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
-	virtual void InitButtons();
+	virtual void Init() override;
 	
 	TFunction<void()> OnMenuClosed;
 	
 private:
-	// ~ Begin SessionSubsystem Callbacks
-	void BindSubsystemCallbacks();
-	void RemoveSubsystemCallbacks();
-	
-	void OnStartSessionSuccess();
-	void OnStartSessionFailure();
-    
-	void OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults);
-	void OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults);
-    
-	void OnJoinSessionSuccess();
-	void OnJoinSessionFailure();
-	
-	void OnDestroySessionSuccess();
-	void OnDestroySessionFailure();
-	// ~ End SessionSubsystem Callbacks
-	
 	UFUNCTION()
-	void OnMaxPlayerSliderChanged(float Value);
-	UFUNCTION()
-	void OnMaxPlayerSpinBoxChanged(float Value);
-	
-	// ~ Begin Button Callbacks
-	UFUNCTION()
-	void HostButtonClicked();
-	UFUNCTION()
-	void JoinButtonClicked();
-	// ~ EndButton Callbacks
-	
-	void StartHostValidation(const FString& Code);
-	void CreateSessionAfterValidation(const FString& ValidatedCode);
-	bool bIsSearchingForHostValidation = false;
-	FString PendingLobbyCode;
-	
-	void SetUIEnabled(const bool bEnabled);
-	FString GenerateRandomLobbyCode(int32 Length) const;
-	void ShowNoticePopup(const FString& Content);
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> NoticePopupWidgetClass;
+	void HandleStartButtonClicked();
+
+	virtual void SetUIEnabled(const bool bEnabled) override;
 	
 	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Start;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Back;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Host;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Join;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UEditableText> LobbyCodeText;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USlider> MaxPlayerSlider;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USpinBox> MaxPlayerSpinBox;
+	TObjectPtr<UCommonTextBlock> CT_Code;
 	// ~ End UIs
 	
-	int32 MaxLobbyCodeLength = 5;
-	EMatchState State = EMatchState::Invalid;
-
 	UPROPERTY(Transient)
-	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
-
+	FString CachedMainMenuMapPath = "";
 	UPROPERTY(Transient)
 	FString CachedLobbyMapPath = "";
 };

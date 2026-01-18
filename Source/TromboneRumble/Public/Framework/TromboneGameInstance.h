@@ -8,9 +8,6 @@
 #include "Engine/GameInstance.h"
 #include "TromboneGameInstance.generated.h"
 
-/**
- * 
- */
 UCLASS(Abstract)
 class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 {
@@ -22,9 +19,15 @@ public:
 private:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "Trombone.Rhythm.Song"))
     FGameplayTag SelectedSongTag = TromboneGamePlayTags::Trombone_Rhythm_Song_MapA;
+    
+    int32 SessionPlayerNumber = 2;
 
 public:
-    //getter setter
+    // ~ Begin Getter & Setter
     void SetSelectedSongTag(const FGameplayTag& InTag) { SelectedSongTag = InTag; }
     FGameplayTag GetSelectedSongTag() const { return SelectedSongTag; }
+    
+    void SetSessionPlayerNumber(const int32 InNumber) { SessionPlayerNumber = InNumber; }
+    int32 GetSessionPlayerNumber() const { return SessionPlayerNumber; }
+    // ~ End Getter & Setter
 };

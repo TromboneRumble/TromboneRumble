@@ -38,7 +38,7 @@ void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* Equipp
 		}
 	}
 	
-	if (++CurrentEquippedInstruments >= NumPublicConnections - 1)
+	if (++CurrentEquippedInstruments >= RegisteredPlayerCount - 1)
 	{
 		SetLobbyState(ELobbyState::CountdownToTravel);
 	}
@@ -53,24 +53,12 @@ void ALobbyGameMode::BeginPlay()
 	Super::BeginPlay();
 	
 	LobbyGameState = GetGameState<ALobbyGameState>();
-
-	if (const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld()))
+	
+	if (const UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
-		if (SessionInterface.IsValid())
-		{
-			if (FNamedOnlineSession* Session = SessionInterface->GetNamedSession(NAME_GameSession))
-			{
-				NumPublicConnections = Session->SessionSettings.NumPublicConnections;
-			}
-		}
+		RegisteredPlayerCount = TromboneGI->GetSessionPlayerNumber();
 	}
-    
-	if (NumPublicConnections <= 0) 
-	{
-		NumPublicConnections = 4; 
-	}
-
+	
 	LobbyReadyPlayers.Empty();
 	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
@@ -83,6 +71,8 @@ void ALobbyGameMode::BeginPlay()
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+	
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Player Joined: %s"), *NewPlayer->GetPlayerState<APlayerState>()->GetPlayerName()));
 
 	if (ADefaultPlayerState* PS = NewPlayer->GetPlayerState<ADefaultPlayerState>())
 	{
@@ -104,7 +94,7 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	const FString DebugMsg = FString::Printf(TEXT("Player Left: %s, Total Players: %d"), *DebugPlayerName, CurrentPlayers);
 	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 
-	if (CurrentPlayers >= NumPublicConnections) return;
+	if (CurrentPlayers >= RegisteredPlayerCount) return;
 
 	const ELobbyState CurrentLobbyState = LobbyGameState->GetCurrentLobbyState();
 	if (CurrentLobbyState == ELobbyState::CountdownToScramble || CurrentLobbyState == ELobbyState::InstrumentScramble)
@@ -144,24 +134,11 @@ void ALobbyGameMode::RequestServerTravel(const ELevelState& InLevelState)
 }
 void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 {
-	if (!PC)
-	{
-		return;
-	}
-
-	//로딩이 완료된 플레이어
+	if (!PC) return;
+	
 	LobbyReadyPlayers.AddUnique(PC);
-
-	//현재 접속한 플레이어
-	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
-
-	if (CurrentPlayerCount < NumPublicConnections)
-	{
-		return;
-	}
-
-	//현재 접속한 플레이어가 로딩까지 완료되었다면
-	if (LobbyReadyPlayers.Num() >= CurrentPlayerCount)
+	
+	if (LobbyReadyPlayers.Num() >= RegisteredPlayerCount)
 	{
 		if (LobbyGameState)
 		{
@@ -188,14 +165,13 @@ void ALobbyGameMode::InitializeInstruments() const
 
 	const auto& InstrumentSounds = SongRow->InstrumentSounds;
 	if (InstrumentSounds.Num() == 0) return;
-
 	
 	TArray<AActor*> SpawnPointActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
 
 	if (SpawnPointActors.Num() == 0) return;
 	
-	for (int32 i = 0; i < NumPublicConnections - 1; ++i)
+	for (int32 i = 0; i < RegisteredPlayerCount - 1; ++i)
 	{
 		const int32 SpawnPointIndex = i % SpawnPointActors.Num();
 		const AActor* SpawnPoint = SpawnPointActors[SpawnPointIndex];
