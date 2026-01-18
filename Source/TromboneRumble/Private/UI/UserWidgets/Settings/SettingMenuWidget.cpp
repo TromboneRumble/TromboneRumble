@@ -6,28 +6,12 @@
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
 
-void USettingMenuWidget::NativePreConstruct()
-{
-	Super::NativePreConstruct();
-}
-
-void USettingMenuWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-}
-
-void USettingMenuWidget::NativeDestruct()
-{
-	Super::NativeDestruct();
-}
-
-void USettingMenuWidget::NativeOnDeactivated()
-{
-	Super::NativeOnDeactivated();
-}
-
 UWidget* USettingMenuWidget::NativeGetDesiredFocusTarget() const
 {
+	if (CB_Audio)
+	{
+		return CB_Audio;
+	}
 	return Super::NativeGetDesiredFocusTarget();
 }
 
@@ -44,6 +28,11 @@ void USettingMenuWidget::Init()
 	{
 		CB_Video->OnClicked().RemoveAll(this);
 		CB_Video->OnClicked().AddLambda([this] { ChangePanel(Widget_VideoOptions); });
+	}
+	if (CB_Back)
+	{
+		CB_Back->OnClicked().RemoveAll(this);
+		CB_Back->OnClicked().AddUObject(this, &USettingMenuWidget::DeactivateWidget);
 	}
 	if (Widget_AudioOptions)
 	{

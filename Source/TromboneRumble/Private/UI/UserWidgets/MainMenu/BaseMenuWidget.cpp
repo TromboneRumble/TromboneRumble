@@ -7,11 +7,6 @@
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "UI/UserWidgets/MainMenu/NoticePopupWidget.h"
 
-void UBaseMenuWidget::NativePreConstruct()
-{
-	Super::NativePreConstruct();
-}
-
 void UBaseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -20,45 +15,8 @@ void UBaseMenuWidget::NativeConstruct()
 	BindSubsystemCallbacks();
 }
 
-void UBaseMenuWidget::NativeDestruct()
-{
-	RemoveFromParent();
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeGameOnly InputModeData;
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(false);
-		}
-	}
-	
-	Super::NativeDestruct();
-}
-
-void UBaseMenuWidget::NativeOnDeactivated()
-{
-	Super::NativeOnDeactivated();
-}
-
-UWidget* UBaseMenuWidget::NativeGetDesiredFocusTarget() const
-{
-	return Super::NativeGetDesiredFocusTarget();
-}
-
 void UBaseMenuWidget::Init()
 {
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeUIOnly InputModeData;
-			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(true);
-		}
-	}
-	
 	SetVisibility(ESlateVisibility::Visible);
 	SetIsFocusable(true);
 }
@@ -91,7 +49,7 @@ void UBaseMenuWidget::SetUIEnabled(const bool bEnabled)
 {
 }
 
-void UBaseMenuWidget::ChangeMenu(EMainMenuType InType) const
+void UBaseMenuWidget::SwitchMenu(EMainMenuType InType)
 {
 	if (const UMainUIRoot* Root = GetRootLayout())
 	{

@@ -96,7 +96,11 @@ void UMatchMenuWidget::NativeOnDeactivated()
 
 UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
 {
-	return CB_Start;
+	if (CB_Start)
+	{
+		return CB_Start;
+	}
+	return Super::NativeGetDesiredFocusTarget();
 }
 
 void UMatchMenuWidget::Init()

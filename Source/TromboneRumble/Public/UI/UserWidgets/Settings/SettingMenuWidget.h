@@ -17,10 +17,6 @@ class TROMBONERUMBLE_API USettingMenuWidget : public UBaseMenuWidget
 	GENERATED_BODY()
 	
 protected:
-	virtual void NativePreConstruct() override;
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
-	virtual void NativeOnDeactivated() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 	virtual void Init() override;
@@ -42,4 +38,6 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Audio;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Video;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Back;
 };

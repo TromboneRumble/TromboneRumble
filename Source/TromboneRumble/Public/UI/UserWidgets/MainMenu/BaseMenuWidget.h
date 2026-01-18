@@ -22,11 +22,7 @@ public:
 	}	
 
 protected:
-	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
-	virtual void NativeOnDeactivated() override;
-	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 	virtual void Init();
 	virtual void ShowNoticePopup(const FString& Content);
@@ -34,7 +30,7 @@ protected:
 	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);
 	
-	void ChangeMenu(EMainMenuType InType) const;
+	void SwitchMenu(EMainMenuType InType);
 	TObjectPtr<UMainUIRoot> GetRootLayout() const;
 	
 	UPROPERTY(EditDefaultsOnly)

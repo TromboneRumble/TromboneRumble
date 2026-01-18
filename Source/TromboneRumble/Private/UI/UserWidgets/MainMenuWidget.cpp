@@ -15,6 +15,16 @@
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "Utilities/DebugHelper.h"
 
+UWidget* UMainMenuWidget::NativeGetDesiredFocusTarget() const
+{
+	if (CB_Online)
+	{
+		return CB_Online;
+	}
+	
+	return Super::NativeGetDesiredFocusTarget();
+}
+
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -39,7 +49,7 @@ void UMainMenuWidget::Init()
 	if (CB_Settings)
 	{
 		CB_Settings->OnClicked().RemoveAll(this);
-		CB_Settings->OnClicked().AddLambda([this] { ChangeMenu(EMainMenuType::Settings); });
+		CB_Settings->OnClicked().AddLambda([this] { SwitchMenu(EMainMenuType::Settings); });
 	}
 	if (CB_Quit)
 	{
