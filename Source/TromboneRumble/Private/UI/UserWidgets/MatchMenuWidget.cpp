@@ -88,10 +88,18 @@ UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
 
 void UMatchMenuWidget::Init()
 {
+	const APlayerController* PC = GetOwningPlayer();
+	if (!PC) return;
+	const bool bIsClient = !PC->HasAuthority();
+	
 	if (CB_Start)
 	{
 		CB_Start->OnClicked().RemoveAll(this);
 		CB_Start->OnClicked().AddUObject(this, &ThisClass::HandleStartButtonClicked);
+		if (bIsClient)
+		{
+			CB_Start->SetIsEnabled(false);
+		}
 	}
 	if (CB_Back)
 	{
