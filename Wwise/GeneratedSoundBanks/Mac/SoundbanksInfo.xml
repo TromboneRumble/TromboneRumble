@@ -1135,7 +1135,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{73892CB8-199D-C633-171C-B584C5EDEFB0}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{9779E62C-CABE-C4BD-4634-12ED0AB0E978}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
@@ -2173,5 +2173,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5D281866-CFBC-7EC8-6F89-9E2846662531}</FileHash>
+	<FileHash>{DBE9AA4A-65C8-564E-9338-8DDACD8EA199}</FileHash>
 </SoundBanksInfo>
