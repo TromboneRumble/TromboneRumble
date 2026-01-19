@@ -7,10 +7,14 @@
 #include "Data/InstrumentScoreData.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
+#include "AkGameplayStatics.h"
 #include "Data/RhythmScoreAttributeSet.h"
 #include "Actors/InstrumentIndicator.h"
+#include "Characters/DefaultTromboneCharacter.h"
+#include "Components/WidgetComponent.h"
 #include "Framework/InGameState.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_WidgetBase.h"
+#include "UI/UserWidgets/Rhythm/ComboWidget/RhythmComboWidgetBase.h"
 #include "Utilities/DebugHelper.h"
 
 AInstrumentBase::AInstrumentBase()
@@ -67,38 +71,44 @@ void AInstrumentBase::OnRep_Equipped()
 		if (IsOwnerLocallyControlled())
 		{
 			BindToRhythmSubsystem(true);
+			if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
+			{
+				UWidgetComponent* WidgetComponent = TromboneCharacter->GetComboWidgetComponent();
+				if (ComboWidgetClass && WidgetComponent->GetWidgetClass() != ComboWidgetClass)
+				{
+					WidgetComponent->SetWidgetClass(ComboWidgetClass);
+					WidgetComponent->InitWidget();
+					UUserWidget* NewWidget = WidgetComponent->GetUserWidgetObject();
+					if (URhythmComboWidgetBase* RhythmComboWidgetBase = Cast<URhythmComboWidgetBase>(NewWidget))
+					{
+						ComboWidgetInstance = RhythmComboWidgetBase;
+						RhythmComboWidgetBase->Init(this);
+					}
+				}
+			}
 		}
 	}
 	else
 	{
 		RemoveBuff();
 		BindToRhythmSubsystem(false);
-	}
-	TryUpdateIndicatorVisibility();
-}
-
-void AInstrumentBase::TryCreateIndicatorWidget()
-{
-	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
-	if (LocalPC && LocalPC->IsLocalController())
-	{
-		IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
-		if (IndicatorWidgetInstance.Get())
+		if (IsOwnerLocallyControlled())
 		{
-			IndicatorWidgetInstance->TargetComponent = GetRootComponent();
-			IndicatorWidgetInstance->AddToViewport();
-			GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
-			TryUpdateIndicatorVisibility();
-			return;
+			if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
+			{
+				UWidgetComponent* WidgetComponent = TromboneCharacter->GetComboWidgetComponent();
+				if (WidgetComponent->GetWidgetClass())
+				{
+					WidgetComponent->SetWidgetClass(nullptr);
+				}
+			}
+		}
+		if (InstrumentDropSound)
+		{
+			UAkGameplayStatics::PostEvent(InstrumentDropSound, this, 0, FOnAkPostEventCallback());
 		}
 	}
-	GetWorld()->GetTimerManager().SetTimer(
-		WidgetInitTimerHandle,
-		this,
-		&AInstrumentBase::TryCreateIndicatorWidget,
-		0.1f,
-		false
-	);
+	TryUpdateIndicatorVisibility();
 }
 
 void AInstrumentBase::TryUpdateIndicatorVisibility()
@@ -153,6 +163,11 @@ void AInstrumentBase::ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass)
 			ActiveBuffHandle = ASC->ApplyGameplayEffectToSelf(BuffClass->GetDefaultObject<UGameplayEffect>(), 1.f, Context);
 			if (ActiveBuffHandle.IsValid() && IsOwnerLocallyControlled())
 			{
+				if (BuffActivationSound)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("BuffActivatedSoundCalled"));
+					UAkGameplayStatics::PostEvent(BuffActivationSound, this, 0, FOnAkPostEventCallback());
+				}
 				OnBuffStateChanged.Broadcast(true);
 				FString DebugMsg = FString::Printf(TEXT(">>> [Buff ON] %s Applied!"), *BuffClass->GetName());
 				Debug::Print(DebugMsg);
@@ -230,6 +245,30 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	{
 		PS->Server_AddScore(FMath::RoundToInt(AddedScore));
 	}
+}
+
+void AInstrumentBase::TryCreateIndicatorWidget()
+{
+	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
+	if (LocalPC && LocalPC->IsLocalController())
+	{
+		IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
+		if (IndicatorWidgetInstance.Get())
+		{
+			IndicatorWidgetInstance->TargetComponent = GetRootComponent();
+			IndicatorWidgetInstance->AddToViewport();
+			GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
+			TryUpdateIndicatorVisibility();
+			return;
+		}
+	}
+	GetWorld()->GetTimerManager().SetTimer(
+		WidgetInitTimerHandle,
+		this,
+		&AInstrumentBase::TryCreateIndicatorWidget,
+		0.1f,
+		false
+	);
 }
 
 bool AInstrumentBase::IsOwnerLocallyControlled() const

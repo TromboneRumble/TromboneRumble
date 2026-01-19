@@ -8,6 +8,7 @@
 #include "GameplayEffectTypes.h"
 #include "InstrumentBase.generated.h"
 
+class URhythmComboWidgetBase;
 class UOSI_WidgetBase;
 class AInstrumentIndicator;
 class UInstrumentScoreData;
@@ -51,11 +52,6 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UOSI_WidgetBase> IndicatorWidgetInstance = nullptr;
 
-	FTimerHandle WidgetInitTimerHandle;
-
-	// 위젯 생성을 시도하는 함수
-	void TryCreateIndicatorWidget();
-
 	UFUNCTION()
 	void TryUpdateIndicatorVisibility();
 
@@ -65,27 +61,43 @@ protected:
 	void HandleInGameStateChanged(EInGameState InGameState);
 	// ~ Indicator
 
-	UPROPERTY(EditAnywhere, Category = "Instrument|Data")
-	TObjectPtr<UInstrumentScoreData> ScoreData;
-
+	// GAS Helpers
 	// 현재 활성화된 버프 핸들 (UnEquip시 제거용)
 	FActiveGameplayEffectHandle ActiveBuffHandle;
 
-	// GAS Helpers
 	void ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass);
 	void RemoveBuff();
 	float GetGradeMultiplier() const;
 	float GetComboMultiplier() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Instrument|Sound")
+	TObjectPtr<UAkAudioEvent> BuffActivationSound;
 	// ~GAS Helpers
 
 	// Rhythm Logic
+	UPROPERTY(EditAnywhere, Category = "Instrument|Data")
+	TObjectPtr<UInstrumentScoreData> ScoreData;
 	UFUNCTION()
-	void HandleNoteDetected(ENoteResult InNoteResult);
+	virtual void HandleNoteDetected(ENoteResult InNoteResult);
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) { return 0.f; }
 	// ~Rhythm Logic
 
+	// UI
+	FTimerHandle WidgetInitTimerHandle;
+	void TryCreateIndicatorWidget();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rhythm|UI")
+	TSubclassOf<URhythmComboWidgetBase> ComboWidgetClass;
+
+	UPROPERTY()
+	TWeakObjectPtr<URhythmComboWidgetBase> ComboWidgetInstance = nullptr;
+	// ~UI
+
 	bool IsOwnerLocallyControlled() const;
 	ADefaultPlayerState* GetOwnerPlayerState() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Instrument|Sound")
+	TObjectPtr<UAkAudioEvent> InstrumentDropSound;
 
 private:
 	void BindToRhythmSubsystem(bool bBind);

@@ -5,7 +5,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "AkComponent.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
@@ -32,7 +31,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh(), FName("pelvis"));
@@ -52,13 +51,6 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
 	RhythmScoreAttributes = CreateDefaultSubobject<URhythmScoreAttributeSet>(TEXT("ScoreAttributeSet"));
-	
-	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
-	if (AkSoundComponent)
-	{
-		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-		AkSoundComponent->OcclusionRefreshInterval = 0.f;
-	}
 
 	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
 	if (RingHitBoxComponent)
@@ -72,13 +64,15 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 		ComboWidgetComponent->SetupAttachment(GetMesh());
 		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 		ComboWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		ComboWidgetComponent->bReceivesDecals = 0;
+		ComboWidgetComponent->SetCastShadow(false);
 	}
 }
 
 void ADefaultTromboneCharacter::Jump()
 {
 	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
-	
+
 	if (bIsSprinting && !Instrument)
 	{
 		AttackComponent->Attack();
@@ -113,13 +107,13 @@ void ADefaultTromboneCharacter::TryInteract()
 void ADefaultTromboneCharacter::Attack()
 {
 	const AItemBase* Weapon = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
-	
+
 	if (AttackComponent && Weapon) AttackComponent->Attack();
 }
 
 void ADefaultTromboneCharacter::StartSprint()
 {
-	if (bIsSprinting) return; 
+	if (bIsSprinting) return;
 
 	bIsSprinting = true;
 	Server_SetIsSprinting(true);
@@ -139,7 +133,7 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 {
 	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
 	if (!Instrument) return;
-	
+
 	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Instrument))
 	{
 		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
@@ -177,7 +171,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
-	
+
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Weapon;
 	if (AItemBase* AlreadyEquippedItem = EquipmentComponent->GetItemInSlot(TargetSlot))
@@ -211,20 +205,12 @@ void ADefaultTromboneCharacter::BeginPlay()
 		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
 		CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
 		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
-	
+
 		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
 
 		InteractorComponent->OnInteractableAvailable.RemoveDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractableAvailable.AddDynamic(this, &ThisClass::HandleInteractableAvailableChanged);
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
-
-		// Sound Listener의 기본 설정을 카메라->Player로 변경
-		if (AkSoundComponent)
-		{
-			TArray<UAkComponent*> Listeners;
-			Listeners.Add(AkSoundComponent);
-			AkSoundComponent->SetListeners(Listeners);
-		}
 
 		ComboWidgetComponent->SetVisibility(true);
 	}
@@ -233,7 +219,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME(ThisClass, bIsSprinting);
 }
 
@@ -242,7 +228,7 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	if (!HasAuthority()) return;
-	
+
 	SpawnAndEquipDefaultWeapon();
 	SpawnAndEquipPreviouslyEquippedWeapon();
 }
@@ -250,7 +236,7 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
 {
 	if (bIsSprinting == bNewIsSprinting) return;
-	
+
 	bIsSprinting = bNewIsSprinting;
 	UpdateMaxWalkSpeed();
 }
@@ -299,7 +285,7 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
 	if (!DefaultWeaponInstance) return;
-	
+
 	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
 	EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
 }
@@ -316,7 +302,7 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 				NewType = Instrument->GetInstrumentType();
 			}
 		}
-		
+
 		if (IsLocallyControlled())
 		{
 			EInstrumentType OldType = EInstrumentType::None;
@@ -349,15 +335,15 @@ ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 void ADefaultTromboneCharacter::SpawnAndEquipDefaultWeapon()
 {
 	if (!DefaultWeaponClass) return;
-	
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = this;
-	
+
 	DefaultWeaponInstance = GetWorld()->SpawnActor<AWeaponBase>(DefaultWeaponClass, SpawnParams);
 	if (DefaultWeaponInstance)
 	{
-		AttackComponent->SetDefaultWeaponInstance(DefaultWeaponInstance); 
+		AttackComponent->SetDefaultWeaponInstance(DefaultWeaponInstance);
 		EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
 	}
 }
@@ -365,7 +351,7 @@ void ADefaultTromboneCharacter::SpawnAndEquipDefaultWeapon()
 void ADefaultTromboneCharacter::SpawnAndEquipPreviouslyEquippedWeapon()
 {
 	const ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>();
-	
+
 	if (PS && PS->EquippedWeaponClass)
 	{
 		FActorSpawnParameters SpawnParams;

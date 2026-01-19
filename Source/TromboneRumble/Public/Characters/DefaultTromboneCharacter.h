@@ -57,25 +57,22 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	
 	// Components
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components|Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components|Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	UPROPERTY()
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	TObjectPtr<UInteractorComponent> InteractorComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UAttackComponent> AttackComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UEquipmentComponent> EquipmentComponent;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAkComponent> AkSoundComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
@@ -84,13 +81,13 @@ protected:
 	UPROPERTY()
 	TObjectPtr<URhythmScoreAttributeSet> RhythmScoreAttributes;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	TObjectPtr<UClientToServerRelayComponent> ServerRelayComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<URingHitBoxComponent> RingHitBoxComponent;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
 	// ~Components
 	
@@ -140,5 +137,6 @@ public:
 	FORCEINLINE UAkComponent* GetAkComponent() { return AkSoundComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
+	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
 	// ~ End Getters / Setters
 };

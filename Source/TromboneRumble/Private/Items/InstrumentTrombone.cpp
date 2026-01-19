@@ -3,6 +3,7 @@
 
 #include "Items/InstrumentTrombone.h"
 #include "Data/InstrumentScoreData.h"
+#include "UI/UserWidgets/Rhythm/ComboWidget/TromboneComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
 float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
@@ -16,7 +17,18 @@ float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 Curren
 		RemoveBuff();
 	}
 
-	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None) return 0.f;
+	if (!ComboWidgetInstance.Get()) return 0.f;
+	UTromboneComboWidget* TromboneComboWidget = Cast<UTromboneComboWidget>(ComboWidgetInstance.Get());
+	
+	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None)
+	{
+		TromboneComboWidget->SetPercentSmooth(0.f);
+		return 0.f;
+	}
+	else
+	{
+		TromboneComboWidget->SetPercentSmooth(FMath::Min(1.0f, (float)CurrentCombo / (float)ScoreData->TromboneBuffComboThreshold));
+	}
 
 	float BaseScore = (InNoteResult == ENoteResult::Excellent) ? ScoreData->PerfectScore : ScoreData->GoodScore;
 	float ComboMultiplier = GetComboMultiplier();

@@ -138,10 +138,9 @@ void AWeaponBase::Unequip(AActor* OwnerActor)
 	const FVector VForwardImpulse = CurrentOwner->GetActorForwardVector() * WeaponData->WeaponDropForwardImpulse;
 	const FVector VUpwardImpulse = FVector::UpVector * WeaponData->WeaponDropUpwardImpulse;
 
-	CurrentOwner = nullptr;
 	bIsEquipped = false;
-
 	OnRep_Equipped();
+	CurrentOwner = nullptr;
     
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(true);
 	if (SkeletalMeshComponent) SkeletalMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);

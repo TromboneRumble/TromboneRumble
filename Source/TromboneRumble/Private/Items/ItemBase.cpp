@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Items/ItemBase.h"
+
+#include "AkComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -22,6 +24,13 @@ AItemBase::AItemBase()
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InteractTriggerComponent = CreateDefaultSubobject<UInteractionTriggerComponent>(TEXT("InteractTriggerComponent"));
+
+	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
+	if (AkSoundComponent)
+	{
+		AkSoundComponent->SetupAttachment(RootComponent);
+		AkSoundComponent->OcclusionRefreshInterval = 0.f;
+	}
 }
 
 void AItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
