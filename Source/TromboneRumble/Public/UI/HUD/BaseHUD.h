@@ -27,15 +27,6 @@ protected:
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Config")
-	EInputModeType DefaultInputMode = EInputModeType::UIOnly;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (EditCondition = "DefaultInputMode != EInputModeType::GameOnly"))
-	EMouseLockMode MouseLockMode = EMouseLockMode::DoNotLock;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config")
-	bool bShowMouseCursor = true;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config")
 	TSubclassOf<UUserWidget> RootLayoutClass;
 	
 	UPROPERTY()

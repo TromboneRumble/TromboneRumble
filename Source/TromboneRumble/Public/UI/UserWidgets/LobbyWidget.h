@@ -16,7 +16,14 @@ class TROMBONERUMBLE_API ULobbyWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	
+public:
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
+	{
+		return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently);
+	}	
+	
 protected:
+	
 	virtual bool Initialize() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
