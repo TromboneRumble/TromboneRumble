@@ -2,31 +2,29 @@
 
 #include "UI/UserWidgets/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
-#include "EasySessionSubsystem.h"
+#include "CommonTextBlock.h"
+#include "EasySessionSettings.h"
 #include "OnlineSessionSettings.h"
+#include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
-#include "Components/Slider.h"
-#include "Components/SpinBox.h"
-#include "HAL/PlatformApplicationMisc.h"
+#include "Framework/TromboneGameInstance.h"
+#include "Framework/GameState/MatchMenuGameState.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/UserWidgets/MainMenu/NoticePopupWidget.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
-
-void UMatchMenuWidget::Init(const TFunction<void()> OnMenuClosedCallback)
-{
-	OnMenuClosed = OnMenuClosedCallback;
-}
 
 void UMatchMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	if (LobbyCodeText)
+	if (CT_Code)
 	{
-		LobbyCodeText->SetText(FText::GetEmpty());
+		CT_Code->SetText(FText::GetEmpty());
 	}
 }
 
@@ -34,335 +32,155 @@ void UMatchMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	BindGameStateEvents();
+	
+	const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+	checkf(!MainMenuMapPath.IsEmpty(), TEXT("Main menu map path not found. Please set it in GameMapDeveloperSettings."));
+	CachedMainMenuMapPath = MainMenuMapPath;
+	
 	const FString LobbyMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
 	checkf(!LobbyMapPath.IsEmpty(), TEXT("Lobby map path not found. Please set it in GameMapDeveloperSettings."));
 	CachedLobbyMapPath = LobbyMapPath;
-	
-	BindSubsystemCallbacks();
-	InitButtons();
-	
-	SetVisibility(ESlateVisibility::Visible);
-	SetIsFocusable(true);
-	
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeUIOnly InputModeData;
-			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(true);
-		}
-	}
-	
-	if (MaxPlayerSlider && MaxPlayerSpinBox)
-	{
-		MaxPlayerSlider->OnValueChanged.AddDynamic(this, &ThisClass::OnMaxPlayerSliderChanged);
-		MaxPlayerSpinBox->OnValueChanged.AddDynamic(this, &ThisClass::OnMaxPlayerSpinBoxChanged);
-		MaxPlayerSpinBox->SetValue(MaxPlayerSlider->GetValue());
-	}
 }
 
 void UMatchMenuWidget::NativeDestruct()
 {
-	RemoveFromParent();
-	if (UWorld* World = GetWorld())
-	{
-		if (APlayerController* PlayerController = World->GetFirstPlayerController())
-		{
-			FInputModeGameOnly InputModeData;
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->SetShowMouseCursor(false);
-		}
-	}
 	RemoveSubsystemCallbacks();
+	RemoveGameStateEvents();
 
 	Super::NativeDestruct();
 }
 
-void UMatchMenuWidget::NativeOnDeactivated()
+void UMatchMenuWidget::NativeOnActivated()
 {
-	Super::NativeOnDeactivated();
-	
-	if (OnMenuClosed) OnMenuClosed();
+	Super::NativeOnActivated();
+
+	const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld());
+	if (!Subsystem) return;
+
+	const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+	if (!SessionInterface.IsValid()) return;
+
+	FNamedOnlineSession* CurrentSession = SessionInterface->GetNamedSession(NAME_GameSession);
+    
+	if (CurrentSession && CurrentSession->SessionSettings.Settings.Num() > 0)
+	{
+		if (const FOnlineSessionSetting* Setting = CurrentSession->SessionSettings.Settings.Find(GKey_Lobby_Code))
+		{
+			if (CT_Code)
+			{
+				FString OutCode;
+				Setting->Data.GetValue(OutCode);
+				CT_Code->SetText(FText::FromString(OutCode));
+			}
+		}
+	}
 }
 
 UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
 {
-	return CB_Host;
+	if (CB_Start)
+	{
+		return CB_Start;
+	}
+	return Super::NativeGetDesiredFocusTarget();
 }
 
-void UMatchMenuWidget::InitButtons()
+void UMatchMenuWidget::Init()
 {
-	if (CB_Host)
+	const APlayerController* PC = GetOwningPlayer();
+	if (!PC) return;
+	const bool bIsClient = !PC->HasAuthority();
+	
+	if (CB_Start)
 	{
-		CB_Host->OnClicked().RemoveAll(this);
-		CB_Host->OnClicked().AddUObject(this, &ThisClass::HostButtonClicked);
-	}
-	if (CB_Join)
-	{
-		CB_Join->OnClicked().RemoveAll(this);
-		CB_Join->OnClicked().AddUObject(this, &ThisClass::JoinButtonClicked);
+		CB_Start->OnClicked().RemoveAll(this);
+		CB_Start->OnClicked().AddUObject(this, &ThisClass::HandleStartButtonClicked);
+		if (bIsClient)
+		{
+			CB_Start->SetIsEnabled(false);
+		}
 	}
 	if (CB_Back)
 	{
 		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddLambda([this]
 		{
-			if (OnMenuClosed) OnMenuClosed();
+			const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
+			const FString URL = MainMenuPkg;
+			UGameplayStatics::OpenLevel(this, FName(*URL), true);
 		});
 	}
 }
 
-void UMatchMenuWidget::BindSubsystemCallbacks()
+void UMatchMenuWidget::BindGameStateEvents()
 {
-	if (!SessionsSubsystem)
+	RemoveGameStateEvents();
+	
+	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		const UGameInstance* GameInstance = GetGameInstance();
-		SessionsSubsystem = GameInstance->GetSubsystem<UEasySessionSubsystem>();
+		MatchMenuGS->OnPlayerListChanged.AddDynamic(this, &ThisClass::OnPlayerListChanged);
+		OnPlayerListChanged(MatchMenuGS->GetPlayerList());
+	}
+}
+
+void UMatchMenuWidget::RemoveGameStateEvents()
+{
+	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
+	{
+		MatchMenuGS->OnPlayerListChanged.RemoveAll(this);
+	}
+}
+
+void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
+{
+	if (!CT_PlayerList) return;
+
+	FString FormattedPlayerList = TEXT("Players:\n");
+
+	for (int32 i = 0; i < PlayerNames.Num(); ++i)
+	{
+		FormattedPlayerList.Append(FString::Printf(TEXT("%d. %s\n"), i + 1, *PlayerNames[i]));
 	}
 	
-	RemoveSubsystemCallbacks();
-	
-	if (SessionsSubsystem)
+	CT_PlayerList->SetText(FText::FromString(FormattedPlayerList));
+}
+
+void UMatchMenuWidget::HandleStartButtonClicked()
+{
+	if (UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		SessionsSubsystem->OnStartSessionSuccess.AddUObject(this, &ThisClass::OnStartSessionSuccess);
-		SessionsSubsystem->OnStartSessionFailure.AddUObject(this, &ThisClass::OnStartSessionFailure);
-		
-		SessionsSubsystem->OnFindSessionsSuccess.AddUObject(this, &ThisClass::OnFindSessionsSuccess);
-		SessionsSubsystem->OnFindSessionsFailure.AddUObject(this, &ThisClass::OnFindSessionsFailure);
-		
-		SessionsSubsystem->OnJoinSessionSuccess.AddUObject(this, &ThisClass::OnJoinSessionSuccess);
-		SessionsSubsystem->OnJoinSessionFailure.AddUObject(this, &ThisClass::OnJoinSessionFailure);
-		
-		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
-		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
-	}
-}
-
-void UMatchMenuWidget::RemoveSubsystemCallbacks()
-{
-	if (SessionsSubsystem)
-	{
-		SessionsSubsystem->OnStartSessionSuccess.RemoveAll(this);
-		SessionsSubsystem->OnStartSessionFailure.RemoveAll(this);
-		
-		SessionsSubsystem->OnFindSessionsSuccess.RemoveAll(this);
-		SessionsSubsystem->OnFindSessionsFailure.RemoveAll(this);
-		
-		SessionsSubsystem->OnJoinSessionSuccess.RemoveAll(this);
-		SessionsSubsystem->OnJoinSessionFailure.RemoveAll(this);
-		
-		SessionsSubsystem->OnDestroySessionSuccess.RemoveAll(this);
-		SessionsSubsystem->OnDestroySessionFailure.RemoveAll(this);
-	}
-}
-
-void UMatchMenuWidget::OnStartSessionSuccess()
-{
-	const FString LobbyPkg = FPackageName::ObjectPathToPackageName(CachedLobbyMapPath);
-	const FString URL = LobbyPkg + TEXT("?listen");
-	UGameplayStatics::OpenLevel(this, FName(*URL), true);
-}
-
-void UMatchMenuWidget::OnStartSessionFailure()
-{
-	SetUIEnabled(true);
-	ShowNoticePopup(TEXT("세션 생성에 실패했습니다. 다시 시도해주세요."));
-}
-
-void UMatchMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults)
-{
-	if (bIsSearchingForHostValidation)
-	{
-		bIsSearchingForHostValidation = false;
-		
-		for (auto Result : SessionResults)
+		if (const UGameStateSubsystem* GameStateSubsystem = TromboneGI->GetSubsystem<UGameStateSubsystem>())
 		{
-			FString SettingsValue;
-			Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
+			const FString MapPath = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+
+			UWorld* World = GetWorld();
+			if (!World || World->GetAuthGameMode() == nullptr || MapPath.IsEmpty()) return;
 	
-			if (SettingsValue == PendingLobbyCode)
+			if (const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld()))
 			{
-				if (LobbyCodeText->GetText().IsEmpty()) 
+				const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+				if (SessionInterface.IsValid())
 				{
-					const FString NewCode = GenerateRandomLobbyCode(FMath::Max(2, MaxLobbyCodeLength));
-					StartHostValidation(NewCode);
+					if (const FNamedOnlineSession* Session = SessionInterface->GetNamedSession(NAME_GameSession))
+					{
+						TromboneGI->SetSessionPlayerNumber(Session->RegisteredPlayers.Num());
+						PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Registered Player Count: %d"), TromboneGI->GetSessionPlayerNumber()));
+					}
 				}
-				else
-				{
-					SetUIEnabled(true);
-					ShowNoticePopup(TEXT("이미 사용 중인 코드입니다."));
-				}
-				return;
+			}
+			
+			if (!World->ServerTravel(MapPath))
+			{
+				PRINT_WITH_CURRENT_CONTEXT(TEXT("ServerTravel failed"));
 			}
 		}
-		
-		CreateSessionAfterValidation(PendingLobbyCode);
-		return;
-	}
-	
-	const FString& LobbyCode = LobbyCodeText->GetText().ToString();
-
-	for (auto Result : SessionResults)
-	{
-		FString SettingsValue;
-		Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
-		
-		if (SettingsValue == LobbyCode)
-		{
-			Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
-			Result.Session.SessionSettings.bUsesPresence = true;
-			SessionsSubsystem->JoinSession(Result);
-			return;
-		}
-	}
-	
-	SetUIEnabled(true);
-	ShowNoticePopup(FString::Printf(TEXT("'%s'에 해당하는 세션을 찾을 수 없습니다."), *LobbyCode));
-}
-
-void UMatchMenuWidget::OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults)
-{
-	if (bIsSearchingForHostValidation)
-	{
-		bIsSearchingForHostValidation = false;
-		SetUIEnabled(true);
-		ShowNoticePopup(TEXT("네트워크 상태가 불안정하여 중복 검사에 실패했습니다."));
-		return;
-	}
-	
-	SetUIEnabled(true);
-	ShowNoticePopup(TEXT("세션 검색에 실패했습니다. 다시 시도해주세요."));
-}
-
-void UMatchMenuWidget::OnJoinSessionSuccess()
-{
-	SetUIEnabled(true);
-}
-
-void UMatchMenuWidget::OnJoinSessionFailure()
-{
-	SetUIEnabled(true);
-	ShowNoticePopup(TEXT("세션 참가에 실패했습니다. 다시 시도해주세요."));
-}
-
-void UMatchMenuWidget::OnDestroySessionSuccess()
-{
-	PRINT_WITH_CURRENT_CONTEXT("Session destroyed successfully");
-}
-
-void UMatchMenuWidget::OnDestroySessionFailure()
-{
-	ShowNoticePopup(TEXT("세션 종료에 실패했습니다. 다시 시도해주세요."));
-}
-
-void UMatchMenuWidget::OnMaxPlayerSliderChanged(const float Value)
-{
-	if (MaxPlayerSpinBox)
-	{
-		MaxPlayerSpinBox->SetValue(FMath::RoundToInt(Value));
-	}
-}
-
-void UMatchMenuWidget::OnMaxPlayerSpinBoxChanged(const float Value)
-{
-	if (MaxPlayerSlider)
-	{
-		MaxPlayerSlider->SetValue(Value);
-	}
-}
-
-void UMatchMenuWidget::HostButtonClicked()
-{
-	FString LobbyCode;
-	if (LobbyCodeText->GetText().IsEmpty())
-	{
-		LobbyCode = GenerateRandomLobbyCode(FMath::Max(2, MaxLobbyCodeLength));
-	}
-	else
-	{
-		LobbyCode = LobbyCodeText->GetText().ToString().ToUpper();
-	}
-	
-	if (SessionsSubsystem)
-	{
-		SetUIEnabled(false);
-		StartHostValidation(LobbyCode);
-	}
-}
-
-void UMatchMenuWidget::JoinButtonClicked()
-{
-	if (LobbyCodeText->GetText().IsEmpty())
-	{
-		ShowNoticePopup(TEXT("로비 코드를 입력해주세요."));
-		return;
-	}
-	
-	if (SessionsSubsystem)
-	{
-		SetUIEnabled(false);
-
-		FEasySearchSettings SearchSettings;
-		SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), LobbyCodeText->GetText().ToString().ToUpper());
-		SessionsSubsystem->FindSessions(SearchSettings);
-	}
-}
-
-void UMatchMenuWidget::StartHostValidation(const FString& Code)
-{
-	bIsSearchingForHostValidation = true;
-	PendingLobbyCode = Code;
-    
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Validating Lobby Code: %s"), *Code));
-
-	FEasySearchSettings SearchSettings;
-	SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), Code); 
-	SessionsSubsystem->FindSessions(SearchSettings);
-}
-
-void UMatchMenuWidget::CreateSessionAfterValidation(const FString& ValidatedCode)
-{
-	if (SessionsSubsystem)
-	{
-		FEasySessionSettings Settings;
-		Settings.NumPublicConnections = FMath::RoundToInt(MaxPlayerSlider->GetValue());
-		Settings.CustomProperties.Add(GKey_Lobby_Code.ToString(), ValidatedCode);
-		SessionsSubsystem->CreateSession(Settings);
 	}
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 {
-	CB_Host->SetIsEnabled(bEnabled);
-	CB_Join->SetIsEnabled(bEnabled);
+	CB_Start->SetIsEnabled(bEnabled);
 	CB_Back->SetIsEnabled(bEnabled);
-	LobbyCodeText->SetIsEnabled(bEnabled);
-	MaxPlayerSlider->SetIsEnabled(bEnabled);
-	MaxPlayerSpinBox->SetIsEnabled(bEnabled);
-}
-
-FString UMatchMenuWidget::GenerateRandomLobbyCode(const int32 Length) const
-{
-	const FString Chars = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-	FString RandomCode;
-	for (int32 i = 0; i < Length; ++i)
-	{
-		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
-	}
-	
-	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("로비 코드 %s가 생성되어 클립보드에 복사되었습니다."), *RandomCode));
-	
-	return RandomCode;
-}
-
-void UMatchMenuWidget::ShowNoticePopup(const FString& Content)
-{
-	if (NoticePopupWidgetClass)
-	{
-		UNoticePopupWidget* NoticePopup = CreateWidget<UNoticePopupWidget>(GetOwningPlayer(), NoticePopupWidgetClass);
-		NoticePopup->OnInit(Content);
-	}
+	CT_Code->SetIsEnabled(bEnabled);
 }
