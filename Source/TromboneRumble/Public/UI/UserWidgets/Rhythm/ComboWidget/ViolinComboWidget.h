@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RhythmComboWidgetBase.h"
-#include "Subsystems/RhythmSubsystem.h"
-#include "TromboneComboWidget.generated.h"
+#include "UI/UserWidgets/Rhythm/ComboWidget/RhythmComboWidgetBase.h"
+#include "ViolinComboWidget.generated.h"
 
+class UCanvasPanel;
 class AInstrumentBase;
 enum class EInstrumentType : uint8;
 enum class ENoteResult : uint8;
@@ -17,11 +17,10 @@ class UTextBlock;
 /**
  * 
  */
-UCLASS(Abstract)
-class TROMBONERUMBLE_API UTromboneComboWidget : public URhythmComboWidgetBase
+UCLASS()
+class TROMBONERUMBLE_API UViolinComboWidget : public URhythmComboWidgetBase
 {
 	GENERATED_BODY()
-
 public:
 	void SetPercentSmooth(float NewPercent);
 protected:
@@ -42,6 +41,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	TObjectPtr<UProgressBar> ProgressBar;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	TObjectPtr<UCanvasPanel> ProgressBarPanel;
+
 	// Animations
 	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
 	TObjectPtr<UWidgetAnimation> ComboBarAnim;
@@ -53,10 +55,16 @@ protected:
 	TObjectPtr<UWidgetAnimation> MissAnim;
 
 	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
+	TObjectPtr<UWidgetAnimation> MissTextAnim;
+
+	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
 	TObjectPtr<UWidgetAnimation> BuffActivateAnim;
 
 	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
 	TObjectPtr<UWidgetAnimation> BuffLoopAnim;
+
+	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
+	TObjectPtr<UWidgetAnimation> IdleAnim;
 	// ~Animations
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
@@ -66,7 +74,7 @@ protected:
 	float InterpSpeed = 5.0f;
 private:
 	void BindDelegates();
-	
+
 
 	float TargetPercent = 0.f;
 	float CurrentPercent = 0.0f;

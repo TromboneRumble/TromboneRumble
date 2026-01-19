@@ -4,6 +4,7 @@
 #include "Items/InstrumentViolin.h"
 #include "Data/InstrumentScoreData.h"
 #include "GameFramework/Character.h"
+#include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
 void AInstrumentViolin::OnHitSuccess(AActor* HitActor)
@@ -86,17 +87,17 @@ void AInstrumentViolin::OnRep_Equipped()
 
 float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {
+	UViolinComboWidget* ViolinComboWidget = Cast<UViolinComboWidget>(ComboWidgetInstance.Get());
+
 	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None)
 	{
 		TotalNoteCount = 0;
-		if (ActiveBuffHandle.IsValid())
-		{
-			BuffRemainingCount = 0;
-			RemoveBuff();
-		}
-		return 0.f;
 	}
-	TotalNoteCount++;
+	else
+	{
+		TotalNoteCount++;
+	}
+	
 
 	// --- 버프 관리 로직 ---
 	if (ActiveBuffHandle.IsValid())
@@ -106,8 +107,12 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		if (BuffRemainingCount <= 0)
 		{
 			RemoveBuff(); // 횟수 소진 시 버프 해제
+			TotalNoteCount = 0;
 		}
-		TotalNoteCount = 1;
+		if (ViolinComboWidget)
+		{
+			ViolinComboWidget->SetPercentSmooth((float)BuffRemainingCount / float(ScoreData->ViolinBuffActivationCount));
+		}
 	}
 	else
 	{
@@ -117,6 +122,16 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 			ApplyBuff(ScoreData->ViolinBuffEffectClass);
 			BuffRemainingCount = ScoreData->ViolinBuffDurationCount;
 		}
+		if (ViolinComboWidget)
+		{
+			ViolinComboWidget->SetPercentSmooth(FMath::Min(1.0f, (float)TotalNoteCount / float(ScoreData->ViolinBuffActivationCount)));
+		}
+	}
+
+	//점수 계산 로직 진행
+	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None)
+	{
+		return 0.f;
 	}
 
 	float BaseScore = (InNoteResult == ENoteResult::Excellent) ? ScoreData->PerfectScore : ScoreData->GoodScore;

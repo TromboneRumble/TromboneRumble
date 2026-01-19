@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/UserWidgets/Rhythm/ComboWidget/TromboneComboWidget.h"
-
+#include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
 #include "Animation/UMGSequencePlayer.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Components/CanvasPanel.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
 
@@ -13,14 +13,12 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/Defines.h"
 
-
-
-void UTromboneComboWidget::SetPercentSmooth(float NewPercent)
+void UViolinComboWidget::SetPercentSmooth(float NewPercent)
 {
 	TargetPercent = FMath::Clamp(NewPercent, 0.0f, 1.0f);
 }
 
-void UTromboneComboWidget::NativeConstruct()
+void UViolinComboWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
@@ -35,12 +33,9 @@ void UTromboneComboWidget::NativeConstruct()
 	}
 }
 
-void UTromboneComboWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UViolinComboWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	if (!ProgressBar) return;
-
-	
 	if (FMath::IsNearlyEqual(CurrentPercent, TargetPercent, 0.001f))
 	{
 		if (CurrentPercent != TargetPercent)
@@ -67,80 +62,92 @@ void UTromboneComboWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 	ProgressBar->SetPercent(CurrentPercent);
 }
 
-void UTromboneComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount)
+void UViolinComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount)
 {
 	if (!ComboText) return;
 	ComboText->SetRenderOpacity(1.0f);
 
+	if (IdleAnim && IsAnimationPlaying(IdleAnim))
+	{
+		StopAnimation(IdleAnim);
+	}
+	
+
 	switch (InNoteResult)
 	{
-		case ENoteResult::Bad:
+	case ENoteResult::Bad:
+	{
+		static const TArray<FString> BadPhrases = {
+			TEXT("Oops!"),
+			TEXT("Meh"),
+			TEXT("What?"),
+			TEXT("No!"),
+			TEXT("Miss...")
+		};
+
+		int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
+		ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
+		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+		if (isBuffActivated && MissTextAnim)
 		{
-			static const TArray<FString> BadPhrases = {
-				TEXT("Oops!"),
-				TEXT("Meh"),
-				TEXT("What?"),
-				TEXT("No!"),
-				TEXT("Miss...")
-			};
-
-			int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
-			ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
-			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
-			if (MissAnim)
-			{
-				StopAllAnimations();
-				PlayAnimation(MissAnim);
-			}
+			PlayAnimation(MissTextAnim);
 		}
-		break;
-
-		case ENoteResult::Good:
+		else if (MissAnim)
 		{
-			FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-			ComboText->SetText(FText::FromString(ComboString));
-
-			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
-			if (ComboTextAnim)
-			{
-				PlayAnimation(ComboTextAnim);
-			}
-			if (!isBuffActivated && ComboBarAnim)
-			{
-				PlayAnimation(ComboBarAnim);
-			}
+			StopAllAnimations();
+			PlayAnimation(MissAnim);
 		}
-		break;
-
-		case ENoteResult::Excellent:
-		{
-			FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-			ComboText->SetText(FText::FromString(ComboString));
-
-			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
-			if (ComboTextAnim)
-			{
-				PlayAnimation(ComboTextAnim);
-			}
-			if (!isBuffActivated && ComboBarAnim)
-			{
-				PlayAnimation(ComboBarAnim);
-			}
-		}
-		break;
-
-		case ENoteResult::None:
-		case ENoteResult::Invalid:
-		default:
-			break;
 	}
+	break;
+
+	case ENoteResult::Good:
+	{
+		FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
+		ComboText->SetText(FText::FromString(ComboString));
+
+		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
+		if (ComboTextAnim)
+		{
+			PlayAnimation(ComboTextAnim);
+		}
+		if (!isBuffActivated && ComboBarAnim)
+		{
+			PlayAnimation(ComboBarAnim);
+		}
+	}
+	break;
+
+	case ENoteResult::Excellent:
+	{
+		FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
+		ComboText->SetText(FText::FromString(ComboString));
+
+		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
+		if (ComboTextAnim)
+		{
+			PlayAnimation(ComboTextAnim);
+		}
+		if (!isBuffActivated && ComboBarAnim)
+		{
+			PlayAnimation(ComboBarAnim);
+		}
+	}
+	break;
+
+	case ENoteResult::None:
+	case ENoteResult::Invalid:
+	default:
+		break;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("%f"), ProgressBar->GetRenderTransformAngle());
 }
 
-void UTromboneComboWidget::HandleBuffStatusChanged(bool IsActive)
+void UViolinComboWidget::HandleBuffStatusChanged(bool IsActive)
 {
 	isBuffActivated = IsActive;
 	if (isBuffActivated && BuffActivateAnim)
 	{
+		StopAnimation(ComboBarAnim);
 		UUMGSequencePlayer* Player = PlayAnimation(BuffActivateAnim);
 		if (Player)
 		{
@@ -152,11 +159,15 @@ void UTromboneComboWidget::HandleBuffStatusChanged(bool IsActive)
 		if (BuffLoopAnim && IsAnimationPlaying(BuffLoopAnim))
 		{
 			StopAnimation(BuffLoopAnim);
+			if (IdleAnim)
+			{
+				PlayAnimation(IdleAnim);
+			}
 		}
 	}
 }
 
-void UTromboneComboWidget::OnBuffActivateAnimationFinished(UUMGSequencePlayer& Player)
+void UViolinComboWidget::OnBuffActivateAnimationFinished(UUMGSequencePlayer& Player)
 {
 	if (isBuffActivated && BuffLoopAnim)
 	{
@@ -164,7 +175,7 @@ void UTromboneComboWidget::OnBuffActivateAnimationFinished(UUMGSequencePlayer& P
 	}
 }
 
-void UTromboneComboWidget::BindDelegates()
+void UViolinComboWidget::BindDelegates()
 {
 	APlayerController* OwningPC = GetOwningPlayer();
 	if (!OwningPC) return;
