@@ -139,7 +139,6 @@ void UViolinComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 Comb
 	default:
 		break;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("%f"), ProgressBar->GetRenderTransformAngle());
 }
 
 void UViolinComboWidget::HandleBuffStatusChanged(bool IsActive)
