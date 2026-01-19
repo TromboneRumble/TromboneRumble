@@ -18,7 +18,7 @@ class TROMBONERUMBLE_API UBaseMenuWidget : public UCommonActivatableWidget
 public:
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
 	{
-		return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::CaptureDuringMouseDown);
+		return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture);
 	}	
 
 protected:
