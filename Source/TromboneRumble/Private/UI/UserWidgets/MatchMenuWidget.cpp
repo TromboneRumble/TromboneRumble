@@ -148,6 +148,8 @@ void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 
 void UMatchMenuWidget::HandleStartButtonClicked()
 {
+	SetUIEnabled(false);
+	
 	if (UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		if (const UGameStateSubsystem* GameStateSubsystem = TromboneGI->GetSubsystem<UGameStateSubsystem>())
@@ -165,7 +167,6 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 					if (const FNamedOnlineSession* Session = SessionInterface->GetNamedSession(NAME_GameSession))
 					{
 						TromboneGI->SetSessionPlayerNumber(Session->RegisteredPlayers.Num());
-						PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Registered Player Count: %d"), TromboneGI->GetSessionPlayerNumber()));
 					}
 				}
 			}
@@ -173,6 +174,7 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 			if (!World->ServerTravel(MapPath))
 			{
 				PRINT_WITH_CURRENT_CONTEXT(TEXT("ServerTravel failed"));
+				SetUIEnabled(true);
 			}
 		}
 	}

@@ -11,7 +11,8 @@ void AInstrumentCymbals::OnHitSuccess(AActor* HitActor)
 	Super::OnHitSuccess(HitActor);
 	if (!IsOwnerLocallyControlled()) return;
 
-	// 타격 점수 서버로 전송
+	PlayHitSound();
+	
 	if (ADefaultPlayerState* DefaultPlayerState = GetOwnerPlayerState())
 	{
 		if (IsOwnerLocallyControlled())

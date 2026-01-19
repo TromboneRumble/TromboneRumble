@@ -7,6 +7,7 @@
 #include "Interfaces/Interactable.h"
 #include "ItemBase.generated.h"
 
+class UAkComponent;
 class UInteractionTriggerComponent;
 class UCapsuleComponent;
 class USphereComponent;
@@ -38,6 +39,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
 	TObjectPtr<UInteractionTriggerComponent> InteractTriggerComponent = nullptr;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
+	TObjectPtr<UAkComponent> AkComponent = nullptr;
 	// ~ End Components
 
 	UPROPERTY(VisibleAnywhere, Replicated)

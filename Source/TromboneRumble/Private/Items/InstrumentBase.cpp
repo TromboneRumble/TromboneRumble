@@ -232,12 +232,6 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	}
 }
 
-bool AInstrumentBase::IsOwnerLocallyControlled() const
-{
-	const APawn* PawnOwner = Cast<APawn>(CurrentOwner);
-	return (PawnOwner && PawnOwner->IsLocallyControlled());
-}
-
 ADefaultPlayerState* AInstrumentBase::GetOwnerPlayerState() const
 {
 	if (const APawn* PawnOwner = Cast<APawn>(CurrentOwner))
