@@ -14,6 +14,9 @@ class TROMBONERUMBLE_API AInstrumentTrombone : public AInstrumentBase
 {
 	GENERATED_BODY()
 
+public:
+	virtual void OnHitSuccess(AActor* HitActor) override;
+	
 protected:
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) override;
 };

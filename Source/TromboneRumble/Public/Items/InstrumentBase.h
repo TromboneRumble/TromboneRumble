@@ -36,16 +36,16 @@ protected:
 	virtual void OnRep_Equipped() override;
 
 	// Indicator
-	UPROPERTY(EditDefaultsOnly, Category = "Indicator")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator")
 	TSubclassOf<AInstrumentIndicator> IndicatorClass;
 
 	UPROPERTY(Transient) 
 	TObjectPtr<AInstrumentIndicator> IndicatorInstance = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Indicator")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator")
 	FVector IndicatorOffset = FVector(0.0f, 0.0f, 100.0f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Indicator|UI")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator|UI")
 	TSubclassOf<UOSI_WidgetBase> IndicatorWidgetClass;
 
 	UPROPERTY()
@@ -65,7 +65,7 @@ protected:
 	void HandleInGameStateChanged(EInGameState InGameState);
 	// ~ Indicator
 
-	UPROPERTY(EditAnywhere, Category = "Instrument|Data")
+	UPROPERTY(EditAnywhere, Category = "Config|Instrument|Data")
 	TObjectPtr<UInstrumentScoreData> ScoreData;
 
 	// 현재 활성화된 버프 핸들 (UnEquip시 제거용)
@@ -84,7 +84,6 @@ protected:
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) { return 0.f; }
 	// ~Rhythm Logic
 
-	bool IsOwnerLocallyControlled() const;
 	ADefaultPlayerState* GetOwnerPlayerState() const;
 
 private:

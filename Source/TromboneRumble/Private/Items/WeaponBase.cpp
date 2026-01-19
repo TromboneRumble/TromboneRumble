@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "AkComponent.h"
 #include "GameplayEffect.h"
 #include "Data/WeaponDataAsset.h"
 #include "Interfaces/CombatReceiver.h"
@@ -30,6 +31,13 @@ AWeaponBase::AWeaponBase()
 	SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	CapsuleComponent->SetCollisionObjectType(AttackTraceChannel); // Object Channel 1 : Weapon
 	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	
+	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AKComponent"));
+	if (AkComponent)
+	{
+		AkComponent->SetupAttachment(RootComponent);
+		AkComponent->OcclusionRefreshInterval = 0.f;
+	}
 }
 
 void AWeaponBase::Tick(float DeltaSeconds)
@@ -216,6 +224,14 @@ bool AWeaponBase::IsCanSweep() const
 	return true;
 }
 
+void AWeaponBase::PlayHitSound()
+{
+	if (HitSoundEvent && AkComponent)
+	{
+		AkComponent->PostAkEvent(HitSoundEvent);
+	}
+}
+
 void AWeaponBase::BeginAttack()
 {
 	bIsDetectHit = true;
@@ -258,4 +274,10 @@ void AWeaponBase::OnRep_Equipped()
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
 		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	}
+}
+
+bool AWeaponBase::IsOwnerLocallyControlled() const
+{
+	const APawn* PawnOwner = Cast<APawn>(CurrentOwner);
+	return PawnOwner && PawnOwner->IsLocallyControlled();
 }

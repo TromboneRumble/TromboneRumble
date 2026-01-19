@@ -47,6 +47,13 @@ public:
 	virtual bool IsCanSweep() const;
 
 protected:
+	virtual void PlayHitSound();
+	
+	bool IsOwnerLocallyControlled() const;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Config")
+	TObjectPtr<UAkAudioEvent> HitSoundEvent;
+	
 	UFUNCTION()
 	virtual void OnRep_Equipped();
 
@@ -61,10 +68,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	TObjectPtr<UWeaponDataAsset> WeaponData;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Config")
 	EInstrumentType InstrumentType = EInstrumentType::Background;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon|GAS|Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|GAS|Movement")
 	TSubclassOf<UGameplayEffect> EquipMoveSpeedEffectClass;
 
 	// 이 악기가 현재 소유자에게 걸어둔 GE 핸들
