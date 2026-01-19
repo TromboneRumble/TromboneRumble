@@ -38,14 +38,6 @@ private:
     UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "스폰 가능 지점 목록"))
     TArray<TObjectPtr<ATargetPoint>> SpawnPoints;
 
-    /** 전체 곡 진행률(0.0 ~ 1.0) 중 스포트라이트 기믹이 시작될 시점입니다. */
-    UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "기믹 시작 진행률"))
-    float SpotlightStartTimePercent = 0.1f;
-    
-    /** 전체 곡 진행률(0.0 ~ 1.0) 중 피버 타임(강화 모드)이 시작될 시점입니다. */
-    UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "피버 타임 시작 진행률"))
-    float FeverTimeStartPercent = 0.8f;
-
     /** [일반] 스포트라이트가 생성되는 최소 시간 간격 (초) */
     UPROPERTY(EditAnywhere, Category = "Spotlight|Normal", meta = (DisplayName = "최소 스폰 간격 (일반)"))
     float MinSpawnInterval_Normal = 8.0f;
