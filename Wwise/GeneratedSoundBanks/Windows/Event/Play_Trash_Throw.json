@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
     "Language": "SFX",
-    "Hash": "{D04E9100-8923-7EA0-6BA3-423D91F02923}",
+    "Hash": "{4677516A-0664-F762-74E8-361133651FB8}",
     "ObjectPath": "Play_Trash_Throw",
     "ShortName": "Play_Trash_Throw",
     "Path": "Event/Play_Trash_Throw.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{CBE549C8-4460-317F-D59B-42BAE60BACE7}"
+  "FileHash": "{491CDB0D-8866-18D8-B145-8A5873B5BCDC}"
  }
 }
