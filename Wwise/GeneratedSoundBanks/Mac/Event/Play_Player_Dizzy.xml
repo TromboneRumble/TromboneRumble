@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{57D78F08-B111-AE41-27C0-3BB21398C10D}">
+		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{B55FB15E-F0FC-CFBC-1A6F-278F38EFF51A}">
 			<ObjectPath>Play_Player_Dizzy</ObjectPath>
 			<ShortName>Play_Player_Dizzy</ShortName>
 			<Path>Event/Play_Player_Dizzy.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{811D3814-FF7B-CB8C-A8A2-9A11915B910B}</FileHash>
+	<FileHash>{162921ED-2BA1-6615-DBE9-130889D067FD}</FileHash>
 </SoundBanksInfo>

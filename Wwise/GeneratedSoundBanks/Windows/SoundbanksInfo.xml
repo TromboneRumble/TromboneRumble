@@ -260,7 +260,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="836697457" Type="Event" GUID="{59761350-8076-4CC8-AC2A-13D68D711760}" Language="SFX" Hash="{D04E9100-8923-7EA0-6BA3-423D91F02923}">
+		<SoundBank Id="836697457" Type="Event" GUID="{59761350-8076-4CC8-AC2A-13D68D711760}" Language="SFX" Hash="{4677516A-0664-F762-74E8-361133651FB8}">
 			<ObjectPath>Play_Trash_Throw</ObjectPath>
 			<ShortName>Play_Trash_Throw</ShortName>
 			<Path>Event/Play_Trash_Throw.bnk</Path>
@@ -1894,7 +1894,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{57D78F08-B111-AE41-27C0-3BB21398C10D}">
+		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{B55FB15E-F0FC-CFBC-1A6F-278F38EFF51A}">
 			<ObjectPath>Play_Player_Dizzy</ObjectPath>
 			<ShortName>Play_Player_Dizzy</ShortName>
 			<Path>Event/Play_Player_Dizzy.bnk</Path>
@@ -2141,7 +2141,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{FA80645F-2D6B-2048-8BB9-CDD1DE770A06}">
+		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{E17EEC12-A35C-6F1C-143B-8C2B0AD78EC3}">
 			<ObjectPath>Play_Audience_Boo</ObjectPath>
 			<ShortName>Play_Audience_Boo</ShortName>
 			<Path>Event/Play_Audience_Boo.bnk</Path>
@@ -2173,5 +2173,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{DAA2B55C-9107-D9C8-92A2-4D1A6AF259D7}</FileHash>
+	<FileHash>{8DA7BE9B-BDA5-A1B4-4955-DF089545CB5D}</FileHash>
 </SoundBanksInfo>
