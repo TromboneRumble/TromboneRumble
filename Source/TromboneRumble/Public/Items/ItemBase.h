@@ -7,6 +7,7 @@
 #include "Interfaces/Interactable.h"
 #include "ItemBase.generated.h"
 
+class UAkComponent;
 class UInteractionTriggerComponent;
 class UCapsuleComponent;
 class USphereComponent;

@@ -10,5 +10,11 @@ UCLASS()
 class TROMBONERUMBLE_API UInGameWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
+
+public:
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
+	{
+		return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently);
+	}	
 	
 };

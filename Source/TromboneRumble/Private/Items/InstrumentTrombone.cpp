@@ -6,6 +6,15 @@
 #include "UI/UserWidgets/Rhythm/ComboWidget/TromboneComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
+void AInstrumentTrombone::OnHitSuccess(AActor* HitActor)
+{
+	Super::OnHitSuccess(HitActor);
+	
+	if (!IsOwnerLocallyControlled()) return;
+
+	PlayHitSound();
+}
+
 float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {
 	if (CurrentCombo >= ScoreData->TromboneBuffComboThreshold)

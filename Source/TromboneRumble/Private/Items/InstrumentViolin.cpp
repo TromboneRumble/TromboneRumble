@@ -6,6 +6,15 @@
 #include "GameFramework/Character.h"
 #include "Utilities/DebugHelper.h"
 
+void AInstrumentViolin::OnHitSuccess(AActor* HitActor)
+{
+	Super::OnHitSuccess(HitActor);
+	
+	if (!IsOwnerLocallyControlled()) return;
+
+	PlayHitSound();
+}
+
 void AInstrumentViolin::OnRep_Equipped()
 {
 	Super::OnRep_Equipped();

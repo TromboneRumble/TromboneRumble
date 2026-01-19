@@ -37,16 +37,16 @@ protected:
 	virtual void OnRep_Equipped() override;
 
 	// Indicator
-	UPROPERTY(EditDefaultsOnly, Category = "Indicator")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator")
 	TSubclassOf<AInstrumentIndicator> IndicatorClass;
 
 	UPROPERTY(Transient) 
 	TObjectPtr<AInstrumentIndicator> IndicatorInstance = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Indicator")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator")
 	FVector IndicatorOffset = FVector(0.0f, 0.0f, 100.0f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Indicator|UI")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator|UI")
 	TSubclassOf<UOSI_WidgetBase> IndicatorWidgetClass;
 
 	UPROPERTY()
@@ -60,7 +60,6 @@ protected:
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
 	// ~ Indicator
-
 	// GAS Helpers
 	// 현재 활성화된 버프 핸들 (UnEquip시 제거용)
 	FActiveGameplayEffectHandle ActiveBuffHandle;
@@ -70,12 +69,12 @@ protected:
 	float GetGradeMultiplier() const;
 	float GetComboMultiplier() const;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Instrument|Sound")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
 	TObjectPtr<UAkAudioEvent> BuffActivationSound;
 	// ~GAS Helpers
 
 	// Rhythm Logic
-	UPROPERTY(EditAnywhere, Category = "Instrument|Data")
+	UPROPERTY(EditAnywhere, Category = "Config|Instrument|Data")
 	TObjectPtr<UInstrumentScoreData> ScoreData;
 	UFUNCTION()
 	virtual void HandleNoteDetected(ENoteResult InNoteResult);
@@ -86,7 +85,7 @@ protected:
 	FTimerHandle WidgetInitTimerHandle;
 	void TryCreateIndicatorWidget();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Rhythm|UI")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Rhythm|UI")
 	TSubclassOf<URhythmComboWidgetBase> ComboWidgetClass;
 
 	UPROPERTY()
@@ -96,7 +95,7 @@ protected:
 	bool IsOwnerLocallyControlled() const;
 	ADefaultPlayerState* GetOwnerPlayerState() const;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Instrument|Sound")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
 	TObjectPtr<UAkAudioEvent> InstrumentDropSound;
 
 private:

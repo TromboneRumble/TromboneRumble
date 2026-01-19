@@ -13,38 +13,6 @@ void ABaseHUD::BeginPlay()
 		if (RootLayout)
 		{
 			RootLayout->AddToViewport();
-
-			if (APlayerController* PC = GetOwningPlayerController())
-			{
-				PC->bShowMouseCursor = bShowMouseCursor;
-
-				switch (DefaultInputMode)
-				{
-				case EInputModeType::UIOnly:
-					{
-						FInputModeUIOnly InputModeData;
-						InputModeData.SetLockMouseToViewportBehavior(MouseLockMode);
-						PC->SetInputMode(InputModeData);
-					}
-					break;
-
-				case EInputModeType::GameOnly:
-					{
-						FInputModeGameOnly InputModeData;
-						PC->SetInputMode(InputModeData);
-					}
-					break;
-
-				case EInputModeType::GameAndUI:
-					{
-						FInputModeGameAndUI InputModeData;
-						InputModeData.SetLockMouseToViewportBehavior(MouseLockMode);
-						InputModeData.SetHideCursorDuringCapture(false);
-						PC->SetInputMode(InputModeData);
-					}
-					break;
-				}
-			}
 		}
 	}
 }
