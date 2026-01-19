@@ -6,14 +6,6 @@
 #include "GameFramework/HUD.h"
 #include "BaseHUD.generated.h"
 
-UENUM(BlueprintType)
-enum class EInputModeType : uint8
-{
-	UIOnly,
-	GameOnly,
-	GameAndUI
-};
-
 UCLASS()
 class TROMBONERUMBLE_API ABaseHUD : public AHUD
 {
