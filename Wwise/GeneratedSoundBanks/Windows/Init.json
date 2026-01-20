@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{BAC1E9CE-AD15-1713-E324-B9CC196329CF}",
+    "Hash": "{82116C6E-4F0D-71C9-5367-F73ACD33D93E}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -46,6 +46,12 @@
     },
     "Busses": [
      {
+      "Id": "1058308940",
+      "Name": "Master_LobbyBGM",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Master_LobbyBGM",
+      "GUID": "{55DFD7BE-E58A-4714-BDAE-7393826F6CC0}"
+     },
+     {
       "Id": "1900298039",
       "Name": "Master_Music",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Master_Music",
@@ -80,6 +86,12 @@
      }
     ],
     "GameParameters": [
+     {
+      "Id": "271579137",
+      "Name": "RTPC_LobbyBGM",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_LobbyBGM",
+      "GUID": "{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"
+     },
      {
       "Id": "836717429",
       "Name": "RTPC_BPM_Test",
@@ -651,6 +663,6 @@
     ]
    }
   ],
-  "FileHash": "{6C3DEE0B-ACB3-86BB-36DD-58E76A8EC5FC}"
+  "FileHash": "{004B08F2-0CB4-0702-A48E-F2C9F6C4FCE7}"
  }
 }

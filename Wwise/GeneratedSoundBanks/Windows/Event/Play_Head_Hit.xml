@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{B8C7131E-5E5B-0DC8-9F91-ED7BCBD800FB}">
+		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{AF5D4B30-8777-5F6F-636C-FFFA3C6D5098}">
 			<ObjectPath>Play_Head_Hit</ObjectPath>
 			<ShortName>Play_Head_Hit</ShortName>
 			<Path>Event/Play_Head_Hit.bnk</Path>
@@ -28,7 +28,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.38691112" DurationMax="0.42857853">
+				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.42560226" DurationMax="0.46537563">
 					<MediaRefs>
 						<MediaRef Id="18254192"/>
 						<MediaRef Id="46542412"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F60845ED-5349-BF17-D87C-0DE42CB2C5CE}</FileHash>
+	<FileHash>{F4C86A0D-FC5D-E0A2-2016-DCE4ECC82052}</FileHash>
 </SoundBanksInfo>

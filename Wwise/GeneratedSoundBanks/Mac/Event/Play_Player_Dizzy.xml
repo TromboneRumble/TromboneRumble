@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{B55FB15E-F0FC-CFBC-1A6F-278F38EFF51A}">
+		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{5E2CC56B-0F6C-8DC0-F18A-56B980FC074A}">
 			<ObjectPath>Play_Player_Dizzy</ObjectPath>
 			<ShortName>Play_Player_Dizzy</ShortName>
 			<Path>Event/Play_Player_Dizzy.bnk</Path>
@@ -13,7 +13,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3076746022" Name="Play_Player_Dizzy" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Dizzy" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" DurationType="OneShot" DurationMin="8.447875" DurationMax="8.447875">
+				<Event Id="3076746022" Name="Play_Player_Dizzy" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Dizzy" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="8.447875" DurationMax="8.447875">
 					<MediaRefs>
 						<MediaRef Id="657118636"/>
 					</MediaRefs>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{162921ED-2BA1-6615-DBE9-130889D067FD}</FileHash>
+	<FileHash>{08374BAE-DA76-4930-92DD-9CE9BBF0F87C}</FileHash>
 </SoundBanksInfo>
