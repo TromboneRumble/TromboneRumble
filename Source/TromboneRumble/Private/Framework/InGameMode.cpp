@@ -6,6 +6,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
+#include "Framework/TromboneGameInstance.h"
 
 AInGameMode::AInGameMode()
 {
@@ -23,17 +24,10 @@ void AInGameMode::HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* Unequ
 void AInGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld()))
+	
+	if (const UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
-		if (SessionInterface.IsValid())
-		{
-			if (FNamedOnlineSession* Session = SessionInterface->GetNamedSession(NAME_GameSession))
-			{
-				NumPublicConnections = Session->SessionSettings.NumPublicConnections;
-			}
-		}
+		NumPublicConnections = TromboneGI->GetSessionPlayerNumber();
 	}
 
 	if (NumPublicConnections <= 0)
