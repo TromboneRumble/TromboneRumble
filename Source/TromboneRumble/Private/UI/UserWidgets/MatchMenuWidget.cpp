@@ -77,17 +77,10 @@ void UMatchMenuWidget::NativeOnActivated()
 	}
 }
 
-UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
-{
-	if (CB_Start)
-	{
-		return CB_Start;
-	}
-	return Super::NativeGetDesiredFocusTarget();
-}
-
 void UMatchMenuWidget::Init()
 {
+	Super::Init();
+	
 	const APlayerController* PC = GetOwningPlayer();
 	if (!PC) return;
 	const bool bIsClient = !PC->HasAuthority();
