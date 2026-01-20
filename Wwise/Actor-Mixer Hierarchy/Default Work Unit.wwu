@@ -2259,7 +2259,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="H_Hit_1" ID="{59267590-3915-482A-A4A5-4786CBABA05D}" ShortID="839145910">
+										<Sound Name="H_Hit_1" ID="{9D722EA7-9DB9-4AA6-A390-3DC2E27E32B5}" ShortID="508709359">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -2269,7 +2269,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="H_Hit_1" ID="{0A72BC6B-5024-4716-BDC3-18E8390E6C6D}">
+												<AudioFileSource Name="H_Hit_1" ID="{90ECCC81-9775-4436-B743-316F27E5B868}">
 													<Language>SFX</Language>
 													<AudioFile>H_Hit_1.wav</AudioFile>
 													<MediaIDList>
@@ -2278,10 +2278,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="H_Hit_1" ID="{0A72BC6B-5024-4716-BDC3-18E8390E6C6D}" Platform="Linked"/>
+												<ActiveSource Name="H_Hit_1" ID="{90ECCC81-9775-4436-B743-316F27E5B868}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="H_Hit_2" ID="{1F3E7811-C0FC-464B-8937-8408133E5E5E}" ShortID="677339166">
+										<Sound Name="H_Hit_2" ID="{D5F86350-3E07-481C-A5B5-1FC549870511}" ShortID="138831294">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -2291,7 +2291,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="H_Hit_2" ID="{EAC305FD-1A06-40E5-B95E-A903C75A8C16}">
+												<AudioFileSource Name="H_Hit_2" ID="{C569012E-74CA-4839-83A8-24C5F62A00BB}">
 													<Language>SFX</Language>
 													<AudioFile>H_Hit_2.wav</AudioFile>
 													<MediaIDList>
@@ -2300,10 +2300,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="H_Hit_2" ID="{EAC305FD-1A06-40E5-B95E-A903C75A8C16}" Platform="Linked"/>
+												<ActiveSource Name="H_Hit_2" ID="{C569012E-74CA-4839-83A8-24C5F62A00BB}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="H_Hit_3" ID="{55FB046A-2AF0-4DF1-845E-127A4E79E5DD}" ShortID="942141937">
+										<Sound Name="H_Hit_3" ID="{345F7D85-19FE-4434-B684-615225EF1442}" ShortID="470876917">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -2313,7 +2313,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="H_Hit_3" ID="{651B64C6-20ED-47C1-99E3-92DEA422C521}">
+												<AudioFileSource Name="H_Hit_3" ID="{11D88FDE-6F54-4BCD-B27A-58692B1DE452}">
 													<Language>SFX</Language>
 													<AudioFile>H_Hit_3.wav</AudioFile>
 													<MediaIDList>
@@ -2322,7 +2322,7 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="H_Hit_3" ID="{651B64C6-20ED-47C1-99E3-92DEA422C521}" Platform="Linked"/>
+												<ActiveSource Name="H_Hit_3" ID="{11D88FDE-6F54-4BCD-B27A-58692B1DE452}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
 									</ChildrenList>

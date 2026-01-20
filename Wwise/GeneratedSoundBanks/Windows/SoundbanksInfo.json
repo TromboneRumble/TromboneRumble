@@ -2422,7 +2422,7 @@
     "Type": "Event",
     "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
     "Language": "SFX",
-    "Hash": "{B8C7131E-5E5B-0DC8-9F91-ED7BCBD800FB}",
+    "Hash": "{AF5D4B30-8777-5F6F-636C-FFFA3C6D5098}",
     "ObjectPath": "Play_Head_Hit",
     "ShortName": "Play_Head_Hit",
     "Path": "Event/Play_Head_Hit.bnk",
@@ -2475,8 +2475,8 @@
       "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "0.38691112",
-      "DurationMax": "0.42857853",
+      "DurationMin": "0.42560226",
+      "DurationMax": "0.46537563",
       "MediaRefs": [
        {
         "Id": "18254192"
@@ -4654,6 +4654,6 @@
     ]
    }
   ],
-  "FileHash": "{3E9B5770-163B-8200-0088-0891057128F2}"
+  "FileHash": "{507C5678-3510-9B3B-04D4-3037245EE4E1}"
  }
 }

@@ -1049,7 +1049,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{B8C7131E-5E5B-0DC8-9F91-ED7BCBD800FB}">
+		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{AF5D4B30-8777-5F6F-636C-FFFA3C6D5098}">
 			<ObjectPath>Play_Head_Hit</ObjectPath>
 			<ShortName>Play_Head_Hit</ShortName>
 			<Path>Event/Play_Head_Hit.bnk</Path>
@@ -1076,7 +1076,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.38691112" DurationMax="0.42857853">
+				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.42560226" DurationMax="0.46537563">
 					<MediaRefs>
 						<MediaRef Id="18254192"/>
 						<MediaRef Id="46542412"/>
@@ -2175,5 +2175,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{68638C80-CF79-2B3F-D0C8-D5F87E1F2A2B}</FileHash>
+	<FileHash>{E15BAC07-B77A-F6DB-EE3C-270E3DFA4815}</FileHash>
 </SoundBanksInfo>
