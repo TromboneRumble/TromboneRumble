@@ -27,16 +27,16 @@ void AInGameMode::BeginPlay()
 	
 	if (const UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		NumPublicConnections = TromboneGI->GetSessionPlayerNumber();
+		SessionPlayerNumber = TromboneGI->GetSessionPlayerNumber();
 	}
 
-	if (NumPublicConnections <= 0)
+	if (SessionPlayerNumber <= 0)
 	{
-		NumPublicConnections = 4;
+		SessionPlayerNumber = 4;
 	}
 	if (GetWorld()->GetNetMode() == NM_Standalone)
 	{
-		NumPublicConnections = 1;
+		SessionPlayerNumber = 1;
 	}
 }
 
@@ -53,7 +53,7 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 	//현재 접속한 플레이어
 	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
 
-	if (CurrentPlayerCount < NumPublicConnections)
+	if (CurrentPlayerCount < SessionPlayerNumber)
 	{
 		return;
 	}

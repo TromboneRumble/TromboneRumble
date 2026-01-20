@@ -89,7 +89,9 @@ void ADefaultTromboneCharacter::Move(const struct FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator Rotation = FRotator::ZeroRotator;
+		//Ragdoll이 되며 Controller가 회전되어도 플레이어는 고정 축을 기준으로 움직이고 싶기 때문에 때문에 주석처리
+		//const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
