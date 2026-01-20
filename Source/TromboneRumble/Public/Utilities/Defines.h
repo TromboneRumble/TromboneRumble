@@ -150,3 +150,10 @@ struct FViewportChangedMessage
 	UPROPERTY()	float LaneXEndPos = 0.f;
 	UPROPERTY()	TArray<float> LaneYPosArray;
 };
+
+UENUM(BlueprintType)
+enum class EBarInterpType : uint8
+{
+	Smooth      UMETA(DisplayName = "Smooth (Ease-Out)"),  // 부드러운 감속 (FInterpTo)
+	Constant    UMETA(DisplayName = "Constant (Linear)")   // 일정한 속도 (FInterpConstantTo)
+};

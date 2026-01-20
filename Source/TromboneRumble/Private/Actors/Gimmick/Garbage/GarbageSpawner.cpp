@@ -283,3 +283,11 @@ void AGarbageSpawner::SpawnAndThrow_Server(const FTransform& SpawnTransform, AAc
 
 	Garbage->InitThrow_Server(StartLocation, TargetLocation);
 }
+
+void AGarbageSpawner::Server_SpawnGarbageForDebugging_Implementation(const int32 Count)
+{
+	for (int32 i = 0; i < Count; ++i)
+	{
+		SpawnGarbageOnce_Server();
+	}
+}

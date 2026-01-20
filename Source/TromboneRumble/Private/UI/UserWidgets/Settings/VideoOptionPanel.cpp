@@ -6,7 +6,9 @@
 #include "GameFramework/GameUserSettings.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "RHI.h"
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
+#include "Utilities/DebugHelper.h"
 
 void UVideoOptionPanel::NativePreConstruct()
 {
@@ -75,15 +77,15 @@ void UVideoOptionPanel::HandleApplyButtonClicked()
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
     {
-       const UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
-       const int32 Idx = ResWidget->GetCurrentIndex();
-       const FString ResString = ResWidget->GetOptionsArray()[Idx].ToString();
+		const UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
+		const int32 Idx = ResWidget->GetCurrentIndex();
+		const FString ResString = ResWidget->GetOptionsArray()[Idx].ToString();
 
-       FString Left, Right;
-       if (ResString.Split(TEXT("x"), &Left, &Right))
-       {
-          NewSettings.Resolution = FIntPoint(FCString::Atoi(*Left), FCString::Atoi(*Right));
-       }
+		FString Left, Right;
+		if (ResString.Split(TEXT("x"), &Left, &Right))
+		{
+			NewSettings.Resolution = FIntPoint(FCString::Atoi(*Left), FCString::Atoi(*Right));
+		}
     }
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
@@ -150,14 +152,40 @@ void UVideoOptionPanel::BuildOptions()
 
 		if (UOptionCycleWidget* NewWidget = CreateWidget<UOptionCycleWidget>(this, OptionCycleWidgetClass))
 		{
-			NewWidget->Init(Row->DisplayName, Row->OptionLabels, Row->DefaultIndex);
+			TArray<FText> Labels = Row->OptionLabels;
+			int32 StartIndex = Row->DefaultIndex;
+
+			if (Row->OptionType == EGraphicsOptionType::Resolution)
+			{
+				Labels.Empty();
+				FScreenResolutionArray Resolutions;
+				if (RHIGetAvailableResolutions(Resolutions, false))
+				{
+					for (const auto& Res : Resolutions)
+					{
+						FText ResText = FText::FromString(FString::Printf(TEXT("%dx%d"), Res.Width, Res.Height));
+                   
+						auto Predicate = [&](const FText& Existing) { return Existing.EqualTo(ResText); };
+						if (!Labels.ContainsByPredicate(Predicate))
+						{
+							Labels.Add(ResText);
+						}
+					}
+				}
+			}
+			
+			NewWidget->Init(Row->DisplayName, Labels, StartIndex);
 			VB_OptionContainer->AddChild(NewWidget);
+			
 			CreatedWidgets.Add(Row->OptionType, NewWidget);
+			
 			if (Row->OptionType == EGraphicsOptionType::OverallQuality)
 			{
 				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
 			}
-			else
+			else if (Row->OptionType != EGraphicsOptionType::Resolution &&
+					 Row->OptionType != EGraphicsOptionType::VSync &&
+					 Row->OptionType != EGraphicsOptionType::WindowMode)
 			{
 				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
 			}
@@ -273,7 +301,8 @@ void UVideoOptionPanel::OnOverallQualityChanged(const int32 NewIndex)
 	{
 		if (Elem.Key != EGraphicsOptionType::OverallQuality && 
 			Elem.Key != EGraphicsOptionType::Resolution && 
-			Elem.Key != EGraphicsOptionType::VSync)
+			Elem.Key != EGraphicsOptionType::VSync &&
+			Elem.Key != EGraphicsOptionType::WindowMode)
 		{
 			Elem.Value->SetSelectedIndex(NewIndex);
 		}

@@ -2,6 +2,7 @@
 
 
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "GameFramework/Pawn.h"
 
@@ -48,6 +49,10 @@ void URingHitBoxComponent::BeginPlay()
 		{
 			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
 			RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
+		}
+		if (ADefaultTromboneCharacter* DefaultTromboneCharacter = Cast<ADefaultTromboneCharacter>(GetOwner()))
+		{
+			DefaultTromboneCharacter->OnStunStateChanged.AddDynamic(this, &ThisClass::OnOwnerStunnedHandler);
 		}
 	}
 }
@@ -100,6 +105,25 @@ void URingHitBoxComponent::OnInstrumentPickedHandler(EInstrumentType PrevType, E
 		{
 			SetVisibility(true, true);
 		}
+	}
+}
+
+void URingHitBoxComponent::OnOwnerStunnedHandler(bool bIsStun)
+{
+	EnsureMID();
+	if (!RingMID)
+	{
+		return;
+	}
+	CacheBaseColorIfNeeded();
+	bIsOwnerStunned = bIsStun;
+	if (bIsStun)
+	{
+		RingMID->SetVectorParameterValue(ColorParamName, StunColor);
+	}
+	else
+	{
+		RingMID->SetVectorParameterValue(ColorParamName, CachedBaseColor);
 	}
 }
 
@@ -215,5 +239,13 @@ void URingHitBoxComponent::RestoreBaseColor()
 		return;
 	}
 
-	RingMID->SetVectorParameterValue(ColorParamName, CachedBaseColor);
+	if (bIsOwnerStunned)
+	{
+		RingMID->SetVectorParameterValue(ColorParamName, StunColor);
+	}
+	else
+	{
+		RingMID->SetVectorParameterValue(ColorParamName, CachedBaseColor);
+	}
+	
 }

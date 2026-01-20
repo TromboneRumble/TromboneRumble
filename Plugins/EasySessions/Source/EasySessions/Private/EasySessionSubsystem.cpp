@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EasySessionSubsystem.h"
+#include "EasySessionLog.h"
 #include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemUtils.h"
@@ -85,7 +86,7 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot host session: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot host session: Session Interface is invalid"));
         }
     }
     
@@ -107,13 +108,13 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
             {
                 if (LastSettings.GetValue().bStartAfterCreate)
                 {
-                    UE_LOG_ONLINE_SESSION(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
+                    UE_LOG_EASY(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
                     StartSessionCompleteDelegateHandle = Sessions->AddOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegate);
                     Sessions->StartSession(NAME_GameSession);
                 }
                 else
                 {
-                    UE_LOG_ONLINE_SESSION(Display, TEXT("Session creation completed. Automatic start is turned off, to start the session call 'StartSession'."));
+                    UE_LOG_EASY(Display, TEXT("Session creation completed. Automatic start is turned off, to start the session call 'StartSession'."));
                     OnStartSessionSuccess.Broadcast();
                 }
             
@@ -164,32 +165,32 @@ void UEasySessionSubsystem::FindSessions(const FEasySearchSettings& InSettings)
         {
             FindSessionsCompleteDelegateHandle = Sessions->AddOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegate);
 
-            LastSessionSearch = MakeShareable(new FOnlineSessionSearch());
-            LastSessionSearch->MaxSearchResults = InSettings.MaxSearchResults;
-            LastSessionSearch->bIsLanQuery = InSettings.bIsLAN;
+            SearchObject = MakeShareable(new FOnlineSessionSearch());
+            SearchObject->MaxSearchResults = InSettings.MaxSearchResults;
+            SearchObject->bIsLanQuery = InSettings.bIsLAN;
     
             if (!InSettings.bIsLAN)
             {
                 // TODO : AdvancedSessions::FOnlineSeacrhSettingsEx 참고
-                LastSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+                
+                SearchObject->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
             }
 
             for (const auto& Pair : InSettings.QuerySettings)
             {
-                LastSessionSearch->QuerySettings.Set(FName(*Pair.Key), Pair.Value, EOnlineComparisonOp::Equals);
+                SearchObject->QuerySettings.Set(FName(*Pair.Key), Pair.Value, EOnlineComparisonOp::Equals);
             }
     
-            Sessions->FindSessions(*Helper.UserID, LastSessionSearch.ToSharedRef());
+            Sessions->FindSessions(*Helper.UserID, SearchObject.ToSharedRef());
             return;
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot find sessions: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot find sessions: Session Interface is invalid"));
         }
     }
     
-    TArray<FOnlineSessionSearchResult> Results;
-    OnFindSessionsFailure.Broadcast(Results);
+    OnFindSessionsFailure.Broadcast(SessionSearchResults);
 }
 
 void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
@@ -207,15 +208,33 @@ void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
         }
     }
     
-    TArray<FOnlineSessionSearchResult> Results;
-    if (bWasSuccessful && LastSessionSearch.IsValid())
+    if (bWasSuccessful && SearchObject.IsValid())
     {
-        Results = LastSessionSearch->SearchResults;
-        OnFindSessionsSuccess.Broadcast(Results);
+        SessionSearchResults = SearchObject->SearchResults;
+        for (const FOnlineSessionSearchResult& Result : SessionSearchResults)
+        {
+            const FString OwnerName = Result.Session.OwningUserName;
+            const int32 Ping = Result.PingInMs;
+            const int32 CurrentPlayers = Result.Session.SessionSettings.NumPublicConnections - Result.Session.NumOpenPublicConnections;
+            const int32 MaxSlots = Result.Session.SessionSettings.NumPublicConnections;
+            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d "), *OwnerName, Ping, CurrentPlayers, MaxSlots);
+            UE_PRINT_EASY(Log, TEXT("%s"), *ResultText);
+            
+            for (const auto& SearchSetting : Result.Session.SessionSettings.Settings)
+            {
+                const FName Key = SearchSetting.Key;
+                const FOnlineSessionSetting& Value = SearchSetting.Value;
+                FString ValueAsString = Value.Data.ToString();
+
+                UE_PRINT_EASY(Log, TEXT("    -> [Key: %s] : [Value: %s]"), *Key.ToString(), *ValueAsString);
+            }
+        }
+        
+        OnFindSessionsSuccess.Broadcast(SessionSearchResults);
     }
     else
     {
-        OnFindSessionsFailure.Broadcast(Results);
+        OnFindSessionsFailure.Broadcast(SessionSearchResults);
     }
 }
 
@@ -257,7 +276,7 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot join session: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot join session: Session Interface is invalid"));
         }
     }
     
@@ -283,7 +302,7 @@ void UEasySessionSubsystem::OnJoinSessionComplete(FName SessionName, const EOnJo
                 {
                     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
                     {
-                        UE_LOG_ONLINE_SESSION(Log, TEXT("Join session: traveling to %s"), *ConnectString);
+                        UE_LOG_EASY(Log, TEXT("Join session: traveling to %s"), *ConnectString);
                         PC->ClientTravel(ConnectString, TRAVEL_Absolute);
                         OnJoinSessionSuccess.Broadcast();
                         return;
@@ -313,7 +332,7 @@ void UEasySessionSubsystem::DestroySession()
         }
         else
         {
-            UE_LOG_ONLINE_SESSION(Display, TEXT("[EasySession] Cannot destroy session: Session Interface is invalid"));
+            UE_LOG_EASY(Display, TEXT("[EasySession] Cannot destroy session: Session Interface is invalid"));
         }
     }
     

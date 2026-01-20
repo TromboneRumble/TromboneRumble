@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
+#include "MainMenu/BaseMenuWidget.h"
 #include "Settings/OptionPanelBase.h"
 #include "MainMenuWidget.generated.h"
 
-
+enum class EMainMenuType : uint8;
+class UEasySessionSubsystem;
+class UEditableText;
 class UMatchMenuWidget;
 class UConfirmationDialogueWidget;
 class UCommonAnimatedSwitcher;
@@ -15,59 +17,69 @@ class UVideoOptionPanel;
 class UAudioOptionPanel;
 
 UCLASS()
-class TROMBONERUMBLE_API UMainMenuWidget : public UCommonActivatableWidget
+class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
 {
 	GENERATED_BODY()
 	
 protected:
-	virtual void NativePreConstruct() override;
-	virtual void NativeDestruct() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 
-private:
-	void InitButtons();
-	void ChangePanel(UWidget* TargetWidget);
+	virtual void NativeConstruct() override;
+	virtual void Init() override;
+	virtual void SetUIEnabled(const bool bEnabled) override;
 	
+	virtual void BindSubsystemCallbacks() override;
+	virtual void RemoveSubsystemCallbacks() override;
+	
+private:
 	// ~ Begin Button Callbacks
 	UFUNCTION()
+	void HandleOnlineButtonClicked();
+	UFUNCTION()
+	void HandleJoinButtonClicked();
+	UFUNCTION()
 	void HandleQuitButtonClicked();
-	// ~ EndButton Callbacks
+	// ~ End Button Callbacks
+	
+	void OnStartSessionSuccess();
+	void OnStartSessionFailure();
+	
+	void OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults);
+	void OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults);
+    
+	void OnJoinSessionSuccess();
+	void OnJoinSessionFailure();
+	
+	void OnDestroySessionSuccess();
+	void OnDestroySessionFailure();
+	
+	FString GenerateRandomLobbyCode(int32 Length) const;
+	void StartHostValidation(const FString& Code);
+	void CreateSessionAfterValidation(const FString& ValidatedCode);
+	bool bIsSearchingForHostValidation = false;
+	FString PendingLobbyCode;
+	
+	// ~ Begin UI
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UEditableText> ET_Code;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Online;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Join;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Settings;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Guide;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Quit;
+	// ~ End UI
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> ConfirmationDialogueWidgetClass;
-
-	// ~ Start UMGs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UWidget> VB_MainMenu;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UWidget> VB_Settings;
-	// ~ End UMGs
-	
-	// ~ Begin Common UIs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UAudioOptionPanel> Widget_AudioOptions;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMatchMenuWidget> Widget_MatchMenu;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Play;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Option;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_BackFromSettings;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Quit;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Audio;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Video;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonAnimatedSwitcher> CAS_MainMenu;
-	// ~ End Common UIs
-	
 	UPROPERTY()
 	TObjectPtr<UConfirmationDialogueWidget> CachedQuitDialog;
+	
+	UPROPERTY(Transient)
+	FString CachedMatchMenuMapPath = "";
 };

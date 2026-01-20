@@ -65,15 +65,21 @@ void ASpotlightManager::TriggerSpotlightSpawn()
 
     const int32 SpawnCount = FMath::RandRange(MinCount, MaxCount);
     
-    TArray<TObjectPtr<ATargetPoint>> AvailableSpawnPoints = SpawnPoints;
-
-    for (int32 i = 0; i < SpawnCount; ++i)
+    TArray<TObjectPtr<ATargetPoint>> AvailableSpawnPoints;
+    for (auto Point : SpawnPoints)
     {
-        if (AvailableSpawnPoints.Num() == 0) break; 
-
+        if (Point && !IsSpawnPointOccupied(Point->GetActorLocation()))
+        {
+            AvailableSpawnPoints.Add(Point);
+        }
+    }
+    
+    const int32 ActualSpawnCount = FMath::Min(SpawnCount, AvailableSpawnPoints.Num());
+    
+    for (int32 i = 0; i < ActualSpawnCount; ++i)
+    {
         const int32 RandIndex = FMath::RandRange(0, AvailableSpawnPoints.Num() - 1);
         TObjectPtr<ATargetPoint> ChosenPoint = AvailableSpawnPoints[RandIndex];
-
         AvailableSpawnPoints.RemoveAt(RandIndex);
 
         if (ChosenPoint)
@@ -93,6 +99,8 @@ void ASpotlightManager::TriggerSpotlightSpawn()
             if (NewZone)
             {
                 NewZone->InitializeZone(bIsFeverTime, SpotlightBonusScore);
+                ActiveSpotlightZones.Add(NewZone);
+                NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
             }
         }
     }
@@ -108,4 +116,54 @@ void ASpotlightManager::TriggerSpotlightSpawn()
         NextSpawnInterval,
         false
     );
+}
+
+bool ASpotlightManager::IsSpawnPointOccupied(const FVector& Location) const
+{
+    for (const auto& Zone : ActiveSpotlightZones)
+    {
+        if (Zone && FVector::DistSquared(Zone->GetActorLocation(), Location) < 100.f)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void ASpotlightManager::OnSpotlightZoneDestroyed(AActor* DestroyedActor)
+{
+    if (ASpotlightZone* Zone = Cast<ASpotlightZone>(DestroyedActor))
+    {
+        ActiveSpotlightZones.Remove(Zone);
+    }
+}
+
+void ASpotlightManager::Server_TriggerAllSpotlightSpawn_Implementation()
+{
+    if (!HasAuthority()) return;
+
+    for (TObjectPtr Point : SpawnPoints)
+    {
+        if (!Point) continue;
+
+        if (IsSpawnPointOccupied(Point->GetActorLocation())) continue;
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+        ASpotlightZone* NewZone = GetWorld()->SpawnActor<ASpotlightZone>(
+            SpotlightZoneClass,
+            Point->GetActorLocation(),
+            Point->GetActorRotation(),
+            SpawnParams
+        );
+
+        if (NewZone)
+        {
+            NewZone->InitializeZone(bIsFeverTime, SpotlightBonusScore);
+            ActiveSpotlightZones.Add(NewZone);
+            NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
+        }
+    }
 }

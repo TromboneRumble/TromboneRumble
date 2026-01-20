@@ -6,8 +6,6 @@
 #include "Engine/LocalPlayer.h"
 #include "EasySessionLog.h"
 
-DEFINE_LOG_CATEGORY(LogEasySession);
-
 FEasyOnlineHelper::FEasyOnlineHelper(const FString& InContextName, UWorld* InWorld, FName SystemName)
     : OnlineSub(Online::GetSubsystem(InWorld)),
     ContextName(InContextName),
@@ -26,37 +24,26 @@ bool FEasyOnlineHelper::IsValid() const
 
 void FEasyOnlineHelper::GetUserID()
 {
-    if (!EnsureWorld()) return;
-        
-    UserID.Reset();
-        
-    UGameInstance* GameInstance = WorldWeakPtr->GetGameInstance();
-    if (!GameInstance)
-    {
-       UE_LOG_EASY(Warning, TEXT("[%s] GameInstance is invalid."), *ContextName);
-       return;
-    }
+	if (!EnsureWorld()) return;
+	UserID.Reset();
 
-    ULocalPlayer* LocalPlayer = GameInstance->GetFirstGamePlayer();
-    if (!LocalPlayer)
-    {
-       UE_LOG_EASY(Warning, TEXT("[%s] Could not find LocalPlayer."), *ContextName);
-       return;
-    }
+	UGameInstance* GI = WorldWeakPtr->GetGameInstance();
+	ULocalPlayer* LP = GI ? GI->GetFirstGamePlayer() : nullptr;
+    
+	if (!LP)
+	{
+		UE_LOG_EASY(Warning, TEXT("[%s] Failed to retrieve LocalPlayer."), *ContextName);
+		return;
+	}
 
-    FUniqueNetIdRepl NetIdRepl = LocalPlayer->GetPreferredUniqueNetId();
-    if (!NetIdRepl.IsValid())
-    {
-       UE_LOG_EASY(Warning, TEXT("[%s] LocalPlayer has no valid UniqueNetId."), *ContextName);
-       return;
-    }
+	FUniqueNetIdRepl NetIdRepl = LP->GetPreferredUniqueNetId();
+	if (!NetIdRepl.IsValid() || !NetIdRepl.GetUniqueNetId().IsValid())
+	{
+		UE_LOG_EASY(Warning, TEXT("[%s] Invalid UniqueNetId."), *ContextName);
+		return;
+	}
 
-    UserID = NetIdRepl.GetUniqueNetId();
-    if (!UserID.IsValid())
-    {
-       UE_LOG_EASY(Warning, TEXT("[%s] Failed to get UniqueNetId from LocalPlayer."), *ContextName);
-       return;
-    }
+	UserID = NetIdRepl.GetUniqueNetId();
 }
 
 bool FEasyOnlineHelper::EnsureWorld() const

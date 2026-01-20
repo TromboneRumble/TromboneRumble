@@ -8,6 +8,8 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UAkAudioEvent;
+class UAkComponent;
 class UNiagaraComponent;
 class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
@@ -15,8 +17,7 @@ class UInputComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRagdollSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStunSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndStunSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStunStateChanged, bool, bIsStunned);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInvincibleSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndInvincibleSignature);
 
@@ -42,8 +43,8 @@ public:
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FEndRagdollSignature EndRagdollDelegate;
-	FOnStunSignature OnStunDelegate;
-	FEndStunSignature EndStunDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FOnStunStateChanged OnStunStateChanged;
 	FOnInvincibleSignature OnInvincibleDelegate;
 	FEndInvincibleSignature EndInvincibleDelegate;
 
@@ -57,8 +58,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
 	FName FaceExpressionParameterName = FName("ExpressionIndex");
 
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Niagara")
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> StunNiagaraSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Components|Niagara")
 	TObjectPtr<UNiagaraComponent> StunNiagaraComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Config|Components|Sound")
+	TObjectPtr<UAkComponent> AkSoundComponent;
 
 private:
 	void InitCharacter();
@@ -132,6 +139,10 @@ private:
 	
 	// TODO : For Debugging
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	int32 StunNiagaraPlayingID = 0;
+	
+public:
 	UFUNCTION(Server, Reliable)
 	void Server_DebugStun();
 

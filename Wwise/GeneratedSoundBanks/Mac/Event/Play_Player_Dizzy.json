@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}",
     "Language": "SFX",
-    "Hash": "{57D78F08-B111-AE41-27C0-3BB21398C10D}",
+    "Hash": "{B55FB15E-F0FC-CFBC-1A6F-278F38EFF51A}",
     "ObjectPath": "Play_Player_Dizzy",
     "ShortName": "Play_Player_Dizzy",
     "Path": "Event/Play_Player_Dizzy.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{8AA88801-7BA7-86F4-8A39-6C5DB8EDF5A3}"
+  "FileHash": "{2DF32B3F-48EF-730C-D8B2-4F09630647A2}"
  }
 }

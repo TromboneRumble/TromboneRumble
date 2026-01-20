@@ -32,6 +32,9 @@ protected:
 	UFUNCTION()
 	void OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType);
 
+	UFUNCTION()
+	void OnOwnerStunnedHandler(bool bIsStun);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Material", meta = (AllowPrivateAccess = "true"))
 	float StartOuterRadius = 0.5f;
 
@@ -67,6 +70,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Flash", meta = (AllowPrivateAccess = "true"))
 	FLinearColor ExcellentFlashColor = FLinearColor(0.f, 1.f, 0.f, 1.f);
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Flash", meta = (AllowPrivateAccess = "true"))
+	FLinearColor StunColor = FLinearColor(0.f, 0.f, 0.f, 1.f);
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "RingHitBox", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMaterialInterface> RingMatOrigin = nullptr;
@@ -83,6 +89,8 @@ private:
 	bool bHasBaseColor = false;
 
 	FTimerHandle FlashTimerHandle;
+
+	bool bIsOwnerStunned = false;
 
 private:
 	void EnsureMID();

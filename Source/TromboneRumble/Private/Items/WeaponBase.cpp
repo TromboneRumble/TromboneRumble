@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "AkComponent.h"
 #include "GameplayEffect.h"
 #include "Data/WeaponDataAsset.h"
 #include "Interfaces/CombatReceiver.h"
@@ -138,10 +139,9 @@ void AWeaponBase::Unequip(AActor* OwnerActor)
 	const FVector VForwardImpulse = CurrentOwner->GetActorForwardVector() * WeaponData->WeaponDropForwardImpulse;
 	const FVector VUpwardImpulse = FVector::UpVector * WeaponData->WeaponDropUpwardImpulse;
 
-	CurrentOwner = nullptr;
 	bIsEquipped = false;
-
 	OnRep_Equipped();
+	CurrentOwner = nullptr;
     
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(true);
 	if (SkeletalMeshComponent) SkeletalMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
@@ -216,6 +216,14 @@ bool AWeaponBase::IsCanSweep() const
 	return true;
 }
 
+void AWeaponBase::PlayHitSound()
+{
+	if (HitSoundEvent && AkSoundComponent)
+	{
+		AkSoundComponent->PostAkEvent(HitSoundEvent);
+	}
+}
+
 void AWeaponBase::BeginAttack()
 {
 	bIsDetectHit = true;
@@ -258,4 +266,10 @@ void AWeaponBase::OnRep_Equipped()
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
 		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	}
+}
+
+bool AWeaponBase::IsOwnerLocallyControlled() const
+{
+	const APawn* PawnOwner = Cast<APawn>(CurrentOwner);
+	return PawnOwner && PawnOwner->IsLocallyControlled();
 }

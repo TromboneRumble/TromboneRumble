@@ -25,7 +25,11 @@ protected:
 private:
 	UFUNCTION()
 	void CheckSpotlightStart(FName CueName);
+	UFUNCTION()
+	void OnSpotlightZoneDestroyed(AActor* DestroyedActor);
+	
 	void TriggerSpotlightSpawn();
+	bool IsSpawnPointOccupied(const FVector& Location) const;
 	
     UPROPERTY(EditDefaultsOnly, Category = "Spotlight")
     TSubclassOf<ASpotlightZone> SpotlightZoneClass;
@@ -33,14 +37,6 @@ private:
     /** 스포트라이트가 생성될 수 있는 후보 위치들의 리스트입니다. (TargetPoint 사용) */
     UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "스폰 가능 지점 목록"))
     TArray<TObjectPtr<ATargetPoint>> SpawnPoints;
-
-    /** 전체 곡 진행률(0.0 ~ 1.0) 중 스포트라이트 기믹이 시작될 시점입니다. */
-    UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "기믹 시작 진행률"))
-    float SpotlightStartTimePercent = 0.1f;
-    
-    /** 전체 곡 진행률(0.0 ~ 1.0) 중 피버 타임(강화 모드)이 시작될 시점입니다. */
-    UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "피버 타임 시작 진행률"))
-    float FeverTimeStartPercent = 0.8f;
 
     /** [일반] 스포트라이트가 생성되는 최소 시간 간격 (초) */
     UPROPERTY(EditAnywhere, Category = "Spotlight|Normal", meta = (DisplayName = "최소 스폰 간격 (일반)"))
@@ -78,7 +74,15 @@ private:
     UPROPERTY(EditAnywhere, Category = "Spotlight|Config", meta = (DisplayName = "성공 보너스 점수"))
     int32 SpotlightBonusScore = 300;
 	
+	UPROPERTY()
+	TSet<TObjectPtr<ASpotlightZone>> ActiveSpotlightZones;
+	
 	FTimerHandle SpawnTimerHandle;
 	bool bIsSpotlightActive = false;
 	bool bIsFeverTime = false;
+	
+	// For Debugging & Cheat
+public:
+	UFUNCTION(Server, Reliable)
+	void Server_TriggerAllSpotlightSpawn();
 };

@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "AkComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,6 +23,12 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	{
 		StunNiagaraComponent->SetupAttachment(GetMesh());
 		StunNiagaraComponent->bAutoActivate = false;
+	}
+	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
+	if (AkSoundComponent)
+	{
+		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
 	
 	InitCharacter();
@@ -74,7 +81,18 @@ void ATromboneCharacterBase::BeginPlay()
 	PlayFaceSequence(ECharacterFaceState::Blink);
 
 	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
-	
+
+	if (IsLocallyControlled())
+	{
+		// Sound Listener의 기본 설정을 카메라->Player로 변경
+		if (AkSoundComponent)
+		{
+			TArray<UAkComponent*> Listeners;
+			Listeners.Add(AkSoundComponent);
+			AkSoundComponent->SetListeners(Listeners);
+		}
+	}
+
 	SetupCharacterData();
 	UpdateSkinFromPlayerState();
 	ApplyFlagPhysics();
@@ -519,7 +537,10 @@ void ATromboneCharacterBase::OnRep_IsStun()
 			StunNiagaraComponent->DeactivateImmediate();
 			StunNiagaraComponent->Activate(true);
 		}
-		OnStunDelegate.Broadcast();
+		if (AkSoundComponent && StunNiagaraSound)
+		{
+			StunNiagaraPlayingID = AkSoundComponent->PostAkEvent(StunNiagaraSound, 0, FOnAkPostEventCallback());
+		}
 	}
 	else
 	{
@@ -529,8 +550,14 @@ void ATromboneCharacterBase::OnRep_IsStun()
 		{
 			StunNiagaraComponent->DeactivateImmediate();
 		}
-		EndStunDelegate.Broadcast();
+		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
+		if (AudioDevice && StunNiagaraPlayingID != 0)
+		{
+			AudioDevice->StopPlayingID(StunNiagaraPlayingID);
+			StunNiagaraPlayingID = 0;
+		}
 	}
+	OnStunStateChanged.Broadcast(bIsStun);
 }
 
 void ATromboneCharacterBase::OnRep_IsInvincible()

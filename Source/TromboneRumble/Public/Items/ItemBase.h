@@ -7,9 +7,11 @@
 #include "Interfaces/Interactable.h"
 #include "ItemBase.generated.h"
 
+class UAkComponent;
 class UInteractionTriggerComponent;
 class UCapsuleComponent;
 class USphereComponent;
+class UAkComponent;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API AItemBase : public AActor, public IInteractable
@@ -38,6 +40,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
 	TObjectPtr<UInteractionTriggerComponent> InteractTriggerComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item|Components|Sound")
+	TObjectPtr<UAkComponent> AkSoundComponent = nullptr;
 	// ~ End Components
 
 	UPROPERTY(VisibleAnywhere, Replicated)
