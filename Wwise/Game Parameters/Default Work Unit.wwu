@@ -14,6 +14,7 @@
 				<GameParameter Name="RTPC_MasterVolume" ID="{B27D731F-8A64-4DA0-B718-3CCB1E9C55E2}"/>
 				<GameParameter Name="RTPC_MusicVolume" ID="{3EC485DA-A658-45AE-AB28-DDC1045E60EB}"/>
 				<GameParameter Name="RTPC_SFXVolume" ID="{6BB75C83-4CCF-480B-88F5-B69F326C8A5F}"/>
+				<GameParameter Name="RTPC_LobbyBGM" ID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>

@@ -154,7 +154,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{A67846F9-DC18-DACC-33E7-37581A0F450F}">
+		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{01F301E8-1A5C-6D7B-E5BC-96CE8FE31C14}">
 			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
 			<ShortName>MainSoundBank</ShortName>
 			<Path>MainSoundBank.bnk</Path>
@@ -721,7 +721,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{BCFF4DCA-3A79-7A32-9AD3-F1F66B6CE9D2}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{5ECB9C52-72AB-BBDA-580C-870925E53C0C}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -735,6 +735,7 @@
 				</AudioDevices>
 			</Plugins>
 			<Busses>
+				<Bus Id="1058308940" Name="Master_LobbyBGM" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Master_LobbyBGM" GUID="{55DFD7BE-E58A-4714-BDAE-7393826F6CC0}"/>
 				<Bus Id="1900298039" Name="Master_Music" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Master_Music" GUID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}"/>
 				<Bus Id="3462011115" Name="Master_SFX" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Master_SFX" GUID="{EF172D25-9499-4866-B0C2-ABB29CF17711}"/>
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
@@ -749,6 +750,7 @@
 				</AuxBus>
 			</AuxBusses>
 			<GameParameters>
+				<GameParameter Id="271579137" Name="RTPC_LobbyBGM" ObjectPath="\Game Parameters\Default Work Unit\RTPC_LobbyBGM" GUID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
 				<GameParameter Id="2378823330" Name="RTPC_MusicVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_MusicVolume" GUID="{3EC485DA-A658-45AE-AB28-DDC1045E60EB}"/>
@@ -2173,5 +2175,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{7BAE9D69-7985-4DD3-B000-968D2C8569B5}</FileHash>
+	<FileHash>{9DC79D06-3487-AF66-245A-5659293851D8}</FileHash>
 </SoundBanksInfo>
