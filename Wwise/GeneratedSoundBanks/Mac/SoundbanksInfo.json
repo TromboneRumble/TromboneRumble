@@ -4094,7 +4094,7 @@
     "Type": "Event",
     "GUID": "{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}",
     "Language": "SFX",
-    "Hash": "{B55FB15E-F0FC-CFBC-1A6F-278F38EFF51A}",
+    "Hash": "{5E2CC56B-0F6C-8DC0-F18A-56B980FC074A}",
     "ObjectPath": "Play_Player_Dizzy",
     "ShortName": "Play_Player_Dizzy",
     "Path": "Event/Play_Player_Dizzy.bnk",
@@ -4115,6 +4115,7 @@
       "Name": "Play_Player_Dizzy",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Dizzy",
       "GUID": "{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}",
+      "MaxAttenuation": "1000",
       "DurationType": "OneShot",
       "DurationMin": "8.447875",
       "DurationMax": "8.447875",
@@ -4641,6 +4642,6 @@
     ]
    }
   ],
-  "FileHash": "{0596DC06-2697-C659-85F6-56C2125E6893}"
+  "FileHash": "{03121CEB-0847-BF25-B3DE-D1213762AC64}"
  }
 }
