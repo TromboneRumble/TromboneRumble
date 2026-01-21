@@ -19,7 +19,7 @@ class TROMBONERUMBLE_API ULobbyWidget : public UCommonActivatableWidget
 public:
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
 	{
-		return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently);
+		return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways, true);
 	}	
 	
 protected:

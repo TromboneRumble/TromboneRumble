@@ -21,7 +21,6 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
-	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 	virtual void Init() override;
 	

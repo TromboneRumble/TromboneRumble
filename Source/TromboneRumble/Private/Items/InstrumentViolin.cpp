@@ -16,16 +16,16 @@ void AInstrumentViolin::OnHitSuccess(AActor* HitActor)
 	PlayHitSound();
 }
 
-void AInstrumentViolin::OnRep_Equipped()
+void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 {
-	Super::OnRep_Equipped();
+	Super::OnRep_CurrentOwner(OldActor);
 	checkf(ViolinBodyMesh, TEXT("ViolinBodyMesh not valid Actor: %s"), *GetName());
 	checkf(ViolinBowMesh, TEXT("ViolinBowMesh not valid Actor: %s"), *GetName());
 
-	if (bIsEquipped)
+	if (CurrentOwner)
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(ViolinBowMesh);
-		
+
 		if (!ViolinBodyActor)
 		{
 			if (IsValid(ViolinBodyClass))
@@ -49,7 +49,7 @@ void AInstrumentViolin::OnRep_Equipped()
 				}
 			}
 		}
-		if (IsValid(ViolinBodyActor) && CurrentOwner)
+		if (IsValid(ViolinBodyActor))
 		{
 			const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner);
 			if (OwnerChar)
@@ -63,7 +63,7 @@ void AInstrumentViolin::OnRep_Equipped()
 			}
 		}
 	}
-	else if (!bIsEquipped)
+	else
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(ViolinBodyMesh);
 		if (IsValid(ViolinBodyActor))

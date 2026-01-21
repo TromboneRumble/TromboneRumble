@@ -13,6 +13,7 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/WidgetComponent.h"
 #include "Framework/InGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_WidgetBase.h"
 #include "UI/UserWidgets/Rhythm/ComboWidget/RhythmComboWidgetBase.h"
 #include "Utilities/DebugHelper.h"
@@ -63,10 +64,10 @@ void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-void AInstrumentBase::OnRep_Equipped()
+void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 {
-	Super::OnRep_Equipped();
-	if (bIsEquipped)
+	Super::OnRep_CurrentOwner(OldActor);
+	if (CurrentOwner)
 	{
 		if (IsOwnerLocallyControlled())
 		{
@@ -92,12 +93,13 @@ void AInstrumentBase::OnRep_Equipped()
 	{
 		RemoveBuff();
 		BindToRhythmSubsystem(false);
-		if (IsOwnerLocallyControlled())
+		const APawn* PawnOwner = Cast<APawn>(OldActor);
+		if (PawnOwner && PawnOwner->IsLocallyControlled())
 		{
-			if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(CurrentOwner))
+			if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(OldActor))
 			{
 				UWidgetComponent* WidgetComponent = TromboneCharacter->GetComboWidgetComponent();
-				if (WidgetComponent->GetWidgetClass())
+				if (ComboWidgetClass && WidgetComponent->GetWidgetClass() == ComboWidgetClass)
 				{
 					WidgetComponent->SetWidgetClass(nullptr);
 				}
@@ -130,7 +132,7 @@ void AInstrumentBase::TryUpdateIndicatorVisibility()
 		return;
 	}
 
-	if (bIsEquipped)
+	if (CurrentOwner)
 	{
 		IndicatorInstance->GetRootComponent()->SetVisibility(false, true);
 		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
@@ -269,12 +271,6 @@ void AInstrumentBase::TryCreateIndicatorWidget()
 		0.1f,
 		false
 	);
-}
-
-bool AInstrumentBase::IsOwnerLocallyControlled() const
-{
-	const APawn* PawnOwner = Cast<APawn>(CurrentOwner);
-	return (PawnOwner && PawnOwner->IsLocallyControlled());
 }
 
 ADefaultPlayerState* AInstrumentBase::GetOwnerPlayerState() const

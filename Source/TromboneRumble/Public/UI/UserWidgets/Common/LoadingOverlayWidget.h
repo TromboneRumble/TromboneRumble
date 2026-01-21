@@ -14,11 +14,6 @@ class TROMBONERUMBLE_API ULoadingOverlayWidget : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 public:
-	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
-	{
-		return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::CaptureDuringMouseDown);
-	}
-	
 	virtual void Init();
 	virtual void Init(FString InContent);
 	

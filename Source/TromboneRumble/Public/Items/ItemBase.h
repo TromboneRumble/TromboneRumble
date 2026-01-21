@@ -45,7 +45,10 @@ protected:
 	TObjectPtr<UAkComponent> AkSoundComponent = nullptr;
 	// ~ End Components
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UFUNCTION()
+	virtual void OnRep_CurrentOwner(AActor* OldActor){};
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_CurrentOwner)
 	TObjectPtr<AActor> CurrentOwner = nullptr;
 	
 public:

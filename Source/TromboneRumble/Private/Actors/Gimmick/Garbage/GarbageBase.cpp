@@ -109,6 +109,7 @@ void AGarbageBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AGarbageBase, TargetLoc);
 	DOREPLIFETIME(AGarbageBase, ChosenExtraApexHeight);
 	DOREPLIFETIME(AGarbageBase, bImpactStarted);
+	DOREPLIFETIME(AGarbageBase, SpinRateDegPerSec);
 	DOREPLIFETIME(AGarbageBase, bHitPawn);
 }
 

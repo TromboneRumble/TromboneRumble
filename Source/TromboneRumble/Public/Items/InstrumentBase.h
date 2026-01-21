@@ -34,7 +34,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void OnRep_Equipped() override;
+	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
+	//virtual void OnRep_Equipped() override;
 
 	// Indicator
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator")
@@ -91,8 +92,6 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<URhythmComboWidgetBase> ComboWidgetInstance = nullptr;
 	// ~UI
-
-	bool IsOwnerLocallyControlled() const;
 	ADefaultPlayerState* GetOwnerPlayerState() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")

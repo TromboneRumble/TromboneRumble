@@ -15,16 +15,6 @@
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "Utilities/DebugHelper.h"
 
-UWidget* UMainMenuWidget::NativeGetDesiredFocusTarget() const
-{
-	if (CB_Online)
-	{
-		return CB_Online;
-	}
-	
-	return Super::NativeGetDesiredFocusTarget();
-}
-
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -36,6 +26,8 @@ void UMainMenuWidget::NativeConstruct()
 
 void UMainMenuWidget::Init()
 {
+	Super::Init();
+	
 	if (CB_Online)
 	{
 		CB_Online->OnClicked().RemoveAll(this);
@@ -60,6 +52,8 @@ void UMainMenuWidget::Init()
 
 void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 {
+	Super::SetUIEnabled(bEnabled);
+	
 	ET_Code->SetIsEnabled(bEnabled);
 	CB_Online->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
