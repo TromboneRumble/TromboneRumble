@@ -1,10 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Actors/Gimmick/PuddleTrap/WaterDropSpawner.h"
 #include "Components/BoxComponent.h"
 #include "Actors/Gimmick/PuddleTrap/WaterDrop.h"
-#include "Kismet/KismetMathLibrary.h"
 
 AWaterDropSpawner::AWaterDropSpawner()
 {
@@ -15,10 +13,11 @@ AWaterDropSpawner::AWaterDropSpawner()
 	SpawnBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AWaterDropSpawner::BeginPlay()
+void AWaterDropSpawner::Activate()
 {
-	Super::BeginPlay();
-	if (HasAuthority() && WaterDropClass && SpawnInterval > 0.f)
+	Super::Activate();
+	
+	if (HasAuthority() && SpawnInterval > 0.f)
 	{
 		GetWorldTimerManager().SetTimer(
 			SpawnTimerHandle,

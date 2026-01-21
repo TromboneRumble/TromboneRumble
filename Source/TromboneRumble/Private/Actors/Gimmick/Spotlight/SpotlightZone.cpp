@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Actors/SpotlightZone.h"
+#include "Actors/Gimmick/Spotlight/SpotlightZone.h"
+
 #include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "AkComponent.h"
@@ -10,10 +11,8 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/DefaultPlayerState.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraSystem.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
-#include "Utilities/DebugHelper.h"
 
 ASpotlightZone::ASpotlightZone()
 {

@@ -4,6 +4,16 @@
 #include "Defines.generated.h"
 
 UENUM()
+enum class EGimmickType : uint8
+{
+	Spotlight,
+	Puddle,
+	Trash,
+	MAX,
+	None = 255,
+};
+
+UENUM()
 enum class ECharacterFaceState : uint8
 {
 	Blink,

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Garbage/GarbageBase.h"
 #include "Engine/World.h"
@@ -9,32 +8,33 @@
 #include "Framework/InGameState.h"
 #include "GameFramework/PlayerState.h"
 #include "Subsystems/RhythmSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 AGarbageSpawner::AGarbageSpawner()
 {
-	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	AActor::SetReplicateMovement(false);
 }
 
+void AGarbageSpawner::Activate()
+{
+	Super::Activate();
+	
+	if (HasAuthority())
+	{
+		if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		{
+			MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::StartAutoSpawnFromMusicCue);
+		}
+	}
+}
 
 void AGarbageSpawner::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	if (HasAuthority() && bAutoStart)
 	{
-		if (bAutoStart)
-		{
-			StartAutoSpawn_Server();
-		}
-		else
-		{
-			if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-			{
-				MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::StartAutoSpawnFromMusicCue);
-			}
-		}
+		StartAutoSpawn_Server();
 	}	
 }
 

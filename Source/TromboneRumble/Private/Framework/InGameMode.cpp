@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/InGameMode.h"
+#include "EngineUtils.h"
+#include "Actors/Gimmick/GimmickManager.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
 #include "Framework/TromboneGameInstance.h"
@@ -42,7 +44,14 @@ void AInGameMode::GameEnd() const
 	if (AInGameState* GS = GetGameState<AInGameState>())
 	{
 		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
-		// TODO : Deactivate Gimmicks
+	}
+	
+	for (TActorIterator<AGimmickManager> It(GetWorld()); It; ++It)
+	{
+		if (*It)
+		{
+			It->DeactivateAllGimmicks();
+		}
 	}
 }
 

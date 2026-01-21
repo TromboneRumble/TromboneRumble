@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Utilities/TromboneCheatManager.h"
-
-#include "Actors/SpotlightManager.h"
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
+#include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"

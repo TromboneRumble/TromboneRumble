@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actors/Gimmick/GimmickBase.h"
 #include "GameFramework/Actor.h"
 #include "WaterDropSpawner.generated.h"
 
@@ -10,29 +11,29 @@ class UBoxComponent;
 class AWaterDrop;
 
 UCLASS(Abstract)
-class TROMBONERUMBLE_API AWaterDropSpawner : public AActor
+class TROMBONERUMBLE_API AWaterDropSpawner : public AGimmickBase
 {
 	GENERATED_BODY()
 	
 public:	
 	AWaterDropSpawner();
+	
+	virtual void Activate() override;
 
 protected:
-	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<UBoxComponent> SpawnBox;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gimmick|Config")
 	TSubclassOf<AWaterDrop> WaterDropClass;
 
 	/** 물방울이 생성되는 시간 간격 (초) 
 	 * 값이 작을수록 물방울이 더 자주 생성되어 떨어집니다. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaterDrop|Config", meta = (DisplayName = "물방울 생성 간격"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gimmick|Config", meta = (DisplayName = "물방울 생성 간격"))
 	float SpawnInterval = 10.f;
+	
+	UPROPERTY()
+	TObjectPtr<UBoxComponent> SpawnBox;
 
 	FTimerHandle SpawnTimerHandle;
 
 	void SpawnOneDrop();
-
 };
