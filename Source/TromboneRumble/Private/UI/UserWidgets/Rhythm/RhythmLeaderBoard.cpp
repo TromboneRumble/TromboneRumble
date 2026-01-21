@@ -1,7 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/UserWidgets/Rhythm/RhythmLeaderBoard.h"
+#include "CommonButtonBase.h"
+#include "EasySessionSubsystem.h"
+#include "TromboneGamePlayTags.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
@@ -9,12 +12,25 @@
 #include "GameFramework/PlayerState.h"
 #include "UI/UserWidgets/Rhythm/RhythmLeaderBoardEntry.h"
 #include "Characters/DefaultPlayerController.h"
-#include "Utilities/DebugHelper.h"
-
 
 void URhythmLeaderBoard::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
+	SetButtonsVisibility(false);
+	
+	if (CB_Exit)
+	{
+		CB_Exit->OnClicked().AddUObject(this, &ThisClass::HandleExitButtonClicked);
+	}
+	
+	if (!SessionsSubsystem)
+	{
+		const UGameInstance* GameInstance = GetGameInstance();
+		SessionsSubsystem = GameInstance->GetSubsystem<UEasySessionSubsystem>();
+		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
+		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
+	}
 
 	if (UWorld* World = GetWorld())
 	{
@@ -61,6 +77,14 @@ void URhythmLeaderBoard::NativeDestruct()
 	}
 
 	Super::NativeDestruct();
+}
+
+void URhythmLeaderBoard::SetButtonsVisibility(bool bIsVisible)
+{
+	if (CB_Exit)
+	{
+		CB_Exit->SetVisibility(bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	}
 }
 
 void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
@@ -169,6 +193,45 @@ void URhythmLeaderBoard::HandleLocalPlayerStateChanged(APlayerState* NewPlayerSt
 	{
 		LocalPlayerState = DefaultPS;
 		RefreshLeaderboard(DefaultPS);
+	}
+}
+
+void URhythmLeaderBoard::HandleExitButtonClicked()
+{
+	SetButtonsVisibility(false);
+	
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		if (UEasySessionSubsystem* SessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
+		{
+			SessionSubsystem->DestroySession(); 
+		}
+		else if (APlayerController* PC = GetOwningPlayer())
+		{
+			const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+			PC->EnableInput(PC);
+			PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
+		}
+	}
+}
+
+void URhythmLeaderBoard::OnDestroySessionSuccess()
+{
+	if (APlayerController* PC = GetOwningPlayer())
+	{
+		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+		PC->EnableInput(PC);
+		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
+	}
+}
+
+void URhythmLeaderBoard::OnDestroySessionFailure()
+{
+	if (APlayerController* PC = GetOwningPlayer())
+	{
+		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+		PC->EnableInput(PC);
+		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 	}
 }
 

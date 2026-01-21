@@ -210,7 +210,7 @@ void ARhythmActor::BeginPlay()
 	Super::BeginPlay();
 	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
 	{
-		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::OnInGameStateChangedHandler);
+		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
 	}
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
 	GetCachedActorPoolSubsystem();
@@ -354,20 +354,18 @@ void ARhythmActor::OnNoteDetectedHandler(ENoteResult InNoteResult)
 	}
 }
 
-void ARhythmActor::OnInGameStateChangedHandler(EInGameState InGameState)
+void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 {
 	switch (InGameState) {
-	case EInGameState::Initializing:
-		break;
-	case EInGameState::Play:
-		{
+		case EInGameState::Play:
 			AreOtherPlayersReady = true;
-		}
-		break;
-	case EInGameState::Paused:
-		break;
-	case EInGameState::Invalid:
-		break;
+			break;
+		
+		case EInGameState::End:
+			CachedRhythmUIRootWidget->OnGameEnded();
+			break;
+		
+		default: ;
 	}
 }
 

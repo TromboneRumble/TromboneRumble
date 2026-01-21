@@ -61,6 +61,9 @@ protected:
 
 	UFUNCTION()
 	void HandleOnLeaderChanged(APlayerState* NewLeader, APlayerState* OldLeader);
+	
+	UFUNCTION()
+	void HandleInGameStateChanged(EInGameState NewState);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UOSI_RhythmRankWidget> RhythmRankWidgetClass;

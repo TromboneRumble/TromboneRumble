@@ -1,9 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/InGameMode.h"
-#include "OnlineSessionSettings.h"
-#include "OnlineSubsystemUtils.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
 #include "Framework/TromboneGameInstance.h"
@@ -37,6 +34,15 @@ void AInGameMode::BeginPlay()
 	if (GetWorld()->GetNetMode() == NM_Standalone)
 	{
 		SessionPlayerNumber = 1;
+	}
+}
+
+void AInGameMode::GameEnd() const
+{
+	if (AInGameState* GS = GetGameState<AInGameState>())
+	{
+		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
+		// TODO : Deactivate Gimmicks
 	}
 }
 

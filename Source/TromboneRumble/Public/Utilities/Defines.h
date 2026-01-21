@@ -61,6 +61,7 @@ enum class EInGameState : uint8
 	Initializing,
 	Play,
 	Paused,
+	End,
 	Invalid = 255 UMETA(Hidden)
 };
 

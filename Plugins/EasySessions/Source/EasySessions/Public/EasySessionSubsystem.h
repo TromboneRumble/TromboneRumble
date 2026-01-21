@@ -19,6 +19,9 @@ class EASYSESSIONS_API UEasySessionSubsystem : public UGameInstanceSubsystem
 	
 public:
 	UEasySessionSubsystem();
+
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 	
 	void CreateSession(const FEasySessionSettings& InSettings);
 	void FindSessions(const FEasySearchSettings& InSettings);
@@ -48,6 +51,8 @@ public:
 	bool IsAdmin();
 
 private:
+	void HandleNetworkFailure(UWorld* InWorld, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
+	
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnFindSessionsComplete(bool bWasSuccessful);

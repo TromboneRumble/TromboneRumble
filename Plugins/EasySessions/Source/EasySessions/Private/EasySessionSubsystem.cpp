@@ -18,6 +18,26 @@ UEasySessionSubsystem::UEasySessionSubsystem() :
 {
 }
 
+void UEasySessionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+    Super::Initialize(Collection);
+    
+    if (GEngine)
+    {
+        GEngine->OnNetworkFailure().AddUObject(this, &ThisClass::HandleNetworkFailure);
+    }
+}
+
+void UEasySessionSubsystem::Deinitialize()
+{
+    if (GEngine)
+    {
+        GEngine->OnNetworkFailure().RemoveAll(this);
+    }
+    
+    Super::Deinitialize();
+}
+
 void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings)
 {
     FEasyOnlineHelper Helper(TEXT("CreateSession"), GetWorld());
@@ -270,6 +290,20 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
         auto Sessions = Helper.OnlineSub->GetSessionInterface();
         if (Sessions.IsValid())
         {
+            if (Sessions->GetNamedSession(NAME_GameSession))
+            {
+                DestroySessionCompleteDelegateHandle = Sessions->AddOnDestroySessionCompleteDelegate_Handle(
+                    FOnDestroySessionCompleteDelegate::CreateLambda([this, SessionResult, Sessions](FName SessionName, bool bWasSuccessful)
+                    {
+                        this->JoinSession(SessionResult);
+                        Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+                    })
+                );
+
+                Sessions->DestroySession(NAME_GameSession);
+                return;
+            }
+            
             JoinSessionCompleteDelegateHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
             Sessions->JoinSession(*Helper.UserID, NAME_GameSession, SessionResult);
             return;
@@ -417,4 +451,21 @@ bool UEasySessionSubsystem::IsAdmin()
     }
 
     return false;
+}
+
+void UEasySessionSubsystem::HandleNetworkFailure(UWorld* InWorld, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+    if (InWorld)
+    {
+        InWorld->GetTimerManager().ClearAllTimersForObject(this);
+    }
+    
+    const IOnlineSessionPtr Sessions = Online::GetSessionInterface(GetWorld());
+    if (Sessions.IsValid())
+    {
+        if (Sessions->GetNamedSession(NAME_GameSession))
+        {
+            Sessions->DestroySession(NAME_GameSession);
+        }
+    }
 }
