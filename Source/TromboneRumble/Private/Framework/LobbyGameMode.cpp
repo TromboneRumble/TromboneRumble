@@ -142,7 +142,7 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 	{
 		if (LobbyGameState)
 		{
-			LobbyGameState->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapA);
+			LobbyGameState->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapB);
 			InitializeInstruments();
 		}
 		SetLobbyState(ELobbyState::CountdownToScramble);

@@ -18,7 +18,7 @@ public:
 	virtual void OnHitSuccess(AActor* HitActor) override;
 	
 protected:
-	virtual void OnRep_Equipped() override;
+	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) override;
 
 	UPROPERTY(EditDefaultsOnly)

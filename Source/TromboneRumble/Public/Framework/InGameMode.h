@@ -28,5 +28,5 @@ public:
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> InGameReadyPlayers;
-	int32 NumPublicConnections = 4;
+	int32 SessionPlayerNumber = 1;
 };

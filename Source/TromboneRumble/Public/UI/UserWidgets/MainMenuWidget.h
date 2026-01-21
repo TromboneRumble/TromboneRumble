@@ -22,8 +22,6 @@ class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
 	GENERATED_BODY()
 	
 protected:
-	virtual UWidget* NativeGetDesiredFocusTarget() const override;
-
 	virtual void NativeConstruct() override;
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;

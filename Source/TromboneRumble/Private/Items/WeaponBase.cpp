@@ -47,7 +47,6 @@ void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ThisClass, bIsEquipped);
 	DOREPLIFETIME(ThisClass, bCanAttack);
 }
 
@@ -55,7 +54,7 @@ bool AWeaponBase::CanInteract_Implementation(AActor* InstigatorActor) const
 {
 	if (CanBeSwitched)
 	{
-		return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
+		return Super::CanInteract_Implementation(InstigatorActor) && !CurrentOwner;
 	}
 	
 	if (const UEquipmentComponent* EquipComp = InstigatorActor->FindComponentByClass<UEquipmentComponent>())
@@ -74,7 +73,7 @@ bool AWeaponBase::CanInteract_Implementation(AActor* InstigatorActor) const
 		}
 	}
 	
-	return Super::CanInteract_Implementation(InstigatorActor) && !bIsEquipped;
+	return Super::CanInteract_Implementation(InstigatorActor) && !CurrentOwner;
 }
 
 void AWeaponBase::Interact_Implementation(AActor* InstigatorActor)
@@ -87,13 +86,13 @@ void AWeaponBase::Interact_Implementation(AActor* InstigatorActor)
 
 void AWeaponBase::Equip(AActor* OwnerActor)
 {
-	if (!HasAuthority() || bIsEquipped || !OwnerActor) return;
+	if (!HasAuthority() || CurrentOwner || !OwnerActor) return;
     
 	SetOwner(OwnerActor);
+	AActor* CachedActor = CurrentOwner;
 	CurrentOwner = OwnerActor;
-	bIsEquipped = true;
-
-	OnRep_Equipped();
+	
+	OnRep_CurrentOwner(CachedActor);
 
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
 
@@ -118,7 +117,7 @@ void AWeaponBase::Equip(AActor* OwnerActor)
 
 void AWeaponBase::Unequip(AActor* OwnerActor)
 {
-	if (!HasAuthority() || !bIsEquipped) return;
+	if (!HasAuthority() || !CurrentOwner) return;
 
 	if (EquipMoveSpeedEffectHandle.IsValid())
 	{
@@ -138,11 +137,11 @@ void AWeaponBase::Unequip(AActor* OwnerActor)
 
 	const FVector VForwardImpulse = CurrentOwner->GetActorForwardVector() * WeaponData->WeaponDropForwardImpulse;
 	const FVector VUpwardImpulse = FVector::UpVector * WeaponData->WeaponDropUpwardImpulse;
-
-	bIsEquipped = false;
-	OnRep_Equipped();
+	AActor* CachedActor = CurrentOwner;
 	CurrentOwner = nullptr;
-    
+	OnRep_CurrentOwner(CachedActor);
+	
+
 	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(true);
 	if (SkeletalMeshComponent) SkeletalMeshComponent->AddImpulse(VForwardImpulse + VUpwardImpulse);
 }
@@ -243,15 +242,14 @@ void AWeaponBase::EndAttack()
 	SetActorTickEnabled(false); 
 }
 
-void AWeaponBase::OnRep_Equipped()
+void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 {
-	if (bIsEquipped)
+	Super::OnRep_CurrentOwner(OldActor);
+	if (CurrentOwner)
 	{
-		if (!CurrentOwner) return;
-
 		const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner);
 		if (!OwnerChar) return;
-		
+
 		SetPhysicsEnabled(false);
 		AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponData->EquipSocketName);
 		SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
@@ -267,7 +265,6 @@ void AWeaponBase::OnRep_Equipped()
 		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	}
 }
-
 bool AWeaponBase::IsOwnerLocallyControlled() const
 {
 	const APawn* PawnOwner = Cast<APawn>(CurrentOwner);

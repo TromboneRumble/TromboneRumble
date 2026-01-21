@@ -154,7 +154,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{A67846F9-DC18-DACC-33E7-37581A0F450F}">
+		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{01F301E8-1A5C-6D7B-E5BC-96CE8FE31C14}">
 			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
 			<ShortName>MainSoundBank</ShortName>
 			<Path>MainSoundBank.bnk</Path>
@@ -721,7 +721,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{BAC1E9CE-AD15-1713-E324-B9CC196329CF}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{82116C6E-4F0D-71C9-5367-F73ACD33D93E}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -735,6 +735,7 @@
 				</AudioDevices>
 			</Plugins>
 			<Busses>
+				<Bus Id="1058308940" Name="Master_LobbyBGM" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Master_LobbyBGM" GUID="{55DFD7BE-E58A-4714-BDAE-7393826F6CC0}"/>
 				<Bus Id="1900298039" Name="Master_Music" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Master_Music" GUID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}"/>
 				<Bus Id="3462011115" Name="Master_SFX" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Master_SFX" GUID="{EF172D25-9499-4866-B0C2-ABB29CF17711}"/>
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
@@ -749,6 +750,7 @@
 				</AuxBus>
 			</AuxBusses>
 			<GameParameters>
+				<GameParameter Id="271579137" Name="RTPC_LobbyBGM" ObjectPath="\Game Parameters\Default Work Unit\RTPC_LobbyBGM" GUID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
 				<GameParameter Id="2378823330" Name="RTPC_MusicVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_MusicVolume" GUID="{3EC485DA-A658-45AE-AB28-DDC1045E60EB}"/>
@@ -1047,7 +1049,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{B8C7131E-5E5B-0DC8-9F91-ED7BCBD800FB}">
+		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{AF5D4B30-8777-5F6F-636C-FFFA3C6D5098}">
 			<ObjectPath>Play_Head_Hit</ObjectPath>
 			<ShortName>Play_Head_Hit</ShortName>
 			<Path>Event/Play_Head_Hit.bnk</Path>
@@ -1074,7 +1076,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.38691112" DurationMax="0.42857853">
+				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.42560226" DurationMax="0.46537563">
 					<MediaRefs>
 						<MediaRef Id="18254192"/>
 						<MediaRef Id="46542412"/>
@@ -1894,7 +1896,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{B55FB15E-F0FC-CFBC-1A6F-278F38EFF51A}">
+		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{5E2CC56B-0F6C-8DC0-F18A-56B980FC074A}">
 			<ObjectPath>Play_Player_Dizzy</ObjectPath>
 			<ShortName>Play_Player_Dizzy</ShortName>
 			<Path>Event/Play_Player_Dizzy.bnk</Path>
@@ -1906,7 +1908,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3076746022" Name="Play_Player_Dizzy" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Dizzy" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" DurationType="OneShot" DurationMin="8.447875" DurationMax="8.447875">
+				<Event Id="3076746022" Name="Play_Player_Dizzy" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Dizzy" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="8.447875" DurationMax="8.447875">
 					<MediaRefs>
 						<MediaRef Id="657118636"/>
 					</MediaRefs>
@@ -2173,5 +2175,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{432C7934-D8E3-BEB9-43F0-EF6F8B4E54AD}</FileHash>
+	<FileHash>{E15BAC07-B77A-F6DB-EE3C-270E3DFA4815}</FileHash>
 </SoundBanksInfo>

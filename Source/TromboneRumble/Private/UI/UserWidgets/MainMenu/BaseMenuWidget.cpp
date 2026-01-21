@@ -17,8 +17,6 @@ void UBaseMenuWidget::NativeConstruct()
 
 void UBaseMenuWidget::Init()
 {
-	SetVisibility(ESlateVisibility::Visible);
-	SetIsFocusable(true);
 }
 
 void UBaseMenuWidget::ShowNoticePopup(const FString& Content)

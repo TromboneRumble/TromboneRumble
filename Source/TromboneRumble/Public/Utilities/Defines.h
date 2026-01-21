@@ -51,6 +51,7 @@ enum class ELevelState : uint8
 	MainMenu,
 	Lobby,
 	InGame,
+	MatchMenu,
 	Invalid = 255 UMETA(Hidden)
 };
 

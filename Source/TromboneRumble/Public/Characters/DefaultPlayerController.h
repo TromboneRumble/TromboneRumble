@@ -67,6 +67,10 @@ protected:
 
 	UPROPERTY()
 	TMap<TObjectPtr<APlayerState>, TObjectPtr<UOSI_RhythmRankWidget>> PlayerStateToRhythmRankWidgetMap;
+	UFUNCTION(BlueprintCallable)
+	void Handle_Attack();
+	UFUNCTION(BlueprintCallable)
+	void Handle_Rhythm(bool bPressed);
 private:
 	// Input handlers
 	void Handle_Move(const struct FInputActionValue& Value);
@@ -75,8 +79,7 @@ private:
 	void Handle_Interact();
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
-	void Handle_Attack();
-	void Handle_Rhythm(bool bPressed);
+	
 	// ~Input handlers
 
 	bool CanProcessInput();
