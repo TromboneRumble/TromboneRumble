@@ -1,35 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Actors/SpotlightManager.h"
-#include "Actors/SpotlightZone.h"
+#include "Actors/Gimmick/Spotlight/SpotlightManager.h"
+#include "Actors/Gimmick/Spotlight/SpotlightZone.h"
 #include "Engine/TargetPoint.h"
-#include "Framework/InGameState.h"
 #include "Subsystems/RhythmSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 ASpotlightManager::ASpotlightManager()
 {
-	PrimaryActorTick.bCanEverTick = false;
 	SetReplicates(false);
 }
 
-void ASpotlightManager::BeginPlay()
+void ASpotlightManager::Activate()
 {
-	Super::BeginPlay();
+    Super::Activate();
     
-
-	if (HasAuthority())
-	{
+    if (HasAuthority())
+    {
         if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
         {
             MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::CheckSpotlightStart);
         }
-	}
+    }
 }
 
-void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void ASpotlightManager::Deactivate()
 {
-	GetWorldTimerManager().ClearAllTimersForObject(this);
+    Super::Deactivate();
+    
     if (HasAuthority())
     {
         if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
@@ -37,6 +34,11 @@ void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
             MusicCueSubsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::CheckSpotlightStart);
         }
     }
+}
+
+void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    Deactivate();
 	
 	Super::EndPlay(EndPlayReason);
 }
@@ -45,7 +47,6 @@ void ASpotlightManager::CheckSpotlightStart(FName CueName)
 {
 	if (CueName == TEXT("Event_Spotlight_Start"))
 	{
-        bIsSpotlightActive = true;
         TriggerSpotlightSpawn();
 	}
     if (CueName == TEXT("Event_Spotlight_Fever"))

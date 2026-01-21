@@ -59,6 +59,25 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelState NewState)
 	}
 }
 
+void ADefaultPlayerController::HandleInGameStateChanged(const EInGameState NewState)
+{
+	switch (NewState)
+	{
+		case EInGameState::End:
+		{
+			DisableInput(this);
+    
+			FInputModeGameAndUI InputMode;
+			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			SetInputMode(InputMode);
+			bShowMouseCursor = true;
+			break;
+		}
+		default: 
+			break;
+	}
+}
+
 void ADefaultPlayerController::Handle_Move(const struct FInputActionValue& Value)
 {
 	if (CanProcessInput()) CachedOwnerCharacter->Move(Value);

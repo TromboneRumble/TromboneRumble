@@ -36,5 +36,9 @@ public:
 private:
 	UFUNCTION()
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	
+	UFUNCTION()
+	void OnMusicEndCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	
 	void BroadcastUserCue(const FName& CueName);
 };

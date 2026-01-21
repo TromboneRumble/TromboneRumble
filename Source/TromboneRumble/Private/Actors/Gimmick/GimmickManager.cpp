@@ -1,0 +1,81 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#include "Actors/Gimmick/GimmickManager.h"
+
+#include "EngineUtils.h"
+#include "Actors/Gimmick/GimmickBase.h"
+
+void AGimmickManager::ActivateGimmickByType(const EGimmickType GimmickType)
+{
+	if (const TObjectPtr<AGimmickBase>* FoundGimmick = ManagedGimmicks.Find(GimmickType))
+	{
+		if (FoundGimmick && *FoundGimmick)
+		{
+			(*FoundGimmick)->Activate();
+		}
+	}
+}
+
+void AGimmickManager::DeactivateGimmickByType(EGimmickType GimmickType)
+{
+	if (const TObjectPtr<AGimmickBase>* FoundGimmick = ManagedGimmicks.Find(GimmickType))
+	{
+		if (FoundGimmick && *FoundGimmick)
+		{
+			(*FoundGimmick)->Deactivate();
+		}
+	}
+}
+
+void AGimmickManager::ActivateAllGimmicks()
+{
+	for (auto& Pair : ManagedGimmicks)
+	{
+		if (Pair.Value)
+		{
+			Pair.Value->Activate();
+		}
+	}
+}
+
+void AGimmickManager::DeactivateAllGimmicks()
+{
+	for (auto& Pair : ManagedGimmicks)
+	{
+		if (Pair.Value)
+		{
+			Pair.Value->Deactivate();
+		}
+	}
+}
+
+bool AGimmickManager::IsGimmickActive(EGimmickType GimmickType) const
+{
+	if (const TObjectPtr<AGimmickBase>* FoundGimmick = ManagedGimmicks.Find(GimmickType))
+	{
+		if (FoundGimmick && *FoundGimmick)
+		{
+			return (*FoundGimmick)->IsActive();
+		}
+	}
+	return false;
+}
+
+void AGimmickManager::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	FindAndRegisterGimmicks();
+	ActivateAllGimmicks();
+}
+
+void AGimmickManager::FindAndRegisterGimmicks()
+{
+	ManagedGimmicks.Empty();
+	
+	for (TActorIterator<AGimmickBase> It(GetWorld()); It; ++It)
+	{
+		AGimmickBase* Gimmick = *It;
+		ManagedGimmicks.Add(Gimmick->GetGimmickType(), Gimmick);
+	}
+}

@@ -22,6 +22,11 @@ void ADefaultPlayerController::BeginPlay()
 	
 	GameStateSubsystem->OnLevelStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleLevelStateChanged);
 	HandleLevelStateChanged(GameStateSubsystem->GetLevelState());
+	
+	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
+	{
+		InGameState->OnInGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleInGameStateChanged);
+	}
 
 	//LoadingScreen
 	FAsyncLoadingScreenModule::OnLoadingScreenFinished().AddUObject(

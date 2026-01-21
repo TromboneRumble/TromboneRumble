@@ -78,7 +78,7 @@ private:
 	void OnNoteDetectedHandler(ENoteResult InNoteResult);
 
 	UFUNCTION()
-	void OnInGameStateChangedHandler(EInGameState InGameState);
+	void HandleInGameStateChanged(EInGameState InGameState);
 
 	UFUNCTION()
 	void WaitForOtherPlayers();

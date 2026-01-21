@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "RhythmLeaderBoard.generated.h"
 
+class UEasySessionSubsystem;
+class UCommonButtonBase;
 class ADefaultPlayerState;
 class UCanvasPanel;
 class URhythmLeaderBoardEntry;
@@ -22,6 +24,8 @@ class TROMBONERUMBLE_API URhythmLeaderBoard : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+	
+	void SetButtonsVisibility(bool bIsVisible);
 
 	UPROPERTY(EditAnywhere, Category = "Leaderboard")
 	TSubclassOf<URhythmLeaderBoardEntry> EntryClass;
@@ -36,9 +40,24 @@ protected:
 	// 네트워크 상황에서 로컬 플레이어의 PlayerState는 늦게 할당될 수 있음
 	UFUNCTION()
 	void HandleLocalPlayerStateChanged(APlayerState* NewPlayerState);
+	
+	UFUNCTION()
+	void HandleExitButtonClicked();
+	
+	UFUNCTION()
+	void OnDestroySessionSuccess();
+	
+	UFUNCTION()
+	void OnDestroySessionFailure();
 
 
 private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Exit;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
+	
 	UPROPERTY()
 	TMap<TWeakObjectPtr<APlayerState>, URhythmLeaderBoardEntry*> EntryMap;
 

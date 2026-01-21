@@ -21,6 +21,8 @@ public:
 	// ~IInstrumentEquipHandler Interfaces
 
 	virtual void BeginPlay() override;
+	
+	void GameEnd() const;
 
 	UFUNCTION()
 	void HandlePlayerLoadingFinished(APlayerController* PC);
