@@ -11,6 +11,7 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Items/InstrumentBase.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 

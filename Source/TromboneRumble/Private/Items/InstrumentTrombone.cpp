@@ -17,25 +17,25 @@ void AInstrumentTrombone::OnHitSuccess(AActor* HitActor)
 
 float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {
-	if (CurrentCombo >= ScoreData->TromboneBuffComboThreshold)
-	{
-		ApplyBuff(ScoreData->TromboneBuffEffectClass);
-	}
-	else
-	{
-		RemoveBuff();
-	}
-
+	
 	if (!ComboWidgetInstance.Get()) return 0.f;
 	UTromboneComboWidget* TromboneComboWidget = Cast<UTromboneComboWidget>(ComboWidgetInstance.Get());
 	
 	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::Bad || InNoteResult == ENoteResult::None)
 	{
+		if (ActiveBuffHandle.IsValid())
+		{
+			RemoveBuff(CurrentOwner);
+		}
 		TromboneComboWidget->SetPercentSmooth(0.f);
 		return 0.f;
 	}
 	else
 	{
+		if (CurrentCombo>=ScoreData->TromboneBuffComboThreshold && !ActiveBuffHandle.IsValid())
+		{
+			ApplyBuff(ScoreData->TromboneBuffEffectClass);
+		}
 		TromboneComboWidget->SetPercentSmooth(FMath::Min(1.0f, (float)CurrentCombo / (float)ScoreData->TromboneBuffComboThreshold));
 	}
 

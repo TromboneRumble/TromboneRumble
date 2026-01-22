@@ -66,7 +66,7 @@ protected:
 	FActiveGameplayEffectHandle ActiveBuffHandle;
 
 	void ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass);
-	void RemoveBuff();
+	void RemoveBuff(AActor* InActor);
 	float GetGradeMultiplier() const;
 	float GetComboMultiplier() const;
 

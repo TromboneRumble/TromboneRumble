@@ -91,7 +91,7 @@ void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 	}
 	else
 	{
-		RemoveBuff();
+		RemoveBuff(OldActor);
 		BindToRhythmSubsystem(false);
 		const APawn* PawnOwner = Cast<APawn>(OldActor);
 		if (PawnOwner && PawnOwner->IsLocallyControlled())
@@ -167,7 +167,6 @@ void AInstrumentBase::ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass)
 			{
 				if (BuffActivationSound)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("BuffActivatedSoundCalled"));
 					UAkGameplayStatics::PostEvent(BuffActivationSound, this, 0, FOnAkPostEventCallback());
 				}
 				OnBuffStateChanged.Broadcast(true);
@@ -178,18 +177,15 @@ void AInstrumentBase::ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass)
 	}
 }
 
-void AInstrumentBase::RemoveBuff()
+void AInstrumentBase::RemoveBuff(AActor* InOwner)
 {
-	if (ActiveBuffHandle.IsValid() && CurrentOwner)
+	if (ActiveBuffHandle.IsValid() && InOwner)
 	{
-		if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(CurrentOwner))
+		if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(InOwner))
 		{
 			if (UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent())
 			{
 				ASC->RemoveActiveGameplayEffect(ActiveBuffHandle);
-			}
-			if (IsOwnerLocallyControlled())
-			{
 				OnBuffStateChanged.Broadcast(false);
 				Debug::Print(TEXT("<<< [Buff OFF] Buff Removed"));
 			}

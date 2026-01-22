@@ -75,7 +75,7 @@ void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 		{
 			BuffRemainingCount = 0;
 			TotalNoteCount = 0;
-			RemoveBuff();
+			RemoveBuff(CurrentOwner);
 		}
 	}
 
@@ -106,7 +106,7 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		BuffRemainingCount--;
 		if (BuffRemainingCount <= 0)
 		{
-			RemoveBuff(); // 횟수 소진 시 버프 해제
+			RemoveBuff(CurrentOwner); // 횟수 소진 시 버프 해제
 			TotalNoteCount = 0;
 		}
 		if (ViolinComboWidget)
