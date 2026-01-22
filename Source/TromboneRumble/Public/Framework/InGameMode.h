@@ -23,6 +23,7 @@ public:
 	virtual void BeginPlay() override;
 	
 	void GameEnd() const;
+	void OnRhythmGameEndedReport();
 
 	UFUNCTION()
 	void HandlePlayerLoadingFinished(APlayerController* PC);
@@ -31,4 +32,5 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> InGameReadyPlayers;
 	int32 SessionPlayerNumber = 1;
+	int32 RhythmGameEndedPlayerCount = 0;
 };

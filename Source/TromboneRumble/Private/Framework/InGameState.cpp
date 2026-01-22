@@ -55,8 +55,9 @@ void AInGameState::BeginPlay()
 void AInGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(AInGameState, CurrentLeader);
-    DOREPLIFETIME(AInGameState, CurrentGameState);
+    DOREPLIFETIME(ThisClass, CurrentLeader);
+    DOREPLIFETIME(ThisClass, CurrentGameState);
+    DOREPLIFETIME(ThisClass, RhythmGameEndedPlayerCount);
 }
 
 void AInGameState::RecalculateLeader()

@@ -69,6 +69,9 @@ protected:
 
 	UPROPERTY(Replicated)
 	EInGameState CurrentGameState = EInGameState::Initializing;
+	
+	UPROPERTY(Replicated)
+	int32 RhythmGameEndedPlayerCount = 0;
 
 private:
 	// 현재 1등을 반환. 없으면 nullptr

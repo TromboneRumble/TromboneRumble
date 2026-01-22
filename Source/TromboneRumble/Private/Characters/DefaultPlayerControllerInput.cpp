@@ -66,6 +66,14 @@ void ADefaultPlayerController::HandleInGameStateChanged(const EInGameState NewSt
 		case EInGameState::End:
 		{
 			DisableInput(this);
+				
+			if (const ULocalPlayer* LP = GetLocalPlayer())
+			{
+				if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+				{
+					Subsystem->RemoveMappingContext(InGameMappingContext);
+				}
+			}
     
 			FInputModeGameAndUI InputMode;
 			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);

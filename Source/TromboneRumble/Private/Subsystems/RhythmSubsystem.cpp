@@ -2,14 +2,29 @@
 
 #include "Subsystems/RhythmSubsystem.h"
 #include "AkGameplayTypes.h"
-#include "Framework/InGameMode.h"
+#include "GameFramework/PlayerState.h"
+#include "Utilities/DebugHelper.h"
+
+void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
+{
+	
+	if (CallbackType == EAkCallbackType::MusicSyncUserCue)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("MusicSyncUserCue"));
+		OnMusicAkCallback(CallbackType, CallbackInfo);
+	}
+	else if (CallbackType == EAkCallbackType::EndOfEvent)
+	{
+		AsyncTask(ENamedThreads::GameThread, [this]()
+		{
+			OnRhythmGameEnded.Broadcast();
+		});
+	}
+}
 
 void URhythmSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	if (CallbackType != EAkCallbackType::MusicSyncUserCue || !CallbackInfo)
-	{
-		return;
-	}
+	if (CallbackType != EAkCallbackType::MusicSyncUserCue || !CallbackInfo) return;
 
 	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
 	{
@@ -21,26 +36,6 @@ void URhythmSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallba
 		}
 	}
 }
-
-void URhythmSubsystem::OnMusicEndCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
-{
-	if (CallbackType == EAkCallbackType::EndOfEvent)
-	{
-		AsyncTask(ENamedThreads::GameThread, [this]()
-		{
-			if (AInGameMode* Gm = Cast<AInGameMode>(GetWorld()->GetAuthGameMode()))
-			{
-				FTimerHandle TimerHandle;
-				const float Delay = 2.0f;
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this, Gm]
-				{
-					Gm->GameEnd();
-				}), Delay, false);
-			}
-		});
-	}
-}
-
 
 void URhythmSubsystem::BroadcastUserCue(const FName& CueName)
 {

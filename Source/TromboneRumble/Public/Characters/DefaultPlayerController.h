@@ -22,6 +22,10 @@ class TROMBONERUMBLE_API ADefaultPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+	
+	UFUNCTION(Server, Reliable)
+	void Server_RhythmGameFinished();
+	
 	// InputActions
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> LobbyMappingContext;

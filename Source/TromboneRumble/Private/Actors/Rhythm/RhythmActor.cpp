@@ -524,29 +524,10 @@ void ARhythmActor::PlayMusic()
 {
 	if (PlayBGMEvent && NoteHearingComponent)
 	{
-		if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
-		{
-			FOnAkPostEventCallback Callback;
-			Callback.BindUFunction(GetCachedRhythmSubsystem(), FName("OnMusicAkCallback"));
+		FOnAkPostEventCallback Callback;
+		Callback.BindUFunction(GetCachedRhythmSubsystem(), FName("HandleMusicCallbacks"));
 
-			const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue;
-
-			NoteHearingComponent->PostAkEvent(
-				PlayBGMEvent,
-				CallbackMask,
-				Callback
-			);
-			return;
-		}
-
-		// 서브시스템 못 찾았으면 콜백 없이 그냥 재생
-		FOnAkPostEventCallback DummyCallback;
-		NoteHearingComponent->PostAkEvent(
-			PlayBGMEvent,
-			0,
-			DummyCallback
-		);
+		const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_EndOfEvent;
+		NoteHearingComponent->PostAkEvent(PlayBGMEvent, CallbackMask, Callback);
 	}
 }
-
-

@@ -12,13 +12,11 @@ enum class EInstrumentType : uint8;
 class UAkCallbackInfo;
 class UAkMusicSyncCallbackInfo;
 
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMusicUserCue, FName, CueName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentPickedDelegate, EInstrumentType, PrevType, EInstrumentType, NewType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRhythmGameEndedDelegate);
 
-/**
- */
 UCLASS()
 class TROMBONERUMBLE_API URhythmSubsystem : public UGameInstanceSubsystem
 {
@@ -32,13 +30,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnNoteDetectedDelegate OnNoteDetected;
+	
+	FOnRhythmGameEndedDelegate OnRhythmGameEnded;
 
 private:
 	UFUNCTION()
+	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
-	
-	UFUNCTION()
-	void OnMusicEndCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
-	
 	void BroadcastUserCue(const FName& CueName);
 };

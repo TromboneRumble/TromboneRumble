@@ -55,6 +55,15 @@ void AInGameMode::GameEnd() const
 	}
 }
 
+void AInGameMode::OnRhythmGameEndedReport()
+{
+	RhythmGameEndedPlayerCount++;
+	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
+	{
+		GameEnd();
+	}
+}
+
 void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 {
 	if (!PC)
