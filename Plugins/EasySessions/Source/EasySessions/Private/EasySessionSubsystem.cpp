@@ -233,11 +233,11 @@ void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
         SessionSearchResults = SearchObject->SearchResults;
         for (const FOnlineSessionSearchResult& Result : SessionSearchResults)
         {
-            const FString OwnerName = Result.Session.OwningUserName;
-            const int32 Ping = Result.PingInMs;
-            const int32 CurrentPlayers = Result.Session.SessionSettings.NumPublicConnections - Result.Session.NumOpenPublicConnections;
-            const int32 MaxSlots = Result.Session.SessionSettings.NumPublicConnections;
-            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d "), *OwnerName, Ping, CurrentPlayers, MaxSlots);
+            const FString OwnerName = GetSessionOwnerName(Result);
+            const int32 Ping = GetPingInMs(Result);
+            const int32 CurrentPlayers = GetCurrentPlayers(Result);
+            const int32 MaxPlayer = GetMaxPlayers(Result);
+            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d "), *OwnerName, Ping, CurrentPlayers, MaxPlayer);
             UE_PRINT_EASY(Log, TEXT("%s"), *ResultText);
             
             for (const auto& SearchSetting : Result.Session.SessionSettings.Settings)
@@ -263,7 +263,7 @@ int32 UEasySessionSubsystem::GetPingInMs(const FOnlineSessionSearchResult& Resul
     return Result.PingInMs;
 }
 
-FString UEasySessionSubsystem::GetServerName(const FOnlineSessionSearchResult& Result)
+FString UEasySessionSubsystem::GetSessionOwnerName(const FOnlineSessionSearchResult& Result)
 {
     return Result.Session.OwningUserName;
 }
