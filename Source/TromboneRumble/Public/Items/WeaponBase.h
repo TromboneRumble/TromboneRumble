@@ -15,6 +15,8 @@
 class UWeaponDataAsset;
 class UGameplayEffect;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHitSuccessDelegate, AActor*, HitActor);
+
 UCLASS()
 class TROMBONERUMBLE_API AWeaponBase : public AItemBase, public IEquipable, public IWeapon
 {
@@ -44,13 +46,16 @@ public:
 	
 	virtual void DetectHit();
 
-	UFUNCTION(NetMulticast, Reliable)
-	virtual void Multicast_OnHitSuccess(AActor* HitActor);
-	UFUNCTION(Client, Reliable)
-	void Client_OnHitSuccess(AActor* HitActor);
+	UPROPERTY(BlueprintAssignable, Category = "Combat")
+	FOnHitSuccessDelegate OnHitSuccess;
+
 	virtual bool IsCanSweep() const;
 
 protected:
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void Multicast_OnHitSuccess(AActor* HitActor);
+	UFUNCTION(Client, Reliable)
+	virtual void Client_OnHitSuccess(AActor* HitActor);
 	virtual void PlayHitSound();
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
 	

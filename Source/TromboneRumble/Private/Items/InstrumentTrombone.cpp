@@ -22,7 +22,7 @@ float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 Curren
 	{
 		if (ActiveBuffHandle.IsValid())
 		{
-			RemoveBuff(CurrentOwner);
+			Server_RemoveBuff(CurrentOwner);
 		}
 		TromboneComboWidget->SetPercentSmooth(0.f);
 		return 0.f;
@@ -31,7 +31,7 @@ float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 Curren
 	{
 		if (CurrentCombo>=ScoreData->TromboneBuffComboThreshold && !ActiveBuffHandle.IsValid())
 		{
-			ApplyBuff(ScoreData->TromboneBuffEffectClass);
+			Server_ApplyBuff(ScoreData->TromboneBuffEffectClass);
 		}
 		TromboneComboWidget->SetPercentSmooth(FMath::Min(1.0f, (float)CurrentCombo / (float)ScoreData->TromboneBuffComboThreshold));
 	}
