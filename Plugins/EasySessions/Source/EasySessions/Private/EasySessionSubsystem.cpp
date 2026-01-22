@@ -50,12 +50,6 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
         {
             LastSettings = InSettings;
 
-            if (Sessions->GetNamedSession(NAME_GameSession))
-            {
-                DestroySession();
-                return;
-            }
-
             CreateSessionCompleteDelegateHandle = Sessions->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
             
             FOnlineSessionSettings Settings;
@@ -138,6 +132,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
                     OnStartSessionSuccess.Broadcast();
                 }
             
+                LastSettings.Reset();
                 return;
             }
         }
@@ -146,6 +141,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
     if (!bWasSuccessful)
     {
         OnStartSessionFailure.Broadcast();
+        LastSettings.Reset();
     }
 }
 
@@ -290,20 +286,6 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
         auto Sessions = Helper.OnlineSub->GetSessionInterface();
         if (Sessions.IsValid())
         {
-            if (Sessions->GetNamedSession(NAME_GameSession))
-            {
-                DestroySessionCompleteDelegateHandle = Sessions->AddOnDestroySessionCompleteDelegate_Handle(
-                    FOnDestroySessionCompleteDelegate::CreateLambda([this, SessionResult, Sessions](FName SessionName, bool bWasSuccessful)
-                    {
-                        this->JoinSession(SessionResult);
-                        Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
-                    })
-                );
-
-                Sessions->DestroySession(NAME_GameSession);
-                return;
-            }
-            
             JoinSessionCompleteDelegateHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
             Sessions->JoinSession(*Helper.UserID, NAME_GameSession, SessionResult);
             return;
@@ -384,12 +366,6 @@ void UEasySessionSubsystem::OnDestroySessionComplete(FName SessionName, const bo
         if (Sessions.IsValid())
         {
             Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
-            
-            if (bWasSuccessful && LastSettings.IsSet())
-            {
-                CreateSession(LastSettings.GetValue());
-                LastSettings.Reset();
-            }
         }
     }
     

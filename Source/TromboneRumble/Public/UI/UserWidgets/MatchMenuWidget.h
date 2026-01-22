@@ -34,6 +34,8 @@ private:
 	
 	UFUNCTION()
 	void HandleStartButtonClicked();
+	UFUNCTION()
+	void HandleBackButtonClicked();
 
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	

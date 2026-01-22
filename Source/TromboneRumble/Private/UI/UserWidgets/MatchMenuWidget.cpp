@@ -4,6 +4,7 @@
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "EasySessionSettings.h"
+#include "EasySessionSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
@@ -88,12 +89,7 @@ void UMatchMenuWidget::Init()
 	if (CB_Back)
 	{
 		CB_Back->OnClicked().RemoveAll(this);
-		CB_Back->OnClicked().AddLambda([this]
-		{
-			const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
-			const FString URL = MainMenuPkg;
-			UGameplayStatics::OpenLevel(this, FName(*URL), true);
-		});
+		CB_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
 	}
 }
 
@@ -162,6 +158,20 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 			}
 		}
 	}
+}
+
+void UMatchMenuWidget::HandleBackButtonClicked()
+{
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UEasySessionSubsystem* EasySessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
+		{
+			EasySessionSubsystem->DestroySession();
+		}
+	}
+	const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
+	const FString URL = MainMenuPkg;
+	UGameplayStatics::OpenLevel(this, FName(*URL), true);
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
