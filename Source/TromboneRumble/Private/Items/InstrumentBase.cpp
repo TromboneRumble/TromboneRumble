@@ -14,6 +14,7 @@
 #include "Components/WidgetComponent.h"
 #include "Framework/InGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_WidgetBase.h"
 #include "UI/UserWidgets/Rhythm/ComboWidget/RhythmComboWidgetBase.h"
 #include "Utilities/DebugHelper.h"
@@ -64,6 +65,12 @@ void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
+void AInstrumentBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AInstrumentBase, ActiveBuffHandle);
+}
+
 void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 {
 	Super::OnRep_CurrentOwner(OldActor);
@@ -91,7 +98,6 @@ void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 	}
 	else
 	{
-		RemoveBuff(OldActor);
 		BindToRhythmSubsystem(false);
 		const APawn* PawnOwner = Cast<APawn>(OldActor);
 		if (PawnOwner && PawnOwner->IsLocallyControlled())
@@ -111,6 +117,13 @@ void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 		}
 	}
 	TryUpdateIndicatorVisibility();
+}
+
+void AInstrumentBase::Unequip(AActor* OwnerActor)
+{
+	if (!HasAuthority() || !CurrentOwner) return;
+	Server_RemoveBuff(CurrentOwner);
+	Super::Unequip(OwnerActor);
 }
 
 void AInstrumentBase::TryUpdateIndicatorVisibility()
@@ -152,10 +165,10 @@ void AInstrumentBase::HandleInGameStateChanged(EInGameState InGameState)
 	}
 }
 
-void AInstrumentBase::ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass)
+void AInstrumentBase::Server_ApplyBuff_Implementation(TSubclassOf<UGameplayEffect> BuffClass)
 {
+	if (!HasAuthority()) return;
 	if (!BuffClass || ActiveBuffHandle.IsValid() || !CurrentOwner) return;
-
 	if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(CurrentOwner))
 	{
 		if (UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent())
@@ -163,31 +176,56 @@ void AInstrumentBase::ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass)
 			FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 			Context.AddSourceObject(this);
 			ActiveBuffHandle = ASC->ApplyGameplayEffectToSelf(BuffClass->GetDefaultObject<UGameplayEffect>(), 1.f, Context);
-			if (ActiveBuffHandle.IsValid() && IsOwnerLocallyControlled())
-			{
-				if (BuffActivationSound)
-				{
-					UAkGameplayStatics::PostEvent(BuffActivationSound, this, 0, FOnAkPostEventCallback());
-				}
-				OnBuffStateChanged.Broadcast(true);
-				FString DebugMsg = FString::Printf(TEXT(">>> [Buff ON] %s Applied!"), *BuffClass->GetName());
-				Debug::Print(DebugMsg);
-			}
+			OnRep_ActiveBuffHandle();
 		}
 	}
 }
 
-void AInstrumentBase::RemoveBuff(AActor* InOwner)
+void AInstrumentBase::OnRep_ActiveBuffHandle()
 {
-	if (ActiveBuffHandle.IsValid() && InOwner)
+	if (!IsOwnerLocallyControlled()) return;
+	if (ActiveBuffHandle.IsValid())
 	{
-		if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(InOwner))
+		if (BuffActivationSound)
+		{
+			UAkGameplayStatics::PostEvent(BuffActivationSound, this, 0, FOnAkPostEventCallback());
+		}
+		OnBuffStateChanged.Broadcast(true);
+
+		FString BuffName = TEXT("Unknown Buff");
+		if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(CurrentOwner))
+		{
+			if (UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent())
+			{
+				const UGameplayEffect* GEDef = ASC->GetGameplayEffectDefForHandle(ActiveBuffHandle);
+				if (GEDef)
+				{
+					BuffName = GEDef->GetName();
+				}
+			}
+		}
+		FString DebugMsg = FString::Printf(TEXT(">>> [Buff ON] Handle ID: %s | Effect: %s Applied!"),
+			*ActiveBuffHandle.ToString(),
+			*BuffName
+		);
+		Debug::Print(DebugMsg);
+	}
+	else
+	{
+		OnBuffStateChanged.Broadcast(false);
+		Debug::Print(TEXT("<<< [Buff OFF] Buff Removed"));
+	}
+}
+
+void AInstrumentBase::Server_RemoveBuff_Implementation(AActor* InActor)
+{
+	if (ActiveBuffHandle.IsValid() && InActor)
+	{
+		if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(InActor))
 		{
 			if (UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent())
 			{
 				ASC->RemoveActiveGameplayEffect(ActiveBuffHandle);
-				OnBuffStateChanged.Broadcast(false);
-				Debug::Print(TEXT("<<< [Buff OFF] Buff Removed"));
 			}
 		}
 	}
@@ -229,15 +267,9 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	ADefaultPlayerState* PS = GetOwnerPlayerState();
 	if (!PS) return;
 
-	// 로컬 UI 업데이트
-	if (!PS->HasAuthority())
-	{
-		PS->HandleCombo(InNoteResult);
-	}
-	// 서버에 콤보 업데이트
-	PS->Server_HandleCombo(InNoteResult);
+	PS->HandleCombo(InNoteResult);
 
-	int32 CurrentCombo = PS->GetComboData().CurrentCombo;
+	int32 CurrentCombo = PS->GetCurrentCombo();
 	float AddedScore = CalculateScore(InNoteResult, CurrentCombo);
 	if (AddedScore > 0.f)
 	{

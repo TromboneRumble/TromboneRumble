@@ -72,7 +72,7 @@ void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 		{
 			BuffRemainingCount = 0;
 			TotalNoteCount = 0;
-			RemoveBuff(CurrentOwner);
+			Server_RemoveBuff(CurrentOwner);
 		}
 	}
 
@@ -103,7 +103,7 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		BuffRemainingCount--;
 		if (BuffRemainingCount <= 0)
 		{
-			RemoveBuff(CurrentOwner); // 횟수 소진 시 버프 해제
+			Server_RemoveBuff(CurrentOwner); // 횟수 소진 시 버프 해제
 			TotalNoteCount = 0;
 		}
 		if (ViolinComboWidget)
@@ -116,7 +116,7 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		// 버프가 없는 상태에서 발동 조건 확인 (N번째 노트마다)
 		if (TotalNoteCount > 0 && (TotalNoteCount % ScoreData->ViolinBuffActivationCount == 0))
 		{
-			ApplyBuff(ScoreData->ViolinBuffEffectClass);
+			Server_ApplyBuff(ScoreData->ViolinBuffEffectClass);
 			BuffRemainingCount = ScoreData->ViolinBuffDurationCount;
 		}
 		if (ViolinComboWidget)

@@ -11,28 +11,28 @@ class AWeaponBase;
 class URhythmSubsystem;
 class AInGameState;
 
-USTRUCT(BlueprintType)
-struct FComboData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadOnly)
-	int32 CurrentCombo = 0;
-
-	UPROPERTY(BlueprintReadOnly)
-	ENoteResult LastNoteResult = ENoteResult::None; 
-
-	//콤보가 0일때 Bad 판정 칠시 판단 용도로 패킷 구분
-	UPROPERTY()
-	uint8 TransactionID = 0;
-
-	bool operator==(const FComboData& Other) const
-	{
-		return CurrentCombo == Other.CurrentCombo &&
-			LastNoteResult == Other.LastNoteResult &&
-			TransactionID == Other.TransactionID;
-	}
-};
+//USTRUCT(BlueprintType)
+//struct FComboData
+//{
+//	GENERATED_BODY()
+//
+//	UPROPERTY(BlueprintReadOnly)
+//	int32 CurrentCombo = 0;
+//
+//	UPROPERTY(BlueprintReadOnly)
+//	ENoteResult LastNoteResult = ENoteResult::None; 
+//
+//	//콤보가 0일때 Bad 판정 칠시 판단 용도로 패킷 구분
+//	UPROPERTY()
+//	uint8 TransactionID = 0;
+//
+//	bool operator==(const FComboData& Other) const
+//	{
+//		return CurrentCombo == Other.CurrentCombo &&
+//			LastNoteResult == Other.LastNoteResult &&
+//			TransactionID == Other.TransactionID;
+//	}
+//};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLocalScoreChanged, APlayerState*, PlayerState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
@@ -63,8 +63,6 @@ public:
 	void Server_AddScore(int32 Amount);
 
 	void HandleCombo(ENoteResult InResult);
-	UFUNCTION(Server, Reliable)
-	void Server_HandleCombo(ENoteResult InResult);
 
 	UPROPERTY(VisibleInstanceOnly, Replicated)
 	TSubclassOf<AWeaponBase> EquippedWeaponClass;
@@ -76,17 +74,14 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
-	UPROPERTY(ReplicatedUsing = OnRep_ComboData)
-	FComboData ComboData;
-
-	UFUNCTION()
-	void OnRep_ComboData();
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int32 CurrentCombo = 0;
 
 public:
 	//getter setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
-	FORCEINLINE FComboData GetComboData() const { return ComboData; }
+	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
 	// ~getter setter
 };

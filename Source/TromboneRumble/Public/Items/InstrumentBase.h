@@ -34,8 +34,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
-	//virtual void OnRep_Equipped() override;
+	virtual void Unequip(AActor* OwnerActor) override;
 
 	// Indicator
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator")
@@ -61,12 +62,19 @@ protected:
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
 	// ~ Indicator
+
 	// GAS Helpers
-	// 현재 활성화된 버프 핸들 (UnEquip시 제거용)
+	UPROPERTY(ReplicatedUsing = OnRep_ActiveBuffHandle)
 	FActiveGameplayEffectHandle ActiveBuffHandle;
 
-	void ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass);
-	void RemoveBuff(AActor* InActor);
+	UFUNCTION(Server, Reliable)
+	void Server_ApplyBuff(TSubclassOf<UGameplayEffect> BuffClass);
+
+	UFUNCTION()
+	void OnRep_ActiveBuffHandle();
+
+	UFUNCTION(Server, Reliable)
+	void Server_RemoveBuff(AActor* InActor);
 	float GetGradeMultiplier() const;
 	float GetComboMultiplier() const;
 
