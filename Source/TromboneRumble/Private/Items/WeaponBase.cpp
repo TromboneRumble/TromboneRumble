@@ -208,6 +208,7 @@ void AWeaponBase::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
 
 void AWeaponBase::Client_OnHitSuccess_Implementation(AActor* HitActor)
 {
+	OnHitSuccess.Broadcast(HitActor);
 }
 
 bool AWeaponBase::IsCanSweep() const
