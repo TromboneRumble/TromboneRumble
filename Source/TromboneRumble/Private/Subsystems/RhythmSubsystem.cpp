@@ -2,15 +2,12 @@
 
 #include "Subsystems/RhythmSubsystem.h"
 #include "AkGameplayTypes.h"
-#include "GameFramework/PlayerState.h"
-#include "Utilities/DebugHelper.h"
 
 void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
 	
 	if (CallbackType == EAkCallbackType::MusicSyncUserCue)
 	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("MusicSyncUserCue"));
 		OnMusicAkCallback(CallbackType, CallbackInfo);
 	}
 	else if (CallbackType == EAkCallbackType::EndOfEvent)

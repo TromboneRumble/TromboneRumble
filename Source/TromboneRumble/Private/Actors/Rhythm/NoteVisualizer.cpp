@@ -201,7 +201,7 @@ void ANoteVisualizer::FindPlayerCharacterAndAttach()
 		RingHitBox,
 		FAttachmentTransformRules::SnapToTargetNotIncludingScale
 	);
-
+	SetActorRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	CachedRingHitBoxComponent = RingHitBox;
 }
 
