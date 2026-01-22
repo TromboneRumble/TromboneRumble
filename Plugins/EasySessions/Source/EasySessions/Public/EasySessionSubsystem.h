@@ -41,7 +41,7 @@ public:
 	FOnDestroySessionFailure OnDestroySessionFailure;
 	
 	static int32 GetPingInMs(const FOnlineSessionSearchResult& Result);
-	static FString GetServerName(const FOnlineSessionSearchResult& Result);
+	static FString GetSessionOwnerName(const FOnlineSessionSearchResult& Result);
 	static int32 GetCurrentPlayers(const FOnlineSessionSearchResult& Result);
 	static int32 GetMaxPlayers(const FOnlineSessionSearchResult& Result);
 

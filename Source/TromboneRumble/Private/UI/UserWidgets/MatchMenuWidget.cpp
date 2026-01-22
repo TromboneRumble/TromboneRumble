@@ -4,6 +4,7 @@
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "EasySessionSettings.h"
+#include "EasySessionSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
@@ -17,16 +18,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
-
-void UMatchMenuWidget::NativePreConstruct()
-{
-	Super::NativePreConstruct();
-	
-	if (CT_Code)
-	{
-		CT_Code->SetText(FText::GetEmpty());
-	}
-}
 
 void UMatchMenuWidget::NativeConstruct()
 {
@@ -69,9 +60,10 @@ void UMatchMenuWidget::NativeOnActivated()
 		{
 			if (CT_Code)
 			{
+				const FString Prefix = TEXT("입장 코드 : ");
 				FString OutCode;
 				Setting->Data.GetValue(OutCode);
-				CT_Code->SetText(FText::FromString(OutCode));
+				CT_Code->SetText(FText::FromString(Prefix + OutCode));
 			}
 		}
 	}
@@ -97,12 +89,7 @@ void UMatchMenuWidget::Init()
 	if (CB_Back)
 	{
 		CB_Back->OnClicked().RemoveAll(this);
-		CB_Back->OnClicked().AddLambda([this]
-		{
-			const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
-			const FString URL = MainMenuPkg;
-			UGameplayStatics::OpenLevel(this, FName(*URL), true);
-		});
+		CB_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
 	}
 }
 
@@ -129,7 +116,7 @@ void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 {
 	if (!CT_PlayerList) return;
 
-	FString FormattedPlayerList = TEXT("Players:\n");
+	FString FormattedPlayerList;
 
 	for (int32 i = 0; i < PlayerNames.Num(); ++i)
 	{
@@ -171,6 +158,20 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 			}
 		}
 	}
+}
+
+void UMatchMenuWidget::HandleBackButtonClicked()
+{
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UEasySessionSubsystem* EasySessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
+		{
+			EasySessionSubsystem->DestroySession();
+		}
+	}
+	const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
+	const FString URL = MainMenuPkg;
+	UGameplayStatics::OpenLevel(this, FName(*URL), true);
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
