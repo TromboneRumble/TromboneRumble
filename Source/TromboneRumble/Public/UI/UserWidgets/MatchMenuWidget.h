@@ -17,7 +17,6 @@ class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
 	GENERATED_BODY()
 	
 protected:
-	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
@@ -35,6 +34,8 @@ private:
 	
 	UFUNCTION()
 	void HandleStartButtonClicked();
+	UFUNCTION()
+	void HandleBackButtonClicked();
 
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	

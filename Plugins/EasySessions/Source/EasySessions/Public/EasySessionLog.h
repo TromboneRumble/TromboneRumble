@@ -28,7 +28,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogEasySession, Log, All);
             LogColor = FColor::Yellow; \
         } \
         FString FinalMsg = FString::Printf(TEXT("%s%s"), EASYSESSION_LOG_PREFIX, *FString::Printf(Format, ##__VA_ARGS__)); \
-        GEngine->AddOnScreenDebugMessage((uint64)-1, 15.0f, LogColor, FinalMsg); \
+        GEngine->AddOnScreenDebugMessage((uint64)-1, 5.0f, LogColor, FinalMsg); \
     } \
 }
 

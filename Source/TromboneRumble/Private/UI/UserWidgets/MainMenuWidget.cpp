@@ -4,6 +4,8 @@
 #include "CommonButtonBase.h"
 #include "EasySessionSettings.h"
 #include "EasySessionSubsystem.h"
+#include "EasySessionUtils.h"
+#include "OnlineSubsystemUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
@@ -47,6 +49,18 @@ void UMainMenuWidget::Init()
 	{
 		CB_Quit->OnClicked().RemoveAll(this);
 		CB_Quit->OnClicked().AddUObject(this, &ThisClass::HandleQuitButtonClicked);
+	}
+	
+	if (const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld()))
+	{
+		const IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
+		if (Sessions.IsValid())
+		{
+			if (Sessions->GetNamedSession(NAME_GameSession))
+			{
+				Sessions->DestroySession(NAME_GameSession);
+			}
+		}
 	}
 }
 

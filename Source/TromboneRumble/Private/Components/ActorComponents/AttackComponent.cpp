@@ -106,7 +106,10 @@ void UAttackComponent::PlayAttackEffects() const
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	Server_ExecuteAttackEnd();
+	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled())
+	{
+		Server_ExecuteAttackEnd();
+	}
 }
 
 void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
@@ -122,7 +125,10 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 		OldWeapon->EndAttack();
 	}
 	
-	Server_ExecuteAttackEnd();
+	if (OwnerCharacter->IsLocallyControlled())
+	{
+		Server_ExecuteAttackEnd();
+	}
 
 	if (NewItem)
 	{

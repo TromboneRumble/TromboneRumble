@@ -21,6 +21,7 @@ void URhythmLeaderBoard::NativeConstruct()
 	
 	if (CB_Exit)
 	{
+		CB_Exit->OnClicked().RemoveAll(this);
 		CB_Exit->OnClicked().AddUObject(this, &ThisClass::HandleExitButtonClicked);
 	}
 	
@@ -209,7 +210,6 @@ void URhythmLeaderBoard::HandleExitButtonClicked()
 		else if (APlayerController* PC = GetOwningPlayer())
 		{
 			const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-			PC->EnableInput(PC);
 			PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 		}
 	}
@@ -220,7 +220,6 @@ void URhythmLeaderBoard::OnDestroySessionSuccess()
 	if (APlayerController* PC = GetOwningPlayer())
 	{
 		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-		PC->EnableInput(PC);
 		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 	}
 }
@@ -230,7 +229,6 @@ void URhythmLeaderBoard::OnDestroySessionFailure()
 	if (APlayerController* PC = GetOwningPlayer())
 	{
 		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-		PC->EnableInput(PC);
 		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 	}
 }

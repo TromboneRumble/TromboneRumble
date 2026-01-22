@@ -11,8 +11,8 @@ void UBaseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	Init();
 	BindSubsystemCallbacks();
+	Init();
 }
 
 void UBaseMenuWidget::Init()

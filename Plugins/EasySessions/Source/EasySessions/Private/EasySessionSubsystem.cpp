@@ -50,12 +50,6 @@ void UEasySessionSubsystem::CreateSession(const FEasySessionSettings& InSettings
         {
             LastSettings = InSettings;
 
-            if (Sessions->GetNamedSession(NAME_GameSession))
-            {
-                DestroySession();
-                return;
-            }
-
             CreateSessionCompleteDelegateHandle = Sessions->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
             
             FOnlineSessionSettings Settings;
@@ -126,7 +120,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
             
             if (bWasSuccessful)
             {
-                if (LastSettings.GetValue().bStartAfterCreate)
+                if (LastSettings.IsSet() && LastSettings.GetValue().bStartAfterCreate)
                 {
                     UE_LOG_EASY(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
                     StartSessionCompleteDelegateHandle = Sessions->AddOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegate);
@@ -138,6 +132,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
                     OnStartSessionSuccess.Broadcast();
                 }
             
+                LastSettings.Reset();
                 return;
             }
         }
@@ -146,6 +141,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
     if (!bWasSuccessful)
     {
         OnStartSessionFailure.Broadcast();
+        LastSettings.Reset();
     }
 }
 
@@ -233,11 +229,11 @@ void UEasySessionSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
         SessionSearchResults = SearchObject->SearchResults;
         for (const FOnlineSessionSearchResult& Result : SessionSearchResults)
         {
-            const FString OwnerName = Result.Session.OwningUserName;
-            const int32 Ping = Result.PingInMs;
-            const int32 CurrentPlayers = Result.Session.SessionSettings.NumPublicConnections - Result.Session.NumOpenPublicConnections;
-            const int32 MaxSlots = Result.Session.SessionSettings.NumPublicConnections;
-            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d "), *OwnerName, Ping, CurrentPlayers, MaxSlots);
+            const FString OwnerName = GetSessionOwnerName(Result);
+            const int32 Ping = GetPingInMs(Result);
+            const int32 CurrentPlayers = GetCurrentPlayers(Result);
+            const int32 MaxPlayer = GetMaxPlayers(Result);
+            FString ResultText = FString::Printf(TEXT("Found a session. Owner:%s Ping:%d Slots:%d/%d "), *OwnerName, Ping, CurrentPlayers, MaxPlayer);
             UE_PRINT_EASY(Log, TEXT("%s"), *ResultText);
             
             for (const auto& SearchSetting : Result.Session.SessionSettings.Settings)
@@ -263,7 +259,7 @@ int32 UEasySessionSubsystem::GetPingInMs(const FOnlineSessionSearchResult& Resul
     return Result.PingInMs;
 }
 
-FString UEasySessionSubsystem::GetServerName(const FOnlineSessionSearchResult& Result)
+FString UEasySessionSubsystem::GetSessionOwnerName(const FOnlineSessionSearchResult& Result)
 {
     return Result.Session.OwningUserName;
 }
@@ -290,20 +286,6 @@ void UEasySessionSubsystem::JoinSession(const FOnlineSessionSearchResult& Sessio
         auto Sessions = Helper.OnlineSub->GetSessionInterface();
         if (Sessions.IsValid())
         {
-            if (Sessions->GetNamedSession(NAME_GameSession))
-            {
-                DestroySessionCompleteDelegateHandle = Sessions->AddOnDestroySessionCompleteDelegate_Handle(
-                    FOnDestroySessionCompleteDelegate::CreateLambda([this, SessionResult, Sessions](FName SessionName, bool bWasSuccessful)
-                    {
-                        this->JoinSession(SessionResult);
-                        Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
-                    })
-                );
-
-                Sessions->DestroySession(NAME_GameSession);
-                return;
-            }
-            
             JoinSessionCompleteDelegateHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
             Sessions->JoinSession(*Helper.UserID, NAME_GameSession, SessionResult);
             return;
@@ -384,12 +366,6 @@ void UEasySessionSubsystem::OnDestroySessionComplete(FName SessionName, const bo
         if (Sessions.IsValid())
         {
             Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
-            
-            if (bWasSuccessful && LastSettings.IsSet())
-            {
-                CreateSession(LastSettings.GetValue());
-                LastSettings.Reset();
-            }
         }
     }
     
