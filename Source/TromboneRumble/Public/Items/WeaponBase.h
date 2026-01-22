@@ -43,7 +43,11 @@ public:
 	// ~ End IWeapon Interface
 	
 	virtual void DetectHit();
-	virtual void OnHitSuccess(AActor* HitActor) {}
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void Multicast_OnHitSuccess(AActor* HitActor);
+	UFUNCTION(Client, Reliable)
+	void Client_OnHitSuccess(AActor* HitActor);
 	virtual bool IsCanSweep() const;
 
 protected:

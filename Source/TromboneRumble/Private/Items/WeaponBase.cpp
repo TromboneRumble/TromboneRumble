@@ -192,13 +192,22 @@ void AWeaponBase::DetectHit()
 				HitData.KnockbackForce = WeaponData->KnockbackForce;
 				HitData.HitType = WeaponData->HitReactionType;
 
-				OnHitSuccess(HitActor);
+				Multicast_OnHitSuccess(HitActor);
+				Client_OnHitSuccess(HitActor);
 				ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
 			}
     	}
     }
 
 	PreviousFrameTransform = CurrentTransform;
+}
+
+void AWeaponBase::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
+{
+}
+
+void AWeaponBase::Client_OnHitSuccess_Implementation(AActor* HitActor)
+{
 }
 
 bool AWeaponBase::IsCanSweep() const

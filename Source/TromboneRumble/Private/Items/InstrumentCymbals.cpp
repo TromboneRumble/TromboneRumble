@@ -6,13 +6,15 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Utilities/DebugHelper.h"
 
-void AInstrumentCymbals::OnHitSuccess(AActor* HitActor)
+void AInstrumentCymbals::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
 {
-	Super::OnHitSuccess(HitActor);
-	if (!IsOwnerLocallyControlled()) return;
-
+	Super::Multicast_OnHitSuccess_Implementation(HitActor);
 	PlayHitSound();
-	
+}
+
+void AInstrumentCymbals::Client_OnHitSuccess_Implementation(AActor* HitActor)
+{
+	Super::Client_OnHitSuccess_Implementation(HitActor);
 	if (ADefaultPlayerState* DefaultPlayerState = GetOwnerPlayerState())
 	{
 		if (IsOwnerLocallyControlled())

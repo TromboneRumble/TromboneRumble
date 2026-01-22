@@ -6,12 +6,9 @@
 #include "UI/UserWidgets/Rhythm/ComboWidget/TromboneComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
-void AInstrumentTrombone::OnHitSuccess(AActor* HitActor)
+void AInstrumentTrombone::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
 {
-	Super::OnHitSuccess(HitActor);
-	
-	if (!IsOwnerLocallyControlled()) return;
-
+	Super::Multicast_OnHitSuccess_Implementation(HitActor);
 	PlayHitSound();
 }
 

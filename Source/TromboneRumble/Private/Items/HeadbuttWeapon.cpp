@@ -3,11 +3,8 @@
 
 #include "Items/HeadbuttWeapon.h"
 
-void AHeadbuttWeapon::OnHitSuccess(AActor* HitActor)
+void AHeadbuttWeapon::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
 {
-	Super::OnHitSuccess(HitActor);
-	
-	if (!IsOwnerLocallyControlled()) return;
-
+	Super::Multicast_OnHitSuccess_Implementation(HitActor);
 	PlayHitSound();
 }

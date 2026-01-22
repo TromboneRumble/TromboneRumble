@@ -7,12 +7,9 @@
 #include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
-void AInstrumentViolin::OnHitSuccess(AActor* HitActor)
+void AInstrumentViolin::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
 {
-	Super::OnHitSuccess(HitActor);
-	
-	if (!IsOwnerLocallyControlled()) return;
-
+	Super::Multicast_OnHitSuccess_Implementation(HitActor);
 	PlayHitSound();
 }
 

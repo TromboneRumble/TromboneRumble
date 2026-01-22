@@ -15,7 +15,7 @@ class TROMBONERUMBLE_API AInstrumentViolin : public AInstrumentBase
 	GENERATED_BODY()
 	
 public:
-	virtual void OnHitSuccess(AActor* HitActor) override;
+	virtual void Multicast_OnHitSuccess_Implementation(AActor* HitActor) override;
 	
 protected:
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
