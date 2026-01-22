@@ -18,16 +18,6 @@
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
-void UMatchMenuWidget::NativePreConstruct()
-{
-	Super::NativePreConstruct();
-	
-	if (CT_Code)
-	{
-		CT_Code->SetText(FText::GetEmpty());
-	}
-}
-
 void UMatchMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -69,9 +59,10 @@ void UMatchMenuWidget::NativeOnActivated()
 		{
 			if (CT_Code)
 			{
+				const FString Prefix = TEXT("입장 코드 : ");
 				FString OutCode;
 				Setting->Data.GetValue(OutCode);
-				CT_Code->SetText(FText::FromString(OutCode));
+				CT_Code->SetText(FText::FromString(Prefix + OutCode));
 			}
 		}
 	}
@@ -129,7 +120,7 @@ void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 {
 	if (!CT_PlayerList) return;
 
-	FString FormattedPlayerList = TEXT("Players:\n");
+	FString FormattedPlayerList;
 
 	for (int32 i = 0; i < PlayerNames.Num(); ++i)
 	{
