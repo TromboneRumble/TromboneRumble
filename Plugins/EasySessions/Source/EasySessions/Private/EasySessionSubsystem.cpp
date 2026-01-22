@@ -126,7 +126,7 @@ void UEasySessionSubsystem::OnCreateSessionComplete(FName SessionName, const boo
             
             if (bWasSuccessful)
             {
-                if (LastSettings.GetValue().bStartAfterCreate)
+                if (LastSettings.IsSet() && LastSettings.GetValue().bStartAfterCreate)
                 {
                     UE_LOG_EASY(Display, TEXT("Session creation completed. Automatic start is turned on, starting session now."));
                     StartSessionCompleteDelegateHandle = Sessions->AddOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegate);
