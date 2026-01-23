@@ -6,21 +6,44 @@
 #include "GameplayTagContainer.h"
 #include "TromboneGamePlayTags.h"
 #include "Engine/GameInstance.h"
+#include "Utilities/Defines.h"
 #include "TromboneGameInstance.generated.h"
+
+class UAkComponent;
+class UAkAudioEvent;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
+    virtual void Init() override;
+    
+    UFUNCTION(BlueprintCallable)
+    void PlayMenuBGM();
+    
+    UFUNCTION(BlueprintCallable)
+    void StopMenuBGM();
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
 
 private:
+    UPROPERTY(VisibleAnywhere)
+    TObjectPtr<UAkComponent> GlobalBGMComponent;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Config|BGM")
+    TMap<EMenuBGMType, TObjectPtr<UAkAudioEvent>> PlayMenuBGMEvents; 
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Config|BGM")
+    TMap<EMenuBGMType, TObjectPtr<UAkAudioEvent>> StopMenuBGMEvents; 
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "Trombone.Rhythm.Song"))
     FGameplayTag SelectedSongTag = TromboneGamePlayTags::Trombone_Rhythm_Song_MapA;
     
     int32 SessionPlayerNumber = 2;
+    bool bIsMenuMusicPlaying = false;
+    EMenuBGMType CurrentMenuBGMType = EMenuBGMType::None;
 
 public:
     // ~ Begin Getter & Setter

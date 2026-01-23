@@ -14,6 +14,8 @@ void ADefaultPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// TODO : ADefaultPlayerController 정리하기!!!
+
 	const UGameInstance* GameInstance = GetGameInstance();
 	if (!GameInstance || !IsLocalController()) return;
 

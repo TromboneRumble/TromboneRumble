@@ -4,6 +4,16 @@
 #include "Defines.generated.h"
 
 UENUM()
+enum class EMenuBGMType : uint8
+{
+	BGM_0,
+	BGM_1,
+	BGM_2,
+	MAX,
+	None = 255,
+};
+
+UENUM()
 enum class EGimmickType : uint8
 {
 	Spotlight,
