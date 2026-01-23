@@ -62,6 +62,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
 	FName RagdollSnapshotName;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Stun")
+	bool bIsStunned = false;
 
 private:
 	UFUNCTION()
