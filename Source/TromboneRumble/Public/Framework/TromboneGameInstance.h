@@ -17,7 +17,7 @@ class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
-    virtual void Init() override;
+    virtual void OnStart() override;
     
     UFUNCTION(BlueprintCallable)
     void PlayMenuBGM();
