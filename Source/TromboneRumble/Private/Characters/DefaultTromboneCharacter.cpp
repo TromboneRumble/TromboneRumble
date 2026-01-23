@@ -19,10 +19,12 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
+#include "Prototype/InGameWidget.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -153,6 +155,21 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 	else
 	{
 		CachedRhythmActor->DetectLongNoteEnd();
+	}
+}
+
+void ADefaultTromboneCharacter::ToggleGuideUI()
+{
+	TArray<UUserWidget*> FoundWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, UInGameWidget::StaticClass());
+
+	for (UUserWidget* Widget : FoundWidgets)
+	{
+		if (UInGameWidget* InGameWidget = Cast<UInGameWidget>(Widget))
+		{
+			InGameWidget->ToggleGuideUI();
+			break;
+		}
 	}
 }
 

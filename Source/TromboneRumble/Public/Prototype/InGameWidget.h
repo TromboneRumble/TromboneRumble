@@ -6,6 +6,8 @@
 #include "CommonActivatableWidget.h"
 #include "InGameWidget.generated.h"
 
+class UImage;
+
 UCLASS()
 class TROMBONERUMBLE_API UInGameWidget : public UCommonActivatableWidget
 {
@@ -17,4 +19,8 @@ public:
 		return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways, true);
 	}	
 	
+	void ToggleGuideUI();
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_Guide;
 };
