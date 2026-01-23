@@ -13,6 +13,7 @@
 #include "Data/WeaponDataAsset.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "Utilities/DebugHelper.h"
 
 AWeaponBase::AWeaponBase()
 {

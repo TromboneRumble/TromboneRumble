@@ -238,8 +238,6 @@ void UMainMenuWidget::OnFindSessionsFailure(const TArray<FOnlineSessionSearchRes
 
 void UMainMenuWidget::OnJoinSessionSuccess()
 {
-	SetUIEnabled(true);
-	HideLoadingOverlay();
 }
 
 void UMainMenuWidget::OnJoinSessionFailure()

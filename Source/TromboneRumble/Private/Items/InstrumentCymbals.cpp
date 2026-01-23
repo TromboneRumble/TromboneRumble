@@ -4,6 +4,7 @@
 #include "Items/InstrumentCymbals.h"
 #include "Data/InstrumentScoreData.h"
 #include "Framework/DefaultPlayerState.h"
+#include "GameFramework/Character.h"
 #include "Utilities/DebugHelper.h"
 
 void AInstrumentCymbals::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
@@ -27,6 +28,59 @@ void AInstrumentCymbals::Client_OnHitSuccess_Implementation(AActor* HitActor)
 		}
 
 		DefaultPlayerState->Server_AddScore(FMath::RoundToInt(ScoreData->AttackScore));
+	}
+}
+
+void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
+{
+	Super::OnRep_CurrentOwner(OldActor);
+
+	if (CurrentOwner)
+	{
+		if (!CymbalsRightHandActor)
+		{
+			if (IsValid(CymbalsHalfClass))
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				CymbalsRightHandActor = GetWorld()->SpawnActor<AActor>(CymbalsHalfClass, GetActorTransform(), SpawnParams);
+
+				if (CymbalsRightHandActor)
+				{
+					TArray<UPrimitiveComponent*> Comps;
+					CymbalsRightHandActor->GetComponents(Comps);
+
+					for (UPrimitiveComponent* Comp : Comps)
+					{
+						Comp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+						Comp->SetReceivesDecals(false);
+					}
+				}
+			}
+		}
+		if (IsValid(CymbalsRightHandActor))
+		{
+			const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner);
+			if (OwnerChar)
+			{
+				CymbalsRightHandActor->SetActorHiddenInGame(false);
+				CymbalsRightHandActor->AttachToComponent(
+					OwnerChar->GetMesh(),
+					FAttachmentTransformRules::SnapToTargetIncludingScale,
+					FName(TEXT("socket_Cymbal_r"))
+				);
+			}
+		}
+	}
+	else
+	{
+		if (IsValid(CymbalsRightHandActor))
+		{
+			CymbalsRightHandActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			CymbalsRightHandActor->SetActorHiddenInGame(true);
+		}
 	}
 }
 
