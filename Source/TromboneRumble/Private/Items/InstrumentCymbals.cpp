@@ -2,6 +2,8 @@
 
 
 #include "Items/InstrumentCymbals.h"
+
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Data/InstrumentScoreData.h"
 #include "Framework/DefaultPlayerState.h"
 #include "GameFramework/Character.h"
@@ -18,16 +20,19 @@ void AInstrumentCymbals::Client_OnHitSuccess_Implementation(AActor* HitActor)
 	Super::Client_OnHitSuccess_Implementation(HitActor);
 	if (ADefaultPlayerState* DefaultPlayerState = GetOwnerPlayerState())
 	{
-		if (IsOwnerLocallyControlled())
+		if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(HitActor))
 		{
-			FString DebugMsg = FString::Printf(
-				TEXT("[Cymbals] HitResult: HitScore: %.0f"),
-				ScoreData->AttackScore
-			);
-			Debug::Print(DebugMsg);
+			if (!TromboneCharacter->IsRagdoll() && !TromboneCharacter->IsStun() && IsOwnerLocallyControlled())
+			{
+				FString DebugMsg = FString::Printf(
+					TEXT("[Cymbals] HitResult: HitScore: %.0f"),
+					ScoreData->AttackScore
+				);
+				Debug::Print(DebugMsg);
+				DefaultPlayerState->Server_AddScore(FMath::RoundToInt(ScoreData->AttackScore));
+			}
 		}
-
-		DefaultPlayerState->Server_AddScore(FMath::RoundToInt(ScoreData->AttackScore));
+		
 	}
 }
 
