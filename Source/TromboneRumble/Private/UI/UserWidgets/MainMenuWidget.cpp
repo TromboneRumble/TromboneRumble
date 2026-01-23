@@ -259,7 +259,7 @@ void UMainMenuWidget::OnDestroySessionFailure()
 
 FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
 {
-	const FString Chars = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
 	FString RandomCode;
 	for (int32 i = 0; i < Length; ++i)
 	{
