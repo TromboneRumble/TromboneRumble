@@ -406,8 +406,8 @@ void ATromboneCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
 #if !UE_BUILD_SHIPPING
-	PlayerInputComponent->BindKey(EKeys::R, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugRagdoll);
-	PlayerInputComponent->BindKey(EKeys::T, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugStun);
+	PlayerInputComponent->BindKey(EKeys::O, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugRagdoll);
+	PlayerInputComponent->BindKey(EKeys::P, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugStun);
 #endif
 }
 
