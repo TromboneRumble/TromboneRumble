@@ -38,4 +38,5 @@ private:
 	TObjectPtr<UCommonTextBlock> CT_Countdown;
 
 	FTimerHandle CountdownTimerHandle;
+	int32 InternalCountdownSeconds = 5;
 };

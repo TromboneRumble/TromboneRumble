@@ -44,7 +44,8 @@ void ULobbyWidget::OnLobbyStateUpdated(const ELobbyState NewState)
 	
 	if (NewState == ELobbyState::CountdownToScramble || NewState == ELobbyState::CountdownToTravel)
 	{
-		CT_Countdown->SetText(FText::AsNumber(CountdownSeconds));
+		InternalCountdownSeconds = CountdownSeconds;
+		CT_Countdown->SetText(FText::AsNumber(InternalCountdownSeconds));
 		CT_Countdown->SetVisibility(ESlateVisibility::Visible);
 		GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ULobbyWidget::UpdateCountdown, 1.0f, true);
 	}
@@ -59,10 +60,10 @@ void ULobbyWidget::UpdateCountdown()
 {
 	if (!CT_Countdown) return;
 
-	CountdownSeconds--;
-	CT_Countdown->SetText(FText::AsNumber(CountdownSeconds));
+	InternalCountdownSeconds--;
+	CT_Countdown->SetText(FText::AsNumber(InternalCountdownSeconds));
 
-	if (CountdownSeconds <= 0)
+	if (InternalCountdownSeconds <= 0)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
 		CT_Countdown->SetVisibility(ESlateVisibility::Hidden);
