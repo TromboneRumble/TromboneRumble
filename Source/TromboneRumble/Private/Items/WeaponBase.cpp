@@ -174,31 +174,30 @@ void AWeaponBase::DetectHit()
 	   CollisionComp->GetCollisionShape(),
 	   Params
 	);
-	
-	if (!bHit) return;
-    for (const FHitResult& Hit : HitResults)
-    {
-    	AActor* HitActor = Hit.GetActor();
-    	if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != CurrentOwner)
-    	{
-			if (HitActor->Implements<UCombatReceiver>())
+	if (bHit)
+	{
+		for (const FHitResult& Hit : HitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+			if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != CurrentOwner)
 			{
-				AlreadyHitActors.Add(HitActor);
+				if (HitActor->Implements<UCombatReceiver>())
+				{
+					AlreadyHitActors.Add(HitActor);
 
-				FHitData HitData;
-				FVector Direction = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
-				Direction.Z = 0.5f;
-				HitData.HitDirection = Direction.GetSafeNormal();
-				HitData.KnockbackForce = WeaponData->KnockbackForce;
-				HitData.HitType = WeaponData->HitReactionType;
-
-				Multicast_OnHitSuccess(HitActor);
-				Client_OnHitSuccess(HitActor);
-				ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
+					FHitData HitData;
+					FVector Direction = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
+					Direction.Z = 0.5f;
+					HitData.HitDirection = Direction.GetSafeNormal();
+					HitData.KnockbackForce = WeaponData->KnockbackForce;
+					HitData.HitType = WeaponData->HitReactionType;
+					Multicast_OnHitSuccess(HitActor);
+					Client_OnHitSuccess(HitActor);
+					ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
+				}
 			}
-    	}
-    }
-
+		}
+	}
 	PreviousFrameTransform = CurrentTransform;
 }
 
