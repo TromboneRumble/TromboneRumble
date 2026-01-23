@@ -17,7 +17,6 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 void UMatchMenuWidget::NativeConstruct()
 {
@@ -114,7 +113,7 @@ void UMatchMenuWidget::RemoveGameStateEvents()
 
 void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 {
-	if (!CT_PlayerList) return;
+	if (!CT_PlayerList || bIsStarted) return;
 
 	FString FormattedPlayerList;
 
@@ -128,17 +127,13 @@ void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 
 void UMatchMenuWidget::HandleStartButtonClicked()
 {
+	bIsStarted = true;
 	SetUIEnabled(false);
 	
 	if (UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		if (const UGameStateSubsystem* GameStateSubsystem = TromboneGI->GetSubsystem<UGameStateSubsystem>())
 		{
-			const FString MapPath = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
-
-			UWorld* World = GetWorld();
-			if (!World || World->GetAuthGameMode() == nullptr || MapPath.IsEmpty()) return;
-	
 			if (const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld()))
 			{
 				const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
@@ -151,10 +146,16 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 				}
 			}
 			
+			const FString MapPath = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+
+			UWorld* World = GetWorld();
+			if (!World || World->GetAuthGameMode() == nullptr || MapPath.IsEmpty()) return;
+			
 			if (!World->ServerTravel(MapPath))
 			{
-				PRINT_WITH_CURRENT_CONTEXT(TEXT("ServerTravel failed"));
+				bIsStarted = false;
 				SetUIEnabled(true);
+				ShowNoticePopup(TEXT("게임 시작에 실패하였습니다."));
 			}
 		}
 	}
