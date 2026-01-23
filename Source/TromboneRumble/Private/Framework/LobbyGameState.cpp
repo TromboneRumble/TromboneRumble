@@ -76,10 +76,10 @@ void ALobbyGameState::Multicast_RemoveWall_Implementation()
 {
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Wall"), FoundActors);
-
-	if (FoundActors.Num() > 0)
+	
+	for (AActor* Actor : FoundActors)
 	{
-		if (AActor* Wall = Cast<AStaticMeshActor>(FoundActors[0]))
+		if (AStaticMeshActor* Wall = Cast<AStaticMeshActor>(Actor))
 		{
 			Wall->Destroy();
 		}
