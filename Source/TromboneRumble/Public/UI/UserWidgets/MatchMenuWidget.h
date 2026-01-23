@@ -56,4 +56,6 @@ private:
 	FString CachedMainMenuMapPath = "";
 	UPROPERTY(Transient)
 	FString CachedLobbyMapPath = "";
+	
+	bool bIsStarted = false;
 };
