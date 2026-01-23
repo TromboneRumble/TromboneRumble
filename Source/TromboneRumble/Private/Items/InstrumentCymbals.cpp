@@ -37,7 +37,9 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 
 	if (CurrentOwner)
 	{
-		if (!CymbalsRightHandActor)
+		SkeletalMeshComponent->SetSkeletalMesh(CymbalsHalfMesh);
+
+		if (!CymbalsHalfActor)
 		{
 			if (IsValid(CymbalsHalfClass))
 			{
@@ -45,12 +47,12 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 				SpawnParams.Owner = this;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-				CymbalsRightHandActor = GetWorld()->SpawnActor<AActor>(CymbalsHalfClass, GetActorTransform(), SpawnParams);
+				CymbalsHalfActor = GetWorld()->SpawnActor<AActor>(CymbalsHalfClass, GetActorTransform(), SpawnParams);
 
-				if (CymbalsRightHandActor)
+				if (CymbalsHalfActor)
 				{
 					TArray<UPrimitiveComponent*> Comps;
-					CymbalsRightHandActor->GetComponents(Comps);
+					CymbalsHalfActor->GetComponents(Comps);
 
 					for (UPrimitiveComponent* Comp : Comps)
 					{
@@ -60,13 +62,13 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 				}
 			}
 		}
-		if (IsValid(CymbalsRightHandActor))
+		if (IsValid(CymbalsHalfActor))
 		{
 			const ACharacter* OwnerChar = Cast<ACharacter>(CurrentOwner);
 			if (OwnerChar)
 			{
-				CymbalsRightHandActor->SetActorHiddenInGame(false);
-				CymbalsRightHandActor->AttachToComponent(
+				CymbalsHalfActor->SetActorHiddenInGame(false);
+				CymbalsHalfActor->AttachToComponent(
 					OwnerChar->GetMesh(),
 					FAttachmentTransformRules::SnapToTargetIncludingScale,
 					FName(TEXT("socket_Cymbal_r"))
@@ -76,10 +78,11 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 	}
 	else
 	{
-		if (IsValid(CymbalsRightHandActor))
+		SkeletalMeshComponent->SetSkeletalMesh(CymbalsFullMesh);
+		if (IsValid(CymbalsHalfActor))
 		{
-			CymbalsRightHandActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
-			CymbalsRightHandActor->SetActorHiddenInGame(true);
+			CymbalsHalfActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			CymbalsHalfActor->SetActorHiddenInGame(true);
 		}
 	}
 }

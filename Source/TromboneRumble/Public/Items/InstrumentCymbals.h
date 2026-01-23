@@ -7,7 +7,7 @@
 #include "InstrumentCymbals.generated.h"
 
 /**
- * 심벌즈는 반쪽짜리로 맵에 스폰되기 때문에 장착시 남은 반쪽을 생성후, 플레이어의 오른손에 달아줘야함.
+ * 심벌즈는 소환될땐 포개어진것, 장착될땐 왼손소켓에 장착후, 남은걸 플레이어의 오른손에 달아줘야함.
  */
 UCLASS(Abstract)
 class TROMBONERUMBLE_API AInstrumentCymbals : public AInstrumentBase
@@ -21,8 +21,14 @@ protected:
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) override;
 
 	UPROPERTY(EditDefaultsOnly , Category = "Config")
+	TObjectPtr<USkeletalMesh> CymbalsFullMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config")
+	TObjectPtr<USkeletalMesh> CymbalsHalfMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config")
 	TSubclassOf<AActor> CymbalsHalfClass = nullptr;
 
 	UPROPERTY(Transient)
-	TObjectPtr<AActor> CymbalsRightHandActor = nullptr;
+	TObjectPtr<AActor> CymbalsHalfActor = nullptr;
 };
