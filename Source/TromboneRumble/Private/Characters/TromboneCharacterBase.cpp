@@ -13,6 +13,7 @@
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/Defines.h"
+#include "Utilities/DebugHelper.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
@@ -528,6 +529,7 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 
 void ATromboneCharacterBase::OnRep_IsStun()
 {
+	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (bIsStun)
 	{
 		ApplyStun();
@@ -550,10 +552,9 @@ void ATromboneCharacterBase::OnRep_IsStun()
 		{
 			StunNiagaraComponent->DeactivateImmediate();
 		}
-		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 		if (AudioDevice && StunNiagaraPlayingID != 0)
 		{
-			AudioDevice->StopPlayingID(StunNiagaraPlayingID);
+			AudioDevice->StopPlayingID(StunNiagaraPlayingID, 0, AkCurveInterpolation_Linear);
 			StunNiagaraPlayingID = 0;
 		}
 	}

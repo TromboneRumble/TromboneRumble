@@ -149,7 +149,7 @@ void AWeaponBase::Unequip(AActor* OwnerActor)
 
 void AWeaponBase::DetectHit()
 {
-	if (!CurrentOwner || !CurrentOwner->HasAuthority() || !IsCanSweep()) return;
+	if (!CurrentOwner || !HasAuthority() || !IsCanSweep()) return;
 	
 	UPrimitiveComponent* CollisionComp = GetCollisionComponent();
 	if (!CollisionComp) return;
@@ -176,7 +176,6 @@ void AWeaponBase::DetectHit()
 	);
 	
 	if (!bHit) return;
-
     for (const FHitResult& Hit : HitResults)
     {
     	AActor* HitActor = Hit.GetActor();

@@ -140,18 +140,18 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 
 	if (IsOwnerLocallyControlled())
 	{
-		FString NoteResultStr = UEnum::GetValueAsString(InNoteResult); // Enum을 문자열로 변환
+		//FString NoteResultStr = UEnum::GetValueAsString(InNoteResult); // Enum을 문자열로 변환
 
-		FString DebugMsg = FString::Printf(
-			TEXT("[Violin] Result: %s | (Base: %.0f * Mult:%.1f) + ComboBonus: %.0f = Final: %.0f"),
-			*NoteResultStr,
-			BaseScore,
-			GradeMultiplier,
-			ScoreData->ComboBasePoint,
-			FinalScore
-		);
+		//FString DebugMsg = FString::Printf(
+		//	TEXT("[Violin] Result: %s | (Base: %.0f * Mult:%.1f) + ComboBonus: %.0f = Final: %.0f"),
+		//	*NoteResultStr,
+		//	BaseScore,
+		//	GradeMultiplier,
+		//	ScoreData->ComboBasePoint,
+		//	FinalScore
+		//);
 
-		Debug::Print(DebugMsg);
+		//Debug::Print(DebugMsg);
 	}
 
 

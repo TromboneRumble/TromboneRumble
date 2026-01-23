@@ -44,19 +44,19 @@ float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 Curren
 
 	if (IsOwnerLocallyControlled())
 	{
-		FString NoteResultStr = UEnum::GetValueAsString(InNoteResult); // Enum을 문자열로 변환
+		//FString NoteResultStr = UEnum::GetValueAsString(InNoteResult); // Enum을 문자열로 변환
 
-		// 예: [Trombone] Result: Excellent | Base: 100 + (ComboBonus: 10 * Mult: 2.0) = Final: 120
-		FString DebugMsg = FString::Printf(
-			TEXT("[Trombone] Result: %s | Base: %.0f + (ComboBonus: %.0f * Mult: %.1f) = Final: %.0f"),
-			*NoteResultStr,
-			BaseScore,
-			ScoreData->ComboBasePoint,
-			ComboMultiplier,
-			FinalScore
-		);
+		//// 예: [Trombone] Result: Excellent | Base: 100 + (ComboBonus: 10 * Mult: 2.0) = Final: 120
+		//FString DebugMsg = FString::Printf(
+		//	TEXT("[Trombone] Result: %s | Base: %.0f + (ComboBonus: %.0f * Mult: %.1f) = Final: %.0f"),
+		//	*NoteResultStr,
+		//	BaseScore,
+		//	ScoreData->ComboBasePoint,
+		//	ComboMultiplier,
+		//	FinalScore
+		//);
 
-		Debug::Print(DebugMsg);
+		//Debug::Print(DebugMsg);
 	}
 	
 	return FinalScore;

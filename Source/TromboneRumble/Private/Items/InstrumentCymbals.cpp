@@ -100,14 +100,14 @@ float AInstrumentCymbals::CalculateScore(ENoteResult InNoteResult, int32 Current
 	{
 		FString NoteResultStr = UEnum::GetValueAsString(InNoteResult); // Enum을 문자열로 변환
 
-		FString DebugMsg = FString::Printf(
-			TEXT("[Cymbals] Result: %s | Base: %.0f + ComboBonus: %.0f = Final: %.0f"),
-			*NoteResultStr,
-			BaseScore,
-			ScoreData->ComboBasePoint,
-			FinalScore
-		);
-		Debug::Print(DebugMsg);
+		//FString DebugMsg = FString::Printf(
+		//	TEXT("[Cymbals] Result: %s | Base: %.0f + ComboBonus: %.0f = Final: %.0f"),
+		//	*NoteResultStr,
+		//	BaseScore,
+		//	ScoreData->ComboBasePoint,
+		//	FinalScore
+		//);
+		//Debug::Print(DebugMsg);
 	}
 
 
