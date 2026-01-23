@@ -66,7 +66,6 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 	if (!CurrentWeapon) return;
 	
 	CurrentWeapon->SetCanAttack(true);
-	CurrentWeapon->EndAttack();
 	UpdateAttackDelegateBinding(false);
 }
 
@@ -99,8 +98,12 @@ void UAttackComponent::PlayAttackEffects() const
 	if (UAnimMontage* MontageToPlay = AttackMontageMap.FindRef(Type))
 	{
 		CurrentWeapon->SetCanAttack(false);
-		OwnerCharacter->PlayAnimMontage(MontageToPlay);
 		CharacterAnimInstance->SetIsAttacking(true);
+		
+		if (!OwnerCharacter->GetMesh()->GetAnimInstance()->Montage_IsPlaying(MontageToPlay))
+		{
+			OwnerCharacter->PlayAnimMontage(MontageToPlay);
+		}
 	}
 }
 

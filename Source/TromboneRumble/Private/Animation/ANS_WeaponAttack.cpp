@@ -12,6 +12,8 @@ void UANS_WeaponAttack::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 	
 	if (const ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(MeshComp->GetOwner()))
 	{
+		if (!Character->HasAuthority()) return;
+		
 		if (AWeaponBase* Weapon = Character->GetCurrentWeapon())
 		{
 			Weapon->BeginAttack();
@@ -26,6 +28,8 @@ void UANS_WeaponAttack::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	
 	if (const ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(MeshComp->GetOwner()))
 	{
+		if (!Character->HasAuthority()) return;
+		
 		if (AWeaponBase* Weapon = Character->GetCurrentWeapon())
 		{
 			Weapon->EndAttack();
