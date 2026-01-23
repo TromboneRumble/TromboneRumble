@@ -44,6 +44,8 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     bShouldMove = (GroundSpeed > 3.0f) || bIsAccelerating;
 
     CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
+    
+    bIsStunned = OwnerCharacter->IsStun();
 }
 
 void UCharacterAnimInstance::AnimNotify_FootStep()
