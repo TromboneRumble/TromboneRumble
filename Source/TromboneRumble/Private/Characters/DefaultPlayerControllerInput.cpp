@@ -33,6 +33,7 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (AttackAction)  EIC->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::Handle_Attack);
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Started, this, &ThisClass::Handle_Rhythm, true);
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Completed, this, &ThisClass::Handle_Rhythm, false);
+		if (GuideAction)   EIC->BindAction(GuideAction, ETriggerEvent::Started, this, &ThisClass::Handle_Guide);
 	}
 }
 
@@ -114,6 +115,11 @@ void ADefaultPlayerController::Handle_SprintPressed()
 void ADefaultPlayerController::Handle_SprintReleased()
 {
 	if (CanProcessInput()) CachedOwnerCharacter->StopSprint();
+}
+
+void ADefaultPlayerController::Handle_Guide()
+{
+	if (CanProcessInput()) CachedOwnerCharacter->ToggleGuideUI();
 }
 
 void ADefaultPlayerController::Handle_Attack()

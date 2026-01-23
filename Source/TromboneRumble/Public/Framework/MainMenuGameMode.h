@@ -12,10 +12,4 @@ UCLASS(Abstract, BlueprintType)
 class TROMBONERUMBLE_API AMainMenuGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-public:
-	virtual void BeginPlay() override;
-	
-protected:
-	UPROPERTY(EditDefaultsOnly, Category = "BGM")
-	TArray<UAkAudioEvent*> MenuBGMEvents;	
 };
