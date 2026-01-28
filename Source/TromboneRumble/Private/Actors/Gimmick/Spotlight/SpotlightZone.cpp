@@ -75,6 +75,7 @@ void ASpotlightZone::HandleServerRPC(ACharacter* InstigatorCharacter)
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(InstigatorCharacter))
 	{
 		TryAwardBonus(TromboneCharacter);
+		SetState(ESpotlightState::Fading);
 	}
 }
 
@@ -199,7 +200,6 @@ void ASpotlightZone::Multicast_PlaySpotlightSuccessEffect_Implementation(ADefaul
 {
 	if (!SpotlightSuccessVFX || !IsValid(InPlayer))
 	{
-		SetState(ESpotlightState::Awarded);
 		return;
 	}
 
@@ -218,13 +218,7 @@ void ASpotlightZone::Multicast_PlaySpotlightSuccessEffect_Implementation(ADefaul
 
 	if (SpotlightSuccessSFX && AkComponent)
 	{
-		FOnAkPostEventCallback Callback;
-		Callback.BindDynamic(this, &ThisClass::OnSpotlightSuccessSFXFinished);
-		AkComponent->PostAkEvent(
-			SpotlightSuccessSFX,
-			AkCallbackType::AK_EndOfEvent,
-			Callback
-		);
+		AkComponent->PostAkEvent(SpotlightSuccessSFX,0,FOnAkPostEventCallback());
 	}
 }
 
@@ -253,12 +247,12 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 		}
 			break;
 
-		case ESpotlightState::Awarded:
-			StartLifecycleTimer(AwardedDuration, &ASpotlightZone::OnAwardedFinished);
-			break;
-
 		case ESpotlightState::Fading:
+		{
+			TurnOffLight();
 			StartLifecycleTimer(FadingDuration, &ASpotlightZone::OnFadingFinished);
+		}
+			
 			break;
 
 		case ESpotlightState::None:
@@ -302,30 +296,11 @@ void ASpotlightZone::OnActiveFinished()
 	SetState(ESpotlightState::Fading);
 }
 
-void ASpotlightZone::OnAwardedFinished()
-{
-	if (HasAuthority())
-	{
-		Destroy();
-	}
-}
-
 void ASpotlightZone::OnFadingFinished()
 {
 	if (HasAuthority())
 	{
 		Destroy();
-	}
-}
-
-void ASpotlightZone::OnSpotlightSuccessSFXFinished(EAkCallbackType InCallbackType, UAkCallbackInfo* InCallbackInfo)
-{
-	if (InCallbackType == EAkCallbackType::EndOfEvent)
-	{
-		if (HasAuthority())
-		{
-			SetState(ESpotlightState::Awarded);
-		}
 	}
 }
 
@@ -344,19 +319,10 @@ void ASpotlightZone::OnRep_CurrentState()
 			SpotLightComponent->SetLightColor(SpotlightActiveColor);
 			LightBeamMesh->SetVisibility(true);
 			break;
-		
-		case ESpotlightState::Awarded:
-			break;
-		
-		case ESpotlightState::Fading:
-			SpotLightComponent->SetVisibility(false);
-			LightBeamMesh->SetVisibility(false);
-			break;
-		
-		case ESpotlightState::None:
+
+	case ESpotlightState::Fading:
+			TurnOffLight();
 		default:
-			SpotLightComponent->SetVisibility(false);
-			LightBeamMesh->SetVisibility(false);
 			break;
 	}
 }
