@@ -95,8 +95,18 @@ void ATromboneCharacterBase::BeginPlay()
 	}
 
 	SetupCharacterData();
+	BoundBounceTimeline();
 	UpdateSkinFromPlayerState();
 	ApplyFlagPhysics();
+}
+
+void ATromboneCharacterBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (BounceTimeline.IsPlaying())
+	{
+		BounceTimeline.TickTimeline(DeltaSeconds);
+	}
 }
 
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -401,6 +411,24 @@ void ATromboneCharacterBase::UpdateFaceExpression(ECharacterFaceType NewType)
 	}
 }
 
+void ATromboneCharacterBase::BoundBounceTimeline()
+{
+	if (BounceCurve)
+	{
+		FOnTimelineVector ProgressFunction;
+		ProgressFunction.BindUFunction(this, FName("HandleBounceProgress"));
+		BounceTimeline.AddInterpVector(BounceCurve, ProgressFunction);
+	}
+}
+
+void ATromboneCharacterBase::HandleBounceProgress(FVector Value)
+{
+	if (GetMesh())
+	{
+		GetMesh()->SetRelativeScale3D(Value);
+	}
+}
+
 void ATromboneCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -534,6 +562,10 @@ void ATromboneCharacterBase::OnRep_IsStun()
 	{
 		ApplyStun();
 		PlayFaceSequence(ECharacterFaceState::Stun);
+		if (BounceCurve)
+		{
+			BounceTimeline.PlayFromStart();
+		}
 		if (StunNiagaraComponent)
 		{
 			StunNiagaraComponent->DeactivateImmediate();

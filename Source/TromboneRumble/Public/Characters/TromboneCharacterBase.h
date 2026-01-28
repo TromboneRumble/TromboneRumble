@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TimelineComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
@@ -30,6 +31,7 @@ public:
 	ATromboneCharacterBase();
 	
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
@@ -66,6 +68,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Config|Components|Sound")
 	TObjectPtr<UAkComponent> AkSoundComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Animation")
+	TObjectPtr<UCurveVector> BounceCurve;
 
 private:
 	void InitCharacter();
@@ -136,6 +141,13 @@ private:
 	FCharacterFaceAnimationSequence CurrentActiveSequence;
 	FTimerHandle FaceSequenceTimerHandle;
 	// ~ End Face Expression Region
+
+	// ~ Bounce Character
+	FTimeline BounceTimeline;
+	void BoundBounceTimeline();
+	UFUNCTION()
+	void HandleBounceProgress(FVector Value);
+	// ~ End Bounce Character
 	
 	// TODO : For Debugging
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
