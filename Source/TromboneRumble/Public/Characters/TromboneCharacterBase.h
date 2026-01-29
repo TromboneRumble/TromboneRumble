@@ -166,5 +166,6 @@ public:
 	bool IsStun() const { return bIsStun; }
 	bool IsRagdoll() const { return bIsRagdoll; }
 	bool IsCanProcessInput() const { return bIsCanProcessInput; }
+	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }
 	//~ End Setter
 };

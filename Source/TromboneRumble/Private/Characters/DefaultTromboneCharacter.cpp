@@ -11,6 +11,7 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Components/ActorComponents/RageComponent.h"
 #include "Components/WidgetComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Data/CharacterAttributeSet.h"
@@ -51,6 +52,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("EquipmentComponent"));
 	ServerRelayComponent = CreateDefaultSubobject<UClientToServerRelayComponent>(TEXT("ServerRelayComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
+	RageComponent = CreateDefaultSubobject<URageComponent>(TEXT("RageComponent"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
 	RhythmScoreAttributes = CreateDefaultSubobject<URhythmScoreAttributeSet>(TEXT("ScoreAttributeSet"));
 

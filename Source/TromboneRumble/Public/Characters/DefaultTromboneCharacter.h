@@ -9,6 +9,7 @@
 #include "DefaultTromboneCharacter.generated.h"
 
 
+class URageComponent;
 class AWeaponBase;
 struct FInputActionValue;
 class ADefaultPlayerController;
@@ -75,6 +76,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URageComponent> RageComponent;
 
 	UPROPERTY()
 	TObjectPtr<UCharacterAttributeSet> CharacterAttributes;

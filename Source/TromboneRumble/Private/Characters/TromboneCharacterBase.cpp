@@ -71,13 +71,22 @@ void ATromboneCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMaterialInterface* BaseSkinMat = GetMesh()->GetMaterial(SkinMaterialIndex);
-	SkinMID = GetMesh()->CreateDynamicMaterialInstance(SkinMaterialIndex, BaseSkinMat);
-	GetMesh()->SetMaterial(SkinMaterialIndex, SkinMID);
-
-	UMaterialInterface* BaseFaceMat = GetMesh()->GetMaterial(FaceMaterialIndex);
-	FaceMID = GetMesh()->CreateDynamicMaterialInstance(FaceMaterialIndex, BaseFaceMat);
-	GetMesh()->SetMaterial(FaceMaterialIndex, FaceMID);
+	if (UMaterialInterface* CurrentSkinMat = GetMesh()->GetMaterial(SkinMaterialIndex))
+	{
+		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
+		if (!SkinMID)
+		{
+			SkinMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(SkinMaterialIndex);
+		}
+	}
+	if (UMaterialInterface* CurrentFaceMat = GetMesh()->GetMaterial(FaceMaterialIndex))
+	{
+		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
+		if (!FaceMID)
+		{
+			FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+		}
+	}
 
 	PlayFaceSequence(ECharacterFaceState::Blink);
 

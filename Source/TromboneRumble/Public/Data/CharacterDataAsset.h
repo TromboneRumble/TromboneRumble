@@ -35,6 +35,20 @@ struct FCharacterFaceAnimationSequence
 	float MaxLoopDelay = 0.0f;
 };
 
+USTRUCT(BlueprintType)
+struct FRageBuffMileStone
+{
+    GENERATED_BODY()
+
+    /** 이 시간에 도달하면 배율 적용 (초) */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float TimeThreshold = 0.0f;
+
+    /** 적용할 이동 속도 배율 */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float SpeedMultiplier = 1.0f;
+};
+
 /*
  * DataAsset 형태로 캐릭터 초기 설정값 보관
  * 인게임에서 변경될 값(Health, Stamina 등)은 CharacterAttributeSet에서 관리
@@ -116,4 +130,10 @@ public:
 	/** 얼굴 표정 애니메이션 시퀀스 맵 */
 	UPROPERTY(EditAnywhere, Category = "Config|Facial Expressions", meta = (DisplayName = "얼굴 표정 애니메이션 시퀀스"))
 	TMap<ECharacterFaceState, FCharacterFaceAnimationSequence> FaceSequences;
+
+    /** 장비를 장착하지 않았을 때 시간에 따라 강화되는 분노 버프 설정 */
+    UPROPERTY(EditAnywhere, Category = "Config|Movement|Buff", meta = (DisplayName = "분노 버프 마일스톤"))
+    TArray<FRageBuffMileStone> SpeedBuffMilestones;
+
+    float GetMaxBuffTime() const;
 };
