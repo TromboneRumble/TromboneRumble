@@ -2,9 +2,3 @@
 
 
 #include "Items/HeadbuttWeapon.h"
-
-void AHeadbuttWeapon::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
-{
-	Super::Multicast_OnHitSuccess_Implementation(HitActor);
-	PlayHitSound();
-}

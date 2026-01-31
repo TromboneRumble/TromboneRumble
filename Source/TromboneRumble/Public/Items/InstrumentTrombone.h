@@ -13,10 +13,6 @@ UCLASS(Abstract)
 class TROMBONERUMBLE_API AInstrumentTrombone : public AInstrumentBase
 {
 	GENERATED_BODY()
-
-public:
-	virtual void Multicast_OnHitSuccess_Implementation(AActor* HitActor) override;
-	
 protected:
 	virtual float CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo) override;
 };

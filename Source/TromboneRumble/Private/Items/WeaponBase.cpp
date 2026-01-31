@@ -26,12 +26,10 @@ AWeaponBase::AWeaponBase()
 	if (CapsuleComponent)
 	{
 		CapsuleComponent->SetReceivesDecals(false);
+		CapsuleComponent->CanCharacterStepUpOn = ECB_No;
+		//충돌판정은 Sweep을 통해서 하고, CapsuleComponent는 Collision Shape 지정용
+		CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	
-	SkeletalMeshComponent->SetCollisionObjectType(AttackTraceChannel); // Object Channel 1 : Weapon
-	SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	CapsuleComponent->SetCollisionObjectType(AttackTraceChannel); // Object Channel 1 : Weapon
-	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 }
 
 void AWeaponBase::Tick(float DeltaSeconds)
@@ -151,7 +149,7 @@ void AWeaponBase::DetectHit()
 {
 	if (!CurrentOwner || !HasAuthority() || !IsCanSweep()) return;
 	
-	UPrimitiveComponent* CollisionComp = GetCollisionComponent();
+	UPrimitiveComponent* CollisionComp = CapsuleComponent;
 	if (!CollisionComp) return;
 
 	const FTransform CurrentTransform = CollisionComp->GetComponentTransform();
@@ -159,21 +157,25 @@ void AWeaponBase::DetectHit()
 	const FVector End = CurrentTransform.GetLocation();
 	const FRotator Rotation = CurrentTransform.GetRotation().Rotator();
 
+	FCollisionObjectQueryParams ObjectParams;
+	ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
+
 	FComponentQueryParams Params;
 	Params.AddIgnoredActor(this);
 	Params.AddIgnoredActor(CurrentOwner);
 
 	TArray<FHitResult> HitResults;
 
-	const bool bHit = GetWorld()->SweepMultiByChannel(
+	const bool bHit = GetWorld()->SweepMultiByObjectType(
 	   HitResults,
 	   Start,
 	   End,
 	   Rotation.Quaternion(),
-	   AttackTraceChannel,
+	   ObjectParams,
 	   CollisionComp->GetCollisionShape(),
 	   Params
 	);
+
 	if (bHit)
 	{
 		for (const FHitResult& Hit : HitResults)
@@ -181,10 +183,10 @@ void AWeaponBase::DetectHit()
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != CurrentOwner)
 			{
+				AlreadyHitActors.Add(HitActor);
+				Multicast_PlayHitSound();
 				if (HitActor->Implements<UCombatReceiver>())
 				{
-					AlreadyHitActors.Add(HitActor);
-
 					FHitData HitData;
 					FVector Direction = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
 					Direction.Z = 0.5f;
@@ -224,13 +226,6 @@ bool AWeaponBase::IsCanSweep() const
 	return true;
 }
 
-void AWeaponBase::PlayHitSound()
-{
-	if (HitSoundEvent && AkSoundComponent)
-	{
-		AkSoundComponent->PostAkEvent(HitSoundEvent);
-	}
-}
 
 void AWeaponBase::BeginAttack()
 {
@@ -251,6 +246,14 @@ void AWeaponBase::EndAttack()
 	SetActorTickEnabled(false); 
 }
 
+void AWeaponBase::Multicast_PlayHitSound_Implementation()
+{
+	if (HitSoundEvent && AkSoundComponent)
+	{
+		AkSoundComponent->PostAkEvent(HitSoundEvent);
+	}
+}
+
 void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 {
 	Super::OnRep_CurrentOwner(OldActor);
@@ -263,7 +266,7 @@ void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 		AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponData->EquipSocketName);
 		SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, true);
-		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	else
 	{
@@ -271,7 +274,7 @@ void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		SetPhysicsEnabled(true);
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
-		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 }
 bool AWeaponBase::IsOwnerLocallyControlled() const

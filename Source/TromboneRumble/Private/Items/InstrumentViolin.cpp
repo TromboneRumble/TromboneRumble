@@ -7,11 +7,6 @@
 #include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
-void AInstrumentViolin::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
-{
-	Super::Multicast_OnHitSuccess_Implementation(HitActor);
-	PlayHitSound();
-}
 
 void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 {

@@ -6,11 +6,6 @@
 #include "UI/UserWidgets/Rhythm/ComboWidget/TromboneComboWidget.h"
 #include "Utilities/DebugHelper.h"
 
-void AInstrumentTrombone::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
-{
-	Super::Multicast_OnHitSuccess_Implementation(HitActor);
-	PlayHitSound();
-}
 
 float AInstrumentTrombone::CalculateScore(ENoteResult InNoteResult, int32 CurrentCombo)
 {

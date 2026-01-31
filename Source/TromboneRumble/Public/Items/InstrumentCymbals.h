@@ -14,7 +14,6 @@ class TROMBONERUMBLE_API AInstrumentCymbals : public AInstrumentBase
 {
 	GENERATED_BODY()
 public:
-	virtual void Multicast_OnHitSuccess_Implementation(AActor* HitActor) override;
 	virtual void Client_OnHitSuccess_Implementation(AActor* HitActor) override;
 protected:
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;

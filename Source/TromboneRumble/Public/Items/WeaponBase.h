@@ -56,7 +56,8 @@ protected:
 	virtual void Multicast_OnHitSuccess(AActor* HitActor);
 	UFUNCTION(Client, Reliable)
 	virtual void Client_OnHitSuccess(AActor* HitActor);
-	virtual void PlayHitSound();
+	UFUNCTION(NetMulticast, Unreliable)
+	virtual void Multicast_PlayHitSound();
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
 	
 	bool IsOwnerLocallyControlled() const;
