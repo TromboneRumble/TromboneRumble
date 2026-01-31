@@ -10,7 +10,4 @@ UCLASS()
 class TROMBONERUMBLE_API AHeadbuttWeapon : public AWeaponBase
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void Multicast_OnHitSuccess_Implementation(AActor* HitActor) override;	
 };

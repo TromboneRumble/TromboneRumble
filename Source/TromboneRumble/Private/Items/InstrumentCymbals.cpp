@@ -9,11 +9,6 @@
 #include "GameFramework/Character.h"
 #include "Utilities/DebugHelper.h"
 
-void AInstrumentCymbals::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
-{
-	Super::Multicast_OnHitSuccess_Implementation(HitActor);
-	PlayHitSound();
-}
 
 void AInstrumentCymbals::Client_OnHitSuccess_Implementation(AActor* HitActor)
 {
