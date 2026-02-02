@@ -158,21 +158,6 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
-							<ObjectLists>
-								<ObjectList Name="Effects">
-									<Reference>
-										<Local>
-											<EffectSlot Name="" ID="{84F180BF-7771-4099-B661-D86E2172AC09}" ShortID="812910981">
-												<ReferenceList>
-													<Reference Name="Effect" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
-														<ObjectRef Name="BBIK_Meter" ID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" WorkUnitID="{D7E12E13-CB6B-4FBE-AD41-C099A1D419A1}"/>
-													</Reference>
-												</ReferenceList>
-											</EffectSlot>
-										</Local>
-									</Reference>
-								</ObjectList>
-							</ObjectLists>
 						</RandomSequenceContainer>
 						<RandomSequenceContainer Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" ShortID="564474846">
 							<PropertyList>
@@ -351,21 +336,6 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
-							<ObjectLists>
-								<ObjectList Name="Effects">
-									<Reference>
-										<Local>
-											<EffectSlot Name="" ID="{6D2BAEBF-6E8C-4893-AD69-F1CEA2E808CE}" ShortID="669873475">
-												<ReferenceList>
-													<Reference Name="Effect" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
-														<ObjectRef Name="BBIK_Meter" ID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" WorkUnitID="{D7E12E13-CB6B-4FBE-AD41-C099A1D419A1}"/>
-													</Reference>
-												</ReferenceList>
-											</EffectSlot>
-										</Local>
-									</Reference>
-								</ObjectList>
-							</ObjectLists>
 						</RandomSequenceContainer>
 						<RandomSequenceContainer Name="BBIK_V" ID="{48EC31B0-D73E-4049-BDE1-68EC4B8A04A1}" ShortID="514115267">
 							<PropertyList>
@@ -515,21 +485,6 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
-							<ObjectLists>
-								<ObjectList Name="Effects">
-									<Reference>
-										<Local>
-											<EffectSlot Name="" ID="{2D078317-BD03-44A8-AAF6-20872605EE4D}" ShortID="539789276">
-												<ReferenceList>
-													<Reference Name="Effect" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
-														<ObjectRef Name="BBIK_Meter" ID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" WorkUnitID="{D7E12E13-CB6B-4FBE-AD41-C099A1D419A1}"/>
-													</Reference>
-												</ReferenceList>
-											</EffectSlot>
-										</Local>
-									</Reference>
-								</ObjectList>
-							</ObjectLists>
 						</RandomSequenceContainer>
 					</ChildrenList>
 				</Folder>
@@ -2241,11 +2196,6 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
 										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-10</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -2357,11 +2307,6 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
 										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-10</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -2473,11 +2418,6 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
 										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-10</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -2594,11 +2534,6 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
 										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-10</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">

@@ -14167,7 +14167,7 @@
 												<Property Name="OverrideEffect" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>10</Value>
+														<Value>12</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
@@ -14420,12 +14420,12 @@
 																								<PointList>
 																									<Point>
 																										<XPos>0</XPos>
-																										<YPos>-5.13228</YPos>
+																										<YPos>-7.03235</YPos>
 																										<Flags>5</Flags>
 																									</Point>
 																									<Point>
 																										<XPos>172.416666666667</XPos>
-																										<YPos>-4.96328</YPos>
+																										<YPos>-6.82251</YPos>
 																										<Flags>37</Flags>
 																									</Point>
 																								</PointList>
@@ -14547,6 +14547,27 @@
 																						<Property Name="FadeOutMode" Type="int16" Value="0"/>
 																					</PropertyList>
 																					<AudioSourceRef Name="Map_A_violin_01" ID="{C6228DC3-F390-4741-A577-995922D76C24}"/>
+																					<PropertyCurveList>
+																						<PropertyCurve PropertyName="Volume">
+																							<Curve Name="" ID="{1F6780D1-36AB-4EF9-8D7E-5F594724C9AE}">
+																								<PropertyList>
+																									<Property Name="Flags" Type="int32" Value="3"/>
+																								</PropertyList>
+																								<PointList>
+																									<Point>
+																										<XPos>0</XPos>
+																										<YPos>-0.79111</YPos>
+																										<Flags>5</Flags>
+																									</Point>
+																									<Point>
+																										<XPos>172.416666666667</XPos>
+																										<YPos>-0.6882</YPos>
+																										<Flags>37</Flags>
+																									</Point>
+																								</PointList>
+																							</Curve>
+																						</PropertyCurve>
+																					</PropertyCurveList>
 																				</MusicClip>
 																			</Local>
 																		</Reference>
@@ -33850,6 +33871,13 @@
 					</ChildrenList>
 				</Folder>
 				<MusicPlaylistContainer Name="Main_BGM" ID="{55BE03C6-4690-4D44-B234-E181C9194207}" ShortID="873256501">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-96</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>

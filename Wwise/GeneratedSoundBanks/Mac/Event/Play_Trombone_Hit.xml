@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{B7178AC4-9C75-749D-A76F-E4C8A8746845}">
+		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{0791DB31-E8BF-580D-F4CF-35F7186DFA95}">
 			<ObjectPath>Play_Trombone_Hit</ObjectPath>
 			<ShortName>Play_Trombone_Hit</ShortName>
 			<Path>Event/Play_Trombone_Hit.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{209875F9-6243-67B6-9CC9-0FB5CA9F189E}</FileHash>
+	<FileHash>{684F9336-9FBD-580E-0523-DB04ED39A1D6}</FileHash>
 </SoundBanksInfo>
