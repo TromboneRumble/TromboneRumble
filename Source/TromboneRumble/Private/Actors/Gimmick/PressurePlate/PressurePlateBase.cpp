@@ -53,9 +53,7 @@ void APressurePlateBase::BeginPlay()
 		TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
 		TriggerBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapEnd);
 	}
-	
 
-	// 타임라인 바인딩
 	if (PressureCurve)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -93,23 +91,30 @@ void APressurePlateBase::OnTimelineFinished()
 	}
 }
 
-void APressurePlateBase::Server_OnPlateActivated()
+void APressurePlateBase::Server_OnPlateActivated_Implementation()
 {
-	for (AActor* TargetActor : LinkedActors)
+	if (!HasAuthority() || SpawningActorClasses.Num() == 0) return;
+
+	int32 RandomIndex = FMath::RandRange(0, SpawningActorClasses.Num() - 1);
+	TSubclassOf<AActor> SelectedClass = SpawningActorClasses[RandomIndex];
+
+	if (!SelectedClass) return;
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	FVector SpawnLocation = GetActorLocation();
+
+	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(SelectedClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+
+	if (SpawnedActor && SpawnedActor->Implements<UInteractable>())
 	{
-		if (!IsValid(TargetActor))
-		{
-			continue;
-		}
+		bool bCanInteract = IInteractable::Execute_CanInteract(SpawnedActor, this);
 
-		if (TargetActor->Implements<UInteractable>())
+		if (bCanInteract)
 		{
-			bool bCanInteract = IInteractable::Execute_CanInteract(TargetActor, this);
-
-			if (bCanInteract)
-			{
-				IInteractable::Execute_Interact(TargetActor, this);
-			}
+			IInteractable::Execute_Interact(SpawnedActor, this);
 		}
 	}
 }
@@ -158,6 +163,5 @@ void APressurePlateBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 		}
 	}
 }
-
 
 

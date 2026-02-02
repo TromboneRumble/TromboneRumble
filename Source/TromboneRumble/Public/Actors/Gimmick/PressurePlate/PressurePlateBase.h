@@ -20,8 +20,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Config|PressurePlate")
-	TArray<AActor*> LinkedActors;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|PressurePlate")
+	TArray<TSubclassOf<AActor>> SpawningActorClasses;;
 
 	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
@@ -36,13 +36,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> PressTargetLocation;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Timeline")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components|Timeline")
 	TObjectPtr<UTimelineComponent> PressureTimeline;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components|Timeline")
 	TObjectPtr<UCurveFloat> PressureCurve;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components|Timeline")
+	TObjectPtr<UTimelineComponent> SpawnRiseTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Components|Timeline")
+	TObjectPtr<UCurveFloat> SpawnRiseCurve;
 	// ~Components
 private:
+
+
 	FVector InitialLocation;
 
 	int32 OverlappingCount = 0;
@@ -56,6 +64,9 @@ private:
 	UFUNCTION()
 	void OnTimelineFinished();
 
+	UFUNCTION(Server, Reliable)
+	virtual void Server_OnPlateActivated();
+
 	UFUNCTION(BlueprintCallable)
 	void UpdatePlateLocation(const float InAlpha);
 
@@ -64,6 +75,4 @@ private:
 
 	UFUNCTION()
 	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	virtual void Server_OnPlateActivated();
 };

@@ -14,23 +14,38 @@ APressurePlate_Explosive::APressurePlate_Explosive()
 	ExplosionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("ExplosionSphere"));
 	RootComponent = ExplosionSphere;
 
-	ExplosionTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("ExplosionTimeline"));
+	EmissiveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("EmissiveTimeline"));
+	ExpansionTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("ExpansionTimeline"));
 }
 
 void APressurePlate_Explosive::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (ExplosionSphere)
+	{
+		MaxRadius = ExplosionSphere->GetUnscaledSphereRadius();
+		ExplosionSphere->SetSphereRadius(1.0f);
+	}
+
 	if (EmissiveCurve)
 	{
-		FOnTimelineFloat ProgressFunction;
-		ProgressFunction.BindUFunction(this, FName("UpdateEmissiveEffect"));
-		ExplosionTimeline->AddInterpFloat(EmissiveCurve, ProgressFunction);
+		FOnTimelineFloat Progress;
+		Progress.BindUFunction(this, FName("UpdateEmissiveEffect"));
+		EmissiveTimeline->AddInterpFloat(EmissiveCurve, Progress);
+		EmissiveTimeline->SetLooping(true);
+	}
 
-		FOnTimelineEvent FinishedFunction;
-		FinishedFunction.BindUFunction(this, FName("TriggerExplosion"));
-		ExplosionTimeline->SetTimelineFinishedFunc(FinishedFunction);
-		ExplosionTimeline->SetLooping(true);
-		ExplosionTimeline->SetTimelineLength(ExplosionTime);
+	if (ExpansionCurve)
+	{
+		FOnTimelineFloat Progress;
+		Progress.BindUFunction(this, FName("UpdateExplosionRadius"));
+		ExpansionTimeline->AddInterpFloat(ExpansionCurve, Progress);
+
+		// 팽창이 끝나면 지뢰 제거
+		FOnTimelineEvent FinishedEvent;
+		FinishedEvent.BindUFunction(this, FName("OnExpansionFinished"));
+		ExpansionTimeline->SetTimelineFinishedFunc(FinishedEvent);
 	}
 }
 
@@ -42,8 +57,9 @@ bool APressurePlate_Explosive::CanInteract_Implementation(AActor* InstigatorActo
 void APressurePlate_Explosive::Interact_Implementation(AActor* InstigatorActor)
 {
 	if (!HasAuthority()) return;
-
-	SetActorLocation(InstigatorActor->GetActorLocation());
+	FVector NewLocation = InstigatorActor->GetActorLocation();
+	NewLocation.Z -= 20.f;
+	SetActorLocation(NewLocation);
 
 	if (APressurePlateBase* PressurePlate = Cast<APressurePlateBase>(InstigatorActor))
 	{
@@ -53,11 +69,12 @@ void APressurePlate_Explosive::Interact_Implementation(AActor* InstigatorActor)
 		}
 	}
 
-	if (ExplosionTimeline)
+	//발판 발광 후 PreExplosionTime초 후 폭발
+	if (EmissiveTimeline)
 	{
-		ExplosionTimeline->PlayFromStart();
-		FTimerHandle ExplosionTimer;
-		GetWorld()->GetTimerManager().SetTimer(ExplosionTimer, this, &APressurePlate_Explosive::TriggerExplosion, ExplosionTime, false);
+		EmissiveTimeline->PlayFromStart();
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &APressurePlate_Explosive::StartExplosionExpansion, PreExplosionTime, false);
 	}
 }
 
@@ -69,17 +86,16 @@ void APressurePlate_Explosive::UpdateEmissiveEffect(float Value)
 	}
 }
 
-void APressurePlate_Explosive::TriggerExplosion()
+void APressurePlate_Explosive::StartExplosionExpansion()
 {
+	EmissiveTimeline->Stop();
+
 	TArray<FOverlapResult> OverlapResults;
+	FCollisionShape DetectionSphere = FCollisionShape::MakeSphere(MaxRadius);
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	float FinalRadius = ExplosionSphere->GetScaledSphereRadius();
-	FCollisionShape SphereShape = FCollisionShape::MakeSphere(FinalRadius);
-
-	// 거리 기반 감쇄 로직을 포함한 폭발 처리
-	if (GetWorld()->OverlapMultiByChannel(OverlapResults, GetActorLocation(), FQuat::Identity, ECC_Pawn, SphereShape, Params))
+	if (GetWorld()->OverlapMultiByChannel(OverlapResults, GetActorLocation(), FQuat::Identity, ECC_Pawn, DetectionSphere, Params))
 	{
 		for (const FOverlapResult& Overlap : OverlapResults)
 		{
@@ -87,19 +103,32 @@ void APressurePlate_Explosive::TriggerExplosion()
 			if (HitActor && HitActor->Implements<UCombatReceiver>())
 			{
 				FHitData HitData;
-
-				FVector Dir = HitActor->GetActorLocation() - GetActorLocation();
-				float Distance = Dir.Size();
-
-				float DistanceAlpha = FMath::Clamp(1.0f - (Distance / FinalRadius), 0.1f, 1.0f);
-
-				HitData.HitDirection = Dir.GetSafeNormal();
-				HitData.KnockbackForce = MaxKnockbackForce * DistanceAlpha; // 거리에 따라 약해짐
 				HitData.HitType = EHitReactionType::Ragdoll;
-
 				ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
 			}
 		}
+	}
+
+	if (ExpansionTimeline)
+	{
+		ExpansionTimeline->PlayFromStart();
+	}
+}
+
+void APressurePlate_Explosive::UpdateExplosionRadius(float Value)
+{
+	float NewRadius = FMath::Lerp(1.0f, MaxRadius, Value);
+	ExplosionSphere->SetSphereRadius(NewRadius);
+}
+
+void APressurePlate_Explosive::OnExpansionFinished()
+{
+	if (!HasAuthority()) return;
+	AActor* Spawner = GetOwner();
+
+	if (Spawner && Spawner->IsA(APressurePlateBase::StaticClass()))
+	{
+		Spawner->Destroy();
 	}
 
 	Destroy();

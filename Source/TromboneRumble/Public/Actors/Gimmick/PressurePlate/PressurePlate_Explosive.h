@@ -19,12 +19,6 @@ public:
 	APressurePlate_Explosive();
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
-	float MaxKnockbackForce = 50000.f;
-
-	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
-	float ExplosionTime = 2.f;
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -37,20 +31,36 @@ protected:
 	void UpdateEmissiveEffect(float Value);
 
 	UFUNCTION()
-	void TriggerExplosion();
+	void StartExplosionExpansion();
+
+	UFUNCTION()
+	void UpdateExplosionRadius(float Value);
+
+	UFUNCTION()
+	void OnExpansionFinished();
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USphereComponent> ExplosionSphere;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	TObjectPtr<UTimelineComponent> ExplosionTimeline;
+	TObjectPtr<UTimelineComponent> EmissiveTimeline;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UTimelineComponent> ExpansionTimeline;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
 	TObjectPtr<UCurveFloat> EmissiveCurve;
 
-	
+	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
+	TObjectPtr<UCurveFloat> ExpansionCurve;
+
+	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
+	float PreExplosionTime = 2.f;
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
+	float MaxRadius = 600.f;
+
 	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
 };
