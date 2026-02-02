@@ -6,8 +6,6 @@
 void UTromboneGameInstance::OnStart()
 {
 	Super::OnStart();
-	
-	PlayMenuBGM();
 }
 
 void UTromboneGameInstance::PlayMenuBGM()
