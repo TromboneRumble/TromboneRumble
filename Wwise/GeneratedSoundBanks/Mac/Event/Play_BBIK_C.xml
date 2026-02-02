@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1436785880" Type="Event" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" Language="SFX" Hash="{39E8D164-B69C-4EB2-4219-58AC209CBFA3}">
+		<SoundBank Id="1436785880" Type="Event" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" Language="SFX" Hash="{B56876E8-406F-F173-7DB0-D60C6C4595DA}">
 			<ObjectPath>Play_BBIK_C</ObjectPath>
 			<ShortName>Play_BBIK_C</ShortName>
 			<Path>Event/Play_BBIK_C.bnk</Path>
@@ -27,11 +27,6 @@
 					<CachePath>SFX/BBIK_C_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<ShareSets>
-					<Plugin Id="2456097223" Name="BBIK_Meter" ObjectPath="\Effects\Default Work Unit\BBIK_Meter" GUID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" LibName="Wwise Meter" LibId="8454147"/>
-				</ShareSets>
-			</Plugins>
 			<Events>
 				<Event Id="1436785880" Name="Play_BBIK_C" ObjectPath="\Events\Default Work Unit\Music\BBIK\Play_BBIK_C" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" DurationType="OneShot" DurationMin="0.5224583" DurationMax="0.916875">
 					<MediaRefs>
@@ -40,14 +35,9 @@
 						<MediaRef Id="721172056"/>
 						<MediaRef Id="736509684"/>
 					</MediaRefs>
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="2456097223"/>
-						</ShareSets>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E71B2D12-3CC9-9548-B4B8-157EBB7368A3}</FileHash>
+	<FileHash>{826AA21A-AE75-015B-D13C-677FB6B6133C}</FileHash>
 </SoundBanksInfo>

@@ -361,7 +361,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{86E0910F-857A-D952-DE37-4CDB8E7316B2}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{94700D02-C752-FCA6-6DEA-A44D91657234}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -462,7 +462,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1078935374" Type="Event" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" Language="SFX" Hash="{2A4DE26F-D1AD-CF93-8846-5C92F348F888}">
+		<SoundBank Id="1078935374" Type="Event" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" Language="SFX" Hash="{170047A5-9FB5-19CA-E1FA-019BB79A255E}">
 			<ObjectPath>Play_Cymbal_Hit</ObjectPath>
 			<ShortName>Play_Cymbal_Hit</ShortName>
 			<Path>Event/Play_Cymbal_Hit.bnk</Path>
@@ -908,7 +908,7 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
-		<SoundBank Id="1436785869" Type="Event" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" Language="SFX" Hash="{97DB2789-5CA3-0C9B-EC40-F8DCC335EEBC}">
+		<SoundBank Id="1436785869" Type="Event" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" Language="SFX" Hash="{C7CC8253-DFCA-26B2-93EA-6A13F36B42CB}">
 			<ObjectPath>Play_BBIK_V</ObjectPath>
 			<ShortName>Play_BBIK_V</ShortName>
 			<Path>Event/Play_BBIK_V.bnk</Path>
@@ -934,11 +934,6 @@
 					<CachePath>SFX/BBIK_C_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<ShareSets>
-					<Plugin Id="2456097223" Name="BBIK_Meter" ObjectPath="\Effects\Default Work Unit\BBIK_Meter" GUID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" LibName="Wwise Meter" LibId="8454147"/>
-				</ShareSets>
-			</Plugins>
 			<Events>
 				<Event Id="1436785869" Name="Play_BBIK_V" ObjectPath="\Events\Default Work Unit\Music\BBIK\Play_BBIK_V" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" DurationType="OneShot" DurationMin="0.40170857" DurationMax="1.076586">
 					<MediaRefs>
@@ -947,15 +942,10 @@
 						<MediaRef Id="721172056"/>
 						<MediaRef Id="736509684"/>
 					</MediaRefs>
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="2456097223"/>
-						</ShareSets>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1436785871" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{7BFCE26E-0C63-5D01-4F32-415E91C495E1}">
+		<SoundBank Id="1436785871" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{593673B5-97B4-24FD-40CC-D3C700C47294}">
 			<ObjectPath>Play_BBIK_T</ObjectPath>
 			<ShortName>Play_BBIK_T</ShortName>
 			<Path>Event/Play_BBIK_T.bnk</Path>
@@ -981,11 +971,6 @@
 					<CachePath>SFX/BBIK_C_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<ShareSets>
-					<Plugin Id="2456097223" Name="BBIK_Meter" ObjectPath="\Effects\Default Work Unit\BBIK_Meter" GUID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" LibName="Wwise Meter" LibId="8454147"/>
-				</ShareSets>
-			</Plugins>
 			<Events>
 				<Event Id="1436785871" Name="Play_BBIK_T" ObjectPath="\Events\Default Work Unit\Music\BBIK\Play_BBIK_T" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" DurationType="OneShot" DurationMin="0.15951025" DurationMax="1.2582892">
 					<MediaRefs>
@@ -994,15 +979,10 @@
 						<MediaRef Id="721172056"/>
 						<MediaRef Id="736509684"/>
 					</MediaRefs>
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="2456097223"/>
-						</ShareSets>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1436785880" Type="Event" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" Language="SFX" Hash="{39E8D164-B69C-4EB2-4219-58AC209CBFA3}">
+		<SoundBank Id="1436785880" Type="Event" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" Language="SFX" Hash="{B56876E8-406F-F173-7DB0-D60C6C4595DA}">
 			<ObjectPath>Play_BBIK_C</ObjectPath>
 			<ShortName>Play_BBIK_C</ShortName>
 			<Path>Event/Play_BBIK_C.bnk</Path>
@@ -1028,11 +1008,6 @@
 					<CachePath>SFX/BBIK_C_4_818F3B66.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<ShareSets>
-					<Plugin Id="2456097223" Name="BBIK_Meter" ObjectPath="\Effects\Default Work Unit\BBIK_Meter" GUID="{B2C3350C-2478-4B92-BAEB-9E71857F0195}" LibName="Wwise Meter" LibId="8454147"/>
-				</ShareSets>
-			</Plugins>
 			<Events>
 				<Event Id="1436785880" Name="Play_BBIK_C" ObjectPath="\Events\Default Work Unit\Music\BBIK\Play_BBIK_C" GUID="{55281800-4A73-48F4-BDD0-BD28ECAE594F}" DurationType="OneShot" DurationMin="0.5224583" DurationMax="0.916875">
 					<MediaRefs>
@@ -1041,15 +1016,10 @@
 						<MediaRef Id="721172056"/>
 						<MediaRef Id="736509684"/>
 					</MediaRefs>
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="2456097223"/>
-						</ShareSets>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{AF5D4B30-8777-5F6F-636C-FFFA3C6D5098}">
+		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{B9CA33ED-5773-B90D-ADEE-540DC8D7605D}">
 			<ObjectPath>Play_Head_Hit</ObjectPath>
 			<ShortName>Play_Head_Hit</ShortName>
 			<Path>Event/Play_Head_Hit.bnk</Path>
@@ -1559,7 +1529,7 @@
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="2148039703" Type="Event" GUID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}" Language="SFX" Hash="{73817956-811A-73D5-A5FC-ED7F0DCF5D15}">
+		<SoundBank Id="2148039703" Type="Event" GUID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}" Language="SFX" Hash="{A333C509-202D-9184-5A5A-8FD4BF0AA396}">
 			<ObjectPath>Play_Violin_Hit</ObjectPath>
 			<ShortName>Play_Violin_Hit</ShortName>
 			<Path>Event/Play_Violin_Hit.bnk</Path>
@@ -1982,7 +1952,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{B7178AC4-9C75-749D-A76F-E4C8A8746845}">
+		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{0791DB31-E8BF-580D-F4CF-35F7186DFA95}">
 			<ObjectPath>Play_Trombone_Hit</ObjectPath>
 			<ShortName>Play_Trombone_Hit</ShortName>
 			<Path>Event/Play_Trombone_Hit.bnk</Path>
@@ -2175,5 +2145,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E15BAC07-B77A-F6DB-EE3C-270E3DFA4815}</FileHash>
+	<FileHash>{347FDFC3-6325-16BB-BD6E-7BD008FEB82E}</FileHash>
 </SoundBanksInfo>

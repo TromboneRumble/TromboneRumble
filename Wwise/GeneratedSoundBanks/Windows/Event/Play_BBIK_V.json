@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
     "Language": "SFX",
-    "Hash": "{97DB2789-5CA3-0C9B-EC40-F8DCC335EEBC}",
+    "Hash": "{C7CC8253-DFCA-26B2-93EA-6A13F36B42CB}",
     "ObjectPath": "Play_BBIK_V",
     "ShortName": "Play_BBIK_V",
     "Path": "Event/Play_BBIK_V.bnk",
@@ -52,18 +52,6 @@
       "CachePath": "SFX/BBIK_C_4_818F3B66.wem"
      }
     ],
-    "Plugins": {
-     "ShareSets": [
-      {
-       "Id": "2456097223",
-       "Name": "BBIK_Meter",
-       "ObjectPath": "\\Effects\\Default Work Unit\\BBIK_Meter",
-       "GUID": "{B2C3350C-2478-4B92-BAEB-9E71857F0195}",
-       "LibName": "Wwise Meter",
-       "LibId": "8454147"
-      }
-     ]
-    },
     "Events": [
      {
       "Id": "1436785869",
@@ -86,18 +74,11 @@
        {
         "Id": "736509684"
        }
-      ],
-      "PluginRefs": {
-       "ShareSets": [
-        {
-         "Id": "2456097223"
-        }
-       ]
-      }
+      ]
      }
     ]
    }
   ],
-  "FileHash": "{2E3D4D72-3890-18C0-8C4E-30F126F6D43F}"
+  "FileHash": "{9E0E368C-9621-F400-7011-ABB2B8F0E810}"
  }
 }
