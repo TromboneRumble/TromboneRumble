@@ -2,6 +2,7 @@
 
 #include "UI/UserWidgets/MainMenuWidget.h"
 #include "CommonButtonBase.h"
+#include "EasyFriendSubsystem.h"
 #include "EasySessionSettings.h"
 #include "EasySessionSubsystem.h"
 #include "EasySessionUtils.h"
@@ -80,19 +81,25 @@ void UMainMenuWidget::BindSubsystemCallbacks()
 {
 	Super::BindSubsystemCallbacks();
 	
-	if (!SessionsSubsystem) return;
-	
-	SessionsSubsystem->OnStartSessionSuccess.AddUObject(this, &ThisClass::OnStartSessionSuccess);
-	SessionsSubsystem->OnStartSessionFailure.AddUObject(this, &ThisClass::OnStartSessionFailure);
-	
-	SessionsSubsystem->OnFindSessionsSuccess.AddUObject(this, &ThisClass::OnFindSessionsSuccess);
-	SessionsSubsystem->OnFindSessionsFailure.AddUObject(this, &ThisClass::OnFindSessionsFailure);
+	if (SessionsSubsystem)
+	{
+		SessionsSubsystem->OnStartSessionSuccess.AddUObject(this, &ThisClass::OnStartSessionSuccess);
+		SessionsSubsystem->OnStartSessionFailure.AddUObject(this, &ThisClass::OnStartSessionFailure);
 		
-	SessionsSubsystem->OnJoinSessionSuccess.AddUObject(this, &ThisClass::OnJoinSessionSuccess);
-	SessionsSubsystem->OnJoinSessionFailure.AddUObject(this, &ThisClass::OnJoinSessionFailure);
+		SessionsSubsystem->OnFindSessionsSuccess.AddUObject(this, &ThisClass::OnFindSessionsSuccess);
+		SessionsSubsystem->OnFindSessionsFailure.AddUObject(this, &ThisClass::OnFindSessionsFailure);
+			
+		SessionsSubsystem->OnJoinSessionSuccess.AddUObject(this, &ThisClass::OnJoinSessionSuccess);
+		SessionsSubsystem->OnJoinSessionFailure.AddUObject(this, &ThisClass::OnJoinSessionFailure);
+		
+		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
+		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
+	}
 	
-	SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
-	SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
+	if (FriendsSubsystem)
+	{
+		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.AddLambda([this]() { ShowLoadingOverlay(); });
+	}
 }
 
 void UMainMenuWidget::RemoveSubsystemCallbacks()

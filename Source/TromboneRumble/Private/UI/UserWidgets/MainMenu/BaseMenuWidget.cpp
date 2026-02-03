@@ -2,6 +2,7 @@
 
 #include "UI/UserWidgets/MainMenu/BaseMenuWidget.h"
 #include "EasySessionSubsystem.h"
+#include "EasyFriendSubsystem.h"
 #include "GameFramework/HUD.h"
 #include "UI/HUD/MainHUD.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
@@ -30,10 +31,14 @@ void UBaseMenuWidget::ShowNoticePopup(const FString& Content)
 
 void UBaseMenuWidget::BindSubsystemCallbacks()
 {
+	const UGameInstance* GameInstance = GetGameInstance();
 	if (!SessionsSubsystem)
 	{
-		const UGameInstance* GameInstance = GetGameInstance();
 		SessionsSubsystem = GameInstance->GetSubsystem<UEasySessionSubsystem>();
+	}
+	if (!FriendsSubsystem)
+	{
+		FriendsSubsystem = GameInstance->GetSubsystem<UEasyFriendSubsystem>();
 	}
 	
 	RemoveSubsystemCallbacks();
