@@ -7,7 +7,6 @@
 #include "PopupWidgetBase.generated.h"
 
 class UCommonButtonBase;
-class UCommonLazyImage;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPopupAction);
 
 UCLASS()

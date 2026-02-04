@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MainMenu/BaseMenuWidget.h"
-#include "Settings/OptionPanelBase.h"
+#include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MainMenuWidget.generated.h"
 
+class UCommonButtonBase;
 enum class EMainMenuType : uint8;
 class UEasySessionSubsystem;
 class UEditableText;

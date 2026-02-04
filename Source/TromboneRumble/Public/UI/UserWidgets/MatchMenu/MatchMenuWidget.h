@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
-#include "MainMenu/BaseMenuWidget.h"
+#include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MatchMenuWidget.generated.h"
 
 class UCommonTextBlock;

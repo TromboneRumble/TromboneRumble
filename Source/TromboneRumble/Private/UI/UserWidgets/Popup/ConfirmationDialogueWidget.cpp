@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/ConfirmationDialogueWidget.h"
+#include "UI/UserWidgets/Popup/ConfirmationDialogueWidget.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "Animation/WidgetAnimation.h"

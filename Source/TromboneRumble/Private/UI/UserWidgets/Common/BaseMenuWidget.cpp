@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/MainMenu/BaseMenuWidget.h"
+#include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "EasySessionSubsystem.h"
 #include "EasyFriendSubsystem.h"
 #include "GameFramework/HUD.h"
 #include "UI/HUD/MainHUD.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
-#include "UI/UserWidgets/MainMenu/NoticePopupWidget.h"
+#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
 
 void UBaseMenuWidget::NativeConstruct()
 {
