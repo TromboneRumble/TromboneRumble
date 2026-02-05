@@ -34,11 +34,11 @@ void AGarbageSpawner::BeginPlay()
 	
 	if (HasAuthority() && bAutoStart)
 	{
-		StartAutoSpawn_Server();
+		Server_StartAutoSpawn();
 	}	
 }
 
-void AGarbageSpawner::SpawnGarbageOnce_Server()
+void AGarbageSpawner::Server_SpawnGarbageOnce()
 {
 	if (!HasAuthority())
 	{
@@ -65,7 +65,7 @@ void AGarbageSpawner::SpawnGarbageOnce_Server()
 	SpawnAndThrow_Server(SpawnTransform, TargetPawn);
 }
 
-void AGarbageSpawner::StartAutoSpawn_Server()
+void AGarbageSpawner::Server_StartAutoSpawn()
 {
 	if (!HasAuthority())
 	{
@@ -77,18 +77,10 @@ void AGarbageSpawner::StartAutoSpawn_Server()
 		return;
 	}
 	
-	const float SpawnInterval = UKismetMathLibrary::RandomFloatInRange(SpawnIntervalMin, SpawnIntervalMax);
-
-	GetWorldTimerManager().SetTimer(
-		AutoSpawnTimer,
-		this,
-		&ThisClass::SpawnGarbageOnce_Server,
-		SpawnInterval,
-		true
-	);
+	ScheduleNextSpawn();
 }
 
-void AGarbageSpawner::StopAutoSpawn_Server()
+void AGarbageSpawner::Server_StopAutoSpawn()
 {
 	if (!HasAuthority())
 	{
@@ -105,8 +97,30 @@ void AGarbageSpawner::StartAutoSpawnFromMusicCue(FName CueName)
 {
 	if (CueName == TEXT("Event_Spotlight_Start"))
 	{
-		StartAutoSpawn_Server();
+		Server_StartAutoSpawn();
 	}
+}
+
+void AGarbageSpawner::ScheduleNextSpawn()
+{
+	if (!HasAuthority()) return;
+
+	const float NextInterval = UKismetMathLibrary::RandomFloatInRange(SpawnIntervalMin, SpawnIntervalMax);
+
+	GetWorldTimerManager().SetTimer(
+		AutoSpawnTimer,
+		this,
+		&ThisClass::SpawnAndReschedule,
+		NextInterval,
+		false
+	);
+}
+
+void AGarbageSpawner::SpawnAndReschedule()
+{
+	Server_SpawnGarbageOnce();
+	AutoSpawnTimer.Invalidate();
+	ScheduleNextSpawn();
 }
 
 TSubclassOf<AGarbageBase> AGarbageSpawner::PickRandomGarbageClass() const
@@ -288,6 +302,6 @@ void AGarbageSpawner::Server_SpawnGarbageForDebugging_Implementation(const int32
 {
 	for (int32 i = 0; i < Count; ++i)
 	{
-		SpawnGarbageOnce_Server();
+		Server_SpawnGarbageOnce();
 	}
 }

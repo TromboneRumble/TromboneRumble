@@ -30,14 +30,17 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void SpawnGarbageOnce_Server();
-	void StartAutoSpawn_Server();
-	void StopAutoSpawn_Server();
+	void Server_SpawnGarbageOnce();
+	void Server_StartAutoSpawn();
+	void Server_StopAutoSpawn();
 
 	UFUNCTION()
 	void StartAutoSpawnFromMusicCue(FName CueName);
 
 protected:
+	void ScheduleNextSpawn();
+	void SpawnAndReschedule();
+
 	TSubclassOf<AGarbageBase> PickRandomGarbageClass() const;
 	bool PickRandomSpawnTransform(FTransform& OutTransform) const;
 	AActor* PickTargetPawn() const;
