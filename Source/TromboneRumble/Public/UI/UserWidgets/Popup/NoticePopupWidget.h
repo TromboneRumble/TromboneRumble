@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/UserWidgets/MainMenu/PopupWidgetBase.h"
+#include "PopupWidgetBase.h"
 #include "NoticePopupWidget.generated.h"
 
 class UCommonTextBlock;

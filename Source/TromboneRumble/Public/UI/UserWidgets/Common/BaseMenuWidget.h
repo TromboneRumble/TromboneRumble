@@ -6,6 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "BaseMenuWidget.generated.h"
 
+class UEasyFriendSubsystem;
 enum class EMainMenuType : uint8;
 class UMainUIRoot;
 class UEasySessionSubsystem;
@@ -42,4 +43,7 @@ protected:
 	
 	UPROPERTY(Transient)
 	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UEasyFriendSubsystem> FriendsSubsystem;
 };

@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/LobbyWidget.h"
+#include "UI/UserWidgets/Lobby/LobbyWidget.h"
 #include "CommonTextBlock.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 #include "Framework/LobbyGameState.h"
 #include "Utilities/Defines.h"
 

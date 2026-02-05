@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/UserWidgets/MainMenu/BaseMenuWidget.h"
+#include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "SettingMenuWidget.generated.h"
 
 class UCommonAnimatedSwitcher;

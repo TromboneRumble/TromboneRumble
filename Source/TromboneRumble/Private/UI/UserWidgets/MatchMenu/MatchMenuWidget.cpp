@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/MatchMenuWidget.h"
+#include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
+#include "EasyExternalUILibrary.h"
 #include "EasySessionSettings.h"
 #include "EasySessionSubsystem.h"
 #include "OnlineSessionSettings.h"
@@ -90,6 +91,11 @@ void UMatchMenuWidget::Init()
 		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
 	}
+	if (CB_Invite)
+	{
+		CB_Invite->OnClicked().RemoveAll(this);
+		CB_Invite->OnClicked().AddUObject(this, &ThisClass::HandleInviteButtonClicked);
+	}
 }
 
 void UMatchMenuWidget::BindGameStateEvents()
@@ -175,9 +181,16 @@ void UMatchMenuWidget::HandleBackButtonClicked()
 	UGameplayStatics::OpenLevel(this, FName(*URL), true);
 }
 
+void UMatchMenuWidget::HandleInviteButtonClicked()
+{
+	EEasyResultType OutResult;
+	UEasyExternalUILibrary::ShowInviteUI(GetOwningPlayer(), OutResult);
+}
+
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 {
 	CB_Start->SetIsEnabled(bEnabled);
 	CB_Back->SetIsEnabled(bEnabled);
+	CB_Invite->SetIsEnabled(bEnabled);
 	CT_Code->SetIsEnabled(bEnabled);
 }

@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/MainMenu/PopupWidgetBase.h"
+#include "UI/UserWidgets/Popup/PopupWidgetBase.h"
 #include "CommonButtonBase.h"
 
 void UPopupWidgetBase::Init()
@@ -55,6 +55,7 @@ void UPopupWidgetBase::HandleCloseButtonClicked()
 
 void UPopupWidgetBase::OnCloseAnimationFinished()
 {
+	UnbindAllFromAnimationFinished(FadeIn);
 	DeactivateWidget();
 }
 

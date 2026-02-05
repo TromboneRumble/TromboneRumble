@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/MainMenu/NoticePopupWidget.h"
+#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
 #include "CommonTextBlock.h"
 
 void UNoticePopupWidget::OnInit(const FString InContent)

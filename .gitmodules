@@ -1,0 +1,3 @@
+[submodule "Plugins/EasySessions"]
+	path = Plugins/EasySessions
+	url = https://github.com/JeongJongMun/EasySessionsPlugin

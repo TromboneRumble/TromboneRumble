@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/UserWidgets/MainMenuWidget.h"
+#include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
+#include "EasyFriendSubsystem.h"
 #include "EasySessionSettings.h"
 #include "EasySessionSubsystem.h"
 #include "EasySessionUtils.h"
@@ -12,9 +13,8 @@
 #include "Components/VerticalBox.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/UserWidgets/ConfirmationDialogueWidget.h"
-#include "UI/UserWidgets/MatchMenuWidget.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
+#include "UI/UserWidgets/Popup/ConfirmationDialogueWidget.h"
 #include "Utilities/DebugHelper.h"
 
 void UMainMenuWidget::NativeConstruct()
@@ -80,19 +80,25 @@ void UMainMenuWidget::BindSubsystemCallbacks()
 {
 	Super::BindSubsystemCallbacks();
 	
-	if (!SessionsSubsystem) return;
-	
-	SessionsSubsystem->OnStartSessionSuccess.AddUObject(this, &ThisClass::OnStartSessionSuccess);
-	SessionsSubsystem->OnStartSessionFailure.AddUObject(this, &ThisClass::OnStartSessionFailure);
-	
-	SessionsSubsystem->OnFindSessionsSuccess.AddUObject(this, &ThisClass::OnFindSessionsSuccess);
-	SessionsSubsystem->OnFindSessionsFailure.AddUObject(this, &ThisClass::OnFindSessionsFailure);
+	if (SessionsSubsystem)
+	{
+		SessionsSubsystem->OnStartSessionSuccess.AddUObject(this, &ThisClass::OnStartSessionSuccess);
+		SessionsSubsystem->OnStartSessionFailure.AddUObject(this, &ThisClass::OnStartSessionFailure);
 		
-	SessionsSubsystem->OnJoinSessionSuccess.AddUObject(this, &ThisClass::OnJoinSessionSuccess);
-	SessionsSubsystem->OnJoinSessionFailure.AddUObject(this, &ThisClass::OnJoinSessionFailure);
+		SessionsSubsystem->OnFindSessionsSuccess.AddUObject(this, &ThisClass::OnFindSessionsSuccess);
+		SessionsSubsystem->OnFindSessionsFailure.AddUObject(this, &ThisClass::OnFindSessionsFailure);
+			
+		SessionsSubsystem->OnJoinSessionSuccess.AddUObject(this, &ThisClass::OnJoinSessionSuccess);
+		SessionsSubsystem->OnJoinSessionFailure.AddUObject(this, &ThisClass::OnJoinSessionFailure);
+		
+		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
+		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
+	}
 	
-	SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
-	SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
+	if (FriendsSubsystem)
+	{
+		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.AddLambda([this]() { ShowLoadingOverlay(); });
+	}
 }
 
 void UMainMenuWidget::RemoveSubsystemCallbacks()
@@ -153,7 +159,7 @@ void UMainMenuWidget::HandleQuitButtonClicked()
 	{
 		CachedQuitDialog = CreateWidget<UConfirmationDialogueWidget>(GetOwningPlayer(), ConfirmationDialogueWidgetClass);
 	}
-	// TODO : 메세지 관리
+	// TODO : 메세지 관리, change to popup
 	const FText Message = FText::FromString(TEXT("정말 게임을 나가실건가요?"));
 	CachedQuitDialog->ShowDialogue(Message);
 }

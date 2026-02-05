@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
-#include "MainMenu/BaseMenuWidget.h"
+#include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MatchMenuWidget.generated.h"
 
 class UCommonTextBlock;
@@ -36,6 +35,8 @@ private:
 	void HandleStartButtonClicked();
 	UFUNCTION()
 	void HandleBackButtonClicked();
+	UFUNCTION()
+	void HandleInviteButtonClicked();
 
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	
@@ -44,6 +45,8 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Start;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Back;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Invite;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Code;
