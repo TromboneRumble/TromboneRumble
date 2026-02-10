@@ -2,17 +2,42 @@
 
 #include "UI/HUD/BaseHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/UserWidgets/Common/BaseUIRoot.h"
+
+void ABaseHUD::PushLoadingOverlay() const
+{
+	if (RootUI)
+	{
+		RootUI->PushLoadingOverlay();
+	}
+}
+
+void ABaseHUD::PushLoadingOverlay(const FString InContent) const
+{
+	if (RootUI)
+	{
+		RootUI->PushLoadingOverlay(InContent);
+	}
+}
+
+void ABaseHUD::PopLoadingOverlay() const
+{
+	if (RootUI)
+	{
+		RootUI->PopLoadingOverlay();
+	}
+}
 
 void ABaseHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (RootLayoutClass)
+	if (RootUIClass)
 	{
-		RootLayout = CreateWidget<UUserWidget>(GetWorld(), RootLayoutClass);
-		if (RootLayout)
+		RootUI = CreateWidget<UBaseUIRoot>(GetWorld(), RootUIClass);
+		if (RootUI)
 		{
-			RootLayout->AddToViewport();
+			RootUI->AddToViewport();
 		}
 	}
 }

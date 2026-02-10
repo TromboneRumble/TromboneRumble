@@ -21,12 +21,20 @@ public:
 	
 	FOnPlayerListUpdateSignature OnPlayerListChanged;
 	
+	void SetIsTransitioningToInGame(const bool bInIsTransitioning);
+	
 private:
 	UFUNCTION()
 	void OnRep_PlayerList() const;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_PlayerList)
 	TArray<FString> PlayerList;
+	
+	UFUNCTION()
+	void OnRep_IsTransitioningToInGame();
+	
+	UPROPERTY(ReplicatedUsing = OnRep_IsTransitioningToInGame)
+	bool bIsTransitioningToInGame = false;
 
 public:
 	// ~ Begin Getter & Setter

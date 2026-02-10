@@ -92,7 +92,7 @@ TObjectPtr<UMainUIRoot> UBaseMenuWidget::GetRootLayout() const
 	{
 		if (const AMainHUD* MainHud = Cast<AMainHUD>(PC->GetHUD()))
 		{
-			if (UMainUIRoot* RootLayout = Cast<UMainUIRoot>(MainHud->GetRootLayout()))
+			if (UMainUIRoot* RootLayout = Cast<UMainUIRoot>(MainHud->GetRootUI()))
 			{
 				return RootLayout;
 			}
