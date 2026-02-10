@@ -85,4 +85,8 @@ protected:
 	void OnOverallQualityChanged(int32 NewIndex);
 	UFUNCTION()
 	void OnSubOptionChanged(int32 NewIndex);
+	
+private:
+	float MinimumResolutionWidth = 1280.0f;
+	float AspectRatio = 1.777f; // 16:9
 };

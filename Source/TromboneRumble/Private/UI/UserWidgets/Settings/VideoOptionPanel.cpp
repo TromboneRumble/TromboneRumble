@@ -161,14 +161,23 @@ void UVideoOptionPanel::BuildOptions()
 				FScreenResolutionArray Resolutions;
 				if (RHIGetAvailableResolutions(Resolutions, false))
 				{
-					for (const auto& Res : Resolutions)
+					for (int32 i = Resolutions.Num() - 1; i >= 0; i--)
 					{
-						FText ResText = FText::FromString(FString::Printf(TEXT("%dx%d"), Res.Width, Res.Height));
-                   
-						auto Predicate = [&](const FText& Existing) { return Existing.EqualTo(ResText); };
-						if (!Labels.ContainsByPredicate(Predicate))
+						const auto& Res = Resolutions[i];
+						
+						if (Res.Width < MinimumResolutionWidth) continue;
+
+						const float CurrentAspectRatio = static_cast<float>(Res.Width) / static_cast<float>(Res.Height);
+						if (FMath::IsNearlyEqual(CurrentAspectRatio, AspectRatio, 0.01f))
 						{
-							Labels.Add(ResText);
+							FText ResText = FText::FromString(FString::Printf(TEXT("%dx%d"), Res.Width, Res.Height));
+	                   
+							auto Predicate = [&](const FText& Existing) { return Existing.EqualTo(ResText); };
+							if (!Labels.ContainsByPredicate(Predicate))
+							{
+								Labels.Add(ResText);
+								PRINT_WITH_CURRENT_CONTEXT(ResText.ToString());
+							}
 						}
 					}
 				}
