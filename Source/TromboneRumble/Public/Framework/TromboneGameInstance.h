@@ -24,7 +24,7 @@ public:
     
     UFUNCTION(BlueprintCallable)
     void StopMenuBGM();
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
 

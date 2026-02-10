@@ -119,7 +119,6 @@ void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEv
 	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
 	{
 		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent, IsSyncTesting);
-		CachedRhythmUIRootWidget->PrepareNoteContainer(InType);
 	}
 }
 
@@ -525,9 +524,52 @@ void ARhythmActor::PlayMusic()
 	if (PlayBGMEvent && NoteHearingComponent)
 	{
 		FOnAkPostEventCallback Callback;
-		Callback.BindUFunction(GetCachedRhythmSubsystem(), FName("HandleMusicCallbacks"));
+		Callback.BindUFunction(this, FName("HandleBGMCallbacks"));
+		UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
 
-		const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_EndOfEvent;
-		NoteHearingComponent->PostAkEvent(PlayBGMEvent, CallbackMask, Callback);
+		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_EndOfEvent;
+		hasReceivedDurationCallback = false;
+		hasReceivedMusicStartCallback = false;
+		hasShotBGMDelegate = false;
+		int32 PlayingID = NoteHearingComponent->PostAkEvent(
+			PlayBGMEvent,
+			CallbackMask,
+			Callback);
+		if (PlayingID != 0 && GameDataSubsystem)
+		{
+			GameDataSubsystem->SetCurrentSongPlayingID(PlayingID);
+		}
+
 	}
+}
+
+void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
+{
+	GetCachedRhythmSubsystem()->HandleMusicCallbacks(CallbackType, CallbackInfo);
+	if (UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+	{
+		GameDataSubsystem->HandleMusicCallbacks(CallbackType, CallbackInfo);
+	}
+	switch (CallbackType)
+	{
+	case EAkCallbackType::Duration:
+		{
+			hasReceivedDurationCallback = true;
+		}
+		break;
+	case EAkCallbackType::MusicPlayStarted:
+		{
+			hasReceivedMusicStartCallback = true;
+		}
+		break;
+	}
+	if (!hasShotBGMDelegate)
+	{
+		if (hasReceivedDurationCallback && hasReceivedMusicStartCallback)
+		{
+			hasShotBGMDelegate = true;
+			GetCachedRhythmSubsystem()->OnRhythmGameStarted.Broadcast();
+		}
+	}
+	
 }

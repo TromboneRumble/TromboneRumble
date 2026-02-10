@@ -76,7 +76,6 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 
 	//현재 접속한 플레이어
 	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
-
 	if (CurrentPlayerCount < SessionPlayerNumber)
 	{
 		return;

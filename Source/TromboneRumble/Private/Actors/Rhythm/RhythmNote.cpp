@@ -90,19 +90,20 @@ void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteS
 	StartLocation = InSpawner->GetActorLocation();
 	EndLocation = StartLocation + FVector(1000.f, 0.f, 0.f);
 
-	URhythmSpawnWidgetBase* RhythmSpawnWidget = InRhythmActor->GetRhythmUIRootWidget()->RhythmSpawnWidget;
-	if (RhythmSpawnWidget)
-	{
-		URhythmNoteWidgetBase* PooledNoteWidget = RhythmSpawnWidget->SpawnPooledRhythmNoteWidget(NoteType);
-		if (PooledNoteWidget)
-		{
-			PooledNoteWidget->InitWithCueMessage(InUserCueName);
-		}
-		if (RhythmNoteUIControllerComponent && RhythmSpawnWidget && PooledNoteWidget)
-		{
-			RhythmNoteUIControllerComponent->InitSettings(RhythmSpawnWidget, PooledNoteWidget, NoteHandle);
-		}
-	}
+	//이전에 캐릭터 발밑이 아니라 WBP_Rhythm에서 UI를 통해 리듬게임 하던 시절 쓰던 코드
+	//URhythmSpawnWidgetBase* RhythmSpawnWidget = InRhythmActor->GetRhythmUIRootWidget()->RhythmSpawnWidget;
+	//if (RhythmSpawnWidget)
+	//{
+	//	URhythmNoteWidgetBase* PooledNoteWidget = RhythmSpawnWidget->SpawnPooledRhythmNoteWidget(NoteType);
+	//	if (PooledNoteWidget)
+	//	{
+	//		PooledNoteWidget->InitWithCueMessage(InUserCueName);
+	//	}
+	//	if (RhythmNoteUIControllerComponent && RhythmSpawnWidget && PooledNoteWidget)
+	//	{
+	//		RhythmNoteUIControllerComponent->InitSettings(RhythmSpawnWidget, PooledNoteWidget, NoteHandle);
+	//	}
+	//}
 	
 }
 

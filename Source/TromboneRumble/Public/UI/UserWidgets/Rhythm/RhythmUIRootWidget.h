@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Iris/Core/IrisProfiler.h"
 #include "RhythmUIRootWidget.generated.h"
 
+class UProgressBar;
+class UTextBlock;
 class URhythmLeaderBoard;
 enum class EInstrumentType : uint8;
 class URhythmSpawnWidgetBase;
@@ -18,18 +21,44 @@ class TROMBONERUMBLE_API URhythmUIRootWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void PrepareNoteContainer(const EInstrumentType& InType);
 	void OnGameEnded();
-	
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
-	
+
+protected:
+	virtual void NativePreConstruct() override;
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	UFUNCTION()
+	void UpdateScoreText(APlayerState* AffectedPlayerState);
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URhythmLeaderBoard> WBP_LeaderBoard;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCanvasPanel> NoteCanvas = nullptr;
 
-	UPROPERTY(meta = (BindWidgetOptional))
-	TObjectPtr<URhythmSpawnWidgetBase> RhythmSpawnWidget = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UProgressBar> MusicProgressBar;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ScoreText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ComboText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UNamedSlot> AddedScoreNameSlot;
+
+	UPROPERTY(meta = (BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
+
+	UPROPERTY(meta = (BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
+
+private:
+	UFUNCTION()
+	void OnRhythmGameStarted();
+	void UpdateProgressbar(float DeltaSeconds);
+	bool hasGameStarted = false;
+	float CurrentSongTotalLength = 0.f;
+	float CurrentTime = 0.f;
+	int32 CurrentSongPlayingID = 0;
+
 };

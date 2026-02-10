@@ -146,21 +146,17 @@ struct FNoteHandle
 	TWeakObjectPtr<AActor> NoteActor = nullptr;
 };
 
-USTRUCT()
-struct FNoteJudgedMessage
+UENUM(BlueprintType)
+enum class EScoreType : uint8
 {
-	GENERATED_BODY()
-	UPROPERTY() FNoteHandle Handle;
-	UPROPERTY() EInstrumentType Instrument = EInstrumentType::Invalid;
-	UPROPERTY() ENoteResult Judge = ENoteResult::None;
-};
+	RhythmScore = 0				UMETA(DisplayName = "Rhythm"),
+	BuffedRhythmScore = 1		UMETA(DisplayName = "RhythmBuffed"),
+	InstrumentPickedUp = 2		UMETA(DisplayName = "InstrumentPickedUp"),
+	OnHit = 3					UMETA(DisplayName = "OnHit"),
+	SpotLight = 4				UMETA(DisplayName = "SpotLight"),
 
-USTRUCT()
-struct FComboChangedMessage
-{
-	GENERATED_BODY()
-	UPROPERTY() int32 Combo = 0;
-	UPROPERTY() int32 DeltaScore = 0;
+	None = 254					UMETA(DisplayName = "None"),
+	Invalid = 255				UMETA(Hidden)
 };
 
 USTRUCT()

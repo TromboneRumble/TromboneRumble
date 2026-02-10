@@ -32,6 +32,20 @@ const FRhythmSongDataRow* UGameDataSubsystem::GetSongRow(const FGameplayTag& InS
     return RhythmSongDataTable->FindRow<FRhythmSongDataRow>(InSongTag.GetTagName(), Ctx, true);
 }
 
+void UGameDataSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
+{
+    if (CallbackType == EAkCallbackType::Duration)
+    {
+        if (UAkDurationCallbackInfo* DurationCallbackInfo = Cast<UAkDurationCallbackInfo>(CallbackInfo))
+        {
+            if (DurationCallbackInfo->Duration > 0.f)
+            {
+                CurrentSongTotalLength = DurationCallbackInfo->Duration / 1000.f;
+            }
+        }
+    }
+}
+
 void UGameDataSubsystem::PreloadSongAssets(const FGameplayTag& InSongTag)
 {
     const FRhythmSongDataRow* Row = GetSongRow(InSongTag);

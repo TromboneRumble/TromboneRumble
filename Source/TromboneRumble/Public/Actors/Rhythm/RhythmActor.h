@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AkGameplayTypes.h"
 #include "GameFramework/Actor.h"
-#include "Iris/Core/IrisProfiler.h"
 #include "Utilities/Defines.h"
 #include "RhythmActor.generated.h"
 
@@ -133,6 +133,11 @@ private:
 	UFUNCTION()
 	void PlayMusic();
 	FTimerHandle PlayBackgroundMusicTimerHandle;
+	UFUNCTION()
+	void HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	bool hasReceivedMusicStartCallback = false;
+	bool hasReceivedDurationCallback = false;
+	bool hasShotBGMDelegate = false;
 
 	UPROPERTY()
 	EInstrumentType FocusedType = EInstrumentType::Background;
