@@ -135,6 +135,14 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 {
 	bIsStarted = true;
 	SetUIEnabled(false);
+
+	if (UWorld* World = GetWorld())
+	{
+		if (AMatchMenuGameState* MatchMenuGS = World->GetGameState<AMatchMenuGameState>())
+		{
+			MatchMenuGS->SetIsTransitioningToInGame(true);
+		}
+	}
 	
 	if (UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{

@@ -6,21 +6,30 @@
 #include "GameFramework/HUD.h"
 #include "BaseHUD.generated.h"
 
+class UBaseUIRoot;
+
 UCLASS()
 class TROMBONERUMBLE_API ABaseHUD : public AHUD
 {
 	GENERATED_BODY()
 	
 public:
-	TObjectPtr<UUserWidget> GetRootLayout() const { return RootLayout; }
+	virtual void PushLoadingOverlay() const;
+	virtual void PushLoadingOverlay(FString InContent) const;
+	virtual void PopLoadingOverlay() const;
 	
 protected:
 	virtual void BeginPlay() override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Config")
-	TSubclassOf<UUserWidget> RootLayoutClass;
+	TSubclassOf<UBaseUIRoot> RootUIClass;
 	
 	UPROPERTY()
-	TObjectPtr<UUserWidget> RootLayout;
+	TObjectPtr<UBaseUIRoot> RootUI;
+	
+public:
+	// ~ Begin Getter & Setter
+	TObjectPtr<UBaseUIRoot> GetRootUI() const { return RootUI; }
+	// ~ End Getter & Setter
 };

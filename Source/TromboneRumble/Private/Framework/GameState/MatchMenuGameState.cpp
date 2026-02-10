@@ -3,6 +3,7 @@
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/HUD/MatchMenuHUD.h"
 
 void AMatchMenuGameState::RemovePlayerState(APlayerState* PlayerState)
 {
@@ -16,6 +17,7 @@ void AMatchMenuGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ThisClass, PlayerList);
+	DOREPLIFETIME(ThisClass, bIsTransitioningToInGame);
 }
 
 void AMatchMenuGameState::UpdatePlayerList()
@@ -42,4 +44,27 @@ void AMatchMenuGameState::UpdatePlayerList()
 void AMatchMenuGameState::OnRep_PlayerList() const
 {
 	OnPlayerListChanged.Broadcast(PlayerList);
+}
+
+void AMatchMenuGameState::OnRep_IsTransitioningToInGame()
+{
+	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	const ABaseHUD* Hud = PC ? PC->GetHUD<ABaseHUD>() : nullptr;
+	
+	if (!Hud) return;
+	
+	if (bIsTransitioningToInGame)
+	{
+		Hud->PushLoadingOverlay();
+	}
+	else
+	{
+		Hud->PopLoadingOverlay();
+	}
+}
+
+void AMatchMenuGameState::SetIsTransitioningToInGame(const bool bInIsTransitioning)
+{
+	bIsTransitioningToInGame = bInIsTransitioning;
+	OnRep_IsTransitioningToInGame();
 }
