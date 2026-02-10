@@ -24,6 +24,7 @@ void UBaseMenuWidget::ShowNoticePopup(const FString& Content)
 {
 	if (NoticePopupWidgetClass)
 	{
+		// TODO : UI Stack에 넣어야 함
 		UNoticePopupWidget* NoticePopup = CreateWidget<UNoticePopupWidget>(GetOwningPlayer(), NoticePopupWidgetClass);
 		NoticePopup->OnInit(Content);
 	}

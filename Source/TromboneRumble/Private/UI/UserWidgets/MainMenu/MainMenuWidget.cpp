@@ -97,7 +97,7 @@ void UMainMenuWidget::BindSubsystemCallbacks()
 	
 	if (FriendsSubsystem)
 	{
-		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.AddLambda([this]() { ShowLoadingOverlay(); });
+		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.AddUObject(this, &ThisClass::ShowLoadingOverlay);
 	}
 }
 
@@ -105,19 +105,25 @@ void UMainMenuWidget::RemoveSubsystemCallbacks()
 {
 	Super::RemoveSubsystemCallbacks();
 	
-	if (!SessionsSubsystem) return;
-	
-	SessionsSubsystem->OnStartSessionSuccess.RemoveAll(this);
-	SessionsSubsystem->OnStartSessionFailure.RemoveAll(this);
-	
-	SessionsSubsystem->OnFindSessionsSuccess.RemoveAll(this);
-	SessionsSubsystem->OnFindSessionsFailure.RemoveAll(this);
+	if (SessionsSubsystem)
+	{
+		SessionsSubsystem->OnStartSessionSuccess.RemoveAll(this);
+		SessionsSubsystem->OnStartSessionFailure.RemoveAll(this);
 		
-	SessionsSubsystem->OnJoinSessionSuccess.RemoveAll(this);
-	SessionsSubsystem->OnJoinSessionFailure.RemoveAll(this);
+		SessionsSubsystem->OnFindSessionsSuccess.RemoveAll(this);
+		SessionsSubsystem->OnFindSessionsFailure.RemoveAll(this);
+			
+		SessionsSubsystem->OnJoinSessionSuccess.RemoveAll(this);
+		SessionsSubsystem->OnJoinSessionFailure.RemoveAll(this);
+		
+		SessionsSubsystem->OnDestroySessionSuccess.RemoveAll(this);
+		SessionsSubsystem->OnDestroySessionFailure.RemoveAll(this);
+	}
 	
-	SessionsSubsystem->OnDestroySessionSuccess.RemoveAll(this);
-	SessionsSubsystem->OnDestroySessionFailure.RemoveAll(this);
+	if (FriendsSubsystem)
+	{
+		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.RemoveAll(this);
+	}
 }
 
 void UMainMenuWidget::HandleOnlineButtonClicked()
