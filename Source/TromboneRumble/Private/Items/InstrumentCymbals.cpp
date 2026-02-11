@@ -24,7 +24,7 @@ void AInstrumentCymbals::Client_OnHitSuccess_Implementation(AActor* HitActor)
 					ScoreData->AttackScore
 				);
 				Debug::Print(DebugMsg);
-				DefaultPlayerState->Server_AddScore(FMath::RoundToInt(ScoreData->AttackScore));
+				DefaultPlayerState->AddScore(FMath::RoundToInt(ScoreData->AttackScore), EScoreType::OnHit);
 			}
 		}
 		

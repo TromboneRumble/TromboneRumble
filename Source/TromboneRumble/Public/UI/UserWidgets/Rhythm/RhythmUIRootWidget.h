@@ -7,6 +7,8 @@
 #include "Iris/Core/IrisProfiler.h"
 #include "RhythmUIRootWidget.generated.h"
 
+class ADefaultPlayerState;
+enum class EScoreType : uint8;
 class UProgressBar;
 class UTextBlock;
 class URhythmLeaderBoard;
@@ -29,7 +31,7 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UFUNCTION()
-	void UpdateScoreText(APlayerState* AffectedPlayerState);
+	void UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URhythmLeaderBoard> WBP_LeaderBoard;
@@ -55,6 +57,12 @@ protected:
 private:
 	UFUNCTION()
 	void OnRhythmGameStarted();
+
+	UFUNCTION()
+	void OnPlayerStateChanged(APlayerState* NewPlayerState);
+
+	void BindDelegates(ADefaultPlayerState* InDefaultPlayerState);
+
 	void UpdateProgressbar(float DeltaSeconds);
 	bool hasGameStarted = false;
 	float CurrentSongTotalLength = 0.f;

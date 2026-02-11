@@ -273,7 +273,15 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	float AddedScore = CalculateScore(InNoteResult, CurrentCombo);
 	if (AddedScore > 0.f)
 	{
-		PS->Server_AddScore(FMath::RoundToInt(AddedScore));
+		if (ActiveBuffHandle.IsValid())
+		{
+			PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedRhythmScore);
+		}
+		else
+		{
+			PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::RhythmScore);
+		}
+		
 	}
 }
 

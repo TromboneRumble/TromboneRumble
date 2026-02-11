@@ -12,7 +12,7 @@ class URhythmSubsystem;
 class AInGameState;
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLocalScoreChanged, APlayerState*, PlayerState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnLocalScoreChanged, APlayerState*, PlayerState, int32, AddedAmount, EScoreType, ScoreType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
 
 UCLASS()
@@ -36,9 +36,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnComboChanged OnComboChanged;
 
-	void AddScore(int32 Amount);
+	void AddScore(int32 Amount, EScoreType ScoreType);
 	UFUNCTION(Server, Reliable)
-	void Server_AddScore(int32 Amount);
+	void Server_AddScore(int32 Amount, EScoreType ScoreType);
 
 	void HandleCombo(ENoteResult InResult);
 

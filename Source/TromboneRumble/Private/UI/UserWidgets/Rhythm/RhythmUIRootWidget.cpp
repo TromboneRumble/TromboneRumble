@@ -10,6 +10,8 @@
 #include "UI/UserWidgets/Rhythm/RhythmLeaderBoard.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Characters/DefaultPlayerController.h"
+#include "Utilities/DebugHelper.h"
 
 
 void URhythmUIRootWidget::OnGameEnded()
@@ -50,7 +52,11 @@ void URhythmUIRootWidget::NativeConstruct()
 	{
 		if (ADefaultPlayerState* DefaultPlayerState = PlayerController->GetPlayerState<ADefaultPlayerState>())
 		{
-			DefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::UpdateScoreText);
+			BindDelegates(DefaultPlayerState);
+		}
+		else if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
+		{
+			DefaultPlayerController->OnPlayerStateChanged.AddDynamic(this, &ThisClass::OnPlayerStateChanged);
 		}
 	}
 }
@@ -65,15 +71,58 @@ void URhythmUIRootWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	
 }
 
-void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState)
+void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType)
 {
-	if (AffectedPlayerState && AffectedPlayerState->GetOwningController() && AffectedPlayerState->GetOwningController()->IsLocalController())
+	if (!AffectedPlayerState) return;
+
+	if (AController* PC = AffectedPlayerState->GetOwningController())
 	{
-		if (ScoreText && ScoreUpdatedAnim)
+		if (!PC->IsLocalController()) return;
+	}
+
+	if (ScoreText)
+	{
+		// 1. 점수 텍스트 갱신 (항상 최신 점수로)
+		int32 UpdatedScore = FMath::FloorToInt(AffectedPlayerState->GetScore());
+		FString FormattedScore = FString::Printf(TEXT("%06d"), UpdatedScore);
+		ScoreText->SetText(FText::FromString(FormattedScore));
+
+		// 2. ScoreType에 따른 디버그 메시지 출력 (Debug::Print 사용)
+		// InKey를 -1로 설정하여 메시지가 덮어씌워지지 않고 로그처럼 쌓이게 함 (빠른 판정 확인용)
+		switch (ScoreType)
 		{
-			int32 UpdatedScore = FMath::FloorToInt(AffectedPlayerState->GetScore());
-			FString FormattedScore = FString::Printf(TEXT("%06d"), UpdatedScore);
-			ScoreText->SetText(FText::FromString(FormattedScore));
+		case EScoreType::RhythmScore:
+			Debug::Print(FString::Printf(TEXT("[UI] 리듬 판정: +%d"), AddedAmount), -1, FColor::Cyan);
+			break;
+
+		case EScoreType::BuffedRhythmScore:
+			Debug::Print(FString::Printf(TEXT("[UI] 버프 점수: +%d"), AddedAmount), -1, FColor::Magenta);
+			break;
+
+		case EScoreType::InstrumentPickedUp:
+			Debug::Print(FString::Printf(TEXT("[UI] 악기 획득: +%d"), AddedAmount), -1, FColor::Green);
+			break;
+
+		case EScoreType::OnHit:
+			Debug::Print(FString::Printf(TEXT("[UI] 타격(PVP): +%d"), AddedAmount), -1, FColor::Red);
+			break;
+
+		case EScoreType::SpotLight:
+			// 스포트라이트는 눈에 잘 띄게 노란색으로 설정
+			Debug::Print(FString::Printf(TEXT("[UI] 스포트라이트 보너스! +%d"), AddedAmount), -1, FColor::Yellow);
+			break;
+
+		case EScoreType::None:
+			// Server OnRep에 의한 단순 동기화 시점에는 로그를 남기지 않음
+			break;
+
+		default:
+			break;
+		}
+
+		// 3. 애니메이션 실행 (단순 동기화가 아닐 때만)
+		if (ScoreType != EScoreType::None && ScoreUpdatedAnim)
+		{
 			PlayAnimation(ScoreUpdatedAnim);
 		}
 	}
@@ -98,6 +147,26 @@ void URhythmUIRootWidget::OnRhythmGameStarted()
 	}
 	CurrentTime = 0.f;
 	hasGameStarted = true;
+}
+
+void URhythmUIRootWidget::OnPlayerStateChanged(APlayerState* NewPlayerState)
+{
+	if (ADefaultPlayerState* PS = Cast<ADefaultPlayerState>(NewPlayerState))
+	{
+		BindDelegates(PS);
+
+		// 더 이상 들을 필요 없으니 구독 해제 (선택사항)
+		if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
+		{
+			DefaultPlayerController->OnPlayerStateChanged.RemoveDynamic(this, &ThisClass::OnPlayerStateChanged);
+		}
+	}
+}
+
+void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerState)
+{
+	InDefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::UpdateScoreText);
+	InDefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::UpdateScoreText);
 }
 
 void URhythmUIRootWidget::UpdateProgressbar(float DeltaSeconds)
