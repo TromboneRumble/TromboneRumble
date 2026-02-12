@@ -36,7 +36,11 @@ void URhythmUIRootWidget::NativePreConstruct()
 	}
 	if (ComboText)
 	{
-		ComboText->SetVisibility(ESlateVisibility::Hidden);
+		ComboText->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (ComboNumberText)
+	{
+		ComboNumberText->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	if (MusicProgressBar)
 	{
@@ -128,6 +132,39 @@ void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState, int
 	}
 }
 
+void URhythmUIRootWidget::UpdateComboText(ENoteResult InNoteResult, int32 ComboCount)
+{
+	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::None) return;
+	if (InNoteResult == ENoteResult::Bad)
+	{
+		if (ComboText)
+		{
+			ComboText->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		if (ComboNumberText)
+		{
+			ComboNumberText->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}
+	else
+	{
+		if (ComboText)
+		{
+			ComboText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
+		if (ComboNumberText)
+		{
+			ComboNumberText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			FString FormattedScore = FString::Printf(TEXT("%d"), ComboCount);
+			ComboNumberText->SetText(FText::FromString(FormattedScore));
+			if (ComboHitAnim)
+			{
+				PlayAnimation(ComboHitAnim);
+			}
+		}
+	}
+}
+
 void URhythmUIRootWidget::OnRhythmGameStarted()
 {
 	if (UTromboneGameInstance* TromboneGameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
@@ -167,6 +204,8 @@ void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerStat
 {
 	InDefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::UpdateScoreText);
 	InDefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::UpdateScoreText);
+	InDefaultPlayerState->OnComboChanged.RemoveDynamic(this, &ThisClass::UpdateComboText);
+	InDefaultPlayerState->OnComboChanged.AddDynamic(this, &ThisClass::UpdateComboText);
 }
 
 void URhythmUIRootWidget::UpdateProgressbar(float DeltaSeconds)

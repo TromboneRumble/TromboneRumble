@@ -67,6 +67,9 @@ protected:
 
 private:
 	// Rhythm Game Init
+	void InitGameState();
+	FTimerHandle GameStateInitTimerHandle;
+
 	void PrepareRhythmGame();
 	ARhythmNoteSpawner* GetOrCreateSpawner(EInstrumentType InType);
 	bool DestroySpawner(EInstrumentType InType);

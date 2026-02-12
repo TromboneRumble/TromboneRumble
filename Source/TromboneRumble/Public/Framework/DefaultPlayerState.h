@@ -52,7 +52,7 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
+	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 
 public:

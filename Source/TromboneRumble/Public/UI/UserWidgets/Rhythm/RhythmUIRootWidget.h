@@ -7,6 +7,7 @@
 #include "Iris/Core/IrisProfiler.h"
 #include "RhythmUIRootWidget.generated.h"
 
+enum class ENoteResult : uint8;
 class ADefaultPlayerState;
 enum class EScoreType : uint8;
 class UProgressBar;
@@ -33,6 +34,9 @@ protected:
 	UFUNCTION()
 	void UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
 
+	UFUNCTION()
+	void UpdateComboText(ENoteResult InNoteResult, int32 ComboCount);
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URhythmLeaderBoard> WBP_LeaderBoard;
 
@@ -46,13 +50,19 @@ protected:
 	TObjectPtr<UTextBlock> ComboText;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ComboNumberText;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UNamedSlot> AddedScoreNameSlot;
 
-	UPROPERTY(meta = (BindWidgetAnim))
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
 
-	UPROPERTY(meta = (BindWidgetAnim))
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	TObjectPtr<UWidgetAnimation> ComboHitAnim;
 
 private:
 	UFUNCTION()

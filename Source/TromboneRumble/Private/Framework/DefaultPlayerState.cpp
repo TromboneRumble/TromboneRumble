@@ -19,7 +19,6 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
-	DOREPLIFETIME(ThisClass, CurrentCombo);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
