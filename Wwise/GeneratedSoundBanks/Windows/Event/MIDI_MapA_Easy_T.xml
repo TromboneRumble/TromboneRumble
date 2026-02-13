@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{BDA23022-2CBA-B67E-BCDB-399070A97290}">
+			<ObjectPath>MIDI_MapA_Easy_T</ObjectPath>
+			<ShortName>MIDI_MapA_Easy_T</ShortName>
+			<Path>Event/MIDI_MapA_Easy_T.bnk</Path>
+			<Media>
+				<File Id="157812467" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_T.mid</ShortName>
+					<Path>Media/157812467.wem</Path>
+					<CachePath>SFX/MIDI_T_707D6309.wem</CachePath>
+				</File>
+				<File Id="378149048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Trombone.wav</ShortName>
+					<Path>Media/378149048.wem</Path>
+					<CachePath>SFX/Map_A_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="681341114" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Main.wav</ShortName>
+					<Path>Media/681341114.wem</Path>
+					<CachePath>SFX/Map_A_Main_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1171123002" Name="MIDI_MapA_Easy_T" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_A_Easy_Rhythm\MIDI_MapA_Easy_T" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" DurationType="OneShot" DurationMin="313.4729" DurationMax="313.4729">
+					<MediaRefs>
+						<MediaRef Id="157812467"/>
+						<MediaRef Id="378149048"/>
+						<MediaRef Id="681341114"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{A1B88A4D-B7DB-9E5A-EA99-BFD1BE028B2C}</FileHash>
+</SoundBanksInfo>

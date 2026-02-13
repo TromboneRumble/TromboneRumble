@@ -1,0 +1,9 @@
+Event	ID	Name			Wwise Object Path	Notes
+	772478594	Play_MapA_Easy_Main			\Default Work Unit\Music\Easy\Map_A_Easy_Rhythm\Play_MapA_Easy_Main	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	1116151608	RTPC_Fail_Volume			\Default Work Unit\RTPC_Fail_Volume	
+
+Effect plug-ins	ID	Name	Type				Notes
+	35494138	Meter (Custom)	Wwise Meter			
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3391962191" Type="Event" GUID="{7E3210EE-4E63-48F1-85F3-6C20F873A925}" Language="SFX" Hash="{78185696-FE6E-B2CB-2ADE-BDF49A3D294D}">
+			<ObjectPath>MIDI_MapC_Easy_C</ObjectPath>
+			<ShortName>MIDI_MapC_Easy_C</ShortName>
+			<Path>Event/MIDI_MapC_Easy_C.bnk</Path>
+			<Media>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="285156482" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_C.mid</ShortName>
+					<Path>Media/285156482.wem</Path>
+					<CachePath>SFX/MapC_MIDI_C_6B8EF492.wem</CachePath>
+				</File>
+				<File Id="401878926" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Cymbal.wav</ShortName>
+					<Path>Media/401878926.wem</Path>
+					<CachePath>SFX/Map_C_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3391962191" Name="MIDI_MapC_Easy_C" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_C_Easy_Rhythm\MIDI_MapC_Easy_C" GUID="{7E3210EE-4E63-48F1-85F3-6C20F873A925}" DurationType="OneShot" DurationMin="316.7991" DurationMax="316.7991">
+					<MediaRefs>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="285156482"/>
+						<MediaRef Id="401878926"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{F732D54A-5B75-2F3B-1FA7-58A8C2A4A45A}</FileHash>
+</SoundBanksInfo>

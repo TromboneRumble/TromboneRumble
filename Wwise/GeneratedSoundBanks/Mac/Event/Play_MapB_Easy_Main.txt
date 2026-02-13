@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	2850152613	Play_MapB_Easy_Main			\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\Play_MapB_Easy_Main	
+

@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3621760171	MIDI_MapB_Easy_T			\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\MIDI_MapB_Easy_T	
+
+Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
+	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	
+
