@@ -92,7 +92,10 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		
 		PooledNote->InitNote(CachedRhythmActor.Get(), this, NoteVisualizerClass, TimeToComplete, InUserCueName);
 
-		if (InUserCueName.StartsWith(TEXT("SS_")))
+		bool bIsN = InUserCueName.Equals(TEXT("N"), ESearchCase::IgnoreCase);
+		bool bIsShortNotePrefix = InUserCueName.StartsWith(TEXT("SS_"));
+
+		if (bIsN || bIsShortNotePrefix)
 		{
 			PooledNote->SetToShortNote();
 		}

@@ -1,0 +1,91 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3391962200",
+    "Type": "Event",
+    "GUID": "{05BF03DD-37F8-4C59-807C-4F0833112725}",
+    "Language": "SFX",
+    "Hash": "{6AD3BF05-7E29-F694-80E4-7F2E9E958126}",
+    "ObjectPath": "MIDI_MapC_Easy_T",
+    "ShortName": "MIDI_MapC_Easy_T",
+    "Path": "Event/MIDI_MapC_Easy_T.bnk",
+    "Media": [
+     {
+      "Id": "94648847",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_C_Trombone.wav",
+      "Path": "Media/94648847.wem",
+      "CachePath": "SFX/Map_C_Trombone_FBC78EF0.wem"
+     },
+     {
+      "Id": "243907615",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_C_Main.wav",
+      "Path": "Media/243907615.wem",
+      "CachePath": "SFX/Map_C_Main_FBC78EF0.wem"
+     },
+     {
+      "Id": "528766811",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MapC_MIDI_T.mid",
+      "Path": "Media/528766811.wem",
+      "CachePath": "SFX/MapC_MIDI_T_B8CEAB03.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3391962200",
+      "Name": "MIDI_MapC_Easy_T",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Easy\\Map_C_Easy_Rhythm\\MIDI_MapC_Easy_T",
+      "GUID": "{05BF03DD-37F8-4C59-807C-4F0833112725}",
+      "DurationType": "OneShot",
+      "DurationMin": "463.38947",
+      "DurationMax": "463.38947",
+      "MediaRefs": [
+       {
+        "Id": "94648847"
+       },
+       {
+        "Id": "243907615"
+       },
+       {
+        "Id": "528766811"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{4DD08B11-38FA-1253-E01B-317EA384894A}"
+ }
+}

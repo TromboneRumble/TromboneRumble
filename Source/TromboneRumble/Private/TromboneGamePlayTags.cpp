@@ -21,6 +21,10 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_Song_MapA, "Trombone.Rhythm.Song.MapA");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_Song_MapB, "Trombone.Rhythm.Song.MapB");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_Song_MapC, "Trombone.Rhythm.Song.MapC");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_Song_EasyMapA, "Trombone.Rhythm.Song.EasyMapA");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_Song_EasyMapB, "Trombone.Rhythm.Song.EasyMapB");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_Song_EasyMapC, "Trombone.Rhythm.Song.EasyMapC");
+	
 
 	//GameplayEffects
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Buff_Speed, "Trombone.Buff.Speed");

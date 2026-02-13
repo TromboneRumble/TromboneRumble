@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3621760188" Type="Event" GUID="{66CDB2D4-2EB1-4FBA-BEA8-56900D0B9BA5}" Language="SFX" Hash="{EA38DE97-7FF5-701F-0BE7-00F84B3B4200}">
+			<ObjectPath>MIDI_MapB_Easy_C</ObjectPath>
+			<ShortName>MIDI_MapB_Easy_C</ShortName>
+			<Path>Event/MIDI_MapB_Easy_C.bnk</Path>
+			<Media>
+				<File Id="134442568" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_C.mid</ShortName>
+					<Path>Media/134442568.wem</Path>
+					<CachePath>SFX/MIDI_C_CA4283DA.wem</CachePath>
+				</File>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="449514800" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Cymbal.wav</ShortName>
+					<Path>Media/449514800.wem</Path>
+					<CachePath>SFX/Map_B_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3621760188" Name="MIDI_MapB_Easy_C" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\MIDI_MapB_Easy_C" GUID="{66CDB2D4-2EB1-4FBA-BEA8-56900D0B9BA5}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+					<MediaRefs>
+						<MediaRef Id="134442568"/>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="449514800"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C9350C40-36D8-FF0B-00B6-8C7284EFE011}</FileHash>
+</SoundBanksInfo>
