@@ -14110,6 +14110,9 @@
 									</ReferenceList>
 									<ChildrenList>
 										<MusicTrack Name="Map_A_Main" ID="{F56A1408-E4C8-43E4-803A-69F2E353C538}" ShortID="593121812">
+											<PropertyList>
+												<Property Name="OverridePriority" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="OutputBus">
 													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
@@ -14165,6 +14168,7 @@
 											<PropertyList>
 												<Property Name="MusicTrackType" Type="int16" Value="3"/>
 												<Property Name="OverrideEffect" Type="bool" Value="True"/>
+												<Property Name="OverridePriority" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
 														<Value>12</Value>
@@ -22330,6 +22334,9 @@
 									</ReferenceList>
 									<ChildrenList>
 										<MusicTrack Name="Map_B_Main" ID="{9A43F7A2-12AA-4349-9D3D-7082C8C25703}" ShortID="813399868">
+											<PropertyList>
+												<Property Name="OverridePriority" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="OutputBus">
 													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
@@ -22384,6 +22391,7 @@
 										<MusicTrack Name="Map_B_Inst" ID="{3BE3E4C3-D54E-498D-A4FB-6C198FC7B5E1}" ShortID="526909904">
 											<PropertyList>
 												<Property Name="MusicTrackType" Type="int16" Value="3"/>
+												<Property Name="OverridePriority" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
 														<Value>4</Value>
@@ -33564,6 +33572,9 @@
 									</ReferenceList>
 									<ChildrenList>
 										<MusicTrack Name="Map_C_Main" ID="{FDAF2C8A-8920-4258-AC8C-F169FF8099D1}" ShortID="245824788">
+											<PropertyList>
+												<Property Name="OverridePriority" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="OutputBus">
 													<ObjectRef Name="Master_Music" ID="{A83BC2A7-9012-4F84-AE4A-A7E8B3862E74}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
@@ -33618,6 +33629,7 @@
 										<MusicTrack Name="Map_C_Inst" ID="{99F433E1-BEC3-4C09-A422-5FBFF83AF867}" ShortID="224653016">
 											<PropertyList>
 												<Property Name="MusicTrackType" Type="int16" Value="3"/>
+												<Property Name="OverridePriority" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
 														<Value>1</Value>

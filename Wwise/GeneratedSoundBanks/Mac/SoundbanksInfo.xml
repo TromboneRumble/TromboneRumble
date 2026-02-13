@@ -308,7 +308,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{9E1E9A53-1D30-E94E-AFDB-45BBE0F6F90F}">
+		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{922EF9BA-D085-D9B9-5729-D8744AB619D6}">
 			<ObjectPath>Play_MapB_Main</ObjectPath>
 			<ShortName>Play_MapB_Main</ShortName>
 			<Path>Event/Play_MapB_Main.bnk</Path>
@@ -361,7 +361,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{94700D02-C752-FCA6-6DEA-A44D91657234}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{274F959E-0626-B451-B197-14D6F6D2B522}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -583,7 +583,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{6508ECC6-A934-F59D-4458-E0A3473AF1C0}">
+		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{AECE2320-89F3-5470-3574-6D0A9E5E8A45}">
 			<ObjectPath>Play_MapC_Main</ObjectPath>
 			<ShortName>Play_MapC_Main</ShortName>
 			<Path>Event/Play_MapC_Main.bnk</Path>
@@ -2145,5 +2145,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{304051DC-7D4D-AA98-963F-434A242F6E6E}</FileHash>
+	<FileHash>{A02CFABC-A31F-1219-24C4-AA82735381BB}</FileHash>
 </SoundBanksInfo>

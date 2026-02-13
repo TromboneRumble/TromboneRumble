@@ -617,7 +617,7 @@
     "Type": "Event",
     "GUID": "{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}",
     "Language": "SFX",
-    "Hash": "{9E1E9A53-1D30-E94E-AFDB-45BBE0F6F90F}",
+    "Hash": "{922EF9BA-D085-D9B9-5729-D8744AB619D6}",
     "ObjectPath": "Play_MapB_Main",
     "ShortName": "Play_MapB_Main",
     "Path": "Event/Play_MapB_Main.bnk",
@@ -736,7 +736,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{94700D02-C752-FCA6-6DEA-A44D91657234}",
+    "Hash": "{274F959E-0626-B451-B197-14D6F6D2B522}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -1193,7 +1193,7 @@
     "Type": "Event",
     "GUID": "{53F9899E-CC11-4622-84BA-C537EC0CB1EC}",
     "Language": "SFX",
-    "Hash": "{6508ECC6-A934-F59D-4458-E0A3473AF1C0}",
+    "Hash": "{AECE2320-89F3-5470-3574-6D0A9E5E8A45}",
     "ObjectPath": "Play_MapC_Main",
     "ShortName": "Play_MapC_Main",
     "Path": "Event/Play_MapC_Main.bnk",
@@ -4597,6 +4597,6 @@
     ]
    }
   ],
-  "FileHash": "{D8A09F2D-A2C3-FC27-180B-305B3B0EA1A6}"
+  "FileHash": "{9D73DF94-E159-3CBD-C999-9658182AC544}"
  }
 }
