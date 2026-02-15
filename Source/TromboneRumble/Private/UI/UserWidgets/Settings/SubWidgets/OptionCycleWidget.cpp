@@ -33,6 +33,13 @@ void UOptionCycleWidget::Init(const FText InName, const TArray<FText> InOptions,
 	InitButtons();
 }
 
+void UOptionCycleWidget::SetIsEnabled(const bool bInIsEnabled)
+{
+	if (CB_Prev) CB_Prev->SetIsEnabled(bInIsEnabled);
+	if (CB_Next) CB_Next->SetIsEnabled(bInIsEnabled);
+	if (WBP_OptionRotator) WBP_OptionRotator->SetIsEnabled(bInIsEnabled);
+}
+
 int32 UOptionCycleWidget::GetCurrentIndex() const
 {
 	return WBP_OptionRotator ? WBP_OptionRotator->GetSelectedIndex() : -1;

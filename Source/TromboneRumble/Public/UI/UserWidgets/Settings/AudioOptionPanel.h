@@ -31,6 +31,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USliderWidgetBase> WBP_MasterSlider;
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USliderWidgetBase> WBP_BGMSlider;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USliderWidgetBase> WBP_MusicSlider;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USliderWidgetBase> WBP_SFXSlider;
