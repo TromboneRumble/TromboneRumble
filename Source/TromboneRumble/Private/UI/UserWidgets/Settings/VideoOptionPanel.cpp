@@ -7,6 +7,7 @@
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "RHI.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
 #include "Utilities/DebugHelper.h"
 
@@ -153,33 +154,34 @@ void UVideoOptionPanel::BuildOptions()
 		if (UOptionCycleWidget* NewWidget = CreateWidget<UOptionCycleWidget>(this, OptionCycleWidgetClass))
 		{
 			TArray<FText> Labels = Row->OptionLabels;
-			int32 StartIndex = Row->DefaultIndex;
+			const int32 StartIndex = Row->DefaultIndex;
 
 			if (Row->OptionType == EGraphicsOptionType::Resolution)
 			{
-				Labels.Empty();
-				FScreenResolutionArray Resolutions;
-				if (RHIGetAvailableResolutions(Resolutions, false))
-				{
-					for (int32 i = Resolutions.Num() - 1; i >= 0; i--)
-					{
-						const auto& Res = Resolutions[i];
-						
-						if (Res.Width < MinimumResolutionWidth) continue;
+				TArray<FIntPoint> SupportedResolutions;
 
-						const float CurrentAspectRatio = static_cast<float>(Res.Width) / static_cast<float>(Res.Height);
-						if (FMath::IsNearlyEqual(CurrentAspectRatio, AspectRatio, 0.01f))
+				if (UKismetSystemLibrary::GetSupportedFullscreenResolutions(SupportedResolutions))
+				{
+					TArray<FText> ValidLabels;
+					for (const FText& Label : Labels)
+					{
+						FString LabelStr = Label.ToString();
+						FString Left, Right;
+
+						if (LabelStr.Split(TEXT("x"), &Left, &Right))
 						{
-							FText ResText = FText::FromString(FString::Printf(TEXT("%dx%d"), Res.Width, Res.Height));
-	                   
-							auto Predicate = [&](const FText& Existing) { return Existing.EqualTo(ResText); };
-							if (!Labels.ContainsByPredicate(Predicate))
+							const int32 Width = FCString::Atoi(*Left);
+							const int32 Height = FCString::Atoi(*Right);
+							FIntPoint TargetRes(Width, Height);
+
+							if (SupportedResolutions.Contains(TargetRes))
 							{
-								Labels.Add(ResText);
-								PRINT_WITH_CURRENT_CONTEXT(ResText.ToString());
+								ValidLabels.Add(Label);
 							}
 						}
 					}
+        
+					Labels = ValidLabels;
 				}
 			}
 			
@@ -192,11 +194,15 @@ void UVideoOptionPanel::BuildOptions()
 			{
 				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
 			}
-			else if (Row->OptionType != EGraphicsOptionType::Resolution &&
+			if (Row->OptionType != EGraphicsOptionType::Resolution &&
 					 Row->OptionType != EGraphicsOptionType::VSync &&
 					 Row->OptionType != EGraphicsOptionType::WindowMode)
 			{
 				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
+			}
+			if (Row->OptionType == EGraphicsOptionType::WindowMode)
+			{
+				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
 			}
 		}
 	}
@@ -266,7 +272,7 @@ void UVideoOptionPanel::UpdateUIFromEngineSettings()
 				break;
 			}
 		}
-
+		
 		CreatedWidgets[EGraphicsOptionType::Resolution]->SetSelectedIndex(TargetIdx != -1 ? TargetIdx : 0);
 	}
 	
@@ -278,7 +284,7 @@ void UVideoOptionPanel::UpdateUIFromEngineSettings()
 	
 	if (CreatedWidgets.Contains(EGraphicsOptionType::WindowMode))
 	{
-		EWindowMode::Type CurrentMode = VideoSettings->GetFullscreenMode();
+		const EWindowMode::Type CurrentMode = VideoSettings->GetFullscreenMode();
 		int32 WindowModeIndex;
 	
 		switch (CurrentMode)
@@ -324,5 +330,16 @@ void UVideoOptionPanel::OnSubOptionChanged(int32 NewIndex)
 	{
 		const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptionsArray().Num() - 1;
 		CreatedWidgets[EGraphicsOptionType::OverallQuality]->SetSelectedIndex(CustomIndex);
+	}
+}
+
+void UVideoOptionPanel::OnWindowModeChanged(const int32 NewIndex)
+{
+	if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
+	{
+		const bool bIsWindowed = (NewIndex == 2);
+        
+		UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
+		ResWidget->SetIsEnabled(bIsWindowed);
 	}
 }

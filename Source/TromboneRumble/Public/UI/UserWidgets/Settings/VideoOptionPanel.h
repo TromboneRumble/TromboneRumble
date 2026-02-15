@@ -85,6 +85,8 @@ protected:
 	void OnOverallQualityChanged(int32 NewIndex);
 	UFUNCTION()
 	void OnSubOptionChanged(int32 NewIndex);
+	UFUNCTION()
+	void OnWindowModeChanged(int32 NewIndex);
 	
 private:
 	float MinimumResolutionWidth = 1280.0f;
