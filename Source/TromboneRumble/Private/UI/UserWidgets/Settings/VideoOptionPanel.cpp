@@ -194,15 +194,15 @@ void UVideoOptionPanel::BuildOptions()
 			{
 				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
 			}
-			if (Row->OptionType != EGraphicsOptionType::Resolution &&
+			else if (Row->OptionType == EGraphicsOptionType::WindowMode)
+			{
+				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
+			}
+			else if (Row->OptionType != EGraphicsOptionType::Resolution &&
 					 Row->OptionType != EGraphicsOptionType::VSync &&
 					 Row->OptionType != EGraphicsOptionType::WindowMode)
 			{
 				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
-			}
-			if (Row->OptionType == EGraphicsOptionType::WindowMode)
-			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
 			}
 		}
 	}
