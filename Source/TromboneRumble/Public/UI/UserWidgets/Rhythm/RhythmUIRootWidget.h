@@ -7,6 +7,7 @@
 #include "Iris/Core/IrisProfiler.h"
 #include "RhythmUIRootWidget.generated.h"
 
+enum class ERhythmGameState : uint8;
 enum class ENoteResult : uint8;
 class ADefaultPlayerState;
 enum class EScoreType : uint8;
@@ -66,7 +67,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void OnRhythmGameStarted();
+	void HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState);
 
 	UFUNCTION()
 	void OnPlayerStateChanged(APlayerState* NewPlayerState);
@@ -75,6 +76,7 @@ private:
 
 	void UpdateProgressbar(float DeltaSeconds);
 	bool hasGameStarted = false;
+	bool IsSongPaused = false;
 	float CurrentSongTotalLength = 0.f;
 	float CurrentTime = 0.f;
 	int32 CurrentSongPlayingID = 0;

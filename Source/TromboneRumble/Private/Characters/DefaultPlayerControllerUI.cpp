@@ -21,7 +21,7 @@ void ADefaultPlayerController::BeginPlay()
 
 	if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
 	{
-		RhythmSubsystem->OnRhythmGameEnded.AddDynamic(this, &ADefaultPlayerController::Server_RhythmGameFinished);
+		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleRhythmGameStateChanged);
 	}
 	
 	UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>();

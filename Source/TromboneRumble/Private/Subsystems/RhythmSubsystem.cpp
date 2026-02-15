@@ -2,6 +2,36 @@
 
 #include "Subsystems/RhythmSubsystem.h"
 #include "AkGameplayTypes.h"
+#include "Actors/Rhythm/RhythmActor.h"
+#include "Kismet/GameplayStatics.h"
+
+void URhythmSubsystem::PauseRhythmGame()
+{
+	if (RhythmActor)
+	{
+		RhythmActor->PauseRhythmGame();
+		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Paused);
+	}
+}
+
+void URhythmSubsystem::ResumeRhythmGame()
+{
+	if (RhythmActor)
+	{
+		RhythmActor->ResumeRhythmGame();
+		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Resumed);
+	}
+}
+
+void URhythmSubsystem::StopRhythmGame()
+{
+	if (RhythmActor)
+	{
+		//TODO : StopRhythmGame구현
+		//RhythmActor->StopRhythmGame();
+		//OnRhythmGameStateChanged.Broadcast(ERhythmGameState::End);
+	}
+}
 
 void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
@@ -12,10 +42,27 @@ void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCal
 	}
 	else if (CallbackType == EAkCallbackType::EndOfEvent)
 	{
-		AsyncTask(ENamedThreads::GameThread, [this]()
+		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
+	}
+}
+
+void URhythmSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	if (UWorld* World = GetWorld())
+	{
+		World->OnWorldBeginPlay.AddUObject(this, &ThisClass::OnWorldBeginPlay);
+	}
+}
+
+void URhythmSubsystem::OnWorldBeginPlay()
+{
+	if (UWorld* World = GetWorld())
+	{
+		if (AActor* FoundActor = UGameplayStatics::GetActorOfClass(World, ARhythmActor::StaticClass()))
 		{
-			OnRhythmGameEnded.Broadcast();
-		});
+			RhythmActor = Cast<ARhythmActor>(FoundActor);
+		}
 	}
 }
 

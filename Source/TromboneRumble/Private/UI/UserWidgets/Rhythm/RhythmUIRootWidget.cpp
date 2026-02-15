@@ -32,7 +32,7 @@ void URhythmUIRootWidget::NativePreConstruct()
 	if (IsDesignTime()) return;
 	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 	{
-		RhythmSubsystem->OnRhythmGameStarted.AddDynamic(this, &ThisClass::OnRhythmGameStarted);
+		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
 	}
 	if (ComboText)
 	{
@@ -68,7 +68,7 @@ void URhythmUIRootWidget::NativeConstruct()
 void URhythmUIRootWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	if (hasGameStarted)
+	if (hasGameStarted && !IsSongPaused)
 	{
 		UpdateProgressbar(InDeltaTime);
 	}
@@ -164,26 +164,43 @@ void URhythmUIRootWidget::UpdateComboText(ENoteResult InNoteResult, int32 ComboC
 		}
 	}
 }
-
-void URhythmUIRootWidget::OnRhythmGameStarted()
+void URhythmUIRootWidget::HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState)
 {
-	if (UTromboneGameInstance* TromboneGameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
+	switch (RhythmGameState)
 	{
-		if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+	case ERhythmGameState::Start:
 		{
-			CurrentSongPlayingID = DataSubsystem->GetCurrentSongPlayingID();
-			if (CurrentSongPlayingID)
+			if (UTromboneGameInstance* TromboneGameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
 			{
-				CurrentSongTotalLength = DataSubsystem->GetCurrentSongLength();
+				if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+				{
+					CurrentSongPlayingID = DataSubsystem->GetCurrentSongPlayingID();
+					if (CurrentSongPlayingID && CurrentSongPlayingID != AK_INVALID_PLAYING_ID)
+					{
+						CurrentSongTotalLength = DataSubsystem->GetCurrentSongLength();
+					}
+				}
 			}
+			if (MusicProgressBar)
+			{
+				MusicProgressBar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			}
+			CurrentTime = 0.f;
+			hasGameStarted = true;
+			IsSongPaused = false;
 		}
+		break;
+	case ERhythmGameState::Paused:
+		IsSongPaused = true;
+		break;
+	case ERhythmGameState::Resumed:
+		IsSongPaused = false;
+		break;
+	case ERhythmGameState::Ended:
+		hasGameStarted = false;
+		break;
+	default: ;
 	}
-	if (MusicProgressBar)
-	{
-		MusicProgressBar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	CurrentTime = 0.f;
-	hasGameStarted = true;
 }
 
 void URhythmUIRootWidget::OnPlayerStateChanged(APlayerState* NewPlayerState)
@@ -210,7 +227,12 @@ void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerStat
 
 void URhythmUIRootWidget::UpdateProgressbar(float DeltaSeconds)
 {
+	if (CurrentSongPlayingID == 0 || CurrentSongPlayingID == AK_INVALID_PLAYING_ID) return;
 	if (CurrentSongTotalLength == 0.f) return;
+	if (!GetWorld() || GetWorld()->IsPaused())
+	{
+		return;
+	}
 	CurrentTime += DeltaSeconds;
 
 	float Percent = FMath::Clamp(CurrentTime / CurrentSongTotalLength, 0.f, 1.f);
@@ -218,4 +240,31 @@ void URhythmUIRootWidget::UpdateProgressbar(float DeltaSeconds)
 	{
 		MusicProgressBar->SetPercent(Percent);
 	}
+
+	
+
+
+	//PostAKEvent로 실행한 PlayingID가 Invalid로 뜨는 오류가 있어서
+	//하단의 코드는 적용 불가능
+	/*AkInt32 CurrentPositionMS = 0;
+	AKRESULT eResult = AK::SoundEngine::GetSourcePlayPosition(CurrentSongPlayingID, &CurrentPositionMS);
+
+	if (eResult == AK_Success)
+	{
+
+		float CurrentTimeSeconds = CurrentPositionMS / 1000.f;
+		float Percent = FMath::Clamp(CurrentTimeSeconds / CurrentSongTotalLength, 0.f, 1.f);
+		if (MusicProgressBar)
+		{
+			MusicProgressBar->SetPercent(Percent);
+		}
+
+		int32 Minutes = FMath::FloorToInt(CurrentTimeSeconds / 60.f);
+		int32 Seconds = FMath::FloorToInt(CurrentTimeSeconds) % 60;
+		UE_LOG(LogTemp, Log, TEXT("재생 시간: %02d:%02d"), Minutes, Seconds);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GetSourcePlayPosition Failed! Result Code: %d"), (int32)eResult);
+	}*/
 }

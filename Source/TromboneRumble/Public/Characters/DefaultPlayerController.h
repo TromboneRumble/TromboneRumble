@@ -23,9 +23,6 @@ class TROMBONERUMBLE_API ADefaultPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	
-	UFUNCTION(Server, Reliable)
-	void Server_RhythmGameFinished();
-	
 	// InputActions
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> LobbyMappingContext;
@@ -70,6 +67,12 @@ protected:
 	
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState NewState);
+
+	UFUNCTION()
+	void HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState);
+
+	UFUNCTION(Server, Reliable)
+	void Server_RhythmGameFinished();
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UOSI_RhythmRankWidget> RhythmRankWidgetClass;

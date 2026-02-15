@@ -125,6 +125,18 @@ enum class ENoteResult : uint8
 };
 
 UENUM(BlueprintType)
+enum class ERhythmGameState : uint8
+{
+	None = 0		UMETA(DisplayName = "None"), 
+	Start = 1		UMETA(DisplayName = "Start"),  
+	Playing = 2		UMETA(DisplayName = "Playing"),
+	Paused = 3		UMETA(DisplayName = "Paused"),
+	Resumed = 4		UMETA(DisplayName = "Resumed"),
+	Ended			UMETA(DisplayName = "Ended"),
+	Invalid = 255   UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
 enum class EInstrumentType : uint8
 {
 	Background	= 0		UMETA(DisplayName = "Background"),

@@ -499,14 +499,17 @@ void ARhythmActor::PlayMusic()
 		Callback.BindUFunction(this, FName("HandleBGMCallbacks"));
 		UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
 
-		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_EndOfEvent;
+		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue |
+			AkCallbackType::AK_EndOfEvent | AkCallbackType::AK_EnableGetSourcePlayPosition |AkCallbackType::AK_EnableGetMusicPlayPosition;
 		hasReceivedDurationCallback = false;
 		hasReceivedMusicStartCallback = false;
 		hasShotBGMDelegate = false;
+
 		BGMPlayingID = NoteHearingComponent->PostAkEvent(
 			PlayBGMEvent,
 			CallbackMask,
 			Callback);
+
 		if (BGMPlayingID != 0 && GameDataSubsystem)
 		{
 			GameDataSubsystem->SetCurrentSongPlayingID(BGMPlayingID);
@@ -535,12 +538,13 @@ void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackI
 	}
 	break;
 	}
+	//MusicPlayStart Callback이 받은 시점에서 리듬게임 시작했다고 알림.
 	if (!hasShotBGMDelegate)
 	{
 		if (hasReceivedDurationCallback && hasReceivedMusicStartCallback)
 		{
 			hasShotBGMDelegate = true;
-			GetCachedRhythmSubsystem()->OnRhythmGameStarted.Broadcast();
+			GetCachedRhythmSubsystem()->OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Start);
 		}
 	}
 
