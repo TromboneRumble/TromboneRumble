@@ -18,6 +18,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 
 void UMatchMenuWidget::NativeConstruct()
 {
@@ -96,6 +97,15 @@ void UMatchMenuWidget::Init()
 		CB_Invite->OnClicked().RemoveAll(this);
 		CB_Invite->OnClicked().AddUObject(this, &ThisClass::HandleInviteButtonClicked);
 	}
+	if (CR_MatchType)
+	{
+		CR_MatchType->OnRotatedWithDirection().RemoveAll(this);
+		CR_MatchType->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMatchType);
+		if (bIsClient)
+		{
+			CR_MatchType->SetIsEnabled(false);
+		}
+	}
 }
 
 void UMatchMenuWidget::BindGameStateEvents()
@@ -106,6 +116,9 @@ void UMatchMenuWidget::BindGameStateEvents()
 	{
 		MatchMenuGS->OnPlayerListChanged.AddDynamic(this, &ThisClass::OnPlayerListChanged);
 		OnPlayerListChanged(MatchMenuGS->GetPlayerList());
+		
+		MatchMenuGS->OnMatchTypeChanged.AddDynamic(this, &ThisClass::OnMatchTypeChanged);
+		OnMatchTypeChanged(MatchMenuGS->GetCurrentMatchType());
 	}
 }
 
@@ -129,6 +142,15 @@ void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
 	}
 	
 	CT_PlayerList->SetText(FText::FromString(FormattedPlayerList));
+}
+
+void UMatchMenuWidget::OnMatchTypeChanged(EMatchType NewType)
+{
+	if (CR_MatchType)
+	{
+		const int32 Index = static_cast<int32>(NewType);
+		CR_MatchType->SetSelectedIndex(Index);
+	}
 }
 
 void UMatchMenuWidget::HandleStartButtonClicked()
@@ -193,6 +215,14 @@ void UMatchMenuWidget::HandleInviteButtonClicked()
 {
 	EEasyResultType OutResult;
 	UEasyExternalUILibrary::ShowInviteUI(GetOwningPlayer(), OutResult);
+}
+
+void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
+{
+	if (AMatchMenuGameState* GS = GetWorld()->GetGameState<AMatchMenuGameState>())
+	{
+		GS->Server_SetMatchType(static_cast<EMatchType>(Value));
+	}
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)

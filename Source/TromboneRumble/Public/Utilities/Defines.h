@@ -4,6 +4,15 @@
 #include "Defines.generated.h"
 
 UENUM()
+enum class EMatchType : uint8
+{
+	Public = 0,
+	Custom = 1,
+	MAX,
+	None = 255,
+};
+
+UENUM()
 enum class EMenuBGMType : uint8
 {
 	BGM_0,

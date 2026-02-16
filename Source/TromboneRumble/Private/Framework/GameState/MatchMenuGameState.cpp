@@ -18,6 +18,7 @@ void AMatchMenuGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	
 	DOREPLIFETIME(ThisClass, PlayerList);
 	DOREPLIFETIME(ThisClass, bIsTransitioningToInGame);
+	DOREPLIFETIME(ThisClass, CurrentMatchType);
 }
 
 void AMatchMenuGameState::UpdatePlayerList()
@@ -63,8 +64,19 @@ void AMatchMenuGameState::OnRep_IsTransitioningToInGame()
 	}
 }
 
+void AMatchMenuGameState::OnRep_CurrentMatchType()
+{
+	OnMatchTypeChanged.Broadcast(CurrentMatchType);
+}
+
 void AMatchMenuGameState::SetIsTransitioningToInGame(const bool bInIsTransitioning)
 {
 	bIsTransitioningToInGame = bInIsTransitioning;
 	OnRep_IsTransitioningToInGame();
+}
+
+void AMatchMenuGameState::Server_SetMatchType_Implementation(const EMatchType NewType)
+{
+	CurrentMatchType = NewType;
+	OnRep_CurrentMatchType();
 }

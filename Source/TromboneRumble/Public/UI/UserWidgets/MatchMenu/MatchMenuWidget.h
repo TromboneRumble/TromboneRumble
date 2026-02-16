@@ -4,8 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
+#include "Utilities/Defines.h"
 #include "MatchMenuWidget.generated.h"
 
+enum class ERotatorDirection : uint8;
+class UCommonRotatorWidgetBase;
+enum class EMatchType : uint8;
+class UCommonRotator;
 class UCommonTextBlock;
 class UEasySessionSubsystem;
 class UCommonButtonBase;
@@ -29,6 +34,8 @@ private:
 	
 	UFUNCTION()
 	void OnPlayerListChanged(const TArray<FString>& PlayerNames);
+	UFUNCTION()
+	void OnMatchTypeChanged(EMatchType NewType);
 	// ~ End GameState Events
 	
 	UFUNCTION()
@@ -37,6 +44,8 @@ private:
 	void HandleBackButtonClicked();
 	UFUNCTION()
 	void HandleInviteButtonClicked();
+	UFUNCTION()
+	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
 
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	
@@ -53,6 +62,9 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_PlayerList;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
 	// ~ End UIs
 	
 	UPROPERTY(Transient)
