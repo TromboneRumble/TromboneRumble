@@ -71,12 +71,16 @@ void AMatchMenuGameState::OnRep_CurrentMatchType()
 
 void AMatchMenuGameState::SetIsTransitioningToInGame(const bool bInIsTransitioning)
 {
+	if (!HasAuthority()) return;
+	
 	bIsTransitioningToInGame = bInIsTransitioning;
 	OnRep_IsTransitioningToInGame();
 }
 
-void AMatchMenuGameState::Server_SetMatchType_Implementation(const EMatchType NewType)
+void AMatchMenuGameState::SetMatchType(const EMatchType NewType)
 {
+	if (!HasAuthority()) return;
+
 	CurrentMatchType = NewType;
 	OnRep_CurrentMatchType();
 }

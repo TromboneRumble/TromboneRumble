@@ -127,6 +127,7 @@ void UMatchMenuWidget::RemoveGameStateEvents()
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
 		MatchMenuGS->OnPlayerListChanged.RemoveAll(this);
+		MatchMenuGS->OnMatchTypeChanged.RemoveAll(this);
 	}
 }
 
@@ -158,12 +159,9 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 	bIsStarted = true;
 	SetUIEnabled(false);
 
-	if (UWorld* World = GetWorld())
+	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		if (AMatchMenuGameState* MatchMenuGS = World->GetGameState<AMatchMenuGameState>())
-		{
-			MatchMenuGS->SetIsTransitioningToInGame(true);
-		}
+		MatchMenuGS->SetIsTransitioningToInGame(true);
 	}
 	
 	if (UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
@@ -219,9 +217,9 @@ void UMatchMenuWidget::HandleInviteButtonClicked()
 
 void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
 {
-	if (AMatchMenuGameState* GS = GetWorld()->GetGameState<AMatchMenuGameState>())
+	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		GS->Server_SetMatchType(static_cast<EMatchType>(Value));
+		MatchMenuGS->SetMatchType(static_cast<EMatchType>(Value));
 	}
 }
 

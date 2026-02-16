@@ -22,9 +22,7 @@ public:
 	void UpdatePlayerList();
 	
 	void SetIsTransitioningToInGame(const bool bInIsTransitioning);
-	
-	UFUNCTION(Server, Reliable)
-	void Server_SetMatchType(EMatchType NewType);
+	void SetMatchType(EMatchType NewType);
 	
 	FOnPlayerListUpdateSignature OnPlayerListChanged;
 	FOnMatchTypeChangedSignature OnMatchTypeChanged;
