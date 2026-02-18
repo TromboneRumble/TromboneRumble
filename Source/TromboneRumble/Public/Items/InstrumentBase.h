@@ -35,6 +35,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void Client_OnHitSuccess_Implementation(AActor* HitActor) override;
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
 	virtual void Unequip(AActor* OwnerActor) override;
 

@@ -83,6 +83,10 @@ void UEquipmentComponent::Server_EquipItem_Implementation(AItemBase* ItemToEquip
 	}
 
 	EquippedItems[SlotIndex] = ItemToEquip;
+
+	ItemToEquip->SetOwner(OwnerChar);
+	ItemToEquip->SetInstigator(OwnerChar);
+
 	if (IEquipable* EquipableNewItem = Cast<IEquipable>(ItemToEquip))
 	{
 		EquipableNewItem->Equip(OwnerChar);
@@ -113,6 +117,7 @@ void UEquipmentComponent::Server_UnequipItem_Implementation(EEquipmentSlotType S
 	AItemBase* OldItem = EquippedItems[SlotIndex];
 	if (OldItem)
 	{
+		OldItem->SetOwner(nullptr);
 		if (IEquipable* EquipableOldItem = Cast<IEquipable>(OldItem))
 		{
 			EquipableOldItem->Unequip(OwnerChar);
