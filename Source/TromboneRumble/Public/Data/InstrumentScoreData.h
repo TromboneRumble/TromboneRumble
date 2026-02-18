@@ -17,17 +17,20 @@ class TROMBONERUMBLE_API UInstrumentScoreData : public UDataAsset
 	GENERATED_BODY()
 public:
 	// --- Base Scores ---
-	UPROPERTY(EditAnywhere, Category = "Scoring|Base")
+	UPROPERTY(EditAnywhere, Category = "Scoring|Rhythm")
 	float PerfectScore = 100.f;
 
-	UPROPERTY(EditAnywhere, Category = "Scoring|Base")
+	UPROPERTY(EditAnywhere, Category = "Scoring|Rhythm")
 	float GoodScore = 50.f;
 
-	UPROPERTY(EditAnywhere, Category = "Scoring|Combo")
+	UPROPERTY(EditAnywhere, Category = "Scoring|Rhythm")
 	float ComboBasePoint = 10.f; 
 
 	UPROPERTY(EditAnywhere, Category = "Scoring|Attack")
 	float AttackScore = 200.f;
+
+	UPROPERTY(EditAnywhere, Category = "Scoring")
+	float InstrumentPickUpScore = 200.f;
 
 	// --- Thresholds & GAS ---
 	UPROPERTY(EditAnywhere, Category = "Logic|Violin")

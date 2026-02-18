@@ -5,11 +5,13 @@
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Kismet/GameplayStatics.h"
 
+
 void URhythmSubsystem::PauseRhythmGame()
 {
 	if (RhythmActor)
 	{
 		RhythmActor->PauseRhythmGame();
+		CurrentState = ERhythmGameState::Paused;
 		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Paused);
 	}
 }
@@ -20,6 +22,7 @@ void URhythmSubsystem::ResumeRhythmGame()
 	{
 		RhythmActor->ResumeRhythmGame();
 		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Resumed);
+		CurrentState = ERhythmGameState::Playing;
 	}
 }
 

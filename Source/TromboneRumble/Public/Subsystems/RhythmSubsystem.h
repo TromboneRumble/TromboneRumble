@@ -46,8 +46,12 @@ public:
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	TObjectPtr<ARhythmActor> RhythmActor;
+
+	ERhythmGameState CurrentState = ERhythmGameState::None;
 private:
 	void OnWorldBeginPlay();
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
+public:
+	FORCEINLINE ERhythmGameState GetCurrentRhythmState() const { return CurrentState; }
 };

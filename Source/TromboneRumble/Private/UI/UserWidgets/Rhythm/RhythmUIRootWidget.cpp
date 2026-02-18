@@ -4,10 +4,13 @@
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmLeaderBoard.h"
+#include "UI/UserWidgets/Rhythm/RhythmFloatingScoreWidget.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/DefaultPlayerController.h"
@@ -30,10 +33,6 @@ void URhythmUIRootWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	if (IsDesignTime()) return;
-	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-	{
-		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
-	}
 	if (ComboText)
 	{
 		ComboText->SetVisibility(ESlateVisibility::Collapsed);
@@ -41,10 +40,6 @@ void URhythmUIRootWidget::NativePreConstruct()
 	if (ComboNumberText)
 	{
 		ComboNumberText->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	if (MusicProgressBar)
-	{
-		MusicProgressBar->SetPercent(0.f);
 	}
 }
 
@@ -68,68 +63,16 @@ void URhythmUIRootWidget::NativeConstruct()
 void URhythmUIRootWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	if (hasGameStarted && !IsSongPaused)
-	{
-		UpdateProgressbar(InDeltaTime);
-	}
-	
 }
 
-void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType)
+
+
+void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerState)
 {
-	if (!AffectedPlayerState) return;
-
-	if (AController* PC = AffectedPlayerState->GetOwningController())
-	{
-		if (!PC->IsLocalController()) return;
-	}
-
-	if (ScoreText)
-	{
-		// 1. 점수 텍스트 갱신 (항상 최신 점수로)
-		int32 UpdatedScore = FMath::FloorToInt(AffectedPlayerState->GetScore());
-		FString FormattedScore = FString::Printf(TEXT("%06d"), UpdatedScore);
-		ScoreText->SetText(FText::FromString(FormattedScore));
-
-		// 2. ScoreType에 따른 디버그 메시지 출력 (Debug::Print 사용)
-		// InKey를 -1로 설정하여 메시지가 덮어씌워지지 않고 로그처럼 쌓이게 함 (빠른 판정 확인용)
-		switch (ScoreType)
-		{
-		case EScoreType::RhythmScore:
-			Debug::Print(FString::Printf(TEXT("[UI] 리듬 판정: +%d"), AddedAmount), -1, FColor::Cyan);
-			break;
-
-		case EScoreType::BuffedRhythmScore:
-			Debug::Print(FString::Printf(TEXT("[UI] 버프 점수: +%d"), AddedAmount), -1, FColor::Magenta);
-			break;
-
-		case EScoreType::InstrumentPickedUp:
-			Debug::Print(FString::Printf(TEXT("[UI] 악기 획득: +%d"), AddedAmount), -1, FColor::Green);
-			break;
-
-		case EScoreType::OnHit:
-			Debug::Print(FString::Printf(TEXT("[UI] 타격(PVP): +%d"), AddedAmount), -1, FColor::Red);
-			break;
-
-		case EScoreType::SpotLight:
-			// 스포트라이트는 눈에 잘 띄게 노란색으로 설정
-			Debug::Print(FString::Printf(TEXT("[UI] 스포트라이트 보너스! +%d"), AddedAmount), -1, FColor::Yellow);
-			break;
-
-		case EScoreType::None:
-			// Server OnRep에 의한 단순 동기화 시점에는 로그를 남기지 않음
-			break;
-
-		default:
-			break;
-		}
-
-		// 3. 애니메이션 실행 (단순 동기화가 아닐 때만)
-		if (ScoreType != EScoreType::None && ScoreUpdatedAnim)
-		{
-			PlayAnimation(ScoreUpdatedAnim);
-		}
-	}
+	InDefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+	InDefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+	InDefaultPlayerState->OnComboChanged.RemoveDynamic(this, &ThisClass::UpdateComboText);
+	InDefaultPlayerState->OnComboChanged.AddDynamic(this, &ThisClass::UpdateComboText);
 }
 
 void URhythmUIRootWidget::UpdateComboText(ENoteResult InNoteResult, int32 ComboCount)
@@ -164,44 +107,6 @@ void URhythmUIRootWidget::UpdateComboText(ENoteResult InNoteResult, int32 ComboC
 		}
 	}
 }
-void URhythmUIRootWidget::HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState)
-{
-	switch (RhythmGameState)
-	{
-	case ERhythmGameState::Start:
-		{
-			if (UTromboneGameInstance* TromboneGameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
-			{
-				if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
-				{
-					CurrentSongPlayingID = DataSubsystem->GetCurrentSongPlayingID();
-					if (CurrentSongPlayingID && CurrentSongPlayingID != AK_INVALID_PLAYING_ID)
-					{
-						CurrentSongTotalLength = DataSubsystem->GetCurrentSongLength();
-					}
-				}
-			}
-			if (MusicProgressBar)
-			{
-				MusicProgressBar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-			}
-			CurrentTime = 0.f;
-			hasGameStarted = true;
-			IsSongPaused = false;
-		}
-		break;
-	case ERhythmGameState::Paused:
-		IsSongPaused = true;
-		break;
-	case ERhythmGameState::Resumed:
-		IsSongPaused = false;
-		break;
-	case ERhythmGameState::Ended:
-		hasGameStarted = false;
-		break;
-	default: ;
-	}
-}
 
 void URhythmUIRootWidget::OnPlayerStateChanged(APlayerState* NewPlayerState)
 {
@@ -217,54 +122,69 @@ void URhythmUIRootWidget::OnPlayerStateChanged(APlayerState* NewPlayerState)
 	}
 }
 
-void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerState)
+
+void URhythmUIRootWidget::HandleOnLocalScoreChanged(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType)
 {
-	InDefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::UpdateScoreText);
-	InDefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::UpdateScoreText);
-	InDefaultPlayerState->OnComboChanged.RemoveDynamic(this, &ThisClass::UpdateComboText);
-	InDefaultPlayerState->OnComboChanged.AddDynamic(this, &ThisClass::UpdateComboText);
+	UpdateScoreText(PlayerState, AddedAmount, ScoreType);
+	SpawnFloatingScoreWidget(PlayerState, AddedAmount, ScoreType);
 }
 
-void URhythmUIRootWidget::UpdateProgressbar(float DeltaSeconds)
+void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType)
 {
-	if (CurrentSongPlayingID == 0 || CurrentSongPlayingID == AK_INVALID_PLAYING_ID) return;
-	if (CurrentSongTotalLength == 0.f) return;
-	if (!GetWorld() || GetWorld()->IsPaused())
-	{
-		return;
-	}
-	CurrentTime += DeltaSeconds;
+	if (!AffectedPlayerState) return;
 
-	float Percent = FMath::Clamp(CurrentTime / CurrentSongTotalLength, 0.f, 1.f);
-	if (MusicProgressBar)
+	if (AController* PC = AffectedPlayerState->GetOwningController())
 	{
-		MusicProgressBar->SetPercent(Percent);
+		if (!PC->IsLocalController()) return;
 	}
 
-	
-
-
-	//PostAKEvent로 실행한 PlayingID가 Invalid로 뜨는 오류가 있어서
-	//하단의 코드는 적용 불가능
-	/*AkInt32 CurrentPositionMS = 0;
-	AKRESULT eResult = AK::SoundEngine::GetSourcePlayPosition(CurrentSongPlayingID, &CurrentPositionMS);
-
-	if (eResult == AK_Success)
+	if (ScoreText)
 	{
+		int32 UpdatedScore = FMath::FloorToInt(AffectedPlayerState->GetScore());
+		FString FormattedScore = FString::Printf(TEXT("%06d"), UpdatedScore);
+		ScoreText->SetText(FText::FromString(FormattedScore));
 
-		float CurrentTimeSeconds = CurrentPositionMS / 1000.f;
-		float Percent = FMath::Clamp(CurrentTimeSeconds / CurrentSongTotalLength, 0.f, 1.f);
-		if (MusicProgressBar)
+		if (ScoreType != EScoreType::None && ScoreUpdatedAnim)
 		{
-			MusicProgressBar->SetPercent(Percent);
+			PlayAnimation(ScoreUpdatedAnim);
 		}
-
-		int32 Minutes = FMath::FloorToInt(CurrentTimeSeconds / 60.f);
-		int32 Seconds = FMath::FloorToInt(CurrentTimeSeconds) % 60;
-		UE_LOG(LogTemp, Log, TEXT("재생 시간: %02d:%02d"), Minutes, Seconds);
 	}
-	else
+}
+
+void URhythmUIRootWidget::SpawnFloatingScoreWidget(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType)
+{
+	if (AddedAmount <= 0) return;
+
+	if (!PlayerState) return;
+	AController* PC = PlayerState->GetOwningController();
+	if (!PC || !PC->IsLocalController()) return;
+
+	if (ScoreType == EScoreType::None || ScoreType == EScoreType::Invalid) return;
+
+	if (FloatingScoreWidgetClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GetSourcePlayPosition Failed! Result Code: %d"), (int32)eResult);
-	}*/
+		URhythmFloatingScoreWidget* FloatingWidget = CreateWidget<URhythmFloatingScoreWidget>(this, FloatingScoreWidgetClass);
+		if (FloatingWidget)
+		{
+			FloatingWidget->Init(AddedAmount, ScoreType);
+
+			if (AddedScoreContainer)
+			{
+				UCanvasPanelSlot* CanvasSlot = AddedScoreContainer->AddChildToCanvas(FloatingWidget);
+				if (CanvasSlot)
+				{
+					CanvasSlot->SetAutoSize(true);
+
+					float RandomX = FMath::RandRange(-20.0f, 20.0f);
+					float RandomY = FMath::RandRange(-20.0f, 20.0f);
+
+					CanvasSlot->SetPosition(FVector2D(RandomX, RandomY));
+				}
+			}
+			else
+			{
+				FloatingWidget->AddToViewport();
+			}
+		}
+	}
 }
