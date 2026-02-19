@@ -175,8 +175,8 @@ void URhythmUIRootWidget::SpawnFloatingScoreWidget(APlayerState* PlayerState, in
 				{
 					CanvasSlot->SetAutoSize(true);
 
-					float RandomX = FMath::RandRange(-20.0f, 20.0f);
-					float RandomY = FMath::RandRange(-20.0f, 20.0f);
+					float RandomX = FMath::RandRange(-40.0f, 60.0f);
+					float RandomY = FMath::RandRange(-30.0f, 30.0f);
 
 					CanvasSlot->SetPosition(FVector2D(RandomX, RandomY));
 				}

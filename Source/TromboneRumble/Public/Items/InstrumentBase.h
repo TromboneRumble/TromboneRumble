@@ -6,6 +6,7 @@
 #include "Items/WeaponBase.h"
 #include "Utilities/Defines.h" 
 #include "GameplayEffectTypes.h"
+#include "Data/InstrumentScoreData.h"
 #include "InstrumentBase.generated.h"
 
 class URhythmComboWidgetBase;
@@ -108,4 +109,7 @@ protected:
 
 private:
 	void BindToRhythmSubsystem(bool bBind);
+
+public:
+	FORCEINLINE float GetInstrumentPickUpScore() const { return ScoreData ? ScoreData->InstrumentPickUpScore : 0.0f; }
 };
