@@ -29,6 +29,16 @@ void USliderWidgetBase::NativePreConstruct()
 	}
 }
 
+void USliderWidgetBase::NativeDestruct()
+{
+	Super::NativeDestruct();
+	
+	if (Slider)
+	{
+		Slider->OnValueChanged.RemoveDynamic(this, &ThisClass::OnSliderValueChanged);
+	}
+}
+
 void USliderWidgetBase::Init(TFunction<void(float)> OnValueChangedCallback)
 {
 	OnValueChanged = OnValueChangedCallback;
