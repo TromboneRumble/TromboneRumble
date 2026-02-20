@@ -114,7 +114,8 @@ void ADefaultPlayerController::HandlePlayerStateAdded(APlayerState* InPlayerStat
 
 		Widget->TargetComponent = PlayerPawnInArray->GetRootComponent();
 		PlayerStateToRhythmRankWidgetMap.Add(PlayerStateInArray, Widget);
-		Widget->AddToViewport();
+		//WBP_Rhythm보다 한칸 아래
+		Widget->AddToViewport(-1);
 	}
 
 	if (bNeedRetryNextFrame && !bRetryTimerRunning)

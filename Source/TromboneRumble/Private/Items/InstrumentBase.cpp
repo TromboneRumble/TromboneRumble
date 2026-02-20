@@ -312,8 +312,10 @@ void AInstrumentBase::TryCreateIndicatorWidget()
 		IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
 		if (IndicatorWidgetInstance.Get())
 		{
+			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
 			IndicatorWidgetInstance->TargetComponent = GetRootComponent();
-			IndicatorWidgetInstance->AddToViewport();
+			//WBP_Rhythm보다 한칸 아래
+			IndicatorWidgetInstance->AddToViewport(-1);
 			GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
 			TryUpdateIndicatorVisibility();
 			return;

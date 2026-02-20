@@ -13,6 +13,7 @@
 void UOSI_WidgetBase::NativeConstruct()
 {
 	Super::NativeConstruct();
+    OSITimer();
     if (UWorld* World = GetWorld())
     {
         World->GetTimerManager().SetTimer(
