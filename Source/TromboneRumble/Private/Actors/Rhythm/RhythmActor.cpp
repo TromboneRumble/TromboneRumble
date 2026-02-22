@@ -2,7 +2,7 @@
 
 
 #include "Actors/Rhythm/RhythmActor.h"
-
+#include "Wwise/API/WwiseSoundEngineAPI.h"
 #include "AkAudioEvent.h"
 #include "Components/BoxComponent.h"
 #include "AkComponent.h"
@@ -179,10 +179,10 @@ void ARhythmActor::PauseRhythmGame()
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
-		
-		if (AudioDevice)
+
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
 		{
-			AudioDevice->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Pause, BGMPlayingID);
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Pause, BGMPlayingID);
 		}
 	}
 	for (TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
@@ -205,10 +205,11 @@ void ARhythmActor::ResumeRhythmGame()
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
-		if (AudioDevice)
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
 		{
-			AudioDevice->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Resume, BGMPlayingID);
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Resume, BGMPlayingID);
 		}
+
 	}
 	for (TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
 	{

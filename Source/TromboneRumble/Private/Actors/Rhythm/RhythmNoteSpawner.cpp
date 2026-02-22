@@ -16,6 +16,7 @@
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
 #include "Actors/Rhythm/NoteVisualizer.h"
+#include "Wwise/API/WwiseSoundEngineAPI.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -41,10 +42,9 @@ void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNo
 	IsSyncTesting = InIsSyncTesting;
 	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
 	{
-		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
-		if (AudioDevice)
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
 		{
-			AudioDevice->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, NoteSpawnPlayingID);
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, NoteSpawnPlayingID);
 		}
 	}
 	NoteSpawnPlayingID = 0;
@@ -64,10 +64,9 @@ void ARhythmNoteSpawner::PauseRhythmGame()
 {
 	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
 	{
-		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
-		if (AudioDevice)
+		if(auto* SoundEngine = IWwiseSoundEngineAPI::Get())
 		{
-			AudioDevice->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Pause, NoteSpawnPlayingID);
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Pause, NoteSpawnPlayingID);
 		}
 	}
 	for (auto It = ActiveNotes.CreateIterator(); It; ++It)
@@ -83,10 +82,9 @@ void ARhythmNoteSpawner::ResumeRhythmGame()
 {
 	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
 	{
-		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
-		if (AudioDevice)
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
 		{
-			AudioDevice->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Resume, NoteSpawnPlayingID);
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Resume, NoteSpawnPlayingID);
 		}
 	}
 	for (auto It = ActiveNotes.CreateIterator(); It; ++It)
