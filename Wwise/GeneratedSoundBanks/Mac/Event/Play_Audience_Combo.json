@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
     "Language": "SFX",
-    "Hash": "{EEE79A0B-D893-BD3B-A8B5-80ACD1ADDE44}",
+    "Hash": "{55B2E9DD-1DEE-EA64-9946-E73EFC89686A}",
     "ObjectPath": "Play_Audience_Combo",
     "ShortName": "Play_Audience_Combo",
     "Path": "Event/Play_Audience_Combo.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{4C5610EC-D4EB-681D-A854-F9088C1AA3D5}"
+  "FileHash": "{6085B337-7494-A24A-2DEB-4B0BB27BF4CB}"
  }
 }

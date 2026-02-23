@@ -123,6 +123,43 @@
     ]
    },
    {
+    "Id": "311910498",
+    "Type": "Event",
+    "GUID": "{5661925E-358B-4DB5-8CD9-19A7BC7F923F}",
+    "Language": "SFX",
+    "Hash": "{E7AE7F58-3E93-F153-E1A6-3EE15A56A97C}",
+    "ObjectPath": "Play_Click",
+    "ShortName": "Play_Click",
+    "Path": "Event/Play_Click.bnk",
+    "Media": [
+     {
+      "Id": "419776262",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Option_UI_Click.wav",
+      "Path": "Media/419776262.wem",
+      "CachePath": "SFX/Option_UI_Click_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "311910498",
+      "Name": "Play_Click",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Click",
+      "GUID": "{5661925E-358B-4DB5-8CD9-19A7BC7F923F}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.24033333",
+      "DurationMax": "0.24033333",
+      "MediaRefs": [
+       {
+        "Id": "419776262"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "356551040",
     "Type": "Bus",
     "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
@@ -305,7 +342,7 @@
     "Type": "Event",
     "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
     "Language": "SFX",
-    "Hash": "{EC3AAA83-7D47-EAD6-25B4-BB43841D501A}",
+    "Hash": "{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}",
     "ObjectPath": "Play_Tutorial_BGM",
     "ShortName": "Play_Tutorial_BGM",
     "Path": "Event/Play_Tutorial_BGM.bnk",
@@ -2960,7 +2997,7 @@
     "Type": "Event",
     "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
     "Language": "SFX",
-    "Hash": "{EEE79A0B-D893-BD3B-A8B5-80ACD1ADDE44}",
+    "Hash": "{55B2E9DD-1DEE-EA64-9946-E73EFC89686A}",
     "ObjectPath": "Play_Audience_Combo",
     "ShortName": "Play_Audience_Combo",
     "Path": "Event/Play_Audience_Combo.bnk",
@@ -5672,6 +5709,6 @@
     ]
    }
   ],
-  "FileHash": "{DC0282DF-1676-1821-94F5-68FB8780CED8}"
+  "FileHash": "{291FCDED-83FE-7547-A64D-EE9E4BF0AD55}"
  }
 }

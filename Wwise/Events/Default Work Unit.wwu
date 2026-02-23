@@ -833,6 +833,21 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="UI_SFX" ID="{1B5C4A91-6284-49B4-BCD2-2002CEB74D93}" ShortID="211380141">
+					<ChildrenList>
+						<Event Name="Play_Click" ID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}">
+							<ChildrenList>
+								<Action Name="" ID="{D785DDBA-4AFB-4B9F-9A77-BCCA0C7085F5}" ShortID="338146034">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Click" ID="{4D3CE2F8-75CD-49F1-BB3F-DFF1B88B705F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

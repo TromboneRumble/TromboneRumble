@@ -63,6 +63,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{E7AE7F58-3E93-F153-E1A6-3EE15A56A97C}">
+			<ObjectPath>Play_Click</ObjectPath>
+			<ShortName>Play_Click</ShortName>
+			<Path>Event/Play_Click.bnk</Path>
+			<Media>
+				<File Id="419776262" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Option_UI_Click.wav</ShortName>
+					<Path>Media/419776262.wem</Path>
+					<CachePath>SFX/Option_UI_Click_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="311910498" Name="Play_Click" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Click" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" DurationType="OneShot" DurationMin="0.24033333" DurationMax="0.24033333">
+					<MediaRefs>
+						<MediaRef Id="419776262"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="356551040" Type="Bus" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}" Language="SFX" Hash="{9924DF2A-E273-9BDE-9B9D-EAAA6FFA0251}">
 			<ObjectPath>Map_A_Reverb</ObjectPath>
 			<ShortName>Map_A_Reverb</ShortName>
@@ -154,7 +173,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{EC3AAA83-7D47-EAD6-25B4-BB43841D501A}">
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}">
 			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
 			<ShortName>Play_Tutorial_BGM</ShortName>
 			<Path>Event/Play_Tutorial_BGM.bnk</Path>
@@ -1315,7 +1334,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{EEE79A0B-D893-BD3B-A8B5-80ACD1ADDE44}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{55B2E9DD-1DEE-EA64-9946-E73EFC89686A}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
@@ -2675,5 +2694,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{657B8E96-D418-2B6F-F722-2578A364232A}</FileHash>
+	<FileHash>{9474BC36-8361-485A-E4BE-711A10D9C180}</FileHash>
 </SoundBanksInfo>
