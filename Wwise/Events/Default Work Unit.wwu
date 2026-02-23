@@ -751,7 +751,7 @@
 												<Action Name="" ID="{392173E9-73EF-4738-8B54-7859C7FB6D61}" ShortID="524283110">
 													<ReferenceList>
 														<Reference Name="Target">
-															<ObjectRef Name="MapB_Easy_Violin_MIDI" ID="{6BFA18FB-980B-431D-923D-AC1D6D0139D6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+															<ObjectRef Name="MapB_Easy_Violin_MIDI" ID="{8CCA2F6B-6107-41AA-AC6C-AA31B06B1129}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 														</Reference>
 													</ReferenceList>
 												</Action>

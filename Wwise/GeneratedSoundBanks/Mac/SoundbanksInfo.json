@@ -5056,7 +5056,7 @@
     "Type": "Event",
     "GUID": "{83857DAD-1B0E-4622-A7D8-BC452FC7303C}",
     "Language": "SFX",
-    "Hash": "{B3BC2536-E828-91D6-7D70-6EC698FCBE5C}",
+    "Hash": "{FAACDF04-1E45-C954-23E3-536C34ED82CB}",
     "ObjectPath": "MIDI_MapB_Easy_V",
     "ShortName": "MIDI_MapB_Easy_V",
     "Path": "Event/MIDI_MapB_Easy_V.bnk",
@@ -5136,7 +5136,7 @@
     "Type": "Event",
     "GUID": "{32AB15D1-3735-4CB1-B22B-C4372805B4C3}",
     "Language": "SFX",
-    "Hash": "{E4ADCE7A-6614-28DE-B808-AA25CD2E214E}",
+    "Hash": "{99E461CC-3B5E-514D-9E67-1F45B4E20367}",
     "ObjectPath": "MIDI_MapB_Easy_T",
     "ShortName": "MIDI_MapB_Easy_T",
     "Path": "Event/MIDI_MapB_Easy_T.bnk",
@@ -5672,6 +5672,6 @@
     ]
    }
   ],
-  "FileHash": "{26D3D45A-3C9C-556E-E863-B9E8DBD2C7B2}"
+  "FileHash": "{DC0282DF-1676-1821-94F5-68FB8780CED8}"
  }
 }
