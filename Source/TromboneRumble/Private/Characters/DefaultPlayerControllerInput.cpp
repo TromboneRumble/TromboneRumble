@@ -87,6 +87,14 @@ void ADefaultPlayerController::HandleInGameStateChanged(const EInGameState NewSt
 	}
 }
 
+void ADefaultPlayerController::HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState)
+{
+	if (RhythmGameState == ERhythmGameState::Ended)
+	{
+		Server_RhythmGameFinished();
+	}
+}
+
 void ADefaultPlayerController::Handle_Move(const struct FInputActionValue& Value)
 {
 	if (CanProcessInput()) CachedOwnerCharacter->Move(Value);

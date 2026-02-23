@@ -14,6 +14,13 @@ class URhythmLeaderBoardEntry;
 class AInGameState;
 class APlayerState;
 
+UENUM(BlueprintType)
+enum class ELeaderboardStyle : uint8
+{
+	FixedSlot		UMETA(DisplayName = "랭크 기반"),
+	Proportional	UMETA(DisplayName = "점수 비례 기반")
+};
+
 /**
  * 
  */
@@ -29,6 +36,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Leaderboard")
 	TSubclassOf<URhythmLeaderBoardEntry> EntryClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Leaderboard")
+	ELeaderboardStyle LeaderboardStyle = ELeaderboardStyle::FixedSlot;
 
 protected:
 	UPROPERTY(meta = (BindWidget))

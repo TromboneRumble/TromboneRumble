@@ -21,7 +21,7 @@ void ADefaultPlayerController::BeginPlay()
 
 	if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
 	{
-		RhythmSubsystem->OnRhythmGameEnded.AddDynamic(this, &ADefaultPlayerController::Server_RhythmGameFinished);
+		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ADefaultPlayerController::HandleRhythmGameStateChanged);
 	}
 	
 	UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>();
@@ -114,7 +114,8 @@ void ADefaultPlayerController::HandlePlayerStateAdded(APlayerState* InPlayerStat
 
 		Widget->TargetComponent = PlayerPawnInArray->GetRootComponent();
 		PlayerStateToRhythmRankWidgetMap.Add(PlayerStateInArray, Widget);
-		Widget->AddToViewport();
+		//WBP_Rhythm보다 한칸 아래
+		Widget->AddToViewport(-1);
 	}
 
 	if (bNeedRetryNextFrame && !bRetryTimerRunning)

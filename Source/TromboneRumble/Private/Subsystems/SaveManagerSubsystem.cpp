@@ -1,14 +1,21 @@
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameUserSettings.h"
-#include "AkGameplayStatics.h"
+#include "Data/WwiseData.h"
 #include "SaveData/TromboneSaveGame.h"
 
-void USaveManagerSubsystem::InitializeSettings()
+void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-    const UTromboneSaveGame* CustomSettings = GetCurrentCustomSettings();
-    ApplyAudio(CustomSettings->Audio);
-    ApplyGameplay(CustomSettings->Gameplay);
+    Super::Initialize(Collection);
+    
+    CachedSettings = LoadOrCreateSettings();
+    ApplyAllSettings();
+}
+
+void USaveManagerSubsystem::ApplyAllSettings()
+{
+    ApplyAudio(CachedSettings->Audio);
+    ApplyGameplay(CachedSettings->Gameplay);
 
     if (!GEngine) return;
     
@@ -19,7 +26,7 @@ void USaveManagerSubsystem::InitializeSettings()
     }
 }
 
-UTromboneSaveGame* USaveManagerSubsystem::GetCurrentCustomSettings()
+UTromboneSaveGame* USaveManagerSubsystem::LoadOrCreateSettings()
 {
     if (UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex))
     {
@@ -28,42 +35,40 @@ UTromboneSaveGame* USaveManagerSubsystem::GetCurrentCustomSettings()
     return Cast<UTromboneSaveGame>(UGameplayStatics::CreateSaveGameObject(UTromboneSaveGame::StaticClass()));
 }
 
-void USaveManagerSubsystem::SaveAudioSettings(const FAudioSettingData& NewSettings)
+void USaveManagerSubsystem::UpdateAndSaveAudio(const FAudioSettingData& NewAudio)
 {
-    UTromboneSaveGame* SaveObj = GetCurrentCustomSettings();
-    SaveObj->Audio = NewSettings;
-    InternalSave(SaveObj);
-    ApplyAudio(NewSettings);
+    CachedSettings->Audio = NewAudio;
+    InternalSave();
+    ApplyAudio(NewAudio);
 }
 
-void USaveManagerSubsystem::SaveGameplaySettings(const FGameplaySettingData& NewSettings)
+void USaveManagerSubsystem::UpdateAndSaveGameplay(const FGameplaySettingData& NewGameplay)
 {
-    UTromboneSaveGame* SaveObj = GetCurrentCustomSettings();
-    SaveObj->Gameplay = NewSettings;
-    InternalSave(SaveObj);
-    ApplyGameplay(NewSettings);
+    CachedSettings->Gameplay = NewGameplay;
+    InternalSave();
+    ApplyGameplay(NewGameplay);
 }
 
-void USaveManagerSubsystem::SaveVideoSettings(const FGraphicsSettingData& NewSettings)
+void USaveManagerSubsystem::SaveVideo(const FGraphicsSettingData& NewVideo)
 {
     if (!GEngine) return;
     
     if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
     {
-        VideoSettings->SetOverallScalabilityLevel(NewSettings.OverallQuality);
+        VideoSettings->SetOverallScalabilityLevel(NewVideo.OverallQuality);
         
-        VideoSettings->SetViewDistanceQuality(NewSettings.ViewDistance);
-        VideoSettings->SetAntiAliasingQuality(NewSettings.AntiAliasing);
-        VideoSettings->SetPostProcessingQuality(NewSettings.PostProcess);
-        VideoSettings->SetShadowQuality(NewSettings.Shadow);
-        VideoSettings->SetGlobalIlluminationQuality(NewSettings.GlobalIllumination);
-        VideoSettings->SetReflectionQuality(NewSettings.Reflections);
-        VideoSettings->SetTextureQuality(NewSettings.Texture);
-        VideoSettings->SetVisualEffectQuality(NewSettings.Effects);
+        VideoSettings->SetViewDistanceQuality(NewVideo.ViewDistance);
+        VideoSettings->SetAntiAliasingQuality(NewVideo.AntiAliasing);
+        VideoSettings->SetPostProcessingQuality(NewVideo.PostProcess);
+        VideoSettings->SetShadowQuality(NewVideo.Shadow);
+        VideoSettings->SetGlobalIlluminationQuality(NewVideo.GlobalIllumination);
+        VideoSettings->SetReflectionQuality(NewVideo.Reflections);
+        VideoSettings->SetTextureQuality(NewVideo.Texture);
+        VideoSettings->SetVisualEffectQuality(NewVideo.Effects);
         
-        VideoSettings->SetScreenResolution(NewSettings.Resolution);
-        VideoSettings->SetVSyncEnabled(NewSettings.bVSync);
-        VideoSettings->SetFullscreenMode(NewSettings.WindowMode);
+        VideoSettings->SetScreenResolution(NewVideo.Resolution);
+        VideoSettings->SetVSyncEnabled(NewVideo.bVSync);
+        VideoSettings->SetFullscreenMode(NewVideo.WindowMode);
         
         VideoSettings->ApplySettings(true);
         VideoSettings->SaveSettings();
@@ -72,9 +77,10 @@ void USaveManagerSubsystem::SaveVideoSettings(const FGraphicsSettingData& NewSet
 
 void USaveManagerSubsystem::ApplyAudio(const FAudioSettingData& Settings)
 {
-    UAkGameplayStatics::SetRTPCValue(nullptr, Settings.MasterVolume * 100.f, 0, nullptr, FName(TEXT("RTPC_MasterVolume")));
-    UAkGameplayStatics::SetRTPCValue(nullptr, Settings.MusicVolume * 100.f, 0, nullptr, FName(TEXT("RTPC_MusicVolume")));
-    UAkGameplayStatics::SetRTPCValue(nullptr, Settings.SFXVolume * 100.f, 0, nullptr, FName(TEXT("RTPC_SFXVolume")));
+    WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, Settings.MasterVolume);
+    WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, Settings.BGMVolume);
+    WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, Settings.MusicVolume);
+    WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, Settings.SFXVolume);
 }
 
 void USaveManagerSubsystem::ApplyGameplay(const FGameplaySettingData& Settings)
@@ -82,7 +88,7 @@ void USaveManagerSubsystem::ApplyGameplay(const FGameplaySettingData& Settings)
     // TODO
 }
 
-void USaveManagerSubsystem::InternalSave(UTromboneSaveGame* SaveObj)
+void USaveManagerSubsystem::InternalSave()
 {
-    UGameplayStatics::SaveGameToSlot(SaveObj, SlotName, UserIndex);
+    UGameplayStatics::SaveGameToSlot(CachedSettings, SlotName, UserIndex);
 }

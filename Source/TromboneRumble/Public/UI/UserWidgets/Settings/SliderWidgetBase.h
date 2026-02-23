@@ -16,6 +16,7 @@ class TROMBONERUMBLE_API USliderWidgetBase : public UCommonUserWidget
 	
 public:
 	virtual void NativePreConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void Init(TFunction<void(float)> OnValueChangedCallback = nullptr);
 	
 	void SetValue(float InValue) const;

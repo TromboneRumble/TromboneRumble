@@ -10,7 +10,9 @@
 #include "AbilitySystemComponent.h"
 #include "AkComponent.h"
 #include "GameplayEffect.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Data/WeaponDataAsset.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
@@ -208,7 +210,7 @@ void AWeaponBase::Multicast_OnHitSuccess_Implementation(AActor* HitActor)
 }
 
 void AWeaponBase::Client_OnHitSuccess_Implementation(AActor* HitActor)
-{
+{	
 	OnHitSuccess.Broadcast(HitActor);
 }
 

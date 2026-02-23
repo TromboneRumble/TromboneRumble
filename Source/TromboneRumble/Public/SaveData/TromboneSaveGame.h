@@ -12,6 +12,7 @@ struct FAudioSettingData
 	GENERATED_BODY()
 	
 	UPROPERTY() float MasterVolume = 0.5f;
+	UPROPERTY() float BGMVolume = 0.5f;
 	UPROPERTY() float MusicVolume = 0.5f;
 	UPROPERTY() float SFXVolume = 0.5f;
 };

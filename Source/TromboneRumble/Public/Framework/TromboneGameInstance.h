@@ -29,6 +29,8 @@ public:
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
 
 private:
+    void InitWWiseEngine();
+
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UAkComponent> GlobalBGMComponent;
     

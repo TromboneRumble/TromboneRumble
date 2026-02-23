@@ -16,6 +16,7 @@
 #include "UI/UserWidgets/Rhythm/Note/RhythmNoteWidgetBase.h"
 #include "UI/UserWidgets/Rhythm/SpawnWidget/RhythmSpawnWidgetBase.h"
 #include "Actors/Rhythm/NoteVisualizer.h"
+#include "Wwise/API/WwiseSoundEngineAPI.h"
 
 ARhythmNoteSpawner::ARhythmNoteSpawner()
 {
@@ -39,6 +40,14 @@ void ARhythmNoteSpawner::InitSpawner(EInstrumentType InType, UAkAudioEvent* InNo
 	ChangeSwitch = InChangeSwitch;
 	FailEvent = InFailEvent;
 	IsSyncTesting = InIsSyncTesting;
+	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
+	{
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
+		{
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, NoteSpawnPlayingID);
+		}
+	}
+	NoteSpawnPlayingID = 0;
 }
 
 void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
@@ -49,6 +58,50 @@ void ARhythmNoteSpawner::OnAkCallback(EAkCallbackType CallbackType, UAkCallbackI
 		SpawnAndMoveNote(CueName);
 	}
 
+}
+
+void ARhythmNoteSpawner::PauseRhythmGame()
+{
+	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
+	{
+		if(auto* SoundEngine = IWwiseSoundEngineAPI::Get())
+		{
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Pause, NoteSpawnPlayingID);
+		}
+	}
+	for (auto It = ActiveNotes.CreateIterator(); It; ++It)
+	{
+		if (ARhythmNote* Note = It->Get())
+		{
+			Note->SetPause(true);
+		}
+	}
+}
+
+void ARhythmNoteSpawner::ResumeRhythmGame()
+{
+	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
+	{
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
+		{
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Resume, NoteSpawnPlayingID);
+		}
+	}
+	for (auto It = ActiveNotes.CreateIterator(); It; ++It)
+	{
+		if (ARhythmNote* Note = It->Get())
+		{
+			Note->SetPause(false);
+		}
+	}
+}
+
+void ARhythmNoteSpawner::RemoveActiveNote(ARhythmNote* Note)
+{
+	if (Note)
+	{
+		ActiveNotes.Remove(Note);
+	}
 }
 
 void ARhythmNoteSpawner::BeginPlay()
@@ -91,6 +144,7 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 	{
 		
 		PooledNote->InitNote(CachedRhythmActor.Get(), this, NoteVisualizerClass, TimeToComplete, InUserCueName);
+		ActiveNotes.Add(PooledNote);
 
 		bool bIsN = InUserCueName.Equals(TEXT("N"), ESearchCase::IgnoreCase);
 		bool bIsShortNotePrefix = InUserCueName.StartsWith(TEXT("SS_"));
@@ -130,6 +184,5 @@ void ARhythmNoteSpawner::SpawnAndMoveNote(const FString& InUserCueName)
 		}
 		
 	}
-
 	
 }
