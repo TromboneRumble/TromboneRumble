@@ -207,10 +207,7 @@ void ARhythmActor::SpawnRhythmRootUI()
 void ARhythmActor::BeginPlay()
 {
 	Super::BeginPlay();
-	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
-	{
-		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
-	}
+	InitGameState();
 	RhythmNoteDestroyer->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnRhythmDestroyBeginOverlap);
 	GetCachedActorPoolSubsystem();
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
@@ -219,12 +216,46 @@ void ARhythmActor::BeginPlay()
 	PrepareRhythmGame();
 }
 
+void ARhythmActor::InitGameState()
+{
+	//Multiplayer에선 GameState가 늦게 세팅될 수 있으므로, timer를 걸어서 Delegate 바인딩 재시도
+	AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>();
+
+	if (InGameState)
+	{
+		InGameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
+		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
+		if (InGameState->GetCurrentGameState() == EInGameState::Play)
+		{
+			HandleInGameStateChanged(EInGameState::Play);
+		}
+		GetWorldTimerManager().ClearTimer(GameStateInitTimerHandle);
+		Debug::Print(TEXT("[RhythmActor] GameState Initialized Successfully."), -1, FColor::Green);
+	}
+	else
+	{
+		Debug::Print(TEXT("[RhythmActor] GameState is NULL. Retrying in 0.1s..."), -1, FColor::Yellow);
+		GetWorldTimerManager().SetTimer(
+			GameStateInitTimerHandle,
+			this,
+			&ThisClass::InitGameState,
+			0.1f,
+			false
+		);
+	}
+}
+
 void ARhythmActor::PrepareRhythmGame()
 {
 	SpawnRhythmRootUI();
+	bool bDataLoadedSuccessfully = false;
 	if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		FGameplayTag SelectedTag = GameInstance->GetSelectedSongTag();
+		if (!SelectedTag.IsValid())
+		{
+			Debug::Print(TEXT("[RhythmActor] Client SelectedTag is Invalid! Data might not be synced yet."), -1, FColor::Red);
+		}
 		if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
 		{
 			FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(SelectedTag);
@@ -232,22 +263,41 @@ void ARhythmActor::PrepareRhythmGame()
 			{
 				UAkAudioEvent* SongBgmEvent = SongRow->BgmEvent.LoadSynchronous();
 				UAkSwitchValue* SongNoneSwitch = SongRow->NoneSwitch.LoadSynchronous();
-				InitBGMEvent(SongBgmEvent, SongNoneSwitch);
+				if (SongBgmEvent)
+                {
+					InitBGMEvent(SongBgmEvent, SongNoneSwitch);
 
-				//악기별로 스포너 생성 및 초기화
-				for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
-				{
-					EInstrumentType InstrumentType = Sound.InstrumentType;
-					UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
-					UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
-					UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
-					CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
-				}
+					//악기별로 스포너 생성 및 초기화
+					for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
+					{
+						EInstrumentType InstrumentType = Sound.InstrumentType;
+						UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
+						UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
+						UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
+						CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
+					}
+                    bDataLoadedSuccessfully = true;
+                }
+                else
+                {
+					Debug::Print(TEXT("[RhythmActor] SongRow found but BgmEvent is NULL!"), -1, FColor::Red);
+                }
+			}
+			else
+			{
+				Debug::Print(FString::Printf(TEXT("[RhythmActor] SongRow Not Found for Tag: %s"), *SelectedTag.ToString()), -1, FColor::Yellow);
 			}
 		}
 	}
-	IsRhythmGameReady = true;
-	WaitForOtherPlayers();
+	if (bDataLoadedSuccessfully)
+	{
+		IsRhythmGameReady = true;
+		WaitForOtherPlayers();
+	}
+	else
+	{
+		Debug::Print(TEXT("[RhythmActor] PrepareRhythmGame Failed to load data. Music will not play."), -1, FColor::Red);
+	}
 }
 
 ARhythmNoteSpawner* ARhythmActor::GetOrCreateSpawner(EInstrumentType InType)

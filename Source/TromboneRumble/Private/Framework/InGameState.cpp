@@ -36,9 +36,9 @@ void AInGameState::Multicast_BroadCastInGameStateChanged_Implementation(EInGameS
     OnInGameStateChanged.Broadcast(InGameState);
 }
 
-void AInGameState::HandleLocalScoreChanged(APlayerState* UpdatedPlayerState)
+void AInGameState::HandleLocalScoreChanged(APlayerState* UpdatedPlayerState, int32 AddedAmount, EScoreType ScoreType)
 {
-	OnScoreChanged.Broadcast(UpdatedPlayerState);
+    OnScoreChanged.Broadcast(UpdatedPlayerState);
 }
 
 void AInGameState::HandleScoreChanged(APlayerState* UpdatePlayerState)

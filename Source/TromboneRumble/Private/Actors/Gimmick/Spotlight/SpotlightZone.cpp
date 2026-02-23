@@ -167,6 +167,10 @@ void ASpotlightZone::HandleOnNoteDetected(ENoteResult NoteResult)
 	ADefaultTromboneCharacter* LocalCharacter = Cast<ADefaultTromboneCharacter>(PlayerController->GetPawn());
 	if (!LocalCharacter) return;
 
+	if (ADefaultPlayerState* PS = LocalCharacter->GetPlayerState<ADefaultPlayerState>())
+	{
+		PS->AddScore(SpotlightBonusScore, EScoreType::SpotLight);
+	}
 
 	if (HasAuthority())
 	{
@@ -268,11 +272,6 @@ bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* InCharacter)
 	if (CurrentState == ESpotlightState::Active && !bIsBonusAwarded)
 	{
 		bIsBonusAwarded = true;
-		
-		if (ADefaultPlayerState* PS = InCharacter->GetPlayerState<ADefaultPlayerState>())
-		{
-			PS->Server_AddScore(FMath::Clamp(SpotlightBonusScore, 0, SpotlightBonusScore));
-		}
 
 		Multicast_PlaySpotlightSuccessEffect(InCharacter);
 		return true;

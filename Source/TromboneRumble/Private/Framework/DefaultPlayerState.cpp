@@ -19,7 +19,6 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
-	DOREPLIFETIME(ThisClass, CurrentCombo);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
@@ -39,7 +38,8 @@ void ADefaultPlayerState::OnRep_PlayerName()
 void ADefaultPlayerState::OnRep_Score()
 {
 	Super::OnRep_Score();
-	OnLocalScoreChanged.Broadcast(this);
+	//서버에서 값이 복제되어왔을때는 숫자만 동기화
+	OnLocalScoreChanged.Broadcast(this, 0, EScoreType::None);
 }
 
 void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
@@ -53,17 +53,26 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 	}
 }
 
-void ADefaultPlayerState::AddScore(int32 Amount)
+void ADefaultPlayerState::AddScore(int32 Amount, EScoreType ScoreType)
 {
-	if (!HasAuthority() || Amount == 0)	return;
+	if (Amount == 0) return;
+
+	// 로컬 점수 선행 계산 후 즉시 갱신
 	const float NewScore = GetScore() + static_cast<float>(Amount);
 	SetScore(NewScore);
-	OnLocalScoreChanged.Broadcast(this);
+	OnLocalScoreChanged.Broadcast(this, Amount, ScoreType);
+
+	// 서버 동기화
+	// Replication은 Server->Client로 이루어지기 때문에 호출 필요
+	if (!HasAuthority())
+	{
+		Server_AddScore(Amount, ScoreType);
+	}
 }
 
-void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount)
+void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount, EScoreType ScoreType)
 {
-	AddScore(Amount);
+	AddScore(Amount, ScoreType);
 }
 
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
