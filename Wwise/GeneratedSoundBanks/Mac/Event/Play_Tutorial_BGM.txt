@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	435519059	Play_Tutorial_BGM			\Default Work Unit\Music\Play_Tutorial_BGM	
+

@@ -397,10 +397,10 @@
 						</Event>
 						<Event Name="Play_Audience_Combo" ID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}">
 							<ChildrenList>
-								<Action Name="" ID="{D9FBB997-E313-4F4C-A8F2-2EAD8A1E0517}" ShortID="768952766">
+								<Action Name="" ID="{E2B267DB-3778-482F-8408-72405C680D86}" ShortID="712373112">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Audience_Combo" ID="{B40E2C4A-0983-45F3-B44D-F151DB5BBD64}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+											<ObjectRef Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -820,6 +820,17 @@
 								</Folder>
 							</ChildrenList>
 						</Folder>
+						<Event Name="Play_Tutorial_BGM" ID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}">
+							<ChildrenList>
+								<Action Name="" ID="{75865E00-0A93-4F33-80E3-7CBBFDB84C5E}" ShortID="183240429">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Tutorial_BGM" ID="{3F4679E8-A150-4114-9E48-5CD1438EE803}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>

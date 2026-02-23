@@ -1,49 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{9779E62C-CABE-C4BD-4634-12ED0AB0E978}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{EEE79A0B-D893-BD3B-A8B5-80ACD1ADDE44}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
 			<Media>
-				<File Id="139820036" Language="SFX" Streaming="false" Location="Loose">
+				<File Id="127793829" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>SWITCH.cm.wav</ShortName>
-					<Path>Media/139820036.wem</Path>
-					<CachePath>SFX/SWITCH.cm_FBC78EF0.wem</CachePath>
-				</File>
-				<File Id="858484202" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Map_A_None.wav</ShortName>
-					<Path>Media/858484202.wem</Path>
-					<CachePath>SFX/Map_A_None_FBC78EF0.wem</CachePath>
+					<Path>Media/127793829.wem</Path>
+					<CachePath>SFX/SWITCH.cm_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="Infinite">
-					<SwitchContainers>
-						<SwitchContainer>
-							<SwitchValue GroupType="Switch" GroupId="2854002871" Id="1072145695" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
-							<MediaRefs>
-								<MediaRef Id="858484202"/>
-							</MediaRefs>
-						</SwitchContainer>
-						<SwitchContainer>
-							<SwitchValue GroupType="Switch" GroupId="2854002871" Id="468800587" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
-							<MediaRefs>
-								<MediaRef Id="139820036"/>
-							</MediaRefs>
-						</SwitchContainer>
-					</SwitchContainers>
+				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="OneShot" DurationMin="18.816" DurationMax="18.816">
+					<MediaRefs>
+						<MediaRef Id="127793829"/>
+					</MediaRefs>
 				</Event>
 			</Events>
-			<SwitchGroups>
-				<SwitchGroup Id="2854002871" Name="Audience" ObjectPath="\Switches\Default Work Unit\Audience" GUID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
-					<Switches>
-						<Switch Id="468800587" Name="Combo_On" ObjectPath="\Switches\Default Work Unit\Audience\Combo_On" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
-						<Switch Id="1072145695" Name="Combo_Off" ObjectPath="\Switches\Default Work Unit\Audience\Combo_Off" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
-					</Switches>
-				</SwitchGroup>
-			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{B2CB9F2C-C49C-CFB5-BE71-C52DB7E07291}</FileHash>
+	<FileHash>{80A9A89E-D0D3-78AA-BDB6-BC0F9CD6E6AF}</FileHash>
 </SoundBanksInfo>
