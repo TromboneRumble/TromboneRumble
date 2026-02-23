@@ -2882,6 +2882,11 @@
 								<MusicSegment Name="Cymbal_MIDI" ID="{9438E446-6D7D-452E-9E92-971BE3E34506}" ShortID="363211165">
 									<PropertyList>
 										<Property Name="EndPosition" Type="Real64" Value="80000"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
