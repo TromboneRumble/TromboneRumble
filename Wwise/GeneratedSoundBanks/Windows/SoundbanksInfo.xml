@@ -662,7 +662,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{50F25554-D8BE-F7F7-1B40-66187B5CF6FF}">
+		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{FD8183FB-53DE-E47B-48DC-1532E99C9021}">
 			<ObjectPath>MIDI_MapA_Easy_C</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_C</ShortName>
 			<Path>Event/MIDI_MapA_Easy_C.bnk</Path>
@@ -703,7 +703,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{BD09528D-9490-5693-2A5D-F1E9C457FDDF}">
+		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{7B24B38F-20EF-17C8-5D73-FED2665426BD}">
 			<ObjectPath>MIDI_MapA_Easy_V</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_V</ShortName>
 			<Path>Event/MIDI_MapA_Easy_V.bnk</Path>
@@ -744,7 +744,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{BDA23022-2CBA-B67E-BCDB-399070A97290}">
+		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{073609F0-A96E-E3C1-602C-5025643544C5}">
 			<ObjectPath>MIDI_MapA_Easy_T</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_T</ShortName>
 			<Path>Event/MIDI_MapA_Easy_T.bnk</Path>
@@ -2330,7 +2330,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{C31F60DE-C050-E4DC-128B-744E703B3311}">
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{3297B058-6540-A127-2845-43D5572B7FC4}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -2694,5 +2694,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{9474BC36-8361-485A-E4BE-711A10D9C180}</FileHash>
+	<FileHash>{2ACE7E60-5AEF-5301-B240-67F731D2D863}</FileHash>
 </SoundBanksInfo>

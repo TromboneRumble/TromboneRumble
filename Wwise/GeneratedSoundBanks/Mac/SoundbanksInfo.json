@@ -1361,7 +1361,7 @@
     "Type": "Event",
     "GUID": "{633AB9B2-0A16-43DA-859D-940C15E7E727}",
     "Language": "SFX",
-    "Hash": "{50F25554-D8BE-F7F7-1B40-66187B5CF6FF}",
+    "Hash": "{FD8183FB-53DE-E47B-48DC-1532E99C9021}",
     "ObjectPath": "MIDI_MapA_Easy_C",
     "ShortName": "MIDI_MapA_Easy_C",
     "Path": "Event/MIDI_MapA_Easy_C.bnk",
@@ -1441,7 +1441,7 @@
     "Type": "Event",
     "GUID": "{7A85555C-0D56-41DF-AB4E-277C25F19F48}",
     "Language": "SFX",
-    "Hash": "{BD09528D-9490-5693-2A5D-F1E9C457FDDF}",
+    "Hash": "{7B24B38F-20EF-17C8-5D73-FED2665426BD}",
     "ObjectPath": "MIDI_MapA_Easy_V",
     "ShortName": "MIDI_MapA_Easy_V",
     "Path": "Event/MIDI_MapA_Easy_V.bnk",
@@ -1521,7 +1521,7 @@
     "Type": "Event",
     "GUID": "{1F573AFF-7751-45DF-B9C6-F6687AD8033B}",
     "Language": "SFX",
-    "Hash": "{BDA23022-2CBA-B67E-BCDB-399070A97290}",
+    "Hash": "{073609F0-A96E-E3C1-602C-5025643544C5}",
     "ObjectPath": "MIDI_MapA_Easy_T",
     "ShortName": "MIDI_MapA_Easy_T",
     "Path": "Event/MIDI_MapA_Easy_T.bnk",
@@ -4999,7 +4999,7 @@
     "Type": "Event",
     "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
     "Language": "SFX",
-    "Hash": "{C31F60DE-C050-E4DC-128B-744E703B3311}",
+    "Hash": "{3297B058-6540-A127-2845-43D5572B7FC4}",
     "ObjectPath": "MIDI_RhythmGame_Cymbal",
     "ShortName": "MIDI_RhythmGame_Cymbal",
     "Path": "Event/MIDI_RhythmGame_Cymbal.bnk",
@@ -5709,6 +5709,6 @@
     ]
    }
   ],
-  "FileHash": "{291FCDED-83FE-7547-A64D-EE9E4BF0AD55}"
+  "FileHash": "{746CA745-4D0D-1959-ACD2-0B1C53EC97E2}"
  }
 }
