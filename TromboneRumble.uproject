@@ -42,6 +42,10 @@
 		{
 			"Name": "CommonUI",
 			"Enabled": true
+		},
+		{
+			"Name": "ProtoAnimatedText",
+			"Enabled": true
 		}
 	]
 }

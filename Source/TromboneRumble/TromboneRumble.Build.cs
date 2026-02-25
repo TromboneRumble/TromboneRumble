@@ -14,7 +14,7 @@ public class TromboneRumble : ModuleRules
 			"UMG", "AkAudio", "WwiseSoundEngine", "Niagara", "CommonUI", "CommonInput", "ApplicationCore", "EasySessions", "RHI",
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayMessageRuntime", "AsyncLoadingScreen"});
+		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayMessageRuntime", "AsyncLoadingScreen", "ProtoAnimatedText"});
 
 		// Uncomment if you are using Slate UI
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

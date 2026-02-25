@@ -42,7 +42,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStateRemoved OnPlayerStateRemoved;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintAssignable)
 	FOnInGameStateChanged OnInGameStateChanged;
 
 	// 클라이언트의 PlayerState점수가 변경되었을 경우, 서버에서 실행해주는 delegate
