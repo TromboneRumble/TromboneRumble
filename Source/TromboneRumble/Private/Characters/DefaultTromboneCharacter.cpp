@@ -63,11 +63,15 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 		RingHitBoxComponent->SetupAttachment(GetMesh());
 	}
 
+	ComboWidgetAnchorComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ComboWidgetAnchorComponent"));
 	ComboWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ComboWidgetComponent"));
-	if (ComboWidgetComponent)
+	if (ComboWidgetAnchorComponent && ComboWidgetComponent)
 	{
-		ComboWidgetComponent->SetupAttachment(GetMesh());
+		ComboWidgetAnchorComponent->SetupAttachment(GetMesh());
+		ComboWidgetAnchorComponent->SetAbsolute(false,true,false);
+		ComboWidgetComponent->SetupAttachment(ComboWidgetAnchorComponent);
 		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		ComboWidgetComponent->SetAbsolute(false, true, false);
 		ComboWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ComboWidgetComponent->bReceivesDecals = 0;
 		ComboWidgetComponent->SetCastShadow(false);
