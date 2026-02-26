@@ -33,14 +33,6 @@ void URhythmUIRootWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	if (IsDesignTime()) return;
-	if (ComboText)
-	{
-		ComboText->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	if (ComboNumberText)
-	{
-		ComboNumberText->SetVisibility(ESlateVisibility::Collapsed);
-	}
 }
 
 void URhythmUIRootWidget::NativeConstruct()
@@ -71,41 +63,6 @@ void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerStat
 {
 	InDefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
 	InDefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
-	InDefaultPlayerState->OnComboChanged.RemoveDynamic(this, &ThisClass::UpdateComboText);
-	InDefaultPlayerState->OnComboChanged.AddDynamic(this, &ThisClass::UpdateComboText);
-}
-
-void URhythmUIRootWidget::UpdateComboText(ENoteResult InNoteResult, int32 ComboCount)
-{
-	if (InNoteResult == ENoteResult::Invalid || InNoteResult == ENoteResult::None) return;
-	if (InNoteResult == ENoteResult::Bad)
-	{
-		if (ComboText)
-		{
-			ComboText->SetVisibility(ESlateVisibility::Collapsed);
-		}
-		if (ComboNumberText)
-		{
-			ComboNumberText->SetVisibility(ESlateVisibility::Collapsed);
-		}
-	}
-	else
-	{
-		if (ComboText)
-		{
-			ComboText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		}
-		if (ComboNumberText)
-		{
-			ComboNumberText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-			FString FormattedScore = FString::Printf(TEXT("%d"), ComboCount);
-			ComboNumberText->SetText(FText::FromString(FormattedScore));
-			if (ComboHitAnim)
-			{
-				PlayAnimation(ComboHitAnim);
-			}
-		}
-	}
 }
 
 void URhythmUIRootWidget::OnPlayerStateChanged(APlayerState* NewPlayerState)

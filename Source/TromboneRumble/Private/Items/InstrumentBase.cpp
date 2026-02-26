@@ -249,6 +249,7 @@ void AInstrumentBase::Server_RemoveBuff_Implementation(AActor* InActor)
 		}
 	}
 	ActiveBuffHandle.Invalidate();
+	OnBuffStateChanged.Broadcast(false);
 }
 
 float AInstrumentBase::GetGradeMultiplier() const

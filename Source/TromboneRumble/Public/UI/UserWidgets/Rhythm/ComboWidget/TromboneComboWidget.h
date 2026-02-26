@@ -28,35 +28,19 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	UFUNCTION()
-	virtual void HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount);
+	UFUNCTION(BlueprintNativeEvent)
+	void HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintNativeEvent)
 	void HandleBuffStatusChanged(bool IsActive);
 
-	void OnBuffActivateAnimationFinished(UUMGSequencePlayer& Player);
-
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboText;
-
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (BindWidget))
 	TObjectPtr<UProgressBar> ProgressBar;
 
 	// Animations
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetAnimOptional), Transient)
 	TObjectPtr<UWidgetAnimation> ComboBarAnim;
 
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
-	TObjectPtr<UWidgetAnimation> ComboTextAnim;
-
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
-	TObjectPtr<UWidgetAnimation> MissAnim;
-
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
-	TObjectPtr<UWidgetAnimation> BuffActivateAnim;
-
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
-	TObjectPtr<UWidgetAnimation> BuffLoopAnim;
 	// ~Animations
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
@@ -70,5 +54,6 @@ private:
 
 	float TargetPercent = 0.f;
 	float CurrentPercent = 0.0f;
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool isBuffActivated = false;
 };

@@ -46,12 +46,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreText;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboText;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboNumberText;
-
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCanvasPanel> AddedScoreContainer;
 	// ~Components
@@ -62,9 +56,6 @@ protected:
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
-
-	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	TObjectPtr<UWidgetAnimation> ComboHitAnim;
 	// ~Animations
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rhythm")
@@ -75,9 +66,6 @@ private:
 	void OnPlayerStateChanged(APlayerState* NewPlayerState);
 
 	void BindDelegates(ADefaultPlayerState* InDefaultPlayerState);
-
-	UFUNCTION()
-	void UpdateComboText(ENoteResult InNoteResult, int32 ComboCount);
 
 	UFUNCTION()
 	void HandleOnLocalScoreChanged(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType);
