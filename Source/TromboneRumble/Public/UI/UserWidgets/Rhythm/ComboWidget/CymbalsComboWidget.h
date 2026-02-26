@@ -25,31 +25,21 @@ public:
 	
 protected:
 	virtual void NativeConstruct() override;
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	UFUNCTION()
-	virtual void HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount);
+	UFUNCTION(BlueprintNativeEvent)
+	void HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintImplementableEvent)
 	void HandleOnAttack(AActor* HitActor);
 
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboText;
-
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	TObjectPtr<UImage> CymbalsImg;
 
 	// Animations
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
-	TObjectPtr<UWidgetAnimation> OnAttackAnim;
 
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetAnimOptional), Transient)
 	TObjectPtr<UWidgetAnimation> MissAnim;
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetAnimOptional), Transient)
 	TObjectPtr<UWidgetAnimation> ComboTextAnim;
 
-	UPROPERTY(meta = (BindWidgetAnimOptional), Transient)
-	TObjectPtr<UWidgetAnimation> IdleAnim;
 	// ~Animations
 private:
 	void BindDelegates();

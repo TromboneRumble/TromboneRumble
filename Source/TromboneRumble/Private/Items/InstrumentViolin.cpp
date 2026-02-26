@@ -103,7 +103,7 @@ float AInstrumentViolin::CalculateScore(ENoteResult InNoteResult, int32 CurrentC
 		}
 		if (ViolinComboWidget)
 		{
-			ViolinComboWidget->SetPercentSmooth((float)BuffRemainingCount / float(ScoreData->ViolinBuffActivationCount));
+			ViolinComboWidget->SetPercentSmooth((float)BuffRemainingCount / float(ScoreData->ViolinBuffDurationCount));
 		}
 	}
 	else

@@ -67,54 +67,7 @@ void UTromboneComboWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 
 void UTromboneComboWidget::HandleComboChanged_Implementation(ENoteResult InNoteResult, int32 ComboCount)
 {
-	//if (!ComboText) return;
-	//ComboText->SetRenderOpacity(1.0f);
-	//switch (InNoteResult)
-	//{
-	//case ENoteResult::Bad:
-	//{
-	//	static const TArray<FString> BadPhrases = {
-	//		TEXT("Oops!"),
-	//		TEXT("Meh"),
-	//		TEXT("What?"),
-	//		TEXT("No!"),
-	//		TEXT("Miss...")
-	//	};
-
-	//	int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
-	//	ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
-	//	ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
-	//	if (MissAnim)
-	//	{
-	//		StopAllAnimations();
-	//		PlayAnimation(MissAnim);
-	//	}
-	//}
-	//break;
-
-	//case ENoteResult::Good:
-	//case ENoteResult::Excellent:
-	//{
-	//	FString ComboString = FString::FromInt(ComboCount);
-	//	ComboText->SetText(FText::FromString(ComboString));
-	//	ComboText->SetColorAndOpacity(FLinearColor(FColor::FromHex(TEXT("FF5900FF"))));
-	//	if (ComboTextAnim)
-	//	{
-	//		PlayAnimation(ComboTextAnim);
-	//	}
-	//	if (!isBuffActivated && ComboBarAnim)
-	//	{
-	//		ProgressBar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	//		PlayAnimation(ComboBarAnim);
-	//	}
-	//}
-	//break;
-
-	//case ENoteResult::None:
-	//case ENoteResult::Invalid:
-	//default:
-	//	break;
-	//}
+	
 }
 
 void UTromboneComboWidget::HandleBuffStatusChanged_Implementation(bool IsActive)

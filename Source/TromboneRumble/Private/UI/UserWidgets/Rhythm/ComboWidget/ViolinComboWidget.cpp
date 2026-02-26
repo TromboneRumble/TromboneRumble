@@ -23,12 +23,9 @@ void UViolinComboWidget::NativeConstruct()
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
 	BindDelegates();
-	if (ComboText)
-	{
-		ComboText->SetRenderOpacity(0.f);
-	}
 	if (ProgressBar)
 	{
+		ProgressBar->SetRenderOpacity(0.f);
 		ProgressBar->SetPercent(0.f);
 	}
 }
@@ -62,117 +59,20 @@ void UViolinComboWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 	ProgressBar->SetPercent(CurrentPercent);
 }
 
-void UViolinComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount)
+void UViolinComboWidget::HandleComboChanged_Implementation(ENoteResult InNoteResult, int32 ComboCount)
 {
-	if (!ComboText) return;
-	ComboText->SetRenderOpacity(1.0f);
-
-	if (IdleAnim && IsAnimationPlaying(IdleAnim))
-	{
-		StopAnimation(IdleAnim);
-	}
-	
-
-	switch (InNoteResult)
-	{
-	case ENoteResult::Bad:
-	{
-		static const TArray<FString> BadPhrases = {
-			TEXT("Oops!"),
-			TEXT("Meh"),
-			TEXT("What?"),
-			TEXT("No!"),
-			TEXT("Miss...")
-		};
-
-		int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
-		ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
-		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
-		if (isBuffActivated && MissTextAnim)
-		{
-			PlayAnimation(MissTextAnim);
-		}
-		else if (MissAnim)
-		{
-			StopAllAnimations();
-			PlayAnimation(MissAnim);
-		}
-	}
-	break;
-
-	case ENoteResult::Good:
-	{
-		FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-		ComboText->SetText(FText::FromString(ComboString));
-
-		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
-		if (ComboTextAnim)
-		{
-			PlayAnimation(ComboTextAnim);
-		}
-		if (!isBuffActivated && ComboBarAnim)
-		{
-			PlayAnimation(ComboBarAnim);
-		}
-	}
-	break;
-
-	case ENoteResult::Excellent:
-	{
-		FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-		ComboText->SetText(FText::FromString(ComboString));
-
-		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
-		if (ComboTextAnim)
-		{
-			PlayAnimation(ComboTextAnim);
-		}
-		if (!isBuffActivated && ComboBarAnim)
-		{
-			PlayAnimation(ComboBarAnim);
-		}
-	}
-	break;
-
-	case ENoteResult::None:
-	case ENoteResult::Invalid:
-	default:
-		break;
-	}
 }
 
-void UViolinComboWidget::HandleBuffStatusChanged(bool IsActive)
+void UViolinComboWidget::HandleBuffStatusChanged_Implementation(bool IsActive)
 {
 	isBuffActivated = IsActive;
-	if (isBuffActivated && BuffActivateAnim)
+	if (isBuffActivated)
 	{
 		StopAnimation(ComboBarAnim);
-		UUMGSequencePlayer* Player = PlayAnimation(BuffActivateAnim);
-		if (Player)
-		{
-			Player->OnSequenceFinishedPlaying().AddUObject(this, &ThisClass::OnBuffActivateAnimationFinished);
-		}
-	}
-	else if (!isBuffActivated)
-	{
-		if (BuffLoopAnim && IsAnimationPlaying(BuffLoopAnim))
-		{
-			StopAnimation(BuffLoopAnim);
-			if (IdleAnim)
-			{
-				PlayAnimation(IdleAnim);
-			}
-		}
 	}
 }
 
-void UViolinComboWidget::OnBuffActivateAnimationFinished(UUMGSequencePlayer& Player)
-{
-	if (isBuffActivated && BuffLoopAnim)
-	{
-		PlayAnimation(BuffLoopAnim, 0.0f, 0);
-	}
-}
+
 
 void UViolinComboWidget::BindDelegates()
 {
