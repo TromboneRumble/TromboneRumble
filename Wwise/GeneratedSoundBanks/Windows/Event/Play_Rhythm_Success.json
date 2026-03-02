@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "359672398",
+    "Type": "Event",
+    "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
+    "Language": "SFX",
+    "Hash": "{921AE99F-1410-497A-BEC1-E74EB4AE684F}",
+    "ObjectPath": "Play_Rhythm_Success",
+    "ShortName": "Play_Rhythm_Success",
+    "Path": "Event/Play_Rhythm_Success.bnk",
+    "Media": [
+     {
+      "Id": "1071671996",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Rhythm_Success.wav",
+      "Path": "Media/1071671996.wem",
+      "CachePath": "SFX/UI_Rhythm_Success_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "359672398",
+      "Name": "Play_Rhythm_Success",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Rhythm_Success",
+      "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.2929584",
+      "DurationMax": "1.2929584",
+      "MediaRefs": [
+       {
+        "Id": "1071671996"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{64BA77F8-D0B3-A073-8454-9D80908A825A}"
+ }
+}

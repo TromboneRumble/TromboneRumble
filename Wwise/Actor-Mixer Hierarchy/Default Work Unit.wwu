@@ -2975,7 +2975,7 @@
 								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-5</Value>
+										<Value>-10</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -3072,104 +3072,11 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
-						<SwitchContainer Name="Audience_Combo" ID="{FD86FE2A-5510-4626-A7BE-CAA4C887ACAE}" ShortID="583414949">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-								</Reference>
-								<Reference Name="DefaultSwitchOrState">
-									<ObjectRef Name="Combo_On" ID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-								</Reference>
-								<Reference Name="SwitchGroupOrStateGroup">
-									<ObjectRef Name="Audience" ID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}" WorkUnitID="{A52B72AF-17FF-40CB-98D6-BB6A363B7EAE}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<Sound Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" ShortID="335329949">
-									<PropertyList>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-22</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="SWITCH_cm" ID="{3E621835-F763-4797-9959-FFB84A6E9567}">
-											<Language>SFX</Language>
-											<AudioFile>SWITCH.cm.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="127793829"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="SWITCH_cm" ID="{3E621835-F763-4797-9959-FFB84A6E9567}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="Silence" ID="{77EFC30B-BAF7-4EAD-8ED5-A809CE99A0F6}" ShortID="402612872">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<SourcePlugin Name="Silence" ID="{3174A9AA-7523-4BF0-B43C-08E45F75916B}" ShortID="685432279" PluginName="Wwise Silence" CompanyID="0" PluginID="101">
-											<Language>SFX</Language>
-										</SourcePlugin>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="Silence" ID="{3174A9AA-7523-4BF0-B43C-08E45F75916B}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-							</ChildrenList>
-							<GroupingInfo>
-								<GroupingBehaviorList>
-									<GroupingBehavior>
-										<ItemRef Name="Silence" ID="{77EFC30B-BAF7-4EAD-8ED5-A809CE99A0F6}"/>
-									</GroupingBehavior>
-									<GroupingBehavior>
-										<ItemRef Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}"/>
-									</GroupingBehavior>
-								</GroupingBehaviorList>
-								<GroupingList>
-									<Grouping>
-										<SwitchRef Name="Combo_On" ID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
-										<ItemList>
-											<ItemRef Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
-										<ItemList>
-											<ItemRef Name="Silence" ID="{77EFC30B-BAF7-4EAD-8ED5-A809CE99A0F6}"/>
-										</ItemList>
-									</Grouping>
-								</GroupingList>
-							</GroupingInfo>
-						</SwitchContainer>
-					</ChildrenList>
-				</Folder>
-				<Folder Name="UI" ID="{BEF43C90-F273-4BA6-B3F4-5C0EE4036C9E}" ShortID="85949838">
-					<ChildrenList>
-						<Sound Name="UI_Click" ID="{4D3CE2F8-75CD-49F1-BB3F-DFF1B88B705F}" ShortID="445773856">
+						<Sound Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" ShortID="335329949">
 							<PropertyList>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-14</Value>
+										<Value>-15</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -3178,7 +3085,40 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="SWITCH_cm" ID="{3E621835-F763-4797-9959-FFB84A6E9567}">
+									<Language>SFX</Language>
+									<AudioFile>SWITCH.cm.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="127793829"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="SWITCH_cm" ID="{3E621835-F763-4797-9959-FFB84A6E9567}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="UI" ID="{BEF43C90-F273-4BA6-B3F4-5C0EE4036C9E}" ShortID="85949838">
+					<ChildrenList>
+						<Sound Name="UI_Click" ID="{4D3CE2F8-75CD-49F1-BB3F-DFF1B88B705F}" ShortID="445773856">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-4</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -3189,9 +3129,74 @@
 										<MediaID ID="419776262"/>
 									</MediaIDList>
 								</AudioFileSource>
+								<AudioFileSource Name="UI_Click" ID="{B9C42626-A0C9-4E08-82C8-AFCD16DE9435}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Click.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1028579066"/>
+									</MediaIDList>
+								</AudioFileSource>
 							</ChildrenList>
 							<ActiveSourceList>
-								<ActiveSource Name="Option_UI_Click" ID="{00EB74BE-3B7F-4C80-842C-0294424635F8}" Platform="Linked"/>
+								<ActiveSource Name="UI_Click" ID="{B9C42626-A0C9-4E08-82C8-AFCD16DE9435}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_Overlap" ID="{D672328E-EC30-4C26-87C9-CC0AAE0D2512}" ShortID="729134655">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-4</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Overlap" ID="{283316FA-2D10-4D43-8DAA-B28541894361}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Overlap.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="195044146"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Overlap" ID="{283316FA-2D10-4D43-8DAA-B28541894361}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_Rhythm_Success" ID="{FE408BC1-CED6-45EA-A074-0942ACC4F1BF}" ShortID="80090878">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-10</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Rhythm_Success" ID="{5BBB5370-E641-4A45-B09D-B6819B9FB4BC}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Rhythm_Success.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1071671996"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Rhythm_Success" ID="{5BBB5370-E641-4A45-B09D-B6819B9FB4BC}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>

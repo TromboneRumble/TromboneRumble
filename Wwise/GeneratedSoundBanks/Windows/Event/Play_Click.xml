@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{E7AE7F58-3E93-F153-E1A6-3EE15A56A97C}">
+		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{29970740-0011-A45E-C546-DAC4F5831BB7}">
 			<ObjectPath>Play_Click</ObjectPath>
 			<ShortName>Play_Click</ShortName>
 			<Path>Event/Play_Click.bnk</Path>
 			<Media>
-				<File Id="419776262" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Option_UI_Click.wav</ShortName>
-					<Path>Media/419776262.wem</Path>
-					<CachePath>SFX/Option_UI_Click_818F3B66.wem</CachePath>
+				<File Id="1028579066" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Click.wav</ShortName>
+					<Path>Media/1028579066.wem</Path>
+					<CachePath>SFX/UI_Click_818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="311910498" Name="Play_Click" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Click" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" DurationType="OneShot" DurationMin="0.24033333" DurationMax="0.24033333">
+				<Event Id="311910498" Name="Play_Click" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Click" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" DurationType="OneShot" DurationMin="0.24266666" DurationMax="0.24266666">
 					<MediaRefs>
-						<MediaRef Id="419776262"/>
+						<MediaRef Id="1028579066"/>
 					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{18E40D90-3C6B-EA2A-87B2-453A65F7FD0F}</FileHash>
+	<FileHash>{F0FC4902-2058-4513-C7E6-6F88E4912A91}</FileHash>
 </SoundBanksInfo>
