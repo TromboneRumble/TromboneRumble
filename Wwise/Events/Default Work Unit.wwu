@@ -400,7 +400,7 @@
 								<Action Name="" ID="{E2B267DB-3778-482F-8408-72405C680D86}" ShortID="712373112">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Audience_Combo" ID="{FD86FE2A-5510-4626-A7BE-CAA4C887ACAE}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+											<ObjectRef Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -837,10 +837,32 @@
 					<ChildrenList>
 						<Event Name="Play_Click" ID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}">
 							<ChildrenList>
-								<Action Name="" ID="{D785DDBA-4AFB-4B9F-9A77-BCCA0C7085F5}" ShortID="338146034">
+								<Action Name="" ID="{8D121E94-E86F-467D-98A7-1E1DAE135320}" ShortID="567504278">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="UI_Click" ID="{4D3CE2F8-75CD-49F1-BB3F-DFF1B88B705F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Overlap" ID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}">
+							<ChildrenList>
+								<Action Name="" ID="{E61AFD41-9D25-4329-AC19-9FA41D9D585C}" ShortID="244378938">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Overlap" ID="{D672328E-EC30-4C26-87C9-CC0AAE0D2512}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Rhythm_Success" ID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}">
+							<ChildrenList>
+								<Action Name="" ID="{F6CF401D-F25E-419D-8390-ADF8A832A5A5}" ShortID="418991016">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Rhythm_Success" ID="{FE408BC1-CED6-45EA-A074-0942ACC4F1BF}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
