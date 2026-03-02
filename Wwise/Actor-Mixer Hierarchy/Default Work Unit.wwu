@@ -3074,9 +3074,11 @@
 						</RandomSequenceContainer>
 						<Sound Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" ShortID="335329949">
 							<PropertyList>
+								<Property Name="IsLoopingInfinite" Type="bool" Value="False"/>
+								<Property Name="LoopCount" Type="int32" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-15</Value>
+										<Value>-8</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -3090,6 +3092,11 @@
 							</ReferenceList>
 							<ChildrenList>
 								<AudioFileSource Name="SWITCH_cm" ID="{3E621835-F763-4797-9959-FFB84A6E9567}">
+									<PropertyList>
+										<Property Name="FadeOutDuration" Type="Real64" Value="2.32734591194969"/>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+										<Property Name="TrimEnd" Type="Real64" Value="2.60347169811321"/>
+									</PropertyList>
 									<Language>SFX</Language>
 									<AudioFile>SWITCH.cm.wav</AudioFile>
 									<MediaIDList>

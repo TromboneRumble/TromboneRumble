@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{025CBE9C-B1B2-077C-E802-B3D11B01D4DE}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{7A0B686A-8C12-DE34-1C21-0980D16F03C3}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
@@ -9,11 +9,11 @@
 				<File Id="127793829" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>SWITCH.cm.wav</ShortName>
 					<Path>Media/127793829.wem</Path>
-					<CachePath>SFX/SWITCH.cm_818F3B66.wem</CachePath>
+					<CachePath>SFX/SWITCH.cm_474FD301.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="OneShot" DurationMin="18.816" DurationMax="18.816">
+				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="OneShot" DurationMin="2.6034718" DurationMax="2.6034718">
 					<MediaRefs>
 						<MediaRef Id="127793829"/>
 					</MediaRefs>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{94DB9A3B-0312-3512-74B9-304D930A9DA0}</FileHash>
+	<FileHash>{740A6BC2-D4D5-5A5B-8936-479DA072BF55}</FileHash>
 </SoundBanksInfo>

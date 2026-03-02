@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
     "Language": "SFX",
-    "Hash": "{025CBE9C-B1B2-077C-E802-B3D11B01D4DE}",
+    "Hash": "{7A0B686A-8C12-DE34-1C21-0980D16F03C3}",
     "ObjectPath": "Play_Audience_Combo",
     "ShortName": "Play_Audience_Combo",
     "Path": "Event/Play_Audience_Combo.bnk",
@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "SWITCH.cm.wav",
       "Path": "Media/127793829.wem",
-      "CachePath": "SFX/SWITCH.cm_818F3B66.wem"
+      "CachePath": "SFX/SWITCH.cm_474FD301.wem"
      }
     ],
     "Events": [
@@ -32,8 +32,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Audience_Combo",
       "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
       "DurationType": "OneShot",
-      "DurationMin": "18.816",
-      "DurationMax": "18.816",
+      "DurationMin": "2.6034718",
+      "DurationMax": "2.6034718",
       "MediaRefs": [
        {
         "Id": "127793829"
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{6AE97557-A443-5A13-25B9-767434DA569C}"
+  "FileHash": "{0AACF1DC-6DAF-96D5-90B9-97098BEECA20}"
  }
 }
