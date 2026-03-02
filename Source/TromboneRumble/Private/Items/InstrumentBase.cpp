@@ -287,6 +287,7 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	ADefaultPlayerState* PS = GetOwnerPlayerState();
 	if (!PS) return;
 
+	//Calculate Score
 	PS->HandleCombo(InNoteResult);
 
 	int32 CurrentCombo = PS->GetCurrentCombo();
@@ -302,6 +303,12 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 			PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::RhythmScore);
 		}
 		
+	}
+	//~Calculate Score
+
+	if (PerfectNoteHitSound && (InNoteResult == ENoteResult::Excellent || InNoteResult == ENoteResult::Good))
+	{
+		UAkGameplayStatics::PostEvent(PerfectNoteHitSound, this, 0, FOnAkPostEventCallback());
 	}
 }
 
