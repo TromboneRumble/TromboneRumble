@@ -63,7 +63,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{29970740-0011-A45E-C546-DAC4F5831BB7}">
+		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{7BB7D602-216E-F06B-59F7-35F8C07257FA}">
 			<ObjectPath>Play_Click</ObjectPath>
 			<ShortName>Play_Click</ShortName>
 			<Path>Event/Play_Click.bnk</Path>
@@ -101,7 +101,7 @@
 				</AuxBus>
 			</AuxBusses>
 		</SoundBank>
-		<SoundBank Id="359672398" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{921AE99F-1410-497A-BEC1-E74EB4AE684F}">
+		<SoundBank Id="359672398" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{7066AC5B-4DC9-359D-0483-95C18278B8B8}">
 			<ObjectPath>Play_Rhythm_Success</ObjectPath>
 			<ShortName>Play_Rhythm_Success</ShortName>
 			<Path>Event/Play_Rhythm_Success.bnk</Path>
@@ -113,7 +113,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="359672398" Name="Play_Rhythm_Success" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Rhythm_Success" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" DurationType="OneShot" DurationMin="1.2929584" DurationMax="1.2929584">
+				<Event Id="359672398" Name="Play_Rhythm_Success" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Rhythm_Success" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" DurationType="OneShot" DurationMin="1.1849635" DurationMax="1.3509827">
 					<MediaRefs>
 						<MediaRef Id="1071671996"/>
 					</MediaRefs>
@@ -1353,7 +1353,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{3021D8F5-4D40-7DE7-9103-D25B9A5897F9}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{025CBE9C-B1B2-077C-E802-B3D11B01D4DE}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
@@ -2615,7 +2615,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3795447587" Type="Event" GUID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}" Language="SFX" Hash="{3E058C21-A232-47A8-A554-8217733A3AF4}">
+		<SoundBank Id="3795447587" Type="Event" GUID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}" Language="SFX" Hash="{B22D8C2F-46A3-ED8F-8C58-89776E181FB6}">
 			<ObjectPath>Play_Overlap</ObjectPath>
 			<ShortName>Play_Overlap</ShortName>
 			<Path>Event/Play_Overlap.bnk</Path>
@@ -2700,7 +2700,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{E17EEC12-A35C-6F1C-143B-8C2B0AD78EC3}">
+		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{30031835-864C-B6A0-7C3D-FCAF99420E38}">
 			<ObjectPath>Play_Audience_Boo</ObjectPath>
 			<ShortName>Play_Audience_Boo</ShortName>
 			<Path>Event/Play_Audience_Boo.bnk</Path>
@@ -2732,5 +2732,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{3A521A42-EDB1-DBE4-8A17-97532C1338C5}</FileHash>
+	<FileHash>{AD2898E3-DC61-7D1A-D8FB-51F9F3620B96}</FileHash>
 </SoundBanksInfo>

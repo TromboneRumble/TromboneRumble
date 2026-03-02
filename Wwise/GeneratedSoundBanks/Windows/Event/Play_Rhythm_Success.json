@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
     "Language": "SFX",
-    "Hash": "{921AE99F-1410-497A-BEC1-E74EB4AE684F}",
+    "Hash": "{7066AC5B-4DC9-359D-0483-95C18278B8B8}",
     "ObjectPath": "Play_Rhythm_Success",
     "ShortName": "Play_Rhythm_Success",
     "Path": "Event/Play_Rhythm_Success.bnk",
@@ -32,8 +32,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Rhythm_Success",
       "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
       "DurationType": "OneShot",
-      "DurationMin": "1.2929584",
-      "DurationMax": "1.2929584",
+      "DurationMin": "1.1849635",
+      "DurationMax": "1.3509827",
       "MediaRefs": [
        {
         "Id": "1071671996"
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{64BA77F8-D0B3-A073-8454-9D80908A825A}"
+  "FileHash": "{97C354B4-843D-A162-87EB-2D1B114E176D}"
  }
 }
