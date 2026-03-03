@@ -162,10 +162,12 @@ UENUM(BlueprintType)
 enum class EScoreType : uint8
 {
 	RhythmScore = 0				UMETA(DisplayName = "Rhythm"),
-	BuffedRhythmScore = 1		UMETA(DisplayName = "RhythmBuffed"),
-	InstrumentPickedUp = 2		UMETA(DisplayName = "InstrumentPickedUp"),
-	OnHit = 3					UMETA(DisplayName = "OnHit"),
-	SpotLight = 4				UMETA(DisplayName = "SpotLight"),
+	BuffedTromboneScore = 1		UMETA(DisplayName = "BuffedTromboneScore"),
+	BuffedViolinScore = 2		UMETA(DisplayName = "BuffedViolinScore"),
+	InstrumentPickedUp = 3		UMETA(DisplayName = "InstrumentPickedUp"),
+	OnHit = 4					UMETA(DisplayName = "OnHit"),
+	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
+	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)

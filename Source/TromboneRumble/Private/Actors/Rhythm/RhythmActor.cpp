@@ -465,10 +465,6 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 			AreOtherPlayersReady = true;
 			break;
 		
-		case EInGameState::End:
-			CachedRhythmUIRootWidget->OnGameEnded();
-			break;
-		
 		default: ;
 	}
 }

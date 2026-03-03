@@ -14,20 +14,10 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/DefaultPlayerController.h"
+#include "Framework/InGameState.h"
 #include "Utilities/DebugHelper.h"
 
 
-void URhythmUIRootWidget::OnGameEnded()
-{
-	if (ShowLeaderboardAnim)
-	{
-		PlayAnimation(ShowLeaderboardAnim);
-	}
-	if (WBP_LeaderBoard)
-	{
-		WBP_LeaderBoard->SetButtonsVisibility(true);
-	}
-}
 
 void URhythmUIRootWidget::NativePreConstruct()
 {
@@ -39,17 +29,17 @@ void URhythmUIRootWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
-	if (APlayerController* PlayerController = GetOwningPlayer())
+	BindDelegates();
+	if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
 	{
-		if (ADefaultPlayerState* DefaultPlayerState = PlayerController->GetPlayerState<ADefaultPlayerState>())
-		{
-			BindDelegates(DefaultPlayerState);
-		}
-		else if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
-		{
-			DefaultPlayerController->OnPlayerStateChanged.AddDynamic(this, &ThisClass::OnPlayerStateChanged);
-		}
+		DefaultPlayerController->OnPlayerStateChanged.AddDynamic(this, &ThisClass::HandleOnPlayerStateChanged);
 	}
+}
+
+void URhythmUIRootWidget::NativeDestruct()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RetryBind);
+	Super::NativeDestruct();
 }
 
 void URhythmUIRootWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -59,22 +49,73 @@ void URhythmUIRootWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 
 
 
-void URhythmUIRootWidget::BindDelegates(ADefaultPlayerState* InDefaultPlayerState)
+void URhythmUIRootWidget::BindDelegates()
 {
-	InDefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
-	InDefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+	APlayerController* PlayerController = GetOwningPlayer();
+	if (!PlayerController) return;
+
+
+	if (ADefaultPlayerState* DefaultPlayerState = PlayerController->GetPlayerState<ADefaultPlayerState>())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RetryBind);
+
+		DefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+		DefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+
+		// Debug::Print(TEXT("Successfully Bound to PlayerState Delegates"), FColor::Green);
+	}
+	else
+	{
+		if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_RetryBind))
+		{
+			GetWorld()->GetTimerManager().SetTimer(
+				TimerHandle_RetryBind,
+				this,
+				&URhythmUIRootWidget::RetryBindDelegates,
+				0.1f,
+				true 
+			);
+		}
+	}
+
+	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
+	{
+		InGameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
+		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
+	}
 }
 
-void URhythmUIRootWidget::OnPlayerStateChanged(APlayerState* NewPlayerState)
+void URhythmUIRootWidget::RetryBindDelegates()
+{
+	// Debug::Print(TEXT("Retrying Delegate Binding..."), FColor::Yellow);
+	BindDelegates();
+}
+
+void URhythmUIRootWidget::HandleInGameStateChanged(EInGameState InGameState)
+{
+	if (InGameState == EInGameState::End)
+	{
+		if (ShowLeaderboardAnim)
+		{
+			PlayAnimation(ShowLeaderboardAnim);
+		}
+		if (WBP_LeaderBoard)
+		{
+			WBP_LeaderBoard->SetButtonsVisibility(true);
+		}
+	}
+}
+
+void URhythmUIRootWidget::HandleOnPlayerStateChanged(APlayerState* NewPlayerState)
 {
 	if (ADefaultPlayerState* PS = Cast<ADefaultPlayerState>(NewPlayerState))
 	{
-		BindDelegates(PS);
+		BindDelegates();
 
 		// 더 이상 들을 필요 없으니 구독 해제 (선택사항)
 		if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
 		{
-			DefaultPlayerController->OnPlayerStateChanged.RemoveDynamic(this, &ThisClass::OnPlayerStateChanged);
+			DefaultPlayerController->OnPlayerStateChanged.RemoveDynamic(this, &ThisClass::HandleOnPlayerStateChanged);
 		}
 	}
 }

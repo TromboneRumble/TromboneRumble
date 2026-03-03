@@ -296,7 +296,15 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	{
 		if (ActiveBuffHandle.IsValid())
 		{
-			PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedRhythmScore);
+			switch (InstrumentType)
+			{
+			case EInstrumentType::Trombone:
+				PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedTromboneScore);
+				break;
+			case EInstrumentType::Violin:
+				PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedViolinScore);
+				break;
+			}
 		}
 		else
 		{
