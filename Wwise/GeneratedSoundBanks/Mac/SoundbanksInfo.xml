@@ -706,7 +706,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{BDA23022-2CBA-B67E-BCDB-399070A97290}">
+		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{526FDAF4-6D0E-A786-50FA-023ECEDA8618}">
 			<ObjectPath>MIDI_MapA_Easy_T</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_T</ShortName>
 			<Path>Event/MIDI_MapA_Easy_T.bnk</Path>
@@ -2680,5 +2680,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E8C81394-8262-ADF8-1A9C-9829100097AA}</FileHash>
+	<FileHash>{1808CCA1-2D7F-240B-D232-164D636B0BC6}</FileHash>
 </SoundBanksInfo>
