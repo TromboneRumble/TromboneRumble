@@ -116,6 +116,9 @@ protected:
     UFUNCTION()
     void HandleInGameStateChanged(EInGameState InGameState);
 
+    UFUNCTION()
+    void HandleOnInstrumentPicked(EInstrumentType PrevType, EInstrumentType NewType);
+
 	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
 	FLinearColor SkinColor = FLinearColor::Black;
 

@@ -24,6 +24,7 @@ void ADefaultPlayerState::BeginPlay()
 	{
 		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
 		RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleNoteDetected);
+		RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::HandleOnInstrumentPicked);
 	}
 	
 
@@ -226,6 +227,24 @@ void ADefaultPlayerState::HandleInGameStateChanged(EInGameState InGameState)
 		}
 	}
 #endif
+}
+
+void ADefaultPlayerState::HandleOnInstrumentPicked(EInstrumentType PrevType, EInstrumentType NewType)
+{
+	auto IsRealInstrument = [](EInstrumentType Type) -> bool
+		{
+			const uint8 V = static_cast<uint8>(Type);
+			const uint8 BG = static_cast<uint8>(EInstrumentType::Background);
+			const uint8 NONE = static_cast<uint8>(EInstrumentType::None);
+			// Background(0) < 실제 악기들(1~3) < None(254)
+			return (V > BG) && (V < NONE);
+		};
+
+	// 이전에 악기를 들고있다가 떨궜을때 콤보 초기화
+	if (IsRealInstrument(PrevType))
+	{
+		CurrentCombo = 0;
+	}
 }
 
 
