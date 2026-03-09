@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "framework/InGameState.h"
 #include "GameFramework/Actor.h"
 #include "GimmickManager.generated.h"
 
@@ -19,7 +20,7 @@ public:
 	void DeactivateGimmickByType(EGimmickType GimmickType);
 	
 	void ActivateAllGimmicks();
-	void DeactivateAllGimmicks();
+	
 	
 	bool IsGimmickActive(EGimmickType GimmickType) const;
 
@@ -27,6 +28,13 @@ protected:
 	virtual void BeginPlay() override;
 	
 	void FindAndRegisterGimmicks();
+
+	void BindToInGameState(AGameStateBase* NewGameState);
+
+	void DeactivateAllGimmicks();
+
+	UFUNCTION()
+	void HandleInGameStateChanged(EInGameState InGameState);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Config")
 	TMap<EGimmickType, TObjectPtr<AGimmickBase>> ManagedGimmicks;

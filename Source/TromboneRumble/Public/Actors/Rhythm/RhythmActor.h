@@ -35,20 +35,28 @@ public:
 	ENoteResult DetectLongNoteEnd();
 
 	// Init Game
-	void PrepareRhythmGame();
 
 	UFUNCTION(BlueprintCallable)
-	void StartRhythmGame();
+	void PrepareAndStartRhythmGame();
 
 	UFUNCTION(BlueprintCallable)
 	void PauseRhythmGame();
 
 	UFUNCTION(BlueprintCallable)
 	void ResumeRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void StopRhythmGame();
 	// ~ Init Game
 
 protected:
 	virtual void BeginPlay() override;
+
+	void CleanupRhythmGame();
+
+	void PrepareRhythmGame();
+
+	void StartRhythmGame();
 
 	/// <summary>
 	/// 악기 전용 RhythmSpawner를 생성하고 초기화
@@ -76,9 +84,14 @@ private:
 	void InitGameState();
 	FTimerHandle GameStateInitTimerHandle;
 
-	
 	UPROPERTY()
-	bool IsRhythmGameReady = false;
+	bool bIsDataLoaded = false;
+
+	UPROPERTY()
+	bool bIsLoadingData = false;     
+
+	UPROPERTY()
+	bool bStartRequested = false;
 
 	ARhythmNoteSpawner* GetOrCreateSpawner(EInstrumentType InType);
 	bool DestroySpawner(EInstrumentType InType);

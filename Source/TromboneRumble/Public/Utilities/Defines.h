@@ -132,6 +132,7 @@ enum class ERhythmGameState : uint8
 	Playing = 2		UMETA(DisplayName = "Playing"),
 	Paused = 3		UMETA(DisplayName = "Paused"),
 	Resumed = 4		UMETA(DisplayName = "Resumed"),
+	Stopped = 5		UMETA(DisplayName = "Stopped"),
 	Ended			UMETA(DisplayName = "Ended"),
 	Invalid = 255   UMETA(Hidden)
 };

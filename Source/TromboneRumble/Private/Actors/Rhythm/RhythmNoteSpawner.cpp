@@ -96,6 +96,32 @@ void ARhythmNoteSpawner::ResumeRhythmGame()
 	}
 }
 
+void ARhythmNoteSpawner::StopRhythmGame()
+{
+	if (NoteSpawnPlayingID != 0 && NoteSpawnPlayingID != AK_INVALID_PLAYING_ID)
+	{
+		if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
+		{
+			SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, NoteSpawnPlayingID);
+		}
+		NoteSpawnPlayingID = 0;
+	}
+
+	
+	if (UActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UActorPoolSubsystem>())
+	{
+		
+		for (auto It = ActiveNotes.CreateIterator(); It; ++It)
+		{
+			if (ARhythmNote* Note = It->Get())
+			{
+				PoolSubsystem->Release(Note);
+			}
+		}
+	}
+	ActiveNotes.Empty();
+}
+
 void ARhythmNoteSpawner::RemoveActiveNote(ARhythmNote* Note)
 {
 	if (Note)

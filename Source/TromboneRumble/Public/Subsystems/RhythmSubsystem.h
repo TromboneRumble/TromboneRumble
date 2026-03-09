@@ -24,10 +24,18 @@ class TROMBONERUMBLE_API URhythmSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
+	void StartRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
 	void PauseRhythmGame();
 	UFUNCTION(BlueprintCallable)
 	void ResumeRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
 	void StopRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void EndRhythmGame();
 
 	UFUNCTION()
 	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
@@ -52,6 +60,9 @@ private:
 	void OnWorldBeginPlay();
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
+
+	bool isRhythmGameForceStopped = false;
+
 public:
 	FORCEINLINE ERhythmGameState GetCurrentRhythmState() const { return CurrentState; }
 };
