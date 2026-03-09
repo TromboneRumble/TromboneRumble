@@ -9,6 +9,7 @@
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/UserWidgets/InGame/InGameResultWidget.h"
 
 AResultCutsceneDirector::AResultCutsceneDirector()
 {
@@ -116,14 +117,39 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 void AResultCutsceneDirector::OnSequenceFinished()
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	if (!PC) return;
+	AInGameState* GameState = Cast<AInGameState>(GetWorld()->GetGameState());
+	if (!PC || !GameState) return;
 
-	//연출이 끝나면 결과창 UI 띄우기
+
+	if (APlayerState* LocalPS = PC->PlayerState)
+	{
+		int32 Rank = GameState->GetPlayerRank(LocalPS);
+		int32 RankIndex = Rank - 1;
+
+		if (ZoomSequences.IsValidIndex(RankIndex) && ZoomSequences[RankIndex])
+		{
+			ALevelSequenceActor* OutActor;
+			FMovieSceneSequencePlaybackSettings Settings;
+
+			ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[RankIndex], Settings, OutActor);
+
+			if (ZoomSequencePlayer)
+			{
+				ZoomSequencePlayer->Play();
+			}
+		}
+	}
+
 	if (ResultWidgetClass)
 	{
 		UUserWidget* ResultWidget = CreateWidget<UUserWidget>(PC, ResultWidgetClass);
 		if (ResultWidget)
 		{
+			if (UInGameResultWidget* InGameWidget = Cast<UInGameResultWidget>(ResultWidget))
+			{
+				int32 MyRank = GameState->GetPlayerRank(PC->PlayerState);
+				InGameWidget->SetResultData(Cast<ADefaultPlayerState>(PC->PlayerState), MyRank);
+			}
 			ResultWidget->AddToViewport();
 
 			// UI 상호작용을 위해 마우스 커서 표시 및 InputMode 변경

@@ -77,33 +77,12 @@ void URhythmUIRootWidget::BindDelegates()
 			);
 		}
 	}
-
-	if (AInGameState* InGameState = GetWorld()->GetGameState<AInGameState>())
-	{
-		InGameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
-		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
-	}
 }
 
 void URhythmUIRootWidget::RetryBindDelegates()
 {
 	// Debug::Print(TEXT("Retrying Delegate Binding..."), FColor::Yellow);
 	BindDelegates();
-}
-
-void URhythmUIRootWidget::HandleInGameStateChanged(EInGameState InGameState)
-{
-	if (InGameState == EInGameState::End)
-	{
-		if (ShowLeaderboardAnim)
-		{
-			PlayAnimation(ShowLeaderboardAnim);
-		}
-		if (WBP_LeaderBoard)
-		{
-			WBP_LeaderBoard->SetButtonsVisibility(true);
-		}
-	}
 }
 
 void URhythmUIRootWidget::HandleOnPlayerStateChanged(APlayerState* NewPlayerState)

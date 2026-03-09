@@ -25,10 +25,10 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> MeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Materials")
-	int32 SkinMaterialIndex = 0;
+	int32 SkinMaterialIndex = 1;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Materials")
-	int32 FaceMaterialIndex = 1;
+	int32 FaceMaterialIndex = 2;
 
 private:
 	UPROPERTY()

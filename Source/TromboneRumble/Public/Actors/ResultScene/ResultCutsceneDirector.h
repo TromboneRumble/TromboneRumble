@@ -39,6 +39,9 @@ protected:
 	TObjectPtr<ULevelSequence> ResultSequence;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Cinematic")
+	TArray<TObjectPtr<ULevelSequence>> ZoomSequences;
+
+	UPROPERTY(EditAnywhere, Category = "Config|Cinematic")
 	TObjectPtr<ACameraActor> CutsceneCamera;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Podium")
@@ -47,6 +50,8 @@ protected:
 private:
 	UPROPERTY()
 	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
+	UPROPERTY()
+	TObjectPtr<ULevelSequencePlayer> ZoomSequencePlayer;
 	
 
 };

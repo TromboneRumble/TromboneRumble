@@ -6,6 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "InGameWidget.generated.h"
 
+enum class EInGameState : uint8;
 class UImage;
 
 UCLASS()
@@ -23,4 +24,12 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image_Guide;
+
+protected:
+	virtual void NativeConstruct() override;
+
+	void BindToInGameState(AGameStateBase* NewGameState);
+
+	UFUNCTION()
+	void HandleInGameStateChanged(EInGameState NewState);
 };

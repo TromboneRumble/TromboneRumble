@@ -31,8 +31,6 @@ class TROMBONERUMBLE_API URhythmLeaderBoard : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	
-	void SetButtonsVisibility(bool bIsVisible);
 
 	UPROPERTY(EditAnywhere, Category = "Leaderboard")
 	TSubclassOf<URhythmLeaderBoardEntry> EntryClass;
@@ -51,22 +49,10 @@ protected:
 	UFUNCTION()
 	void HandleLocalPlayerStateChanged(APlayerState* NewPlayerState);
 	
-	UFUNCTION()
-	void HandleExitButtonClicked();
-	
-	UFUNCTION()
-	void OnDestroySessionSuccess();
-	
-	UFUNCTION()
-	void OnDestroySessionFailure();
+
 
 
 private:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Exit;
-	
-	UPROPERTY(Transient)
-	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
 	
 	UPROPERTY()
 	TMap<TWeakObjectPtr<APlayerState>, URhythmLeaderBoardEntry*> EntryMap;
