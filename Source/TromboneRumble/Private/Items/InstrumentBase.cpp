@@ -287,6 +287,7 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	ADefaultPlayerState* PS = GetOwnerPlayerState();
 	if (!PS) return;
 
+	//Calculate Score
 	PS->HandleCombo(InNoteResult);
 
 	int32 CurrentCombo = PS->GetCurrentCombo();
@@ -295,13 +296,27 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	{
 		if (ActiveBuffHandle.IsValid())
 		{
-			PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedRhythmScore);
+			switch (InstrumentType)
+			{
+			case EInstrumentType::Trombone:
+				PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedTromboneScore);
+				break;
+			case EInstrumentType::Violin:
+				PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::BuffedViolinScore);
+				break;
+			}
 		}
 		else
 		{
 			PS->AddScore(FMath::RoundToInt(AddedScore), EScoreType::RhythmScore);
 		}
 		
+	}
+	//~Calculate Score
+
+	if (PerfectNoteHitSound && (InNoteResult == ENoteResult::Excellent || InNoteResult == ENoteResult::Good))
+	{
+		UAkGameplayStatics::PostEvent(PerfectNoteHitSound, this, 0, FOnAkPostEventCallback());
 	}
 }
 

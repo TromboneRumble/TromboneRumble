@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3795447587",
+    "Type": "Event",
+    "GUID": "{BECEEF13-B67B-4315-AD8F-8A747D65D444}",
+    "Language": "SFX",
+    "Hash": "{B22D8C2F-46A3-ED8F-8C58-89776E181FB6}",
+    "ObjectPath": "Play_Overlap",
+    "ShortName": "Play_Overlap",
+    "Path": "Event/Play_Overlap.bnk",
+    "Media": [
+     {
+      "Id": "195044146",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Overlap.wav",
+      "Path": "Media/195044146.wem",
+      "CachePath": "SFX/UI_Overlap_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3795447587",
+      "Name": "Play_Overlap",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Overlap",
+      "GUID": "{BECEEF13-B67B-4315-AD8F-8A747D65D444}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.042583335",
+      "DurationMax": "0.042583335",
+      "MediaRefs": [
+       {
+        "Id": "195044146"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{2CB36586-00F0-9A9E-7449-E5CF00FA2454}"
+ }
+}

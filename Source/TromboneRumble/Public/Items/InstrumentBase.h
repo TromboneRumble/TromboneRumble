@@ -84,6 +84,9 @@ protected:
 	TObjectPtr<UAkAudioEvent> BuffActivationSound;
 	// ~GAS Helpers
 
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
+	TObjectPtr<UAkAudioEvent> PerfectNoteHitSound;
+
 	// Rhythm Logic
 	UPROPERTY(EditAnywhere, Category = "Config|Instrument|Data")
 	TObjectPtr<UInstrumentScoreData> ScoreData;

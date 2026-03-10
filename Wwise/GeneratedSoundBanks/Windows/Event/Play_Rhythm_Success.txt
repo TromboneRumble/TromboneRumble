@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	359672398	Play_Rhythm_Success			\Default Work Unit\UI_SFX\Play_Rhythm_Success	
+
