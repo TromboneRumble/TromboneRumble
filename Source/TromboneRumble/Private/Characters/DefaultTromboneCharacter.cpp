@@ -21,6 +21,7 @@
 #include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Items/InstrumentBase.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -62,11 +63,15 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 		RingHitBoxComponent->SetupAttachment(GetMesh());
 	}
 
+	ComboWidgetAnchorComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ComboWidgetAnchorComponent"));
 	ComboWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ComboWidgetComponent"));
-	if (ComboWidgetComponent)
+	if (ComboWidgetAnchorComponent && ComboWidgetComponent)
 	{
-		ComboWidgetComponent->SetupAttachment(GetMesh());
+		ComboWidgetAnchorComponent->SetupAttachment(GetMesh());
+		ComboWidgetAnchorComponent->SetAbsolute(false,true,false);
+		ComboWidgetComponent->SetupAttachment(ComboWidgetAnchorComponent);
 		ComboWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		ComboWidgetComponent->SetAbsolute(false, true, false);
 		ComboWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ComboWidgetComponent->bReceivesDecals = 0;
 		ComboWidgetComponent->SetCastShadow(false);
@@ -301,6 +306,14 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 	{
 		Server_InteractItem(Item);
 	}
+
+	if (const AInstrumentBase* InstrumentBase = Cast<AInstrumentBase>(InteractedActor))
+	{
+		if (ADefaultPlayerState* PS = GetPlayerState<ADefaultPlayerState>())
+		{
+			PS->AddScore(InstrumentBase->GetInstrumentPickUpScore(), EScoreType::InstrumentPickedUp);
+		}
+	}
 }
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
@@ -336,6 +349,7 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 			{
 				RhythmSubsystem->OnInstrumentPicked.Broadcast(OldType, NewType);
 			}
+
 		}
 	}
 }

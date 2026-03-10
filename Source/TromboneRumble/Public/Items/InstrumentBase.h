@@ -6,6 +6,7 @@
 #include "Items/WeaponBase.h"
 #include "Utilities/Defines.h" 
 #include "GameplayEffectTypes.h"
+#include "Data/InstrumentScoreData.h"
 #include "InstrumentBase.generated.h"
 
 class URhythmComboWidgetBase;
@@ -35,6 +36,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void Client_OnHitSuccess_Implementation(AActor* HitActor) override;
 	virtual void OnRep_CurrentOwner(AActor* OldActor) override;
 	virtual void Unequip(AActor* OwnerActor) override;
 
@@ -82,6 +84,9 @@ protected:
 	TObjectPtr<UAkAudioEvent> BuffActivationSound;
 	// ~GAS Helpers
 
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
+	TObjectPtr<UAkAudioEvent> PerfectNoteHitSound;
+
 	// Rhythm Logic
 	UPROPERTY(EditAnywhere, Category = "Config|Instrument|Data")
 	TObjectPtr<UInstrumentScoreData> ScoreData;
@@ -107,4 +112,7 @@ protected:
 
 private:
 	void BindToRhythmSubsystem(bool bBind);
+
+public:
+	FORCEINLINE float GetInstrumentPickUpScore() const { return ScoreData ? ScoreData->InstrumentPickUpScore : 0.0f; }
 };

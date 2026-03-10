@@ -71,6 +71,25 @@ void AInstrumentBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	DOREPLIFETIME(AInstrumentBase, ActiveBuffHandle);
 }
 
+void AInstrumentBase::Client_OnHitSuccess_Implementation(AActor* HitActor)
+{
+	Super::Client_OnHitSuccess_Implementation(HitActor);
+
+	if (const APawn* PawnOwner = Cast<APawn>(CurrentOwner))
+	{
+		if (ADefaultPlayerState* DefaultPlayerState = PawnOwner->GetPlayerState<ADefaultPlayerState>())
+		{
+			if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(HitActor))
+			{
+				if (!TromboneCharacter->IsRagdoll() && !TromboneCharacter->IsStun() && IsOwnerLocallyControlled())
+				{
+					DefaultPlayerState->AddScore(FMath::RoundToInt(ScoreData->AttackScore), EScoreType::OnHit);
+				}
+			}
+		}
+	}
+}
+
 void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 {
 	Super::OnRep_CurrentOwner(OldActor);
@@ -230,6 +249,7 @@ void AInstrumentBase::Server_RemoveBuff_Implementation(AActor* InActor)
 		}
 	}
 	ActiveBuffHandle.Invalidate();
+	OnBuffStateChanged.Broadcast(false);
 }
 
 float AInstrumentBase::GetGradeMultiplier() const
@@ -267,6 +287,7 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	ADefaultPlayerState* PS = GetOwnerPlayerState();
 	if (!PS) return;
 
+	//Calculate Score
 	PS->HandleCombo(InNoteResult);
 
 	int32 CurrentCombo = PS->GetCurrentCombo();
@@ -283,6 +304,12 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 		}
 		
 	}
+	//~Calculate Score
+
+	if (PerfectNoteHitSound && (InNoteResult == ENoteResult::Excellent || InNoteResult == ENoteResult::Good))
+	{
+		UAkGameplayStatics::PostEvent(PerfectNoteHitSound, this, 0, FOnAkPostEventCallback());
+	}
 }
 
 void AInstrumentBase::TryCreateIndicatorWidget()
@@ -293,8 +320,10 @@ void AInstrumentBase::TryCreateIndicatorWidget()
 		IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
 		if (IndicatorWidgetInstance.Get())
 		{
+			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
 			IndicatorWidgetInstance->TargetComponent = GetRootComponent();
-			IndicatorWidgetInstance->AddToViewport();
+			//WBP_Rhythm보다 한칸 아래
+			IndicatorWidgetInstance->AddToViewport(-1);
 			GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
 			TryUpdateIndicatorVisibility();
 			return;

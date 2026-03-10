@@ -40,6 +40,16 @@ void ARhythmNote::Tick(float DeltaTime)
 	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, Alpha);
 }
 
+void ARhythmNote::SetPause(bool InPause)
+{
+	bIsMoving = !InPause;
+	if (SyncDebugTimerHandle.IsValid())
+	{
+		if (InPause) GetWorld()->GetTimerManager().PauseTimer(SyncDebugTimerHandle);
+		else GetWorld()->GetTimerManager().UnPauseTimer(SyncDebugTimerHandle);
+	}
+}
+
 void ARhythmNote::OnTakenFromPool_Implementation()
 {
 	NoteLifeTime = 0.f;
@@ -58,6 +68,12 @@ void ARhythmNote::OnReturnToPool_Implementation()
 	NoteLifeTime = 0.f;
 	bIsMoving = false;
 
+	if (ParentSpawner.IsValid())
+	{
+		ParentSpawner->RemoveActiveNote(this);
+		ParentSpawner = nullptr;
+	}
+
 	CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
 	CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
 	CancelSyncDebugTimer();
@@ -70,6 +86,7 @@ void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteS
 	checkf(InSpawner->GetSpawnerType() != EInstrumentType::Invalid, TEXT("Spawner Type is Invalid"));
 
 	NoteType = InSpawner->GetSpawnerType();
+	ParentSpawner = const_cast<ARhythmNoteSpawner*>(InSpawner);
 	TimeToComplete = InTimeToComplete;
 
 	CachedNoteVisualizerClass = InNoteVisualizerClass;

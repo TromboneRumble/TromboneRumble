@@ -19,9 +19,6 @@ class TROMBONERUMBLE_API URhythmLeaderBoardEntry : public UUserWidget
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	int32 Rank = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	int32 Score = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
@@ -30,35 +27,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FLinearColor SkinColor = FLinearColor::White;
 
-	void UpdateData(const FLinearColor& InSkinColor, int32 InRank, int32 InScore, bool bInIsLocalPlayer);
+	void UpdateData(const FLinearColor& InSkinColor, int32 InScore, bool bInIsLocalPlayer);
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> RankText;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreText;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> PlayerBackGround;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UImage> RightBackground;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leaderboard|Style")
-	TObjectPtr<UTexture2D> LocalPlayerBG;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leaderboard|Style")
-	TObjectPtr<UTexture2D> OtherPlayerBG;
 private:
-	int32 TargetRank = 0;
+	float TargetY = 0.f;
 	float RowHeight = 50.f;
 	float MoveSpeed = 10.f;
 
 	
 public:
-	FORCEINLINE void SetTargetRank(int32 InTargetRank) { TargetRank = InTargetRank; }
+	FORCEINLINE void SetTargetY(float InTargetY) { TargetY = InTargetY; }
 	FORCEINLINE void SetRowHeight(float InRowHeight) { RowHeight = InRowHeight; }
 };

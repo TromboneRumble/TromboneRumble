@@ -93,6 +93,10 @@ protected:
 	TObjectPtr<URingHitBoxComponent> RingHitBoxComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
+	TObjectPtr<USceneComponent> ComboWidgetAnchorComponent;
+	// ~Components
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
 	// ~Components
 	

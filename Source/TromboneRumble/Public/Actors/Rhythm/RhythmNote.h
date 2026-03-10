@@ -26,6 +26,7 @@ class TROMBONERUMBLE_API ARhythmNote : public AActor, public IPoolable
 public:	
 	ARhythmNote();
 	virtual void Tick(float DeltaTime) override;
+	void SetPause(bool InPause);
 
 	// IPoolable interface
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
@@ -86,6 +87,9 @@ private:
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ARhythmActor> CachedRhythmActor = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ARhythmNoteSpawner> ParentSpawner = nullptr;
 	// ~Cached References
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))

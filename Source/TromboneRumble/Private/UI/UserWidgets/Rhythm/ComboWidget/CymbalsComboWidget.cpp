@@ -17,96 +17,13 @@ void UCymbalsComboWidget::NativeConstruct()
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
 	BindDelegates();
-	if (ComboText)
-	{
-		ComboText->SetRenderOpacity(0.f);
-	}
-	if (IdleAnim)
-	{
-		PlayAnimation(IdleAnim,0.f,0);
-	}
 }
 
-void UCymbalsComboWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UCymbalsComboWidget::HandleComboChanged_Implementation(ENoteResult InNoteResult, int32 ComboCount)
 {
-	Super::NativeTick(MyGeometry, InDeltaTime);
+	
 }
 
-void UCymbalsComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount)
-{
-	if (!ComboText) return;
-	ComboText->SetRenderOpacity(1.0f);
-
-	switch (InNoteResult)
-	{
-	case ENoteResult::Bad:
-	{
-		static const TArray<FString> BadPhrases = {
-			TEXT("Oops!"),
-			TEXT("Meh"),
-			TEXT("What?"),
-			TEXT("No!"),
-			TEXT("Miss...")
-		};
-
-		int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
-		ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
-		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
-		if (MissAnim)
-		{
-			StopAllAnimations();
-			UUMGSequencePlayer* Player = PlayAnimation(MissAnim);
-			Player->OnSequenceFinishedPlaying().AddLambda([this](UUMGSequencePlayer& InSequencePlayer)
-				{
-					if (IdleAnim)
-					{
-						PlayAnimation(IdleAnim, 0.0f, 0);
-					}
-				});
-		}
-	}
-	break;
-
-	case ENoteResult::Good:
-	{
-		FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-		ComboText->SetText(FText::FromString(ComboString));
-
-		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
-		if (ComboTextAnim)
-		{
-			PlayAnimation(ComboTextAnim);
-		}
-	}
-	break;
-
-	case ENoteResult::Excellent:
-	{
-		FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-		ComboText->SetText(FText::FromString(ComboString));
-
-		ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
-		if (ComboTextAnim)
-		{
-			PlayAnimation(ComboTextAnim);
-		}
-	}
-	break;
-
-	case ENoteResult::None:
-	case ENoteResult::Invalid:
-	default:
-		break;
-	}
-}
-
-void UCymbalsComboWidget::HandleOnAttack(AActor* HitActor)
-{
-	if (OnAttackAnim)
-	{
-		PlayAnimation(OnAttackAnim);
-	}
-}
 
 void UCymbalsComboWidget::BindDelegates()
 {

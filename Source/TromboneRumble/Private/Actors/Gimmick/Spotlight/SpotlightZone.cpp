@@ -72,6 +72,7 @@ void ASpotlightZone::HandleServerRPC(ACharacter* InstigatorCharacter)
 {
 	if (!HasAuthority() || !InstigatorCharacter) return;
 	if (!TriggerVolume->IsOverlappingActor(InstigatorCharacter)) return;
+	if (CurrentState != ESpotlightState::Active) return;
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(InstigatorCharacter))
 	{
 		TryAwardBonus(TromboneCharacter);
@@ -116,6 +117,7 @@ void ASpotlightZone::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 	DOREPLIFETIME(ThisClass, CurrentState);
 	DOREPLIFETIME(ThisClass, bIsBonusAwarded);
+	DOREPLIFETIME(ThisClass, SpotlightBonusScore);
 }
 
 void ASpotlightZone::HandleTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -153,7 +155,7 @@ void ASpotlightZone::HandleOnNoteDetected(ENoteResult NoteResult)
 		return;
 	}
 
-	if (!bIsLocalPlayerOverlapping)
+	if (!bIsLocalPlayerOverlapping || CurrentState != ESpotlightState::Active || bIsBonusAwarded)
 	{
 		return;
 	}
@@ -181,6 +183,8 @@ void ASpotlightZone::HandleOnNoteDetected(ENoteResult NoteResult)
 	}
 	else
 	{
+		//서버의 응답이 오기 전에 중복 획득하는 것을 막기 위해 로컬에서 미리 획득 처리
+		bIsBonusAwarded = true;
 		if (UClientToServerRelayComponent* Relay = LocalCharacter->GetClientToServerRelayComponent())
 		{
 			Relay->Server_SendRPCRequest(this);

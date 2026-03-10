@@ -7,16 +7,21 @@
 #include "Iris/Core/IrisProfiler.h"
 #include "RhythmUIRootWidget.generated.h"
 
-enum class ENoteResult : uint8;
-class ADefaultPlayerState;
-enum class EScoreType : uint8;
+
+
 class UProgressBar;
 class UTextBlock;
-class URhythmLeaderBoard;
-enum class EInstrumentType : uint8;
-class URhythmSpawnWidgetBase;
 class UCanvasPanel;
-class URhythmSpawnWidget;
+
+enum class EScoreType : uint8;
+enum class ERhythmGameState : uint8;
+enum class ENoteResult : uint8;
+enum class EInstrumentType : uint8;
+
+class URhythmTimeWidget;
+class URhythmLeaderBoard;
+class URhythmFloatingScoreWidget;
+class ADefaultPlayerState;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API URhythmUIRootWidget : public UUserWidget
@@ -31,52 +36,45 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	UFUNCTION()
-	void UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
-
-	UFUNCTION()
-	void UpdateComboText(ENoteResult InNoteResult, int32 ComboCount);
-
+	// Components
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URhythmLeaderBoard> WBP_LeaderBoard;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UProgressBar> MusicProgressBar;
+	TObjectPtr<URhythmTimeWidget> WBP_RhythmTimeWidget;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreText;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboText;
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UCanvasPanel> AddedScoreContainer;
+	// ~Components
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboNumberText;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UNamedSlot> AddedScoreNameSlot;
-
+	// Animations
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
+	// ~Animations
 
-	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
-	TObjectPtr<UWidgetAnimation> ComboHitAnim;
+	UPROPERTY(EditDefaultsOnly, Category = "Rhythm")
+	TSubclassOf<URhythmFloatingScoreWidget> FloatingScoreWidgetClass;
 
 private:
-	UFUNCTION()
-	void OnRhythmGameStarted();
-
 	UFUNCTION()
 	void OnPlayerStateChanged(APlayerState* NewPlayerState);
 
 	void BindDelegates(ADefaultPlayerState* InDefaultPlayerState);
 
-	void UpdateProgressbar(float DeltaSeconds);
-	bool hasGameStarted = false;
-	float CurrentSongTotalLength = 0.f;
-	float CurrentTime = 0.f;
-	int32 CurrentSongPlayingID = 0;
+	UFUNCTION()
+	void HandleOnLocalScoreChanged(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType);
+
+	UFUNCTION()
+	void UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
+
+	UFUNCTION()
+	void SpawnFloatingScoreWidget(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
+
 
 };

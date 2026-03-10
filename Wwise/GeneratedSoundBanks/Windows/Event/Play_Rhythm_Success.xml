@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="359672398" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{7066AC5B-4DC9-359D-0483-95C18278B8B8}">
+			<ObjectPath>Play_Rhythm_Success</ObjectPath>
+			<ShortName>Play_Rhythm_Success</ShortName>
+			<Path>Event/Play_Rhythm_Success.bnk</Path>
+			<Media>
+				<File Id="1071671996" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Rhythm_Success.wav</ShortName>
+					<Path>Media/1071671996.wem</Path>
+					<CachePath>SFX/UI_Rhythm_Success_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="359672398" Name="Play_Rhythm_Success" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Rhythm_Success" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" DurationType="OneShot" DurationMin="1.1849635" DurationMax="1.3509827">
+					<MediaRefs>
+						<MediaRef Id="1071671996"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{7FED62F9-DB9D-6576-58C3-12F4DB4B9678}</FileHash>
+</SoundBanksInfo>
