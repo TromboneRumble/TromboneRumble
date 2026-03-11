@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{AB5E32D0-65AB-8033-40F9-C1F2399F1486}">
+			<ObjectPath>Play_Rhythm_Perfect</ObjectPath>
+			<ShortName>Play_Rhythm_Perfect</ShortName>
+			<Path>Event/Play_Rhythm_Perfect.bnk</Path>
+			<Media>
+				<File Id="267698809" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Rhythm_Success_Perfect.wav</ShortName>
+					<Path>Media/267698809.wem</Path>
+					<CachePath>SFX/UI_Rhythm_Success_Perfect_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2550201584" Name="Play_Rhythm_Perfect" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Rhythm_Perfect" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" DurationType="OneShot" DurationMin="0.56960106" DurationMax="0.60347134">
+					<MediaRefs>
+						<MediaRef Id="267698809"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{4FD0E900-F734-2F7C-B010-AE2DDFD0F14B}</FileHash>
+</SoundBanksInfo>

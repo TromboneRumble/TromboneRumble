@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="343370882" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{4D381A65-2D82-88C8-1F29-05E5052F7E68}">
+			<ObjectPath>Play_Rhythm_Good</ObjectPath>
+			<ShortName>Play_Rhythm_Good</ShortName>
+			<Path>Event/Play_Rhythm_Good.bnk</Path>
+			<Media>
+				<File Id="1071671996" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Rhythm_Success.wav</ShortName>
+					<Path>Media/1071671996.wem</Path>
+					<CachePath>SFX/UI_Rhythm_Success_89BD1287.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="343370882" Name="Play_Rhythm_Good" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Rhythm_Good" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" DurationType="OneShot" DurationMin="1.1426746" DurationMax="1.2106215">
+					<MediaRefs>
+						<MediaRef Id="1071671996"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{9196F6E7-34AC-01F8-8664-C8430B674A73}</FileHash>
+</SoundBanksInfo>
