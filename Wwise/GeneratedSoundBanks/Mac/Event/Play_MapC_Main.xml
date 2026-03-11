@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{884F6C62-1521-077D-D22B-294D3B8487FC}">
+		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{2686A3B4-7641-7FB6-12A7-0ACAB35984CB}">
 			<ObjectPath>Play_MapC_Main</ObjectPath>
 			<ShortName>Play_MapC_Main</ShortName>
 			<Path>Event/Play_MapC_Main.bnk</Path>
@@ -49,5 +49,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{56BFBD16-927A-5671-D444-86A77D9372A8}</FileHash>
+	<FileHash>{881D89BE-8304-F0C6-ACC2-326CD0BB22F1}</FileHash>
 </SoundBanksInfo>
