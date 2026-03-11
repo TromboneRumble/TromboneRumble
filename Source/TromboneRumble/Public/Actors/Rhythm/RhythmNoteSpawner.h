@@ -34,6 +34,14 @@ public:
 
 	UFUNCTION()
 	void OnAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+
+	void PauseRhythmGame();
+
+	void ResumeRhythmGame();
+
+	void StopRhythmGame();
+
+	void RemoveActiveNote(ARhythmNote* Note);
 public:
 
 	UPROPERTY()
@@ -43,11 +51,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
-	void SpawnAndMoveNote(const FString& InUserCueName);
+	UPROPERTY(Transient)
+	TSet<TObjectPtr<ARhythmNote>> ActiveNotes;
 
-
-private:
 	// Components
 	UPROPERTY(EditAnywhere, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UArrowComponent> ArrowComponent;
@@ -62,6 +68,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkAudioEvent> FailEvent = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Rhythm", meta = (AllowPrivateAccess = "true"))
+	int32 NoteSpawnPlayingID = 0;
 	// ~WWise Audio
 
 	// Cached Reference
@@ -88,6 +97,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Rhythm")
 	bool IsSyncTesting = false;
+
+private:
+	void SpawnAndMoveNote(const FString& InUserCueName);
+
 public:
 	//getter setter
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
@@ -98,4 +111,9 @@ public:
 	FORCEINLINE UAkSwitchValue* GetChangeSwitch() const { return ChangeSwitch; }
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE UAkAudioEvent* GetFailEvent() const { return FailEvent; }
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm")
+	FORCEINLINE int32 GetNoteSpawnPlayingID() const { return NoteSpawnPlayingID; }
+
+	FORCEINLINE void SetNoteSpawnPlayingID(int32 InPlayingID) { NoteSpawnPlayingID = InPlayingID; }
 };

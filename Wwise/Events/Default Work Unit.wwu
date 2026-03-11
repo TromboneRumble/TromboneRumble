@@ -397,10 +397,10 @@
 						</Event>
 						<Event Name="Play_Audience_Combo" ID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}">
 							<ChildrenList>
-								<Action Name="" ID="{D9FBB997-E313-4F4C-A8F2-2EAD8A1E0517}" ShortID="768952766">
+								<Action Name="" ID="{E2B267DB-3778-482F-8408-72405C680D86}" ShortID="712373112">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Audience_Combo" ID="{B40E2C4A-0983-45F3-B44D-F151DB5BBD64}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+											<ObjectRef Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -667,6 +667,202 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Main_BGM" ID="{55BE03C6-4690-4D44-B234-E181C9194207}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Folder Name="Easy" ID="{7DCFAE57-89D3-49A1-8E40-9D6CFE159B47}" ShortID="12137590">
+							<ChildrenList>
+								<Folder Name="Map_A_Easy_Rhythm" ID="{567B1D70-8922-4743-97D3-A76BF22625D5}" ShortID="871335915">
+									<ChildrenList>
+										<Event Name="Play_MapA_Easy_Main" ID="{CF76B634-FCD1-48D0-8700-EA68AE5402DC}">
+											<ChildrenList>
+												<Action Name="" ID="{AC55FB3E-EE47-469F-A407-FF8C8E2B4081}" ShortID="493290730">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Map_A_Easy" ID="{F7BE12A1-47E6-4FC4-8517-0D28E023FC16}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapA_Easy_C" ID="{633AB9B2-0A16-43DA-859D-940C15E7E727}">
+											<ChildrenList>
+												<Action Name="" ID="{E149E12A-B09A-4BA1-8C16-776C8FD41EF6}" ShortID="820056510">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapA_Easy_Cymbal_MIDI" ID="{1992CD64-C85D-4FE1-9DBB-9E82A55D52B4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapA_Easy_V" ID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}">
+											<ChildrenList>
+												<Action Name="" ID="{E4DB7475-9BBE-4881-B7BA-46FBFEC2CE60}" ShortID="304626902">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapA_Easy_Violin_MIDI" ID="{1314623F-7339-4B2A-BA4B-B37119C112F4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapA_Easy_T" ID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}">
+											<ChildrenList>
+												<Action Name="" ID="{97772AD0-0677-4A80-8177-A4C5A1CE74C6}" ShortID="30275943">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapA_Easy_Trombone_MIDI" ID="{63952994-4491-4955-94E4-89B402D8CC28}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+									</ChildrenList>
+								</Folder>
+								<Folder Name="Map_B_Easy_Rhythm" ID="{E3084648-3705-4101-87E2-64F2DB5E367D}" ShortID="549863192">
+									<ChildrenList>
+										<Event Name="MIDI_MapB_Easy_C" ID="{66CDB2D4-2EB1-4FBA-BEA8-56900D0B9BA5}">
+											<ChildrenList>
+												<Action Name="" ID="{9E8515B7-4F9E-499E-A9C7-E6D87D60C66E}" ShortID="654033094">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapB_Easy_Cymbal_MIDI" ID="{9864200D-5A39-428F-B95E-2E9B7DD8CA18}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapB_Easy_T" ID="{32AB15D1-3735-4CB1-B22B-C4372805B4C3}">
+											<ChildrenList>
+												<Action Name="" ID="{638F1C7D-C698-4E82-A513-D85D9B6217EE}" ShortID="909373037">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapB_Easy_Trombone_MIDI" ID="{605201C1-3A0D-49B4-B591-E75E70100EFE}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapB_Easy_V" ID="{83857DAD-1B0E-4622-A7D8-BC452FC7303C}">
+											<ChildrenList>
+												<Action Name="" ID="{392173E9-73EF-4738-8B54-7859C7FB6D61}" ShortID="524283110">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapB_Easy_Violin_MIDI" ID="{8CCA2F6B-6107-41AA-AC6C-AA31B06B1129}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="Play_MapB_Easy_Main" ID="{8196F37A-0DB6-42AE-9826-3BC96A93FB02}">
+											<ChildrenList>
+												<Action Name="" ID="{98FD5857-EE51-45E1-BA0C-3CCE969C303D}" ShortID="234291898">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Map_B_Easy" ID="{6006FCCB-2D40-4F56-BF72-439A8D420E59}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+									</ChildrenList>
+								</Folder>
+								<Folder Name="Map_C_Easy_Rhythm" ID="{01659ADF-23BF-4373-80B6-6E461CDEC820}" ShortID="548855731">
+									<ChildrenList>
+										<Event Name="Play_MapC_Easy_Main" ID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}">
+											<ChildrenList>
+												<Action Name="" ID="{65B68323-2F29-49D8-8FFB-125AC38FB762}" ShortID="777177338">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="Map_C_Easy" ID="{0AAF8E79-081C-4182-9EC1-123C1425475E}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapC_Easy_V" ID="{F89E643B-4B7D-417C-A48C-211C459CFAFA}">
+											<ChildrenList>
+												<Action Name="" ID="{75D52F7B-323B-4156-8947-AA9D0D3A7D64}" ShortID="926595807">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapC_Easy_Violin_MIDI" ID="{2630F939-95B2-4BFE-86B5-5CF972AD3028}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapC_Easy_T" ID="{05BF03DD-37F8-4C59-807C-4F0833112725}">
+											<ChildrenList>
+												<Action Name="" ID="{50EA6C14-0C5B-4FF0-BEC6-71B3DF769FD0}" ShortID="78166334">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapC_Easy_Trombone_MIDI" ID="{36F4973D-1C25-4290-907B-3F0FE2C8D437}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+										<Event Name="MIDI_MapC_Easy_C" ID="{7E3210EE-4E63-48F1-85F3-6C20F873A925}">
+											<ChildrenList>
+												<Action Name="" ID="{85911238-FA0D-4DEA-BD8E-1816984374DB}" ShortID="924426577">
+													<ReferenceList>
+														<Reference Name="Target">
+															<ObjectRef Name="MapC_Easy_Cymbal_MIDI" ID="{9AEF4745-8F56-4CE4-9605-C0372F1E7F19}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+														</Reference>
+													</ReferenceList>
+												</Action>
+											</ChildrenList>
+										</Event>
+									</ChildrenList>
+								</Folder>
+							</ChildrenList>
+						</Folder>
+						<Event Name="Play_Tutorial_BGM" ID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}">
+							<ChildrenList>
+								<Action Name="" ID="{75865E00-0A93-4F33-80E3-7CBBFDB84C5E}" ShortID="183240429">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Tutorial_BGM" ID="{3F4679E8-A150-4114-9E48-5CD1438EE803}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="UI_SFX" ID="{1B5C4A91-6284-49B4-BCD2-2002CEB74D93}" ShortID="211380141">
+					<ChildrenList>
+						<Event Name="Play_Click" ID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}">
+							<ChildrenList>
+								<Action Name="" ID="{8D121E94-E86F-467D-98A7-1E1DAE135320}" ShortID="567504278">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Click" ID="{4D3CE2F8-75CD-49F1-BB3F-DFF1B88B705F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Overlap" ID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}">
+							<ChildrenList>
+								<Action Name="" ID="{E61AFD41-9D25-4329-AC19-9FA41D9D585C}" ShortID="244378938">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Overlap" ID="{D672328E-EC30-4C26-87C9-CC0AAE0D2512}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Rhythm_Success" ID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}">
+							<ChildrenList>
+								<Action Name="" ID="{F6CF401D-F25E-419D-8390-ADF8A832A5A5}" ShortID="418991016">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Rhythm_Success" ID="{FE408BC1-CED6-45EA-A074-0942ACC4F1BF}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

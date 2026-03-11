@@ -9,46 +9,28 @@
 #include "Components/TextBlock.h"
 
 
-void URhythmLeaderBoardEntry::UpdateData(const FLinearColor& InSkinColor, int32 InRank, int32 InScore, bool bInIsLocalPlayer)
+void URhythmLeaderBoardEntry::UpdateData(const FLinearColor& InSkinColor, int32 InScore, bool bInIsLocalPlayer)
 {
-	Rank = InRank;
 	Score = InScore;
 	bIsLocalPlayer = bInIsLocalPlayer;
 	SkinColor = InSkinColor;
 
-	if (RankText)
-	{
-		RankText->SetText(FText::Format(NSLOCTEXT("", "", "{0}등"), Rank));
-	}
-
 	if (ScoreText)
 	{
-		ScoreText->SetText(FText::Format(NSLOCTEXT("", "", "{0}점"), Score));
+		FString PaddedScore = FString::Printf(TEXT("%06d"), Score);
+		ScoreText->SetText(FText::FromString(PaddedScore));
 	}
 
 	if (PlayerBackGround)
 	{
 		PlayerBackGround->SetColorAndOpacity(InSkinColor);
 	}
-
-	if (RightBackground)
-	{
-		if (bIsLocalPlayer && LocalPlayerBG)
-		{
-			RightBackground->SetBrushFromTexture(LocalPlayerBG, true);
-		}
-		else if (OtherPlayerBG)
-		{
-			RightBackground->SetBrushFromTexture(OtherPlayerBG, true);
-		}
-	}
 }
 
 void URhythmLeaderBoardEntry::NativeConstruct()
 {
 	Super::NativeConstruct();
-	TargetRank = Rank;
-	UpdateData(SkinColor, Rank, Score, bIsLocalPlayer);
+	UpdateData(SkinColor, Score, bIsLocalPlayer);
 }
 
 void URhythmLeaderBoardEntry::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -56,19 +38,12 @@ void URhythmLeaderBoardEntry::NativeTick(const FGeometry& MyGeometry, float InDe
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(Slot);
-	if (!CanvasSlot || TargetRank <= 0)
+	if (!CanvasSlot)
 	{
 		return;
 	}
 
-	const float AdditionalPadding = RowHeight * 0.1f;
-	const float EntryHeight = RowHeight * 0.9f;
-	const float Spacing = EntryHeight + AdditionalPadding;
-
-	const float TargetY = (TargetRank - 1) * Spacing;
-
 	FVector2D Pos = CanvasSlot->GetPosition();
 	Pos.Y = FMath::FInterpTo(Pos.Y, TargetY, InDeltaTime, MoveSpeed);
-
 	CanvasSlot->SetPosition(Pos);
 }

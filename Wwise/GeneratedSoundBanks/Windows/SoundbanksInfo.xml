@@ -63,6 +63,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{7BB7D602-216E-F06B-59F7-35F8C07257FA}">
+			<ObjectPath>Play_Click</ObjectPath>
+			<ShortName>Play_Click</ShortName>
+			<Path>Event/Play_Click.bnk</Path>
+			<Media>
+				<File Id="1028579066" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Click.wav</ShortName>
+					<Path>Media/1028579066.wem</Path>
+					<CachePath>SFX/UI_Click_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="311910498" Name="Play_Click" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Click" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" DurationType="OneShot" DurationMin="0.24266666" DurationMax="0.24266666">
+					<MediaRefs>
+						<MediaRef Id="1028579066"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="356551040" Type="Bus" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}" Language="SFX" Hash="{9924DF2A-E273-9BDE-9B9D-EAAA6FFA0251}">
 			<ObjectPath>Map_A_Reverb</ObjectPath>
 			<ShortName>Map_A_Reverb</ShortName>
@@ -81,6 +100,25 @@
 					</PluginRefs>
 				</AuxBus>
 			</AuxBusses>
+		</SoundBank>
+		<SoundBank Id="359672398" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{7066AC5B-4DC9-359D-0483-95C18278B8B8}">
+			<ObjectPath>Play_Rhythm_Success</ObjectPath>
+			<ShortName>Play_Rhythm_Success</ShortName>
+			<Path>Event/Play_Rhythm_Success.bnk</Path>
+			<Media>
+				<File Id="1071671996" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Rhythm_Success.wav</ShortName>
+					<Path>Media/1071671996.wem</Path>
+					<CachePath>SFX/UI_Rhythm_Success_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="359672398" Name="Play_Rhythm_Success" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Rhythm_Success" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" DurationType="OneShot" DurationMin="1.1849635" DurationMax="1.3509827">
+					<MediaRefs>
+						<MediaRef Id="1071671996"/>
+					</MediaRefs>
+				</Event>
+			</Events>
 		</SoundBank>
 		<SoundBank Id="387421697" Type="Event" GUID="{25288945-2D05-4E74-8F4D-6EF0BA964007}" Language="SFX" Hash="{20E27F04-103D-6E9C-6CA5-8084CB94755C}">
 			<ObjectPath>MIDI_RhythmGame_Violin</ObjectPath>
@@ -154,6 +192,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}">
+			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
+			<ShortName>Play_Tutorial_BGM</ShortName>
+			<Path>Event/Play_Tutorial_BGM.bnk</Path>
+			<Media>
+				<File Id="443851067" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Tutorial.wav</ShortName>
+					<Path>Media/443851067.wem</Path>
+					<CachePath>SFX/Tutorial_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="435519059" Name="Play_Tutorial_BGM" ObjectPath="\Events\Default Work Unit\Music\Play_Tutorial_BGM" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" DurationType="Infinite">
+					<MediaRefs>
+						<MediaRef Id="443851067"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="534561221" Type="User" GUID="{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}" Language="SFX" Hash="{01F301E8-1A5C-6D7B-E5BC-96CE8FE31C14}">
 			<ObjectPath>\SoundBanks\Default Work Unit\MainSoundBank</ObjectPath>
 			<ShortName>MainSoundBank</ShortName>
@@ -222,6 +279,72 @@
 					</MediaRefs>
 				</Event>
 			</Events>
+		</SoundBank>
+		<SoundBank Id="772478594" Type="Event" GUID="{CF76B634-FCD1-48D0-8700-EA68AE5402DC}" Language="SFX" Hash="{4874E5B3-ECE5-BB22-B577-8B46A74EC62A}">
+			<ObjectPath>Play_MapA_Easy_Main</ObjectPath>
+			<ShortName>Play_MapA_Easy_Main</ShortName>
+			<Path>Event/Play_MapA_Easy_Main.bnk</Path>
+			<Media>
+				<File Id="292465416" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Cymbal.wav</ShortName>
+					<Path>Media/292465416.wem</Path>
+					<CachePath>SFX/Map_A_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="378149048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Trombone.wav</ShortName>
+					<Path>Media/378149048.wem</Path>
+					<CachePath>SFX/Map_A_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="681341114" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Main.wav</ShortName>
+					<Path>Media/681341114.wem</Path>
+					<CachePath>SFX/Map_A_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="708259744" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_violin.wav</ShortName>
+					<Path>Media/708259744.wem</Path>
+					<CachePath>SFX/Map_A_violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="858484202" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_None.wav</ShortName>
+					<Path>Media/858484202.wem</Path>
+					<CachePath>SFX/Map_A_None_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="35494138" Name="Meter (Custom)" ObjectPath="\Interactive Music Hierarchy\Default Work Unit\Easy\MapA_Easy\MapA_Song\Map_A_Easy\Map_A__Easy_Inst\[Effect Slot [0]: (Meter)]\Meter (Custom)" GUID="{9C8BA623-BD5E-4DA3-8762-8E449ACF401C}" LibName="Wwise Meter" LibId="8454147"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="772478594" Name="Play_MapA_Easy_Main" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_A_Easy_Rhythm\Play_MapA_Easy_Main" GUID="{CF76B634-FCD1-48D0-8700-EA68AE5402DC}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
+					<MediaRefs>
+						<MediaRef Id="292465416"/>
+						<MediaRef Id="378149048"/>
+						<MediaRef Id="681341114"/>
+						<MediaRef Id="708259744"/>
+						<MediaRef Id="858484202"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="35494138"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
+			</GameParameters>
+			<SwitchGroups>
+				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
+					<Switches>
+						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
+						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
 		</SoundBank>
 		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{3154E065-F27B-3F92-9B2C-A5244C14C599}">
 			<ObjectPath>Play_Light_On</ObjectPath>
@@ -308,7 +431,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{9E1E9A53-1D30-E94E-AFDB-45BBE0F6F90F}">
+		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{922EF9BA-D085-D9B9-5729-D8744AB619D6}">
 			<ObjectPath>Play_MapB_Main</ObjectPath>
 			<ShortName>Play_MapB_Main</ShortName>
 			<Path>Event/Play_MapB_Main.bnk</Path>
@@ -361,7 +484,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{94700D02-C752-FCA6-6DEA-A44D91657234}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{274F959E-0626-B451-B197-14D6F6D2B522}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -558,6 +681,129 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{FD8183FB-53DE-E47B-48DC-1532E99C9021}">
+			<ObjectPath>MIDI_MapA_Easy_C</ObjectPath>
+			<ShortName>MIDI_MapA_Easy_C</ShortName>
+			<Path>Event/MIDI_MapA_Easy_C.bnk</Path>
+			<Media>
+				<File Id="134442568" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_C.mid</ShortName>
+					<Path>Media/134442568.wem</Path>
+					<CachePath>SFX/MIDI_C_CA4283DA.wem</CachePath>
+				</File>
+				<File Id="292465416" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Cymbal.wav</ShortName>
+					<Path>Media/292465416.wem</Path>
+					<CachePath>SFX/Map_A_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="681341114" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Main.wav</ShortName>
+					<Path>Media/681341114.wem</Path>
+					<CachePath>SFX/Map_A_Main_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1171122989" Name="MIDI_MapA_Easy_C" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_A_Easy_Rhythm\MIDI_MapA_Easy_C" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" DurationType="OneShot" DurationMin="176.13333" DurationMax="176.13333">
+					<MediaRefs>
+						<MediaRef Id="134442568"/>
+						<MediaRef Id="292465416"/>
+						<MediaRef Id="681341114"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{7B24B38F-20EF-17C8-5D73-FED2665426BD}">
+			<ObjectPath>MIDI_MapA_Easy_V</ObjectPath>
+			<ShortName>MIDI_MapA_Easy_V</ShortName>
+			<Path>Event/MIDI_MapA_Easy_V.bnk</Path>
+			<Media>
+				<File Id="681341114" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Main.wav</ShortName>
+					<Path>Media/681341114.wem</Path>
+					<CachePath>SFX/Map_A_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="708259744" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_violin.wav</ShortName>
+					<Path>Media/708259744.wem</Path>
+					<CachePath>SFX/Map_A_violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1052433117" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_V.mid</ShortName>
+					<Path>Media/1052433117.wem</Path>
+					<CachePath>SFX/MIDI_V_707D6309.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1171123000" Name="MIDI_MapA_Easy_V" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_A_Easy_Rhythm\MIDI_MapA_Easy_V" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" DurationType="OneShot" DurationMin="313.4729" DurationMax="313.4729">
+					<MediaRefs>
+						<MediaRef Id="681341114"/>
+						<MediaRef Id="708259744"/>
+						<MediaRef Id="1052433117"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{073609F0-A96E-E3C1-602C-5025643544C5}">
+			<ObjectPath>MIDI_MapA_Easy_T</ObjectPath>
+			<ShortName>MIDI_MapA_Easy_T</ShortName>
+			<Path>Event/MIDI_MapA_Easy_T.bnk</Path>
+			<Media>
+				<File Id="157812467" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_T.mid</ShortName>
+					<Path>Media/157812467.wem</Path>
+					<CachePath>SFX/MIDI_T_707D6309.wem</CachePath>
+				</File>
+				<File Id="378149048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Trombone.wav</ShortName>
+					<Path>Media/378149048.wem</Path>
+					<CachePath>SFX/Map_A_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="681341114" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_Main.wav</ShortName>
+					<Path>Media/681341114.wem</Path>
+					<CachePath>SFX/Map_A_Main_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1171123002" Name="MIDI_MapA_Easy_T" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_A_Easy_Rhythm\MIDI_MapA_Easy_T" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" DurationType="OneShot" DurationMin="313.4729" DurationMax="313.4729">
+					<MediaRefs>
+						<MediaRef Id="157812467"/>
+						<MediaRef Id="378149048"/>
+						<MediaRef Id="681341114"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="1296229240" Type="Event" GUID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}" Language="SFX" Hash="{45166D77-6F57-0BD5-EEE0-6230040F00B7}">
 			<ObjectPath>Play_Cymbal_Attack_Voice</ObjectPath>
 			<ShortName>Play_Cymbal_Attack_Voice</ShortName>
@@ -583,7 +829,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{6508ECC6-A934-F59D-4458-E0A3473AF1C0}">
+		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{AECE2320-89F3-5470-3574-6D0A9E5E8A45}">
 			<ObjectPath>Play_MapC_Main</ObjectPath>
 			<ShortName>Play_MapC_Main</ShortName>
 			<Path>Event/Play_MapC_Main.bnk</Path>
@@ -1107,48 +1353,24 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{9779E62C-CABE-C4BD-4634-12ED0AB0E978}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{7A0B686A-8C12-DE34-1C21-0980D16F03C3}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
 			<Media>
-				<File Id="139820036" Language="SFX" Streaming="false" Location="Loose">
+				<File Id="127793829" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>SWITCH.cm.wav</ShortName>
-					<Path>Media/139820036.wem</Path>
-					<CachePath>SFX/SWITCH.cm_FBC78EF0.wem</CachePath>
-				</File>
-				<File Id="858484202" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Map_A_None.wav</ShortName>
-					<Path>Media/858484202.wem</Path>
-					<CachePath>SFX/Map_A_None_FBC78EF0.wem</CachePath>
+					<Path>Media/127793829.wem</Path>
+					<CachePath>SFX/SWITCH.cm_474FD301.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="Infinite">
-					<SwitchContainers>
-						<SwitchContainer>
-							<SwitchValue GroupType="Switch" GroupId="2854002871" Id="1072145695" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
-							<MediaRefs>
-								<MediaRef Id="858484202"/>
-							</MediaRefs>
-						</SwitchContainer>
-						<SwitchContainer>
-							<SwitchValue GroupType="Switch" GroupId="2854002871" Id="468800587" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
-							<MediaRefs>
-								<MediaRef Id="139820036"/>
-							</MediaRefs>
-						</SwitchContainer>
-					</SwitchContainers>
+				<Event Id="1663244239" Name="Play_Audience_Combo" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Audience_Combo" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" DurationType="OneShot" DurationMin="2.6034718" DurationMax="2.6034718">
+					<MediaRefs>
+						<MediaRef Id="127793829"/>
+					</MediaRefs>
 				</Event>
 			</Events>
-			<SwitchGroups>
-				<SwitchGroup Id="2854002871" Name="Audience" ObjectPath="\Switches\Default Work Unit\Audience" GUID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
-					<Switches>
-						<Switch Id="468800587" Name="Combo_On" ObjectPath="\Switches\Default Work Unit\Audience\Combo_On" GUID="{30A2DC3C-0003-4E2A-96AF-21E3111B4B37}"/>
-						<Switch Id="1072145695" Name="Combo_Off" ObjectPath="\Switches\Default Work Unit\Audience\Combo_Off" GUID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
-					</Switches>
-				</SwitchGroup>
-			</SwitchGroups>
 		</SoundBank>
 		<SoundBank Id="1795670352" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{FF613A78-BCAA-B79D-6CC3-9D0247AFDF45}">
 			<ObjectPath>Note_Long_End</ObjectPath>
@@ -1652,6 +1874,53 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="2848021508" Type="Event" GUID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}" Language="SFX" Hash="{0164ACD9-0832-9003-F4EE-0F388B16B61C}">
+			<ObjectPath>Play_MapC_Easy_Main</ObjectPath>
+			<ShortName>Play_MapC_Easy_Main</ShortName>
+			<Path>Event/Play_MapC_Easy_Main.bnk</Path>
+			<Media>
+				<File Id="94648847" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Trombone.wav</ShortName>
+					<Path>Media/94648847.wem</Path>
+					<CachePath>SFX/Map_C_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="256784692" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Violin.wav</ShortName>
+					<Path>Media/256784692.wem</Path>
+					<CachePath>SFX/Map_C_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="401878926" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Cymbal.wav</ShortName>
+					<Path>Media/401878926.wem</Path>
+					<CachePath>SFX/Map_C_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2848021508" Name="Play_MapC_Easy_Main" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_C_Easy_Rhythm\Play_MapC_Easy_Main" GUID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}" DurationType="OneShot" DurationMin="205.48332" DurationMax="205.48332">
+					<MediaRefs>
+						<MediaRef Id="94648847"/>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="256784692"/>
+						<MediaRef Id="401878926"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<SwitchGroups>
+				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
+					<Switches>
+						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
+						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
+		</SoundBank>
 		<SoundBank Id="2848553920" Type="Event" GUID="{FA134D79-95A6-438E-B236-82CD5B5E4B5C}" Language="SFX" Hash="{4649A31C-608E-D906-1E88-B4F0E9B80B5E}">
 			<ObjectPath>Play_RhythmGame_Main</ObjectPath>
 			<ShortName>Play_RhythmGame_Main</ShortName>
@@ -1691,6 +1960,59 @@
 						<MediaRef Id="911794588"/>
 						<MediaRef Id="976228796"/>
 						<MediaRef Id="1069913665"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<SwitchGroups>
+				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
+					<Switches>
+						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
+						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
+		</SoundBank>
+		<SoundBank Id="2850152613" Type="Event" GUID="{8196F37A-0DB6-42AE-9826-3BC96A93FB02}" Language="SFX" Hash="{32D24E67-07F7-CB3A-AD5B-CC4CE8573C26}">
+			<ObjectPath>Play_MapB_Easy_Main</ObjectPath>
+			<ShortName>Play_MapB_Easy_Main</ShortName>
+			<Path>Event/Play_MapB_Easy_Main.bnk</Path>
+			<Media>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="409495629" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Violin.wav</ShortName>
+					<Path>Media/409495629.wem</Path>
+					<CachePath>SFX/Map_B_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="449514800" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Cymbal.wav</ShortName>
+					<Path>Media/449514800.wem</Path>
+					<CachePath>SFX/Map_B_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="858484202" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_A_None.wav</ShortName>
+					<Path>Media/858484202.wem</Path>
+					<CachePath>SFX/Map_A_None_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1063425767" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Trombone.wav</ShortName>
+					<Path>Media/1063425767.wem</Path>
+					<CachePath>SFX/Map_B_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2850152613" Name="Play_MapB_Easy_Main" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\Play_MapB_Easy_Main" GUID="{8196F37A-0DB6-42AE-9826-3BC96A93FB02}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+					<MediaRefs>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="409495629"/>
+						<MediaRef Id="449514800"/>
+						<MediaRef Id="858484202"/>
+						<MediaRef Id="1063425767"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -1904,7 +2226,130 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{C31F60DE-C050-E4DC-128B-744E703B3311}">
+		<SoundBank Id="3391962191" Type="Event" GUID="{7E3210EE-4E63-48F1-85F3-6C20F873A925}" Language="SFX" Hash="{78185696-FE6E-B2CB-2ADE-BDF49A3D294D}">
+			<ObjectPath>MIDI_MapC_Easy_C</ObjectPath>
+			<ShortName>MIDI_MapC_Easy_C</ShortName>
+			<Path>Event/MIDI_MapC_Easy_C.bnk</Path>
+			<Media>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="285156482" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_C.mid</ShortName>
+					<Path>Media/285156482.wem</Path>
+					<CachePath>SFX/MapC_MIDI_C_6B8EF492.wem</CachePath>
+				</File>
+				<File Id="401878926" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Cymbal.wav</ShortName>
+					<Path>Media/401878926.wem</Path>
+					<CachePath>SFX/Map_C_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3391962191" Name="MIDI_MapC_Easy_C" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_C_Easy_Rhythm\MIDI_MapC_Easy_C" GUID="{7E3210EE-4E63-48F1-85F3-6C20F873A925}" DurationType="OneShot" DurationMin="316.7991" DurationMax="316.7991">
+					<MediaRefs>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="285156482"/>
+						<MediaRef Id="401878926"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3391962200" Type="Event" GUID="{05BF03DD-37F8-4C59-807C-4F0833112725}" Language="SFX" Hash="{6AD3BF05-7E29-F694-80E4-7F2E9E958126}">
+			<ObjectPath>MIDI_MapC_Easy_T</ObjectPath>
+			<ShortName>MIDI_MapC_Easy_T</ShortName>
+			<Path>Event/MIDI_MapC_Easy_T.bnk</Path>
+			<Media>
+				<File Id="94648847" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Trombone.wav</ShortName>
+					<Path>Media/94648847.wem</Path>
+					<CachePath>SFX/Map_C_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="528766811" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_T.mid</ShortName>
+					<Path>Media/528766811.wem</Path>
+					<CachePath>SFX/MapC_MIDI_T_B8CEAB03.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3391962200" Name="MIDI_MapC_Easy_T" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_C_Easy_Rhythm\MIDI_MapC_Easy_T" GUID="{05BF03DD-37F8-4C59-807C-4F0833112725}" DurationType="OneShot" DurationMin="463.38947" DurationMax="463.38947">
+					<MediaRefs>
+						<MediaRef Id="94648847"/>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="528766811"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3391962202" Type="Event" GUID="{F89E643B-4B7D-417C-A48C-211C459CFAFA}" Language="SFX" Hash="{ED3064FD-A154-2981-5772-2B2E197E0121}">
+			<ObjectPath>MIDI_MapC_Easy_V</ObjectPath>
+			<ShortName>MIDI_MapC_Easy_V</ShortName>
+			<Path>Event/MIDI_MapC_Easy_V.bnk</Path>
+			<Media>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="256784692" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Violin.wav</ShortName>
+					<Path>Media/256784692.wem</Path>
+					<CachePath>SFX/Map_C_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="626910662" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_V.mid</ShortName>
+					<Path>Media/626910662.wem</Path>
+					<CachePath>SFX/MapC_MIDI_V_B8CEAB03.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3391962202" Name="MIDI_MapC_Easy_V" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_C_Easy_Rhythm\MIDI_MapC_Easy_V" GUID="{F89E643B-4B7D-417C-A48C-211C459CFAFA}" DurationType="OneShot" DurationMin="463.38947" DurationMax="463.38947">
+					<MediaRefs>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="256784692"/>
+						<MediaRef Id="626910662"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{3297B058-6540-A127-2845-43D5572B7FC4}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -1949,6 +2394,129 @@
 					<MediaRefs>
 						<MediaRef Id="961276031"/>
 					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3621760169" Type="Event" GUID="{83857DAD-1B0E-4622-A7D8-BC452FC7303C}" Language="SFX" Hash="{FAACDF04-1E45-C954-23E3-536C34ED82CB}">
+			<ObjectPath>MIDI_MapB_Easy_V</ObjectPath>
+			<ShortName>MIDI_MapB_Easy_V</ShortName>
+			<Path>Event/MIDI_MapB_Easy_V.bnk</Path>
+			<Media>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="409495629" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Violin.wav</ShortName>
+					<Path>Media/409495629.wem</Path>
+					<CachePath>SFX/Map_B_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1052433117" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_V.mid</ShortName>
+					<Path>Media/1052433117.wem</Path>
+					<CachePath>SFX/MIDI_V_707D6309.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3621760169" Name="MIDI_MapB_Easy_V" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\MIDI_MapB_Easy_V" GUID="{83857DAD-1B0E-4622-A7D8-BC452FC7303C}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="409495629"/>
+						<MediaRef Id="1052433117"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3621760171" Type="Event" GUID="{32AB15D1-3735-4CB1-B22B-C4372805B4C3}" Language="SFX" Hash="{99E461CC-3B5E-514D-9E67-1F45B4E20367}">
+			<ObjectPath>MIDI_MapB_Easy_T</ObjectPath>
+			<ShortName>MIDI_MapB_Easy_T</ShortName>
+			<Path>Event/MIDI_MapB_Easy_T.bnk</Path>
+			<Media>
+				<File Id="157812467" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_T.mid</ShortName>
+					<Path>Media/157812467.wem</Path>
+					<CachePath>SFX/MIDI_T_707D6309.wem</CachePath>
+				</File>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1063425767" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Trombone.wav</ShortName>
+					<Path>Media/1063425767.wem</Path>
+					<CachePath>SFX/Map_B_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3621760171" Name="MIDI_MapB_Easy_T" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\MIDI_MapB_Easy_T" GUID="{32AB15D1-3735-4CB1-B22B-C4372805B4C3}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="157812467"/>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="1063425767"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="3621760188" Type="Event" GUID="{66CDB2D4-2EB1-4FBA-BEA8-56900D0B9BA5}" Language="SFX" Hash="{EA38DE97-7FF5-701F-0BE7-00F84B3B4200}">
+			<ObjectPath>MIDI_MapB_Easy_C</ObjectPath>
+			<ShortName>MIDI_MapB_Easy_C</ShortName>
+			<Path>Event/MIDI_MapB_Easy_C.bnk</Path>
+			<Media>
+				<File Id="134442568" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MIDI_C.mid</ShortName>
+					<Path>Media/134442568.wem</Path>
+					<CachePath>SFX/MIDI_C_CA4283DA.wem</CachePath>
+				</File>
+				<File Id="322920745" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Main.wav</ShortName>
+					<Path>Media/322920745.wem</Path>
+					<CachePath>SFX/Map_B_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="449514800" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_B_Cymbal.wav</ShortName>
+					<Path>Media/449514800.wem</Path>
+					<CachePath>SFX/Map_B_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3621760188" Name="MIDI_MapB_Easy_C" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_B_Easy_Rhythm\MIDI_MapB_Easy_C" GUID="{66CDB2D4-2EB1-4FBA-BEA8-56900D0B9BA5}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+					<MediaRefs>
+						<MediaRef Id="134442568"/>
+						<MediaRef Id="322920745"/>
+						<MediaRef Id="449514800"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
@@ -2047,6 +2615,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="3795447587" Type="Event" GUID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}" Language="SFX" Hash="{B22D8C2F-46A3-ED8F-8C58-89776E181FB6}">
+			<ObjectPath>Play_Overlap</ObjectPath>
+			<ShortName>Play_Overlap</ShortName>
+			<Path>Event/Play_Overlap.bnk</Path>
+			<Media>
+				<File Id="195044146" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Overlap.wav</ShortName>
+					<Path>Media/195044146.wem</Path>
+					<CachePath>SFX/UI_Overlap_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3795447587" Name="Play_Overlap" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Overlap" GUID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}" DurationType="OneShot" DurationMin="0.042583335" DurationMax="0.042583335">
+					<MediaRefs>
+						<MediaRef Id="195044146"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="4133920287" Type="Event" GUID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}" Language="SFX" Hash="{0454997F-BB84-47C7-79E3-F4D36F4870ED}">
 			<ObjectPath>Play_Long_Short</ObjectPath>
 			<ShortName>Play_Long_Short</ShortName>
@@ -2113,7 +2700,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{E17EEC12-A35C-6F1C-143B-8C2B0AD78EC3}">
+		<SoundBank Id="4250244477" Type="Event" GUID="{5AB7B217-5DB1-496B-9263-7CF1392B9B48}" Language="SFX" Hash="{30031835-864C-B6A0-7C3D-FCAF99420E38}">
 			<ObjectPath>Play_Audience_Boo</ObjectPath>
 			<ShortName>Play_Audience_Boo</ShortName>
 			<Path>Event/Play_Audience_Boo.bnk</Path>
@@ -2145,5 +2732,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{347FDFC3-6325-16BB-BD6E-7BD008FEB82E}</FileHash>
+	<FileHash>{37CD3E10-83EA-0A9C-F3C0-930C114A32D6}</FileHash>
 </SoundBanksInfo>

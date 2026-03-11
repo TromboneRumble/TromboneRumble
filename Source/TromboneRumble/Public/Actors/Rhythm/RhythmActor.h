@@ -33,9 +33,30 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	ENoteResult DetectLongNoteEnd();
-	
 
 	// Init Game
+
+	UFUNCTION(BlueprintCallable)
+	void PrepareAndStartRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void PauseRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void ResumeRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void StopRhythmGame();
+	// ~ Init Game
+
+protected:
+	virtual void BeginPlay() override;
+
+	void CleanupRhythmGame();
+
+	void PrepareRhythmGame();
+
+	void StartRhythmGame();
 
 	/// <summary>
 	/// 악기 전용 RhythmSpawner를 생성하고 초기화
@@ -56,18 +77,22 @@ public:
 	void InitBGMEvent(UAkAudioEvent* InSoundEvent, UAkSwitchValue* InNoneSwitch);
 
 	UFUNCTION(BlueprintCallable)
-	void StartRhythmGame();
-
-	UFUNCTION(BlueprintCallable)
 	void SpawnRhythmRootUI();
-	// ~ Init Game
-
-protected:
-	virtual void BeginPlay() override;
 
 private:
 	// Rhythm Game Init
-	void PrepareRhythmGame();
+	void InitGameState();
+	FTimerHandle GameStateInitTimerHandle;
+
+	UPROPERTY()
+	bool bIsDataLoaded = false;
+
+	UPROPERTY()
+	bool bIsLoadingData = false;     
+
+	UPROPERTY()
+	bool bStartRequested = false;
+
 	ARhythmNoteSpawner* GetOrCreateSpawner(EInstrumentType InType);
 	bool DestroySpawner(EInstrumentType InType);
 
@@ -80,9 +105,21 @@ private:
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
 
+	UPROPERTY()
+	bool AreOtherPlayersReady = false;
+
 	UFUNCTION()
 	void WaitForOtherPlayers();
 	FTimerHandle CheckPlayersTimerHandle;
+
+	UFUNCTION()
+	void PlayMusic();
+	FTimerHandle PlayBackgroundMusicTimerHandle;
+	UFUNCTION()
+	void HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	bool hasReceivedMusicStartCallback = false;
+	bool hasReceivedDurationCallback = false;
+	bool hasShotBGMDelegate = false;
 	// ~Rhythm Game Init
 
 	// Note Detection Logic
@@ -130,17 +167,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UAkSwitchValue* NoneSwitch = nullptr;
 
-	UFUNCTION()
-	void PlayMusic();
-	FTimerHandle PlayBackgroundMusicTimerHandle;
-	UFUNCTION()
-	void HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
-	bool hasReceivedMusicStartCallback = false;
-	bool hasReceivedDurationCallback = false;
-	bool hasShotBGMDelegate = false;
-
 	UPROPERTY()
 	EInstrumentType FocusedType = EInstrumentType::Background;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int32 BGMPlayingID = 0;
 
 	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool IsSensingLongNote = false;
@@ -150,14 +181,7 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	bool IsSyncTesting = false;
-
-	UPROPERTY()
-	bool IsRhythmGameReady = false;
-
-	UPROPERTY()
-	bool AreOtherPlayersReady = false;
 	// ~Rhythm Game
-
 
 	// Cached References
 	UActorPoolSubsystem* GetCachedActorPoolSubsystem();
@@ -178,4 +202,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE EInstrumentType GetFocusedInstrumentType() const { return FocusedType; }
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm")
+	FORCEINLINE int32 GetBGMPlayingID() const { return BGMPlayingID; }
 };

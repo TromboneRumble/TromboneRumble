@@ -14,6 +14,13 @@ class URhythmLeaderBoardEntry;
 class AInGameState;
 class APlayerState;
 
+UENUM(BlueprintType)
+enum class ELeaderboardStyle : uint8
+{
+	FixedSlot		UMETA(DisplayName = "랭크 기반"),
+	Proportional	UMETA(DisplayName = "점수 비례 기반")
+};
+
 /**
  * 
  */
@@ -24,11 +31,12 @@ class TROMBONERUMBLE_API URhythmLeaderBoard : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	
-	void SetButtonsVisibility(bool bIsVisible);
 
 	UPROPERTY(EditAnywhere, Category = "Leaderboard")
 	TSubclassOf<URhythmLeaderBoardEntry> EntryClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Leaderboard")
+	ELeaderboardStyle LeaderboardStyle = ELeaderboardStyle::FixedSlot;
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -41,22 +49,10 @@ protected:
 	UFUNCTION()
 	void HandleLocalPlayerStateChanged(APlayerState* NewPlayerState);
 	
-	UFUNCTION()
-	void HandleExitButtonClicked();
-	
-	UFUNCTION()
-	void OnDestroySessionSuccess();
-	
-	UFUNCTION()
-	void OnDestroySessionFailure();
+
 
 
 private:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Exit;
-	
-	UPROPERTY(Transient)
-	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
 	
 	UPROPERTY()
 	TMap<TWeakObjectPtr<APlayerState>, URhythmLeaderBoardEntry*> EntryMap;

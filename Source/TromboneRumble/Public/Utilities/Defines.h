@@ -134,6 +134,19 @@ enum class ENoteResult : uint8
 };
 
 UENUM(BlueprintType)
+enum class ERhythmGameState : uint8
+{
+	None = 0		UMETA(DisplayName = "None"), 
+	Start = 1		UMETA(DisplayName = "Start"),  
+	Playing = 2		UMETA(DisplayName = "Playing"),
+	Paused = 3		UMETA(DisplayName = "Paused"),
+	Resumed = 4		UMETA(DisplayName = "Resumed"),
+	Stopped = 5		UMETA(DisplayName = "Stopped"),
+	Ended			UMETA(DisplayName = "Ended"),
+	Invalid = 255   UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
 enum class EInstrumentType : uint8
 {
 	Background	= 0		UMETA(DisplayName = "Background"),
@@ -159,10 +172,12 @@ UENUM(BlueprintType)
 enum class EScoreType : uint8
 {
 	RhythmScore = 0				UMETA(DisplayName = "Rhythm"),
-	BuffedRhythmScore = 1		UMETA(DisplayName = "RhythmBuffed"),
-	InstrumentPickedUp = 2		UMETA(DisplayName = "InstrumentPickedUp"),
-	OnHit = 3					UMETA(DisplayName = "OnHit"),
-	SpotLight = 4				UMETA(DisplayName = "SpotLight"),
+	BuffedTromboneScore = 1		UMETA(DisplayName = "BuffedTromboneScore"),
+	BuffedViolinScore = 2		UMETA(DisplayName = "BuffedViolinScore"),
+	InstrumentPickedUp = 3		UMETA(DisplayName = "InstrumentPickedUp"),
+	OnHit = 4					UMETA(DisplayName = "OnHit"),
+	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
+	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)

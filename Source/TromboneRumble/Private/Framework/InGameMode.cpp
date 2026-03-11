@@ -45,14 +45,6 @@ void AInGameMode::GameEnd() const
 	{
 		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
 	}
-	
-	for (TActorIterator<AGimmickManager> It(GetWorld()); It; ++It)
-	{
-		if (*It)
-		{
-			It->DeactivateAllGimmicks();
-		}
-	}
 }
 
 void AInGameMode::OnRhythmGameEndedReport()

@@ -8,6 +8,7 @@
 #include "Utilities/Defines.h"
 #include "RhythmSubsystem.generated.h"
 
+class ARhythmActor;
 enum class EInstrumentType : uint8;
 class UAkCallbackInfo;
 class UAkMusicSyncCallbackInfo;
@@ -15,14 +16,30 @@ class UAkMusicSyncCallbackInfo;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMusicUserCue, FName, CueName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentPickedDelegate, EInstrumentType, PrevType, EInstrumentType, NewType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRhythmGameStartedDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRhythmGameEndedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRhythmGameStateDelegate, ERhythmGameState, CurrentGameState);
 
 UCLASS()
 class TROMBONERUMBLE_API URhythmSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
+	void StartRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void PauseRhythmGame();
+	UFUNCTION(BlueprintCallable)
+	void ResumeRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void StopRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void EndRhythmGame();
+
+	UFUNCTION()
+	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+
 	UPROPERTY(BlueprintAssignable)
 	FOnMusicUserCue OnMusicUserCue;
 
@@ -33,12 +50,19 @@ public:
 	FOnNoteDetectedDelegate OnNoteDetected;
 
 	//BGM의 PlayingID를 세팅해야해서 노트 소환이 아니라, 음악 재생 시점에서 게임 시작했다고 알림
-	FOnRhythmGameStartedDelegate OnRhythmGameStarted;
-	FOnRhythmGameEndedDelegate OnRhythmGameEnded;
+	FOnRhythmGameStateDelegate OnRhythmGameStateChanged;
+protected:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	TObjectPtr<ARhythmActor> RhythmActor;
 
-	UFUNCTION()
-	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	ERhythmGameState CurrentState = ERhythmGameState::None;
 private:
+	void OnWorldBeginPlay();
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
+
+	bool isRhythmGameForceStopped = false;
+
+public:
+	FORCEINLINE ERhythmGameState GetCurrentRhythmState() const { return CurrentState; }
 };

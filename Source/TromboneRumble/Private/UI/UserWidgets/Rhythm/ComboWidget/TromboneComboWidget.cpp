@@ -26,12 +26,9 @@ void UTromboneComboWidget::NativeConstruct()
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
 	BindDelegates();
-	if (ComboText)
-	{
-		ComboText->SetRenderOpacity(0.f);
-	}
 	if (ProgressBar)
 	{
+		ProgressBar->SetRenderOpacity(0.f);
 		ProgressBar->SetPercent(0.f);
 	}
 }
@@ -68,100 +65,22 @@ void UTromboneComboWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 	ProgressBar->SetPercent(CurrentPercent);
 }
 
-void UTromboneComboWidget::HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount)
+void UTromboneComboWidget::HandleComboChanged_Implementation(ENoteResult InNoteResult, int32 ComboCount)
 {
-	if (!ComboText) return;
-	ComboText->SetRenderOpacity(1.0f);
-
-	switch (InNoteResult)
-	{
-		case ENoteResult::Bad:
-		{
-			static const TArray<FString> BadPhrases = {
-				TEXT("Oops!"),
-				TEXT("Meh"),
-				TEXT("What?"),
-				TEXT("No!"),
-				TEXT("Miss...")
-			};
-
-			int32 RandomIndex = FMath::RandRange(0, BadPhrases.Num() - 1);
-			ComboText->SetText(FText::FromString(BadPhrases[RandomIndex]));
-			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
-			if (MissAnim)
-			{
-				StopAllAnimations();
-				PlayAnimation(MissAnim);
-			}
-		}
-		break;
-
-		case ENoteResult::Good:
-		{
-			FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-			ComboText->SetText(FText::FromString(ComboString));
-
-			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.8f, 0.0f))); // Gold
-			if (ComboTextAnim)
-			{
-				PlayAnimation(ComboTextAnim);
-			}
-			if (!isBuffActivated && ComboBarAnim)
-			{
-				PlayAnimation(ComboBarAnim);
-			}
-		}
-		break;
-
-		case ENoteResult::Excellent:
-		{
-			FString ComboString = FString::FromInt(ComboCount) + TEXT(" ♪");
-			ComboText->SetText(FText::FromString(ComboString));
-
-			ComboText->SetColorAndOpacity(FSlateColor(FLinearColor(0.0f, 1.0f, 0.0f)));
-			if (ComboTextAnim)
-			{
-				PlayAnimation(ComboTextAnim);
-			}
-			if (!isBuffActivated && ComboBarAnim)
-			{
-				PlayAnimation(ComboBarAnim);
-			}
-		}
-		break;
-
-		case ENoteResult::None:
-		case ENoteResult::Invalid:
-		default:
-			break;
-	}
+	
 }
 
-void UTromboneComboWidget::HandleBuffStatusChanged(bool IsActive)
+void UTromboneComboWidget::HandleBuffStatusChanged_Implementation(bool IsActive)
 {
 	isBuffActivated = IsActive;
-	if (isBuffActivated && BuffActivateAnim)
+	if (isBuffActivated)
 	{
-		UUMGSequencePlayer* Player = PlayAnimation(BuffActivateAnim);
-		if (Player)
-		{
-			Player->OnSequenceFinishedPlaying().AddUObject(this, &ThisClass::OnBuffActivateAnimationFinished);
-		}
+		StopAnimation(ComboBarAnim);
+		ProgressBar->SetVisibility(ESlateVisibility::Collapsed);
 	}
-	else if (!isBuffActivated)
+	else
 	{
-		if (BuffLoopAnim && IsAnimationPlaying(BuffLoopAnim))
-		{
-			StopAnimation(BuffLoopAnim);
-		}
-	}
-}
-
-void UTromboneComboWidget::OnBuffActivateAnimationFinished(UUMGSequencePlayer& Player)
-{
-	if (isBuffActivated && BuffLoopAnim)
-	{
-		PlayAnimation(BuffLoopAnim, 0.0f, 0);
+		ProgressBar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	}
 }
 

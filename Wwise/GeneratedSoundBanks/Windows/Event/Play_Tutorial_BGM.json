@@ -1,0 +1,46 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "435519059",
+    "Type": "Event",
+    "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
+    "Language": "SFX",
+    "Hash": "{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}",
+    "ObjectPath": "Play_Tutorial_BGM",
+    "ShortName": "Play_Tutorial_BGM",
+    "Path": "Event/Play_Tutorial_BGM.bnk",
+    "Media": [
+     {
+      "Id": "443851067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Tutorial.wav",
+      "Path": "Media/443851067.wem",
+      "CachePath": "SFX/Tutorial_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "435519059",
+      "Name": "Play_Tutorial_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Play_Tutorial_BGM",
+      "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "443851067"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{1385321E-41CC-5E81-4DBE-8F80577DE479}"
+ }
+}

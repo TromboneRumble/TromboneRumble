@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	311910498	Play_Click			\Default Work Unit\UI_SFX\Play_Click	
+

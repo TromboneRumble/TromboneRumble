@@ -113,6 +113,8 @@ private:
 	FLinearColor SpotlightActiveColor = FLinearColor(1, 0.98f, 0.64f);
 	
 	FTimerHandle LifecycleTimerHandle;
+
+	UPROPERTY(Replicated)
 	int32 SpotlightBonusScore = 300;
 
 	UPROPERTY(EditDefaultsOnly, Category = "VFX", meta = (AllowPrivateAccess = "true"))

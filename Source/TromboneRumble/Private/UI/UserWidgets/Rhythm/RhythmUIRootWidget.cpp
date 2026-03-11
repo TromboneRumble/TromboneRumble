@@ -4,110 +4,164 @@
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Data/RhythmSongDataRow.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmLeaderBoard.h"
+#include "UI/UserWidgets/Rhythm/RhythmFloatingScoreWidget.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Characters/DefaultPlayerController.h"
+#include "Framework/InGameState.h"
+#include "Utilities/DebugHelper.h"
 
 
-void URhythmUIRootWidget::OnGameEnded()
-{
-	if (ShowLeaderboardAnim)
-	{
-		PlayAnimation(ShowLeaderboardAnim);
-	}
-	if (WBP_LeaderBoard)
-	{
-		WBP_LeaderBoard->SetButtonsVisibility(true);
-	}
-}
 
 void URhythmUIRootWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	if (IsDesignTime()) return;
-	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-	{
-		RhythmSubsystem->OnRhythmGameStarted.AddDynamic(this, &ThisClass::OnRhythmGameStarted);
-	}
-	if (ComboText)
-	{
-		ComboText->SetVisibility(ESlateVisibility::Hidden);
-	}
-	if (MusicProgressBar)
-	{
-		MusicProgressBar->SetPercent(0.f);
-	}
 }
 
 void URhythmUIRootWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
-	if (APlayerController* PlayerController = GetOwningPlayer())
+	BindDelegates();
+	if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
 	{
-		if (ADefaultPlayerState* DefaultPlayerState = PlayerController->GetPlayerState<ADefaultPlayerState>())
-		{
-			DefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::UpdateScoreText);
-		}
+		DefaultPlayerController->OnPlayerStateChanged.AddDynamic(this, &ThisClass::HandleOnPlayerStateChanged);
 	}
+}
+
+void URhythmUIRootWidget::NativeDestruct()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RetryBind);
+	Super::NativeDestruct();
 }
 
 void URhythmUIRootWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	if (hasGameStarted)
-	{
-		UpdateProgressbar(InDeltaTime);
-	}
-	
 }
 
-void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState)
+
+
+void URhythmUIRootWidget::BindDelegates()
 {
-	if (AffectedPlayerState && AffectedPlayerState->GetOwningController() && AffectedPlayerState->GetOwningController()->IsLocalController())
+	APlayerController* PlayerController = GetOwningPlayer();
+	if (!PlayerController) return;
+
+
+	if (ADefaultPlayerState* DefaultPlayerState = PlayerController->GetPlayerState<ADefaultPlayerState>())
 	{
-		if (ScoreText && ScoreUpdatedAnim)
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RetryBind);
+
+		DefaultPlayerState->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+		DefaultPlayerState->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleOnLocalScoreChanged);
+
+		// Debug::Print(TEXT("Successfully Bound to PlayerState Delegates"), FColor::Green);
+	}
+	else
+	{
+		if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_RetryBind))
 		{
-			int32 UpdatedScore = FMath::FloorToInt(AffectedPlayerState->GetScore());
-			FString FormattedScore = FString::Printf(TEXT("%06d"), UpdatedScore);
-			ScoreText->SetText(FText::FromString(FormattedScore));
+			GetWorld()->GetTimerManager().SetTimer(
+				TimerHandle_RetryBind,
+				this,
+				&URhythmUIRootWidget::RetryBindDelegates,
+				0.1f,
+				true 
+			);
+		}
+	}
+}
+
+void URhythmUIRootWidget::RetryBindDelegates()
+{
+	// Debug::Print(TEXT("Retrying Delegate Binding..."), FColor::Yellow);
+	BindDelegates();
+}
+
+void URhythmUIRootWidget::HandleOnPlayerStateChanged(APlayerState* NewPlayerState)
+{
+	if (ADefaultPlayerState* PS = Cast<ADefaultPlayerState>(NewPlayerState))
+	{
+		BindDelegates();
+
+		// 더 이상 들을 필요 없으니 구독 해제 (선택사항)
+		if (ADefaultPlayerController* DefaultPlayerController = Cast<ADefaultPlayerController>(GetOwningPlayer()))
+		{
+			DefaultPlayerController->OnPlayerStateChanged.RemoveDynamic(this, &ThisClass::HandleOnPlayerStateChanged);
+		}
+	}
+}
+
+
+void URhythmUIRootWidget::HandleOnLocalScoreChanged(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType)
+{
+	UpdateScoreText(PlayerState, AddedAmount, ScoreType);
+	SpawnFloatingScoreWidget(PlayerState, AddedAmount, ScoreType);
+}
+
+void URhythmUIRootWidget::UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType)
+{
+	if (!AffectedPlayerState) return;
+
+	if (AController* PC = AffectedPlayerState->GetOwningController())
+	{
+		if (!PC->IsLocalController()) return;
+	}
+
+	if (ScoreText)
+	{
+		int32 UpdatedScore = FMath::FloorToInt(AffectedPlayerState->GetScore());
+		FString FormattedScore = FString::Printf(TEXT("%06d"), UpdatedScore);
+		ScoreText->SetText(FText::FromString(FormattedScore));
+
+		if (ScoreType != EScoreType::None && ScoreUpdatedAnim)
+		{
 			PlayAnimation(ScoreUpdatedAnim);
 		}
 	}
 }
 
-void URhythmUIRootWidget::OnRhythmGameStarted()
+void URhythmUIRootWidget::SpawnFloatingScoreWidget(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType)
 {
-	if (UTromboneGameInstance* TromboneGameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (AddedAmount <= 0) return;
+
+	if (!PlayerState) return;
+	AController* PC = PlayerState->GetOwningController();
+	if (!PC || !PC->IsLocalController()) return;
+
+	if (ScoreType == EScoreType::None || ScoreType == EScoreType::Invalid) return;
+
+	if (FloatingScoreWidgetClass)
 	{
-		if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+		URhythmFloatingScoreWidget* FloatingWidget = CreateWidget<URhythmFloatingScoreWidget>(this, FloatingScoreWidgetClass);
+		if (FloatingWidget)
 		{
-			CurrentSongPlayingID = DataSubsystem->GetCurrentSongPlayingID();
-			if (CurrentSongPlayingID)
+			FloatingWidget->Init(AddedAmount, ScoreType);
+
+			if (AddedScoreContainer)
 			{
-				CurrentSongTotalLength = DataSubsystem->GetCurrentSongLength();
+				UCanvasPanelSlot* CanvasSlot = AddedScoreContainer->AddChildToCanvas(FloatingWidget);
+				if (CanvasSlot)
+				{
+					CanvasSlot->SetAutoSize(true);
+
+					float RandomX = FMath::RandRange(-40.0f, 60.0f);
+					float RandomY = FMath::RandRange(-30.0f, 30.0f);
+
+					CanvasSlot->SetPosition(FVector2D(RandomX, RandomY));
+				}
+			}
+			else
+			{
+				FloatingWidget->AddToViewport();
 			}
 		}
-	}
-	if (MusicProgressBar)
-	{
-		MusicProgressBar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	CurrentTime = 0.f;
-	hasGameStarted = true;
-}
-
-void URhythmUIRootWidget::UpdateProgressbar(float DeltaSeconds)
-{
-	if (CurrentSongTotalLength == 0.f) return;
-	CurrentTime += DeltaSeconds;
-
-	float Percent = FMath::Clamp(CurrentTime / CurrentSongTotalLength, 0.f, 1.f);
-	if (MusicProgressBar)
-	{
-		MusicProgressBar->SetPercent(Percent);
 	}
 }

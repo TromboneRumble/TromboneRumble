@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3391962200" Type="Event" GUID="{05BF03DD-37F8-4C59-807C-4F0833112725}" Language="SFX" Hash="{6AD3BF05-7E29-F694-80E4-7F2E9E958126}">
+			<ObjectPath>MIDI_MapC_Easy_T</ObjectPath>
+			<ShortName>MIDI_MapC_Easy_T</ShortName>
+			<Path>Event/MIDI_MapC_Easy_T.bnk</Path>
+			<Media>
+				<File Id="94648847" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Trombone.wav</ShortName>
+					<Path>Media/94648847.wem</Path>
+					<CachePath>SFX/Map_C_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="243907615" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_C_Main.wav</ShortName>
+					<Path>Media/243907615.wem</Path>
+					<CachePath>SFX/Map_C_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="528766811" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MapC_MIDI_T.mid</ShortName>
+					<Path>Media/528766811.wem</Path>
+					<CachePath>SFX/MapC_MIDI_T_B8CEAB03.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3391962200" Name="MIDI_MapC_Easy_T" ObjectPath="\Events\Default Work Unit\Music\Easy\Map_C_Easy_Rhythm\MIDI_MapC_Easy_T" GUID="{05BF03DD-37F8-4C59-807C-4F0833112725}" DurationType="OneShot" DurationMin="463.38947" DurationMax="463.38947">
+					<MediaRefs>
+						<MediaRef Id="94648847"/>
+						<MediaRef Id="243907615"/>
+						<MediaRef Id="528766811"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{B9984D5A-EDC8-63A8-6016-B96D658FA668}</FileHash>
+</SoundBanksInfo>

@@ -7,58 +7,72 @@
 #include "Iris/Core/IrisProfiler.h"
 #include "RhythmUIRootWidget.generated.h"
 
+
+enum class EInGameState : uint8;
 class UProgressBar;
 class UTextBlock;
-class URhythmLeaderBoard;
-enum class EInstrumentType : uint8;
-class URhythmSpawnWidgetBase;
 class UCanvasPanel;
-class URhythmSpawnWidget;
+
+enum class EScoreType : uint8;
+enum class ERhythmGameState : uint8;
+enum class ENoteResult : uint8;
+enum class EInstrumentType : uint8;
+
+class URhythmTimeWidget;
+class URhythmLeaderBoard;
+class URhythmFloatingScoreWidget;
+class ADefaultPlayerState;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API URhythmUIRootWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
-	void OnGameEnded();
-
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	UFUNCTION()
-	void UpdateScoreText(APlayerState* AffectedPlayerState);
-
+	// Components
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URhythmLeaderBoard> WBP_LeaderBoard;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UProgressBar> MusicProgressBar;
+	TObjectPtr<URhythmTimeWidget> WBP_RhythmTimeWidget;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreText;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> ComboText;
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UCanvasPanel> AddedScoreContainer;
+	// ~Components
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UNamedSlot> AddedScoreNameSlot;
-
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
+	// Animations
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
+	// ~Animations
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rhythm")
+	TSubclassOf<URhythmFloatingScoreWidget> FloatingScoreWidgetClass;
 
 private:
+	void BindDelegates();
+	FTimerHandle TimerHandle_RetryBind;
+	void RetryBindDelegates();
+
 	UFUNCTION()
-	void OnRhythmGameStarted();
-	void UpdateProgressbar(float DeltaSeconds);
-	bool hasGameStarted = false;
-	float CurrentSongTotalLength = 0.f;
-	float CurrentTime = 0.f;
-	int32 CurrentSongPlayingID = 0;
+	void HandleOnPlayerStateChanged(APlayerState* NewPlayerState);
+
+
+	UFUNCTION()
+	void HandleOnLocalScoreChanged(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType);
+
+	UFUNCTION()
+	void UpdateScoreText(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
+
+	UFUNCTION()
+	void SpawnFloatingScoreWidget(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
 
 };

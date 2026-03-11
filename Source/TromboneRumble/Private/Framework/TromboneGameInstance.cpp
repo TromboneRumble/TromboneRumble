@@ -14,6 +14,7 @@ TSubclassOf<UOnlineSession> UTromboneGameInstance::GetOnlineSessionClass()
 void UTromboneGameInstance::OnStart()
 {
 	Super::OnStart();
+	InitWWiseEngine();
 }
 
 void UTromboneGameInstance::PlayMenuBGM()
@@ -42,5 +43,30 @@ void UTromboneGameInstance::StopMenuBGM()
         
 		bIsMenuMusicPlaying = false;
 		CurrentMenuBGMType = EMenuBGMType::None;
+	}
+}
+
+void UTromboneGameInstance::InitWWiseEngine()
+{
+	{
+		AkMemSettings DefaultMemorySettings;
+		AK::MemoryMgr::GetDefaultSettings(DefaultMemorySettings);
+		AKRESULT InitResult = AK::MemoryMgr::Init(&DefaultMemorySettings);
+		//UE_LOG(LogTemp, Warning, TEXT("MemoryManagerInitResult : %d"), (int32)InitResult);
+	}
+
+	{
+		AkStreamMgrSettings DefaultStreamMgrSettings;
+		AK::StreamMgr::GetDefaultSettings(DefaultStreamMgrSettings);
+		AK::IAkStreamMgr* AkStreamMgr = AK::StreamMgr::Create(DefaultStreamMgrSettings);
+	}
+
+	{
+		AkInitSettings DefaultInitSettings;
+		AK::SoundEngine::GetDefaultInitSettings(DefaultInitSettings);
+		AkPlatformInitSettings DefaultPlatformSettings;
+		AK::SoundEngine::GetDefaultPlatformInitSettings(DefaultPlatformSettings);
+		AKRESULT InitResult = AK::SoundEngine::Init(&DefaultInitSettings, &DefaultPlatformSettings);
+		//UE_LOG(LogTemp, Warning, TEXT("SoundEngineInitResult : %d"), (int32)InitResult);
 	}
 }

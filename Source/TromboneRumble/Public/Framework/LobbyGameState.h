@@ -24,6 +24,7 @@ public:
 	void SetLobbyState(ELobbyState NewState);
 
 	// Host가 게임 시작 버튼 누를때 선택한 곡에 따라 애셋 로딩
+	UFUNCTION(BlueprintCallable)
 	void SetSelectedSongTag(const FGameplayTag& InTag);
 
 	UFUNCTION(NetMulticast, Reliable)

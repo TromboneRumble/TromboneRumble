@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}">
+			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
+			<ShortName>Play_Tutorial_BGM</ShortName>
+			<Path>Event/Play_Tutorial_BGM.bnk</Path>
+			<Media>
+				<File Id="443851067" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Tutorial.wav</ShortName>
+					<Path>Media/443851067.wem</Path>
+					<CachePath>SFX/Tutorial_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="435519059" Name="Play_Tutorial_BGM" ObjectPath="\Events\Default Work Unit\Music\Play_Tutorial_BGM" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" DurationType="Infinite">
+					<MediaRefs>
+						<MediaRef Id="443851067"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{F12EA4A6-C517-EB77-A366-9AF06FB3224C}</FileHash>
+</SoundBanksInfo>

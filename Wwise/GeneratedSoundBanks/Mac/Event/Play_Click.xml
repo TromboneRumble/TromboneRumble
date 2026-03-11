@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="311910498" Type="Event" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" Language="SFX" Hash="{7BB7D602-216E-F06B-59F7-35F8C07257FA}">
+			<ObjectPath>Play_Click</ObjectPath>
+			<ShortName>Play_Click</ShortName>
+			<Path>Event/Play_Click.bnk</Path>
+			<Media>
+				<File Id="1028579066" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Click.wav</ShortName>
+					<Path>Media/1028579066.wem</Path>
+					<CachePath>SFX/UI_Click_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="311910498" Name="Play_Click" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Click" GUID="{5661925E-358B-4DB5-8CD9-19A7BC7F923F}" DurationType="OneShot" DurationMin="0.24266666" DurationMax="0.24266666">
+					<MediaRefs>
+						<MediaRef Id="1028579066"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{2A01FED9-2F41-CBD3-8AF9-DDD5B7056A9D}</FileHash>
+</SoundBanksInfo>

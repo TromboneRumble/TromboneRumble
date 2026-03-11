@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "359672398",
+    "Type": "Event",
+    "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
+    "Language": "SFX",
+    "Hash": "{7066AC5B-4DC9-359D-0483-95C18278B8B8}",
+    "ObjectPath": "Play_Rhythm_Success",
+    "ShortName": "Play_Rhythm_Success",
+    "Path": "Event/Play_Rhythm_Success.bnk",
+    "Media": [
+     {
+      "Id": "1071671996",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Rhythm_Success.wav",
+      "Path": "Media/1071671996.wem",
+      "CachePath": "SFX/UI_Rhythm_Success_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "359672398",
+      "Name": "Play_Rhythm_Success",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Rhythm_Success",
+      "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.1849635",
+      "DurationMax": "1.3509827",
+      "MediaRefs": [
+       {
+        "Id": "1071671996"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{490DAE11-2B7C-35A8-B00C-8ADDA54BF088}"
+ }
+}
