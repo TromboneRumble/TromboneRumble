@@ -2,6 +2,8 @@
 
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "CommonActivatableWidget.h"
+#include "EasyMatchmakingManager.h"
+#include "EasyPartyManager.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
 void UMainUIRoot::PushMenu(const EMainMenuType InType) const
@@ -11,6 +13,9 @@ void UMainUIRoot::PushMenu(const EMainMenuType InType) const
 	{
 		case EMainMenuType::MainMenu:
 			TargetWidgetClass = DefaultWidgetClass;
+			break;
+		case EMainMenuType::Lobby:
+			TargetWidgetClass = LobbyWidgetClass;
 			break;
 		case EMainMenuType::Settings:
 			TargetWidgetClass = SettingMenuWidgetClass;
@@ -23,4 +28,31 @@ void UMainUIRoot::PushMenu(const EMainMenuType InType) const
 	{
 		UIStack->AddWidget(TargetWidgetClass);
 	}
+}
+
+void UMainUIRoot::Register()
+{
+	Super::Register();
+	
+	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	{
+		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingCompleted);
+		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+	}
+}
+
+void UMainUIRoot::HandleMatchmakingStarted()
+{
+	PushLoadingOverlay();
+}
+
+void UMainUIRoot::HandleMatchmakingCompleted(FName SessionName, EEasyMatchmakingCompleteResult Result)
+{
+	PopLoadingOverlay();
+}
+
+void UMainUIRoot::HandleMatchmakingCanceled()
+{
+	PopLoadingOverlay();
 }

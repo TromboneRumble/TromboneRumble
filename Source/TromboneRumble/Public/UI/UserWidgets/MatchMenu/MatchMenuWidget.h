@@ -7,6 +7,9 @@
 #include "Utilities/Defines.h"
 #include "MatchMenuWidget.generated.h"
 
+enum class EEasyMatchmakingCompleteResult : uint8;
+enum class EEasyMatchmakingState : uint8;
+class UTromboneGameInstance;
 enum class ERotatorDirection : uint8;
 class UCommonRotatorWidgetBase;
 enum class EMatchType : uint8;
@@ -24,8 +27,10 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
+	virtual void NativeOnInitialized() override;
 	
 	virtual void Init() override;
+	virtual void SetUIEnabled(const bool bEnabled) override;
 	
 private:
 	// ~ Begin GameState Events
@@ -38,6 +43,7 @@ private:
 	void OnMatchTypeChanged(EMatchType NewType);
 	// ~ End GameState Events
 	
+	// ~ Begin UI Events
 	UFUNCTION()
 	void HandleStartButtonClicked();
 	UFUNCTION()
@@ -46,8 +52,7 @@ private:
 	void HandleInviteButtonClicked();
 	UFUNCTION()
 	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
-
-	virtual void SetUIEnabled(const bool bEnabled) override;
+	// ~ End UI Events
 	
 	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget))
@@ -73,4 +78,9 @@ private:
 	FString CachedLobbyMapPath = "";
 	
 	bool bIsStarted = false;
+	
+	UFUNCTION()
+	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
+	UFUNCTION()
+	void HandleOnUpdateCompleteInMatchmaking(bool bWasSuccessful);
 };

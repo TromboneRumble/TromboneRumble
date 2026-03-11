@@ -16,7 +16,12 @@ UCLASS(Abstract)
 class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+    
 public:
+    //~ Begin UGameInstance Interface
+    virtual TSubclassOf<UOnlineSession> GetOnlineSessionClass() override;
+    //~ End UGameInstance Interface
+    
     virtual void OnStart() override;
     
     UFUNCTION(BlueprintCallable)

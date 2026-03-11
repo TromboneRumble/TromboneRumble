@@ -3,6 +3,8 @@
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "EasyFriendSubsystem.h"
+#include "EasyMatchmakingManager.h"
+#include "EasyMatchmakingPolicy.h"
 #include "EasySessionSettings.h"
 #include "EasySessionSubsystem.h"
 #include "EasySessionUtils.h"
@@ -12,10 +14,8 @@
 #include "Components/EditableText.h"
 #include "Components/VerticalBox.h"
 #include "HAL/PlatformApplicationMisc.h"
-#include "Kismet/GameplayStatics.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "UI/UserWidgets/Popup/ConfirmationDialogueWidget.h"
-#include "Utilities/DebugHelper.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -26,14 +26,27 @@ void UMainMenuWidget::NativeConstruct()
 	CachedMatchMenuMapPath = MatchMenuMapPath;
 }
 
+void UMainMenuWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
+	MatchmakingManager->OnMatchmakingUpdated().AddDynamic(this, &ThisClass::HandleMatchmakingUpdated);
+}
+
 void UMainMenuWidget::Init()
 {
 	Super::Init();
 	
-	if (CB_Online)
+	if (CB_CreateSession)
 	{
-		CB_Online->OnClicked().RemoveAll(this);
-		CB_Online->OnClicked().AddUObject(this, &ThisClass::HandleOnlineButtonClicked);
+		CB_CreateSession->OnClicked().RemoveAll(this);
+		CB_CreateSession->OnClicked().AddUObject(this, &ThisClass::HandleCreateSessionClicked);
+	}
+	if (CB_QuickJoin)
+	{
+		CB_QuickJoin->OnClicked().RemoveAll(this);
+		CB_QuickJoin->OnClicked().AddUObject(this, &ThisClass::HandleQuickJoinButtonClicked);
 	}
 	if (CB_Join)
 	{
@@ -69,11 +82,12 @@ void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 	Super::SetUIEnabled(bEnabled);
 	
 	ET_Code->SetIsEnabled(bEnabled);
-	CB_Online->SetIsEnabled(bEnabled);
+	CB_QuickJoin->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
 	CB_Settings->SetIsEnabled(bEnabled);
 	CB_Guide->SetIsEnabled(bEnabled);
 	CB_Quit->SetIsEnabled(bEnabled);
+	CB_CreateSession->SetIsEnabled(bEnabled);
 }
 
 void UMainMenuWidget::BindSubsystemCallbacks()
@@ -82,17 +96,6 @@ void UMainMenuWidget::BindSubsystemCallbacks()
 	
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->OnStartSessionSuccess.AddUObject(this, &ThisClass::OnStartSessionSuccess);
-		SessionsSubsystem->OnStartSessionFailure.AddUObject(this, &ThisClass::OnStartSessionFailure);
-		
-		SessionsSubsystem->OnFindSessionsSuccess.AddUObject(this, &ThisClass::OnFindSessionsSuccess);
-		SessionsSubsystem->OnFindSessionsFailure.AddUObject(this, &ThisClass::OnFindSessionsFailure);
-			
-		SessionsSubsystem->OnJoinSessionSuccess.AddUObject(this, &ThisClass::OnJoinSessionSuccess);
-		SessionsSubsystem->OnJoinSessionFailure.AddUObject(this, &ThisClass::OnJoinSessionFailure);
-		
-		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
-		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
 	}
 	
 	if (FriendsSubsystem)
@@ -107,17 +110,6 @@ void UMainMenuWidget::RemoveSubsystemCallbacks()
 	
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->OnStartSessionSuccess.RemoveAll(this);
-		SessionsSubsystem->OnStartSessionFailure.RemoveAll(this);
-		
-		SessionsSubsystem->OnFindSessionsSuccess.RemoveAll(this);
-		SessionsSubsystem->OnFindSessionsFailure.RemoveAll(this);
-			
-		SessionsSubsystem->OnJoinSessionSuccess.RemoveAll(this);
-		SessionsSubsystem->OnJoinSessionFailure.RemoveAll(this);
-		
-		SessionsSubsystem->OnDestroySessionSuccess.RemoveAll(this);
-		SessionsSubsystem->OnDestroySessionFailure.RemoveAll(this);
 	}
 	
 	if (FriendsSubsystem)
@@ -126,17 +118,53 @@ void UMainMenuWidget::RemoveSubsystemCallbacks()
 	}
 }
 
-void UMainMenuWidget::HandleOnlineButtonClicked()
+void UMainMenuWidget::HandleCreateSessionClicked()
 {
-	FString LobbyCode = GenerateRandomLobbyCode(FMath::Max(2, 5));
-	
-	if (SessionsSubsystem)
+	FString LobbyCode = GenerateRandomLobbyCode(5);
+
+	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
+
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this, LobbyCode](UEasyMatchmakingPolicy* MatchmakingPolicy)
 	{
-		SetUIEnabled(false);
-		StartHostValidation(LobbyCode);
+		FEasyHostParams HostParams = FEasyHostParams();
+		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
+		HostParams.bHidden = true;
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
+    
+		FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
+		int32 Flag = 0;
+		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
 		
-		ShowLoadingOverlay();
-	}
+		EEasyMatchmakingMode Mode = EEasyMatchmakingMode::CreateOnly;
+    
+		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
+	}));
+}
+
+void UMainMenuWidget::HandleQuickJoinButtonClicked()
+{
+	FString LobbyCode = GenerateRandomLobbyCode(5);
+	
+	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
+			
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this, LobbyCode](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	{
+		FEasyHostParams HostParams = FEasyHostParams();
+		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
+		HostParams.bHidden = false;
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		
+		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
+		Param.HostParams = HostParams;
+		Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
+												
+		int32 Flag = 0;
+		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
+
+		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::Default;
+				
+		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
+	}));
 }
 
 void UMainMenuWidget::HandleJoinButtonClicked()
@@ -147,16 +175,23 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 		return;
 	}
 	
-	if (SessionsSubsystem)
+	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
+			
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
 	{
-		SetUIEnabled(false);
-
-		FEasySearchSettings SearchSettings;
-		SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), ET_Code->GetText().ToString().ToUpper());
-		SessionsSubsystem->FindSessions(SearchSettings);
-		
-		ShowLoadingOverlay();
-	}
+		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
+		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
+		Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
+		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
+												
+		int32 Flag = 0;
+		Flag |= static_cast<int32>(EEasyMatchmakingFlags::NoHost);
+		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
+	
+		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::Default;
+				
+		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
+	}));
 }
 
 void UMainMenuWidget::HandleQuitButtonClicked()
@@ -170,103 +205,23 @@ void UMainMenuWidget::HandleQuitButtonClicked()
 	CachedQuitDialog->ShowDialogue(Message);
 }
 
-void UMainMenuWidget::OnStartSessionSuccess()
+void UMainMenuWidget::HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime)
 {
-	HideLoadingOverlay();
+	UE_LOG(LogTemp, Log, TEXT("Matchmaking State Updated: %s, Time: %d"), LexToString(MatchmakingState), MatchmakingTime);
 	
-	const FString MatchMenuPkg = FPackageName::ObjectPathToPackageName(CachedMatchMenuMapPath);
-	const FString URL = MatchMenuPkg + TEXT("?listen");
-	UGameplayStatics::OpenLevel(this, FName(*URL), true);
-}
-
-void UMainMenuWidget::OnStartSessionFailure()
-{
-	HideLoadingOverlay();
-	
-	SetUIEnabled(true);
-	ShowNoticePopup(TEXT("세션 생성에 실패했습니다. 다시 시도해주세요."));
-}
-
-void UMainMenuWidget::OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults)
-{
-	if (bIsSearchingForHostValidation)
+	if (UEasyStatics::IsMatchmaking(GetWorld()))
 	{
-		bIsSearchingForHostValidation = false;
-		
-		for (auto Result : SessionResults)
-		{
-			FString SettingsValue;
-			Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
-	
-			if (SettingsValue == PendingLobbyCode)
-			{
-				const FString NewCode = GenerateRandomLobbyCode(FMath::Max(2, 5));
-				StartHostValidation(NewCode);
-				return;
-			}
-		}
-		
-		CreateSessionAfterValidation(PendingLobbyCode);
-		return;
+		ShowLoadingOverlay();
 	}
-	
-	const FString& LobbyCode = ET_Code->GetText().ToString().ToUpper();
-
-	for (auto Result : SessionResults)
+	else
 	{
-		FString SettingsValue;
-		Result.Session.SessionSettings.Get(GKey_Lobby_Code, SettingsValue);
-		
-		if (SettingsValue == LobbyCode)
-		{
-			Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
-			Result.Session.SessionSettings.bUsesPresence = true;
-			SessionsSubsystem->JoinSession(Result);
-			return;
-		}
-	}
-	
-	HideLoadingOverlay();
-	
-	SetUIEnabled(true);
-	ShowNoticePopup(FString::Printf(TEXT("'%s'에 해당하는 세션을 찾을 수 없습니다."), *LobbyCode));
-}
-
-void UMainMenuWidget::OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults)
-{
-	if (bIsSearchingForHostValidation)
-	{
-		bIsSearchingForHostValidation = false;
-		SetUIEnabled(true);
-		ShowNoticePopup(TEXT("네트워크 상태가 불안정하여 중복 검사에 실패했습니다."));
 		HideLoadingOverlay();
-		return;
 	}
 	
-	SetUIEnabled(true);
-	ShowNoticePopup(TEXT("세션 검색에 실패했습니다. 다시 시도해주세요."));
-	HideLoadingOverlay();
-}
-
-void UMainMenuWidget::OnJoinSessionSuccess()
-{
-}
-
-void UMainMenuWidget::OnJoinSessionFailure()
-{
-	SetUIEnabled(true);
-	ShowNoticePopup(TEXT("세션 참가에 실패했습니다. 다시 시도해주세요."));
-	HideLoadingOverlay();
-}
-
-void UMainMenuWidget::OnDestroySessionSuccess()
-{
-	PRINT_WITH_CURRENT_CONTEXT("Session destroyed successfully");
-}
-
-void UMainMenuWidget::OnDestroySessionFailure()
-{
-	ShowNoticePopup(TEXT("세션 종료에 실패했습니다. 다시 시도해주세요."));
+	if (MatchmakingState == EEasyMatchmakingState::JoiningSession)
+	{
+		SetUIEnabled(false);
+	}
 }
 
 FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
@@ -279,28 +234,6 @@ FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
 	}
 	
 	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("로비 코드 %s가 생성되어 클립보드에 복사되었습니다."), *RandomCode));
 	
 	return RandomCode;
-}
-
-void UMainMenuWidget::StartHostValidation(const FString& Code)
-{
-	bIsSearchingForHostValidation = true;
-	PendingLobbyCode = Code;
-    
-	FEasySearchSettings SearchSettings;
-	SearchSettings.QuerySettings.Add(GKey_Lobby_Code.ToString(), Code); 
-	SessionsSubsystem->FindSessions(SearchSettings);
-}
-
-void UMainMenuWidget::CreateSessionAfterValidation(const FString& ValidatedCode)
-{
-	if (SessionsSubsystem)
-	{
-		FEasySessionSettings Settings;
-		Settings.NumPublicConnections = 4;
-		Settings.CustomProperties.Add(GKey_Lobby_Code.ToString(), ValidatedCode);
-		SessionsSubsystem->CreateSession(Settings);
-	}
 }

@@ -4,8 +4,12 @@
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "EasyExternalUILibrary.h"
+#include "EasyMatchmakingManager.h"
+#include "EasyMatchmakingPolicy.h"
+#include "EasyOnlineSession.h"
+#include "EasyReservationManager.h"
 #include "EasySessionSettings.h"
-#include "EasySessionSubsystem.h"
+#include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
@@ -17,7 +21,6 @@
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Kismet/GameplayStatics.h"
-#include "Subsystems/GameStateSubsystem.h"
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 
 void UMatchMenuWidget::NativeConstruct()
@@ -46,28 +49,45 @@ void UMatchMenuWidget::NativeDestruct()
 void UMatchMenuWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
-
-	const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld());
-	if (!Subsystem) return;
-
-	const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
-	if (!SessionInterface.IsValid()) return;
-
-	FNamedOnlineSession* CurrentSession = SessionInterface->GetNamedSession(NAME_GameSession);
-    
-	if (CurrentSession && CurrentSession->SessionSettings.Settings.Num() > 0)
+	
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	IOnlineSessionPtr SessionInterface = OnlineSubsystem ? OnlineSubsystem->GetSessionInterface() : nullptr;
+	if (!SessionInterface.IsValid())
 	{
-		if (const FOnlineSessionSetting* Setting = CurrentSession->SessionSettings.Settings.Find(GKey_Lobby_Code))
-		{
-			if (CT_Code)
-			{
-				const FString Prefix = TEXT("입장 코드 : ");
-				FString OutCode;
-				Setting->Data.GetValue(OutCode);
-				CT_Code->SetText(FText::FromString(Prefix + OutCode));
-			}
-		}
+		UE_LOG(LogTemp, Error, TEXT("Session interface is not valid"));
+		return;
 	}
+	
+	FNamedOnlineSession* NamedSession = SessionInterface->GetNamedSession(NAME_GameSession);
+	if (!NamedSession)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No session data found"));
+		return;
+	}
+	
+	FString OutCode;
+	if (!NamedSession->SessionSettings.Get(GKey_Lobby_Code, OutCode))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to get lobby code from session settings"));
+		return;
+	}
+	
+	if (!CT_Code)
+	{
+		UE_LOG(LogTemp, Error, TEXT("CT_Code is not bound in the widget"));
+		return;
+	}
+
+	const FString Prefix = TEXT("입장 코드 : ");
+	CT_Code->SetText(FText::FromString(Prefix + OutCode));
+}
+
+void UMatchMenuWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
+	MatchmakingManager->OnMatchmakingUpdated().AddDynamic(this, &ThisClass::HandleMatchmakingUpdated);
 }
 
 void UMatchMenuWidget::Init()
@@ -76,16 +96,13 @@ void UMatchMenuWidget::Init()
 	
 	const APlayerController* PC = GetOwningPlayer();
 	if (!PC) return;
-	const bool bIsClient = !PC->HasAuthority();
+	const bool bIsHost = PC->HasAuthority();
 	
 	if (CB_Start)
 	{
 		CB_Start->OnClicked().RemoveAll(this);
 		CB_Start->OnClicked().AddUObject(this, &ThisClass::HandleStartButtonClicked);
-		if (bIsClient)
-		{
-			CB_Start->SetIsEnabled(false);
-		}
+		CB_Start->SetIsEnabled(bIsHost);
 	}
 	if (CB_Back)
 	{
@@ -101,10 +118,7 @@ void UMatchMenuWidget::Init()
 	{
 		CR_MatchType->OnRotatedWithDirection().RemoveAll(this);
 		CR_MatchType->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMatchType);
-		if (bIsClient)
-		{
-			CR_MatchType->SetIsEnabled(false);
-		}
+		CR_MatchType->SetIsEnabled(bIsHost);
 	}
 }
 
@@ -156,54 +170,25 @@ void UMatchMenuWidget::OnMatchTypeChanged(EMatchType NewType)
 
 void UMatchMenuWidget::HandleStartButtonClicked()
 {
-	bIsStarted = true;
 	SetUIEnabled(false);
-
-	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
-	{
-		MatchMenuGS->SetIsTransitioningToInGame(true);
-	}
 	
-	if (UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{
-		if (const UGameStateSubsystem* GameStateSubsystem = TromboneGI->GetSubsystem<UGameStateSubsystem>())
-		{
-			if (const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld()))
-			{
-				const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
-				if (SessionInterface.IsValid())
-				{
-					if (const FNamedOnlineSession* Session = SessionInterface->GetNamedSession(NAME_GameSession))
-					{
-						TromboneGI->SetSessionPlayerNumber(Session->RegisteredPlayers.Num());
-					}
-				}
-			}
-			
-			const FString MapPath = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
-
-			UWorld* World = GetWorld();
-			if (!World || World->GetAuthGameMode() == nullptr || MapPath.IsEmpty()) return;
-			
-			if (!World->ServerTravel(MapPath))
-			{
-				bIsStarted = false;
-				SetUIEnabled(true);
-				ShowNoticePopup(TEXT("게임 시작에 실패하였습니다."));
-			}
-		}
+	bIsStarted = true;
+	UEasyReservationManager* ReservationManager = UEasyReservationManager::Get(this);
+	if (ReservationManager->IsReservationHost())
+	{ 
+		TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
+		ReservationManager->SetHostReservations(Reservations);
 	}
+
+	FString URL = TEXT("/Game/Levels/LobbyMap");
+	UEasyStatics::ServerTravelToLevel(this, URL);
 }
 
 void UMatchMenuWidget::HandleBackButtonClicked()
 {
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (UEasySessionSubsystem* EasySessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
-		{
-			EasySessionSubsystem->DestroySession();
-		}
-	}
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	OnlineSession->DestroySession(NAME_GameSession);
+	
 	const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
 	const FString URL = MainMenuPkg;
 	UGameplayStatics::OpenLevel(this, FName(*URL), true);
@@ -212,19 +197,79 @@ void UMatchMenuWidget::HandleBackButtonClicked()
 void UMatchMenuWidget::HandleInviteButtonClicked()
 {
 	EEasyResultType OutResult;
-	UEasyExternalUILibrary::ShowInviteUI(GetOwningPlayer(), OutResult);
+	UEasyExternalUILibrary::ShowInviteUI(GetOwningPlayer(), NAME_GameSession, OutResult);
 }
 
 void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		MatchMenuGS->SetMatchType(static_cast<EMatchType>(Value));
+		EMatchType Type = static_cast<EMatchType>(Value);
+		MatchMenuGS->SetMatchType(Type);
+		
+		ShowLoadingOverlay();
+		
+		bool bNewHidden = false;
+		switch (Type)
+		{
+			case EMatchType::Public:
+				bNewHidden = false;
+				break;
+			
+			case EMatchType::Custom:
+				bNewHidden = true;
+				break;
+			
+			default: 
+				break;
+		}
+		
+		FEasySessionSettings UpdatedSettings;
+		UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+			
+		OnlineSession->OnUpdateMatchComplete().AddDynamic(this, &ThisClass::HandleOnUpdateCompleteInMatchmaking);
+		OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
+		UpdatedSettings.bHidden = bNewHidden;
+		
+		TArray<FEasySessionSetting> ExtraSessionSettings = TArray<FEasySessionSetting>();
+		
+		FString LobbyCode;
+		if (UpdatedSettings.GetSessionSetting(GKey_Lobby_Code, LobbyCode))
+		{
+			ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		}
+				
+		OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings);
+	}
+}
+
+void UMatchMenuWidget::HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime)
+{
+	if (UEasyStatics::IsMatchmaking(GetWorld()))
+	{
+		ShowLoadingOverlay();
+	}
+	else
+	{
+		HideLoadingOverlay();
+	}
+}
+
+void UMatchMenuWidget::HandleOnUpdateCompleteInMatchmaking(bool bWasSuccessful)
+{
+	HideLoadingOverlay();
+	
+	if (bWasSuccessful)
+	{
+		UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+		OnlineSession->OnUpdateMatchComplete().RemoveDynamic(this, &ThisClass::HandleOnUpdateCompleteInMatchmaking);
 	}
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 {
+	Super::SetUIEnabled(bEnabled);
+	
 	CB_Start->SetIsEnabled(bEnabled);
 	CB_Back->SetIsEnabled(bEnabled);
 	CB_Invite->SetIsEnabled(bEnabled);

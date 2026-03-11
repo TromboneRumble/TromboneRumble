@@ -6,13 +6,14 @@
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "MainUIRoot.generated.h"
 
-class UCommonActivatableWidgetStack;
+enum class EEasyMatchmakingCompleteResult : uint8;
 class UCommonActivatableWidget;
 
 enum class EMainMenuType : uint8
 {
 	None,
 	MainMenu,
+	Lobby,
 	Settings
 };
 
@@ -25,6 +26,20 @@ public:
 	void PushMenu(EMainMenuType InType) const;
 	
 protected:
+	virtual void Register() override;
+	
+protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCommonActivatableWidget> SettingMenuWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCommonActivatableWidget> LobbyWidgetClass;
+	
+private:
+	UFUNCTION()
+	void HandleMatchmakingStarted();
+	UFUNCTION()
+	void HandleMatchmakingCompleted(FName SessionName, EEasyMatchmakingCompleteResult Result);
+	UFUNCTION()
+	void HandleMatchmakingCanceled();
 };

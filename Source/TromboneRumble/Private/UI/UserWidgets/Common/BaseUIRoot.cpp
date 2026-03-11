@@ -5,8 +5,6 @@
 #include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
-class ULoadingOverlayWidget;
-
 void UBaseUIRoot::NativePreConstruct()
 {
 	Super::NativePreConstruct();
@@ -15,6 +13,13 @@ void UBaseUIRoot::NativePreConstruct()
 	{
 		UIStack->AddWidget(DefaultWidgetClass);
 	}
+}
+
+void UBaseUIRoot::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	Register();
 }
 
 void UBaseUIRoot::NativeDestruct()
@@ -29,6 +34,9 @@ void UBaseUIRoot::NativeDestruct()
 
 void UBaseUIRoot::PushLoadingOverlay() const
 {
+	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<ULoadingOverlayWidget>())
+		return;
+	
 	if (LoadingOverlayWidgetClass)
 	{
 		OverlayStack->AddWidget(LoadingOverlayWidgetClass);
@@ -37,11 +45,14 @@ void UBaseUIRoot::PushLoadingOverlay() const
 
 void UBaseUIRoot::PushLoadingOverlay(FString InContent) const
 {
+	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<ULoadingOverlayWidget>())
+		return;
+	
 	if (LoadingOverlayWidgetClass)
 	{
 		OverlayStack->AddWidget<ULoadingOverlayWidget>(LoadingOverlayWidgetClass, [this, InContent](ULoadingOverlayWidget& OverlayWidget) 
 		{
-			OverlayWidget.Init(InContent);
+			OverlayWidget.InitWithContent(InContent);
 		});
 	}
 }
@@ -52,4 +63,8 @@ void UBaseUIRoot::PopLoadingOverlay() const
 	{
 		OverlayStack->GetActiveWidget()->DeactivateWidget();
 	}
+}
+
+void UBaseUIRoot::Register()
+{
 }

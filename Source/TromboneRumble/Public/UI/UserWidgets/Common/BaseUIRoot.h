@@ -16,11 +16,15 @@ class TROMBONERUMBLE_API UBaseUIRoot : public UCommonUserWidget
 	
 public:
 	virtual void NativePreConstruct() override;
+	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	
 	void PushLoadingOverlay() const;
 	void PushLoadingOverlay(FString InContent) const;
 	void PopLoadingOverlay() const;
+	
+protected:
+	virtual void Register();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))

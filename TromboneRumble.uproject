@@ -42,6 +42,14 @@
 		{
 			"Name": "CommonUI",
 			"Enabled": true
-		}
+		},
+		{
+			"Name": "EasySessions",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineFramework",
+			"Enabled": true
+		},
 	]
 }

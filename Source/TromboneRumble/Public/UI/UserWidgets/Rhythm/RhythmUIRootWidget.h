@@ -46,10 +46,10 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UNamedSlot> AddedScoreNameSlot;
 
-	UPROPERTY(meta = (BindWidgetAnim))
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
 
-	UPROPERTY(meta = (BindWidgetAnim))
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
 
 private:

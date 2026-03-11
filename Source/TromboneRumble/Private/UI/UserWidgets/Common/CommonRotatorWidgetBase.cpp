@@ -25,7 +25,7 @@ void UCommonRotatorWidgetBase::NativePreConstruct()
 	}
 }
 
-void UCommonRotatorWidgetBase::Init(TArray<FText> InOptions, int32 InDefaultIndex)
+void UCommonRotatorWidgetBase::Init(const TArray<FText> InOptions, const int32 InDefaultIndex)
 {
 	OptionsArray = InOptions;
 	DefaultSelectedIndex = InDefaultIndex;
@@ -37,17 +37,17 @@ void UCommonRotatorWidgetBase::Init(TArray<FText> InOptions, int32 InDefaultInde
 	}
 }
 
-void UCommonRotatorWidgetBase::SetIsEnabled(bool bInIsEnabled)
+void UCommonRotatorWidgetBase::SetIsEnabled(const bool bInIsEnabled)
 {
 	if (CB_Prev)
 	{
 		CB_Prev->SetIsEnabled(bInIsEnabled);
-		CB_Prev->SetVisibility(bInIsEnabled ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden);		
+		CB_Prev->SetVisibility(bInIsEnabled ? ESlateVisibility::Visible : ESlateVisibility::Hidden);		
 	}
 	if (CB_Next)
 	{
 		CB_Next->SetIsEnabled(bInIsEnabled);
-		CB_Next->SetVisibility(bInIsEnabled ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden);
+		CB_Next->SetVisibility(bInIsEnabled ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	}
 }
 

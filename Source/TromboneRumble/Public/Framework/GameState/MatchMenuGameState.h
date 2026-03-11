@@ -21,7 +21,6 @@ public:
 
 	void UpdatePlayerList();
 	
-	void SetIsTransitioningToInGame(const bool bInIsTransitioning);
 	void SetMatchType(EMatchType NewType);
 	
 	FOnPlayerListUpdateSignature OnPlayerListChanged;
@@ -34,14 +33,9 @@ private:
 	TArray<FString> PlayerList;
 	
 	UFUNCTION()
-	void OnRep_IsTransitioningToInGame();
-	UPROPERTY(ReplicatedUsing = OnRep_IsTransitioningToInGame)
-	bool bIsTransitioningToInGame = false;
-	
-	UFUNCTION()
 	void OnRep_CurrentMatchType();
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentMatchType)
-	EMatchType CurrentMatchType = EMatchType::Public;
+	EMatchType CurrentMatchType = EMatchType::Custom;
 
 public:
 	// ~ Begin Getter & Setter
