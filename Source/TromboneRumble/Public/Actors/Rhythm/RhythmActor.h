@@ -106,7 +106,7 @@ private:
 	void HandleInGameStateChanged(EInGameState InGameState);
 
 	UPROPERTY()
-	bool AreOtherPlayersReady = false;
+	bool bAreOtherPlayersReady = false;
 
 	UFUNCTION()
 	void WaitForOtherPlayers();
@@ -117,9 +117,9 @@ private:
 	FTimerHandle PlayBackgroundMusicTimerHandle;
 	UFUNCTION()
 	void HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
-	bool hasReceivedMusicStartCallback = false;
-	bool hasReceivedDurationCallback = false;
-	bool hasShotBGMDelegate = false;
+	bool bHasReceivedMusicStartCallback = false;
+	bool bHasReceivedDurationCallback = false;
+	bool bHasShotBGMDelegate = false;
 	// ~Rhythm Game Init
 
 	// Note Detection Logic
@@ -130,6 +130,12 @@ private:
 	void OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleMusicCue(FName CueName);
+
+	//곡이 시작되고 플레이어가 연타하는것을 막기 위해 이벤트로 제어
+	bool bCanDetectNotes = false;
 	// ~Note Detection Logic
 
 	// Components
@@ -174,13 +180,13 @@ private:
 	int32 BGMPlayingID = 0;
 
 	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	bool IsSensingLongNote = false;
+	bool bIsSensingLongNote = false;
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	float RhythmDestroyerBoxExtent = 30.f;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	bool IsSyncTesting = false;
+	bool bIsSyncTesting = false;
 	// ~Rhythm Game
 
 	// Cached References

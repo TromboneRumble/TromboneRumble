@@ -70,7 +70,9 @@ void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCal
 	{
 		if (!isRhythmGameForceStopped)
 		{
+			RhythmActor->StopRhythmGame();
 			OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
+			CurrentState = ERhythmGameState::Ended;
 		}
 	}
 }

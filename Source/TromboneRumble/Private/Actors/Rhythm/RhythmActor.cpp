@@ -60,10 +60,15 @@ void ARhythmActor::Tick(float DeltaTime)
 
 void ARhythmActor::DetectNotes()
 {
-	if (FocusedType == EInstrumentType::Background || FocusedType == EInstrumentType::Invalid)
+	if (FocusedType == EInstrumentType::Background || FocusedType == EInstrumentType::Invalid || bCanDetectNotes == false)
 	{
 		return;
 	}
+	if (!(GetCachedRhythmSubsystem()->GetCurrentRhythmState() == ERhythmGameState::Playing || GetCachedRhythmSubsystem()->GetCurrentRhythmState() == ERhythmGameState::Start))
+	{
+		return;
+	}
+
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
 	if (!BestNote)
@@ -76,7 +81,7 @@ void ARhythmActor::DetectNotes()
 	if (BestNote->IsLongNote() && !BestNote->IsLongNoteEnd())
 	{
 		//TODO : 롱노트 세부판정
-		IsSensingLongNote = true;
+		bIsSensingLongNote = true;
 		Debug::Print(TEXT("Long Note Sense Start"));
 		return;
 	}
@@ -95,9 +100,9 @@ void ARhythmActor::DetectNotes()
 
 ENoteResult ARhythmActor::DetectLongNoteEnd()
 {
-	if (!IsSensingLongNote) return ENoteResult::None;
+	if (!bIsSensingLongNote) return ENoteResult::None;
 	Debug::Print(TEXT("Long Note Sense End"));
-	IsSensingLongNote = false;
+	bIsSensingLongNote = false;
 	TMap<ARhythmNote*, TSet<UPrimitiveComponent*>> NoteToHitComps;
 	ARhythmNote* BestNote = GetBestNoteFromLineTrace(NoteToHitComps);
 	// 롱노트 감지를 시작했지만 허공에다 마우스를 뗀 경우
@@ -208,6 +213,7 @@ void ARhythmActor::BeginPlay()
 	GetCachedActorPoolSubsystem();
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
+	GetCachedRhythmSubsystem()->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCue);
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
 	PrepareRhythmGame();
 }
@@ -243,10 +249,10 @@ void ARhythmActor::CleanupRhythmGame()
 	bIsDataLoaded = false;
 	bIsLoadingData = false;
 	bStartRequested = false;
-	IsSensingLongNote = false;
-	hasReceivedMusicStartCallback = false;
-	hasReceivedDurationCallback = false;
-	hasShotBGMDelegate = false;
+	bIsSensingLongNote = false;
+	bHasReceivedMusicStartCallback = false;
+	bHasReceivedDurationCallback = false;
+	bHasShotBGMDelegate = false;
 
 	if (CachedRhythmUIRootWidget)
 	{
@@ -391,7 +397,7 @@ void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEv
 		TEXT("InType must NOT be Background or Invalid"));
 	if (ARhythmNoteSpawner* NewSpawner = GetOrCreateSpawner(InType))
 	{
-		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent, IsSyncTesting);
+		NewSpawner->InitSpawner(InType, InNoteEvent, InChangeSwitch, InFailEvent, bIsSyncTesting);
 	}
 }
 
@@ -503,7 +509,7 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrume
 {
 	checkf(NewType != EInstrumentType::Invalid, TEXT("InType Is Invalid Type"));
 	checkf(NoteHearingComponent, TEXT("NoteHearingComponent is Not valid"));
-	IsSensingLongNote = false;
+	bIsSensingLongNote = false;
 
 	FocusedType = NewType;
 	if (NewType == EInstrumentType::Background)
@@ -554,7 +560,7 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 {
 	switch (InGameState) {
 		case EInGameState::Play:
-			AreOtherPlayersReady = true;
+			bAreOtherPlayersReady = true;
 			break;
 		
 		default: ;
@@ -563,7 +569,7 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 
 void ARhythmActor::WaitForOtherPlayers()
 {
-	if (bIsDataLoaded && AreOtherPlayersReady)
+	if (bIsDataLoaded && bAreOtherPlayersReady)
 	{
 		StartRhythmGame();
 		EnableInput(GetWorld()->GetFirstPlayerController());
@@ -590,9 +596,9 @@ void ARhythmActor::PlayMusic()
 
 		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue |
 			AkCallbackType::AK_EndOfEvent | AkCallbackType::AK_EnableGetSourcePlayPosition |AkCallbackType::AK_EnableGetMusicPlayPosition;
-		hasReceivedDurationCallback = false;
-		hasReceivedMusicStartCallback = false;
-		hasShotBGMDelegate = false;
+		bHasReceivedDurationCallback = false;
+		bHasReceivedMusicStartCallback = false;
+		bHasShotBGMDelegate = false;
 
 		BGMPlayingID = NoteHearingComponent->PostAkEvent(
 			PlayBGMEvent,
@@ -618,21 +624,21 @@ void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackI
 	{
 	case EAkCallbackType::Duration:
 	{
-		hasReceivedDurationCallback = true;
+		bHasReceivedDurationCallback = true;
 	}
 	break;
 	case EAkCallbackType::MusicPlayStarted:
 	{
-		hasReceivedMusicStartCallback = true;
+		bHasReceivedMusicStartCallback = true;
 	}
 	break;
 	}
 	//MusicPlayStart Callback이 받은 시점에서 리듬게임 시작했다고 알림.
-	if (!hasShotBGMDelegate)
+	if (!bHasShotBGMDelegate)
 	{
-		if (hasReceivedDurationCallback && hasReceivedMusicStartCallback)
+		if (bHasReceivedDurationCallback && bHasReceivedMusicStartCallback)
 		{
-			hasShotBGMDelegate = true;
+			bHasShotBGMDelegate = true;
 			GetCachedRhythmSubsystem()->OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Start);
 		}
 	}
@@ -724,6 +730,37 @@ ARhythmNote* ARhythmActor::GetBestNoteFromLineTrace(TMap<ARhythmNote*, TSet<UPri
 	
 }
 
+void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (bIsSyncTesting) return;
+	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
+	{
+		if (ARhythmNote* Note = Cast<ARhythmNote>(OtherActor))
+		{
+			Note->CancelSyncDebugTimer();
+			if (FocusedType == Note->GetNoteType())
+			{
+				Note->SpawnRhythmResultWidget(ENoteResult::Bad);
+				GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(ENoteResult::Bad);
+			}
+		}
+		GetCachedActorPoolSubsystem()->Release(OtherActor);
+	}
+}
+
+void ARhythmActor::HandleMusicCue(FName CueName)
+{
+	if (CueName == TEXT("Event_Enable_Click"))
+	{
+		bCanDetectNotes = true;
+	}
+	if (CueName == TEXT("Event_Disable_Click"))
+	{
+		bCanDetectNotes = false;
+	}
+}
+
 UActorPoolSubsystem* ARhythmActor::GetCachedActorPoolSubsystem()
 {
 	if (CachedActorPoolSubsystem.IsValid())
@@ -750,23 +787,4 @@ URhythmSubsystem* ARhythmActor::GetCachedRhythmSubsystem()
 	}
 
 	return nullptr;
-}
-
-void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (IsSyncTesting) return;
-	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UPoolable::StaticClass()))
-	{
-		if (ARhythmNote* Note = Cast<ARhythmNote>(OtherActor))
-		{
-			Note->CancelSyncDebugTimer();
-			if (FocusedType == Note->GetNoteType())
-			{
-				Note->SpawnRhythmResultWidget(ENoteResult::Bad);
-				GetCachedRhythmSubsystem()->OnNoteDetected.Broadcast(ENoteResult::Bad);
-			}
-		}
-		GetCachedActorPoolSubsystem()->Release(OtherActor);
-	}
 }
