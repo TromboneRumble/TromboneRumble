@@ -3177,7 +3177,7 @@
 								<ActiveSource Name="UI_Overlap" ID="{283316FA-2D10-4D43-8DAA-B28541894361}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
-						<Sound Name="UI_Rhythm_Success" ID="{FE408BC1-CED6-45EA-A074-0942ACC4F1BF}" ShortID="80090878">
+						<Sound Name="UI_Rhythm_Success_Good" ID="{FE408BC1-CED6-45EA-A074-0942ACC4F1BF}" ShortID="80090878">
 							<PropertyList>
 								<Property Name="Pitch" Type="int32">
 									<ModifierList>
@@ -3185,8 +3185,8 @@
 											<Modifier Name="" ID="{FC5C6A84-A581-40E5-B391-CF283F29F8F2}">
 												<PropertyList>
 													<Property Name="Enabled" Type="bool" Value="True"/>
-													<Property Name="Max" Type="Real64" Value="151"/>
-													<Property Name="Min" Type="Real64" Value="-76"/>
+													<Property Name="Max" Type="Real64" Value="50"/>
+													<Property Name="Min" Type="Real64" Value="-50"/>
 												</PropertyList>
 											</Modifier>
 										</ModifierInfo>
@@ -3208,6 +3208,11 @@
 							</ReferenceList>
 							<ChildrenList>
 								<AudioFileSource Name="UI_Rhythm_Success" ID="{5BBB5370-E641-4A45-B09D-B6819B9FB4BC}">
+									<PropertyList>
+										<Property Name="FadeInDuration" Type="Real64" Value="0.0135814950980392"/>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+										<Property Name="TrimBegin" Type="Real64" Value="0.116800857843137"/>
+									</PropertyList>
 									<Language>SFX</Language>
 									<AudioFile>UI_Rhythm_Success.wav</AudioFile>
 									<MediaIDList>
@@ -3217,6 +3222,48 @@
 							</ChildrenList>
 							<ActiveSourceList>
 								<ActiveSource Name="UI_Rhythm_Success" ID="{5BBB5370-E641-4A45-B09D-B6819B9FB4BC}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_Rhythm_Success_Perfect" ID="{9903A68B-ED9C-4748-8C59-D365DBD5ACCE}" ShortID="385338030">
+							<PropertyList>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{CC6E29A5-891A-40F9-B471-E99AF0BE6A91}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Max" Type="Real64" Value="50"/>
+													<Property Name="Min" Type="Real64" Value="-50"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-7</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Rhythm_Success_Perfect" ID="{9D48D962-06D0-41B5-9331-CE6AA33EAA80}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Rhythm_Success_Perfect.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="267698809"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Rhythm_Success_Perfect" ID="{9D48D962-06D0-41B5-9331-CE6AA33EAA80}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>

@@ -9,7 +9,7 @@
 				<File Id="127793829" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>SWITCH.cm.wav</ShortName>
 					<Path>Media/127793829.wem</Path>
-					<CachePath>SFX/SWITCH.cm_474FD301.wem</CachePath>
+					<CachePath>SFX/SWITCH.cm_DBFCC4A5.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{740A6BC2-D4D5-5A5B-8936-479DA072BF55}</FileHash>
+	<FileHash>{B1FD7073-4BF5-37D2-8B4F-7DE951FC3661}</FileHash>
 </SoundBanksInfo>

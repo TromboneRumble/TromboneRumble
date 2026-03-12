@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "SWITCH.cm.wav",
       "Path": "Media/127793829.wem",
-      "CachePath": "SFX/SWITCH.cm_474FD301.wem"
+      "CachePath": "SFX/SWITCH.cm_DBFCC4A5.wem"
      }
     ],
     "Events": [
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{AB9FA63D-CAC4-DAD4-2A39-DF240D44F4FE}"
+  "FileHash": "{4EB293AE-B164-7819-B717-86220F269256}"
  }
 }
