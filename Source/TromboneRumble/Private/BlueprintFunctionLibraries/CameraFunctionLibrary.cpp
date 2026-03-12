@@ -68,58 +68,108 @@ void UCameraFunctionLibrary::UpdateTopDownCameraOffsetEase(
     InputLen = FMath::Clamp(InputLen, 0.f, 1.f); // 0~1
     const float Strength = (InputExponent > 0.f) ? FMath::Pow(InputLen, InputExponent) : InputLen;
 
-    // 목표(Target) 계산 (월드 → 로컬 변환)
-    FVector DesiredWorld = FVector::ZeroVector;
+    FVector DesiredWorld_Unclamped = FVector::ZeroVector;
     if (Strength > KINDA_SMALL_NUMBER)
     {
-        DesiredWorld = MakeDesiredWorldOffsetFromCameraYaw(SpringArm, MoveInput, MaxOffset, Strength);
+        DesiredWorld_Unclamped = MakeDesiredWorldOffsetFromCameraYaw(SpringArm, MoveInput, MaxOffset, Strength);
     }
     else if (!bZeroWhenNoInput)
     {
-        // 입력 없을 때 유지하고 싶다면: 현재 Target 유지
-        DesiredWorld = SpringArm->GetComponentTransform().TransformVectorNoScale(InOutState.Target);
+        DesiredWorld_Unclamped = SpringArm->GetComponentTransform().TransformVectorNoScale(InOutState.Target);
     }
-    // 기본: 입력 없을 때 0으로 복귀
 
-    FVector DesiredLocal = SpringArm->GetComponentTransform().InverseTransformVectorNoScale(DesiredWorld);
+    FVector DesiredLocal_Unclamped = SpringArm->GetComponentTransform().InverseTransformVectorNoScale(DesiredWorld_Unclamped);
 
-    // Z 유지 옵션
     if (bKeepCurrentZ)
     {
-        DesiredLocal.Z = SpringArm->TargetOffset.Z;
+        DesiredLocal_Unclamped.Z = SpringArm->TargetOffset.Z;
     }
 
-    // 새 목표가 생기면 이징 상태(시작값/시간) 초기화
-    const float ToleranceSq = 0.5f; // 필요시 조절
-    const bool bNewTarget = !InOutState.bIsActive
-        || (DesiredLocal - InOutState.Target).SizeSquared() > ToleranceSq;
+
+    // 이징 상태 갱신 (벽 충돌과 무관하게 입력에만 반응)
+    const float ToleranceSq = 0.5f;
+    const bool bNewTarget = !InOutState.bIsActive || (DesiredLocal_Unclamped - InOutState.Target).SizeSquared() > ToleranceSq;
 
     if (bNewTarget)
     {
         InOutState.Start = SpringArm->TargetOffset;
-        InOutState.Target = DesiredLocal;
+        InOutState.Target = DesiredLocal_Unclamped;
         InOutState.Elapsed = 0.f;
         InOutState.Duration = FMath::Max(0.001f, DurationSeconds);
         InOutState.bIsActive = true;
     }
 
-    // 시간 기반 이징 보간 (정확히 Duration초 사용)
-    float Alpha = (InOutState.Duration <= KINDA_SMALL_NUMBER) ? 1.f
-        : FMath::Clamp(InOutState.Elapsed / InOutState.Duration, 0.f, 1.f);
-    const float Eased = ApplyEase(Alpha, EaseType);
-
-    const FVector NewLocal = FMath::Lerp(InOutState.Start, InOutState.Target, Eased);
-    SpringArm->TargetOffset = NewLocal;
-
-    // 시간 진행
+    // 시간 기반 이징 보간 (충돌 없는 이상적인 궤적)
     if (InOutState.bIsActive)
     {
         InOutState.Elapsed += DeltaTime;
         if (InOutState.Elapsed >= InOutState.Duration)
         {
-            // 정확히 목표에 스냅 & 종료
-            SpringArm->TargetOffset = InOutState.Target;
             InOutState.bIsActive = false;
         }
     }
+
+    float Alpha = (InOutState.Duration <= KINDA_SMALL_NUMBER) ? 1.f : FMath::Clamp(InOutState.Elapsed / InOutState.Duration, 0.f, 1.f);
+    const float Eased = ApplyEase(Alpha, EaseType);
+
+    // 이번 프레임에서 카메라가 가고 싶어 하는 이상적인 로컬 위치
+    FVector EasedLocal_Unclamped = FMath::Lerp(InOutState.Start, InOutState.Target, Eased);
+
+    // 벽 충돌 검사 (이상적인 위치를 향해 레이캐스트)
+    FVector EasedWorld_Unclamped = SpringArm->GetComponentTransform().TransformVectorNoScale(EasedLocal_Unclamped);
+    FVector FinalWorld = EasedWorld_Unclamped; // 기본값은 충돌이 없을 때의 값
+
+    if (!EasedWorld_Unclamped.IsNearlyZero())
+    {
+        FVector TraceStart = ReferenceActor->GetActorLocation();
+        FVector TraceEnd = TraceStart + EasedWorld_Unclamped;
+
+        FHitResult HitResult;
+        FCollisionQueryParams QueryParams;
+        QueryParams.AddIgnoredActor(ReferenceActor);
+
+        bool bHit = World->SweepSingleByChannel(
+            HitResult,
+            TraceStart,
+            TraceEnd,
+            FQuat::Identity,
+            SpringArm->ProbeChannel,
+            FCollisionShape::MakeSphere(SpringArm->ProbeSize),
+            QueryParams
+        );
+
+        if (bHit)
+        {
+            if (HitResult.bStartPenetrating)
+            {
+                // 이미 벽에 파고든 상태에서 시작했다면, 벽의 표면(Normal)을 따라 미끄러지도록 처리
+                FinalWorld = FVector::VectorPlaneProject(EasedWorld_Unclamped, HitResult.Normal);
+            }
+            else
+            {
+                // 벽에 부딪힌 경우: 충돌 지점까지는 이동하고, 남은 이동량은 벽면을 따라 미끄러지게(Slide) 만듭니다.
+                FVector SafeMove = EasedWorld_Unclamped * FMath::Max(0.f, HitResult.Time - 0.05f); // 안전 마진
+                FVector Remainder = EasedWorld_Unclamped * (1.f - HitResult.Time);
+                FVector SlidedRemainder = FVector::VectorPlaneProject(Remainder, HitResult.ImpactNormal);
+
+                FinalWorld = SafeMove + SlidedRemainder;
+            }
+
+            // 미끄러지는 벡터가 원래 가려던 길이보다 길어지지 않게 제한
+            FinalWorld = FinalWorld.GetClampedToMaxSize(EasedWorld_Unclamped.Size());
+        }
+    }
+
+    // 최종 계산된 월드 좌표를 다시 로컬 좌표로 변환
+    FVector FinalLocal = SpringArm->GetComponentTransform().InverseTransformVectorNoScale(FinalWorld);
+
+    // Z축 유지 보정 (충돌로 인해 위아래 오프셋이 흔들리는 것 방지)
+    if (bKeepCurrentZ)
+    {
+        FinalLocal.Z = SpringArm->TargetOffset.Z;
+    }
+
+    // 5. 최종 위치 적용 (VInterpTo를 사용해 1프레임 튀는 현상 흡수)
+    // 15.f는 보간 속도입니다. 수치가 높을수록 빠릿하게 따라가고, 낮을수록 부드럽습니다.
+    SpringArm->TargetOffset = FMath::VInterpTo(SpringArm->TargetOffset, FinalLocal, DeltaTime, 100.f);
 }
