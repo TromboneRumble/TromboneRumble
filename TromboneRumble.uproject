@@ -55,6 +55,6 @@
 		{
 			"Name": "OnlineFramework",
 			"Enabled": true
-		},
+		}
 	]
 }
