@@ -1398,7 +1398,7 @@
     "Type": "Event",
     "GUID": "{633AB9B2-0A16-43DA-859D-940C15E7E727}",
     "Language": "SFX",
-    "Hash": "{FD8183FB-53DE-E47B-48DC-1532E99C9021}",
+    "Hash": "{7DDE995B-55D2-CD04-69BF-34C5327445E8}",
     "ObjectPath": "MIDI_MapA_Easy_C",
     "ShortName": "MIDI_MapA_Easy_C",
     "Path": "Event/MIDI_MapA_Easy_C.bnk",
@@ -1478,7 +1478,7 @@
     "Type": "Event",
     "GUID": "{7A85555C-0D56-41DF-AB4E-277C25F19F48}",
     "Language": "SFX",
-    "Hash": "{7B24B38F-20EF-17C8-5D73-FED2665426BD}",
+    "Hash": "{98BED9C1-38CE-2FF4-F2E3-88A8CE2B90F9}",
     "ObjectPath": "MIDI_MapA_Easy_V",
     "ShortName": "MIDI_MapA_Easy_V",
     "Path": "Event/MIDI_MapA_Easy_V.bnk",
@@ -1558,7 +1558,7 @@
     "Type": "Event",
     "GUID": "{1F573AFF-7751-45DF-B9C6-F6687AD8033B}",
     "Language": "SFX",
-    "Hash": "{073609F0-A96E-E3C1-602C-5025643544C5}",
+    "Hash": "{6134DD91-3131-B5FD-2EA6-62B8C7BDD5B0}",
     "ObjectPath": "MIDI_MapA_Easy_T",
     "ShortName": "MIDI_MapA_Easy_T",
     "Path": "Event/MIDI_MapA_Easy_T.bnk",
@@ -6179,6 +6179,6 @@
     ]
    }
   ],
-  "FileHash": "{9D2BB1A4-C03E-EB64-1D77-00BB0BAFCE29}"
+  "FileHash": "{F82B4A5C-AF0E-6EF3-E0B3-DACF3F85238B}"
  }
 }

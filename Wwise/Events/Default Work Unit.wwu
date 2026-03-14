@@ -692,7 +692,7 @@
 												<Action Name="" ID="{E149E12A-B09A-4BA1-8C16-776C8FD41EF6}" ShortID="820056510">
 													<ReferenceList>
 														<Reference Name="Target">
-															<ObjectRef Name="MapA_Easy_Cymbal_MIDI" ID="{1992CD64-C85D-4FE1-9DBB-9E82A55D52B4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+															<ObjectRef Name="MapA_Easy_Cymbal_MIDI" ID="{A7171CDE-2B73-4DC5-A505-89689A76FE95}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 														</Reference>
 													</ReferenceList>
 												</Action>
@@ -703,7 +703,7 @@
 												<Action Name="" ID="{E4DB7475-9BBE-4881-B7BA-46FBFEC2CE60}" ShortID="304626902">
 													<ReferenceList>
 														<Reference Name="Target">
-															<ObjectRef Name="MapA_Easy_Violin_MIDI" ID="{1314623F-7339-4B2A-BA4B-B37119C112F4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+															<ObjectRef Name="MapA_Easy_Violin_MIDI" ID="{BAEDA22A-F2B6-422D-B782-ACF796F332BE}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 														</Reference>
 													</ReferenceList>
 												</Action>
@@ -714,7 +714,7 @@
 												<Action Name="" ID="{97772AD0-0677-4A80-8177-A4C5A1CE74C6}" ShortID="30275943">
 													<ReferenceList>
 														<Reference Name="Target">
-															<ObjectRef Name="MapA_Easy_Trombone_MIDI" ID="{63952994-4491-4955-94E4-89B402D8CC28}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+															<ObjectRef Name="MapA_Easy_Trombone_MIDI" ID="{40C37E1A-BA1C-40F3-80AB-9D8AE5D26D05}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 														</Reference>
 													</ReferenceList>
 												</Action>
