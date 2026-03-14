@@ -1478,7 +1478,7 @@
     "Type": "Event",
     "GUID": "{7A85555C-0D56-41DF-AB4E-277C25F19F48}",
     "Language": "SFX",
-    "Hash": "{98BED9C1-38CE-2FF4-F2E3-88A8CE2B90F9}",
+    "Hash": "{0189C506-52A0-DA1D-C0FA-FF4CD447DD58}",
     "ObjectPath": "MIDI_MapA_Easy_V",
     "ShortName": "MIDI_MapA_Easy_V",
     "Path": "Event/MIDI_MapA_Easy_V.bnk",
@@ -1558,7 +1558,7 @@
     "Type": "Event",
     "GUID": "{1F573AFF-7751-45DF-B9C6-F6687AD8033B}",
     "Language": "SFX",
-    "Hash": "{6134DD91-3131-B5FD-2EA6-62B8C7BDD5B0}",
+    "Hash": "{BCCF05BE-53F6-4C0B-26BD-7F77E32CE2C3}",
     "ObjectPath": "MIDI_MapA_Easy_T",
     "ShortName": "MIDI_MapA_Easy_T",
     "Path": "Event/MIDI_MapA_Easy_T.bnk",
@@ -2631,6 +2631,43 @@
         "Name": "Scattering",
         "Type": "Real32",
         "Value": "0"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "1402154955",
+    "Type": "Event",
+    "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
+    "Language": "SFX",
+    "Hash": "{EB006831-4C39-6418-F01E-E44F5C14A2A3}",
+    "ObjectPath": "Play_Ranking_BGM",
+    "ShortName": "Play_Ranking_BGM",
+    "Path": "Event/Play_Ranking_BGM.bnk",
+    "Media": [
+     {
+      "Id": "823108851",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ranking Song.wav",
+      "Path": "Media/823108851.wem",
+      "CachePath": "SFX/Ranking Song_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1402154955",
+      "Name": "Play_Ranking_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Play_Ranking_BGM",
+      "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
+      "DurationType": "OneShot",
+      "DurationMin": "20.27025",
+      "DurationMax": "20.27025",
+      "MediaRefs": [
+       {
+        "Id": "823108851"
        }
       ]
      }
@@ -6179,6 +6216,6 @@
     ]
    }
   ],
-  "FileHash": "{973E44CA-64AE-0CDA-7153-35CEE5989E04}"
+  "FileHash": "{45D629AB-A456-CFC5-BB3E-7F28445F7835}"
  }
 }

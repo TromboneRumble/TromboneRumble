@@ -722,7 +722,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{98BED9C1-38CE-2FF4-F2E3-88A8CE2B90F9}">
+		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{0189C506-52A0-DA1D-C0FA-FF4CD447DD58}">
 			<ObjectPath>MIDI_MapA_Easy_V</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_V</ShortName>
 			<Path>Event/MIDI_MapA_Easy_V.bnk</Path>
@@ -763,7 +763,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{6134DD91-3131-B5FD-2EA6-62B8C7BDD5B0}">
+		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{BCCF05BE-53F6-4C0B-26BD-7F77E32CE2C3}">
 			<ObjectPath>MIDI_MapA_Easy_T</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_T</ShortName>
 			<Path>Event/MIDI_MapA_Easy_T.bnk</Path>
@@ -1153,6 +1153,25 @@
 					</Properties>
 				</AcousticTexture>
 			</AcousticTextures>
+		</SoundBank>
+		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{EB006831-4C39-6418-F01E-E44F5C14A2A3}">
+			<ObjectPath>Play_Ranking_BGM</ObjectPath>
+			<ShortName>Play_Ranking_BGM</ShortName>
+			<Path>Event/Play_Ranking_BGM.bnk</Path>
+			<Media>
+				<File Id="823108851" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Ranking Song.wav</ShortName>
+					<Path>Media/823108851.wem</Path>
+					<CachePath>SFX/Ranking Song_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1402154955" Name="Play_Ranking_BGM" ObjectPath="\Events\Default Work Unit\Music\Play_Ranking_BGM" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" DurationType="OneShot" DurationMin="20.27025" DurationMax="20.27025">
+					<MediaRefs>
+						<MediaRef Id="823108851"/>
+					</MediaRefs>
+				</Event>
+			</Events>
 		</SoundBank>
 		<SoundBank Id="1436785869" Type="Event" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" Language="SFX" Hash="{C7CC8253-DFCA-26B2-93EA-6A13F36B42CB}">
 			<ObjectPath>Play_BBIK_V</ObjectPath>
@@ -2927,5 +2946,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{6C5A3378-40DD-BE2E-1F1F-860D2865BE3F}</FileHash>
+	<FileHash>{D28F8D28-96EE-B8BE-154A-E7300D23A7F5}</FileHash>
 </SoundBanksInfo>

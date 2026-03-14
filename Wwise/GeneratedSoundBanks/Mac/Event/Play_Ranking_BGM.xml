@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{EB006831-4C39-6418-F01E-E44F5C14A2A3}">
+			<ObjectPath>Play_Ranking_BGM</ObjectPath>
+			<ShortName>Play_Ranking_BGM</ShortName>
+			<Path>Event/Play_Ranking_BGM.bnk</Path>
+			<Media>
+				<File Id="823108851" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Ranking Song.wav</ShortName>
+					<Path>Media/823108851.wem</Path>
+					<CachePath>SFX/Ranking Song_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1402154955" Name="Play_Ranking_BGM" ObjectPath="\Events\Default Work Unit\Music\Play_Ranking_BGM" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" DurationType="OneShot" DurationMin="20.27025" DurationMax="20.27025">
+					<MediaRefs>
+						<MediaRef Id="823108851"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{411ED53F-2270-5A8C-CFC8-753933B3BE83}</FileHash>
+</SoundBanksInfo>

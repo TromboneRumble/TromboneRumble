@@ -879,6 +879,17 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Event Name="Play_Ranking_BGM" ID="{383CC094-19B9-4794-8497-472E2CAFCAEC}">
+							<ChildrenList>
+								<Action Name="" ID="{0C86F785-EE04-4569-9824-733FBFC891D5}" ShortID="388187599">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Ranking_BGM" ID="{2BE1B5B2-D0E4-49DD-BFC6-E2BFAB8CE9C4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="UI_SFX" ID="{1B5C4A91-6284-49B4-BCD2-2002CEB74D93}" ShortID="211380141">
