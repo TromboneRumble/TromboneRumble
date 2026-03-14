@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1402154955",
+    "Type": "Event",
+    "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
+    "Language": "SFX",
+    "Hash": "{EB006831-4C39-6418-F01E-E44F5C14A2A3}",
+    "ObjectPath": "Play_Ranking_BGM",
+    "ShortName": "Play_Ranking_BGM",
+    "Path": "Event/Play_Ranking_BGM.bnk",
+    "Media": [
+     {
+      "Id": "823108851",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ranking Song.wav",
+      "Path": "Media/823108851.wem",
+      "CachePath": "SFX/Ranking Song_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1402154955",
+      "Name": "Play_Ranking_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Play_Ranking_BGM",
+      "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
+      "DurationType": "OneShot",
+      "DurationMin": "20.27025",
+      "DurationMax": "20.27025",
+      "MediaRefs": [
+       {
+        "Id": "823108851"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{D55A3EB9-0915-502B-8528-CF20B61E2B84}"
+ }
+}
