@@ -7,6 +7,8 @@
 #include "Framework/InGameState.h"
 #include "ResultCutsceneDirector.generated.h"
 
+class UInGameResultWidget;
+class UAkAudioEvent;
 class ULevelSequence;
 class ULevelSequencePlayer;
 class ALevelSequenceActor;
@@ -21,6 +23,10 @@ class TROMBONERUMBLE_API AResultCutsceneDirector : public AActor
 	
 public:	
 	AResultCutsceneDirector();
+
+	void SkipResultSequence();
+	void PlayZoomSequence(bool bForward);
+	void StopBGM();
 protected:
 	virtual void BeginPlay() override;
 
@@ -47,11 +53,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Config|Podium")
 	TArray<TObjectPtr<APodiumActor>> PrePlacedPodiums;
 
+	UPROPERTY(EditAnywhere, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> RankingBGM;
 private:
 	UPROPERTY()
 	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
 	UPROPERTY()
 	TObjectPtr<ULevelSequencePlayer> ZoomSequencePlayer;
-	
+
+	UPROPERTY()
+	TSoftObjectPtr<UInGameResultWidget> CachedResultWidget;
+
+	UPROPERTY()
+	int32 RankingPlayingID = 0;
 
 };

@@ -7,8 +7,11 @@
 #include "InGameResultWidget.generated.h"
 
 
+class UCanvasPanel;
+class UOverlay;
+class AResultCutsceneDirector;
+class UButton;
 class UEasySessionSubsystem;
-class UCommonButtonBase;
 class UTextBlock;
 class ADefaultPlayerState;
 
@@ -25,9 +28,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI|Result")
 	void SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank);
 
+	void HideSkipButtonAndShowButtons();
+
 protected:
 	virtual void NativeConstruct() override;
 
+	UFUNCTION()
+	void HandleSkipClicked();           // 화면 전체 투명 버튼
+	UFUNCTION()
+	void HandleViewMyResultClicked();   // 내 결과 보기
+	UFUNCTION()
+	void HandleViewLeaderboardClicked(); // 순위표 보기 (상세에서 뒤로가기)
 	UFUNCTION()
 	void HandleExitButtonClicked();
 
@@ -82,10 +93,32 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> SpotlightCountText;
 
+	
+
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> ReturnToMainMenuButton;
+	TObjectPtr<UButton> SkipButton;            
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> BackgroundBlurOverlay;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> ResultOverlay;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> ButtonOverlay;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ViewMyResultButton;    
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ViewLeaderboardButton; 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ReturnToMainMenuButton;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> SpawnAnimation;
+
 
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
+	TWeakObjectPtr<AResultCutsceneDirector> Director;
+public:
+	void SetDirector(AResultCutsceneDirector* InDirector);
 };

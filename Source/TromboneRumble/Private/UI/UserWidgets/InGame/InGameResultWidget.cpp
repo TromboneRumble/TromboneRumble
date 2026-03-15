@@ -4,10 +4,12 @@
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
 #include "Components/TextBlock.h"
 #include "Framework/DefaultPlayerState.h"
-#include "CommonButtonBase.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
 #include "EasySessionSubsystem.h"
+#include "Actors/ResultScene/ResultCutsceneDirector.h"
+#include "Components/Button.h"
+#include "Components/Overlay.h"
 
 void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank)
 {
@@ -53,15 +55,35 @@ void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 
 	if (SpotlightCountText) SpotlightCountText->SetText(FText::AsNumber(ScoreData.SpotlightPickupCount));
 }
 
+void UInGameResultWidget::HideSkipButtonAndShowButtons()
+{
+	if (SkipButton)
+	{
+		SkipButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (ButtonOverlay)
+	{
+		ButtonOverlay->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (ViewLeaderboardButton)
+	{
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+
 void UInGameResultWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	if (BackgroundBlurOverlay) BackgroundBlurOverlay->SetRenderOpacity(0.f);
+	if (ResultOverlay) ResultOverlay->SetRenderOpacity(0.f);
+	if (ButtonOverlay) ButtonOverlay->SetVisibility(ESlateVisibility::Collapsed);
 
-	if (ReturnToMainMenuButton)
-	{
-		ReturnToMainMenuButton->OnClicked().RemoveAll(this);
-		ReturnToMainMenuButton->OnClicked().AddUObject(this, &ThisClass::HandleExitButtonClicked);
-	}
+
+	if (SkipButton) SkipButton->OnClicked.AddDynamic(this, &ThisClass::HandleSkipClicked);
+	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewMyResultClicked);
+	if (ViewLeaderboardButton) ViewLeaderboardButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewLeaderboardClicked);
+	if (ReturnToMainMenuButton) ReturnToMainMenuButton->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
 
 	if (!SessionsSubsystem)
 	{
@@ -72,8 +94,51 @@ void UInGameResultWidget::NativeConstruct()
 	}
 }
 
+void UInGameResultWidget::HandleSkipClicked()
+{
+	if (Director.IsValid()) Director->SkipResultSequence();
+}
+
+void UInGameResultWidget::HandleViewMyResultClicked()
+{
+	if (Director.IsValid())
+	{
+		Director->PlayZoomSequence(true); // 줌인
+		PlayAnimation(SpawnAnimation);
+	}
+	if (ViewLeaderboardButton)
+	{
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (ViewMyResultButton)
+	{
+		ViewMyResultButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void UInGameResultWidget::HandleViewLeaderboardClicked()
+{
+	if (Director.IsValid())
+	{
+		Director->PlayZoomSequence(false); // 줌아웃 (역재생)
+		PlayAnimation(SpawnAnimation,0,1,EUMGSequencePlayMode::Reverse);
+	}
+	if (ViewLeaderboardButton)
+	{
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (ViewMyResultButton)
+	{
+		ViewMyResultButton->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
 void UInGameResultWidget::HandleExitButtonClicked()
 {
+	if (Director.IsValid())
+	{
+		Director->StopBGM();
+	}
 	if (const UGameInstance* GI = GetGameInstance())
 	{
 		if (UEasySessionSubsystem* SessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
@@ -104,4 +169,10 @@ void UInGameResultWidget::OnDestroySessionFailure()
 		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
 		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 	}
+}
+
+void UInGameResultWidget::SetDirector(AResultCutsceneDirector* InDirector)
+{
+	Director = InDirector;
+	UE_LOG(LogTemp, Warning, TEXT("ADSF"));
 }
