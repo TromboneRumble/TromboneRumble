@@ -14,14 +14,11 @@
 void UVideoOptionPanel::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	
-	Text_OptionPanelTitle->SetText(FText::FromString(TEXT("비디오 옵션")));
 }
 
 void UVideoOptionPanel::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
 	BuildOptions();
 }
 

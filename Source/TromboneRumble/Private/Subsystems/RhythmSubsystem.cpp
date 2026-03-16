@@ -6,6 +6,18 @@
 #include "Kismet/GameplayStatics.h"
 
 
+void URhythmSubsystem::StartRhythmGame()
+{
+	if (RhythmActor)
+	{
+		RhythmActor->PrepareAndStartRhythmGame();
+		CurrentState = ERhythmGameState::Start;
+		isRhythmGameForceStopped = false;
+		//Broadcast는 RhythmActor에서 노래 준비가 다 끝난후에 호출
+		//OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Start);
+	}
+}
+
 void URhythmSubsystem::PauseRhythmGame()
 {
 	if (RhythmActor)
@@ -30,9 +42,20 @@ void URhythmSubsystem::StopRhythmGame()
 {
 	if (RhythmActor)
 	{
-		//TODO : StopRhythmGame구현
-		//RhythmActor->StopRhythmGame();
-		//OnRhythmGameStateChanged.Broadcast(ERhythmGameState::End);
+		RhythmActor->StopRhythmGame();
+		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Stopped);
+		CurrentState = ERhythmGameState::Stopped;
+		isRhythmGameForceStopped = true;
+	}
+}
+
+void URhythmSubsystem::EndRhythmGame()
+{
+	if (RhythmActor)
+	{
+		RhythmActor->StopRhythmGame();
+		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
+		CurrentState = ERhythmGameState::Ended;
 	}
 }
 
@@ -45,7 +68,12 @@ void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCal
 	}
 	else if (CallbackType == EAkCallbackType::EndOfEvent)
 	{
-		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
+		if (!isRhythmGameForceStopped)
+		{
+			RhythmActor->StopRhythmGame();
+			OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
+			CurrentState = ERhythmGameState::Ended;
+		}
 	}
 }
 

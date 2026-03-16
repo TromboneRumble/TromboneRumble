@@ -49,8 +49,6 @@ protected:
 	// ~Components
 
 	// Animations
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
@@ -63,9 +61,6 @@ private:
 	void BindDelegates();
 	FTimerHandle TimerHandle_RetryBind;
 	void RetryBindDelegates();
-
-	UFUNCTION()
-	void HandleInGameStateChanged(EInGameState InGameState);
 
 	UFUNCTION()
 	void HandleOnPlayerStateChanged(APlayerState* NewPlayerState);

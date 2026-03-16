@@ -39,6 +39,8 @@ public:
 
 	void ResumeRhythmGame();
 
+	void StopRhythmGame();
+
 	void RemoveActiveNote(ARhythmNote* Note);
 public:
 

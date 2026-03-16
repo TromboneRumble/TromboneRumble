@@ -48,6 +48,11 @@ void AInstrumentBase::BeginPlay()
 	{
 		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
 	}
+
+	if (URhythmSubsystem* RhythmSys = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+	{
+		RhythmSys->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
+	}
 }
 
 void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -184,6 +189,18 @@ void AInstrumentBase::HandleInGameStateChanged(EInGameState InGameState)
 	}
 }
 
+void AInstrumentBase::HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState)
+{
+	if (RhythmGameState == ERhythmGameState::Ended)
+	{
+		if (IndicatorWidgetInstance.Get())
+		{
+			IndicatorWidgetInstance->RemoveFromParent();
+			IndicatorWidgetInstance = nullptr;
+		}
+	}
+}
+
 void AInstrumentBase::Server_ApplyBuff_Implementation(TSubclassOf<UGameplayEffect> BuffClass)
 {
 	if (!HasAuthority()) return;
@@ -314,9 +331,13 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 	}
 	//~Calculate Score
 
-	if (PerfectNoteHitSound && (InNoteResult == ENoteResult::Excellent || InNoteResult == ENoteResult::Good))
+	if (PerfectNoteHitSound && InNoteResult == ENoteResult::Excellent)
 	{
 		UAkGameplayStatics::PostEvent(PerfectNoteHitSound, this, 0, FOnAkPostEventCallback());
+	}
+	else if (GoodNoteHitSound && InNoteResult == ENoteResult::Good)
+	{
+		UAkGameplayStatics::PostEvent(GoodNoteHitSound, this, 0, FOnAkPostEventCallback());
 	}
 }
 

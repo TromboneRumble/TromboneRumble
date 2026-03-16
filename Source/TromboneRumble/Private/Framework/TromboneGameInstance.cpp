@@ -1,7 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/TromboneGameInstance.h"
+#include "EasyOnlineSession.h"
 #include "AkGameplayStatics.h"
+#include "EasyConfig.h"
+
+TSubclassOf<UOnlineSession> UTromboneGameInstance::GetOnlineSessionClass()
+{
+	const UEasyConfig* Config = UEasyConfig::Get();
+	return Config->OnlineSessionClass;
+}
 
 void UTromboneGameInstance::OnStart()
 {
@@ -61,4 +69,16 @@ void UTromboneGameInstance::InitWWiseEngine()
 		AKRESULT InitResult = AK::SoundEngine::Init(&DefaultInitSettings, &DefaultPlatformSettings);
 		//UE_LOG(LogTemp, Warning, TEXT("SoundEngineInitResult : %d"), (int32)InitResult);
 	}
+}
+
+FText UTromboneGameInstance::GetUIText(const FString& Key) const
+{
+	if (CommonStringTable.IsNull())
+	{
+		return FText::FromString(TEXT("String Table Missing"));
+	}
+
+	FName TableId = FName(*CommonStringTable.ToSoftObjectPath().GetAssetPathString());
+
+	return FText::FromStringTable(TableId, Key);
 }

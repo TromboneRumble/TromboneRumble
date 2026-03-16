@@ -3,7 +3,7 @@
 #include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
 #include "CommonTextBlock.h"
 
-void ULoadingOverlayWidget::Init()
+void ULoadingOverlayWidget::InitDefault()
 {
 	if (CT_Content)
 	{
@@ -11,10 +11,12 @@ void ULoadingOverlayWidget::Init()
 	}
 }
 
-void ULoadingOverlayWidget::Init(FString InContent)
+void ULoadingOverlayWidget::InitWithContent(const FString& InContent)
 {
+	FString FinalContent = InContent.IsEmpty() ? DefaultContent : InContent;
+	
 	if (CT_Content)
 	{
-		CT_Content->SetText(FText::FromString(InContent));
+		CT_Content->SetText(FText::FromString(FinalContent));
 	}
 }

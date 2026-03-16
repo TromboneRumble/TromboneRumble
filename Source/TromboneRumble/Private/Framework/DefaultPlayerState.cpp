@@ -48,11 +48,7 @@ void ADefaultPlayerState::OnRep_PlayerName()
 {
 	Super::OnRep_PlayerName();
 
-	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
-	{
-		LobbyGameState->UpdatePlayerList();
-	}
-	else if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
+	if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
 		MatchMenuGameState->UpdatePlayerList();
 	}

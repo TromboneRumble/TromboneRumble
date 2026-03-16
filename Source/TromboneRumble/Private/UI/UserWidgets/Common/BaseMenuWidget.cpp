@@ -20,7 +20,7 @@ void UBaseMenuWidget::Init()
 {
 }
 
-void UBaseMenuWidget::ShowNoticePopup(const FString& Content)
+void UBaseMenuWidget::ShowNoticePopup(const FText& Content)
 {
 	if (NoticePopupWidgetClass)
 	{
@@ -55,15 +55,15 @@ void UBaseMenuWidget::SetUIEnabled(const bool bEnabled)
 
 void UBaseMenuWidget::ShowLoadingOverlay()
 {
-	if (const TObjectPtr<UMainUIRoot> Root = GetRootLayout())
+	if (const TObjectPtr<UBaseUIRoot> Root = GetRootLayout())
 	{
 		Root->PushLoadingOverlay();
 	}
 }
 
-void UBaseMenuWidget::ShowLoadingOverlay(FString InContent)
+void UBaseMenuWidget::ShowLoadingOverlay(const FString InContent)
 {
-	if (const TObjectPtr<UMainUIRoot> Root = GetRootLayout())
+	if (const TObjectPtr<UBaseUIRoot> Root = GetRootLayout())
 	{
 		Root->PushLoadingOverlay(InContent);
 	}
@@ -71,28 +71,28 @@ void UBaseMenuWidget::ShowLoadingOverlay(FString InContent)
 
 void UBaseMenuWidget::HideLoadingOverlay()
 {
-	if (const TObjectPtr<UMainUIRoot> Root = GetRootLayout())
+	if (const TObjectPtr<UBaseUIRoot> Root = GetRootLayout())
 	{
 		Root->PopLoadingOverlay();
 	}
 }
 
-void UBaseMenuWidget::SwitchMenu(EMainMenuType InType)
+void UBaseMenuWidget::SwitchMenu(const EMainMenuType InType)
 {
-	if (const UMainUIRoot* Root = GetRootLayout())
+	if (const UMainUIRoot* Root = Cast<UMainUIRoot>(GetRootLayout()))
 	{
 		Root->PushMenu(InType); 
 	}
 }
 
-TObjectPtr<UMainUIRoot> UBaseMenuWidget::GetRootLayout() const
+TObjectPtr<UBaseUIRoot> UBaseMenuWidget::GetRootLayout() const
 {
 	const APlayerController* PC = GetOwningPlayer();
 	if (PC && PC->GetLocalPlayer())
 	{
-		if (const AMainHUD* MainHud = Cast<AMainHUD>(PC->GetHUD()))
+		if (const ABaseHUD* MainHud = Cast<ABaseHUD>(PC->GetHUD()))
 		{
-			if (UMainUIRoot* RootLayout = Cast<UMainUIRoot>(MainHud->GetRootUI()))
+			if (UBaseUIRoot* RootLayout = Cast<UBaseUIRoot>(MainHud->GetRootUI()))
 			{
 				return RootLayout;
 			}

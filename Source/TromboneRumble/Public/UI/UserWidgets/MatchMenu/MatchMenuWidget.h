@@ -4,8 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
+#include "Utilities/Defines.h"
 #include "MatchMenuWidget.generated.h"
 
+enum class EEasyMatchmakingCompleteResult : uint8;
+enum class EEasyMatchmakingState : uint8;
+class UTromboneGameInstance;
+enum class ERotatorDirection : uint8;
+class UCommonRotatorWidgetBase;
+enum class EMatchType : uint8;
+class UCommonRotator;
 class UCommonTextBlock;
 class UEasySessionSubsystem;
 class UCommonButtonBase;
@@ -19,8 +27,10 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
+	virtual void NativeOnInitialized() override;
 	
 	virtual void Init() override;
+	virtual void SetUIEnabled(const bool bEnabled) override;
 	
 private:
 	// ~ Begin GameState Events
@@ -29,16 +39,20 @@ private:
 	
 	UFUNCTION()
 	void OnPlayerListChanged(const TArray<FString>& PlayerNames);
+	UFUNCTION()
+	void OnMatchTypeChanged(EMatchType NewType);
 	// ~ End GameState Events
 	
+	// ~ Begin UI Events
 	UFUNCTION()
 	void HandleStartButtonClicked();
 	UFUNCTION()
 	void HandleBackButtonClicked();
 	UFUNCTION()
 	void HandleInviteButtonClicked();
-
-	virtual void SetUIEnabled(const bool bEnabled) override;
+	UFUNCTION()
+	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
+	// ~ End UI Events
 	
 	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget))
@@ -53,6 +67,9 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_PlayerList;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
 	// ~ End UIs
 	
 	UPROPERTY(Transient)
@@ -61,4 +78,9 @@ private:
 	FString CachedLobbyMapPath = "";
 	
 	bool bIsStarted = false;
+	
+	UFUNCTION()
+	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
+	UFUNCTION()
+	void HandleOnUpdateCompleteInMatchmaking(bool bWasSuccessful);
 };

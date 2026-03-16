@@ -3,7 +3,6 @@
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
-#include "UI/HUD/MatchMenuHUD.h"
 
 void AMatchMenuGameState::RemovePlayerState(APlayerState* PlayerState)
 {
@@ -17,7 +16,7 @@ void AMatchMenuGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ThisClass, PlayerList);
-	DOREPLIFETIME(ThisClass, bIsTransitioningToInGame);
+	DOREPLIFETIME(ThisClass, CurrentMatchType);
 }
 
 void AMatchMenuGameState::UpdatePlayerList()
@@ -46,25 +45,15 @@ void AMatchMenuGameState::OnRep_PlayerList() const
 	OnPlayerListChanged.Broadcast(PlayerList);
 }
 
-void AMatchMenuGameState::OnRep_IsTransitioningToInGame()
+void AMatchMenuGameState::OnRep_CurrentMatchType()
 {
-	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	const ABaseHUD* Hud = PC ? PC->GetHUD<ABaseHUD>() : nullptr;
-	
-	if (!Hud) return;
-	
-	if (bIsTransitioningToInGame)
-	{
-		Hud->PushLoadingOverlay();
-	}
-	else
-	{
-		Hud->PopLoadingOverlay();
-	}
+	OnMatchTypeChanged.Broadcast(CurrentMatchType);
 }
 
-void AMatchMenuGameState::SetIsTransitioningToInGame(const bool bInIsTransitioning)
+void AMatchMenuGameState::SetMatchType(const EMatchType NewType)
 {
-	bIsTransitioningToInGame = bInIsTransitioning;
-	OnRep_IsTransitioningToInGame();
+	if (!HasAuthority()) return;
+
+	CurrentMatchType = NewType;
+	OnRep_CurrentMatchType();
 }

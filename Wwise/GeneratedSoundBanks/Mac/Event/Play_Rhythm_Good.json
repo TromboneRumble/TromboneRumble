@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "343370882",
+    "Type": "Event",
+    "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
+    "Language": "SFX",
+    "Hash": "{4D381A65-2D82-88C8-1F29-05E5052F7E68}",
+    "ObjectPath": "Play_Rhythm_Good",
+    "ShortName": "Play_Rhythm_Good",
+    "Path": "Event/Play_Rhythm_Good.bnk",
+    "Media": [
+     {
+      "Id": "1071671996",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Rhythm_Success.wav",
+      "Path": "Media/1071671996.wem",
+      "CachePath": "SFX/UI_Rhythm_Success_3283EF5A.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "343370882",
+      "Name": "Play_Rhythm_Good",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Rhythm_Good",
+      "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.1426746",
+      "DurationMax": "1.2106215",
+      "MediaRefs": [
+       {
+        "Id": "1071671996"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{AC5ACC81-2EB6-5253-710F-21475F1927DF}"
+ }
+}
