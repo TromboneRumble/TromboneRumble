@@ -1,16 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ProtoType/InGameWidget.h"
+
+#include "Components/CanvasPanel.h"
 #include "Components/Image.h"
 #include "Framework/InGameState.h"
 #include "Utilities/DebugHelper.h"
 
 void UInGameWidget::ToggleGuideUI()
 {
-	const ESlateVisibility CurrentVisibility = Image_Guide->GetVisibility();
+	const ESlateVisibility CurrentVisibility = InGameCanvas->GetVisibility();
 	const ESlateVisibility TargetVisibility = CurrentVisibility == ESlateVisibility::Visible ? ESlateVisibility::Collapsed : ESlateVisibility::Visible;
 	
-	Image_Guide->SetVisibility(TargetVisibility);
+	InGameCanvas->SetVisibility(TargetVisibility);
 }
 
 void UInGameWidget::NativeConstruct()

@@ -70,3 +70,15 @@ void UTromboneGameInstance::InitWWiseEngine()
 		//UE_LOG(LogTemp, Warning, TEXT("SoundEngineInitResult : %d"), (int32)InitResult);
 	}
 }
+
+FText UTromboneGameInstance::GetUIText(const FString& Key) const
+{
+	if (CommonStringTable.IsNull())
+	{
+		return FText::FromString(TEXT("String Table Missing"));
+	}
+
+	FName TableId = FName(*CommonStringTable.ToSoftObjectPath().GetAssetPathString());
+
+	return FText::FromStringTable(TableId, Key);
+}
