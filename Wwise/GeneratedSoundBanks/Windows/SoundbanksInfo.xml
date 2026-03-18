@@ -681,7 +681,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{FD8183FB-53DE-E47B-48DC-1532E99C9021}">
+		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{7DDE995B-55D2-CD04-69BF-34C5327445E8}">
 			<ObjectPath>MIDI_MapA_Easy_C</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_C</ShortName>
 			<Path>Event/MIDI_MapA_Easy_C.bnk</Path>
@@ -722,7 +722,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{7B24B38F-20EF-17C8-5D73-FED2665426BD}">
+		<SoundBank Id="1171123000" Type="Event" GUID="{7A85555C-0D56-41DF-AB4E-277C25F19F48}" Language="SFX" Hash="{0189C506-52A0-DA1D-C0FA-FF4CD447DD58}">
 			<ObjectPath>MIDI_MapA_Easy_V</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_V</ShortName>
 			<Path>Event/MIDI_MapA_Easy_V.bnk</Path>
@@ -763,7 +763,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{073609F0-A96E-E3C1-602C-5025643544C5}">
+		<SoundBank Id="1171123002" Type="Event" GUID="{1F573AFF-7751-45DF-B9C6-F6687AD8033B}" Language="SFX" Hash="{BCCF05BE-53F6-4C0B-26BD-7F77E32CE2C3}">
 			<ObjectPath>MIDI_MapA_Easy_T</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_T</ShortName>
 			<Path>Event/MIDI_MapA_Easy_T.bnk</Path>
@@ -1153,6 +1153,25 @@
 					</Properties>
 				</AcousticTexture>
 			</AcousticTextures>
+		</SoundBank>
+		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{EB006831-4C39-6418-F01E-E44F5C14A2A3}">
+			<ObjectPath>Play_Ranking_BGM</ObjectPath>
+			<ShortName>Play_Ranking_BGM</ShortName>
+			<Path>Event/Play_Ranking_BGM.bnk</Path>
+			<Media>
+				<File Id="823108851" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Ranking Song.wav</ShortName>
+					<Path>Media/823108851.wem</Path>
+					<CachePath>SFX/Ranking Song_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1402154955" Name="Play_Ranking_BGM" ObjectPath="\Events\Default Work Unit\Music\Play_Ranking_BGM" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" DurationType="OneShot" DurationMin="20.27025" DurationMax="20.27025">
+					<MediaRefs>
+						<MediaRef Id="823108851"/>
+					</MediaRefs>
+				</Event>
+			</Events>
 		</SoundBank>
 		<SoundBank Id="1436785869" Type="Event" GUID="{6F774DF0-065B-4E18-88C3-4330E80A9591}" Language="SFX" Hash="{C7CC8253-DFCA-26B2-93EA-6A13F36B42CB}">
 			<ObjectPath>Play_BBIK_V</ObjectPath>
@@ -2927,5 +2946,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{711C5360-EADE-4F70-5239-39E9D5E552AA}</FileHash>
+	<FileHash>{0DAC94AE-2BB0-78D1-E58F-3BB60FE130B6}</FileHash>
 </SoundBanksInfo>

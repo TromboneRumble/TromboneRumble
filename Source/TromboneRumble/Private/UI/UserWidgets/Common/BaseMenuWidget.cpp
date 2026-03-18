@@ -20,7 +20,7 @@ void UBaseMenuWidget::Init()
 {
 }
 
-void UBaseMenuWidget::ShowNoticePopup(const FString& Content)
+void UBaseMenuWidget::ShowNoticePopup(const FText& Content)
 {
 	if (NoticePopupWidgetClass)
 	{

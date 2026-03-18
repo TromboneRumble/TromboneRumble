@@ -26,7 +26,7 @@ protected:
 	virtual void NativeConstruct() override;
 	
 	virtual void Init();
-	virtual void ShowNoticePopup(const FString& Content);
+	virtual void ShowNoticePopup(const FText& Content);
 	virtual void BindSubsystemCallbacks();
 	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);

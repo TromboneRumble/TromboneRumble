@@ -13,6 +13,7 @@
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
 #include "Components/VerticalBox.h"
+#include "Framework/TromboneGameInstance.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "UI/UserWidgets/Popup/ConfirmationDialogueWidget.h"
@@ -171,7 +172,11 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 {
 	if (ET_Code->GetText().IsEmpty())
 	{
-		ShowNoticePopup(TEXT("로비 코드를 입력해주세요."));
+		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		{
+			const FText Message = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
+			ShowNoticePopup(Message);
+		}
 		return;
 	}
 	
@@ -200,8 +205,9 @@ void UMainMenuWidget::HandleQuitButtonClicked()
 	{
 		CachedQuitDialog = CreateWidget<UConfirmationDialogueWidget>(GetOwningPlayer(), ConfirmationDialogueWidgetClass);
 	}
-	// TODO : 메세지 관리, change to popup
-	const FText Message = FText::FromString(TEXT("정말 게임을 나가실건가요?"));
+
+	UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
+	const FText Message = GI ? GI->GetUIText(TEXT("Confirmation_QuitGame")) : FText::FromString(TEXT("Default Quit Message"));
 	CachedQuitDialog->ShowDialogue(Message);
 }
 

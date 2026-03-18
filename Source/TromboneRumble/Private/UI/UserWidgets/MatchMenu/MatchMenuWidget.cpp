@@ -78,8 +78,7 @@ void UMatchMenuWidget::NativeOnActivated()
 		return;
 	}
 
-	const FString Prefix = TEXT("입장 코드 : ");
-	CT_Code->SetText(FText::FromString(Prefix + OutCode));
+	CT_Code->SetText(FText::FromString(OutCode));
 }
 
 void UMatchMenuWidget::NativeOnInitialized()
