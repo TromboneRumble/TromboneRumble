@@ -19,7 +19,10 @@ struct FHitData
 	float KnockbackForce = 0.0f;
 
 	UPROPERTY()
-	EHitReactionType HitType = EHitReactionType::Invalid;
+	EHitInstigatorType HitInstigator = EHitInstigatorType::None;
+	
+	UPROPERTY()
+	EHitReactionType HitReaction = EHitReactionType::None;
 };
 
 // This class does not need to be modified.

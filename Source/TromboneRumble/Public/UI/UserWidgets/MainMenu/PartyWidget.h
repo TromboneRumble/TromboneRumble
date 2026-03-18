@@ -15,7 +15,7 @@ class TROMBONERUMBLE_API UPartyWidget : public UCommonUserWidget
 {
 	GENERATED_BODY()
 	
-	public:
+public:
 
 	/** Default constructor. */
 	UPartyWidget();

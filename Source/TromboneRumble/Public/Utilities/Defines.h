@@ -65,15 +65,6 @@ enum class EEquipmentSlotType : uint8
 	MAX_SLOTS
 };
 
-// TODO : 추후 팀전 고려.
-UENUM()
-enum class EMatchState : uint8
-{
-	FreeForAll,
-	TwoTeams,
-	Invalid = 255 UMETA(Hidden)
-};
-
 UENUM()
 enum class ELevelState : uint8
 {
@@ -81,6 +72,7 @@ enum class ELevelState : uint8
 	Lobby,
 	InGame,
 	MatchMenu,
+	Tutorial,
 	Invalid = 255 UMETA(Hidden)
 };
 
@@ -105,12 +97,25 @@ enum class ELobbyState : uint8
 };
 
 UENUM()
+enum class EHitInstigatorType : uint8
+{
+	None,
+	Headbutt,
+	Trombone,
+	Cymbals,
+	Violin,
+	Garbage_Cup,
+	Garbage_Paper,
+	Garbage_Chair,
+	PressurePlate,
+};
+
+UENUM()
 enum class EHitReactionType : uint8
 {
 	None,
 	Stun,
 	Ragdoll,
-	Invalid		= 255	UMETA(Hidden)
 };
 
 UENUM()

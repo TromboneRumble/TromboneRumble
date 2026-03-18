@@ -12,14 +12,6 @@ AInGameMode::AInGameMode()
 	bUseSeamlessTravel = true;
 }
 
-void AInGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
-{
-}
-
-void AInGameMode::HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem)
-{
-}
-
 void AInGameMode::BeginPlay()
 {
 	Super::BeginPlay();
