@@ -26,7 +26,7 @@ void UQuestWidget::InitQuestWidget(const FQuestUIData& QuestUIData)
 	
 	if (Image_Icon)
 	{
-		// Image_Icon->SetBrushFromTexture(Icon);
+		Image_Icon->SetBrushFromTexture(Icon);
 	}
 	else
 	{
