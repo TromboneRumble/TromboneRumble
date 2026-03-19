@@ -77,6 +77,9 @@ protected:
 	/** Quest sequence is currently in progress. Prevents processing sequence while quest */
 	bool bIsQuestSequenceProcessing = false;
 	
+	/** Interval after quest completion before processing the next tutorial sequence (seconds) */
+	float IntervalAfterQuestCompletion = 1.5f;
+	
 	UPROPERTY()
 	TObjectPtr<URhythmSubsystem> RhythmSubsystem;
 	
