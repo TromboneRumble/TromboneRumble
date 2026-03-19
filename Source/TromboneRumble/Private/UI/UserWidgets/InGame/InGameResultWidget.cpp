@@ -10,6 +10,7 @@
 #include "Actors/ResultScene/ResultCutsceneDirector.h"
 #include "Components/Button.h"
 #include "Components/Overlay.h"
+#include "Components/Image.h"
 
 void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank)
 {
@@ -17,17 +18,13 @@ void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 
 
 	FRumbleScoreData ScoreData = PlayerState->GetScoreData();
 
-	FString RankSuffix;
-	switch (PlayerRank)
+	if (RankImage && RankTextures.IsValidIndex(PlayerRank - 1))
 	{
-	case 1: RankSuffix = TEXT("st"); break;
-	case 2: RankSuffix = TEXT("nd"); break;
-	case 3: RankSuffix = TEXT("rd"); break;
-	default: RankSuffix = TEXT("th"); break;
-	}
-	if (RankText)
-	{
-		RankText->SetText(FText::FromString(FString::Printf(TEXT("<%d%s>"), PlayerRank, *RankSuffix)));
+		UTexture2D* TargetTexture = RankTextures[PlayerRank - 1].LoadSynchronous();
+		if (TargetTexture)
+		{
+			RankImage->SetBrushFromTexture(TargetTexture);
+		}
 	}
 
 	// 최종 합산 점수
@@ -64,10 +61,17 @@ void UInGameResultWidget::HideSkipButtonAndShowButtons()
 	if (ButtonOverlay)
 	{
 		ButtonOverlay->SetVisibility(ESlateVisibility::Visible);
-	}
-	if (ViewLeaderboardButton)
-	{
-		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Collapsed);
+		if (ViewLeaderboardButton)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CAlled"));
+			ViewLeaderboardButton->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ViewLeaderboardButton->SetRenderOpacity(0.f);
+		}
+		if (ReturnToMainMenuButtonMyResult)
+		{
+			ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ReturnToMainMenuButtonMyResult->SetRenderOpacity(0.f);
+		}
 	}
 }
 
@@ -75,15 +79,28 @@ void UInGameResultWidget::HideSkipButtonAndShowButtons()
 void UInGameResultWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	if (IsDesignTime()) return;
+
+
 	if (BackgroundBlurOverlay) BackgroundBlurOverlay->SetRenderOpacity(0.f);
 	if (ResultOverlay) ResultOverlay->SetRenderOpacity(0.f);
 	if (ButtonOverlay) ButtonOverlay->SetVisibility(ESlateVisibility::Collapsed);
 
-
 	if (SkipButton) SkipButton->OnClicked.AddDynamic(this, &ThisClass::HandleSkipClicked);
 	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewMyResultClicked);
 	if (ViewLeaderboardButton) ViewLeaderboardButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewLeaderboardClicked);
-	if (ReturnToMainMenuButton) ReturnToMainMenuButton->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
+	if (ReturnToMainMenuButtonLeaderBoard) ReturnToMainMenuButtonLeaderBoard->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
+	if (ReturnToMainMenuButtonMyResult) ReturnToMainMenuButtonMyResult->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
+
+	if (ViewLeaderboardButton)
+	{
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	if (ReturnToMainMenuButtonMyResult)
+	{
+		ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+
 
 	if (!SessionsSubsystem)
 	{
@@ -101,35 +118,56 @@ void UInGameResultWidget::HandleSkipClicked()
 
 void UInGameResultWidget::HandleViewMyResultClicked()
 {
+
+	if (ViewLeaderboardButton)
+	{
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (ReturnToMainMenuButtonMyResult)
+	{
+		ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (ViewMyResultButton)
+	{
+		ViewMyResultButton->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+	if (ReturnToMainMenuButtonLeaderBoard)
+	{
+		ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
 	if (Director.IsValid())
 	{
 		Director->PlayZoomSequence(true); // 줌인
 		PlayAnimation(SpawnAnimation);
 	}
-	if (ViewLeaderboardButton)
-	{
-		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Visible);
-	}
-	if (ViewMyResultButton)
-	{
-		ViewMyResultButton->SetVisibility(ESlateVisibility::Collapsed);
-	}
 }
 
 void UInGameResultWidget::HandleViewLeaderboardClicked()
 {
-	if (Director.IsValid())
-	{
-		Director->PlayZoomSequence(false); // 줌아웃 (역재생)
-		PlayAnimation(SpawnAnimation,0,1,EUMGSequencePlayMode::Reverse);
-	}
+	
 	if (ViewLeaderboardButton)
 	{
-		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Collapsed);
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
+	if (ReturnToMainMenuButtonMyResult)
+	{
+		ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+
 	if (ViewMyResultButton)
 	{
 		ViewMyResultButton->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (ReturnToMainMenuButtonLeaderBoard)
+	{
+		ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (Director.IsValid())
+	{
+		Director->PlayZoomSequence(false); // 줌아웃 (역재생)
+		PlayAnimation(SpawnAnimation, 0, 1, EUMGSequencePlayMode::Reverse);
 	}
 }
 
@@ -174,5 +212,4 @@ void UInGameResultWidget::OnDestroySessionFailure()
 void UInGameResultWidget::SetDirector(AResultCutsceneDirector* InDirector)
 {
 	Director = InDirector;
-	UE_LOG(LogTemp, Warning, TEXT("ADSF"));
 }

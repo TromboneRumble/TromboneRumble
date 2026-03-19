@@ -7,6 +7,7 @@
 #include "InGameResultWidget.generated.h"
 
 
+class UImage;
 class UCanvasPanel;
 class UOverlay;
 class AResultCutsceneDirector;
@@ -49,7 +50,10 @@ protected:
 	void OnDestroySessionFailure();
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> RankText;
+	TObjectPtr<UImage> RankImage;
+
+	UPROPERTY(EditAnywhere, Category = "UI|Result")
+	TArray<TSoftObjectPtr<UTexture2D>> RankTextures;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TotalScoreText;
@@ -108,8 +112,12 @@ protected:
 	TObjectPtr<UButton> ViewMyResultButton;    
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ViewLeaderboardButton; 
+
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> ReturnToMainMenuButton;
+	TObjectPtr<UButton> ReturnToMainMenuButtonMyResult;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ReturnToMainMenuButtonLeaderBoard;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> SpawnAnimation;

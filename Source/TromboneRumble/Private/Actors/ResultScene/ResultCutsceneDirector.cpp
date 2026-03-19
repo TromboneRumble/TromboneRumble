@@ -109,6 +109,23 @@ void AResultCutsceneDirector::BindToInGameState(AGameStateBase* NewGameState)
 	}
 }
 
+void HideActorRecursive(AActor* TargetActor, bool bHidden)
+{
+	if (!TargetActor) return;
+
+	// 본인 숨기기
+	TargetActor->SetActorHiddenInGame(bHidden);
+
+	// 부착된 모든 자식 액터들을 가져와서 동일하게 적용
+	TArray<AActor*> AttachedActors;
+	TargetActor->GetAttachedActors(AttachedActors);
+
+	for (AActor* ChildActor : AttachedActors)
+	{
+		HideActorRecursive(ChildActor, bHidden);
+	}
+}
+
 void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 {
 	if (NewState != EInGameState::End) return;
@@ -144,12 +161,12 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 			if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(SortedPlayers[i]))
 			{
 				PodiumActor->ApplySkinColor(DefaultPS->GetSkinColor());
-				PodiumActor->SetActorHiddenInGame(false);
+				HideActorRecursive(PodiumActor, false);
 			}
 		}
 		else
 		{
-			PodiumActor->SetActorHiddenInGame(true);
+			HideActorRecursive(PodiumActor, true);
 		}
 	}
 
@@ -182,8 +199,11 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 				ResultWidget->AddToViewport();
 
 				PC->bShowMouseCursor = false;
-				FInputModeUIOnly InputMode;
+				FInputModeGameAndUI InputMode;
+				
 				InputMode.SetWidgetToFocus(ResultWidget->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				
 				PC->SetInputMode(InputMode);
 			}
 		}
