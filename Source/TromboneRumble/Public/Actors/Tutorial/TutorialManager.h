@@ -51,6 +51,8 @@ public:
 	void SpawnInstruments();
 	void SpawnDummyCharacter();
 	
+	void ShowTutorialCompletePopup();
+	
 	ADefaultTromboneCharacter* GetPlayerCharacter() const;
 	
 	UFUNCTION()

@@ -1,9 +1,13 @@
 #include "Actors/Tutorial/TutorialManager.h"
+#include "Blueprint/UserWidget.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/QuestData.h"
 #include "Data/TutorialData.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "Utilities/TromboneStatics.h"
 
 ATutorialManager::ATutorialManager()
 {
@@ -122,6 +126,7 @@ void ATutorialManager::ProcessTutorial()
 	
 	if (CurrentIndex >= TutorialSequenceNames.Num())
 	{
+		ShowTutorialCompletePopup();
 		UE_LOG(LogTemp, Warning, TEXT("Tutorial sequence completed"));
 		return;
 	}
@@ -273,6 +278,29 @@ void ATutorialManager::SpawnDummyCharacter()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn dummy character of class %s"), *DummyCharacterClass->GetName());
 	}
+}
+
+void ATutorialManager::ShowTutorialCompletePopup()
+{
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	const FText Title = FText::FromString(TEXT("Tutorial Completed"));
+	const FText Description = FText::FromString(TEXT("Congratulations! You have completed the tutorial."));
+	const FText LeftButtonText = FText::FromString(TEXT("Yes"));
+	const FText RightButtonText = FText::FromString(TEXT("Go MainMenu"));
+	FOnPopupAction LeftAction, RightAction;
+	LeftAction.AddLambda([this]()
+	{
+		UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
+	});
+	RightAction.AddLambda([this]()
+	{
+		UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
+	});
+		
+	auto* Popup = CreateWidget<UTwoButtonWithoutClosePopup>(GetWorld(), Config->TwoButtonWithoutClosePopupWidgetClass);
+	Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+	
+	UTromboneStatics::SetInputConfig(GetWorld(), true, true, true);
 }
 
 ADefaultTromboneCharacter* ATutorialManager::GetPlayerCharacter() const

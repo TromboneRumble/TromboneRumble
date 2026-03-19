@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,7 @@
 #include "PopupWidgetBase.generated.h"
 
 class UCommonButtonBase;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPopupAction);
+DECLARE_MULTICAST_DELEGATE(FOnPopupAction);
 
 UCLASS()
 class TROMBONERUMBLE_API UPopupWidgetBase : public UCommonActivatableWidget

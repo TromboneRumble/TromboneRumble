@@ -1,0 +1,77 @@
+#include "Utilities/TromboneStatics.h"
+#include "EnhancedInputSubsystems.h"
+#include "NativeGameplayTags.h"
+#include "TromboneGamePlayTags.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Utilities/Defines.h"
+
+void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelState Level, const bool bAbsolute)
+{
+	FString MapPath;
+	switch (Level)
+	{
+		case ELevelState::MainMenu:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+			break;
+		case ELevelState::Lobby:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+			break;
+		case ELevelState::MatchMenu:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
+			break;
+		case ELevelState::Tutorial:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Tutorial_Main);
+			break;
+		case ELevelState::InGame:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
+			break;
+		default:
+			UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::OpenLevel] Unknown level state"));
+			return;
+	}
+	
+	const FString URL = FPackageName::ObjectPathToPackageName(MapPath);
+	UGameplayStatics::OpenLevel(WorldContextObject, FName(*URL), bAbsolute);
+	
+}
+
+void UTromboneStatics::SetInputConfig(const UObject* WorldContextObject, bool bFocusUI, bool bShowCursor, bool bIgnoreInput, bool bRemoveMappingContext)
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!PC) return;
+	
+	if (bRemoveMappingContext)
+	{
+		if (const auto* LP = PC->GetLocalPlayer())
+		{
+			if (auto* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			{
+				Subsystem->ClearAllMappings(); 
+			}
+		}
+	}
+
+	PC->bShowMouseCursor = bShowCursor;
+	if (bIgnoreInput)
+	{
+		PC->DisableInput(PC);
+	}
+	else
+	{
+		PC->EnableInput(PC);
+	}
+
+	if (bFocusUI)
+	{
+		FInputModeGameAndUI Mode;
+		Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		Mode.SetHideCursorDuringCapture(false);
+		PC->SetInputMode(Mode);
+	}
+	else
+	{
+		const FInputModeGameOnly Mode;
+		PC->SetInputMode(Mode);
+	}
+}
