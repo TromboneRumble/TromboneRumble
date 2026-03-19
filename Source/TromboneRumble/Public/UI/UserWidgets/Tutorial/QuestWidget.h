@@ -11,6 +11,7 @@ class UImage;
 class ATutorialManager;
 class UCommonTextBlock;
 
+UENUM()
 enum class EQuestStatus : uint8
 {
 	InProgress,
@@ -29,7 +30,6 @@ public:
 	
 	/** Initializes the quest widget with the given description and icon. */
 	void InitQuestWidget(const FQuestUIData& QuestUIData);
-	void InitQuestWidget(const FText& Description, UTexture2D* Icon);
 	
 	/** Updates the quest status and changes the status icon. */
 	void UpdateQuestStatus(EQuestStatus NewStatus);
@@ -39,6 +39,14 @@ protected:
 	void HandleInProgressStatus();
 	
 	void HandleCompletedStatus();
+	
+protected:
+	
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* CompleteStatusTexture;
+	
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* InprogressStatusTexture;
 	
 protected:
 	

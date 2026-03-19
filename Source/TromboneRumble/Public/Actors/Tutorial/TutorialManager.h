@@ -5,6 +5,8 @@
 #include "Data/QuestData.h"
 #include "TutorialManager.generated.h"
 
+class ADefaultTromboneCharacter;
+enum class ENoteResult : uint8;
 class URhythmSubsystem;
 enum class EWeaponType : uint8;
 enum class EQuestConditionParamType : uint8;
@@ -43,11 +45,18 @@ public:
 	void ProcessTutorial();
 	void ProcessDialogueSequence();
 	void ProcessQuestSequence();
-	void InternalProcessQuestSequence();
 	void ProcessTransitionSequence();
+	void ProcessSequenceSideEffect();
 	
 	void SpawnInstruments();
 	void SpawnDummyCharacter();
+	
+	ADefaultTromboneCharacter* GetPlayerCharacter() const;
+	
+	UFUNCTION()
+	void HandleOnNoteDetected(ENoteResult NoteResult);
+	UFUNCTION()
+	void HandleOnSpotlightBonusEarned();
 	
 protected:
 	

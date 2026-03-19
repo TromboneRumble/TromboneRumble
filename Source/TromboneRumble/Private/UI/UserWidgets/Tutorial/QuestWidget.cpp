@@ -1,6 +1,7 @@
 #include "UI/UserWidgets/Tutorial/QuestWidget.h"
 #include "CommonTextBlock.h"
 #include "Actors/Tutorial/TutorialManager.h"
+#include "Components/Image.h"
 
 UQuestWidget::UQuestWidget()
 {
@@ -25,33 +26,13 @@ void UQuestWidget::InitQuestWidget(const FQuestUIData& QuestUIData)
 	
 	if (Image_Icon)
 	{
-		// Image_Icon->SetBrushFromTexture(QuestUIData.Icon);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Image_Icon is not bound in the widget."));
-	}
-}
-
-void UQuestWidget::InitQuestWidget(const FText& Description, UTexture2D* Icon)
-{
-	if (CT_Description)
-	{
-		CT_Description->SetText(Description);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CT_Description is not bound in the widget."));
-	}
-	
-	if (Image_Icon)
-	{
 		// Image_Icon->SetBrushFromTexture(Icon);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Image_Icon is not bound in the widget."));
 	}
+	
 	UpdateQuestStatus(EQuestStatus::InProgress);
 }
 
@@ -78,7 +59,7 @@ void UQuestWidget::HandleInProgressStatus()
 {
 	if (Image_Status)
 	{
-		// Image_Status->SetBrushFromTexture(InProgressIcon);
+		Image_Status->SetBrushFromTexture(InprogressStatusTexture);
 	}
 	else
 	{
@@ -88,17 +69,9 @@ void UQuestWidget::HandleInProgressStatus()
 
 void UQuestWidget::HandleCompletedStatus()
 {
-	if (CT_Description)
-	{
-		// TODO : Delete Later
-		FText CurrentText = CT_Description->GetText();
-		FText StrikethroughText = FText::FromString(FString::Printf(TEXT("<s>%s</s>"), *CurrentText.ToString()));
-		CT_Description->SetText(StrikethroughText);
-	}
-	
 	if (Image_Status)
 	{
-		// Image_Status->SetBrushFromTexture(CompletedIcon);
+		Image_Status->SetBrushFromTexture(CompleteStatusTexture);
 	}
 	else
 	{

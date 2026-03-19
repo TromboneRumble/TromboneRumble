@@ -1,6 +1,9 @@
 #include "Actors/Tutorial/TutorialManager.h"
+
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Data/QuestData.h"
 #include "Data/TutorialData.h"
+#include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/EnumHelper.h"
@@ -26,6 +29,7 @@ void ATutorialManager::BeginPlay()
 		if (URhythmSubsystem* Subsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
 		{
 			RhythmSubsystem = Subsystem;
+			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
 		}
 	}
 	
@@ -35,13 +39,8 @@ void ATutorialManager::BeginPlay()
 	}
 }
 
-void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditionParamType ConditionParam_0,
-	FString ConditionParam_1)
+void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditionParamType ConditionParam_0, FString ConditionParam_1)
 {
-	const FString DebugMsg = FString::Printf(TEXT("Condition: %s, ConditionParam_0: %s, ConditionParam_1: %s"), 
-		*EnumHelper::EnumToString(Condition), 
-		*EnumHelper::EnumToString(ConditionParam_0), *ConditionParam_1);
-	// PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 	bool bQuestUpdated = false;
 	
 	for (auto& Elem : CurrentActiveQuest)
@@ -50,17 +49,15 @@ void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditi
 		
 		if (ActiveQuestData.bIsCompleted) continue;
 		
-		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Param_1 - Active: %s, Reported: %s"), *ActiveQuestData.QuestConditionParam_1, *ConditionParam_1));
-		
 		if (ActiveQuestData.QuestCondition == Condition &&
 			ActiveQuestData.QuestConditionParam_0 == ConditionParam_0 &&
 			ActiveQuestData.QuestConditionParam_1 == ConditionParam_1)
 		{
 			ActiveQuestData.QuestCondition_Count--;
-			bQuestUpdated = true;
 			
 			if (ActiveQuestData.QuestCondition_Count <= 0)
 			{
+				bQuestUpdated = true;
 				ActiveQuestData.bIsCompleted = true;
 				OnQuestCompleted.Broadcast(ActiveQuestData.QuestID);
 				UE_LOG(LogTemp, Log, TEXT("Quest %s completed!"), *ActiveQuestData.QuestID);
@@ -150,6 +147,7 @@ void ATutorialManager::ProcessDialogueSequence()
 {
 	FString Dialogue = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->DummyDialogue;
 
+	ProcessSequenceSideEffect();
 	OnDialogueSequence.Broadcast(Dialogue);
 }
 
@@ -172,7 +170,7 @@ void ATutorialManager::ProcessQuestSequence()
 			ActiveQuestData.QuestCondition_Count = QuestData->QuestCondition_Count;
 			CurrentActiveQuest.Add(QuestID, ActiveQuestData);
 			
-			FText Description = FText::FromString(QuestData->Comment); // TODO:
+			FText Description = FText::FromString(QuestData->Comment); // TODO: change comment to string table
 			UTexture2D* Icon = LoadObject<UTexture2D>(nullptr, *QuestData->IconPath);
 			
 			if (!Icon)
@@ -188,8 +186,23 @@ void ATutorialManager::ProcessQuestSequence()
 		}
 	}
 	
+	ProcessSequenceSideEffect();
 	OnQuestSequence.Broadcast(QuestUIDataArray);
+}
+
+void ATutorialManager::ProcessTransitionSequence()
+{
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]()
+	{
+		ProcessTutorial();
+		ProcessSequenceSideEffect();
+	});
 	
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, TimerDelegate, 1.0f, false);
+}
+
+void ATutorialManager::ProcessSequenceSideEffect()
+{
 	if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_016"))
 	{
 		SpawnInstruments();
@@ -202,25 +215,21 @@ void ATutorialManager::ProcessQuestSequence()
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))
 	{
 		SpawnDummyCharacter();
+		
+		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+		{
+			MyCharacter->Unequip();
+		}
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
 	{
 		RhythmSubsystem->ResumeRhythmGame();
+		
+		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+		{
+			MyCharacter->Unequip();
+		}
 	}
-}
-
-void ATutorialManager::InternalProcessQuestSequence()
-{
-}
-
-void ATutorialManager::ProcessTransitionSequence()
-{
-	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]()
-	{
-		ProcessTutorial();
-	});
-	
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, TimerDelegate, 1.0f, false);
 }
 
 void ATutorialManager::SpawnInstruments()
@@ -258,4 +267,31 @@ void ATutorialManager::SpawnDummyCharacter()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn dummy character of class %s"), *DummyCharacterClass->GetName());
 	}
+}
+
+ADefaultTromboneCharacter* ATutorialManager::GetPlayerCharacter() const
+{
+	if (ACharacter* MyCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
+		if (ADefaultTromboneCharacter* PlayerCharacter = Cast<ADefaultTromboneCharacter>(MyCharacter))
+		{
+			return PlayerCharacter;
+		}
+	}
+	
+	UE_LOG(LogTemp, Error, TEXT("Get Player Character Failed"));
+	return nullptr;
+}
+
+void ATutorialManager::HandleOnNoteDetected(const ENoteResult NoteResult)
+{
+	if (NoteResult == ENoteResult::Excellent)
+	{
+		ReportAction(EQuestConditionType::GetNoteLevel, EQuestConditionParamType::Specific, FString("Excellent"));
+	}
+}
+
+void ATutorialManager::HandleOnSpotlightBonusEarned()
+{
+	ReportAction(EQuestConditionType::HitSpotlight, EQuestConditionParamType::Any, FString());
 }	

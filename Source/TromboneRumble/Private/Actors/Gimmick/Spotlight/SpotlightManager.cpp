@@ -1,8 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
+#include "Actors/Tutorial/TutorialManager.h"
 #include "Engine/TargetPoint.h"
+#include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 
 ASpotlightManager::ASpotlightManager()
@@ -34,6 +34,13 @@ void ASpotlightManager::Deactivate()
             MusicCueSubsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::CheckSpotlightStart);
         }
     }
+}
+
+void ASpotlightManager::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
 }
 
 void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -102,6 +109,11 @@ void ASpotlightManager::TriggerSpotlightSpawn()
                 NewZone->InitializeZone(bIsFeverTime, SpotlightBonusScore);
                 ActiveSpotlightZones.Add(NewZone);
                 NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
+                
+                if (TutorialManager)
+                {
+                    NewZone->OnSpotlightBonusEarned.AddUObject(TutorialManager, &ATutorialManager::HandleOnSpotlightBonusEarned);
+                }
             }
         }
     }
@@ -136,6 +148,10 @@ void ASpotlightManager::OnSpotlightZoneDestroyed(AActor* DestroyedActor)
     if (ASpotlightZone* Zone = Cast<ASpotlightZone>(DestroyedActor))
     {
         ActiveSpotlightZones.Remove(Zone);
+        if (TutorialManager)
+        {
+            Zone->OnSpotlightBonusEarned.RemoveAll(TutorialManager);
+        }
     }
 }
 

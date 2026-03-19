@@ -26,6 +26,8 @@ enum class ESpotlightState : uint8
 	Fading      // 시간 초과로 사라짐
 };
 
+DECLARE_MULTICAST_DELEGATE(FOnSpotlightBonusEarned)
+
 UCLASS()
 class TROMBONERUMBLE_API ASpotlightZone : public AActor, public IServerRPCInterface
 {
@@ -35,7 +37,8 @@ public:
 	ASpotlightZone();
 	void InitializeZone(bool bIsFeverTime, const int32 InSpotlightBonusScore);
 	virtual void HandleServerRPC(ACharacter* InstigatorCharacter) override;
-	
+
+	FOnSpotlightBonusEarned OnSpotlightBonusEarned;
 
 protected:
 	virtual void BeginPlay() override;
