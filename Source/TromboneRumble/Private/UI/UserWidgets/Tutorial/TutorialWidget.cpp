@@ -25,7 +25,15 @@ void UTutorialWidget::NativeConstruct()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
 	}
 	
-	RegisterInputActions();
+	if (WBP_Dialogue)
+	{
+		WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	if (WBP_Quest)
+	{
+		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void UTutorialWidget::NativeDestruct()
@@ -71,7 +79,6 @@ void UTutorialWidget::UnregisterInputActions()
 
 void UTutorialWidget::HandleDialogueSequence(const FString& DialogueString)
 {
-
 	RegisterInputActions();
 	
 	if (WBP_Dialogue)

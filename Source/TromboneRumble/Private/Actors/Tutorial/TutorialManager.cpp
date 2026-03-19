@@ -1,12 +1,9 @@
 #include "Actors/Tutorial/TutorialManager.h"
-
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/QuestData.h"
 #include "Data/TutorialData.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
-#include "Utilities/DebugHelper.h"
-#include "Utilities/EnumHelper.h"
 
 ATutorialManager::ATutorialManager()
 {
@@ -70,6 +67,7 @@ void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditi
 		if (IsClearAllActiveQuests())
 		{
 			UE_LOG(LogTemp, Log, TEXT("All quests completed! Proceeding to the next tutorial sequence."));
+			bIsQuestSequenceProcessing = false;
 			ProcessTutorial();
 		}
 	}
@@ -115,6 +113,8 @@ void ATutorialManager::InitializeTutorial()
 
 void ATutorialManager::ProcessTutorial()
 {
+	if (bIsQuestSequenceProcessing) return;
+	
 	if (CurrentIndex >= TutorialSequenceNames.Num())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Tutorial sequence completed"));
@@ -153,6 +153,7 @@ void ATutorialManager::ProcessDialogueSequence()
 
 void ATutorialManager::ProcessQuestSequence()
 {
+	bIsQuestSequenceProcessing = true;
 	TArray<FString> QuestIDs = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->QuestID;
 	TArray<FQuestUIData> QuestUIDataArray;
 	CurrentActiveQuest.Empty();

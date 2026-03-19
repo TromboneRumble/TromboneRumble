@@ -60,15 +60,22 @@ public:
 	
 protected:
 	
+	/** Currently active quests. Key is QuestID (1001 ...) */
 	UPROPERTY(VisibleAnywhere)
 	TMap<FString, FActiveQuestData> CurrentActiveQuest;
 	
+	/** Tutorial sequence Row names. Key is TutorialSequence_001 ... */
 	UPROPERTY()
 	TArray<FName> TutorialSequenceNames;
 	
+	/** Tutorial sequence index */
 	int32 CurrentIndex = -1;
 	
+	/** Timer handle for ProcessTutorial() delay */
 	FTimerHandle TimerHandle_Tutorial;
+	
+	/** Quest sequence is currently in progress. Prevents processing sequence while quest */
+	bool bIsQuestSequenceProcessing = false;
 	
 	UPROPERTY()
 	TObjectPtr<URhythmSubsystem> RhythmSubsystem;
