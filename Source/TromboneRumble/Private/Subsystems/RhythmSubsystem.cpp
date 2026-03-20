@@ -4,11 +4,11 @@
 #include "AkGameplayTypes.h"
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "Utilities/DebugHelper.h"
 
 void URhythmSubsystem::StartRhythmGame()
 {
-	if (RhythmActor)
+	if (RhythmActor.Get())
 	{
 		RhythmActor->PrepareAndStartRhythmGame();
 		CurrentState = ERhythmGameState::Start;
@@ -16,46 +16,66 @@ void URhythmSubsystem::StartRhythmGame()
 		//Broadcast는 RhythmActor에서 노래 준비가 다 끝난후에 호출
 		//OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Start);
 	}
+	else
+	{
+		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+	}
 }
 
 void URhythmSubsystem::PauseRhythmGame()
 {
-	if (RhythmActor)
+	if (RhythmActor.Get())
 	{
 		RhythmActor->PauseRhythmGame();
 		CurrentState = ERhythmGameState::Paused;
 		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Paused);
 	}
+	else
+	{
+		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+	}
 }
 
 void URhythmSubsystem::ResumeRhythmGame()
 {
-	if (RhythmActor)
+	if (RhythmActor.Get())
 	{
 		RhythmActor->ResumeRhythmGame();
 		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Resumed);
 		CurrentState = ERhythmGameState::Playing;
 	}
+	else
+	{
+		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+	}
 }
 
 void URhythmSubsystem::StopRhythmGame()
 {
-	if (RhythmActor)
+	if (RhythmActor.Get())
 	{
 		RhythmActor->StopRhythmGame();
 		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Stopped);
 		CurrentState = ERhythmGameState::Stopped;
 		isRhythmGameForceStopped = true;
 	}
+	else
+	{
+		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+	}
 }
 
 void URhythmSubsystem::EndRhythmGame()
 {
-	if (RhythmActor)
+	if (RhythmActor.Get())
 	{
 		RhythmActor->StopRhythmGame();
 		OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
 		CurrentState = ERhythmGameState::Ended;
+	}
+	else
+	{
+		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
 	}
 }
 
@@ -80,21 +100,6 @@ void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCal
 void URhythmSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	if (UWorld* World = GetWorld())
-	{
-		World->OnWorldBeginPlay.AddUObject(this, &ThisClass::OnWorldBeginPlay);
-	}
-}
-
-void URhythmSubsystem::OnWorldBeginPlay()
-{
-	if (UWorld* World = GetWorld())
-	{
-		if (AActor* FoundActor = UGameplayStatics::GetActorOfClass(World, ARhythmActor::StaticClass()))
-		{
-			RhythmActor = Cast<ARhythmActor>(FoundActor);
-		}
-	}
 }
 
 void URhythmSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
@@ -115,4 +120,9 @@ void URhythmSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallba
 void URhythmSubsystem::BroadcastUserCue(const FName& CueName)
 {
 	OnMusicUserCue.Broadcast(CueName);
+}
+
+void URhythmSubsystem::RegisterRhythmActor(ARhythmActor* InActor)
+{
+	RhythmActor = InActor;
 }

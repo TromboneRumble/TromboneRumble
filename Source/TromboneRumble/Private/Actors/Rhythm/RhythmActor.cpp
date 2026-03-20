@@ -121,8 +121,11 @@ void ARhythmActor::PrepareAndStartRhythmGame()
 	// 데이터 로딩이 완료된 경우 즉시 시작 대기열 진입
 	if (bIsDataLoaded)
 	{
+		Debug::Print(TEXT("PrepareAndStartRhythmGame - WaitForOtherPlayers"));
+		//TODO : 싱글플레이어에서도 가능하게 하기
 		bAreOtherPlayersReady = true;
 		WaitForOtherPlayers();
+		
 		return;
 	}
 
@@ -130,6 +133,7 @@ void ARhythmActor::PrepareAndStartRhythmGame()
 	// 현재 로딩 중이라면, 완료되는 즉시 시작되도록 예약 플래그 설정
 	if (bIsLoadingData)
 	{
+		Debug::Print(TEXT("Prepare And Start RhythmGame - bIsLoadingData"));
 		bStartRequested = true;
 		return;
 	}
@@ -215,6 +219,7 @@ void ARhythmActor::BeginPlay()
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
 	GetCachedRhythmSubsystem()->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCue);
+	GetCachedRhythmSubsystem()->RegisterRhythmActor(this);
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
 	PrepareRhythmGame();
 }
@@ -321,6 +326,10 @@ void ARhythmActor::PrepareRhythmGame()
 		{
 			bStartRequested = false;
 			WaitForOtherPlayers();
+		}
+		else
+		{
+			Debug::Print(TEXT("[RhythmActor] PrepareRhythmGame completed. Waiting for Start Request..."), -1, FColor::Green);
 		}
 	}
 	else
@@ -432,7 +441,7 @@ void ARhythmActor::InitGameState()
 	{
 		InGameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
 		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
-		if (InGameState->GetCurrentGameState() == EInGameState::Play)
+		if (GetNetMode() == NM_Standalone || InGameState->GetCurrentGameState() == EInGameState::Play)
 		{
 			HandleInGameStateChanged(EInGameState::Play);
 		}
@@ -561,7 +570,10 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 {
 	switch (InGameState) {
 		case EInGameState::Play:
+		{
 			bAreOtherPlayersReady = true;
+			GetCachedRhythmSubsystem()->StartRhythmGame();
+		}
 			break;
 		
 		default: ;
@@ -570,18 +582,35 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 
 void ARhythmActor::WaitForOtherPlayers()
 {
+	AInGameState* InGameState = GetWorld() ? GetWorld()->GetGameState<AInGameState>() : nullptr;
+	if (InGameState)
+	{
+		if (InGameState->GetCurrentGameState() == EInGameState::Play)
+		{
+			bAreOtherPlayersReady = true;
+		}
+	}
+	if (GetNetMode() == NM_Standalone)
+	{
+		bAreOtherPlayersReady = true;
+	}
+
 	if (bIsDataLoaded && bAreOtherPlayersReady)
 	{
 		StartRhythmGame();
 		EnableInput(GetWorld()->GetFirstPlayerController());
+		GetWorldTimerManager().ClearTimer(CheckPlayersTimerHandle);
 	}
 	else
 	{
+		FString Reason = !bIsDataLoaded ? TEXT("DataNotLoaded") : TEXT("OtherPlayersNotReady");
+		Debug::Print(FString::Printf(TEXT("[RhythmActor] Waiting... Reason: %s"), *Reason), -1, FColor::Yellow);
+
 		GetWorld()->GetTimerManager().SetTimer(
 			CheckPlayersTimerHandle,
 			this,
 			&ARhythmActor::WaitForOtherPlayers,
-			1.0f,
+			0.5f,
 			false
 		);
 	}

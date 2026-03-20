@@ -203,6 +203,7 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 				
 				InputMode.SetWidgetToFocus(ResultWidget->TakeWidget());
 				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				InputMode.SetHideCursorDuringCapture(false);
 				
 				PC->SetInputMode(InputMode);
 			}

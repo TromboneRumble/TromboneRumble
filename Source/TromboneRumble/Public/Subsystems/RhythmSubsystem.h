@@ -53,11 +53,11 @@ public:
 	FOnRhythmGameStateDelegate OnRhythmGameStateChanged;
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	TObjectPtr<ARhythmActor> RhythmActor;
+	UPROPERTY()
+	TWeakObjectPtr<ARhythmActor> RhythmActor;
 
 	ERhythmGameState CurrentState = ERhythmGameState::None;
 private:
-	void OnWorldBeginPlay();
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
 
@@ -65,4 +65,5 @@ private:
 
 public:
 	FORCEINLINE ERhythmGameState GetCurrentRhythmState() const { return CurrentState; }
+	void RegisterRhythmActor(ARhythmActor* InActor);
 };
