@@ -17,6 +17,7 @@ class TROMBONERUMBLE_API UOptionCycleWidget : public UCommonRotatorWidgetBase
 	
 public:
 	virtual void NativePreConstruct() override;
+	// TODO : 부모 클래스의 Init을 숨김. 수정해야 함
 	virtual void Init(FText InName, TArray<FText> InOptions, int32 DefaultIndex);
 
 protected:

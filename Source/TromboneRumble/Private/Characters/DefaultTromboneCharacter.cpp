@@ -192,6 +192,14 @@ EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() co
 	return EInstrumentType::None;
 }
 
+void ADefaultTromboneCharacter::Unequip()
+{
+	if (!DefaultWeaponInstance) return;
+
+	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+	EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -318,10 +326,7 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 
 void ADefaultTromboneCharacter::HandleOnRagdoll()
 {
-	if (!DefaultWeaponInstance) return;
-
-	EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
-	EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
+	Unequip();
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)

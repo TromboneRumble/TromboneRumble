@@ -1,7 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
-
 #include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "AkComponent.h"
@@ -172,6 +169,7 @@ void ASpotlightZone::HandleOnNoteDetected(ENoteResult NoteResult)
 	if (ADefaultPlayerState* PS = LocalCharacter->GetPlayerState<ADefaultPlayerState>())
 	{
 		PS->AddScore(SpotlightBonusScore, EScoreType::SpotLight);
+		OnSpotlightBonusEarned.Broadcast();
 	}
 
 	if (HasAuthority())

@@ -103,7 +103,8 @@ void APressurePlate_Explosive::StartExplosionExpansion()
 			if (HitActor && HitActor->Implements<UCombatReceiver>())
 			{
 				FHitData HitData;
-				HitData.HitType = EHitReactionType::Ragdoll;
+				HitData.HitReaction = EHitReactionType::Ragdoll;
+				HitData.HitInstigator = HitInstigatorType;
 				ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
 			}
 		}

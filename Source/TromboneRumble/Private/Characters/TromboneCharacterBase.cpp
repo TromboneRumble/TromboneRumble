@@ -148,7 +148,7 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 
 	if (bIsInvincible || bIsStun || bIsRagdoll) return;
 
-	switch (HitData.HitType)
+	switch (HitData.HitReaction)
 	{
 	case EHitReactionType::Ragdoll:
 		OnRagdoll();

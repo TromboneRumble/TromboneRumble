@@ -194,7 +194,9 @@ void AWeaponBase::DetectHit()
 					Direction.Z = 0.5f;
 					HitData.HitDirection = Direction.GetSafeNormal();
 					HitData.KnockbackForce = WeaponData->KnockbackForce;
-					HitData.HitType = WeaponData->HitReactionType;
+					HitData.HitReaction = WeaponData->HitReactionType;
+					HitData.HitInstigator = HitInstigatorType;
+					
 					Multicast_OnHitSuccess(HitActor);
 					Client_OnHitSuccess(HitActor);
 					ICombatReceiver::Execute_OnHitReceived(HitActor, HitData);
@@ -220,7 +222,11 @@ bool AWeaponBase::IsCanSweep() const
 	if (!GI) return false;
 
 	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
-	if (!GameStateSubsystem || GameStateSubsystem->GetLevelState() != ELevelState::InGame)
+	if (!GameStateSubsystem)
+	{
+		return false;
+	}
+	if (GameStateSubsystem->GetLevelState() != ELevelState::InGame && GameStateSubsystem->GetLevelState() != ELevelState::Tutorial)
 	{
 		return false;
 	}

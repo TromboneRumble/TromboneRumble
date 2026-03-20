@@ -121,6 +121,7 @@ void ARhythmActor::PrepareAndStartRhythmGame()
 	// 데이터 로딩이 완료된 경우 즉시 시작 대기열 진입
 	if (bIsDataLoaded)
 	{
+		bAreOtherPlayersReady = true;
 		WaitForOtherPlayers();
 		return;
 	}

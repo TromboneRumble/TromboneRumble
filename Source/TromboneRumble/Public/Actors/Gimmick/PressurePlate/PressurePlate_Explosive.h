@@ -6,8 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
 #include "Components/TimelineComponent.h"
+#include "Utilities/Defines.h"
 #include "PressurePlate_Explosive.generated.h"
 
+enum class EHitInstigatorType : uint8;
 class USphereComponent;
 
 UCLASS()
@@ -60,6 +62,9 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
 	float MaxRadius = 600.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
+	EHitInstigatorType HitInstigatorType = EHitInstigatorType::PressurePlate;
 
 	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;

@@ -162,8 +162,9 @@ void AGarbageBase::HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		FVector Direction = (OtherActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 		HitData.HitDirection = Direction;
-		HitData.HitType = HitReactionType; 
+		HitData.HitReaction = HitReactionType; 
 		HitData.KnockbackForce = 500.f;    // TODO : 데이터화
+		HitData.HitInstigator = HitInstigatorType;
 
 		ICombatReceiver::Execute_OnHitReceived(OtherActor, HitData);
 	}

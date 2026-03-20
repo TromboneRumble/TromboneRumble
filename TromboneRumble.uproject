@@ -14,7 +14,8 @@
 				"DeveloperSettings",
 				"AkAudio",
 				"GameplayAbilities",
-				"CommonUI"
+				"CommonUI",
+				"CoreUObject"
 			]
 		}
 	],

@@ -3,19 +3,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Pawn.h"
 #include "TutorialDummy.generated.h"
 
+class ATutorialManager;
+
 UCLASS()
-class TROMBONERUMBLE_API ATutorialDummy : public APawn
+class TROMBONERUMBLE_API ATutorialDummy : public ADefaultTromboneCharacter
 {
 	GENERATED_BODY()
-
+	
 public:
-	ATutorialDummy();
-	virtual void Tick(float DeltaTime) override;
-
-protected:
-	virtual void BeginPlay() override;
+	// ~ Begin ICombatReceiver Interfaces
+	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
+	// ~ End ICombatReceiver Interfaces
+	
+private:
+	
+	/** Reference to the tutorial manager */
+	UPROPERTY()
+	TObjectPtr<ATutorialManager> TutorialManager;
 
 };

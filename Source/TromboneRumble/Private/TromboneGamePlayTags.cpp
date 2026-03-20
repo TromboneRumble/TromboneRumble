@@ -9,6 +9,7 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MatchMenu_Main, "Trombone.Maps.MatchMenu.Main");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_Main, "Trombone.Maps.Lobby.Main");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_Main, "Trombone.Maps.InGame.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Tutorial_Main, "Trombone.Maps.Tutorial.Main");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MK, "Trombone.Maps.InGame.MK");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_HW, "Trombone.Maps.InGame.HW");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MJ, "Trombone.Maps.InGame.MJ");
