@@ -6,6 +6,7 @@
 #include "CommonUserWidget.h"
 #include "BaseUIRoot.generated.h"
 
+class UFadeWidget;
 class UCommonActivatableWidget;
 class UCommonActivatableWidgetStack;
 
@@ -23,6 +24,15 @@ public:
 	void PushLoadingOverlay(FString InContent) const;
 	void PopLoadingOverlay() const;
 	
+	/** Pushes fade overlay
+	 * @return Fade widget that was pushed or currently active fade widget
+	 * @see UFadeWidget
+	 */
+	UFadeWidget* PushFadeOverlay() const;
+	
+	/** Pops the fade overlay */
+	void PopFadeOverlay() const;
+	
 protected:
 	virtual void Register();
 	
@@ -38,4 +48,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCommonActivatableWidget> LoadingOverlayWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCommonActivatableWidget> FadeWidgetClass;
 };

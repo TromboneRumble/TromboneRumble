@@ -23,6 +23,7 @@ struct FQuestUIData
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialDialogueSequence, const FText& /*DialogueString*/);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialQuestSequence, const TArray<FQuestUIData>& /*QuestUIData*/);
+DECLARE_MULTICAST_DELEGATE(FOnTutorialTransitionSequence);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, const FString& /*QuestID*/);
 
 UCLASS()
@@ -35,6 +36,7 @@ public:
 	
 	FOnTutorialDialogueSequence OnDialogueSequence;
 	FOnTutorialQuestSequence OnQuestSequence;
+	FOnTutorialTransitionSequence OnTransitionSequence;
 	FOnQuestCompleted OnQuestCompleted;
 	
 	virtual void BeginPlay() override;

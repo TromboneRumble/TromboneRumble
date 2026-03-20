@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "TutorialWidget.generated.h"
 
+class UBaseUIRoot;
 struct FQuestUIData;
 class UTutorialQuestWidget;
 class UTutorialDialogueWidget;
@@ -19,9 +18,6 @@ class TROMBONERUMBLE_API UTutorialWidget : public UCommonActivatableWidget
 public:
 	/** Default constructor. */
 	UTutorialWidget();
-	
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
 	
 protected:
 	
@@ -41,6 +37,10 @@ private:
 	UPROPERTY()
 	TObjectPtr<ATutorialManager> TutorialManager;
 	
+	/** Reference to the root UI layout */
+	UPROPERTY()
+	TObjectPtr<UBaseUIRoot> RootLayout;
+	
 	/** UI action binding handles for skipping dialogue */
 	UPROPERTY()
 	TArray<FUIActionBindingHandle> SkipActionHandles;
@@ -59,7 +59,16 @@ private:
 	/** Handles the quest sequence event */
 	void HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray);
 	
+	/** Handles the transition sequence event */
+	void HandleTransitionSequence();
+	
 	/** Handles the skip dialogue input action */
 	void HandleSkipDialogue();
-
+	
+protected:
+	// ~ Begin UCommonActivatableWidget Interface
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+	// ~ End UCommonActivatableWidget Interface
 };

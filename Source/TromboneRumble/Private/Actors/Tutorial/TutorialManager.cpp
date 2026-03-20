@@ -128,6 +128,7 @@ void ATutorialManager::InitializeTutorial()
 
 void ATutorialManager::ProcessTutorial()
 {
+	
 	if (bIsQuestSequenceProcessing) return;
 	
 	if (CurrentIndex >= TutorialSequenceNames.Num())
@@ -139,7 +140,6 @@ void ATutorialManager::ProcessTutorial()
 	
 	const FName CurrentSequenceName = TutorialSequenceNames[CurrentIndex];
 	const ETutorialSequenceType SequenceType = TutorialDataTable->FindRow<FTutorialData>(CurrentSequenceName, FString())->SequenceType;
-
 	switch (SequenceType)
 	{
 		case ETutorialSequenceType::Dialogue:
@@ -155,8 +155,6 @@ void ATutorialManager::ProcessTutorial()
 			UE_LOG(LogTemp, Warning, TEXT("Unknown tutorial sequence type"));
 			break;
 	}
-	
-	CurrentIndex++;
 }
 
 void ATutorialManager::ProcessDialogueSequence()
@@ -164,6 +162,7 @@ void ATutorialManager::ProcessDialogueSequence()
 	const FString DescriptionStringId = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->DialogueStringID;
 	const FText Dialogue = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
 	
+	CurrentIndex++;
 	ProcessSequenceSideEffect();
 	OnDialogueSequence.Broadcast(Dialogue);
 }
@@ -211,19 +210,15 @@ void ATutorialManager::ProcessQuestSequence()
 		}
 	}
 	
+	CurrentIndex++;
 	ProcessSequenceSideEffect();
 	OnQuestSequence.Broadcast(QuestUIDataArray);
 }
 
 void ATutorialManager::ProcessTransitionSequence()
 {
-	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]()
-	{
-		ProcessTutorial();
-		ProcessSequenceSideEffect();
-	});
-	
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, TimerDelegate, 0.1f, false);
+	CurrentIndex++;
+	OnTransitionSequence.Broadcast();
 }
 
 void ATutorialManager::ProcessSequenceSideEffect()

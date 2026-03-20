@@ -2,12 +2,16 @@
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Input/CommonUIInputTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "UI/UserWidgets/Common/FadeWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialDialogueWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialQuestWidget.h"
+#include "Utilities/TromboneStatics.h"
 
 UTutorialWidget::UTutorialWidget()
 {
 	SkipActionHandles.Empty();
+	bSupportsActivationFocus = true;
 }
 
 void UTutorialWidget::NativeConstruct()
@@ -19,6 +23,7 @@ void UTutorialWidget::NativeConstruct()
 	{
 		TutorialManager->OnDialogueSequence.AddUObject(this, &ThisClass::HandleDialogueSequence);
 		TutorialManager->OnQuestSequence.AddUObject(this, &ThisClass::HandleQuestSequence);
+		TutorialManager->OnTransitionSequence.AddUObject(this, &ThisClass::HandleTransitionSequence);
 	}
 	else
 	{
@@ -33,6 +38,15 @@ void UTutorialWidget::NativeConstruct()
 	if (WBP_Quest)
 	{
 		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
+	{
+		RootLayout = Root;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to find RootLayout for TutorialWidget."));
 	}
 }
 
@@ -106,9 +120,26 @@ void UTutorialWidget::HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDat
 	}
 }
 
+void UTutorialWidget::HandleTransitionSequence()
+{
+	UnregisterInputActions();
+	
+	UFadeWidget* Widget = RootLayout->PushFadeOverlay();
+	Widget->OnFadeOutComplete.AddLambda([this]()
+	{
+		RootLayout->PopFadeOverlay();
+		TutorialManager->ProcessTutorial();
+	});
+}
+
 void UTutorialWidget::HandleSkipDialogue()
 {
 	if (!TutorialManager) return;
 	
 	TutorialManager->ProcessTutorial();
+}
+
+TOptional<FUIInputConfig> UTutorialWidget::GetDesiredInputConfig() const
+{
+	return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways, true);
 }

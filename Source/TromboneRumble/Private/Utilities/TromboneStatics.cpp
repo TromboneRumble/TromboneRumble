@@ -4,6 +4,9 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/HUD/BaseHUD.h"
+#include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelState Level, const bool bAbsolute)
@@ -74,4 +77,21 @@ void UTromboneStatics::SetInputConfig(const UObject* WorldContextObject, bool bF
 		const FInputModeGameOnly Mode;
 		PC->SetInputMode(Mode);
 	}
+}
+
+UBaseUIRoot* UTromboneStatics::GetRootLayout(const APlayerController* PlayerController)
+{
+	if (PlayerController && PlayerController->GetLocalPlayer())
+	{
+		if (const ABaseHUD* Hud = Cast<ABaseHUD>(PlayerController->GetHUD()))
+		{
+			if (UBaseUIRoot* RootLayout = Cast<UBaseUIRoot>(Hud->GetRootUI()))
+			{
+				return RootLayout;
+			}
+		}
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to get RootLayout"));
+	return nullptr;
 }

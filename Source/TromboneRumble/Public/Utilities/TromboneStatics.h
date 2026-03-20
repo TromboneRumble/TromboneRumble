@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "TromboneStatics.generated.h"
 
+class UBaseUIRoot;
 enum class ELevelState : uint8;
 
 /**
@@ -20,4 +21,9 @@ public:
 	
 	/** Configures player input */
 	static void SetInputConfig(const UObject* WorldContextObject, bool bFocusUI, bool bShowCursor, bool bIgnoreInput = false, bool bRemoveMappingContext = false);	
+	
+	/** @return The root UI layout widget
+	 *  @see UBaseUIRoot
+	 */
+	static UBaseUIRoot* GetRootLayout(const APlayerController* PlayerController);
 };
