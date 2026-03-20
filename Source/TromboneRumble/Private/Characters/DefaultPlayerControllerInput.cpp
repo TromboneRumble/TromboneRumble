@@ -91,11 +91,6 @@ void ADefaultPlayerController::HandleInGameStateChanged(const EInGameState NewSt
 					Subsystem->RemoveMappingContext(InGameMappingContext);
 				}
 			}
-    
-			FInputModeGameAndUI InputMode;
-			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			SetInputMode(InputMode);
-			bShowMouseCursor = true;
 			break;
 		}
 		default: 
