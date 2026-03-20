@@ -162,8 +162,8 @@ void ATutorialManager::ProcessDialogueSequence()
 	const FString DescriptionStringId = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->DialogueStringID;
 	const FText Dialogue = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
 	
-	CurrentIndex++;
 	ProcessSequenceSideEffect();
+	CurrentIndex++;
 	OnDialogueSequence.Broadcast(Dialogue);
 }
 
@@ -210,8 +210,8 @@ void ATutorialManager::ProcessQuestSequence()
 		}
 	}
 	
-	CurrentIndex++;
 	ProcessSequenceSideEffect();
+	CurrentIndex++;
 	OnQuestSequence.Broadcast(QuestUIDataArray);
 }
 
