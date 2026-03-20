@@ -5,6 +5,7 @@
 #include "Data/QuestData.h"
 #include "TutorialManager.generated.h"
 
+enum class ETutorialExtraDataType : uint8;
 class UTromboneGameInstance;
 class ADefaultTromboneCharacter;
 enum class ENoteResult : uint8;
@@ -25,6 +26,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialDialogueSequence, const FText& /*
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialQuestSequence, const TArray<FQuestUIData>& /*QuestUIData*/);
 DECLARE_MULTICAST_DELEGATE(FOnTutorialTransitionSequence);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, const FString& /*QuestID*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnShowExtraData, UTexture2D* /*Image*/);
 
 UCLASS()
 class TROMBONERUMBLE_API ATutorialManager : public AActor
@@ -38,6 +40,7 @@ public:
 	FOnTutorialQuestSequence OnQuestSequence;
 	FOnTutorialTransitionSequence OnTransitionSequence;
 	FOnQuestCompleted OnQuestCompleted;
+	FOnShowExtraData OnShowExtraData;
 	
 	virtual void BeginPlay() override;
 	
@@ -50,6 +53,8 @@ public:
 	void ProcessQuestSequence();
 	void ProcessTransitionSequence();
 	void ProcessSequenceSideEffect();
+	
+	void ShowExtraData(ETutorialExtraDataType ExtraDataType, const FString& ExtraDataPath);
 	
 	void SpawnInstruments();
 	void SpawnDummyCharacter();

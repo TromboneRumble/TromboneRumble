@@ -128,7 +128,6 @@ void ATutorialManager::InitializeTutorial()
 
 void ATutorialManager::ProcessTutorial()
 {
-	
 	if (bIsQuestSequenceProcessing) return;
 	
 	if (CurrentIndex >= TutorialSequenceNames.Num())
@@ -159,12 +158,19 @@ void ATutorialManager::ProcessTutorial()
 
 void ATutorialManager::ProcessDialogueSequence()
 {
-	const FString DescriptionStringId = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->DialogueStringID;
+	const FTutorialData* TutorialData = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString());
+	
+	const FString DescriptionStringId = TutorialData->DialogueStringID;
 	const FText Dialogue = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
 	
 	ProcessSequenceSideEffect();
 	CurrentIndex++;
 	OnDialogueSequence.Broadcast(Dialogue);
+	
+	const ETutorialExtraDataType ExtraDataType = TutorialData->ExtraDataType;
+	const FString ExtraDataPath = TutorialData->ExtraDataPath;
+	
+	ShowExtraData(ExtraDataType, ExtraDataPath);
 }
 
 void ATutorialManager::ProcessQuestSequence()
@@ -249,6 +255,33 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		{
 			MyCharacter->Unequip();
 		}
+	}
+}
+
+void ATutorialManager::ShowExtraData(ETutorialExtraDataType ExtraDataType, const FString& ExtraDataPath)
+{
+	switch (ExtraDataType)
+	{
+		case ETutorialExtraDataType::Image:
+		{
+			UTexture2D* Image = LoadObject<UTexture2D>(nullptr, *ExtraDataPath);
+			if (Image)
+			{
+				OnShowExtraData.Broadcast(Image);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Failed to load extra data image from path %s"), *ExtraDataPath);
+			}
+			break;
+		}
+		case ETutorialExtraDataType::Video:
+		{
+			// TODO :Load and play the video
+			break;
+		}
+		default:
+			break;
 	}
 }
 

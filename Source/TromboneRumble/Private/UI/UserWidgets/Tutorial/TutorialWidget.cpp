@@ -1,5 +1,6 @@
 #include "UI/UserWidgets/Tutorial/TutorialWidget.h"
 #include "Actors/Tutorial/TutorialManager.h"
+#include "Components/Image.h"
 #include "Input/CommonUIInputTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
@@ -24,6 +25,7 @@ void UTutorialWidget::NativeConstruct()
 		TutorialManager->OnDialogueSequence.AddUObject(this, &ThisClass::HandleDialogueSequence);
 		TutorialManager->OnQuestSequence.AddUObject(this, &ThisClass::HandleQuestSequence);
 		TutorialManager->OnTransitionSequence.AddUObject(this, &ThisClass::HandleTransitionSequence);
+		TutorialManager->OnShowExtraData.AddUObject(this, &ThisClass::HandleOnExtraData);
 	}
 	else
 	{
@@ -38,6 +40,11 @@ void UTutorialWidget::NativeConstruct()
 	if (WBP_Quest)
 	{
 		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	if (Image_ExtraData)
+	{
+		Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	
 	if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
@@ -104,6 +111,11 @@ void UTutorialWidget::HandleDialogueSequence(const FText& DialogueString)
 	{
 		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	
+	if (Image_ExtraData)
+	{
+		Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void UTutorialWidget::HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray)
@@ -117,6 +129,10 @@ void UTutorialWidget::HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDat
 	if (WBP_Dialogue)
 	{
 		WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (Image_ExtraData)
+	{
+		Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -134,9 +150,19 @@ void UTutorialWidget::HandleTransitionSequence()
 
 void UTutorialWidget::HandleSkipDialogue()
 {
-	if (!TutorialManager) return;
-	
-	TutorialManager->ProcessTutorial();
+	if (TutorialManager)
+	{
+		TutorialManager->ProcessTutorial();
+	}
+}
+
+void UTutorialWidget::HandleOnExtraData(UTexture2D* Image)
+{
+	if (Image_ExtraData && Image)
+	{
+		Image_ExtraData->SetBrushFromTexture(Image, true);
+		Image_ExtraData->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
 }
 
 TOptional<FUIInputConfig> UTutorialWidget::GetDesiredInputConfig() const

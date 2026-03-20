@@ -4,6 +4,7 @@
 #include "CommonActivatableWidget.h"
 #include "TutorialWidget.generated.h"
 
+class UImage;
 class UBaseUIRoot;
 struct FQuestUIData;
 class UTutorialQuestWidget;
@@ -26,6 +27,9 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTutorialQuestWidget> WBP_Quest;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_ExtraData;
 	
 	/** Input actions to skip dialogue */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -64,6 +68,9 @@ private:
 	
 	/** Handles the skip dialogue input action */
 	void HandleSkipDialogue();
+	
+	/** Handles the show extra data event */
+	void HandleOnExtraData(UTexture2D* Image);
 	
 protected:
 	// ~ Begin UCommonActivatableWidget Interface

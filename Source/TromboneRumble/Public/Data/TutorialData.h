@@ -30,6 +30,7 @@ enum class ETutorialExtraDataType : uint8
 {
 	None,
 	Image,
+	Video,
 };
 
 USTRUCT(BlueprintType)
