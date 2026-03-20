@@ -105,8 +105,6 @@ protected:
 	TObjectPtr<UOverlay> BackgroundBlurOverlay;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOverlay> ResultOverlay;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOverlay> ButtonOverlay;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ViewMyResultButton;    
