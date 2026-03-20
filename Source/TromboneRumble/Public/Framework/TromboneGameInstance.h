@@ -36,6 +36,8 @@ public:
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
     TSoftObjectPtr<UStringTable> CommonStringTable;
+    UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
+    TSoftObjectPtr<UStringTable> TutorialStringTable;
 private:
     void InitWWiseEngine();
 
@@ -65,5 +67,6 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     FText GetUIText(const FString& Key) const;
+    FText GetTutorialUIText(const FString& Key) const;
     // ~ End Getter & Setter
 };

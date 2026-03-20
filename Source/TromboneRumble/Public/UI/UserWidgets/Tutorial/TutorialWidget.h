@@ -54,7 +54,7 @@ private:
 	void UnregisterInputActions();
 	
 	/** Handles the dialogue sequence event */
-	void HandleDialogueSequence(const FString& DialogueString);
+	void HandleDialogueSequence(const FText& DialogueString);
 	
 	/** Handles the quest sequence event */
 	void HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray);

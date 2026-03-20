@@ -5,6 +5,7 @@
 #include "Data/QuestData.h"
 #include "TutorialManager.generated.h"
 
+class UTromboneGameInstance;
 class ADefaultTromboneCharacter;
 enum class ENoteResult : uint8;
 class URhythmSubsystem;
@@ -20,7 +21,7 @@ struct FQuestUIData
 	UTexture2D* Icon;
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialDialogueSequence, const FString& /*DialogueString*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialDialogueSequence, const FText& /*DialogueString*/);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialQuestSequence, const TArray<FQuestUIData>& /*QuestUIData*/);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, const FString& /*QuestID*/);
 
@@ -84,6 +85,8 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<URhythmSubsystem> RhythmSubsystem;
+	UPROPERTY()
+	TObjectPtr<UTromboneGameInstance> TromboneGameInstance;
 	
 	UPROPERTY(EditAnywhere, Category = "Tutorial")
 	TObjectPtr<UDataTable> TutorialDataTable;

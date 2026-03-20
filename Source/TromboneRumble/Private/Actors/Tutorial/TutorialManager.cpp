@@ -4,6 +4,7 @@
 #include "Data/QuestData.h"
 #include "Data/TutorialData.h"
 #include "DeveloperSettings/TromboneConfig.h"
+#include "Framework/TromboneGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
@@ -25,12 +26,17 @@ void ATutorialManager::BeginPlay()
 	});
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, TimerDelegate, 1.0f, false);
 	
-	if (const UGameInstance* GameInstance = GetGameInstance())
+	if (UGameInstance* GI = GetGameInstance())
 	{
-		if (URhythmSubsystem* Subsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
+		if (URhythmSubsystem* Subsystem = GI->GetSubsystem<URhythmSubsystem>())
 		{
 			RhythmSubsystem = Subsystem;
 			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
+		}
+		
+		if (UTromboneGameInstance* TGI = Cast<UTromboneGameInstance>(GI))
+		{
+			TromboneGameInstance = TGI;
 		}
 	}
 	
@@ -155,8 +161,9 @@ void ATutorialManager::ProcessTutorial()
 
 void ATutorialManager::ProcessDialogueSequence()
 {
-	FString Dialogue = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->DummyDialogue;
-
+	const FString DescriptionStringId = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->DialogueStringID;
+	const FText Dialogue = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
+	
 	ProcessSequenceSideEffect();
 	OnDialogueSequence.Broadcast(Dialogue);
 }
@@ -181,7 +188,14 @@ void ATutorialManager::ProcessQuestSequence()
 			ActiveQuestData.QuestCondition_Count = QuestData->QuestCondition_Count;
 			CurrentActiveQuest.Add(QuestID, ActiveQuestData);
 			
-			FText Description = FText::FromString(QuestData->Comment); // TODO: change comment to string table
+			FString DescriptionStringId = QuestData->StringID;
+			const FText Description = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
+			
+			FFormatNamedArguments FormatArgs = { 
+				{ TEXT("1"), FText::FromString(QuestData->QuestConditionParam_1) },
+				{ TEXT("0"), QuestData->QuestCondition_Count }
+			};
+			const FText FormattedDescription = FText::Format(Description, FormatArgs);
 			UTexture2D* Icon = LoadObject<UTexture2D>(nullptr, *QuestData->IconPath);
 			
 			if (!Icon)
@@ -189,7 +203,7 @@ void ATutorialManager::ProcessQuestSequence()
 				UE_LOG(LogTemp, Warning, TEXT("Failed to load icon for Quest ID %s from path %s"), *QuestID, *QuestData->IconPath);
 			}
 			
-			QuestUIDataArray.Add({ QuestID, Description, Icon });
+			QuestUIDataArray.Add({ QuestID, FormattedDescription, Icon });
 		}
 		else
 		{
@@ -282,25 +296,29 @@ void ATutorialManager::SpawnDummyCharacter()
 
 void ATutorialManager::ShowTutorialCompletePopup()
 {
-	const UTromboneConfig* Config = UTromboneConfig::Get();
-	const FText Title = FText::FromString(TEXT("Tutorial Completed"));
-	const FText Description = FText::FromString(TEXT("Congratulations! You have completed the tutorial."));
-	const FText LeftButtonText = FText::FromString(TEXT("Yes"));
-	const FText RightButtonText = FText::FromString(TEXT("Go MainMenu"));
-	FOnPopupAction LeftAction, RightAction;
-	LeftAction.AddLambda([this]()
+	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
-	});
-	RightAction.AddLambda([this]()
-	{
-		UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
-	});
+		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndTitle"));
+		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndDescription"));
+		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetUIText(TEXT("StringKey_Common_GoToMainMenu"));
 		
-	auto* Popup = CreateWidget<UTwoButtonWithoutClosePopup>(GetWorld(), Config->TwoButtonWithoutClosePopupWidgetClass);
-	Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
-	
-	UTromboneStatics::SetInputConfig(GetWorld(), true, true, true);
+		FOnPopupAction LeftAction, RightAction;
+		LeftAction.AddLambda([this]()
+		{
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
+		});
+		RightAction.AddLambda([this]()
+		{
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
+		});
+		
+		const UTromboneConfig* Config = UTromboneConfig::Get();
+		auto* Popup = CreateWidget<UTwoButtonWithoutClosePopup>(GetWorld(), Config->TwoButtonWithoutClosePopupWidgetClass);
+		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+		
+		UTromboneStatics::SetInputConfig(GetWorld(), true, true, true);
+	}
 }
 
 ADefaultTromboneCharacter* ATutorialManager::GetPlayerCharacter() const

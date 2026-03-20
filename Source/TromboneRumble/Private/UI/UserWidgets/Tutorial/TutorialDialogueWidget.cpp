@@ -32,11 +32,11 @@ void UTutorialDialogueWidget::NativeDestruct()
 	}
 }
 
-void UTutorialDialogueWidget::SetDialogueText(const FString& DialogueString)
+void UTutorialDialogueWidget::SetDialogueText(const FText& DialogueString)
 {
 	if (CT_Dialogue)
 	{
-		CT_Dialogue->SetText(FText::FromString(DialogueString));
+		CT_Dialogue->SetText(DialogueString);
 	}
 	else
 	{

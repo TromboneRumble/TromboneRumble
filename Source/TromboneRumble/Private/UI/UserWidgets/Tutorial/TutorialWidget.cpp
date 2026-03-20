@@ -77,7 +77,7 @@ void UTutorialWidget::UnregisterInputActions()
 	SkipActionHandles.Empty();
 }
 
-void UTutorialWidget::HandleDialogueSequence(const FString& DialogueString)
+void UTutorialWidget::HandleDialogueSequence(const FText& DialogueString)
 {
 	RegisterInputActions();
 	

@@ -82,3 +82,15 @@ FText UTromboneGameInstance::GetUIText(const FString& Key) const
 
 	return FText::FromStringTable(TableId, Key);
 }
+
+FText UTromboneGameInstance::GetTutorialUIText(const FString& Key) const
+{
+	if (TutorialStringTable.IsNull())
+	{
+		return FText::FromString(TEXT("String Table Missing"));
+	}
+
+	FName TableId = FName(*TutorialStringTable.ToSoftObjectPath().GetAssetPathString());
+
+	return FText::FromStringTable(TableId, Key);
+}

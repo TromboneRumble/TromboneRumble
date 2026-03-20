@@ -26,7 +26,7 @@ protected:
 	TObjectPtr<UCommonTextBlock> CT_Dialogue;
 	
 private:
-	void SetDialogueText(const FString& DialogueString);
+	void SetDialogueText(const FText& DialogueString);
 
 	/** Reference to the tutorial manager */
 	UPROPERTY()
