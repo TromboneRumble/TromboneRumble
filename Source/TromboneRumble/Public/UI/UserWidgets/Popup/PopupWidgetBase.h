@@ -29,6 +29,7 @@ public:
 	
 	virtual void Init();
 	virtual void Refresh();
+	virtual void ClosePopup(bool bCloseImmediately = false);
 	
 protected:
 	virtual void NativeOnActivated() override;
@@ -42,7 +43,6 @@ protected:
 	virtual void OnCloseAnimationFinished();
 	// ~ End Events
 	
-	virtual void ClosePopup(bool bCloseImmediately = false);
 	virtual void SetEnableButtons(bool bInIsEnabled);
 	
 	// ~ Begin Widgets

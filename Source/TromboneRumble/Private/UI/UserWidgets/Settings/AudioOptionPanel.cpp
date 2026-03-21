@@ -47,7 +47,7 @@ void UAudioOptionPanel::HandleApplyButtonClicked()
 	NewAudio.MusicVolume = WBP_MusicSlider->GetValue();
 	NewAudio.SFXVolume = WBP_SFXSlider->GetValue();
 
-	SaveManagerSubsystem->UpdateAndSaveAudio(NewAudio);
+	SaveManagerSubsystem->ApplyAndSaveAudio(NewAudio);
 }
 
 void UAudioOptionPanel::HandleResetButtonClicked()

@@ -7,6 +7,14 @@
 #include "TromboneSaveGame.generated.h"
 
 USTRUCT()
+struct FPlayerData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY() bool bIsFirstTimePlayer = true;
+};
+
+USTRUCT()
 struct FAudioSettingData 
 {
 	GENERATED_BODY()
@@ -81,4 +89,7 @@ public:
 	
 	UPROPERTY() 
 	FGameplaySettingData Gameplay;
+	
+	UPROPERTY() 
+	FPlayerData PlayerData;
 };

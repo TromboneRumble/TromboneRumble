@@ -47,7 +47,10 @@ private:
 	UFUNCTION()
 	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
 	
+	/** Generates a random lobby code of the specified length. */
 	FString GenerateRandomLobbyCode(int32 Length) const;
+	
+	void ShowTutorialPopup();
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))

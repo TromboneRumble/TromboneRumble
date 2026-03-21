@@ -15,8 +15,12 @@
 #include "Components/VerticalBox.h"
 #include "Framework/TromboneGameInstance.h"
 #include "HAL/PlatformApplicationMisc.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "UI/UserWidgets/Popup/ConfirmationDialogueWidget.h"
+#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
+#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "Utilities/TromboneStatics.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -121,6 +125,16 @@ void UMainMenuWidget::RemoveSubsystemCallbacks()
 
 void UMainMenuWidget::HandleCreateSessionClicked()
 {
+	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+	{
+		if (Subsystem->ShouldShowTutorialPopup())
+		{
+			ShowTutorialPopup();
+			Subsystem->MarkTutorialAsCompleted();
+			return;
+		}
+	}
+	
 	FString LobbyCode = GenerateRandomLobbyCode(5);
 
 	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
@@ -144,6 +158,16 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 
 void UMainMenuWidget::HandleQuickJoinButtonClicked()
 {
+	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+	{
+		if (Subsystem->ShouldShowTutorialPopup())
+		{
+			ShowTutorialPopup();
+			Subsystem->MarkTutorialAsCompleted();
+			return;
+		}
+	}
+	
 	FString LobbyCode = GenerateRandomLobbyCode(5);
 	
 	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
@@ -175,7 +199,8 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
 			const FText Message = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
-			ShowNoticePopup(Message);
+			UNoticePopupWidget* NoticePopup = UTromboneStatics::ShowNoticePopup(GetWorld());
+			NoticePopup->OnInit(Message);
 		}
 		return;
 	}
@@ -242,4 +267,29 @@ FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
 	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
 	
 	return RandomCode;
+}
+
+void UMainMenuWidget::ShowTutorialPopup()
+{
+	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
+		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
+		const FText LeftButtonText = GI->GetUIText(TEXT("Common_No"));
+		const FText RightButtonText = GI->GetUIText(TEXT("Common_Yes"));
+		
+		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld());
+		
+		FOnPopupAction LeftAction, RightAction;
+		LeftAction.AddLambda([this, Popup]()
+		{
+			Popup->ClosePopup();
+		});
+		RightAction.AddLambda([this]()
+		{
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
+		});
+		
+		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+	}
 }

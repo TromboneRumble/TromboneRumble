@@ -26,7 +26,6 @@ protected:
 	virtual void NativeConstruct() override;
 	
 	virtual void Init();
-	virtual void ShowNoticePopup(const FText& Content);
 	virtual void BindSubsystemCallbacks();
 	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);
@@ -39,9 +38,6 @@ protected:
 	
 	void SwitchMenu(EMainMenuType InType);
 	TObjectPtr<UBaseUIRoot> GetRootLayout() const;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> NoticePopupWidgetClass;
 	
 	UPROPERTY(Transient)
 	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;

@@ -6,7 +6,6 @@
 #include "GameFramework/HUD.h"
 #include "UI/HUD/MainHUD.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
-#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
 
 void UBaseMenuWidget::NativeConstruct()
 {
@@ -18,16 +17,6 @@ void UBaseMenuWidget::NativeConstruct()
 
 void UBaseMenuWidget::Init()
 {
-}
-
-void UBaseMenuWidget::ShowNoticePopup(const FText& Content)
-{
-	if (NoticePopupWidgetClass)
-	{
-		// TODO : UI Stack에 넣어야 함
-		UNoticePopupWidget* NoticePopup = CreateWidget<UNoticePopupWidget>(GetOwningPlayer(), NoticePopupWidgetClass);
-		NoticePopup->OnInit(Content);
-	}
 }
 
 void UBaseMenuWidget::BindSubsystemCallbacks()

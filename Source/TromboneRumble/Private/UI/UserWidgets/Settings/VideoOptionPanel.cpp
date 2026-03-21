@@ -113,7 +113,7 @@ void UVideoOptionPanel::HandleApplyButtonClicked()
 		NewSettings.WindowMode = NewWindowMode;
 	}
 
-    SaveManagerSubsystem->SaveVideo(NewSettings);
+    SaveManagerSubsystem->ApplyAndSaveVideo(NewSettings);
 }
 
 void UVideoOptionPanel::HandleResetButtonClicked()

@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "TromboneStatics.generated.h"
 
+class UNoticePopupWidget;
+class UTwoButtonWithoutClosePopup;
 class UBaseUIRoot;
 enum class ELevelState : uint8;
 
@@ -26,4 +28,16 @@ public:
 	 *  @see UBaseUIRoot
 	 */
 	static UBaseUIRoot* GetRootLayout(const APlayerController* PlayerController);
+	
+	/** Shows a notice popup. Should Initialize the popup
+	 * @return popup widget instance
+	 * @see UNoticePopupWidget
+	 */
+	static UNoticePopupWidget* ShowNoticePopup(const UObject* WorldContextObject);
+	
+	/** Shows a two-button popup without close button. Should Initialize the popup
+	 * @return popup widget instance
+	 * @see UTwoButtonWithoutClosePopup
+	 */
+	static UTwoButtonWithoutClosePopup* ShowTwoButtonPopup(const UObject* WorldContextObject);
 };

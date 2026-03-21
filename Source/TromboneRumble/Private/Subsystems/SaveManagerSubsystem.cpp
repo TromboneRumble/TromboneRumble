@@ -12,6 +12,42 @@ void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     ApplyAllSettings();
 }
 
+bool USaveManagerSubsystem::ShouldShowTutorialPopup() const
+{
+    return CachedSettings->PlayerData.bIsFirstTimePlayer;
+}
+
+void USaveManagerSubsystem::MarkTutorialAsCompleted()
+{
+    CachedSettings->PlayerData.bIsFirstTimePlayer = false;
+    InternalSave();
+}
+
+void USaveManagerSubsystem::ResetToDefaultSettings()
+{
+    UTromboneSaveGame* DefaultSettings = Cast<UTromboneSaveGame>(UGameplayStatics::CreateSaveGameObject(UTromboneSaveGame::StaticClass()));
+
+    if (DefaultSettings)
+    {
+        CachedSettings = DefaultSettings;
+        InternalSave();
+
+        if (GEngine)
+        {
+            if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+            {
+                VideoSettings->SetToDefaults();
+                VideoSettings->ApplySettings(false);
+                VideoSettings->SaveSettings();
+            }
+        }
+
+        ApplyAllSettings();
+        
+        UE_LOG(LogTemp, Log, TEXT("[USaveManagerSubsystem::ResetToDefaultSettings] All settings have been reset to default."));
+    }
+}
+
 void USaveManagerSubsystem::ApplyAllSettings()
 {
     ApplyAudio(CachedSettings->Audio);
@@ -35,21 +71,21 @@ UTromboneSaveGame* USaveManagerSubsystem::LoadOrCreateSettings()
     return Cast<UTromboneSaveGame>(UGameplayStatics::CreateSaveGameObject(UTromboneSaveGame::StaticClass()));
 }
 
-void USaveManagerSubsystem::UpdateAndSaveAudio(const FAudioSettingData& NewAudio)
+void USaveManagerSubsystem::ApplyAndSaveAudio(const FAudioSettingData& NewAudio)
 {
     CachedSettings->Audio = NewAudio;
     InternalSave();
     ApplyAudio(NewAudio);
 }
 
-void USaveManagerSubsystem::UpdateAndSaveGameplay(const FGameplaySettingData& NewGameplay)
+void USaveManagerSubsystem::ApplyAndSaveGameplay(const FGameplaySettingData& NewGameplay)
 {
     CachedSettings->Gameplay = NewGameplay;
     InternalSave();
     ApplyGameplay(NewGameplay);
 }
 
-void USaveManagerSubsystem::SaveVideo(const FGraphicsSettingData& NewVideo)
+void USaveManagerSubsystem::ApplyAndSaveVideo(const FGraphicsSettingData& NewVideo)
 {
     if (!GEngine) return;
     

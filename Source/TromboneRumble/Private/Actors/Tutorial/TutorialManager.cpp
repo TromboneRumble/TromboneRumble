@@ -1,9 +1,7 @@
 #include "Actors/Tutorial/TutorialManager.h"
-#include "Blueprint/UserWidget.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/QuestData.h"
 #include "Data/TutorialData.h"
-#include "DeveloperSettings/TromboneConfig.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -341,8 +339,7 @@ void ATutorialManager::ShowTutorialCompletePopup()
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
 		});
 		
-		const UTromboneConfig* Config = UTromboneConfig::Get();
-		auto* Popup = CreateWidget<UTwoButtonWithoutClosePopup>(GetWorld(), Config->TwoButtonWithoutClosePopupWidgetClass);
+		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld());
 		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
 		
 		UTromboneStatics::SetInputConfig(GetWorld(), true, true, true);

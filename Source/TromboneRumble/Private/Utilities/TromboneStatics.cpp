@@ -3,10 +3,13 @@
 #include "NativeGameplayTags.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "Utilities/DebugHelper.h"
+#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
 #include "Utilities/Defines.h"
 
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelState Level, const bool bAbsolute)
@@ -41,6 +44,7 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 
 void UTromboneStatics::SetInputConfig(const UObject* WorldContextObject, bool bFocusUI, bool bShowCursor, bool bIgnoreInput, bool bRemoveMappingContext)
 {
+	// TODO : Common UI에 맞게 수정하고 테스트하기
 	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
 	if (!PC) return;
 	
@@ -94,4 +98,36 @@ UBaseUIRoot* UTromboneStatics::GetRootLayout(const APlayerController* PlayerCont
 	
 	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to get RootLayout"));
 	return nullptr;
+}
+
+UNoticePopupWidget* UTromboneStatics::ShowNoticePopup(const UObject* WorldContextObject)
+{
+	// TODO : 스택에 넣기
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	UNoticePopupWidget* NoticePopup = CreateWidget<UNoticePopupWidget>(World, Config->NoticePopupWidgetClass);
+	if (!NoticePopup)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to create NoticePopup"));
+		return nullptr;
+	}
+	
+	return NoticePopup;
+}
+
+UTwoButtonWithoutClosePopup* UTromboneStatics::ShowTwoButtonPopup(const UObject* WorldContextObject)
+{
+	// TODO : 스택에 넣기
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	UTwoButtonWithoutClosePopup* Popup = CreateWidget<UTwoButtonWithoutClosePopup>(World, Config->TwoButtonWithoutClosePopupWidgetClass);
+	if (!Popup)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to create TwoButtonWithoutClosePopup"));
+		return nullptr;
+	}
+	
+	return Popup;
 }
