@@ -63,6 +63,11 @@ void UMainMenuWidget::Init()
 		CB_Settings->OnClicked().RemoveAll(this);
 		CB_Settings->OnClicked().AddLambda([this] { SwitchMenu(EMainMenuType::Settings); });
 	}
+	if (CB_Tutorial)
+	{
+		CB_Tutorial->OnClicked().RemoveAll(this);
+		CB_Tutorial->OnClicked().AddLambda([this] { UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial); });
+	}
 	if (CB_Quit)
 	{
 		CB_Quit->OnClicked().RemoveAll(this);
@@ -90,7 +95,7 @@ void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 	CB_QuickJoin->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
 	CB_Settings->SetIsEnabled(bEnabled);
-	CB_Guide->SetIsEnabled(bEnabled);
+	CB_Tutorial->SetIsEnabled(bEnabled);
 	CB_Quit->SetIsEnabled(bEnabled);
 	CB_CreateSession->SetIsEnabled(bEnabled);
 }

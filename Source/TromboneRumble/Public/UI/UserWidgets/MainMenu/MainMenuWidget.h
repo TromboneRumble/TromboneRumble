@@ -65,7 +65,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Settings;
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Guide;
+	TObjectPtr<UCommonButtonBase> CB_Tutorial;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Quit;
 	// ~ End UI
