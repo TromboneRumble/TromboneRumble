@@ -1,7 +1,6 @@
 #include "Actors/Tutorial/TutorialDummy.h"
 #include "Actors/Tutorial/TutorialManager.h"
-#include "DeveloperSettings/TromboneConfig.h"
-#include "Items/WeaponBase.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
@@ -25,6 +24,13 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 			break;
 			
 		case EHitInstigatorType::Headbutt:
+			if (HasAuthority())
+			{
+				if (UEquipmentComponent* EquipComp = GetEquipmentComponent())
+				{
+					EquipComp->Server_UnequipItem_Implementation(EEquipmentSlotType::Weapon);
+				}
+			}
 			SpecificBasicAction = "HitWithHead";
 			break;
 		
@@ -35,30 +41,5 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 	if (TutorialManager)
 	{
 		TutorialManager->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
-	}
-}
-
-void ATutorialDummy::EquipInstrument(EWeaponType WeaponType)
-{
-	const UTromboneConfig* Config = UTromboneConfig::Get();
-	if (const TSubclassOf<AActor>* InstrumentClassPtr = Config->InstrumentClasses.Find(WeaponType))
-	{
-		if (const TSubclassOf<AActor> InstrumentClass = *InstrumentClassPtr)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-			
-			const FRotator SpawnRotation = FRotator::ZeroRotator;
-			const FVector SpawnLocation = GetActorLocation();
-
-			if (AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(InstrumentClass, SpawnLocation, SpawnRotation, SpawnParams))
-			{
-				if (AWeaponBase* Weapon = Cast<AWeaponBase>(SpawnedInstrument))
-				{
-					Equip(Weapon);
-				}
-			}
-		}
 	}
 }

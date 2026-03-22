@@ -18,9 +18,7 @@ public:
 	// ~ Begin ICombatReceiver Interfaces
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces
-	
-	void EquipInstrument(EWeaponType WeaponType);
-	
+
 private:
 	
 	/** Reference to the tutorial manager */

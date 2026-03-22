@@ -107,6 +107,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
 	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
 
+	// TODO : 빙의를 하지 않는 더미 캐릭터의 경우 PossessedBy가 호출되지 않아 null임. 수정 필요
+	// @see ATutorialDummy
 	UPROPERTY(Transient)
 	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
 	
@@ -151,5 +153,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
 	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
+	FORCEINLINE UEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
 	// ~ End Getters / Setters
 };

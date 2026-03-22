@@ -160,6 +160,11 @@ void ATutorialManager::ProcessTutorial()
 
 void ATutorialManager::ProcessDialogueSequence()
 {
+	if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+	{
+		MyCharacter->SetPlayerInput(false);
+	}
+	
 	const FTutorialData* TutorialData = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString());
 	
 	const FString DescriptionStringId = TutorialData->DialogueStringID;
@@ -177,6 +182,11 @@ void ATutorialManager::ProcessDialogueSequence()
 
 void ATutorialManager::ProcessQuestSequence()
 {
+	if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+	{
+		MyCharacter->SetPlayerInput(true);
+	}
+	
 	bIsQuestSequenceProcessing = true;
 	TArray<FString> QuestIDs = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString())->QuestID;
 	TArray<FQuestUIData> QuestUIDataArray;
@@ -225,6 +235,11 @@ void ATutorialManager::ProcessQuestSequence()
 
 void ATutorialManager::ProcessTransitionSequence()
 {
+	if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+	{
+		MyCharacter->SetPlayerInput(false);
+	}
+	
 	CurrentIndex++;
 	OnTransitionSequence.Broadcast();
 }
@@ -235,7 +250,7 @@ void ATutorialManager::ProcessSequenceSideEffect()
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
-			SpawnInstruments();
+			SpawnInstrument(EWeaponType::Trombone);
 			GI->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
 			RhythmSubsystem->StartRhythmGame(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
 		}
@@ -246,19 +261,16 @@ void ATutorialManager::ProcessSequenceSideEffect()
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))
 	{
-		SpawnDummyCharacter();
-		
 		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
 		{
 			MyCharacter->Unequip();
 		}
 		DestroySpawnedInstruments();
+		ATutorialDummy* SpawnedDummy = SpawnDummyCharacter();
+		AInstrumentBase* SpawnedInstrument = SpawnInstrument(EWeaponType::Trombone);
+		SpawnedDummy->Equip(SpawnedInstrument);
 	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_024"))
-	{
-		SpawnInstrument(EWeaponType::Trombone);
-	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_031"))
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
 	{
 		RhythmSubsystem->ResumeRhythmGame();
 		
@@ -369,9 +381,13 @@ void ATutorialManager::DestroySpawnedInstruments()
 	SpawnedInstruments.Empty();
 }
 
-void ATutorialManager::SpawnDummyCharacter()
+ATutorialDummy* ATutorialManager::SpawnDummyCharacter()
 {
-	if (!DummyCharacterClass) return;
+	if (!DummyCharacterClass)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("DummyCharacterClass is not set"));
+		return nullptr;
+	}
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -382,8 +398,12 @@ void ATutorialManager::SpawnDummyCharacter()
 		if (SpawnedDummy)
 		{
 			SpawnedDummyCharacter = SpawnedDummy;
+			return SpawnedDummy;
 		}
 	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to spawn dummy character"));
+	return nullptr;
 }
 
 void ATutorialManager::DestroySpawnedDummyCharacter()

@@ -61,7 +61,7 @@ public:
 	void SpawnInstruments();
 	AInstrumentBase* SpawnInstrument(EWeaponType WeaponType);
 	void DestroySpawnedInstruments();
-	void SpawnDummyCharacter();
+	ATutorialDummy* SpawnDummyCharacter();
 	void DestroySpawnedDummyCharacter();
 	
 	void ShowTutorialCompletePopup();
