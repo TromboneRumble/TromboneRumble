@@ -116,10 +116,10 @@ ENoteResult ARhythmActor::DetectLongNoteEnd()
 	return ENoteResult::Bad;
 }
 
-void ARhythmActor::PrepareAndStartRhythmGame()
+void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 {
 	// 데이터 로딩이 완료된 경우 즉시 시작 대기열 진입
-	if (bIsDataLoaded)
+	if (bIsDataLoaded && InSelectedTag == LoadedGameplayTag)
 	{
 		Debug::Print(TEXT("PrepareAndStartRhythmGame - WaitForOtherPlayers"));
 		//TODO : 싱글플레이어에서도 가능하게 하기
@@ -139,8 +139,9 @@ void ARhythmActor::PrepareAndStartRhythmGame()
 	}
 
 	//로딩이 안된 경우 로딩 트리거
+	CleanupRhythmGame();
 	bStartRequested = true;
-	PrepareRhythmGame();
+	PrepareRhythmGame(InSelectedTag);
 }
 
 
@@ -221,7 +222,10 @@ void ARhythmActor::BeginPlay()
 	GetCachedRhythmSubsystem()->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCue);
 	GetCachedRhythmSubsystem()->RegisterRhythmActor(this);
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
-	PrepareRhythmGame();
+	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		PrepareRhythmGame(GI->GetSelectedSongTag());
+	}
 }
 
 void ARhythmActor::CleanupRhythmGame()
@@ -253,6 +257,7 @@ void ARhythmActor::CleanupRhythmGame()
 
 	// 상태 및 플래그 초기화
 	bIsDataLoaded = false;
+	LoadedGameplayTag = FGameplayTag::EmptyTag;
 	bIsLoadingData = false;
 	bStartRequested = false;
 	bIsSensingLongNote = false;
@@ -267,7 +272,7 @@ void ARhythmActor::CleanupRhythmGame()
 	}
 }
 
-void ARhythmActor::PrepareRhythmGame()
+void ARhythmActor::PrepareRhythmGame(const FGameplayTag& InGamePlayTag)
 {
 	if (bIsLoadingData) return;
 
@@ -276,44 +281,43 @@ void ARhythmActor::PrepareRhythmGame()
 
 	bool bDataLoadedSuccessfully = false;
 	BGMPlayingID = 0;
-	if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{
-		FGameplayTag SelectedTag = GameInstance->GetSelectedSongTag();
-		if (!SelectedTag.IsValid())
-		{
-			Debug::Print(TEXT("[RhythmActor] Client SelectedTag is Invalid! Data might not be synced yet."), -1, FColor::Red);
-		}
-		if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
-		{
-			FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(SelectedTag);
-			if (SongRow)
-			{
-				UAkAudioEvent* SongBgmEvent = SongRow->BgmEvent.LoadSynchronous();
-				UAkSwitchValue* SongNoneSwitch = SongRow->NoneSwitch.LoadSynchronous();
-				if (SongBgmEvent)
-				{
-					InitBGMEvent(SongBgmEvent, SongNoneSwitch);
 
-					//악기별로 스포너 생성 및 초기화
-					for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
-					{
-						EInstrumentType InstrumentType = Sound.InstrumentType;
-						UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
-						UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
-						UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
-						CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
-					}
-					bDataLoadedSuccessfully = true;
-				}
-				else
+	if (!InGamePlayTag.IsValid())
+	{
+		Debug::Print(TEXT("[RhythmActor] Client SelectedTag is Invalid! Data might not be synced yet."), -1, FColor::Red);
+	}
+
+	if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+	{
+		FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(InGamePlayTag);
+		if (SongRow)
+		{
+			UAkAudioEvent* SongBgmEvent = SongRow->BgmEvent.LoadSynchronous();
+			UAkSwitchValue* SongNoneSwitch = SongRow->NoneSwitch.LoadSynchronous();
+			if (SongBgmEvent)
+			{
+				InitBGMEvent(SongBgmEvent, SongNoneSwitch);
+
+				//악기별로 스포너 생성 및 초기화
+				for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
 				{
-					Debug::Print(TEXT("[RhythmActor] SongRow found but BgmEvent is NULL!"), -1, FColor::Red);
+					EInstrumentType InstrumentType = Sound.InstrumentType;
+					UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
+					UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
+					UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
+					CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
 				}
+				LoadedGameplayTag = InGamePlayTag;
+				bDataLoadedSuccessfully = true;
 			}
 			else
 			{
-				Debug::Print(FString::Printf(TEXT("[RhythmActor] SongRow Not Found for Tag: %s"), *SelectedTag.ToString()), -1, FColor::Yellow);
+				Debug::Print(TEXT("[RhythmActor] SongRow found but BgmEvent is NULL!"), -1, FColor::Red);
 			}
+		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("[RhythmActor] SongRow Not Found for Tag: %s"), *InGamePlayTag.ToString()), -1, FColor::Yellow);
 		}
 	}
 	bIsLoadingData = false;
@@ -572,7 +576,7 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 		case EInGameState::Play:
 		{
 			bAreOtherPlayersReady = true;
-			GetCachedRhythmSubsystem()->StartRhythmGame();
+			GetCachedRhythmSubsystem()->StartRhythmGame(LoadedGameplayTag);
 		}
 			break;
 		

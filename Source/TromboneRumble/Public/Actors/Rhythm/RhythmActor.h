@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AkGameplayTypes.h"
+#include "GameplayTagContainer.h"
+#include "TromboneGamePlayTags.h"
 #include "GameFramework/Actor.h"
 #include "Utilities/Defines.h"
 #include "RhythmActor.generated.h"
@@ -37,7 +39,7 @@ public:
 	// Init Game
 
 	UFUNCTION(BlueprintCallable)
-	void PrepareAndStartRhythmGame();
+	void PrepareAndStartRhythmGame(const FGameplayTag& InGamePlayTag);
 
 	UFUNCTION(BlueprintCallable)
 	void PauseRhythmGame();
@@ -54,7 +56,7 @@ protected:
 
 	void CleanupRhythmGame();
 
-	void PrepareRhythmGame();
+	void PrepareRhythmGame(const FGameplayTag& InGamePlayTag);
 
 	void StartRhythmGame();
 
@@ -86,6 +88,9 @@ private:
 
 	UPROPERTY()
 	bool bIsDataLoaded = false;
+
+	UPROPERTY()
+	FGameplayTag LoadedGameplayTag = FGameplayTag::EmptyTag;
 
 	UPROPERTY()
 	bool bIsLoadingData = false;     

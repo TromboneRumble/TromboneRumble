@@ -3,14 +3,15 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "AkGameplayTypes.h"
 #include "Actors/Rhythm/RhythmActor.h"
+#include "Framework/TromboneGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
-void URhythmSubsystem::StartRhythmGame()
+void URhythmSubsystem::StartRhythmGame(const FGameplayTag& InGamePlayTag)
 {
 	if (RhythmActor.Get())
 	{
-		RhythmActor->PrepareAndStartRhythmGame();
+		RhythmActor->PrepareAndStartRhythmGame(InGamePlayTag);
 		CurrentState = ERhythmGameState::Start;
 		isRhythmGameForceStopped = false;
 		//Broadcast는 RhythmActor에서 노래 준비가 다 끝난후에 호출

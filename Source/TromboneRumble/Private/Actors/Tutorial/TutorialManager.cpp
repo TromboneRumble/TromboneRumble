@@ -227,13 +227,14 @@ void ATutorialManager::ProcessSequenceSideEffect()
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
+			SpawnInstruments();
 			GI->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
+			RhythmSubsystem->StartRhythmGame(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
 		}
-		SpawnInstruments();
-		RhythmSubsystem->StartRhythmGame();
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_017"))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("CAlled"));
 		RhythmSubsystem->PauseRhythmGame();
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))
