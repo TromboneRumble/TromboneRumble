@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Data/QuestData.h"
+#include "Items/InstrumentBase.h"
 #include "TutorialManager.generated.h"
 
 class ATutorialDummy;
@@ -58,6 +59,7 @@ public:
 	void ShowExtraData(ETutorialExtraDataType ExtraDataType, const FString& ExtraDataPath);
 	
 	void SpawnInstruments();
+	AInstrumentBase* SpawnInstrument(EWeaponType WeaponType);
 	void DestroySpawnedInstruments();
 	void SpawnDummyCharacter();
 	void DestroySpawnedDummyCharacter();

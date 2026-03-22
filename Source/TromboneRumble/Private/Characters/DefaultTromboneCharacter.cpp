@@ -192,7 +192,7 @@ EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() co
 	return EInstrumentType::None;
 }
 
-void ADefaultTromboneCharacter::Equip(AWeaponBase* WeaponToEquip)
+void ADefaultTromboneCharacter::Equip(AItemBase* WeaponToEquip)
 {
 	if (EquipmentComponent)
 	{

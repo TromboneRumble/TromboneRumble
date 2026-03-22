@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/AttackComponent.h"
+#include "Items/InstrumentBase.h"
 #include "DefaultTromboneCharacter.generated.h"
 
 
@@ -53,7 +54,7 @@ public:
 
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	
-	void Equip(AWeaponBase* WeaponToEquip);
+	void Equip(AItemBase* WeaponToEquip);
 	void Unequip();
 	
 protected:

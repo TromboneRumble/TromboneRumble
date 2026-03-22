@@ -254,11 +254,11 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		}
 		DestroySpawnedInstruments();
 	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_023"))
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_024"))
 	{
-		SpawnedDummyCharacter->EquipInstrument(EWeaponType::Trombone);
+		SpawnInstrument(EWeaponType::Trombone);
 	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_031"))
 	{
 		RhythmSubsystem->ResumeRhythmGame();
 		
@@ -318,6 +318,43 @@ void ATutorialManager::SpawnInstruments()
 		
 		SpawnedInstruments.Add(SpawnedInstrument);
 	}
+}
+
+AInstrumentBase* ATutorialManager::SpawnInstrument(EWeaponType WeaponType)
+{
+	if (WeaponType == EWeaponType::Invalid)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid weapon type provided for spawning instrument"));
+		return nullptr;
+	}
+	
+	if (!WeaponClasses.Contains(WeaponType))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No weapon class found for weapon type %s"), *EnumHelper::EnumToString(WeaponType));
+		return nullptr;
+	}
+
+	const TSubclassOf<AActor> WeaponClass = WeaponClasses[WeaponType];
+	if (!WeaponClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Weapon class for weapon type %s is null"), *EnumHelper::EnumToString(WeaponType));
+		return nullptr;
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	const FVector SpawnLocation = WeaponSpawnLocations.Contains(WeaponType) ? WeaponSpawnLocations[WeaponType] : FVector::ZeroVector;
+	const FRotator SpawnRotation = FRotator::ZeroRotator;
+
+	if (AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(WeaponClass, SpawnLocation, SpawnRotation, SpawnParams))
+	{
+		SpawnedInstruments.Add(SpawnedInstrument);
+		return Cast<AInstrumentBase>(SpawnedInstrument);
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Failed to spawn instrument of class %s"), *WeaponClass->GetName());
+	return nullptr;
 }
 
 void ATutorialManager::DestroySpawnedInstruments()
