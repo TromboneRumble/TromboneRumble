@@ -1,4 +1,6 @@
 #include "Actors/Tutorial/TutorialManager.h"
+
+#include "Actors/Tutorial/TutorialDummy.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/QuestData.h"
 #include "Data/TutorialData.h"
@@ -6,6 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "Utilities/DebugHelper.h"
+#include "Utilities/EnumHelper.h"
 #include "Utilities/TromboneStatics.h"
 
 ATutorialManager::ATutorialManager()
@@ -238,7 +242,6 @@ void ATutorialManager::ProcessSequenceSideEffect()
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_017"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CAlled"));
 		RhythmSubsystem->PauseRhythmGame();
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))
@@ -249,6 +252,11 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		{
 			MyCharacter->Unequip();
 		}
+		DestroySpawnedInstruments();
+	}
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_023"))
+	{
+		SpawnedDummyCharacter->EquipInstrument(EWeaponType::Trombone);
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
 	{
@@ -302,12 +310,26 @@ void ATutorialManager::SpawnInstruments()
 		FVector SpawnLocation = WeaponSpawnLocations.Contains(WeaponType) ? WeaponSpawnLocations[WeaponType] : FVector::ZeroVector;
 		FRotator SpawnRotation = FRotator::ZeroRotator;
 		
-		const AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(WeaponClass, SpawnLocation, SpawnRotation, SpawnParams);
+		AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(WeaponClass, SpawnLocation, SpawnRotation, SpawnParams);
 		if (!SpawnedInstrument)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Failed to spawn instrument of class %s"), *WeaponClass->GetName());
 		}
+		
+		SpawnedInstruments.Add(SpawnedInstrument);
 	}
+}
+
+void ATutorialManager::DestroySpawnedInstruments()
+{
+	for (AActor* Instrument : SpawnedInstruments)
+	{
+		if (Instrument)
+		{
+			Instrument->Destroy();
+		}
+	}
+	SpawnedInstruments.Empty();
 }
 
 void ATutorialManager::SpawnDummyCharacter()
@@ -318,10 +340,21 @@ void ATutorialManager::SpawnDummyCharacter()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	const FRotator Rotation = FRotator(0, 180, 0);
-	const AActor* SpawnedDummy = GetWorld()->SpawnActor<AActor>(DummyCharacterClass, DummyCharacterSpawnLocation, Rotation, SpawnParams);
-	if (!SpawnedDummy)
+	if (ATutorialDummy* SpawnedDummy = GetWorld()->SpawnActor<ATutorialDummy>(DummyCharacterClass, DummyCharacterSpawnLocation, Rotation, SpawnParams))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn dummy character of class %s"), *DummyCharacterClass->GetName());
+		if (SpawnedDummy)
+		{
+			SpawnedDummyCharacter = SpawnedDummy;
+		}
+	}
+}
+
+void ATutorialManager::DestroySpawnedDummyCharacter()
+{
+	if (SpawnedDummyCharacter)
+	{
+		SpawnedDummyCharacter->Destroy();
+		SpawnedDummyCharacter = nullptr;
 	}
 }
 

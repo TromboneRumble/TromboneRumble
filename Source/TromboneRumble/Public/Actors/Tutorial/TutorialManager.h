@@ -5,6 +5,7 @@
 #include "Data/QuestData.h"
 #include "TutorialManager.generated.h"
 
+class ATutorialDummy;
 enum class ETutorialExtraDataType : uint8;
 class UTromboneGameInstance;
 class ADefaultTromboneCharacter;
@@ -57,7 +58,9 @@ public:
 	void ShowExtraData(ETutorialExtraDataType ExtraDataType, const FString& ExtraDataPath);
 	
 	void SpawnInstruments();
+	void DestroySpawnedInstruments();
 	void SpawnDummyCharacter();
+	void DestroySpawnedDummyCharacter();
 	
 	void ShowTutorialCompletePopup();
 	
@@ -71,15 +74,15 @@ public:
 protected:
 	
 	/** Currently active quests. Key is QuestID (1001 ...) */
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	TMap<FString, FActiveQuestData> CurrentActiveQuest;
 	
 	/** Tutorial sequence Row names. Key is TutorialSequence_001 ... */
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	TArray<FName> TutorialSequenceNames;
 	
 	/** Tutorial sequence index */
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	int32 CurrentIndex = -1;
 	
 	/** Timer handle for ProcessTutorial() delay */
@@ -101,6 +104,14 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Tutorial")
 	TObjectPtr<UDataTable> QuestDataTable;
+	
+	/** Spawned instrument actors during the tutorial, used for destroy */
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> SpawnedInstruments;
+	
+	/** Spawned dummy character during the tutorial, used for destroy */
+	UPROPERTY()
+	TObjectPtr<ATutorialDummy> SpawnedDummyCharacter;
 	
 	// TODO : CheatManager랑 함께 공유? 관리?
 	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")

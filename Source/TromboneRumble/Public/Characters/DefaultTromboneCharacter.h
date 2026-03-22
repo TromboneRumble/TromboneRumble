@@ -53,6 +53,7 @@ public:
 
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	
+	void Equip(AWeaponBase* WeaponToEquip);
 	void Unequip();
 	
 protected:

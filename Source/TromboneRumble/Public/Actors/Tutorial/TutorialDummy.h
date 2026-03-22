@@ -19,10 +19,11 @@ public:
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces
 	
+	void EquipInstrument(EWeaponType WeaponType);
+	
 private:
 	
 	/** Reference to the tutorial manager */
 	UPROPERTY()
 	TObjectPtr<ATutorialManager> TutorialManager;
-
 };

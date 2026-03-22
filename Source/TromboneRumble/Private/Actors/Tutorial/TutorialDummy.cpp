@@ -1,8 +1,8 @@
 #include "Actors/Tutorial/TutorialDummy.h"
 #include "Actors/Tutorial/TutorialManager.h"
+#include "DeveloperSettings/TromboneConfig.h"
+#include "Items/WeaponBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "Utilities/DebugHelper.h"
-#include "Utilities/EnumHelper.h"
 
 void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 {
@@ -11,9 +11,6 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
 	
 	FString SpecificBasicAction = FString();
-	
-	const FString DebugMsg = FString::Printf(TEXT("Hit received from instigator: %s"), *EnumHelper::EnumToString(HitData.HitInstigator));
-	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 	
 	switch (HitData.HitInstigator)
 	{
@@ -38,5 +35,30 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 	if (TutorialManager)
 	{
 		TutorialManager->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
+	}
+}
+
+void ATutorialDummy::EquipInstrument(EWeaponType WeaponType)
+{
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	if (const TSubclassOf<AActor>* InstrumentClassPtr = Config->InstrumentClasses.Find(WeaponType))
+	{
+		if (const TSubclassOf<AActor> InstrumentClass = *InstrumentClassPtr)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+			
+			const FRotator SpawnRotation = FRotator::ZeroRotator;
+			const FVector SpawnLocation = GetActorLocation();
+
+			if (AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(InstrumentClass, SpawnLocation, SpawnRotation, SpawnParams))
+			{
+				if (AWeaponBase* Weapon = Cast<AWeaponBase>(SpawnedInstrument))
+				{
+					Equip(Weapon);
+				}
+			}
+		}
 	}
 }

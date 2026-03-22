@@ -4,6 +4,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "TromboneConfig.generated.h"
 
+enum class EWeaponType : uint8;
 /**
  * Config for Trombone Rumble Project.
  */
@@ -31,4 +32,8 @@ public:
 	/** Two-button without close button popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UTwoButtonWithoutClosePopup> TwoButtonWithoutClosePopupWidgetClass;
+	
+	/** Instrument actor classes for each weapon type. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Instrument")
+	TMap<EWeaponType, TSubclassOf<AActor>> InstrumentClasses;
 };

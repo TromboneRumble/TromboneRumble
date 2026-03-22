@@ -141,6 +141,21 @@ void UTutorialWidget::HandleTransitionSequence()
 	UnregisterInputActions();
 	
 	UFadeWidget* Widget = RootLayout->PushFadeOverlay();
+	Widget->OnFadeInComplete.AddLambda([this]()
+	{
+		if (WBP_Dialogue)
+		{
+			WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		if (WBP_Quest)
+		{
+			WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		if (Image_ExtraData)
+		{
+			Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	});
 	Widget->OnFadeOutComplete.AddLambda([this]()
 	{
 		RootLayout->PopFadeOverlay();
