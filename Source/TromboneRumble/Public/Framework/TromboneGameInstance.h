@@ -16,7 +16,12 @@ UCLASS(Abstract)
 class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+    
 public:
+    //~ Begin UGameInstance Interface
+    virtual TSubclassOf<UOnlineSession> GetOnlineSessionClass() override;
+    //~ End UGameInstance Interface
+    
     virtual void OnStart() override;
     
     UFUNCTION(BlueprintCallable)
@@ -28,6 +33,11 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
 
+protected:
+    UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
+    TSoftObjectPtr<UStringTable> CommonStringTable;
+    UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
+    TSoftObjectPtr<UStringTable> TutorialStringTable;
 private:
     void InitWWiseEngine();
 
@@ -54,5 +64,9 @@ public:
     
     void SetSessionPlayerNumber(const int32 InNumber) { SessionPlayerNumber = InNumber; }
     int32 GetSessionPlayerNumber() const { return SessionPlayerNumber; }
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    FText GetUIText(const FString& Key) const;
+    FText GetTutorialUIText(const FString& Key) const;
     // ~ End Getter & Setter
 };

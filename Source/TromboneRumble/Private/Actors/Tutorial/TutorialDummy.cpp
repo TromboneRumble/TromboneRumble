@@ -1,22 +1,42 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actors/Tutorial/TutorialDummy.h"
+#include "Actors/Tutorial/TutorialManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Utilities/DebugHelper.h"
+#include "Utilities/EnumHelper.h"
 
-ATutorialDummy::ATutorialDummy()
+void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 {
-	PrimaryActorTick.bCanEverTick = true;
-
-}
-
-void ATutorialDummy::BeginPlay()
-{
-	Super::BeginPlay();
+	Super::OnHitReceived_Implementation(HitData);
 	
-}
+	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
+	
+	FString SpecificBasicAction = FString();
+	
+	const FString DebugMsg = FString::Printf(TEXT("Hit received from instigator: %s"), *EnumHelper::EnumToString(HitData.HitInstigator));
+	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
+	
+	switch (HitData.HitInstigator)
+	{
+		case EHitInstigatorType::Cymbals:
+			; // intentional fall through
+		
+		case EHitInstigatorType::Violin:
+			; // intentional fall through
+		
+		case EHitInstigatorType::Trombone:
+			SpecificBasicAction = "HitWithInstrument";
+			break;
+			
+		case EHitInstigatorType::Headbutt:
+			SpecificBasicAction = "HitWithHead";
+			break;
+		
+		default:
+			break;
+	}
 
-void ATutorialDummy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	if (TutorialManager)
+	{
+		TutorialManager->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
+	}
 }

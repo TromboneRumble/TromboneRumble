@@ -2,14 +2,37 @@
 
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Framework/InGameState.h"
 #include "Framework/LobbyGameState.h"
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "HAL/PlatformFileManager.h"
+#include "Utilities/DebugHelper.h"
 
 ADefaultPlayerState::ADefaultPlayerState()
 {
 	bReplicates = true;
+}
+
+void ADefaultPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+	{
+		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
+		RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleNoteDetected);
+		RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::HandleOnInstrumentPicked);
+	}
+	
+
+	// 멀티플레이 환경에서 GameState가 늦게 바인딩 될 수 있음
+	GetWorldTimerManager().SetTimer(TimerHandle_BindGameState, this, &ThisClass::TryBindGameState, 0.5f, true);
+	// 혹시 이미 들어와 있을 수 있으니 즉시 1회 실행
+	TryBindGameState();
+
 }
 
 
@@ -25,11 +48,7 @@ void ADefaultPlayerState::OnRep_PlayerName()
 {
 	Super::OnRep_PlayerName();
 
-	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
-	{
-		LobbyGameState->UpdatePlayerList();
-	}
-	else if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
+	if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
 		MatchMenuGameState->UpdatePlayerList();
 	}
@@ -60,6 +79,55 @@ void ADefaultPlayerState::AddScore(int32 Amount, EScoreType ScoreType)
 	// 로컬 점수 선행 계산 후 즉시 갱신
 	const float NewScore = GetScore() + static_cast<float>(Amount);
 	SetScore(NewScore);
+	switch (ScoreType) {
+		case EScoreType::RhythmScore:
+			{
+			CurrentScoreData.TotalScore = NewScore;
+			}
+			break;
+		case EScoreType::BuffedTromboneScore:
+		{
+			CurrentScoreData.TotalScore = NewScore;
+			CurrentScoreData.TromboneComboBuffScore += Amount;
+		}
+			break;
+		case EScoreType::BuffedViolinScore:
+			{
+			CurrentScoreData.TotalScore = NewScore;
+			CurrentScoreData.ViolinBuffScore += Amount;
+			}
+			break;
+		case EScoreType::InstrumentPickedUp:
+			{
+			CurrentScoreData.OtherScore += Amount;
+			CurrentScoreData.InstrumentStealCount++;
+			}
+			break;
+		case EScoreType::OnHit:
+			{
+			CurrentScoreData.AttackScore += Amount;
+			CurrentScoreData.HitCount++;
+			}
+			break;
+		case EScoreType::CymbalsHit:
+			{
+			CurrentScoreData.AttackScore += Amount;
+			CurrentScoreData.CymbalsAttackScore += Amount;
+			CurrentScoreData.HitCount++;
+			}
+			break;
+		case EScoreType::SpotLight:
+			{
+				CurrentScoreData.OtherScore += Amount;
+				CurrentScoreData.SpotlightPickupCount++;
+			}
+			break;
+		case EScoreType::None:
+			break;
+		case EScoreType::Invalid:
+			break;
+		
+	}
 	OnLocalScoreChanged.Broadcast(this, Amount, ScoreType);
 
 	// 서버 동기화
@@ -75,22 +143,106 @@ void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount, EScoreTyp
 	AddScore(Amount, ScoreType);
 }
 
-void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
+void ADefaultPlayerState::TryBindGameState()
 {
-	SkinColor = InSkinColor;
-	OnRep_SkinColor();
-}
-
-void ADefaultPlayerState::OnRep_SkinColor()
-{
-	if (APawn* Pawn = GetPawn())
+	if (AGameStateBase* CurrentGameState = GetWorld()->GetGameState())
 	{
-		if (const ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
+		GetWorldTimerManager().ClearTimer(TimerHandle_BindGameState);
+
+		if (AInGameState* InGameState = Cast<AInGameState>(CurrentGameState))
 		{
-			TromboneCharacter->ApplySkinColor(SkinColor);
+			InGameState->OnInGameStateChanged.AddUniqueDynamic(this, &ThisClass::HandleInGameStateChanged);
 		}
 	}
 }
+
+void ADefaultPlayerState::HandleRhythmGameStateChanged(ERhythmGameState NewState)
+{
+	if (NewState == ERhythmGameState::Start)
+	{
+		CurrentScoreData.Reset();
+	}
+}
+
+void ADefaultPlayerState::HandleNoteDetected(ENoteResult NoteResult)
+{
+	switch (NoteResult)
+	{
+	case ENoteResult::Bad:
+		{
+		CurrentScoreData.MissCount++;
+		}
+		break;
+	case ENoteResult::Good:
+		{
+		CurrentScoreData.GoodCount++;
+		}
+		break;
+	case ENoteResult::Excellent:
+		{
+		CurrentScoreData.PerfectCount++;
+		}
+		break;
+	}
+}
+
+void ADefaultPlayerState::HandleInGameStateChanged(EInGameState InGameState)
+{
+	if (InGameState != EInGameState::End) return;
+#if !(UE_BUILD_SHIPPING)
+	APlayerController* PlayerController = GetPlayerController();
+	if  (PlayerController && PlayerController->IsLocalController())
+	{
+		// 파일 경로 및 이름 설정 (Saved/Logs/ScoreExports/PlayerName_Timestamp.txt)
+		FString Timestamp = FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S"));
+		FString FileName = FString::Printf(TEXT("ScoreLog_%s_%s.txt"), *GetPlayerName(), *Timestamp);
+		FString SavePath = FPaths::ProjectSavedDir() / TEXT("Logs/ScoreExports/") / FileName;
+
+	
+		FString LogContent = FString::Printf(TEXT("=== Trombone Rumble Score Report ===\n"));
+		LogContent += FString::Printf(TEXT("Player: %s\n"), *GetPlayerName());
+		LogContent += FString::Printf(TEXT("Date: %s\n"), *FDateTime::Now().ToString());
+		LogContent += TEXT("-------------------------------------------\n");
+		LogContent += FString::Printf(TEXT("Total Score: %.2f\n"), CurrentScoreData.TotalScore);
+		LogContent += FString::Printf(TEXT("Perfect Count: %d / Good Count: %d / Miss Count: %d\n"),
+			CurrentScoreData.PerfectCount, CurrentScoreData.GoodCount, CurrentScoreData.MissCount);
+		LogContent += TEXT("-------------------------------------------\n");
+		LogContent += FString::Printf(TEXT("Trombone Buff Score: %.2f\n"), CurrentScoreData.TromboneComboBuffScore);
+		LogContent += FString::Printf(TEXT("Violin Buff Score: %.2f\n"), CurrentScoreData.ViolinBuffScore);
+		LogContent += FString::Printf(TEXT("Cymbals Attack Score: %.2f\n"), CurrentScoreData.CymbalsAttackScore);
+		LogContent += TEXT("-------------------------------------------\n");
+		LogContent += FString::Printf(TEXT("Total Attack Score: %.2f (Hits: %d)\n"), CurrentScoreData.AttackScore, CurrentScoreData.HitCount);
+		LogContent += FString::Printf(TEXT("Instrument Steals: %d\n"), CurrentScoreData.InstrumentStealCount);
+		LogContent += FString::Printf(TEXT("Spotlight Pickups: %d\n"), CurrentScoreData.SpotlightPickupCount);
+		LogContent += TEXT("===========================================");
+
+		
+		if (FFileHelper::SaveStringToFile(LogContent, *SavePath))
+		{
+			Debug::Print(TEXT("Score log created! Check Saved/Logs/ScoreExports/"));
+		}
+	}
+#endif
+}
+
+void ADefaultPlayerState::HandleOnInstrumentPicked(EInstrumentType PrevType, EInstrumentType NewType)
+{
+	auto IsRealInstrument = [](EInstrumentType Type) -> bool
+		{
+			const uint8 V = static_cast<uint8>(Type);
+			const uint8 BG = static_cast<uint8>(EInstrumentType::Background);
+			const uint8 NONE = static_cast<uint8>(EInstrumentType::None);
+			// Background(0) < 실제 악기들(1~3) < None(254)
+			return (V > BG) && (V < NONE);
+		};
+
+	// 이전에 악기를 들고있다가 떨궜을때 콤보 초기화
+	if (IsRealInstrument(PrevType))
+	{
+		CurrentCombo = 0;
+	}
+}
+
 
 void ADefaultPlayerState::HandleCombo(ENoteResult InResult)
 {
@@ -104,4 +256,21 @@ void ADefaultPlayerState::HandleCombo(ENoteResult InResult)
 	}
 
 	OnComboChanged.Broadcast(InResult, CurrentCombo);
+}
+
+void ADefaultPlayerState::OnRep_SkinColor()
+{
+	if (APawn* Pawn = GetPawn())
+	{
+		if (const ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
+		{
+			TromboneCharacter->ApplySkinColor(SkinColor);
+		}
+	}
+}
+
+void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
+{
+	SkinColor = InSkinColor;
+	OnRep_SkinColor();
 }

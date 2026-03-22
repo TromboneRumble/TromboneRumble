@@ -63,6 +63,9 @@ protected:
 
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
+
+	UFUNCTION()
+	void HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState);
 	// ~ Indicator
 
 	// GAS Helpers
@@ -86,6 +89,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
 	TObjectPtr<UAkAudioEvent> PerfectNoteHitSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
+	TObjectPtr<UAkAudioEvent> GoodNoteHitSound;
 
 	// Rhythm Logic
 	UPROPERTY(EditAnywhere, Category = "Config|Instrument|Data")

@@ -52,6 +52,7 @@ void AItemBase::SetPhysicsEnabled(bool bEnable) const
 		SkeletalMeshComponent->SetCollisionProfileName(TEXT("PhysicsActor"));
 		SkeletalMeshComponent->SetSimulatePhysics(true);
 		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(true);
+		SkeletalMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	}
 	else
 	{

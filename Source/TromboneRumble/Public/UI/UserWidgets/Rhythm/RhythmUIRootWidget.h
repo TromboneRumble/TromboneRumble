@@ -8,7 +8,7 @@
 #include "RhythmUIRootWidget.generated.h"
 
 
-
+enum class EInGameState : uint8;
 class UProgressBar;
 class UTextBlock;
 class UCanvasPanel;
@@ -28,12 +28,10 @@ class TROMBONERUMBLE_API URhythmUIRootWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
-	void OnGameEnded();
-
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	// Components
@@ -51,8 +49,6 @@ protected:
 	// ~Components
 
 	// Animations
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	TObjectPtr<UWidgetAnimation> ShowLeaderboardAnim;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> ScoreUpdatedAnim;
@@ -62,10 +58,13 @@ protected:
 	TSubclassOf<URhythmFloatingScoreWidget> FloatingScoreWidgetClass;
 
 private:
-	UFUNCTION()
-	void OnPlayerStateChanged(APlayerState* NewPlayerState);
+	void BindDelegates();
+	FTimerHandle TimerHandle_RetryBind;
+	void RetryBindDelegates();
 
-	void BindDelegates(ADefaultPlayerState* InDefaultPlayerState);
+	UFUNCTION()
+	void HandleOnPlayerStateChanged(APlayerState* NewPlayerState);
+
 
 	UFUNCTION()
 	void HandleOnLocalScoreChanged(APlayerState* PlayerState, int32 AddedAmount, EScoreType ScoreType);
@@ -75,6 +74,5 @@ private:
 
 	UFUNCTION()
 	void SpawnFloatingScoreWidget(APlayerState* AffectedPlayerState, int32 AddedAmount, EScoreType ScoreType);
-
 
 };

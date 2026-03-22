@@ -2,6 +2,7 @@
 
 #pragma once
 #define PRINT_WITH_CURRENT_CONTEXT(Msg) Debug::Print(FString::Printf(TEXT("[%s] %s"), *FString(__FUNCTION__), *FString(Msg)))
+#define LOG_WITH_CURRENT_CONTEXT(Verbosity, Msg) UE_LOG(LogTemp, Verbosity, TEXT("[%s] %s"), *FString(__FUNCTION__), *FString(Msg))
 
 namespace Debug
 {

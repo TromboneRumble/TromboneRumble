@@ -43,6 +43,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Sound")
 	TObjectPtr<UAkAudioEvent> SpawnSoundEvent = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Type")
+	EHitInstigatorType HitInstigatorType = EHitInstigatorType::None;
 
 	/** 투척 시 최소 추가 높이 (cm) 
 	 * 시작점과 목표점 중 높은 곳을 기준으로, 최소한 이 값만큼은 더 위로 솟구쳤다가 떨어집니다. */

@@ -2,10 +2,9 @@
 
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "CommonActivatableWidget.h"
+#include "UI/UserWidgets/Common/FadeWidget.h"
 #include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-
-class ULoadingOverlayWidget;
 
 void UBaseUIRoot::NativePreConstruct()
 {
@@ -15,6 +14,13 @@ void UBaseUIRoot::NativePreConstruct()
 	{
 		UIStack->AddWidget(DefaultWidgetClass);
 	}
+}
+
+void UBaseUIRoot::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	Register();
 }
 
 void UBaseUIRoot::NativeDestruct()
@@ -29,6 +35,9 @@ void UBaseUIRoot::NativeDestruct()
 
 void UBaseUIRoot::PushLoadingOverlay() const
 {
+	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<ULoadingOverlayWidget>())
+		return;
+	
 	if (LoadingOverlayWidgetClass)
 	{
 		OverlayStack->AddWidget(LoadingOverlayWidgetClass);
@@ -37,11 +46,14 @@ void UBaseUIRoot::PushLoadingOverlay() const
 
 void UBaseUIRoot::PushLoadingOverlay(FString InContent) const
 {
+	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<ULoadingOverlayWidget>())
+		return;
+	
 	if (LoadingOverlayWidgetClass)
 	{
 		OverlayStack->AddWidget<ULoadingOverlayWidget>(LoadingOverlayWidgetClass, [this, InContent](ULoadingOverlayWidget& OverlayWidget) 
 		{
-			OverlayWidget.Init(InContent);
+			OverlayWidget.InitWithContent(InContent);
 		});
 	}
 }
@@ -52,4 +64,31 @@ void UBaseUIRoot::PopLoadingOverlay() const
 	{
 		OverlayStack->GetActiveWidget()->DeactivateWidget();
 	}
+}
+
+UFadeWidget* UBaseUIRoot::PushFadeOverlay() const
+{
+	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<UFadeWidget>())
+	{
+		return Cast<UFadeWidget>(OverlayStack->GetActiveWidget());
+	}
+	
+	if (FadeWidgetClass)
+	{
+		return OverlayStack->AddWidget<UFadeWidget>(FadeWidgetClass);
+	}
+	
+	return nullptr;
+}
+
+void UBaseUIRoot::PopFadeOverlay() const
+{
+	if (OverlayStack && OverlayStack->GetActiveWidget())
+	{
+		OverlayStack->GetActiveWidget()->DeactivateWidget();
+	}
+}
+
+void UBaseUIRoot::Register()
+{
 }

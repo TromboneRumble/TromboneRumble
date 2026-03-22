@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "MatchMenuGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListUpdateSignature, const TArray<FString>&, PlayerNames);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchTypeChangedSignature, EMatchType, NewType);
 
 UCLASS()
 class TROMBONERUMBLE_API AMatchMenuGameState : public AGameStateBase
@@ -19,25 +21,25 @@ public:
 
 	void UpdatePlayerList();
 	
-	FOnPlayerListUpdateSignature OnPlayerListChanged;
+	void SetMatchType(EMatchType NewType);
 	
-	void SetIsTransitioningToInGame(const bool bInIsTransitioning);
+	FOnPlayerListUpdateSignature OnPlayerListChanged;
+	FOnMatchTypeChangedSignature OnMatchTypeChanged;
 	
 private:
 	UFUNCTION()
 	void OnRep_PlayerList() const;
-	
 	UPROPERTY(ReplicatedUsing = OnRep_PlayerList)
 	TArray<FString> PlayerList;
 	
 	UFUNCTION()
-	void OnRep_IsTransitioningToInGame();
-	
-	UPROPERTY(ReplicatedUsing = OnRep_IsTransitioningToInGame)
-	bool bIsTransitioningToInGame = false;
+	void OnRep_CurrentMatchType();
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentMatchType)
+	EMatchType CurrentMatchType = EMatchType::Custom;
 
 public:
 	// ~ Begin Getter & Setter
 	FORCEINLINE TArray<FString> GetPlayerList() const { return PlayerList; }
+	FORCEINLINE EMatchType GetCurrentMatchType() const { return CurrentMatchType; }
 	// ~ End Getter & Setter
 };

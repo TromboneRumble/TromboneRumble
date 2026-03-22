@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AkGameplayTypes.h"
+#include "GameplayTagContainer.h"
 #include "Utilities/Defines.h"
 #include "RhythmSubsystem.generated.h"
 
@@ -24,10 +25,18 @@ class TROMBONERUMBLE_API URhythmSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
+	void StartRhythmGame(const FGameplayTag& InGamePlayTag);
+
+	UFUNCTION(BlueprintCallable)
 	void PauseRhythmGame();
 	UFUNCTION(BlueprintCallable)
 	void ResumeRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
 	void StopRhythmGame();
+
+	UFUNCTION(BlueprintCallable)
+	void EndRhythmGame();
 
 	UFUNCTION()
 	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
@@ -45,13 +54,17 @@ public:
 	FOnRhythmGameStateDelegate OnRhythmGameStateChanged;
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	TObjectPtr<ARhythmActor> RhythmActor;
+	UPROPERTY()
+	TWeakObjectPtr<ARhythmActor> RhythmActor;
 
 	ERhythmGameState CurrentState = ERhythmGameState::None;
 private:
-	void OnWorldBeginPlay();
 	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
+
+	bool isRhythmGameForceStopped = false;
+
 public:
 	FORCEINLINE ERhythmGameState GetCurrentRhythmState() const { return CurrentState; }
+	void RegisterRhythmActor(ARhythmActor* InActor);
 };

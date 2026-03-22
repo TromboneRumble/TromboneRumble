@@ -6,9 +6,9 @@
 #include "CommonActivatableWidget.h"
 #include "BaseMenuWidget.generated.h"
 
+class UBaseUIRoot;
 class UEasyFriendSubsystem;
 enum class EMainMenuType : uint8;
-class UMainUIRoot;
 class UEasySessionSubsystem;
 
 UCLASS()
@@ -26,17 +26,19 @@ protected:
 	virtual void NativeConstruct() override;
 	
 	virtual void Init();
-	virtual void ShowNoticePopup(const FString& Content);
+	virtual void ShowNoticePopup(const FText& Content);
 	virtual void BindSubsystemCallbacks();
 	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);
 	
+	UFUNCTION()
 	virtual void ShowLoadingOverlay();
 	virtual void ShowLoadingOverlay(FString InContent);
+	UFUNCTION()
 	virtual void HideLoadingOverlay();
 	
 	void SwitchMenu(EMainMenuType InType);
-	TObjectPtr<UMainUIRoot> GetRootLayout() const;
+	TObjectPtr<UBaseUIRoot> GetRootLayout() const;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> NoticePopupWidgetClass;

@@ -11,8 +11,6 @@
 void UAudioOptionPanel::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	
-	Text_OptionPanelTitle->SetText(FText::FromString(TEXT("오디오 옵션")));
 }
 
 void UAudioOptionPanel::Init(const TFunction<void()> BackAction)

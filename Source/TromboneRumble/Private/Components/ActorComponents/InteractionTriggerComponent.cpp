@@ -16,6 +16,7 @@ UInteractionTriggerComponent::UInteractionTriggerComponent()
 	TriggerVolume->InitSphereRadius(120.f);
 	TriggerVolume->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TriggerVolume->SetCollisionObjectType(ECC_WorldDynamic);
+	TriggerVolume->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	TriggerVolume->SetGenerateOverlapEvents(true);
 	TriggerVolume->SetSimulatePhysics(false);
 }

@@ -39,5 +39,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Video;
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Language;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Back;
 };

@@ -148,7 +148,7 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 
 	if (bIsInvincible || bIsStun || bIsRagdoll) return;
 
-	switch (HitData.HitType)
+	switch (HitData.HitReaction)
 	{
 	case EHitReactionType::Ragdoll:
 		OnRagdoll();
@@ -176,9 +176,10 @@ void ATromboneCharacterBase::InitCharacter()
 
 void ATromboneCharacterBase::SetupCapsuleComponent()
 {
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 78.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap); // Object Channel 1 : Weapon
 	GetCapsuleComponent()->CanCharacterStepUpOn = ECB_No;
 }
@@ -189,6 +190,7 @@ void ATromboneCharacterBase::SetupSkeletalMeshComponent()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -CapsuleHalfHeight), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetHiddenInGame(false);
 }
 

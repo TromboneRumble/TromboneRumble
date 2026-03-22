@@ -4,6 +4,15 @@
 #include "Defines.generated.h"
 
 UENUM()
+enum class EMatchType : uint8
+{
+	Public = 0,
+	Custom = 1,
+	MAX,
+	None = 255,
+};
+
+UENUM()
 enum class EMenuBGMType : uint8
 {
 	BGM_0,
@@ -32,6 +41,7 @@ enum class ECharacterFaceState : uint8
 	Victory,
 	Lose,
 	Hit,
+	Cry,
 	None = 255,
 };
 
@@ -46,6 +56,9 @@ enum class ECharacterFaceType : uint8
 	Ragdoll1 = 5,
 	Ragdoll2 = 6,
 	Ragdoll3 = 7,
+	Cry1 = 8,
+	Cry2 = 9,
+	Cry3 = 10,
 	None = 255,
 };
 
@@ -56,15 +69,6 @@ enum class EEquipmentSlotType : uint8
 	MAX_SLOTS
 };
 
-// TODO : 추후 팀전 고려.
-UENUM()
-enum class EMatchState : uint8
-{
-	FreeForAll,
-	TwoTeams,
-	Invalid = 255 UMETA(Hidden)
-};
-
 UENUM()
 enum class ELevelState : uint8
 {
@@ -72,6 +76,7 @@ enum class ELevelState : uint8
 	Lobby,
 	InGame,
 	MatchMenu,
+	Tutorial,
 	Invalid = 255 UMETA(Hidden)
 };
 
@@ -96,12 +101,25 @@ enum class ELobbyState : uint8
 };
 
 UENUM()
+enum class EHitInstigatorType : uint8
+{
+	None,
+	Headbutt,
+	Trombone,
+	Cymbals,
+	Violin,
+	Garbage_Cup,
+	Garbage_Paper,
+	Garbage_Chair,
+	PressurePlate,
+};
+
+UENUM()
 enum class EHitReactionType : uint8
 {
 	None,
 	Stun,
 	Ragdoll,
-	Invalid		= 255	UMETA(Hidden)
 };
 
 UENUM()
@@ -132,6 +150,7 @@ enum class ERhythmGameState : uint8
 	Playing = 2		UMETA(DisplayName = "Playing"),
 	Paused = 3		UMETA(DisplayName = "Paused"),
 	Resumed = 4		UMETA(DisplayName = "Resumed"),
+	Stopped = 5		UMETA(DisplayName = "Stopped"),
 	Ended			UMETA(DisplayName = "Ended"),
 	Invalid = 255   UMETA(Hidden)
 };
@@ -162,10 +181,12 @@ UENUM(BlueprintType)
 enum class EScoreType : uint8
 {
 	RhythmScore = 0				UMETA(DisplayName = "Rhythm"),
-	BuffedRhythmScore = 1		UMETA(DisplayName = "RhythmBuffed"),
-	InstrumentPickedUp = 2		UMETA(DisplayName = "InstrumentPickedUp"),
-	OnHit = 3					UMETA(DisplayName = "OnHit"),
-	SpotLight = 4				UMETA(DisplayName = "SpotLight"),
+	BuffedTromboneScore = 1		UMETA(DisplayName = "BuffedTromboneScore"),
+	BuffedViolinScore = 2		UMETA(DisplayName = "BuffedViolinScore"),
+	InstrumentPickedUp = 3		UMETA(DisplayName = "InstrumentPickedUp"),
+	OnHit = 4					UMETA(DisplayName = "OnHit"),
+	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
+	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)

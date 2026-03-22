@@ -74,6 +74,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config")
 	EInstrumentType InstrumentType = EInstrumentType::Background;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Config")
+	EHitInstigatorType HitInstigatorType = EHitInstigatorType::None;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|GAS|Movement")
 	TSubclassOf<UGameplayEffect> EquipMoveSpeedEffectClass;

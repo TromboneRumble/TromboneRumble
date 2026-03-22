@@ -12,4 +12,6 @@ UCLASS(Abstract, BlueprintType)
 class TROMBONERUMBLE_API AMainMenuGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+	
+	AMainMenuGameMode();
 };

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Popup/PopupWidgetBase.h"
 #include "CommonButtonBase.h"
 
@@ -25,9 +23,13 @@ void UPopupWidgetBase::NativeOnActivated()
 		Button_Close->OnClicked().AddUObject(this, &UPopupWidgetBase::HandleCloseButtonClicked);
 	}
 	
-	if (bCloseDim && Button_Dim)
+	if (Button_Dim)
 	{
-		Button_Dim->OnClicked().AddUObject(this, &UPopupWidgetBase::HandleCloseButtonClicked);
+		Button_Dim->SetIsEnabled(bCloseDim);
+		if (bCloseDim)
+		{
+			Button_Dim->OnClicked().AddUObject(this, &UPopupWidgetBase::HandleCloseButtonClicked);
+		}
 	}
 
 	if (bPlayAnimation && FadeIn)

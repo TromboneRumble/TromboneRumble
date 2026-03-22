@@ -53,6 +53,8 @@ public:
 
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	
+	void Unequip();
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

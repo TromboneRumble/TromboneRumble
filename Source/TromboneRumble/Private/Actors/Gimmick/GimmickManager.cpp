@@ -67,6 +67,18 @@ void AGimmickManager::BeginPlay()
 	
 	FindAndRegisterGimmicks();
 	ActivateAllGimmicks();
+
+	if (UWorld* World = GetWorld())
+	{
+		if (AInGameState* GameState = Cast<AInGameState>(GetWorld()->GetGameState()))
+		{
+			GameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
+		}
+		else
+		{
+			World->GameStateSetEvent.AddUObject(this, &ThisClass::BindToInGameState);
+		}
+	}
 }
 
 void AGimmickManager::FindAndRegisterGimmicks()
@@ -77,5 +89,22 @@ void AGimmickManager::FindAndRegisterGimmicks()
 	{
 		AGimmickBase* Gimmick = *It;
 		ManagedGimmicks.Add(Gimmick->GetGimmickType(), Gimmick);
+	}
+}
+
+void AGimmickManager::BindToInGameState(AGameStateBase* NewGameState)
+{
+	if (AInGameState* GameState = Cast<AInGameState>(NewGameState))
+	{
+		GameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
+		GameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
+	}
+}
+
+void AGimmickManager::HandleInGameStateChanged(EInGameState InGameState)
+{
+	if (InGameState == EInGameState::End)
+	{
+		DeactivateAllGimmicks();
 	}
 }

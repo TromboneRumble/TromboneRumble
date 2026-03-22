@@ -13,11 +13,6 @@ class TROMBONERUMBLE_API ABaseHUD : public AHUD
 {
 	GENERATED_BODY()
 	
-public:
-	virtual void PushLoadingOverlay() const;
-	virtual void PushLoadingOverlay(FString InContent) const;
-	virtual void PopLoadingOverlay() const;
-	
 protected:
 	virtual void BeginPlay() override;
 	

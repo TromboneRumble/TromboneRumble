@@ -4,7 +4,10 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Actors/Tutorial/TutorialManager.h"
+#include "Data/QuestData.h"
 #include "Framework/LobbyGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 void ADefaultPlayerController::AcknowledgePossession(APawn* InPawn)
 {
@@ -22,6 +25,7 @@ void ADefaultPlayerController::OnRep_PlayerState()
 void ADefaultPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+	
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		if (MoveAction)    EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_Move);
@@ -34,6 +38,14 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Started, this, &ThisClass::Handle_Rhythm, true);
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Completed, this, &ThisClass::Handle_Rhythm, false);
 		if (GuideAction)   EIC->BindAction(GuideAction, ETriggerEvent::Started, this, &ThisClass::Handle_Guide);
+		
+		ATutorialManager* TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
+		if (TutorialManager)
+		{
+			if (MoveAction) EIC->BindAction(MoveAction, ETriggerEvent::Started, TutorialManager, &ATutorialManager::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Move"));
+			if (SprintAction) EIC->BindAction(SprintAction, ETriggerEvent::Started, TutorialManager, &ATutorialManager::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Run"));
+			if (JumpAction) EIC->BindAction(JumpAction, ETriggerEvent::Started, TutorialManager, &ATutorialManager::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Jump"));
+		}
 	}
 }
 
@@ -53,7 +65,11 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelState NewState)
 			case ELevelState::InGame:
 				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
 				break;
+			case ELevelState::Tutorial:
+				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
+				break;
 			default:
+				UE_LOG(LogTemp, Warning, TEXT("Unhandled level state."));
 				break;
 			}
 		}
@@ -75,11 +91,6 @@ void ADefaultPlayerController::HandleInGameStateChanged(const EInGameState NewSt
 					Subsystem->RemoveMappingContext(InGameMappingContext);
 				}
 			}
-    
-			FInputModeGameAndUI InputMode;
-			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			SetInputMode(InputMode);
-			bShowMouseCursor = true;
 			break;
 		}
 		default: 

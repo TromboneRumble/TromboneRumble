@@ -6,6 +6,7 @@
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MainMenuWidget.generated.h"
 
+enum class EEasyMatchmakingState : uint8;
 class UCommonButtonBase;
 enum class EMainMenuType : uint8;
 class UEasySessionSubsystem;
@@ -23,6 +24,8 @@ class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
+
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	
@@ -32,37 +35,28 @@ protected:
 private:
 	// ~ Begin Button Callbacks
 	UFUNCTION()
-	void HandleOnlineButtonClicked();
+	void HandleCreateSessionClicked();
+	UFUNCTION()
+	void HandleQuickJoinButtonClicked();
 	UFUNCTION()
 	void HandleJoinButtonClicked();
 	UFUNCTION()
 	void HandleQuitButtonClicked();
 	// ~ End Button Callbacks
 	
-	void OnStartSessionSuccess();
-	void OnStartSessionFailure();
-	
-	void OnFindSessionsSuccess(const TArray<FOnlineSessionSearchResult>& SessionResults);
-	void OnFindSessionsFailure(const TArray<FOnlineSessionSearchResult>& SessionResults);
-    
-	void OnJoinSessionSuccess();
-	void OnJoinSessionFailure();
-	
-	void OnDestroySessionSuccess();
-	void OnDestroySessionFailure();
+	UFUNCTION()
+	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
 	
 	FString GenerateRandomLobbyCode(int32 Length) const;
-	void StartHostValidation(const FString& Code);
-	void CreateSessionAfterValidation(const FString& ValidatedCode);
-	bool bIsSearchingForHostValidation = false;
-	FString PendingLobbyCode;
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UEditableText> ET_Code;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Online;
+	TObjectPtr<UCommonButtonBase> CB_CreateSession;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_QuickJoin;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Join;
 	UPROPERTY(meta = (BindWidget))

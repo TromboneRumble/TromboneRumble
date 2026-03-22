@@ -8,18 +8,13 @@
 #include "InGameMode.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API AInGameMode : public AGameModeBase, public IItemEquipHandler
+class TROMBONERUMBLE_API AInGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
 	AInGameMode();
 	
-	// IInstrumentEquipHandler Interfaces
-	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
-	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
-	// ~IInstrumentEquipHandler Interfaces
-
 	virtual void BeginPlay() override;
 	
 	void GameEnd() const;

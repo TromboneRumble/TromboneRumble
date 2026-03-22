@@ -14,10 +14,15 @@ class TROMBONERUMBLE_API ULoadingOverlayWidget : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 public:
-	virtual void Init();
-	virtual void Init(FString InContent);
+	
+	UFUNCTION(BlueprintCallable, Category = "Loading")
+	virtual void InitDefault();
+	
+	UFUNCTION(BlueprintCallable, Category = "Loading")
+	virtual void InitWithContent(const FString& InContent = TEXT(""));
 	
 protected:
+	
 	UPROPERTY(EditDefaultsOnly)
 	FString DefaultContent = TEXT("Loading...");
 	

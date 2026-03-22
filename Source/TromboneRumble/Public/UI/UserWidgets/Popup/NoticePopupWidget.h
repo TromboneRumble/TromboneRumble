@@ -14,8 +14,8 @@ class TROMBONERUMBLE_API UNoticePopupWidget : public UPopupWidgetBase
 	GENERATED_BODY()
 	
 public:
-	virtual void OnInit(FString InContent);
-	virtual void OnInit(FString InTitle, FString InContent);
+	virtual void OnInit(const FText& InContent);
+	virtual void OnInit(const FText& InTitle, const FText& InContent);
 	
 protected:
 	// ~ Begin Widgets

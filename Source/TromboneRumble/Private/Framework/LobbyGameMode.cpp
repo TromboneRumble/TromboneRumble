@@ -144,7 +144,8 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 		{
 			const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA : 
 																TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
-			LobbyGameState->SetSelectedSongTag(SelectedSong);
+			//const FGameplayTag SelectedSong = TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
+			//LobbyGameState->SetSelectedSongTag(SelectedSong);
 			InitializeInstruments();
 		}
 		SetLobbyState(ELobbyState::CountdownToScramble);

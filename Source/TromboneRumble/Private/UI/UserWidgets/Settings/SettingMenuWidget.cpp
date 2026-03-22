@@ -5,6 +5,7 @@
 #include "CommonButtonBase.h"
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
+#include "Kismet/KismetInternationalizationLibrary.h"
 
 UWidget* USettingMenuWidget::NativeGetDesiredFocusTarget() const
 {
@@ -28,6 +29,18 @@ void USettingMenuWidget::Init()
 	{
 		CB_Video->OnClicked().RemoveAll(this);
 		CB_Video->OnClicked().AddLambda([this] { ChangePanel(Widget_VideoOptions); });
+	}
+	if (CB_Language)
+	{
+		CB_Language->OnClicked().RemoveAll(this);
+		CB_Language->OnClicked().AddLambda([this]
+		{
+
+				FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
+				FString NewCulture = CurrentCulture.StartsWith(TEXT("ko")) ? TEXT("en") : TEXT("ko");
+				UKismetInternationalizationLibrary::SetCurrentCulture(NewCulture, true);
+				UE_LOG(LogTemp, Log, TEXT("Language changed from %s to %s"), *CurrentCulture, *NewCulture);
+		});
 	}
 	if (CB_Back)
 	{

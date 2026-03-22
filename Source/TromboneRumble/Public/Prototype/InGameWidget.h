@@ -6,7 +6,8 @@
 #include "CommonActivatableWidget.h"
 #include "InGameWidget.generated.h"
 
-class UImage;
+class UCanvasPanel;
+enum class EInGameState : uint8;
 
 UCLASS()
 class TROMBONERUMBLE_API UInGameWidget : public UCommonActivatableWidget
@@ -22,5 +23,13 @@ public:
 	void ToggleGuideUI();
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UImage> Image_Guide;
+	TObjectPtr<UCanvasPanel> InGameCanvas;
+
+protected:
+	virtual void NativeConstruct() override;
+
+	void BindToInGameState(AGameStateBase* NewGameState);
+
+	UFUNCTION()
+	void HandleInGameStateChanged(EInGameState NewState);
 };

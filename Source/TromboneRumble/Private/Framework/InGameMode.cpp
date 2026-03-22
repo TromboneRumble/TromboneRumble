@@ -12,14 +12,6 @@ AInGameMode::AInGameMode()
 	bUseSeamlessTravel = true;
 }
 
-void AInGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
-{
-}
-
-void AInGameMode::HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem)
-{
-}
-
 void AInGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -44,14 +36,6 @@ void AInGameMode::GameEnd() const
 	if (AInGameState* GS = GetGameState<AInGameState>())
 	{
 		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
-	}
-	
-	for (TActorIterator<AGimmickManager> It(GetWorld()); It; ++It)
-	{
-		if (*It)
-		{
-			It->DeactivateAllGimmicks();
-		}
 	}
 }
 
