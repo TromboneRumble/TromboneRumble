@@ -229,11 +229,16 @@ void ATutorialManager::ProcessSequenceSideEffect()
 {
 	if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_016"))
 	{
-		SpawnInstruments();
-		RhythmSubsystem->StartRhythmGame();
+		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		{
+			SpawnInstruments();
+			GI->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
+			RhythmSubsystem->StartRhythmGame(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
+		}
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_017"))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("CAlled"));
 		RhythmSubsystem->PauseRhythmGame();
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))

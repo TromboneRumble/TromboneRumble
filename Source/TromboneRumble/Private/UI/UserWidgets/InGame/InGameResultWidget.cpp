@@ -30,7 +30,7 @@ void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 
 	// 최종 합산 점수
 	if (TotalScoreText)
 	{
-		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("%d Points"), FMath::RoundToInt(PlayerState->GetScore()))));
+		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerState->GetScore()))));
 	}
 
 	// 총 연주 점수 파트
@@ -58,21 +58,34 @@ void UInGameResultWidget::HideSkipButtonAndShowButtons()
 	{
 		SkipButton->SetVisibility(ESlateVisibility::Collapsed);
 	}
-	if (ButtonOverlay)
+
+	if (ResultOverlay)
 	{
-		ButtonOverlay->SetVisibility(ESlateVisibility::Visible);
+		ResultOverlay->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		ResultOverlay->SetRenderOpacity(1.f);
+		if (ViewMyResultButton)
+		{
+			ViewMyResultButton->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ViewMyResultButton->SetRenderOpacity(1.f);
+		}
+		if (ReturnToMainMenuButtonLeaderBoard)
+		{
+			ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ReturnToMainMenuButtonLeaderBoard->SetRenderOpacity(1.f);
+		}
+
 		if (ViewLeaderboardButton)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CAlled"));
-			ViewLeaderboardButton->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ViewLeaderboardButton->SetVisibility(ESlateVisibility::Collapsed);
 			ViewLeaderboardButton->SetRenderOpacity(0.f);
 		}
 		if (ReturnToMainMenuButtonMyResult)
 		{
-			ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::Collapsed);
 			ReturnToMainMenuButtonMyResult->SetRenderOpacity(0.f);
 		}
 	}
+	
 }
 
 
@@ -84,7 +97,6 @@ void UInGameResultWidget::NativeConstruct()
 
 	if (BackgroundBlurOverlay) BackgroundBlurOverlay->SetRenderOpacity(0.f);
 	if (ResultOverlay) ResultOverlay->SetRenderOpacity(0.f);
-	if (ButtonOverlay) ButtonOverlay->SetVisibility(ESlateVisibility::Collapsed);
 
 	if (SkipButton) SkipButton->OnClicked.AddDynamic(this, &ThisClass::HandleSkipClicked);
 	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewMyResultClicked);
@@ -94,11 +106,20 @@ void UInGameResultWidget::NativeConstruct()
 
 	if (ViewLeaderboardButton)
 	{
-		ViewLeaderboardButton->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		ViewLeaderboardButton->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	if (ReturnToMainMenuButtonMyResult)
 	{
-		ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		ReturnToMainMenuButtonMyResult->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if (ViewMyResultButton)
+	{
+		ViewMyResultButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (ReturnToMainMenuButtonLeaderBoard)
+	{
+		ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
 

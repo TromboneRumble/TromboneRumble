@@ -116,13 +116,16 @@ ENoteResult ARhythmActor::DetectLongNoteEnd()
 	return ENoteResult::Bad;
 }
 
-void ARhythmActor::PrepareAndStartRhythmGame()
+void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 {
 	// 데이터 로딩이 완료된 경우 즉시 시작 대기열 진입
-	if (bIsDataLoaded)
+	if (bIsDataLoaded && InSelectedTag == LoadedGameplayTag)
 	{
+		Debug::Print(TEXT("PrepareAndStartRhythmGame - WaitForOtherPlayers"));
+		//TODO : 싱글플레이어에서도 가능하게 하기
 		bAreOtherPlayersReady = true;
 		WaitForOtherPlayers();
+		
 		return;
 	}
 
@@ -130,13 +133,15 @@ void ARhythmActor::PrepareAndStartRhythmGame()
 	// 현재 로딩 중이라면, 완료되는 즉시 시작되도록 예약 플래그 설정
 	if (bIsLoadingData)
 	{
+		Debug::Print(TEXT("Prepare And Start RhythmGame - bIsLoadingData"));
 		bStartRequested = true;
 		return;
 	}
 
 	//로딩이 안된 경우 로딩 트리거
+	CleanupRhythmGame();
 	bStartRequested = true;
-	PrepareRhythmGame();
+	PrepareRhythmGame(InSelectedTag);
 }
 
 
@@ -215,8 +220,12 @@ void ARhythmActor::BeginPlay()
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
 	GetCachedRhythmSubsystem()->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCue);
+	GetCachedRhythmSubsystem()->RegisterRhythmActor(this);
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
-	PrepareRhythmGame();
+	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		PrepareRhythmGame(GI->GetSelectedSongTag());
+	}
 }
 
 void ARhythmActor::CleanupRhythmGame()
@@ -248,6 +257,7 @@ void ARhythmActor::CleanupRhythmGame()
 
 	// 상태 및 플래그 초기화
 	bIsDataLoaded = false;
+	LoadedGameplayTag = FGameplayTag::EmptyTag;
 	bIsLoadingData = false;
 	bStartRequested = false;
 	bIsSensingLongNote = false;
@@ -262,7 +272,7 @@ void ARhythmActor::CleanupRhythmGame()
 	}
 }
 
-void ARhythmActor::PrepareRhythmGame()
+void ARhythmActor::PrepareRhythmGame(const FGameplayTag& InGamePlayTag)
 {
 	if (bIsLoadingData) return;
 
@@ -271,44 +281,43 @@ void ARhythmActor::PrepareRhythmGame()
 
 	bool bDataLoadedSuccessfully = false;
 	BGMPlayingID = 0;
-	if (UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{
-		FGameplayTag SelectedTag = GameInstance->GetSelectedSongTag();
-		if (!SelectedTag.IsValid())
-		{
-			Debug::Print(TEXT("[RhythmActor] Client SelectedTag is Invalid! Data might not be synced yet."), -1, FColor::Red);
-		}
-		if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
-		{
-			FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(SelectedTag);
-			if (SongRow)
-			{
-				UAkAudioEvent* SongBgmEvent = SongRow->BgmEvent.LoadSynchronous();
-				UAkSwitchValue* SongNoneSwitch = SongRow->NoneSwitch.LoadSynchronous();
-				if (SongBgmEvent)
-				{
-					InitBGMEvent(SongBgmEvent, SongNoneSwitch);
 
-					//악기별로 스포너 생성 및 초기화
-					for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
-					{
-						EInstrumentType InstrumentType = Sound.InstrumentType;
-						UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
-						UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
-						UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
-						CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
-					}
-					bDataLoadedSuccessfully = true;
-				}
-				else
+	if (!InGamePlayTag.IsValid())
+	{
+		Debug::Print(TEXT("[RhythmActor] Client SelectedTag is Invalid! Data might not be synced yet."), -1, FColor::Red);
+	}
+
+	if (UGameDataSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
+	{
+		FRhythmSongDataRow const* SongRow = DataSubsystem->GetSongRow(InGamePlayTag);
+		if (SongRow)
+		{
+			UAkAudioEvent* SongBgmEvent = SongRow->BgmEvent.LoadSynchronous();
+			UAkSwitchValue* SongNoneSwitch = SongRow->NoneSwitch.LoadSynchronous();
+			if (SongBgmEvent)
+			{
+				InitBGMEvent(SongBgmEvent, SongNoneSwitch);
+
+				//악기별로 스포너 생성 및 초기화
+				for (const FRhythmInstrumentSound& Sound : SongRow->InstrumentSounds)
 				{
-					Debug::Print(TEXT("[RhythmActor] SongRow found but BgmEvent is NULL!"), -1, FColor::Red);
+					EInstrumentType InstrumentType = Sound.InstrumentType;
+					UAkAudioEvent* NoteEvent = Sound.NoteEvent.LoadSynchronous();
+					UAkSwitchValue* ChangeSwitch = Sound.ChangeSwitch.LoadSynchronous();
+					UAkAudioEvent* FailEvent = Sound.FailEvent.LoadSynchronous();
+					CreateAndInitRhythmSpawner(InstrumentType, NoteEvent, ChangeSwitch, FailEvent);
 				}
+				LoadedGameplayTag = InGamePlayTag;
+				bDataLoadedSuccessfully = true;
 			}
 			else
 			{
-				Debug::Print(FString::Printf(TEXT("[RhythmActor] SongRow Not Found for Tag: %s"), *SelectedTag.ToString()), -1, FColor::Yellow);
+				Debug::Print(TEXT("[RhythmActor] SongRow found but BgmEvent is NULL!"), -1, FColor::Red);
 			}
+		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("[RhythmActor] SongRow Not Found for Tag: %s"), *InGamePlayTag.ToString()), -1, FColor::Yellow);
 		}
 	}
 	bIsLoadingData = false;
@@ -321,6 +330,10 @@ void ARhythmActor::PrepareRhythmGame()
 		{
 			bStartRequested = false;
 			WaitForOtherPlayers();
+		}
+		else
+		{
+			Debug::Print(TEXT("[RhythmActor] PrepareRhythmGame completed. Waiting for Start Request..."), -1, FColor::Green);
 		}
 	}
 	else
@@ -432,7 +445,7 @@ void ARhythmActor::InitGameState()
 	{
 		InGameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
 		InGameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
-		if (InGameState->GetCurrentGameState() == EInGameState::Play)
+		if (GetNetMode() == NM_Standalone || InGameState->GetCurrentGameState() == EInGameState::Play)
 		{
 			HandleInGameStateChanged(EInGameState::Play);
 		}
@@ -561,7 +574,10 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 {
 	switch (InGameState) {
 		case EInGameState::Play:
+		{
 			bAreOtherPlayersReady = true;
+			GetCachedRhythmSubsystem()->StartRhythmGame(LoadedGameplayTag);
+		}
 			break;
 		
 		default: ;
@@ -570,18 +586,35 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 
 void ARhythmActor::WaitForOtherPlayers()
 {
+	AInGameState* InGameState = GetWorld() ? GetWorld()->GetGameState<AInGameState>() : nullptr;
+	if (InGameState)
+	{
+		if (InGameState->GetCurrentGameState() == EInGameState::Play)
+		{
+			bAreOtherPlayersReady = true;
+		}
+	}
+	if (GetNetMode() == NM_Standalone)
+	{
+		bAreOtherPlayersReady = true;
+	}
+
 	if (bIsDataLoaded && bAreOtherPlayersReady)
 	{
 		StartRhythmGame();
 		EnableInput(GetWorld()->GetFirstPlayerController());
+		GetWorldTimerManager().ClearTimer(CheckPlayersTimerHandle);
 	}
 	else
 	{
+		FString Reason = !bIsDataLoaded ? TEXT("DataNotLoaded") : TEXT("OtherPlayersNotReady");
+		Debug::Print(FString::Printf(TEXT("[RhythmActor] Waiting... Reason: %s"), *Reason), -1, FColor::Yellow);
+
 		GetWorld()->GetTimerManager().SetTimer(
 			CheckPlayersTimerHandle,
 			this,
 			&ARhythmActor::WaitForOtherPlayers,
-			1.0f,
+			0.5f,
 			false
 		);
 	}

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "CommonActivatableWidget.h"
 #include "InGameResultWidget.generated.h"
 
 
@@ -21,11 +21,16 @@ class ADefaultPlayerState;
  * 
  */
 UCLASS()
-class TROMBONERUMBLE_API UInGameResultWidget : public UUserWidget
+class TROMBONERUMBLE_API UInGameResultWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 
 public:
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
+	{
+		return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways,false);
+	}
+
 	UFUNCTION(BlueprintCallable, Category = "UI|Result")
 	void SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank);
 
@@ -105,8 +110,6 @@ protected:
 	TObjectPtr<UOverlay> BackgroundBlurOverlay;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOverlay> ResultOverlay;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOverlay> ButtonOverlay;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ViewMyResultButton;    
