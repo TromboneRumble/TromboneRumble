@@ -225,6 +225,10 @@ void ATutorialManager::ProcessSequenceSideEffect()
 {
 	if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_016"))
 	{
+		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		{
+			GI->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
+		}
 		SpawnInstruments();
 		RhythmSubsystem->StartRhythmGame();
 	}
