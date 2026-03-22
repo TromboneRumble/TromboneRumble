@@ -41,6 +41,7 @@ enum class ECharacterFaceState : uint8
 	Victory,
 	Lose,
 	Hit,
+	Cry,
 	None = 255,
 };
 
@@ -55,6 +56,9 @@ enum class ECharacterFaceType : uint8
 	Ragdoll1 = 5,
 	Ragdoll2 = 6,
 	Ragdoll3 = 7,
+	Cry1 = 8,
+	Cry2 = 9,
+	Cry3 = 10,
 	None = 255,
 };
 

@@ -30,7 +30,7 @@ void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 
 	// 최종 합산 점수
 	if (TotalScoreText)
 	{
-		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("%d Points"), FMath::RoundToInt(PlayerState->GetScore()))));
+		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerState->GetScore()))));
 	}
 
 	// 총 연주 점수 파트
