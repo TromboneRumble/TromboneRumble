@@ -161,6 +161,7 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 			if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(SortedPlayers[i]))
 			{
 				PodiumActor->ApplySkinColor(DefaultPS->GetSkinColor());
+				PodiumActor->SetPlayerName(DefaultPS->GetPlayerName());
 				HideActorRecursive(PodiumActor, false);
 			}
 		}

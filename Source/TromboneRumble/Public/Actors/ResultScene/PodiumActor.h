@@ -8,6 +8,7 @@
 #include "PodiumActor.generated.h"
 
 class USkeletalMeshComponent;
+class UWidgetComponent;
 class UCharacterDataAsset;
 
 UCLASS()
@@ -20,11 +21,19 @@ public:
 
 	void ApplySkinColor(const FLinearColor& InSkinColor);
 
+	void SetPlayerName(const FString& InName);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetNameWidgetVisibility(bool bVisible);
+
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> MeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UWidgetComponent> NameWidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
