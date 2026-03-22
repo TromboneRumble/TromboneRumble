@@ -4,7 +4,9 @@
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Framework/TromboneGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
@@ -106,5 +108,20 @@ void UTromboneCheatManager::Trombone_Stun()
 	{
 		TromboneCharacter->Server_DebugStun();
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Stun executed"));
+	}
+}
+
+void UTromboneCheatManager::Trombone_ResetSettingData()
+{
+	if (const UWorld* World = GetWorld())
+	{
+		if (const UGameInstance* GI = World->GetGameInstance())
+		{
+			if (USaveManagerSubsystem* Subsystem = GI->GetSubsystem<USaveManagerSubsystem>())
+			{
+				Subsystem->ResetToDefaultSettings();
+				PRINT_WITH_CURRENT_CONTEXT(TEXT("Tutorial data reset"));
+			}
+		}
 	}
 }

@@ -75,10 +75,11 @@ protected:
 	TMap<FString, FActiveQuestData> CurrentActiveQuest;
 	
 	/** Tutorial sequence Row names. Key is TutorialSequence_001 ... */
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<FName> TutorialSequenceNames;
 	
 	/** Tutorial sequence index */
+	UPROPERTY(VisibleAnywhere)
 	int32 CurrentIndex = -1;
 	
 	/** Timer handle for ProcessTutorial() delay */

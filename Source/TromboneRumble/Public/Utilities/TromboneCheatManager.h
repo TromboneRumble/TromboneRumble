@@ -31,6 +31,9 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_Stun();
 	
+	UFUNCTION(Exec)
+	void Trombone_ResetSettingData();
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Cheat|Config")
 	TMap<EWeaponType, TSubclassOf<AActor>> WeaponClasses;
 };
