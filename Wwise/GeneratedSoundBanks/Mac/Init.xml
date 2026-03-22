@@ -58,6 +58,12 @@
 						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
 					</Switches>
 				</SwitchGroup>
+				<SwitchGroup Id="3762955427" Name="Tutorial" ObjectPath="\Switches\Default Work Unit\Tutorial" GUID="{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}">
+					<Switches>
+						<Switch Id="930712164" Name="Off" ObjectPath="\Switches\Default Work Unit\Tutorial\Off" GUID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
+						<Switch Id="1651971902" Name="On" ObjectPath="\Switches\Default Work Unit\Tutorial\On" GUID="{AA466120-C963-4F3B-812D-743D589BD365}"/>
+					</Switches>
+				</SwitchGroup>
 			</SwitchGroups>
 			<AcousticTextures>
 				<AcousticTexture Id="504532776" Name="Brick" ObjectPath="\Virtual Acoustics\Factory Acoustic Textures\Textures\Brick" GUID="{B086A5A9-F204-4C53-A838-BDB18B18F6D6}">
@@ -189,5 +195,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{30CEEC73-93B0-E3AD-699C-550C92298596}</FileHash>
+	<FileHash>{D713AD19-0ABF-4D80-2200-5C9A60FA2F60}</FileHash>
 </SoundBanksInfo>

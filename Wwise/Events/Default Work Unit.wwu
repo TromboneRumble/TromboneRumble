@@ -406,6 +406,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Host_Speaking" ID="{A5981776-F3D0-4919-93FB-1E5275B10847}">
+							<ChildrenList>
+								<Action Name="" ID="{B13F9B6B-45CA-4C1E-8423-1BAEF933130B}" ShortID="682907783">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_ShowHost" ID="{69039D01-9671-435F-8F12-FA5350103EA8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Music" ID="{94721253-F941-4EE2-95E8-54B7EC20F1ED}" ShortID="952241594">

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{633AB9B2-0A16-43DA-859D-940C15E7E727}",
     "Language": "SFX",
-    "Hash": "{B9C9558D-3C9D-94F5-63EC-8BDBF246FE7C}",
+    "Hash": "{9525B53E-F178-0D63-E522-721E50A2CD7A}",
     "ObjectPath": "MIDI_MapA_Easy_C",
     "ShortName": "MIDI_MapA_Easy_C",
     "Path": "Event/MIDI_MapA_Easy_C.bnk",
@@ -86,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{C0C2470E-5980-4B1F-8192-08FAACFBF524}"
+  "FileHash": "{9958DBE0-5A7C-773E-F58C-48E02259E29A}"
  }
 }

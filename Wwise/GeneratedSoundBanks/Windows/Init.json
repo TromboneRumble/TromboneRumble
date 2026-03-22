@@ -195,6 +195,26 @@
         "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
        }
       ]
+     },
+     {
+      "Id": "3762955427",
+      "Name": "Tutorial",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial",
+      "GUID": "{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}",
+      "Switches": [
+       {
+        "Id": "930712164",
+        "Name": "Off",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\Off",
+        "GUID": "{18A66267-44C9-4121-9C05-0085F4699085}"
+       },
+       {
+        "Id": "1651971902",
+        "Name": "On",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\On",
+        "GUID": "{AA466120-C963-4F3B-812D-743D589BD365}"
+       }
+      ]
      }
     ],
     "AcousticTextures": [
@@ -663,6 +683,6 @@
     ]
    }
   ],
-  "FileHash": "{004B08F2-0CB4-0702-A48E-F2C9F6C4FCE7}"
+  "FileHash": "{10FEDE31-2AD8-4F8A-0FE4-EA7E8277D04C}"
  }
 }

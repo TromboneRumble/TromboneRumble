@@ -379,7 +379,7 @@
     "Type": "Event",
     "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
     "Language": "SFX",
-    "Hash": "{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}",
+    "Hash": "{676E4B8E-5A21-3CAC-CA5F-3F45F203079A}",
     "ObjectPath": "Play_Tutorial_BGM",
     "ShortName": "Play_Tutorial_BGM",
     "Path": "Event/Play_Tutorial_BGM.bnk",
@@ -404,6 +404,28 @@
       "MediaRefs": [
        {
         "Id": "443851067"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "3762955427",
+      "Name": "Tutorial",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial",
+      "GUID": "{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}",
+      "Switches": [
+       {
+        "Id": "930712164",
+        "Name": "Off",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\Off",
+        "GUID": "{18A66267-44C9-4121-9C05-0085F4699085}"
+       },
+       {
+        "Id": "1651971902",
+        "Name": "On",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\On",
+        "GUID": "{AA466120-C963-4F3B-812D-743D589BD365}"
        }
       ]
      }
@@ -1398,7 +1420,7 @@
     "Type": "Event",
     "GUID": "{633AB9B2-0A16-43DA-859D-940C15E7E727}",
     "Language": "SFX",
-    "Hash": "{B9C9558D-3C9D-94F5-63EC-8BDBF246FE7C}",
+    "Hash": "{9525B53E-F178-0D63-E522-721E50A2CD7A}",
     "ObjectPath": "MIDI_MapA_Easy_C",
     "ShortName": "MIDI_MapA_Easy_C",
     "Path": "Event/MIDI_MapA_Easy_C.bnk",
@@ -2169,6 +2191,26 @@
         "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
        }
       ]
+     },
+     {
+      "Id": "3762955427",
+      "Name": "Tutorial",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial",
+      "GUID": "{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}",
+      "Switches": [
+       {
+        "Id": "930712164",
+        "Name": "Off",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\Off",
+        "GUID": "{18A66267-44C9-4121-9C05-0085F4699085}"
+       },
+       {
+        "Id": "1651971902",
+        "Name": "On",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\On",
+        "GUID": "{AA466120-C963-4F3B-812D-743D589BD365}"
+       }
+      ]
      }
     ],
     "AcousticTextures": [
@@ -2641,7 +2683,7 @@
     "Type": "Event",
     "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
     "Language": "SFX",
-    "Hash": "{F652A6B8-1652-AAB0-845F-D579B02D07E0}",
+    "Hash": "{EB006831-4C39-6418-F01E-E44F5C14A2A3}",
     "ObjectPath": "Play_Ranking_BGM",
     "ShortName": "Play_Ranking_BGM",
     "Path": "Event/Play_Ranking_BGM.bnk",
@@ -5225,6 +5267,43 @@
     ]
    },
    {
+    "Id": "3304145397",
+    "Type": "Event",
+    "GUID": "{A5981776-F3D0-4919-93FB-1E5275B10847}",
+    "Language": "SFX",
+    "Hash": "{F573F10A-577A-9691-F387-9861588FCE17}",
+    "ObjectPath": "Play_Host_Speaking",
+    "ShortName": "Play_Host_Speaking",
+    "Path": "Event/Play_Host_Speaking.bnk",
+    "Media": [
+     {
+      "Id": "184366762",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Show_Host_Voice.wav",
+      "Path": "Media/184366762.wem",
+      "CachePath": "SFX/Show_Host_Voice_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3304145397",
+      "Name": "Play_Host_Speaking",
+      "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Host_Speaking",
+      "GUID": "{A5981776-F3D0-4919-93FB-1E5275B10847}",
+      "DurationType": "OneShot",
+      "DurationMin": "56.5565",
+      "DurationMax": "56.5565",
+      "MediaRefs": [
+       {
+        "Id": "184366762"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "3391962191",
     "Type": "Event",
     "GUID": "{7E3210EE-4E63-48F1-85F3-6C20F873A925}",
@@ -6216,6 +6295,6 @@
     ]
    }
   ],
-  "FileHash": "{67604027-D5A0-AD4E-F269-281A39CFFC92}"
+  "FileHash": "{72E187D2-B3F2-EEBC-8417-CD141CD53994}"
  }
 }
