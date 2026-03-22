@@ -192,7 +192,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{676E4B8E-5A21-3CAC-CA5F-3F45F203079A}">
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{5744615E-A031-2BE8-09DC-E923A0D9BF63}">
 			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
 			<ShortName>Play_Tutorial_BGM</ShortName>
 			<Path>Event/Play_Tutorial_BGM.bnk</Path>
@@ -2979,5 +2979,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{1D830112-54AD-2AF2-4505-3A513C14B400}</FileHash>
+	<FileHash>{F4A053CB-1605-C661-2604-F9323A19B43F}</FileHash>
 </SoundBanksInfo>

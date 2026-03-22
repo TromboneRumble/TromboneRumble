@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
     "Language": "SFX",
-    "Hash": "{676E4B8E-5A21-3CAC-CA5F-3F45F203079A}",
+    "Hash": "{5744615E-A031-2BE8-09DC-E923A0D9BF63}",
     "ObjectPath": "Play_Tutorial_BGM",
     "ShortName": "Play_Tutorial_BGM",
     "Path": "Event/Play_Tutorial_BGM.bnk",
@@ -63,6 +63,6 @@
     ]
    }
   ],
-  "FileHash": "{423D7F73-9B52-C205-1C75-D1119B1A9E20}"
+  "FileHash": "{5BE61D8C-86BC-25B5-2D56-74652213B8FC}"
  }
 }
