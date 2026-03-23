@@ -19,7 +19,7 @@ void URhythmSubsystem::StartRhythmGame(const FGameplayTag& InGamePlayTag)
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem StartRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
@@ -33,7 +33,7 @@ void URhythmSubsystem::PauseRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem PauseRhythmGame: No Rhythm Actor Found"));
 	}
 }
 
@@ -47,7 +47,7 @@ void URhythmSubsystem::ResumeRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem ResumeRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
@@ -62,7 +62,7 @@ void URhythmSubsystem::StopRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem StopRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
@@ -76,7 +76,7 @@ void URhythmSubsystem::EndRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem EndRhythmGame : No Rhythm Actor Found"));
 	}
 }
 

@@ -123,7 +123,7 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 	{
 		Debug::Print(TEXT("PrepareAndStartRhythmGame - WaitForOtherPlayers"));
 		//TODO : 싱글플레이어에서도 가능하게 하기
-		bAreOtherPlayersReady = true;
+		//bAreOtherPlayersReady = true;
 		WaitForOtherPlayers();
 		
 		return;
