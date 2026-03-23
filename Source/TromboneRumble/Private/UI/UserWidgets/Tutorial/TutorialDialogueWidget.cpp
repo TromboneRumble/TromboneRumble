@@ -42,4 +42,9 @@ void UTutorialDialogueWidget::SetDialogueText(const FText& DialogueString)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CT_Dialogue is not bound in the widget."));
 	}
+
+	if (BounceAnim && Image_Speaker)
+	{
+		PlayAnimation(BounceAnim);
+	}
 }

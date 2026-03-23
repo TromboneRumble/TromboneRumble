@@ -6,6 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "TutorialDialogueWidget.generated.h"
 
+class UImage;
 class ATutorialManager;
 class UCommonTextBlock;
 
@@ -24,6 +25,12 @@ public:
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Dialogue;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_Speaker;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
+	TObjectPtr<UWidgetAnimation> BounceAnim;
 	
 private:
 	void SetDialogueText(const FText& DialogueString);
