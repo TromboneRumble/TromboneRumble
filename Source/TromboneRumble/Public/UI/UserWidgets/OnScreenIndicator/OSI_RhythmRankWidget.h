@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "OSI_WidgetBase.h"
+#include "Utilities/Defines.h"
 #include "OSI_RhythmRankWidget.generated.h"
 
 /**
@@ -16,4 +17,8 @@ class TROMBONERUMBLE_API UOSI_RhythmRankWidget : public UOSI_WidgetBase
 
 protected:
 	virtual void NativePreConstruct() override;
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void HandleRhythmGameStateChanged(ERhythmGameState RhythmGameState);
 };
