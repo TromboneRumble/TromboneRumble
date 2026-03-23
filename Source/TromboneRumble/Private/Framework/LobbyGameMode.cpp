@@ -1,16 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Framework/LobbyGameMode.h"
 #include "AkGameplayStatics.h"
-#include "OnlineSessionSettings.h"
-#include "OnlineSubsystemUtils.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Framework/DefaultPlayerState.h"
 #include "Framework/LobbyGameState.h"
 #include "GameFramework/GameStateBase.h"
-#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
@@ -19,12 +12,6 @@
 #include "Items/WeaponBase.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
-
-ALobbyGameMode::ALobbyGameMode()
-{
-	PrimaryActorTick.bCanEverTick = false;
-	bUseSeamlessTravel = true;
-}
 
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
@@ -68,32 +55,12 @@ void ALobbyGameMode::BeginPlay()
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
-void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
-{
-	Super::PostLogin(NewPlayer);
-	
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Player Joined: %s"), *NewPlayer->GetPlayerState<APlayerState>()->GetPlayerName()));
-
-	if (ADefaultPlayerState* PS = NewPlayer->GetPlayerState<ADefaultPlayerState>())
-	{
-		if (PS->GetSkinColor() == FLinearColor::Black)
-		{
-			const FLinearColor AssignedColor = AssignUniqueColorToCharacter();
-			PS->SetSkinColor(AssignedColor); 
-		}
-	}
-}
-
 void ALobbyGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer);
 
 	const int32 CurrentPlayers = GetNumPlayers();
 	
-	const FString DebugPlayerName = ExitedPlayer->GetPlayerState<APlayerState>()->GetPlayerName();
-	const FString DebugMsg = FString::Printf(TEXT("Player Left: %s, Total Players: %d"), *DebugPlayerName, CurrentPlayers);
-	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
-
 	if (CurrentPlayers >= RegisteredPlayerCount) return;
 
 	const ELobbyState CurrentLobbyState = LobbyGameState->GetCurrentLobbyState();
@@ -246,32 +213,4 @@ void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
 {
 	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
 	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),Timer, false);
-}
-
-FLinearColor ALobbyGameMode::AssignUniqueColorToCharacter()
-{
-	if (!HasAuthority()) return FLinearColor::White;
-
-	if (UsedColors.Num() < 4) 
-	{
-		TArray<FLinearColor> RemainingColors = AvailableColors;
-        
-		for (const FLinearColor& Color : UsedColors)
-		{
-			RemainingColors.Remove(Color);
-		}
-
-		if (RemainingColors.Num() > 0)
-		{
-			const int32 RandomIndex = FMath::RandRange(0, RemainingColors.Num() - 1);
-			const FLinearColor AssignedColor = RemainingColors[RandomIndex];
-            
-			UsedColors.Add(AssignedColor); 
-            
-			return AssignedColor;
-		}
-	}
-
-	const int32 RandomIndex = FMath::RandRange(0, AvailableColors.Num() - 1);
-	return AvailableColors[RandomIndex];
 }

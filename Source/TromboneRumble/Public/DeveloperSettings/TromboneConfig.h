@@ -33,4 +33,9 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UTwoButtonWithoutClosePopup> TwoButtonWithoutClosePopupWidgetClass;
 	
+public:
+	/** Skin color randomly assigned to a character in-game */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Appearance")
+	TArray<FLinearColor> CharacterSkinColors;
+	
 };

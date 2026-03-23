@@ -5,11 +5,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/Defines.h"
 
-ATutorialGameMode::ATutorialGameMode()
-{
-	bUseSeamlessTravel = true;
-}
-
 void ATutorialGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
 	if (!EquippedPlayer || !EquippedItem) return;

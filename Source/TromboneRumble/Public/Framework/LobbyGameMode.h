@@ -1,9 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameMode/TromboneGameModeBase.h"
 #include "Interfaces/ItemEquipHandler.h"
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
@@ -13,20 +11,17 @@ class ADefaultPlayerState;
 class ALobbyGameState;
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IItemEquipHandler
+class TROMBONERUMBLE_API ALobbyGameMode : public ATromboneGameModeBase, public IItemEquipHandler
 {
 	GENERATED_BODY()
 	
 public:
-	ALobbyGameMode();
-
 	// IInstrumentEquipHandler Interfaces
 	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
 	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
 	// ~IInstrumentEquipHandler Interfaces
 	
 	virtual void BeginPlay() override;
-	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* ExitedPlayer) override;
 
 	void RequestServerTravel(const ELevelState& InLevelState);
@@ -40,12 +35,6 @@ private:
 	
 
 private:	
-	FLinearColor AssignUniqueColorToCharacter();
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<FLinearColor> AvailableColors;
-	TArray<FLinearColor> UsedColors;
-	
 	UPROPERTY()
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 
