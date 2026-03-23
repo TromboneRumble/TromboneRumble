@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -58,11 +56,8 @@ class TROMBONERUMBLE_API UVideoOptionPanel : public UOptionPanelBase
 	
 public:
 	virtual void NativePreConstruct() override;
-	virtual void NativeConstruct() override;
-	virtual void Init(TFunction<void()> BackAction) override;
 	
 protected:
-	virtual void HandleBackButtonClicked() override;
 	virtual void HandleApplyButtonClicked() override;
 	virtual void HandleResetButtonClicked() override;
 	
@@ -88,7 +83,4 @@ protected:
 	UFUNCTION()
 	void OnWindowModeChanged(int32 NewIndex);
 	
-private:
-	float MinimumResolutionWidth = 1280.0f;
-	float AspectRatio = 1.777f; // 16:9
 };

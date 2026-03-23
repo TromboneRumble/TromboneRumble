@@ -66,14 +66,6 @@ void UBaseMenuWidget::HideLoadingOverlay()
 	}
 }
 
-void UBaseMenuWidget::SwitchMenu(const EMainMenuType InType)
-{
-	if (const UMainUIRoot* Root = Cast<UMainUIRoot>(GetRootLayout()))
-	{
-		Root->PushMenu(InType); 
-	}
-}
-
 TObjectPtr<UBaseUIRoot> UBaseMenuWidget::GetRootLayout() const
 {
 	const APlayerController* PC = GetOwningPlayer();

@@ -4,6 +4,7 @@
 #include "CommonActivatableWidget.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
 #include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
+#include "Utilities/DebugHelper.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
 void UBaseUIRoot::NativePreConstruct()
@@ -86,6 +87,28 @@ void UBaseUIRoot::PopFadeOverlay() const
 	if (OverlayStack && OverlayStack->GetActiveWidget())
 	{
 		OverlayStack->GetActiveWidget()->DeactivateWidget();
+	}
+}
+
+UCommonActivatableWidget* UBaseUIRoot::PushPopup(const TSubclassOf<UCommonActivatableWidget> PopupClass) const
+{
+	if (PopupStack)
+	{
+		if (UCommonActivatableWidget* PushedPopup = PopupStack->AddWidget(PopupClass))
+		{
+			return PushedPopup;
+		}
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to push popup."));
+	return nullptr;
+}
+
+void UBaseUIRoot::PopPopup() const
+{
+	if (PopupStack && PopupStack->GetActiveWidget())
+	{
+		PopupStack->GetActiveWidget()->DeactivateWidget();
 	}
 }
 

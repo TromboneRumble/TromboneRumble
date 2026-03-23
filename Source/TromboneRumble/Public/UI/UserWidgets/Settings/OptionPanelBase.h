@@ -17,12 +17,14 @@ class TROMBONERUMBLE_API UOptionPanelBase : public UCommonActivatableWidget
 	
 public:
 	virtual void NativeConstruct() override;
-	virtual void Init(TFunction<void()> BackAction); 
+	virtual void Init(); 
+	
+	
+	virtual void HandleDeactivated();
 	
 protected:
 	virtual void InitButtons();
 	
-	virtual void HandleBackButtonClicked();
 	virtual void HandleApplyButtonClicked();
 	virtual void HandleResetButtonClicked();
 	
@@ -32,10 +34,6 @@ protected:
 	TFunction<void()> OnBackAction;
 	
 	// ~ Begin Common UIs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> Text_OptionPanelTitle;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> Button_Back;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> Button_Apply;
 	UPROPERTY(meta = (BindWidget))

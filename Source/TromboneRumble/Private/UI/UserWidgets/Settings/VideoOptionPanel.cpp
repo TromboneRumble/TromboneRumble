@@ -1,7 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
-#include "CommonTextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameUserSettings.h"
 #include "SaveData/TromboneSaveGame.h"
@@ -9,33 +6,12 @@
 #include "RHI.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
-#include "Utilities/DebugHelper.h"
 
 void UVideoOptionPanel::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-}
-
-void UVideoOptionPanel::NativeConstruct()
-{
-	Super::NativeConstruct();
-	BuildOptions();
-}
-
-void UVideoOptionPanel::Init(const TFunction<void()> BackAction)
-{
-	Super::Init(BackAction);
-}
-
-void UVideoOptionPanel::HandleBackButtonClicked()
-{
-	Super::HandleBackButtonClicked();
 	
-	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
-	{
-		VideoSettings->LoadSettings();
-		UpdateUIFromEngineSettings();
-	}
+	BuildOptions();
 }
 
 void UVideoOptionPanel::HandleApplyButtonClicked()

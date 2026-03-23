@@ -36,7 +36,6 @@ protected:
 	UFUNCTION()
 	virtual void HideLoadingOverlay();
 	
-	void SwitchMenu(EMainMenuType InType);
 	TObjectPtr<UBaseUIRoot> GetRootLayout() const;
 	
 	UPROPERTY(Transient)

@@ -1,21 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "AkGameplayStatics.h"
-#include "CommonTextBlock.h"
 #include "Data/WwiseData.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/Settings/SliderWidgetBase.h"
 
-void UAudioOptionPanel::NativePreConstruct()
+void UAudioOptionPanel::Init()
 {
-	Super::NativePreConstruct();
-}
-
-void UAudioOptionPanel::Init(const TFunction<void()> BackAction)
-{
-	Super::Init(BackAction);
+	Super::Init();
 	
 	InitSliders();
 	
@@ -28,9 +20,9 @@ void UAudioOptionPanel::Init(const TFunction<void()> BackAction)
 	}
 }
 
-void UAudioOptionPanel::HandleBackButtonClicked()
+void UAudioOptionPanel::HandleDeactivated()
 {
-	Super::HandleBackButtonClicked();
+	Super::HandleDeactivated();
 	
 	const FAudioSettingData Data = SaveManagerSubsystem->GetAudioSettings();
 	UpdateUIFromSettings(Data);

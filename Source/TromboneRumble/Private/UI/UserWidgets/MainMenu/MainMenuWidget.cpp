@@ -61,7 +61,10 @@ void UMainMenuWidget::Init()
 	if (CB_Settings)
 	{
 		CB_Settings->OnClicked().RemoveAll(this);
-		CB_Settings->OnClicked().AddLambda([this] { SwitchMenu(EMainMenuType::Settings); });
+		CB_Settings->OnClicked().AddLambda([this]
+		{
+			GetRootLayout()->PushPopup(SettingPopupClass);
+		});
 	}
 	if (CB_Tutorial)
 	{

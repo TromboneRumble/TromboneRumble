@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Settings/SettingMenuWidget.h"
 #include "CommonAnimatedSwitcher.h"
 #include "CommonButtonBase.h"
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
 #include "Kismet/KismetInternationalizationLibrary.h"
+#include "UI/UserWidgets/Common/BaseUIRoot.h"
 
 UWidget* USettingMenuWidget::NativeGetDesiredFocusTarget() const
 {
@@ -35,25 +34,33 @@ void USettingMenuWidget::Init()
 		CB_Language->OnClicked().RemoveAll(this);
 		CB_Language->OnClicked().AddLambda([this]
 		{
-
-				FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
-				FString NewCulture = CurrentCulture.StartsWith(TEXT("ko")) ? TEXT("en") : TEXT("ko");
-				UKismetInternationalizationLibrary::SetCurrentCulture(NewCulture, true);
-				UE_LOG(LogTemp, Log, TEXT("Language changed from %s to %s"), *CurrentCulture, *NewCulture);
+			FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
+			FString NewCulture = CurrentCulture.StartsWith(TEXT("ko")) ? TEXT("en") : TEXT("ko");
+			UKismetInternationalizationLibrary::SetCurrentCulture(NewCulture, true);
+			UE_LOG(LogTemp, Log, TEXT("Language changed from %s to %s"), *CurrentCulture, *NewCulture);
 		});
 	}
 	if (CB_Back)
 	{
 		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddUObject(this, &USettingMenuWidget::DeactivateWidget);
+		CB_Back->OnClicked().AddLambda([this]()
+		{
+			GetRootLayout()->PopPopup();
+			if (UOptionPanelBase* ActivePanel = Cast<UOptionPanelBase>(CAS_Settings->GetActiveWidget()))
+			{
+				ActivePanel->HandleDeactivated();
+			}
+			DeactivateWidget();
+		});
 	}
 	if (Widget_AudioOptions)
 	{
-		Widget_AudioOptions->Init([this] { ChangePanel(VB_Settings); });
+		Widget_AudioOptions->Init();
 	}
 	if (Widget_VideoOptions)
 	{
-		Widget_VideoOptions->Init([this] { ChangePanel(VB_Settings); });
+		Widget_VideoOptions->Init();
 	}
 }
 

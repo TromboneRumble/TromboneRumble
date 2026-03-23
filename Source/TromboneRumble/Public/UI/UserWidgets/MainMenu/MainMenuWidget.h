@@ -71,6 +71,8 @@ private:
 	// ~ End UI
 	
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCommonActivatableWidget> SettingPopupClass;
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> ConfirmationDialogueWidgetClass;
 	UPROPERTY()
 	TObjectPtr<UConfirmationDialogueWidget> CachedQuitDialog;

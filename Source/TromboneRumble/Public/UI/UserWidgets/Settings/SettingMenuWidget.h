@@ -28,8 +28,6 @@ private:
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_Settings;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UWidget> VB_Settings;
-	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UAudioOptionPanel> Widget_AudioOptions;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
