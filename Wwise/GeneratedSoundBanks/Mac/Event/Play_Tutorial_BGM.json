@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
     "Language": "SFX",
-    "Hash": "{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}",
+    "Hash": "{5744615E-A031-2BE8-09DC-E923A0D9BF63}",
     "ObjectPath": "Play_Tutorial_BGM",
     "ShortName": "Play_Tutorial_BGM",
     "Path": "Event/Play_Tutorial_BGM.bnk",
@@ -38,9 +38,31 @@
        }
       ]
      }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "3762955427",
+      "Name": "Tutorial",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial",
+      "GUID": "{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}",
+      "Switches": [
+       {
+        "Id": "930712164",
+        "Name": "Off",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\Off",
+        "GUID": "{18A66267-44C9-4121-9C05-0085F4699085}"
+       },
+       {
+        "Id": "1651971902",
+        "Name": "On",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Tutorial\\On",
+        "GUID": "{AA466120-C963-4F3B-812D-743D589BD365}"
+       }
+      ]
+     }
     ]
    }
   ],
-  "FileHash": "{145E47BD-9353-0A32-9BB9-A4135F2475C0}"
+  "FileHash": "{2ED3893A-89CD-89E2-40D4-126A11D52AA8}"
  }
 }

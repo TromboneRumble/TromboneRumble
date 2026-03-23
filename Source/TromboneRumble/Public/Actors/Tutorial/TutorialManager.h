@@ -6,6 +6,7 @@
 #include "Items/InstrumentBase.h"
 #include "TutorialManager.generated.h"
 
+class UAkSwitchValue;
 class ATutorialDummy;
 enum class ETutorialExtraDataType : uint8;
 class UTromboneGameInstance;
@@ -127,4 +128,10 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
 	FVector DummyCharacterSpawnLocation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
+	TObjectPtr<UAkAudioEvent> TutorialBGMEvent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
+	TObjectPtr<UAkSwitchValue> TutorialBGMOffSwitch = nullptr;
 };

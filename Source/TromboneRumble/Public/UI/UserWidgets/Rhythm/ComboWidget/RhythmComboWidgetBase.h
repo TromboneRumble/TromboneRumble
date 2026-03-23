@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Items/InstrumentBase.h"
 #include "RhythmComboWidgetBase.generated.h"
-
-class AInstrumentBase;
 
 /**
  * 
@@ -20,5 +19,12 @@ public:
 	virtual void Init(AInstrumentBase* InOwner);
 
 	UPROPERTY(Transient)
-	TObjectPtr<AInstrumentBase> OwnerInstrument;
+	TWeakObjectPtr<AInstrumentBase> OwnerInstrument;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+	TObjectPtr<UTexture> PerfectComboImg;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+	TObjectPtr<UTexture> GoodComboImg;
 };

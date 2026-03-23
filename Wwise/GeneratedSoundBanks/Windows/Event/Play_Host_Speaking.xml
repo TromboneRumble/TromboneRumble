@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3304145397" Type="Event" GUID="{A5981776-F3D0-4919-93FB-1E5275B10847}" Language="SFX" Hash="{F573F10A-577A-9691-F387-9861588FCE17}">
+			<ObjectPath>Play_Host_Speaking</ObjectPath>
+			<ShortName>Play_Host_Speaking</ShortName>
+			<Path>Event/Play_Host_Speaking.bnk</Path>
+			<Media>
+				<File Id="184366762" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Show_Host_Voice.wav</ShortName>
+					<Path>Media/184366762.wem</Path>
+					<CachePath>SFX/Show_Host_Voice_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3304145397" Name="Play_Host_Speaking" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Host_Speaking" GUID="{A5981776-F3D0-4919-93FB-1E5275B10847}" DurationType="OneShot" DurationMin="56.5565" DurationMax="56.5565">
+					<MediaRefs>
+						<MediaRef Id="184366762"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{016EDA03-16E6-CDEF-F4FC-E7AA24C35AAC}</FileHash>
+</SoundBanksInfo>

@@ -1,5 +1,6 @@
 #include "Actors/Tutorial/TutorialManager.h"
 
+#include "AkGameplayStatics.h"
 #include "Actors/Tutorial/TutorialDummy.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/QuestData.h"
@@ -35,6 +36,10 @@ void ATutorialManager::BeginPlay()
 			RhythmSubsystem = Subsystem;
 			RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleOnNoteDetected);
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("RhythmSubsystem is null"));
+		}
 		
 		if (UTromboneGameInstance* TGI = Cast<UTromboneGameInstance>(GI))
 		{
@@ -42,9 +47,9 @@ void ATutorialManager::BeginPlay()
 		}
 	}
 	
-	if (!RhythmSubsystem)
+	if (TutorialBGMEvent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("RhythmSubsystem is null"));
+		UAkGameplayStatics::PostEvent(TutorialBGMEvent, UGameplayStatics::GetPlayerPawn(this,0), 0, FOnAkPostEventCallback());
 	}
 }
 
@@ -246,7 +251,15 @@ void ATutorialManager::ProcessTransitionSequence()
 
 void ATutorialManager::ProcessSequenceSideEffect()
 {
-	if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_016"))
+	if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_012"))
+	{
+		if (TutorialBGMOffSwitch)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CALLEd"));
+			UAkGameplayStatics::SetSwitch(TutorialBGMOffSwitch, UGameplayStatics::GetPlayerPawn(this, 0),FName(""),FName(""));
+		}
+	}
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_016"))
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{

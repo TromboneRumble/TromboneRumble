@@ -22,8 +22,10 @@ ARhythmNote::ARhythmNote()
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	OuterSphere = CreateDefaultSubobject<USphereComponent>(TEXT("OuterSphere"));
+	OuterSphere->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	OuterSphere->SetupAttachment(RootComponent);
 	InnerSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InnerSphere"));
+	InnerSphere->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	InnerSphere->SetupAttachment(RootComponent);
 
 	RhythmNoteUIControllerComponent = CreateDefaultSubobject<URhythmNoteUIControllerComponent>(TEXT("RhythmNoteUIControllerComponent"));
