@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{7DDE995B-55D2-CD04-69BF-34C5327445E8}">
+		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{9525B53E-F178-0D63-E522-721E50A2CD7A}">
 			<ObjectPath>MIDI_MapA_Easy_C</ObjectPath>
 			<ShortName>MIDI_MapA_Easy_C</ShortName>
 			<Path>Event/MIDI_MapA_Easy_C.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0FE199DE-F706-B2C1-B079-63A12F2207C3}</FileHash>
+	<FileHash>{3E1DC650-436E-68EA-A6C5-F0EBEDAFC9AB}</FileHash>
 </SoundBanksInfo>
