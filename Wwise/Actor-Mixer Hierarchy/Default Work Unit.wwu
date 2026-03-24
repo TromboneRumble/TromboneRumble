@@ -3078,7 +3078,7 @@
 								<Property Name="LoopCount" Type="int32" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-8</Value>
+										<Value>-7</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>

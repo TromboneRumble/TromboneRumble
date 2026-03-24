@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{9821A7D4-2790-4D81-8C43-8AC095163364}",
     "Language": "SFX",
-    "Hash": "{E1F5096D-CDFB-726E-C0BF-1101D6F7250B}",
+    "Hash": "{1AA71F8A-3968-77B5-28BC-188B528B3910}",
     "ObjectPath": "Play_MapT_Main",
     "ShortName": "Play_MapT_Main",
     "Path": "Event/Play_MapT_Main.bnk",
@@ -67,9 +67,7 @@
       "Name": "Play_MapT_Main",
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_T_Rhythm\\Play_MapT_Main",
       "GUID": "{9821A7D4-2790-4D81-8C43-8AC095163364}",
-      "DurationType": "OneShot",
-      "DurationMin": "163.43333",
-      "DurationMax": "163.43333",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "322920745"
@@ -125,6 +123,6 @@
     ]
    }
   ],
-  "FileHash": "{4BD18CE4-96DB-09D6-BE50-3A3115E9F92B}"
+  "FileHash": "{5DCE416D-3972-14B2-DD63-C75BDB8A07C1}"
  }
 }

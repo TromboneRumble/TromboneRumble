@@ -849,7 +849,7 @@
 										<Action Name="" ID="{2372A024-B21A-488B-9269-341E1894FA9F}" ShortID="226809273">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="Map_T" ID="{E0E8E92E-6DA4-4E91-8B52-471457D1B0A6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="Map_T" ID="{947C5F65-06CF-4E64-BBC8-97A901EDF7F3}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
@@ -860,7 +860,7 @@
 										<Action Name="" ID="{62C109C6-FF49-4B8A-A4B7-AEE5EF35EC7F}" ShortID="498987478">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapT_Violin_MIDI" ID="{2174DF04-F83A-4229-A535-838C067BC813}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapT_Violin_MIDI" ID="{8302D357-C782-452E-A493-C9A2D7438AAA}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
@@ -871,7 +871,7 @@
 										<Action Name="" ID="{01221001-4C50-4C6F-8070-F97CF037B6AC}" ShortID="336537583">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapT_Trombone_MIDI" ID="{7C1CCDEE-0803-420A-9193-BCFD9D31C012}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapT_Trombone_MIDI" ID="{9220D8CB-33DA-4AF4-AEE1-F9AD763A5F77}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
@@ -882,7 +882,7 @@
 										<Action Name="" ID="{F338E7DB-6DDD-42FC-9B66-2A494D0475A0}" ShortID="678081582">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapT_Cymbal_MIDI" ID="{99B7C61F-F391-441D-8BB0-67FA5B5EC787}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapT_Cymbal_MIDI" ID="{AC0772D5-0EA5-4618-BFEA-D6007A14F138}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
