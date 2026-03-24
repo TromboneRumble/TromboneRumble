@@ -23,6 +23,12 @@
 						<Switch Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
 					</ChildrenList>
 				</SwitchGroup>
+				<SwitchGroup Name="Tutorial" ID="{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}">
+					<ChildrenList>
+						<Switch Name="On" ID="{AA466120-C963-4F3B-812D-743D589BD365}"/>
+						<Switch Name="Off" ID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
+					</ChildrenList>
+				</SwitchGroup>
 			</ChildrenList>
 		</WorkUnit>
 	</Switches>

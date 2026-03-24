@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{C1AFA8B5-77F8-EBC5-F6CC-112B2DBE6EAC}">
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{5744615E-A031-2BE8-09DC-E923A0D9BF63}">
 			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
 			<ShortName>Play_Tutorial_BGM</ShortName>
 			<Path>Event/Play_Tutorial_BGM.bnk</Path>
@@ -19,7 +19,15 @@
 					</MediaRefs>
 				</Event>
 			</Events>
+			<SwitchGroups>
+				<SwitchGroup Id="3762955427" Name="Tutorial" ObjectPath="\Switches\Default Work Unit\Tutorial" GUID="{02BD87A3-9B3F-47AB-B35E-1D3A8E86FFD8}">
+					<Switches>
+						<Switch Id="930712164" Name="Off" ObjectPath="\Switches\Default Work Unit\Tutorial\Off" GUID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
+						<Switch Id="1651971902" Name="On" ObjectPath="\Switches\Default Work Unit\Tutorial\On" GUID="{AA466120-C963-4F3B-812D-743D589BD365}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F12EA4A6-C517-EB77-A366-9AF06FB3224C}</FileHash>
+	<FileHash>{60D6E237-15EE-9343-7DA5-D9D9E4D8CF89}</FileHash>
 </SoundBanksInfo>

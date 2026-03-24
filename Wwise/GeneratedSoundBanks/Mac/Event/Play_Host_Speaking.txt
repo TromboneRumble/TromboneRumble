@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3304145397	Play_Host_Speaking			\Default Work Unit\Audience_SFX\Play_Host_Speaking	
+
