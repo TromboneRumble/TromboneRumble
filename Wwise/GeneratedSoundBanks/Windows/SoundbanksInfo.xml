@@ -1740,7 +1740,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2023964404" Type="Event" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" Language="SFX" Hash="{E1F5096D-CDFB-726E-C0BF-1101D6F7250B}">
+		<SoundBank Id="2023964404" Type="Event" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" Language="SFX" Hash="{1AA71F8A-3968-77B5-28BC-188B528B3910}">
 			<ObjectPath>Play_MapT_Main</ObjectPath>
 			<ShortName>Play_MapT_Main</ShortName>
 			<Path>Event/Play_MapT_Main.bnk</Path>
@@ -1772,7 +1772,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="2023964404" Name="Play_MapT_Main" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\Play_MapT_Main" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+				<Event Id="2023964404" Name="Play_MapT_Main" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\Play_MapT_Main" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="409495629"/>
@@ -2274,7 +2274,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2986717248" Type="Event" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" Language="SFX" Hash="{B52EBBCB-865E-8894-E542-DA63EBB449BF}">
+		<SoundBank Id="2986717248" Type="Event" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" Language="SFX" Hash="{33BF2DDD-1BC3-95B7-E323-B8297AD739D3}">
 			<ObjectPath>MIDI_MapT_V</ObjectPath>
 			<ShortName>MIDI_MapT_V</ShortName>
 			<Path>Event/MIDI_MapT_V.bnk</Path>
@@ -2295,27 +2295,17 @@
 					<CachePath>SFX/MIDI_V_707D6309.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<Custom>
-					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
-				</Custom>
-			</Plugins>
 			<Events>
-				<Event Id="2986717248" Name="MIDI_MapT_V" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_V" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+				<Event Id="2986717248" Name="MIDI_MapT_V" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_V" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="409495629"/>
 						<MediaRef Id="1052433117"/>
 					</MediaRefs>
-					<PluginRefs>
-						<Custom>
-							<PluginRef Id="559532962"/>
-						</Custom>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2986717250" Type="Event" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" Language="SFX" Hash="{5DAACCA0-673E-D1AD-3BC2-8E283425B5CA}">
+		<SoundBank Id="2986717250" Type="Event" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" Language="SFX" Hash="{82C77F4B-2B96-AB14-D610-07B2604BEA9D}">
 			<ObjectPath>MIDI_MapT_T</ObjectPath>
 			<ShortName>MIDI_MapT_T</ShortName>
 			<Path>Event/MIDI_MapT_T.bnk</Path>
@@ -2336,27 +2326,17 @@
 					<CachePath>SFX/Map_B_Trombone_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<Custom>
-					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
-				</Custom>
-			</Plugins>
 			<Events>
-				<Event Id="2986717250" Name="MIDI_MapT_T" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_T" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+				<Event Id="2986717250" Name="MIDI_MapT_T" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_T" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="157812467"/>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="1063425767"/>
 					</MediaRefs>
-					<PluginRefs>
-						<Custom>
-							<PluginRef Id="559532962"/>
-						</Custom>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2986717269" Type="Event" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" Language="SFX" Hash="{6EEFEB19-730E-0D34-BC0B-DABA14BDE566}">
+		<SoundBank Id="2986717269" Type="Event" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" Language="SFX" Hash="{06B37DD0-BA04-C577-9AF4-6C847EAAD407}">
 			<ObjectPath>MIDI_MapT_C</ObjectPath>
 			<ShortName>MIDI_MapT_C</ShortName>
 			<Path>Event/MIDI_MapT_C.bnk</Path>
@@ -2377,23 +2357,13 @@
 					<CachePath>SFX/Map_B_Cymbal_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<Custom>
-					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
-				</Custom>
-			</Plugins>
 			<Events>
-				<Event Id="2986717269" Name="MIDI_MapT_C" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_C" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+				<Event Id="2986717269" Name="MIDI_MapT_C" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_C" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="134442568"/>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="449514800"/>
 					</MediaRefs>
-					<PluginRefs>
-						<Custom>
-							<PluginRef Id="559532962"/>
-						</Custom>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
@@ -2979,5 +2949,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F4A053CB-1605-C661-2604-F9323A19B43F}</FileHash>
+	<FileHash>{20D0FBD1-EBF7-1ABB-43B5-10D41046F4C3}</FileHash>
 </SoundBanksInfo>
