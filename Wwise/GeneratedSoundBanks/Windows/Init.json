@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{82116C6E-4F0D-71C9-5367-F73ACD33D93E}",
+    "Hash": "{65479D6F-AF38-BB12-A242-7387BC92F737}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -87,12 +87,6 @@
     ],
     "GameParameters": [
      {
-      "Id": "271579137",
-      "Name": "RTPC_LobbyBGM",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_LobbyBGM",
-      "GUID": "{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"
-     },
-     {
       "Id": "836717429",
       "Name": "RTPC_BPM_Test",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BPM_Test",
@@ -121,6 +115,12 @@
       "Name": "RTPC_SFXVolume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_SFXVolume",
       "GUID": "{6BB75C83-4CCF-480B-88F5-B69F326C8A5F}"
+     },
+     {
+      "Id": "3062363417",
+      "Name": "RTPC_BGMVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BGMVolume",
+      "GUID": "{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"
      }
     ],
     "SwitchGroups": [
@@ -683,6 +683,6 @@
     ]
    }
   ],
-  "FileHash": "{10FEDE31-2AD8-4F8A-0FE4-EA7E8277D04C}"
+  "FileHash": "{89928B7D-5804-46FA-AA94-6BCE00B6A833}"
  }
 }

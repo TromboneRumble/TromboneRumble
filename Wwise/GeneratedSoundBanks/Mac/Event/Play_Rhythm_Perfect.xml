@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{AB5E32D0-65AB-8033-40F9-C1F2399F1486}">
+		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}">
 			<ObjectPath>Play_Rhythm_Perfect</ObjectPath>
 			<ShortName>Play_Rhythm_Perfect</ShortName>
 			<Path>Event/Play_Rhythm_Perfect.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5E2DF6F0-1452-0C24-92E4-B7FB1102E9C6}</FileHash>
+	<FileHash>{82215A71-0692-AEAE-E1BE-CA9CCB1C1BF6}</FileHash>
 </SoundBanksInfo>
