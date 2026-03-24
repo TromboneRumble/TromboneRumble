@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}",
     "Language": "SFX",
-    "Hash": "{AB5E32D0-65AB-8033-40F9-C1F2399F1486}",
+    "Hash": "{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}",
     "ObjectPath": "Play_Rhythm_Perfect",
     "ShortName": "Play_Rhythm_Perfect",
     "Path": "Event/Play_Rhythm_Perfect.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{48A6199A-C6EE-C7EA-ADCE-C4B1F2477C5B}"
+  "FileHash": "{3D53D9D2-ADBB-1A44-1813-A3CBF523B8E9}"
  }
 }

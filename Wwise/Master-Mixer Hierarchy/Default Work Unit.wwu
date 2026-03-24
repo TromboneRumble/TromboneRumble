@@ -120,7 +120,7 @@
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="RTPC_LobbyBGM" ID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+														<ObjectRef Name="RTPC_BGMVolume" ID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>

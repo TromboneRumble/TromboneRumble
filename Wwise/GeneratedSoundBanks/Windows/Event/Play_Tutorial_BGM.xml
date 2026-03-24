@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{5744615E-A031-2BE8-09DC-E923A0D9BF63}">
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{1E98EA08-2910-79E8-DE76-93F95103AE86}">
 			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
 			<ShortName>Play_Tutorial_BGM</ShortName>
 			<Path>Event/Play_Tutorial_BGM.bnk</Path>
@@ -29,5 +29,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{7DE9FFEA-E38E-8A22-0FDB-1077B9447499}</FileHash>
+	<FileHash>{CD87E126-65A7-9D47-A93E-AE832952823C}</FileHash>
 </SoundBanksInfo>

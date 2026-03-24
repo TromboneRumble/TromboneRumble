@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{5744615E-A031-2BE8-09DC-E923A0D9BF63}">
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{1E98EA08-2910-79E8-DE76-93F95103AE86}">
 			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
 			<ShortName>Play_Tutorial_BGM</ShortName>
 			<Path>Event/Play_Tutorial_BGM.bnk</Path>
@@ -29,5 +29,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{60D6E237-15EE-9343-7DA5-D9D9E4D8CF89}</FileHash>
+	<FileHash>{82CCD848-07EE-030A-109F-F0E3B3AECAD5}</FileHash>
 </SoundBanksInfo>
