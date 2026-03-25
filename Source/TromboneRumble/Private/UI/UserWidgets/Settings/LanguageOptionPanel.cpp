@@ -41,7 +41,7 @@ void ULanguageOptionPanel::HandleApplyButtonClicked()
 	if (SelectedIndex >= 0 && SelectedIndex < SupportedCultures.Num())
 	{
 		FString NewCulture = SupportedCultures[SelectedIndex];
-		UKismetInternationalizationLibrary::SetCurrentCulture(NewCulture, true);
+		UKismetInternationalizationLibrary::SetCurrentLanguage(NewCulture, true);
 		CurrentLanguageIndex = SelectedIndex;
 		UE_LOG(LogTemp, Log, TEXT("Language changed to %s"), *NewCulture);
 	}

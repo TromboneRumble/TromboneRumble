@@ -6,6 +6,9 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
 #include "Framework/TromboneGameInstance.h"
+#include "EasyOnlineSession.h"
+#include "EasySessionTypes.h"
+#include "EasySessionUtils.h"
 
 AInGameMode::AInGameMode()
 {
@@ -16,15 +19,14 @@ void AInGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (const UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	FEasyNamedSession CurrentGameSession;
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	OnlineSession->GetSession(NAME_GameSession, CurrentGameSession);
+	if (CurrentGameSession.IsValid())
 	{
-		SessionPlayerNumber = TromboneGI->GetSessionPlayerNumber();
+		SessionPlayerNumber = UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession);
 	}
 
-	if (SessionPlayerNumber <= 0)
-	{
-		SessionPlayerNumber = 4;
-	}
 	if (GetWorld()->GetNetMode() == NM_Standalone)
 	{
 		SessionPlayerNumber = 1;
