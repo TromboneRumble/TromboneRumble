@@ -8,6 +8,7 @@
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Actors/Gimmick/GimmickManager.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/EnumHelper.h"
@@ -51,6 +52,9 @@ void ATutorialManager::BeginPlay()
 	{
 		UAkGameplayStatics::PostEvent(TutorialBGMEvent, UGameplayStatics::GetPlayerPawn(this,0), 0, FOnAkPostEventCallback());
 	}
+
+	GimmickManager = Cast<AGimmickManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AGimmickManager::StaticClass()));
+
 }
 
 void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditionParamType ConditionParam_0, FString ConditionParam_1)
@@ -291,6 +295,13 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		{
 			MyCharacter->Unequip();
 		}
+		if (GimmickManager.Get())
+		{
+			GimmickManager->ActivateGimmickByType(EGimmickType::Spotlight);
+			GimmickManager->ActivateGimmickByType(EGimmickType::Puddle);
+			GimmickManager->ActivateGimmickByType(EGimmickType::Trash);
+		}
+
 	}
 }
 

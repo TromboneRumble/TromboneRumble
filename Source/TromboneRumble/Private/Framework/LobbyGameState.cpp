@@ -39,6 +39,7 @@ void ALobbyGameState::SetSelectedSongTag(const FGameplayTag& InTag)
 {
 	if (!HasAuthority()) return;
 	SelectedSongTag = InTag;
+	UE_LOG(LogTemp, Warning, TEXT("Selected Song Tag changed to: %s"), *InTag.ToString());
 	OnRep_SelectedSongTag();
 }
 
