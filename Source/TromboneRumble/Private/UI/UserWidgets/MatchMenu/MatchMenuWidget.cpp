@@ -150,7 +150,16 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 		TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
 		ReservationManager->SetHostReservations(Reservations);
 	}
-
+	
+	FEasySessionSettings UpdatedSettings;
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+			
+	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
+	UpdatedSettings.bAllowJoinInProgress = false;
+		
+	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
+	OnlineSession->StartOnlineSession(NAME_GameSession);
+	
 	FString URL = TEXT("/Game/Levels/LobbyMap");
 	UEasyStatics::ServerTravelToLevel(this, URL);
 }
@@ -204,7 +213,7 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 			ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		}
 				
-		OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings);
+		OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true, ExtraSessionSettings);
 	}
 }
 
