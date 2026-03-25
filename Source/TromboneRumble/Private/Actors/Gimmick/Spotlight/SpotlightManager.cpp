@@ -16,10 +16,7 @@ void ASpotlightManager::Activate()
     
     if (HasAuthority())
     {
-        if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-        {
-            MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::CheckSpotlightStart);
-        }
+        TriggerSpotlightSpawn();
     }
 }
 
@@ -52,10 +49,6 @@ void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ASpotlightManager::CheckSpotlightStart(FName CueName)
 {
-	if (CueName == TEXT("Event_Spotlight_Start"))
-	{
-        TriggerSpotlightSpawn();
-	}
     if (CueName == TEXT("Event_Spotlight_Fever"))
     {
         bIsFeverTime = true;

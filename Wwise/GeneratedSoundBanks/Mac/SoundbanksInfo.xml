@@ -192,7 +192,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{5744615E-A031-2BE8-09DC-E923A0D9BF63}">
+		<SoundBank Id="435519059" Type="Event" GUID="{B0057F0A-FEB6-42EF-8F3A-C773B972B195}" Language="SFX" Hash="{1E98EA08-2910-79E8-DE76-93F95103AE86}">
 			<ObjectPath>Play_Tutorial_BGM</ObjectPath>
 			<ShortName>Play_Tutorial_BGM</ShortName>
 			<Path>Event/Play_Tutorial_BGM.bnk</Path>
@@ -975,7 +975,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{5ECB9C52-72AB-BBDA-580C-870925E53C0C}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{35B793A2-7C83-9F6D-AAF0-63396BA8B563}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -1004,12 +1004,12 @@
 				</AuxBus>
 			</AuxBusses>
 			<GameParameters>
-				<GameParameter Id="271579137" Name="RTPC_LobbyBGM" ObjectPath="\Game Parameters\Default Work Unit\RTPC_LobbyBGM" GUID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
 				<GameParameter Id="2378823330" Name="RTPC_MusicVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_MusicVolume" GUID="{3EC485DA-A658-45AE-AB28-DDC1045E60EB}"/>
 				<GameParameter Id="2582501215" Name="RTPC_MasterVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_MasterVolume" GUID="{B27D731F-8A64-4DA0-B718-3CCB1E9C55E2}"/>
 				<GameParameter Id="2644490154" Name="RTPC_SFXVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_SFXVolume" GUID="{6BB75C83-4CCF-480B-88F5-B69F326C8A5F}"/>
+				<GameParameter Id="3062363417" Name="RTPC_BGMVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BGMVolume" GUID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 			</GameParameters>
 			<SwitchGroups>
 				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
@@ -1168,7 +1168,7 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
-		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{EB006831-4C39-6418-F01E-E44F5C14A2A3}">
+		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{DD977E42-4E57-16B2-655B-27E32D9AC9BA}">
 			<ObjectPath>Play_Ranking_BGM</ObjectPath>
 			<ShortName>Play_Ranking_BGM</ShortName>
 			<Path>Event/Play_Ranking_BGM.bnk</Path>
@@ -1386,7 +1386,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{7A0B686A-8C12-DE34-1C21-0980D16F03C3}">
+		<SoundBank Id="1663244239" Type="Event" GUID="{076B29FC-857E-4261-8AD6-C9F0D027F9FC}" Language="SFX" Hash="{93C7FE82-6605-F75B-9CC5-C001D0625733}">
 			<ObjectPath>Play_Audience_Combo</ObjectPath>
 			<ShortName>Play_Audience_Combo</ShortName>
 			<Path>Event/Play_Audience_Combo.bnk</Path>
@@ -1740,7 +1740,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2023964404" Type="Event" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" Language="SFX" Hash="{E1F5096D-CDFB-726E-C0BF-1101D6F7250B}">
+		<SoundBank Id="2023964404" Type="Event" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" Language="SFX" Hash="{5947A296-30D0-9D5D-1A50-88CF7A50807E}">
 			<ObjectPath>Play_MapT_Main</ObjectPath>
 			<ShortName>Play_MapT_Main</ShortName>
 			<Path>Event/Play_MapT_Main.bnk</Path>
@@ -1772,7 +1772,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="2023964404" Name="Play_MapT_Main" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\Play_MapT_Main" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+				<Event Id="2023964404" Name="Play_MapT_Main" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\Play_MapT_Main" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="409495629"/>
@@ -1878,7 +1878,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{AB5E32D0-65AB-8033-40F9-C1F2399F1486}">
+		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}">
 			<ObjectPath>Play_Rhythm_Perfect</ObjectPath>
 			<ShortName>Play_Rhythm_Perfect</ShortName>
 			<Path>Event/Play_Rhythm_Perfect.bnk</Path>
@@ -2274,7 +2274,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2986717248" Type="Event" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" Language="SFX" Hash="{B52EBBCB-865E-8894-E542-DA63EBB449BF}">
+		<SoundBank Id="2986717248" Type="Event" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" Language="SFX" Hash="{75F86F63-1B99-DEB1-CEE6-C5C95459F56D}">
 			<ObjectPath>MIDI_MapT_V</ObjectPath>
 			<ShortName>MIDI_MapT_V</ShortName>
 			<Path>Event/MIDI_MapT_V.bnk</Path>
@@ -2295,27 +2295,17 @@
 					<CachePath>SFX/MIDI_V_707D6309.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<Custom>
-					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
-				</Custom>
-			</Plugins>
 			<Events>
-				<Event Id="2986717248" Name="MIDI_MapT_V" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_V" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+				<Event Id="2986717248" Name="MIDI_MapT_V" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_V" GUID="{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="409495629"/>
 						<MediaRef Id="1052433117"/>
 					</MediaRefs>
-					<PluginRefs>
-						<Custom>
-							<PluginRef Id="559532962"/>
-						</Custom>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2986717250" Type="Event" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" Language="SFX" Hash="{5DAACCA0-673E-D1AD-3BC2-8E283425B5CA}">
+		<SoundBank Id="2986717250" Type="Event" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" Language="SFX" Hash="{F11A8765-E65F-0FCB-3FE4-05366277BE66}">
 			<ObjectPath>MIDI_MapT_T</ObjectPath>
 			<ShortName>MIDI_MapT_T</ShortName>
 			<Path>Event/MIDI_MapT_T.bnk</Path>
@@ -2336,27 +2326,17 @@
 					<CachePath>SFX/Map_B_Trombone_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<Custom>
-					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
-				</Custom>
-			</Plugins>
 			<Events>
-				<Event Id="2986717250" Name="MIDI_MapT_T" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_T" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+				<Event Id="2986717250" Name="MIDI_MapT_T" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_T" GUID="{C43A6F99-2486-442F-885F-E3718529C405}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="157812467"/>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="1063425767"/>
 					</MediaRefs>
-					<PluginRefs>
-						<Custom>
-							<PluginRef Id="559532962"/>
-						</Custom>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2986717269" Type="Event" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" Language="SFX" Hash="{6EEFEB19-730E-0D34-BC0B-DABA14BDE566}">
+		<SoundBank Id="2986717269" Type="Event" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" Language="SFX" Hash="{8E400922-25FF-C979-F044-450A8E4C8286}">
 			<ObjectPath>MIDI_MapT_C</ObjectPath>
 			<ShortName>MIDI_MapT_C</ShortName>
 			<Path>Event/MIDI_MapT_C.bnk</Path>
@@ -2377,23 +2357,13 @@
 					<CachePath>SFX/Map_B_Cymbal_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
-			<Plugins>
-				<Custom>
-					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
-				</Custom>
-			</Plugins>
 			<Events>
-				<Event Id="2986717269" Name="MIDI_MapT_C" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_C" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" DurationType="OneShot" DurationMin="163.43333" DurationMax="163.43333">
+				<Event Id="2986717269" Name="MIDI_MapT_C" ObjectPath="\Events\Default Work Unit\Music\Map_T_Rhythm\MIDI_MapT_C" GUID="{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="134442568"/>
 						<MediaRef Id="322920745"/>
 						<MediaRef Id="449514800"/>
 					</MediaRefs>
-					<PluginRefs>
-						<Custom>
-							<PluginRef Id="559532962"/>
-						</Custom>
-					</PluginRefs>
 				</Event>
 			</Events>
 		</SoundBank>
@@ -2454,7 +2424,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3304145397" Type="Event" GUID="{A5981776-F3D0-4919-93FB-1E5275B10847}" Language="SFX" Hash="{F573F10A-577A-9691-F387-9861588FCE17}">
+		<SoundBank Id="3304145397" Type="Event" GUID="{A5981776-F3D0-4919-93FB-1E5275B10847}" Language="SFX" Hash="{71B6C8A2-5E1E-F773-C4C8-A45683C2C892}">
 			<ObjectPath>Play_Host_Speaking</ObjectPath>
 			<ShortName>Play_Host_Speaking</ShortName>
 			<Path>Event/Play_Host_Speaking.bnk</Path>
@@ -2596,7 +2566,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{3297B058-6540-A127-2845-43D5572B7FC4}">
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{2DFB7AFC-FAC6-65D4-54D4-9C9F4F42EE00}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -2979,5 +2949,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{AA997439-EF01-0EF9-98C7-885CC8F31352}</FileHash>
+	<FileHash>{94EB5893-7DC8-96A9-4938-7221CB03EF8A}</FileHash>
 </SoundBanksInfo>

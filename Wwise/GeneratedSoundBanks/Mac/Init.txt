@@ -1,5 +1,4 @@
 Game Parameter	ID	Name			Wwise Object Path	Notes
-	271579137	RTPC_LobbyBGM			\Default Work Unit\RTPC_LobbyBGM	
 	504532776	Brick			\Factory Acoustic Textures\Textures\Brick	
 	513139656	Mountain			\Factory Acoustic Textures\Textures\Mountain	
 	841620460	Concrete			\Factory Acoustic Textures\Textures\Concrete	
@@ -13,6 +12,7 @@ Game Parameter	ID	Name			Wwise Object Path	Notes
 	2637588553	Tile			\Factory Acoustic Textures\Textures\Tile	
 	2644490154	RTPC_SFXVolume			\Default Work Unit\RTPC_SFXVolume	
 	2928161104	Curtains			\Factory Acoustic Textures\Textures\Curtains	
+	3062363417	RTPC_BGMVolume			\Default Work Unit\RTPC_BGMVolume	
 	3195498748	Cork_Tiles			\Factory Acoustic Textures\Textures\Cork_Tiles	
 	3670307564	Drywall			\Factory Acoustic Textures\Textures\Drywall	
 	4168643977	Acoustic_Banner			\Factory Acoustic Textures\Textures\Acoustic_Banner	

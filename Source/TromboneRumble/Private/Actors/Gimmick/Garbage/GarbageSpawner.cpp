@@ -7,7 +7,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Framework/InGameState.h"
 #include "GameFramework/PlayerState.h"
-#include "Subsystems/RhythmSubsystem.h"
 
 AGarbageSpawner::AGarbageSpawner()
 {
@@ -21,21 +20,14 @@ void AGarbageSpawner::Activate()
 	
 	if (HasAuthority())
 	{
-		if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-		{
-			MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::StartAutoSpawnFromMusicCue);
-		}
+		Server_StartAutoSpawn();
 	}
 }
 
 void AGarbageSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (HasAuthority() && bAutoStart)
-	{
-		Server_StartAutoSpawn();
-	}	
+
 }
 
 void AGarbageSpawner::Server_SpawnGarbageOnce()

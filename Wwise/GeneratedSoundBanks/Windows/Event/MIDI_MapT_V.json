@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}",
     "Language": "SFX",
-    "Hash": "{B52EBBCB-865E-8894-E542-DA63EBB449BF}",
+    "Hash": "{75F86F63-1B99-DEB1-CEE6-C5C95459F56D}",
     "ObjectPath": "MIDI_MapT_V",
     "ShortName": "MIDI_MapT_V",
     "Path": "Event/MIDI_MapT_V.bnk",
@@ -43,27 +43,13 @@
       "CachePath": "SFX/MIDI_V_707D6309.wem"
      }
     ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
     "Events": [
      {
       "Id": "2986717248",
       "Name": "MIDI_MapT_V",
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_T_Rhythm\\MIDI_MapT_V",
       "GUID": "{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}",
-      "DurationType": "OneShot",
-      "DurationMin": "236.72504",
-      "DurationMax": "236.72504",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "322920745"
@@ -74,18 +60,11 @@
        {
         "Id": "1052433117"
        }
-      ],
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
+      ]
      }
     ]
    }
   ],
-  "FileHash": "{1E4BC2C1-E81A-913F-F632-0DFC64B6F68D}"
+  "FileHash": "{DC7D0910-59B3-036F-131A-B1ED7F673F7F}"
  }
 }

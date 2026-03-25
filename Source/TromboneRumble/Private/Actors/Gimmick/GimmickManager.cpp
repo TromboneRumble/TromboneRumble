@@ -4,6 +4,7 @@
 
 #include "EngineUtils.h"
 #include "Actors/Gimmick/GimmickBase.h"
+#include "Subsystems/RhythmSubsystem.h"
 
 void AGimmickManager::ActivateGimmickByType(const EGimmickType GimmickType)
 {
@@ -66,7 +67,6 @@ void AGimmickManager::BeginPlay()
 	Super::BeginPlay();
 	
 	FindAndRegisterGimmicks();
-	ActivateAllGimmicks();
 
 	if (UWorld* World = GetWorld())
 	{
@@ -77,6 +77,13 @@ void AGimmickManager::BeginPlay()
 		else
 		{
 			World->GameStateSetEvent.AddUObject(this, &ThisClass::BindToInGameState);
+		}
+	}
+	if (HasAuthority())
+	{
+		if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		{
+			MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCueName);
 		}
 	}
 }
@@ -106,5 +113,17 @@ void AGimmickManager::HandleInGameStateChanged(EInGameState InGameState)
 	if (InGameState == EInGameState::End)
 	{
 		DeactivateAllGimmicks();
+	}
+}
+
+void AGimmickManager::HandleMusicCueName(FName CueName)
+{
+	if (HasAuthority())
+	{
+		if (CueName == TEXT("Event_Spotlight_Start"))
+		{
+			DeactivateAllGimmicks();
+			ActivateAllGimmicks();
+		}
 	}
 }

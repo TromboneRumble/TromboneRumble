@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{82116C6E-4F0D-71C9-5367-F73ACD33D93E}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{65479D6F-AF38-BB12-A242-7387BC92F737}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -30,12 +30,12 @@
 				</AuxBus>
 			</AuxBusses>
 			<GameParameters>
-				<GameParameter Id="271579137" Name="RTPC_LobbyBGM" ObjectPath="\Game Parameters\Default Work Unit\RTPC_LobbyBGM" GUID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 				<GameParameter Id="836717429" Name="RTPC_BPM_Test" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BPM_Test" GUID="{CE6A8154-20C0-412E-A831-ACE8F55EF18C}"/>
 				<GameParameter Id="1116151608" Name="RTPC_Fail_Volume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Fail_Volume" GUID="{B4B823F8-631E-401E-8129-C408D3A19230}"/>
 				<GameParameter Id="2378823330" Name="RTPC_MusicVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_MusicVolume" GUID="{3EC485DA-A658-45AE-AB28-DDC1045E60EB}"/>
 				<GameParameter Id="2582501215" Name="RTPC_MasterVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_MasterVolume" GUID="{B27D731F-8A64-4DA0-B718-3CCB1E9C55E2}"/>
 				<GameParameter Id="2644490154" Name="RTPC_SFXVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_SFXVolume" GUID="{6BB75C83-4CCF-480B-88F5-B69F326C8A5F}"/>
+				<GameParameter Id="3062363417" Name="RTPC_BGMVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_BGMVolume" GUID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
 			</GameParameters>
 			<SwitchGroups>
 				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
@@ -195,5 +195,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8D672BE1-D8E3-A232-6E07-B35AF7D5DD2C}</FileHash>
+	<FileHash>{48D57D7E-5D21-74A9-E382-33F2732B8136}</FileHash>
 </SoundBanksInfo>

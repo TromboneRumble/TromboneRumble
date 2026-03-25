@@ -35,6 +35,9 @@ protected:
 
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
+
+	UFUNCTION()
+	void HandleMusicCueName(FName CueName);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Config")
 	TMap<EGimmickType, TObjectPtr<AGimmickBase>> ManagedGimmicks;

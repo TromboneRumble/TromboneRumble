@@ -6,6 +6,7 @@
 #include "Items/InstrumentBase.h"
 #include "TutorialManager.generated.h"
 
+class AGimmickManager;
 class UAkSwitchValue;
 class ATutorialDummy;
 enum class ETutorialExtraDataType : uint8;
@@ -134,4 +135,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
 	TObjectPtr<UAkSwitchValue> TutorialBGMOffSwitch = nullptr;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<AGimmickManager> GimmickManager = nullptr;
 };
