@@ -267,7 +267,7 @@ void ATutorialManager::ProcessSequenceSideEffect()
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
-			SpawnInstrument(EWeaponType::Trombone);
+			SpawnInstruments();
 			GI->SetSelectedSongTag(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
 			RhythmSubsystem->StartRhythmGame(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
 		}
