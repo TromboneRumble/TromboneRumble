@@ -66141,16 +66141,6 @@
 													</Reference>
 													<Reference>
 														<Local>
-															<MusicCue Name="Event_Spotlight_Start" ID="{F1EB07A5-B0D6-4320-82F8-67A9FBE7B22B}">
-																<PropertyList>
-																	<Property Name="CueType" Type="int16" Value="2"/>
-																	<Property Name="TimeMs" Type="Real64" Value="10000"/>
-																</PropertyList>
-															</MusicCue>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
 															<MusicCue Name="Event_Spotlight_Fever" ID="{CCBCFE66-2C38-404F-9C9F-F20421F9B220}">
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="2"/>
