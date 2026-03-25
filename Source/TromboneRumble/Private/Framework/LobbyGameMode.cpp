@@ -56,6 +56,15 @@ void ALobbyGameMode::BeginPlay()
 	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
 		GS->OnPlayerLoadingScreenFinished.AddUObject(this, &ThisClass::HandlePlayerLoadingScreenFinished);
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			APlayerController* PC = It->Get();
+			//호스트가 로딩이 끝난 상태로 월드에 있는 경우 수동으로 HandlePlayerLoadingScreenFinished을 호출
+			if (PC && PC->IsLocalController())
+			{
+				HandlePlayerLoadingScreenFinished(PC);
+			}
+		}
 	}
 
 	SetLobbyState(ELobbyState::WaitingForPlayers);
@@ -110,7 +119,6 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 	if (!PC) return;
 	
 	LobbyReadyPlayers.AddUnique(PC);
-	
 	if (LobbyReadyPlayers.Num() >= RegisteredPlayerCount)
 	{
 		if (LobbyGameState)
