@@ -30,8 +30,10 @@ void AMatchMenuGameState::HandleMatchPawnCreated(APawn* PlayerPawn)
 		PlayerStartMappings[PlayerStart] = PlayerPawn;
 		PlayerPawn->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
 		
-		OnPlayerStartOccupancyChanged.Broadcast(PlayerStart, PlayerPawn);
+		OnPlayerStartOccupancyChangedEvent.Broadcast(PlayerStart, PlayerPawn);
 	}
+	
+	OnPlayerCountChangedEvent.Broadcast(GetCurrentPlayerCount());
 }
 
 void AMatchMenuGameState::HandleMatchPawnPreDestroyed(APawn* PlayerPawn)
@@ -49,10 +51,12 @@ void AMatchMenuGameState::HandleMatchPawnPreDestroyed(APawn* PlayerPawn)
 			APlayerStart* ClearedStart = Pair.Key;
 			Pair.Value = nullptr; 
           
-			OnPlayerStartOccupancyChanged.Broadcast(ClearedStart, nullptr);
+			OnPlayerStartOccupancyChangedEvent.Broadcast(ClearedStart, nullptr);
 			break;
 		}
 	}
+	
+	OnPlayerCountChangedEvent.Broadcast(GetCurrentPlayerCount());
 }
 
 APlayerStart* AMatchMenuGameState::FindPlayerStart(APawn* PlayerPawn) const
@@ -126,4 +130,18 @@ void AMatchMenuGameState::SetMatchType(const EMatchType NewType)
 
 	CurrentMatchType = NewType;
 	OnRep_CurrentMatchType();
+}
+
+int32 AMatchMenuGameState::GetCurrentPlayerCount() const
+{
+	int32 PlayerCount = 0;
+	for (const auto& Pair : PlayerStartMappings)
+	{
+		if (Pair.Value != nullptr)
+		{
+			PlayerCount++;
+		}
+	}
+
+	return PlayerCount;
 }

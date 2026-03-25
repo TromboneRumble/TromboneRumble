@@ -5,9 +5,9 @@
 #include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "MatchMenuGameState.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListUpdateSignature, const TArray<FString>&, PlayerNames);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchTypeChangedSignature, EMatchType, NewType);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerStartOccupancyChanged, APlayerStart*, PlayerStart, APawn*, OccupyingPawn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FK2_OnPlayerCountChangedSignature, int32, NewPlayerCount);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FK2_OnPlayerStartOccupancyChanged, APlayerStart*, PlayerStart, APawn*, OccupyingPawn);
 
 UCLASS()
 class TROMBONERUMBLE_API AMatchMenuGameState : public AGameStateBase
@@ -20,10 +20,19 @@ public:
 	
 	void SetMatchType(EMatchType NewType);
 	
-	FOnMatchTypeChangedSignature OnMatchTypeChanged;
+	/** @return The current player count in the match menu. */
+	int32 GetCurrentPlayerCount() const;
 	
-	UPROPERTY(BlueprintAssignable, Category = "Match")
-	FOnPlayerStartOccupancyChanged OnPlayerStartOccupancyChanged;
+public:
+	/** @return The delegate fired when the player count changed in the match menu */
+	UPROPERTY(BlueprintAssignable, Category = "Events", DisplayName = "On Player Count Changed", meta = (AllowPrivateAccess))
+	FK2_OnPlayerCountChangedSignature OnPlayerCountChangedEvent;
+	
+	/** @return The delegate fired when a player start occupancy changed in the match menu */
+	UPROPERTY(BlueprintAssignable, Category = "Events", DisplayName = "On Player Start Occupancy Changed", meta = (AllowPrivateAccess))
+	FK2_OnPlayerStartOccupancyChanged OnPlayerStartOccupancyChangedEvent;
+	
+	FOnMatchTypeChangedSignature OnMatchTypeChanged;
 	
 public:
 	

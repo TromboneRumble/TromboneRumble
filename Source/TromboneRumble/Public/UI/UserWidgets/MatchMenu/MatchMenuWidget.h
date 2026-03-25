@@ -32,6 +32,22 @@ protected:
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	
+protected:
+	
+	// ~ Begin UIs
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonButtonBase> CB_Start;
+	
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonButtonBase> CB_Back;
+	
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonTextBlock> CT_Code;
+	
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
+	// ~ End UIs
+	
 private:
 	// ~ Begin GameState Events
 	void BindGameStateEvents();
@@ -49,19 +65,6 @@ private:
 	UFUNCTION()
 	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
 	// ~ End UI Events
-	
-	// ~ Begin UIs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Start;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Back;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> CT_Code;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
-	// ~ End UIs
 	
 	UPROPERTY(Transient)
 	FString CachedMainMenuMapPath = "";
