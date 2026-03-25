@@ -1,5 +1,8 @@
 #include "Framework/LobbyGameMode.h"
 #include "AkGameplayStatics.h"
+#include "EasyOnlineSession.h"
+#include "EasySessionTypes.h"
+#include "EasySessionUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/LobbyGameState.h"
@@ -41,9 +44,12 @@ void ALobbyGameMode::BeginPlay()
 	
 	LobbyGameState = GetGameState<ALobbyGameState>();
 	
-	if (const UTromboneGameInstance* TromboneGI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	FEasyNamedSession CurrentGameSession;
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	OnlineSession->GetSession(NAME_GameSession, CurrentGameSession);
+	if (CurrentGameSession.IsValid())
 	{
-		RegisteredPlayerCount = TromboneGI->GetSessionPlayerNumber();
+		RegisteredPlayerCount = UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession);
 	}
 	
 	LobbyReadyPlayers.Empty();
