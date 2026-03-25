@@ -16,14 +16,16 @@ void ATromboneGameModeBase::PostLogin(APlayerController* NewPlayer)
 	{
 		if (ADefaultPlayerState* PS = NewPlayer->GetPlayerState<ADefaultPlayerState>())
 		{
-			if (PS->GetSkinColor() == FLinearColor::Black)
+			FLinearColor SkinColor = PS->GetSkinColor();
+			if (SkinColor == FLinearColor::Black)
 			{
 				if (auto* AppearanceSub = GetGameInstance()->GetSubsystem<UAppearanceSubsystem>())
 				{
-					const FLinearColor UniqueColor = AppearanceSub->AssignUniqueColor();
-					PS->SetSkinColor(UniqueColor);
+					SkinColor = AppearanceSub->AssignUniqueColor();
 				}
 			}
+			
+			PS->SetSkinColor(SkinColor);
 		}
 	}
 }

@@ -1,15 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Framework/InGameState.h"
 #include "Framework/LobbyGameState.h"
-#include "Framework/GameState/MatchMenuGameState.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "HAL/PlatformFileManager.h"
+#include "Pawns/MatchPawn.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultPlayerState::ADefaultPlayerState()
@@ -47,11 +45,8 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 void ADefaultPlayerState::OnRep_PlayerName()
 {
 	Super::OnRep_PlayerName();
-
-	if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
-	{
-		MatchMenuGameState->UpdatePlayerList();
-	}
+	
+	OnPlayerNameChanged.Broadcast(GetPlayerName());
 }
 
 void ADefaultPlayerState::OnRep_Score()
@@ -265,6 +260,10 @@ void ADefaultPlayerState::OnRep_SkinColor()
 		if (const ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
 		{
 			TromboneCharacter->ApplySkinColor(SkinColor);
+		}
+		if (const AMatchPawn* LobbyPawn = Cast<AMatchPawn>(Pawn))
+		{
+			LobbyPawn->UpdateSkinFromPlayerState();
 		}
 	}
 }

@@ -38,8 +38,6 @@ private:
 	void RemoveGameStateEvents();
 	
 	UFUNCTION()
-	void OnPlayerListChanged(const TArray<FString>& PlayerNames);
-	UFUNCTION()
 	void OnMatchTypeChanged(EMatchType NewType);
 	// ~ End GameState Events
 	
@@ -49,8 +47,6 @@ private:
 	UFUNCTION()
 	void HandleBackButtonClicked();
 	UFUNCTION()
-	void HandleInviteButtonClicked();
-	UFUNCTION()
 	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
 	// ~ End UI Events
 	
@@ -59,14 +55,9 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Start;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Back;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Invite;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Code;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> CT_PlayerList;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;

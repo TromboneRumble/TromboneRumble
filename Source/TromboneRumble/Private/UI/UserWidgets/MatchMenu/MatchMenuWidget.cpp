@@ -1,9 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
-#include "EasyExternalUILibrary.h"
 #include "EasyMatchmakingManager.h"
 #include "EasyMatchmakingPolicy.h"
 #include "EasyOnlineSession.h"
@@ -12,11 +9,9 @@
 #include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
-#include "OnlineSubsystemUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/Button.h"
-#include "Components/EditableText.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "Interfaces/OnlineSessionInterface.h"
@@ -108,11 +103,6 @@ void UMatchMenuWidget::Init()
 		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
 	}
-	if (CB_Invite)
-	{
-		CB_Invite->OnClicked().RemoveAll(this);
-		CB_Invite->OnClicked().AddUObject(this, &ThisClass::HandleInviteButtonClicked);
-	}
 	if (CR_MatchType)
 	{
 		CR_MatchType->OnRotatedWithDirection().RemoveAll(this);
@@ -127,9 +117,6 @@ void UMatchMenuWidget::BindGameStateEvents()
 	
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		MatchMenuGS->OnPlayerListChanged.AddDynamic(this, &ThisClass::OnPlayerListChanged);
-		OnPlayerListChanged(MatchMenuGS->GetPlayerList());
-		
 		MatchMenuGS->OnMatchTypeChanged.AddDynamic(this, &ThisClass::OnMatchTypeChanged);
 		OnMatchTypeChanged(MatchMenuGS->GetCurrentMatchType());
 	}
@@ -139,23 +126,8 @@ void UMatchMenuWidget::RemoveGameStateEvents()
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		MatchMenuGS->OnPlayerListChanged.RemoveAll(this);
 		MatchMenuGS->OnMatchTypeChanged.RemoveAll(this);
 	}
-}
-
-void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
-{
-	if (!CT_PlayerList || bIsStarted) return;
-
-	FString FormattedPlayerList;
-
-	for (int32 i = 0; i < PlayerNames.Num(); ++i)
-	{
-		FormattedPlayerList.Append(FString::Printf(TEXT("%d. %s\n"), i + 1, *PlayerNames[i]));
-	}
-	
-	CT_PlayerList->SetText(FText::FromString(FormattedPlayerList));
 }
 
 void UMatchMenuWidget::OnMatchTypeChanged(EMatchType NewType)
@@ -191,12 +163,6 @@ void UMatchMenuWidget::HandleBackButtonClicked()
 	const FString MainMenuPkg = FPackageName::ObjectPathToPackageName(CachedMainMenuMapPath);
 	const FString URL = MainMenuPkg;
 	UGameplayStatics::OpenLevel(this, FName(*URL), true);
-}
-
-void UMatchMenuWidget::HandleInviteButtonClicked()
-{
-	EEasyResultType OutResult;
-	UEasyExternalUILibrary::ShowInviteUI(GetOwningPlayer(), NAME_GameSession, OutResult);
 }
 
 void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
@@ -271,6 +237,4 @@ void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 	
 	CB_Start->SetIsEnabled(bEnabled);
 	CB_Back->SetIsEnabled(bEnabled);
-	CB_Invite->SetIsEnabled(bEnabled);
-	CT_Code->SetIsEnabled(bEnabled);
 }

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,6 +8,13 @@
 class AWeaponBase;
 class URhythmSubsystem;
 class AInGameState;
+
+/**
+ * Delegate triggered when the player's name changes.
+ *
+ * @param PlayerName The new player name.
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerNameChanged, const FString&, PlayerName);
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnLocalScoreChanged, APlayerState*, PlayerState, int32, AddedAmount, EScoreType, ScoreType);
@@ -79,13 +84,10 @@ class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 
 public:
 	ADefaultPlayerState();
-
-    virtual void BeginPlay() override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void OnRep_PlayerName() override;
-	virtual void OnRep_Score() override;
-	virtual void CopyProperties(APlayerState* PlayerState) override;	
-
+	
+	/** Event when the player's name changes. */
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPlayerNameChanged OnPlayerNameChanged;
 
 	// 클라이언트 PlayerState 에서 점수가 바뀌면 GameState에 알림.
 	UPROPERTY(BlueprintAssignable)
@@ -132,11 +134,19 @@ protected:
     FRumbleScoreData CurrentScoreData;
 
 public:
-	//getter setter
+	// ~ Begin APlayerState Interface
+	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_PlayerName() override;
+	virtual void OnRep_Score() override;
+	virtual void CopyProperties(APlayerState* PlayerState) override;	
+	// ~ End APlayerState Interface
+	
+	// ~ Begin Getter & Setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
 	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
     FORCEINLINE FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
-	// ~getter setter
+	// ~ End Getter & Setter
 };
