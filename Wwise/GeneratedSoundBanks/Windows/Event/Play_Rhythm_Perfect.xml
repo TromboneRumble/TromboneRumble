@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{AB5E32D0-65AB-8033-40F9-C1F2399F1486}">
+		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}">
 			<ObjectPath>Play_Rhythm_Perfect</ObjectPath>
 			<ShortName>Play_Rhythm_Perfect</ShortName>
 			<Path>Event/Play_Rhythm_Perfect.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4FD0E900-F734-2F7C-B010-AE2DDFD0F14B}</FileHash>
+	<FileHash>{224EB2FE-95E0-3C6D-F1F5-66E333410190}</FileHash>
 </SoundBanksInfo>
