@@ -1,7 +1,6 @@
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
-#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 #include "Utilities/DebugHelper.h"
 
@@ -11,21 +10,7 @@ AMatchMenuGameState::AMatchMenuGameState()
 	PlayerStartMappings = TMap<APlayerStart*, APawn*>();
 }
 
-void AMatchMenuGameState::UpdatePlayerList()
-{
-	if (!HasAuthority()) return;
-
-	TArray<FString> NewPlayerList;
-	for (const APlayerState* PlayerState : PlayerArray)
-	{
-		if (PlayerState)
-		{
-			NewPlayerList.Add(PlayerState->GetPlayerName());
-		}
-	}
-}
-
-void AMatchMenuGameState::HandleLobbyPawnCreated(APawn* PlayerPawn)
+void AMatchMenuGameState::HandleMatchPawnCreated(APawn* PlayerPawn)
 {
 	if (!PlayerPawn)
 	{
@@ -49,21 +34,21 @@ void AMatchMenuGameState::HandleLobbyPawnCreated(APawn* PlayerPawn)
 	}
 }
 
-void AMatchMenuGameState::HandleLobbyPawnPreDestroyed(APawn* PlayerPawn)
+void AMatchMenuGameState::HandleMatchPawnPreDestroyed(APawn* PlayerPawn)
 {
 	if (!PlayerPawn)
 	{
 		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("PlayerPawn is nullptr"));
 		return;
 	}
-
-	for (const auto PlayerStartMapping : PlayerStartMappings)
+	
+	for (auto& Pair : PlayerStartMappings)
 	{
-		if (PlayerStartMapping.Value == PlayerPawn)
+		if (Pair.Value == PlayerPawn)
 		{
-			APlayerStart* ClearedStart = PlayerStartMapping.Key;
-			PlayerStartMappings.Remove(ClearedStart);
-			
+			APlayerStart* ClearedStart = Pair.Key;
+			Pair.Value = nullptr; 
+          
 			OnPlayerStartOccupancyChanged.Broadcast(ClearedStart, nullptr);
 			break;
 		}

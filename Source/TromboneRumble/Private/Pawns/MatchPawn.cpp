@@ -2,7 +2,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Engine/World.h"
-#include "TimerManager.h"
 #include "Components/ActorComponents/NameplateComponent.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Framework/GameState/MatchMenuGameState.h"
@@ -59,7 +58,7 @@ void AMatchPawn::BeginPlay()
 
 	if (AMatchMenuGameState* GameState = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		GameState->HandleLobbyPawnCreated(this);
+		GameState->HandleMatchPawnCreated(this);
 	}
 	
 	if (UMaterialInterface* CurrentSkinMat = SkeletalMeshComponent->GetMaterial(SkinMaterialIndex))
@@ -87,7 +86,7 @@ void AMatchPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (AMatchMenuGameState* GameState = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		GameState->HandleLobbyPawnPreDestroyed(this);
+		GameState->HandleMatchPawnPreDestroyed(this);
 	}
 
 	Super::EndPlay(EndPlayReason);

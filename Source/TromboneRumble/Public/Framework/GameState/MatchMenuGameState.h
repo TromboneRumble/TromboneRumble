@@ -17,8 +17,6 @@ class TROMBONERUMBLE_API AMatchMenuGameState : public AGameStateBase
 public:
 	/** Default constructor. */
 	AMatchMenuGameState();
-
-	void UpdatePlayerList();
 	
 	void SetMatchType(EMatchType NewType);
 	
@@ -30,25 +28,21 @@ public:
 public:
 	
 	/** Tag of the player start where the local player should be moved to. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lobby")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Match")
 	FName LocalPlayerStartTag;
 	
 protected:
-	
-	/**
- * Possible PlayerStart actors and the lobby pawns that currently occupy them.
- * Used to figure out which PlayerStarts are free to spawn on when relocating lobby pawns.
- * Not replicated because pawns are moved around locally in each clients world.
- */
+
+	/** PlayerStart where the player can be positioned */
 	UPROPERTY()
 	TMap<APlayerStart*, APawn*> PlayerStartMappings;
 	
 public:
 	/** Called when a lobby pawn is spawned. */
-	virtual void HandleLobbyPawnCreated(APawn* PlayerPawn);
+	virtual void HandleMatchPawnCreated(APawn* PlayerPawn);
 	
 	/** Called before a lobby pawn is destroyed. */
-	virtual void HandleLobbyPawnPreDestroyed(APawn* PlayerPawn);
+	virtual void HandleMatchPawnPreDestroyed(APawn* PlayerPawn);
 
 	/** Find a new player start for the given pawn. This is used when we want to have the local player in a fix spot. */
 	UFUNCTION(BlueprintCallable, Category = "Default")
