@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{ABAAE343-BCBE-4782-A1E4-001C0C06D751}",
     "Language": "SFX",
-    "Hash": "{3297B058-6540-A127-2845-43D5572B7FC4}",
+    "Hash": "{2DFB7AFC-FAC6-65D4-54D4-9C9F4F42EE00}",
     "ObjectPath": "MIDI_RhythmGame_Cymbal",
     "ShortName": "MIDI_RhythmGame_Cymbal",
     "Path": "Event/MIDI_RhythmGame_Cymbal.bnk",
@@ -62,6 +62,6 @@
     ]
    }
   ],
-  "FileHash": "{7F290403-C503-7FDE-49FF-38C4F1FEC134}"
+  "FileHash": "{23DDC7E6-6CAE-C173-4B77-20DFB178F909}"
  }
 }

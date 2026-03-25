@@ -1740,7 +1740,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2023964404" Type="Event" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" Language="SFX" Hash="{CB50F19E-22C2-737C-D855-4FC3D5C40A9B}">
+		<SoundBank Id="2023964404" Type="Event" GUID="{9821A7D4-2790-4D81-8C43-8AC095163364}" Language="SFX" Hash="{5947A296-30D0-9D5D-1A50-88CF7A50807E}">
 			<ObjectPath>Play_MapT_Main</ObjectPath>
 			<ShortName>Play_MapT_Main</ShortName>
 			<Path>Event/Play_MapT_Main.bnk</Path>
@@ -2566,7 +2566,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{3297B058-6540-A127-2845-43D5572B7FC4}">
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{2DFB7AFC-FAC6-65D4-54D4-9C9F4F42EE00}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -2949,5 +2949,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{83741666-CECA-708B-0CE6-B23C3B4DF04A}</FileHash>
+	<FileHash>{94EB5893-7DC8-96A9-4938-7221CB03EF8A}</FileHash>
 </SoundBanksInfo>

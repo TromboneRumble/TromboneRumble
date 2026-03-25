@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{3297B058-6540-A127-2845-43D5572B7FC4}">
+		<SoundBank Id="3440465348" Type="Event" GUID="{ABAAE343-BCBE-4782-A1E4-001C0C06D751}" Language="SFX" Hash="{2DFB7AFC-FAC6-65D4-54D4-9C9F4F42EE00}">
 			<ObjectPath>MIDI_RhythmGame_Cymbal</ObjectPath>
 			<ShortName>MIDI_RhythmGame_Cymbal</ShortName>
 			<Path>Event/MIDI_RhythmGame_Cymbal.bnk</Path>
@@ -31,5 +31,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{2EBCDE44-1C42-A1DC-64E3-B76E0A0286F4}</FileHash>
+	<FileHash>{5BBE9F5D-B7A6-6CF5-EF01-A34C0355AE9A}</FileHash>
 </SoundBanksInfo>
