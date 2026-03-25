@@ -38,6 +38,7 @@ void UMainMenuWidget::NativeOnInitialized()
 	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
 	{
 		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
 		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
 	}
 }
@@ -248,6 +249,14 @@ void UMainMenuWidget::HandleQuitButtonClicked()
 void UMainMenuWidget::HandleMatchmakingStarted()
 {
 	SetUIEnabled(false);
+}
+
+void UMainMenuWidget::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
+{
+	if (Result == EEasyMatchmakingCompleteResult::Failure || Result == EEasyMatchmakingCompleteResult::NoResults)
+	{
+		SetUIEnabled(true);
+	}
 }
 
 void UMainMenuWidget::HandleMatchmakingCanceled()

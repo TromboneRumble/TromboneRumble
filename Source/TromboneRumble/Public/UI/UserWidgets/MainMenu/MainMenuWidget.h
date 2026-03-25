@@ -6,6 +6,7 @@
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MainMenuWidget.generated.h"
 
+enum class EEasyMatchmakingCompleteResult : uint8;
 enum class EEasyMatchmakingState : uint8;
 class UCommonButtonBase;
 enum class EMainMenuType : uint8;
@@ -44,12 +45,6 @@ private:
 	void HandleQuitButtonClicked();
 	// ~ End Button Callbacks
 	
-	
-	UFUNCTION()
-	void HandleMatchmakingStarted();
-	UFUNCTION()
-	void HandleMatchmakingCanceled();
-	
 	/** Generates a random lobby code of the specified length. */
 	FString GenerateRandomLobbyCode(int32 Length) const;
 	
@@ -82,4 +77,19 @@ private:
 	
 	UPROPERTY(Transient)
 	FString CachedMatchMenuMapPath = "";
+	
+private:
+	
+	/** Called when matchmaking starts. */
+	UFUNCTION()
+	void HandleMatchmakingStarted();
+	
+	/** Called when matchmaking is complete. */
+	UFUNCTION()
+	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	
+	/** Called when matchmaking is canceled. */
+	UFUNCTION()
+	void HandleMatchmakingCanceled();
+	
 };

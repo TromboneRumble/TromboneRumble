@@ -21,6 +21,10 @@ private:
 	UFUNCTION()
 	void HandleMatchmakingStarted();
 	
+	/** Called when matchmaking is complete. */
+	UFUNCTION()
+	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	
 	/** Called when matchmaking is canceled. */
 	UFUNCTION()
 	void HandleMatchmakingCanceled();

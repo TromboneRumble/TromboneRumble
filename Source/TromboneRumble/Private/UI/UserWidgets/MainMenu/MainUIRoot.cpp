@@ -8,6 +8,7 @@ void UMainUIRoot::Register()
 	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
 	{
 		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
 		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
 	}
 }
@@ -15,6 +16,14 @@ void UMainUIRoot::Register()
 void UMainUIRoot::HandleMatchmakingStarted()
 {
 	PushLoadingOverlay();
+}
+
+void UMainUIRoot::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
+{
+	if (Result == EEasyMatchmakingCompleteResult::Failure || Result == EEasyMatchmakingCompleteResult::NoResults)
+	{
+		PopLoadingOverlay();
+	}
 }
 
 
