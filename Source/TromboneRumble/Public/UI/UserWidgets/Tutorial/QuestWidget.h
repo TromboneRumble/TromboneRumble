@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* InprogressStatusTexture;
 	
+	UPROPERTY(EditDefaultsOnly)
+	float CompleteDescriptionOpacity = 0.3f;
+	
 protected:
 	
 	/** Quest description */
