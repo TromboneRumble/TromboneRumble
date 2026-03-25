@@ -186,12 +186,13 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 	{
 		FEasyHostParams HostParams = FEasyHostParams();
 		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
-		HostParams.bHidden = false;
+		HostParams.bHidden = true;
 		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
 		Param.HostParams = HostParams;
-		Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
+		// Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
+		Param.MinSlotsRequired = 1;
 												
 		int32 Flag = 0;
 		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
@@ -204,6 +205,16 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 
 void UMainMenuWidget::HandleJoinButtonClicked()
 {
+	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+	{
+		if (Subsystem->ShouldShowTutorialPopup())
+		{
+			ShowTutorialPopup();
+			Subsystem->MarkTutorialAsCompleted();
+			return;
+		}
+	}
+	
 	if (ET_Code->GetText().IsEmpty())
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
@@ -221,7 +232,8 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	{
 		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
+		// Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
+		Param.MinSlotsRequired = 1;
 		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
 												
 		int32 Flag = 0;
