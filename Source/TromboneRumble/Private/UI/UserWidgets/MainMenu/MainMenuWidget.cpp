@@ -35,8 +35,11 @@ void UMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-	MatchmakingManager->OnMatchmakingUpdated().AddDynamic(this, &ThisClass::HandleMatchmakingUpdated);
+	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	{
+		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+	}
 }
 
 void UMainMenuWidget::Init()
@@ -113,7 +116,6 @@ void UMainMenuWidget::BindSubsystemCallbacks()
 	
 	if (FriendsSubsystem)
 	{
-		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.AddUObject(this, &ThisClass::ShowLoadingOverlay);
 	}
 }
 
@@ -127,7 +129,6 @@ void UMainMenuWidget::RemoveSubsystemCallbacks()
 	
 	if (FriendsSubsystem)
 	{
-		FriendsSubsystem->SessionInviteAcceptedCustomDelegate.RemoveAll(this);
 	}
 }
 
@@ -244,23 +245,14 @@ void UMainMenuWidget::HandleQuitButtonClicked()
 	CachedQuitDialog->ShowDialogue(Message);
 }
 
-void UMainMenuWidget::HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime)
+void UMainMenuWidget::HandleMatchmakingStarted()
 {
-	UE_LOG(LogTemp, Log, TEXT("Matchmaking State Updated: %s, Time: %d"), LexToString(MatchmakingState), MatchmakingTime);
-	
-	if (UEasyStatics::IsMatchmaking(GetWorld()))
-	{
-		ShowLoadingOverlay();
-	}
-	else
-	{
-		HideLoadingOverlay();
-	}
-	
-	if (MatchmakingState == EEasyMatchmakingState::JoiningSession)
-	{
-		SetUIEnabled(false);
-	}
+	SetUIEnabled(false);
+}
+
+void UMainMenuWidget::HandleMatchmakingCanceled()
+{
+	SetUIEnabled(true);
 }
 
 FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const

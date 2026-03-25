@@ -44,8 +44,11 @@ private:
 	void HandleQuitButtonClicked();
 	// ~ End Button Callbacks
 	
+	
 	UFUNCTION()
-	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
+	void HandleMatchmakingStarted();
+	UFUNCTION()
+	void HandleMatchmakingCanceled();
 	
 	/** Generates a random lobby code of the specified length. */
 	FString GenerateRandomLobbyCode(int32 Length) const;

@@ -16,10 +16,13 @@ protected:
 	virtual void Register() override;
 
 private:
+	
+	/** Called when matchmaking starts. */
 	UFUNCTION()
 	void HandleMatchmakingStarted();
-	UFUNCTION()
-	void HandleMatchmakingCompleted(FName SessionName, EEasyMatchmakingCompleteResult Result);
+	
+	/** Called when matchmaking is canceled. */
 	UFUNCTION()
 	void HandleMatchmakingCanceled();
+	
 };
