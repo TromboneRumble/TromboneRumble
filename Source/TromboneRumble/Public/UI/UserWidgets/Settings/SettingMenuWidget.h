@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "SettingMenuWidget.generated.h"
 
+class ULanguageOptionPanel;
 class UCommonAnimatedSwitcher;
 class UCommonButtonBase;
 class UVideoOptionPanel;
@@ -24,20 +23,22 @@ protected:
 private:
 	void ChangePanel(UWidget* TargetWidget);
 	
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_Settings;
 	
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UAudioOptionPanel> Widget_AudioOptions;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<ULanguageOptionPanel> Widget_LanguageOptions;
 	
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Audio;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Video;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Language;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Back;
 };

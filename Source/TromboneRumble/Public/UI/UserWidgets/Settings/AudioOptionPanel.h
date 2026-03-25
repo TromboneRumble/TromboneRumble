@@ -15,7 +15,7 @@ class TROMBONERUMBLE_API UAudioOptionPanel : public UOptionPanelBase
 	
 public:
 	virtual void Init() override;
-	virtual void HandleDeactivated() override;
+	virtual void Deactivate() override;
 	
 protected:
 	virtual void HandleApplyButtonClicked() override;

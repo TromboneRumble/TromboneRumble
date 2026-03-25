@@ -5,6 +5,7 @@
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
 #include "Kismet/KismetInternationalizationLibrary.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "UI/UserWidgets/Settings/LanguageOptionPanel.h"
 
 UWidget* USettingMenuWidget::NativeGetDesiredFocusTarget() const
 {
@@ -32,13 +33,7 @@ void USettingMenuWidget::Init()
 	if (CB_Language)
 	{
 		CB_Language->OnClicked().RemoveAll(this);
-		CB_Language->OnClicked().AddLambda([this]
-		{
-			FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
-			FString NewCulture = CurrentCulture.StartsWith(TEXT("ko")) ? TEXT("en") : TEXT("ko");
-			UKismetInternationalizationLibrary::SetCurrentCulture(NewCulture, true);
-			UE_LOG(LogTemp, Log, TEXT("Language changed from %s to %s"), *CurrentCulture, *NewCulture);
-		});
+		CB_Language->OnClicked().AddLambda([this] { ChangePanel(Widget_LanguageOptions); });
 	}
 	if (CB_Back)
 	{
@@ -49,18 +44,10 @@ void USettingMenuWidget::Init()
 			GetRootLayout()->PopPopup();
 			if (UOptionPanelBase* ActivePanel = Cast<UOptionPanelBase>(CAS_Settings->GetActiveWidget()))
 			{
-				ActivePanel->HandleDeactivated();
+				ActivePanel->Deactivate();
 			}
 			DeactivateWidget();
 		});
-	}
-	if (Widget_AudioOptions)
-	{
-		Widget_AudioOptions->Init();
-	}
-	if (Widget_VideoOptions)
-	{
-		Widget_VideoOptions->Init();
 	}
 }
 

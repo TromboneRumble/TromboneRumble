@@ -20,9 +20,9 @@ void UAudioOptionPanel::Init()
 	}
 }
 
-void UAudioOptionPanel::HandleDeactivated()
+void UAudioOptionPanel::Deactivate()
 {
-	Super::HandleDeactivated();
+	Super::Deactivate();
 	
 	const FAudioSettingData Data = SaveManagerSubsystem->GetAudioSettings();
 	UpdateUIFromSettings(Data);

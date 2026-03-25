@@ -16,13 +16,12 @@ class TROMBONERUMBLE_API UOptionPanelBase : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 public:
-	virtual void NativeConstruct() override;
-	virtual void Init(); 
 	
-	
-	virtual void HandleDeactivated();
+	virtual void Deactivate();
 	
 protected:
+	
+	virtual void Init(); 
 	virtual void InitButtons();
 	
 	virtual void HandleApplyButtonClicked();
@@ -31,12 +30,16 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USaveManagerSubsystem> SaveManagerSubsystem;
 	
-	TFunction<void()> OnBackAction;
-	
 	// ~ Begin Common UIs
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> Button_Apply;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> Button_Reset;
 	// ~ End Common UIs
+	
+public:
+	
+	// ~ Begin UUserWidget Interface
+	virtual void NativeConstruct() override;
+	// ~ End UUserWidget Interface
 };
