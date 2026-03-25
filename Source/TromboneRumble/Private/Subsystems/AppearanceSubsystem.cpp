@@ -10,13 +10,22 @@ void UAppearanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 FLinearColor UAppearanceSubsystem::AssignUniqueColor()
 {
+	TArray<FLinearColor> RemainingColors;
 	for (const FLinearColor& Color : AvailableSkinColors)
 	{
 		if (!UsedSkinColors.Contains(Color))
 		{
-			UsedSkinColors.Add(Color);
-			return Color;
+			RemainingColors.Add(Color);
 		}
+	}
+
+	if (RemainingColors.Num() > 0)
+	{
+		const int32 RandomIndex = FMath::RandRange(0, RemainingColors.Num() - 1);
+		const FLinearColor ChosenColor = RemainingColors[RandomIndex];
+
+		UsedSkinColors.Add(ChosenColor);
+		return ChosenColor;
 	}
 
 	return FLinearColor::Gray;

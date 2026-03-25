@@ -62,7 +62,6 @@ public:
 	//~ Begin APawn Interface
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	//~ End APawn Interface
 	

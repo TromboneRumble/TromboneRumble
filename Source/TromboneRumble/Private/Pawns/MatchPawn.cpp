@@ -78,6 +78,9 @@ void AMatchPawn::BeginPlay()
 			FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
 		}
 	}
+	
+	// Apply a skin color in server side
+	UpdateSkinFromPlayerState();
 }
 
 void AMatchPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -90,16 +93,10 @@ void AMatchPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void AMatchPawn::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	
-	UpdateSkinFromPlayerState();
-}
-
 void AMatchPawn::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
+
+	// Apply a skin color in client side
 	UpdateSkinFromPlayerState();
 }
