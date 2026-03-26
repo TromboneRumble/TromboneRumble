@@ -67,4 +67,6 @@ private:
 	UPROPERTY()
 	int32 RankingPlayingID = 0;
 
+	int32 CachedLocalPlayerRankIndex = -1;
+
 };

@@ -32,33 +32,25 @@ void AResultCutsceneDirector::SkipResultSequence()
 
 void AResultCutsceneDirector::PlayZoomSequence(bool bForward)
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	AInGameState* GameState = Cast<AInGameState>(GetWorld()->GetGameState());
-	if (!PC || !GameState) return;
+	
+	if (CachedLocalPlayerRankIndex == -1) return;
 
-
-	if (APlayerState* LocalPS = PC->PlayerState)
+	if (ZoomSequences.IsValidIndex(CachedLocalPlayerRankIndex) && ZoomSequences[CachedLocalPlayerRankIndex])
 	{
-		int32 Rank = GameState->GetPlayerRank(LocalPS);
-		int32 RankIndex = Rank - 1;
-
-		if (ZoomSequences.IsValidIndex(RankIndex) && ZoomSequences[RankIndex])
+		if (!ZoomSequencePlayer)
 		{
-			if (!ZoomSequencePlayer)
-			{
-				ALevelSequenceActor* OutActor;
-				ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[RankIndex], FMovieSceneSequencePlaybackSettings(), OutActor);
-			}
+			ALevelSequenceActor* OutActor;
+			ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[CachedLocalPlayerRankIndex], FMovieSceneSequencePlaybackSettings(), OutActor);
+		}
 
-			if (bForward)
-			{
-				ZoomSequencePlayer->Play();
-			}
-			else
-			{
-				ZoomSequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(ZoomSequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump));
-				ZoomSequencePlayer->PlayReverse();
-			}
+		if (bForward)
+		{
+			ZoomSequencePlayer->Play();
+		}
+		else
+		{
+			ZoomSequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(ZoomSequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump));
+			ZoomSequencePlayer->PlayReverse();
 		}
 	}
 }
@@ -135,6 +127,10 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 
 	if (!GameState || !PC) return;
 
+	if (APlayerState* LocalPS = PC->PlayerState)
+	{
+		CachedLocalPlayerRankIndex = GameState->GetPlayerRank(LocalPS) - 1;
+	}
 	if (APawn* CurrentPawn = PC->GetPawn())
 	{
 		PC->DisableInput(PC);
