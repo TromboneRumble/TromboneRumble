@@ -117,13 +117,10 @@ void UTutorialWidget::HandleTransitionSequence()
 	if (UFadeWidget* Widget = RootLayout->PushFadeOverlay())
 	{
 		Widget->OnFadeInComplete.Clear();
-		Widget->OnFadeInComplete.AddLambda([this](){ SetUIVisibility(ESlateVisibility::Collapsed); });
 		Widget->OnFadeOutComplete.Clear();
-		Widget->OnFadeOutComplete.AddLambda([this]()
-		{
-			TutorialManager->ProcessTutorial();
-			RootLayout->PopFadeOverlay();
-		});
+		
+		Widget->OnFadeInComplete.AddUObject(this, &ThisClass::OnFadeInFinished);
+		Widget->OnFadeOutComplete.AddUObject(this, &ThisClass::OnFadeOutFinished);
 	}
 	else
 	{
@@ -171,6 +168,41 @@ void UTutorialWidget::SetUIVisibility(const ESlateVisibility NewVisibility)
 	if (Border_Dim)
 	{
 		Border_Dim->SetVisibility(NewVisibility);
+	}
+}
+
+void UTutorialWidget::OnFadeInFinished()
+{
+	SetUIVisibility(ESlateVisibility::Collapsed);
+}
+
+void UTutorialWidget::OnFadeOutFinished()
+{
+	if (IsValid(TutorialManager))
+	{
+		TutorialManager->ProcessTutorial();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TutorialManager is not valid in OnFadeOutFinished."));
+		ATutorialManager* RetryManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
+		if (IsValid(RetryManager))
+		{
+			RetryManager->ProcessTutorial();
+		}
+	}
+
+	if (IsValid(RootLayout))
+	{
+		RootLayout->PopFadeOverlay();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RootLayout is not valid in OnFadeOutFinished."));
+		if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
+		{
+			Root->PopFadeOverlay();
+		}
 	}
 }
 

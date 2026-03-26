@@ -81,6 +81,11 @@ private:
 	/** Set visibility of the tutorial UI */
 	void SetUIVisibility(ESlateVisibility NewVisibility);
 	
+private:
+	
+	void OnFadeInFinished();
+	void OnFadeOutFinished();
+	
 protected:
 	// ~ Begin UCommonActivatableWidget Interface
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
