@@ -202,10 +202,12 @@ void UInGameResultWidget::HandleExitButtonClicked()
 	{
 		if (UEasySessionSubsystem* SessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("[InGameResultWidget] Requested session destruction."));
 			SessionSubsystem->DestroySession();
 		}
 		else if (APlayerController* PC = GetOwningPlayer())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("[InGameResultWidget] SessionSubsystem not found. Falling back to direct travel."));
 			const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
 			PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 		}
