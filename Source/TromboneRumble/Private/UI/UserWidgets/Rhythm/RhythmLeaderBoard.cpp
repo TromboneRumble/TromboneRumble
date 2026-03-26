@@ -208,8 +208,6 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 			Entry = CreateWidget<URhythmLeaderBoardEntry>(World, EntryClass);
 			if (!Entry) continue;
 
-			Entry->SetPlayerName(PS->GetPlayerName());
-
 			// CanvasPanel에 붙이기
 			if (UCanvasPanelSlot* CanvasSlot = Canvas_LeaderBoard->AddChildToCanvas(Entry))
 			{
@@ -223,6 +221,8 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 
 			EntryMap.Add(PS, Entry);
 		}
+
+		Entry->SetPlayerName(PS->GetPlayerName());
 
 		const bool bIsLocal = (LocalPS && PS == LocalPS);
 
