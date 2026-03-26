@@ -537,10 +537,15 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrume
 	else
 	{
 
-		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(NewType))
+		if (TObjectPtr<ARhythmNoteSpawner>* FoundPtr = RhythmNoteSpawners.Find(NewType))
 		{
-			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+			ARhythmNoteSpawner* FoundSpawner = FoundPtr->Get();
+			if (IsValid(FoundSpawner))
+			{
+				NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+			}
 		}
+
 		if (RhythmNoteDestroyer)
 		{
 			RhythmNoteDestroyer->SetBoxExtent(FVector(RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent));

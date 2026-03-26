@@ -40,6 +40,7 @@ void UOSI_WidgetBase::OSITimer()
     if (!TargetComponent)
     {
         UE_LOG(LogTemp, Warning, TEXT("No Target Component"));
+        return;
     }
     UpdateViewportSize();
     ObjectLocation = TargetComponent->GetComponentLocation();
