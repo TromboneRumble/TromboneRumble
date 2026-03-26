@@ -30,6 +30,15 @@ void AGarbageSpawner::BeginPlay()
 
 }
 
+void AGarbageSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (HasAuthority())
+	{
+		Server_StopAutoSpawn();
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 void AGarbageSpawner::Server_SpawnGarbageOnce()
 {
 	if (!HasAuthority())

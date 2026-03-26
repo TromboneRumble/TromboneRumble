@@ -133,6 +133,9 @@ void APuddleTrap::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			}
 		}
 		ActiveSlowEffects.Empty();
+
+		GetWorldTimerManager().ClearTimer(LifetimeTimerHandle);
+		LifetimeTimerHandle.Invalidate();
 	}
 
 	Super::EndPlay(EndPlayReason);

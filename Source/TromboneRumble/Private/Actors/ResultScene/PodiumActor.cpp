@@ -74,6 +74,16 @@ void APodiumActor::BeginPlay()
 	}
 }
 
+void APodiumActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(FaceSequenceTimerHandle);
+		FaceSequenceTimerHandle.Invalidate();
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 void APodiumActor::PlayFaceSequence(ECharacterFaceState TargetState)
 {
 	if (!CharacterData) return;

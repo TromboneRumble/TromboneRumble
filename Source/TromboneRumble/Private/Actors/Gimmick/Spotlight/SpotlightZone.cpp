@@ -98,6 +98,11 @@ void ASpotlightZone::BeginPlay()
 
 void ASpotlightZone::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(LifecycleTimerHandle);
+		LifecycleTimerHandle.Invalidate();
+	}
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
 		if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())

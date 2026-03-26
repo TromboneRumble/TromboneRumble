@@ -92,6 +92,18 @@ void AResultCutsceneDirector::BeginPlay()
 	}
 }
 
+void AResultCutsceneDirector::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UWorld* World = GetWorld())
+	{
+		if (AInGameState* GameState = Cast<AInGameState>(World->GetGameState()))
+		{
+			GameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
+		}
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 void AResultCutsceneDirector::BindToInGameState(AGameStateBase* NewGameState)
 {
 	if (AInGameState* GameState = Cast<AInGameState>(NewGameState))

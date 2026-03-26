@@ -26,6 +26,12 @@ void ASpotlightManager::Deactivate()
     
     if (HasAuthority())
     {
+        if (GetWorld())
+        {
+            GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+            SpawnTimerHandle.Invalidate();
+        }
+
         if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
         {
             MusicCueSubsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::CheckSpotlightStart);
