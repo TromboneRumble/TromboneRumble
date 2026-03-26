@@ -29,6 +29,7 @@ public:
 	void StopBGM();
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void BindToInGameState(AGameStateBase* NewGameState);
 
