@@ -109,7 +109,7 @@ void UAttackComponent::PlayAttackEffects() const
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled())
+	if (OwnerCharacter)
 	{
 		Server_ExecuteAttackEnd();
 	}
