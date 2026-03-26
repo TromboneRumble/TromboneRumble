@@ -61,6 +61,11 @@ void ATutorialManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		World->GetTimerManager().ClearTimer(TimerHandle_Tutorial);
 	}
 	
+	OnDialogueSequence.Clear();
+	OnQuestSequence.Clear();
+	OnTransitionSequence.Clear();
+	OnShowExtraData.Clear();
+	
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -309,7 +314,10 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		DestroySpawnedInstruments();
 		ATutorialDummy* SpawnedDummy = SpawnDummyCharacter();
 		AInstrumentBase* SpawnedInstrument = SpawnInstrument(EWeaponType::Trombone);
-		SpawnedDummy->Equip(SpawnedInstrument);
+		if (IsValid(SpawnedInstrument))
+		{
+			SpawnedDummy->Equip(SpawnedInstrument);
+		}
 	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_023"))
 	{
@@ -326,7 +334,7 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		{
 			MyCharacter->Unequip();
 		}
-		if (GimmickManager.Get())
+		if (GimmickManager.IsValid() && GimmickManager.Get())
 		{
 			GimmickManager->ActivateGimmickByType(EGimmickType::Spotlight);
 			GimmickManager->ActivateGimmickByType(EGimmickType::Puddle);
@@ -426,9 +434,10 @@ AInstrumentBase* ATutorialManager::SpawnInstrument(EWeaponType WeaponType)
 
 void ATutorialManager::DestroySpawnedInstruments()
 {
-	for (AActor* Instrument : SpawnedInstruments)
+	for (int32 i = SpawnedInstruments.Num() - 1; i >= 0; --i)
 	{
-		if (Instrument)
+		AActor* Instrument = SpawnedInstruments[i].Get();
+		if (IsValid(Instrument))
 		{
 			Instrument->Destroy();
 		}
@@ -490,7 +499,7 @@ void ATutorialManager::ShowTutorialCompletePopup()
 		});
 		
 		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld());
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction, false);
 		
 		UTromboneStatics::SetInputConfig(GetWorld(), true, true, true);
 	}

@@ -2,7 +2,7 @@
 #include "CommonTextBlock.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
 
-void UTwoButtonWithoutClosePopup::OnInit(const FText& InTitle, const FText& InContent, const FText& LeftText, const FText& RightText, const FOnPopupAction& InLeftButtonDelegate, const FOnPopupAction& InRightButtonDelegate)
+void UTwoButtonWithoutClosePopup::OnInit(const FText& InTitle, const FText& InContent, const FText& LeftText, const FText& RightText, const FOnPopupAction& InLeftButtonDelegate, const FOnPopupAction& InRightButtonDelegate, const bool bShouldClosePopup)
 {
 	Init();
 	
@@ -25,6 +25,7 @@ void UTwoButtonWithoutClosePopup::OnInit(const FText& InTitle, const FText& InCo
 	
 	OnLeftButtonClicked = InLeftButtonDelegate;
 	OnRightButtonClicked = InRightButtonDelegate;
+	bShouldClosePopupAfterClick = bShouldClosePopup;
 }
 
 void UTwoButtonWithoutClosePopup::NativeConstruct()
@@ -48,7 +49,10 @@ void UTwoButtonWithoutClosePopup::HandleLeftButtonClicked()
 		OnLeftButtonClicked.Broadcast();
 	}
 	
-	ClosePopup();
+	if (bShouldClosePopupAfterClick)
+	{
+		ClosePopup();
+	}
 }
 
 void UTwoButtonWithoutClosePopup::HandleRightButtonClicked()
@@ -58,5 +62,8 @@ void UTwoButtonWithoutClosePopup::HandleRightButtonClicked()
 		OnRightButtonClicked.Broadcast();
 	}
 	
-	ClosePopup();
+	if (bShouldClosePopupAfterClick)
+	{
+		ClosePopup();
+	}
 }

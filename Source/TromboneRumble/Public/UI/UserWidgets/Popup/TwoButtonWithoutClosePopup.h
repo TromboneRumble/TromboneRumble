@@ -15,7 +15,7 @@ class TROMBONERUMBLE_API UTwoButtonWithoutClosePopup : public UPopupWidgetBase
 public:
 	
 	/** Initializes the popup */
-	virtual void OnInit(const FText& InTitle, const FText& InContent, const FText& LeftText, const FText& RightText, const FOnPopupAction& InLeftButtonDelegate, const FOnPopupAction& InRightButtonDelegate);
+	virtual void OnInit(const FText& InTitle, const FText& InContent, const FText& LeftText, const FText& RightText, const FOnPopupAction& InLeftButtonDelegate, const FOnPopupAction& InRightButtonDelegate, const bool bShouldClosePopup = true);
 		
 protected:
 	virtual void NativeConstruct() override;
@@ -30,6 +30,7 @@ protected:
 	
 	FOnPopupAction OnLeftButtonClicked;
 	FOnPopupAction OnRightButtonClicked;
+	bool bShouldClosePopupAfterClick = true;
 	
 protected:
 	
