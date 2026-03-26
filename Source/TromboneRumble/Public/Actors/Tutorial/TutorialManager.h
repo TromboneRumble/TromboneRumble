@@ -47,6 +47,7 @@ public:
 	FOnShowExtraData OnShowExtraData;
 	
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	void ReportAction(EQuestConditionType Condition, EQuestConditionParamType ConditionParam_0, FString ConditionParam_1 = FString());
 	bool IsClearAllActiveQuests() const;

@@ -121,8 +121,8 @@ void UTutorialWidget::HandleTransitionSequence()
 		Widget->OnFadeOutComplete.Clear();
 		Widget->OnFadeOutComplete.AddLambda([this]()
 		{
-			RootLayout->PopFadeOverlay();
 			TutorialManager->ProcessTutorial();
+			RootLayout->PopFadeOverlay();
 		});
 	}
 	else

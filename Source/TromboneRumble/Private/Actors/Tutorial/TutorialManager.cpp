@@ -23,12 +23,9 @@ void ATutorialManager::BeginPlay()
 	Super::BeginPlay();
 	
 	InitializeTutorial();
-
-	const FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]()
-	{
-		ProcessTutorial();
-	});
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, TimerDelegate, 1.0f, false);
+	
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Tutorial);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, this, &ThisClass::ProcessTutorial, 1.0f, false);
 	
 	if (UGameInstance* GI = GetGameInstance())
 	{
@@ -55,6 +52,16 @@ void ATutorialManager::BeginPlay()
 
 	GimmickManager = Cast<AGimmickManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AGimmickManager::StaticClass()));
 
+}
+
+void ATutorialManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (const UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(TimerHandle_Tutorial);
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditionParamType ConditionParam_0, FString ConditionParam_1)
@@ -90,11 +97,8 @@ void ATutorialManager::ReportAction(EQuestConditionType Condition, EQuestConditi
 			UE_LOG(LogTemp, Log, TEXT("All quests completed! Proceeding to the next tutorial sequence."));
 			bIsQuestSequenceProcessing = false;
 			
-			FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]()
-			{
-				ProcessTutorial();
-			});
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, TimerDelegate, IntervalAfterQuestCompletion, false);
+			GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Tutorial);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle_Tutorial, this, &ThisClass::ProcessTutorial, IntervalAfterQuestCompletion, false);
 		}
 	}
 }
