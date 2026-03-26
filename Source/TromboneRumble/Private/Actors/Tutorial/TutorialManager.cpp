@@ -301,6 +301,13 @@ void ATutorialManager::ProcessSequenceSideEffect()
 		AInstrumentBase* SpawnedInstrument = SpawnInstrument(EWeaponType::Trombone);
 		SpawnedDummy->Equip(SpawnedInstrument);
 	}
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_023"))
+	{
+		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+		{
+			MyCharacter->Unequip();
+		}
+	}
 	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
 	{
 		RhythmSubsystem->ResumeRhythmGame();
