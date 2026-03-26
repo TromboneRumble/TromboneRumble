@@ -37,9 +37,13 @@ void UOSI_WidgetBase::NativeDestruct()
 
 void UOSI_WidgetBase::OSITimer()
 {
-    if (!TargetComponent)
+    if (!IsValid(this)) return;
+
+    if (!IsValid(TargetComponent))
     {
         UE_LOG(LogTemp, Warning, TEXT("No Target Component"));
+        if (UWorld* World = GetWorld())
+            World->GetTimerManager().ClearTimer(TimerHandle_Update);
         return;
     }
     UpdateViewportSize();

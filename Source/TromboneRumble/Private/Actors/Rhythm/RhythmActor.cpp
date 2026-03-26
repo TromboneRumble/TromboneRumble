@@ -226,6 +226,12 @@ void ARhythmActor::BeginPlay()
 	}
 }
 
+void ARhythmActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	CleanupRhythmGame();
+	Super::EndPlay(EndPlayReason);
+}
+
 void ARhythmActor::CleanupRhythmGame()
 {
 	// 모든 타이머 정지
