@@ -114,15 +114,22 @@ void UTutorialWidget::HandleTransitionSequence()
 {
 	UnregisterInputActions();
 	
-	UFadeWidget* Widget = RootLayout->PushFadeOverlay();
-	Widget->OnFadeInComplete.Clear();
-	Widget->OnFadeInComplete.AddLambda([this](){ SetUIVisibility(ESlateVisibility::Collapsed); });
-	Widget->OnFadeOutComplete.Clear();
-	Widget->OnFadeOutComplete.AddLambda([this]()
+	if (UFadeWidget* Widget = RootLayout->PushFadeOverlay())
 	{
-		RootLayout->PopFadeOverlay();
+		Widget->OnFadeInComplete.Clear();
+		Widget->OnFadeInComplete.AddLambda([this](){ SetUIVisibility(ESlateVisibility::Collapsed); });
+		Widget->OnFadeOutComplete.Clear();
+		Widget->OnFadeOutComplete.AddLambda([this]()
+		{
+			RootLayout->PopFadeOverlay();
+			TutorialManager->ProcessTutorial();
+		});
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to create FadeWidget for transition sequence."));
 		TutorialManager->ProcessTutorial();
-	});
+	}
 }
 
 void UTutorialWidget::HandleSkipDialogue()

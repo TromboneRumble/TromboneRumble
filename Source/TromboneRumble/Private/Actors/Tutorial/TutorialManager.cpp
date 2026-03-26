@@ -174,34 +174,40 @@ void ATutorialManager::ProcessDialogueSequence()
 		MyCharacter->SetPlayerInput(false);
 	}
 	
-	const FTutorialData* TutorialData = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString());
-	
-	const FString DescriptionStringId = TutorialData->DialogueStringID;
-	const FText Dialogue = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
-	
-	ProcessSequenceSideEffect();
-	CurrentIndex++;
-	OnDialogueSequence.Broadcast(Dialogue);
-	
-	const ETutorialExtraDataType ExtraDataType = TutorialData->ExtraDataType;
-	FString ExtraDataPath;
+	if (const FTutorialData* TutorialData = TutorialDataTable->FindRow<FTutorialData>(TutorialSequenceNames[CurrentIndex], FString()))
+	{
+		const FString DescriptionStringId = TutorialData->DialogueStringID;
+		const FText Dialogue = TromboneGameInstance->GetTutorialUIText(DescriptionStringId);
+		
+		ProcessSequenceSideEffect();
+		CurrentIndex++;
+		OnDialogueSequence.Broadcast(Dialogue);
+			
+		const ETutorialExtraDataType ExtraDataType = TutorialData->ExtraDataType;
+		FString ExtraDataPath;
 
-	const FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
-	if (CurrentCulture.Equals(TEXT("ko")))
-	{
-		ExtraDataPath = TutorialData->ExtraDataPath_ko;
-	}
-	else if (CurrentCulture.Equals(TEXT("en")))
-	{
-		ExtraDataPath = TutorialData->ExtraDataPath_en;
+		const FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
+		if (CurrentCulture.Equals(TEXT("ko")))
+		{
+			ExtraDataPath = TutorialData->ExtraDataPath_ko;
+		}
+		else if (CurrentCulture.Equals(TEXT("en")))
+		{
+			ExtraDataPath = TutorialData->ExtraDataPath_en;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Unsupported culture %s. Defaulting to English extra data path."), *CurrentCulture);
+			ExtraDataPath = TutorialData->ExtraDataPath_en;
+		}
+			
+		ShowExtraData(ExtraDataType, ExtraDataPath);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Unsupported culture %s. Defaulting to English extra data path."), *CurrentCulture);
-		ExtraDataPath = TutorialData->ExtraDataPath_en;
+		UE_LOG(LogTemp, Warning, TEXT("Tutorial data not found for sequence %s"), *TutorialSequenceNames[CurrentIndex].ToString());
 	}
-	
-	ShowExtraData(ExtraDataType, ExtraDataPath);
+
 }
 
 void ATutorialManager::ProcessQuestSequence()
