@@ -65,6 +65,8 @@ void ADefaultPlayerController::BeginPlay()
 void ADefaultPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	FAsyncLoadingScreenModule::OnLoadingScreenFinished().RemoveAll(this);
+	
+	GetWorldTimerManager().ClearTimer(RetryCreateRankWidgetsHandle);
 
 	Super::EndPlay(EndPlayReason);
 }

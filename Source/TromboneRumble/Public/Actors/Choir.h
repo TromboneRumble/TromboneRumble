@@ -57,6 +57,7 @@ private:
 	FChoirAnimationSequence* CurrentSequence = nullptr;
 	int32 CurrentFrameIndex = 0;
 	FTimerHandle TimerHandle_FaceAnim;
+	FTimerHandle TimerHandle_StartDelay;
 
 	UPROPERTY(EditAnywhere, Category = "Config")
 	FName FaceExpressionParameterName = TEXT("ExpressionIndex");

@@ -47,6 +47,9 @@ void ACrown::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			InGameState->OnLeaderChanged.RemoveDynamic(this, &ThisClass::HandleLeaderChanged);
 		}
 	}
+	
+	GetWorldTimerManager().ClearTimer(InitialLeaderTimerHandle);
+	
 	Super::EndPlay(EndPlayReason);
 }
 
