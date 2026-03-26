@@ -240,6 +240,14 @@ void ARhythmNote::BeginPlay()
 	}
 }
 
+void ARhythmNote::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	GetWorld()->GetTimerManager().ClearTimer(SyncDebugTimerHandle);
+	
+}
+
 
 
 

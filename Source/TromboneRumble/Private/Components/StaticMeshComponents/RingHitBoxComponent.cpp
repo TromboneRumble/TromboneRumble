@@ -57,6 +57,13 @@ void URingHitBoxComponent::BeginPlay()
 	}
 }
 
+void URingHitBoxComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorld()->GetTimerManager().ClearTimer(FlashTimerHandle);
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 #if WITH_EDITOR
 void URingHitBoxComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {

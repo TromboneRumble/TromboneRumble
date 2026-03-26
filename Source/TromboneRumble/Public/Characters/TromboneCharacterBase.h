@@ -31,6 +31,7 @@ public:
 	ATromboneCharacterBase();
 	
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -110,6 +111,8 @@ private:
 
 	FTimerHandle OnHitTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
+	FTimerHandle TimerHandler_DelayedSavePostSnapshot;
+	FTimerHandle TimerHandler_InternalUnapplyRagdoll;
 
 	bool bIsCanProcessInput = true;
 	

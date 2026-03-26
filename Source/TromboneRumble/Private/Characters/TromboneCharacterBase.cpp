@@ -109,6 +109,17 @@ void ATromboneCharacterBase::BeginPlay()
 	ApplyFlagPhysics();
 }
 
+void ATromboneCharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(InvincibilityTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(FaceSequenceTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandler_DelayedSavePostSnapshot);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandler_InternalUnapplyRagdoll);
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void ATromboneCharacterBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -361,9 +372,8 @@ void ATromboneCharacterBase::UnapplyRagdoll()
     SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation);
     GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
 
-	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(
-		Handle, 
+		TimerHandler_DelayedSavePostSnapshot, 
 		this, 
 		&ThisClass::DelayedSavePoseSnapshot, 
 		PoseSnapshotInterval,
@@ -378,9 +388,8 @@ void ATromboneCharacterBase::DelayedSavePoseSnapshot()
 		AnimInst->SaveRagdollPoseSnapshot();
 	}
 
-	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(
-		Handle, 
+		TimerHandler_InternalUnapplyRagdoll, 
 		this, 
 		&ThisClass::InternalUnapplyRagdoll, 
 		PoseSnapshotInterval,

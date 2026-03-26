@@ -70,6 +70,7 @@ void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (GetWorld())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
+		GetWorld()->GetTimerManager().ClearTimer(IndicatorRetryTimerHandle);
 	}
 	Super::EndPlay(EndPlayReason);
 }
