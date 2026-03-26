@@ -27,6 +27,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Default")
 	virtual void InitPlayerWidget(ADefaultPlayerState* InOwningPlayerState);
 
+	/** @return Whether the owning player is the local player. */
+	UFUNCTION(BlueprintPure, Category = "Default")
+	bool IsLocallyControlledPlayer() const;
+	
 protected:
 
 	/** Called when the owning player's name is changed. */

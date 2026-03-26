@@ -32,3 +32,16 @@ void UPlayerNameplateWidget::OnPlayerNameChanged(const FString& PlayerName)
 {
 	K2_OnPlayerNameChanged(PlayerName);
 }
+
+bool UPlayerNameplateWidget::IsLocallyControlledPlayer() const
+{
+	if (OwningPlayerState)
+	{
+		if (const APlayerController* PC = GetOwningPlayer())
+		{
+			return PC->PlayerState == OwningPlayerState;
+		}
+	}
+	
+	return false;
+}
