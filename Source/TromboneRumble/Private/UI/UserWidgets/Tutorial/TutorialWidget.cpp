@@ -1,4 +1,5 @@
 #include "UI/UserWidgets/Tutorial/TutorialWidget.h"
+#include "CommonBorder.h"
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Components/Image.h"
 #include "Input/CommonUIInputTypes.h"
@@ -32,21 +33,6 @@ void UTutorialWidget::NativeConstruct()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
 	}
 	
-	if (WBP_Dialogue)
-	{
-		WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	
-	if (WBP_Quest)
-	{
-		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	
-	if (Image_ExtraData)
-	{
-		Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	
 	if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
 	{
 		RootLayout = Root;
@@ -55,6 +41,8 @@ void UTutorialWidget::NativeConstruct()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to find RootLayout for TutorialWidget."));
 	}
+	
+	SetUIVisibility(ESlateVisibility::Collapsed);
 }
 
 void UTutorialWidget::NativeDestruct()
@@ -102,19 +90,11 @@ void UTutorialWidget::HandleDialogueSequence(const FText& DialogueString)
 {
 	RegisterInputActions();
 	
+	SetUIVisibility(ESlateVisibility::Collapsed);
+	
 	if (WBP_Dialogue)
 	{
 		WBP_Dialogue->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	
-	if (WBP_Quest)
-	{
-		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	
-	if (Image_ExtraData)
-	{
-		Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -122,17 +102,11 @@ void UTutorialWidget::HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDat
 {
 	UnregisterInputActions();
 	
+	SetUIVisibility(ESlateVisibility::Collapsed);
+	
 	if (WBP_Quest)
 	{
 		WBP_Quest->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	if (WBP_Dialogue)
-	{
-		WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	if (Image_ExtraData)
-	{
-		Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -142,21 +116,7 @@ void UTutorialWidget::HandleTransitionSequence()
 	
 	UFadeWidget* Widget = RootLayout->PushFadeOverlay();
 	Widget->OnFadeInComplete.Clear();
-	Widget->OnFadeInComplete.AddLambda([this]()
-	{
-		if (WBP_Dialogue)
-		{
-			WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
-		}
-		if (WBP_Quest)
-		{
-			WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
-		}
-		if (Image_ExtraData)
-		{
-			Image_ExtraData->SetVisibility(ESlateVisibility::Collapsed);
-		}
-	});
+	Widget->OnFadeInComplete.AddLambda([this](){ SetUIVisibility(ESlateVisibility::Collapsed); });
 	Widget->OnFadeOutComplete.Clear();
 	Widget->OnFadeOutComplete.AddLambda([this]()
 	{
@@ -179,6 +139,31 @@ void UTutorialWidget::HandleOnExtraData(UTexture2D* Image)
 	{
 		Image_ExtraData->SetBrushFromTexture(Image, true);
 		Image_ExtraData->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	
+	if (Border_Dim)
+	{
+		Border_Dim->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+}
+
+void UTutorialWidget::SetUIVisibility(const ESlateVisibility NewVisibility)
+{
+	if (WBP_Dialogue)
+	{
+		WBP_Dialogue->SetVisibility(NewVisibility);
+	}
+	if (WBP_Quest)
+	{
+		WBP_Quest->SetVisibility(NewVisibility);
+	}
+	if (Image_ExtraData)
+	{
+		Image_ExtraData->SetVisibility(NewVisibility);
+	}
+	if (Border_Dim)
+	{
+		Border_Dim->SetVisibility(NewVisibility);
 	}
 }
 

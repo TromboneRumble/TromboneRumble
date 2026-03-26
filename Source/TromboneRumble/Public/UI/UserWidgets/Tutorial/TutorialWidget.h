@@ -4,6 +4,7 @@
 #include "CommonActivatableWidget.h"
 #include "TutorialWidget.generated.h"
 
+class UCommonBorder;
 class UImage;
 class UBaseUIRoot;
 struct FQuestUIData;
@@ -30,6 +31,9 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image_ExtraData;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonBorder> Border_Dim;
 	
 	/** Input actions to skip dialogue */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -71,6 +75,11 @@ private:
 	
 	/** Handles the show extra data event */
 	void HandleOnExtraData(UTexture2D* Image);
+	
+private:
+	
+	/** Set visibility of the tutorial UI */
+	void SetUIVisibility(ESlateVisibility NewVisibility);
 	
 protected:
 	// ~ Begin UCommonActivatableWidget Interface

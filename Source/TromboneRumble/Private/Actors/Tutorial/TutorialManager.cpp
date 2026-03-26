@@ -1,5 +1,4 @@
 #include "Actors/Tutorial/TutorialManager.h"
-
 #include "AkGameplayStatics.h"
 #include "Actors/Tutorial/TutorialDummy.h"
 #include "Characters/DefaultTromboneCharacter.h"
@@ -9,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Actors/Gimmick/GimmickManager.h"
+#include "Kismet/KismetInternationalizationLibrary.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/EnumHelper.h"
@@ -184,7 +184,22 @@ void ATutorialManager::ProcessDialogueSequence()
 	OnDialogueSequence.Broadcast(Dialogue);
 	
 	const ETutorialExtraDataType ExtraDataType = TutorialData->ExtraDataType;
-	const FString ExtraDataPath = TutorialData->ExtraDataPath;
+	FString ExtraDataPath;
+
+	const FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
+	if (CurrentCulture.Equals(TEXT("ko")))
+	{
+		ExtraDataPath = TutorialData->ExtraDataPath_ko;
+	}
+	else if (CurrentCulture.Equals(TEXT("en")))
+	{
+		ExtraDataPath = TutorialData->ExtraDataPath_en;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Unsupported culture %s. Defaulting to English extra data path."), *CurrentCulture);
+		ExtraDataPath = TutorialData->ExtraDataPath_en;
+	}
 	
 	ShowExtraData(ExtraDataType, ExtraDataPath);
 }
@@ -259,7 +274,6 @@ void ATutorialManager::ProcessSequenceSideEffect()
 	{
 		if (TutorialBGMOffSwitch)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CALLEd"));
 			UAkGameplayStatics::SetSwitch(TutorialBGMOffSwitch, UGameplayStatics::GetPlayerPawn(this, 0),FName(""),FName(""));
 		}
 	}

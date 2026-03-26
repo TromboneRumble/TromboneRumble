@@ -54,10 +54,6 @@ struct FTutorialData : public FTableRowBase
 	UPROPERTY(EditAnywhere)
 	FString DialogueStringID;
 	
-	/** Dummy Dialogue String. */
-	UPROPERTY(EditAnywhere)
-	FString DummyDialogue;
-	
 	/** Quest ID to reference in the Quest Data Table */
 	UPROPERTY(EditAnywhere)
 	TArray<FString> QuestID;
@@ -70,7 +66,11 @@ struct FTutorialData : public FTableRowBase
 	UPROPERTY(EditAnywhere)
 	ETutorialExtraDataType ExtraDataType;
 	
-	/** Path to the extra data */
+	/** Path to the extra data (korean)*/
 	UPROPERTY(EditAnywhere)
-	FString ExtraDataPath;
+	FString ExtraDataPath_ko;
+		
+	/** Path to the extra data (english)*/
+	UPROPERTY(EditAnywhere)
+	FString ExtraDataPath_en;
 };
