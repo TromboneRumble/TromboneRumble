@@ -25,6 +25,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> MeshComponent;
@@ -56,6 +57,7 @@ private:
 	FChoirAnimationSequence* CurrentSequence = nullptr;
 	int32 CurrentFrameIndex = 0;
 	FTimerHandle TimerHandle_FaceAnim;
+	FTimerHandle TimerHandle_StartDelay;
 
 	UPROPERTY(EditAnywhere, Category = "Config")
 	FName FaceExpressionParameterName = TEXT("ExpressionIndex");

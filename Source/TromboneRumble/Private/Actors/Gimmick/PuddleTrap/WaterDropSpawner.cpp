@@ -31,6 +31,7 @@ void AWaterDropSpawner::Activate()
 void AWaterDropSpawner::Deactivate()
 {
 	Super::Deactivate();
+	
 	if (GetWorld())
 	{
 		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);

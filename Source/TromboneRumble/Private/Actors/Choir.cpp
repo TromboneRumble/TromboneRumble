@@ -39,9 +39,16 @@ void AChoir::BeginPlay()
         CurrentPlayRate = FMath::FRandRange(AnimationData->MinPlayRate, AnimationData->MaxPlayRate);
         float StartOffset = FMath::FRandRange(0.0f, AnimationData->MaxStartOffset);
 
-        FTimerHandle StartDelayHandle;
-        GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, this, &AChoir::InitializeRandomAnimation, StartOffset, false);
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle_StartDelay, this, &AChoir::InitializeRandomAnimation, StartOffset, false);
     }
+}
+
+void AChoir::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    GetWorldTimerManager().ClearTimer(TimerHandle_FaceAnim);
+    GetWorldTimerManager().ClearTimer(TimerHandle_StartDelay);
+    
+    Super::EndPlay(EndPlayReason);
 }
 
 void AChoir::InitializeRandomAnimation()

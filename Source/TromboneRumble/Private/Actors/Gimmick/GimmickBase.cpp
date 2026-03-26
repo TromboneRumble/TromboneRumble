@@ -9,9 +9,9 @@ AGimmickBase::AGimmickBase()
 
 void AGimmickBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
-	
 	Deactivate();
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void AGimmickBase::Activate()
