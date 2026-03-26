@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,7 +6,6 @@
 
 class UBaseUIRoot;
 class UEasyFriendSubsystem;
-enum class EMainMenuType : uint8;
 class UEasySessionSubsystem;
 
 UCLASS()

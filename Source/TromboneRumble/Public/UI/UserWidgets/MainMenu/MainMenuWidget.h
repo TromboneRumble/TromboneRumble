@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,16 +5,8 @@
 #include "MainMenuWidget.generated.h"
 
 enum class EEasyMatchmakingCompleteResult : uint8;
-enum class EEasyMatchmakingState : uint8;
 class UCommonButtonBase;
-enum class EMainMenuType : uint8;
-class UEasySessionSubsystem;
 class UEditableText;
-class UMatchMenuWidget;
-class UConfirmationDialogueWidget;
-class UCommonAnimatedSwitcher;
-class UVideoOptionPanel;
-class UAudioOptionPanel;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
@@ -33,22 +23,10 @@ protected:
 	virtual void BindSubsystemCallbacks() override;
 	virtual void RemoveSubsystemCallbacks() override;
 	
-private:
-	// ~ Begin Button Callbacks
-	UFUNCTION()
-	void HandleCreateSessionClicked();
-	UFUNCTION()
-	void HandleQuickJoinButtonClicked();
-	UFUNCTION()
-	void HandleJoinButtonClicked();
-	UFUNCTION()
-	void HandleQuitButtonClicked();
-	// ~ End Button Callbacks
+protected:
 	
-	/** Generates a random lobby code of the specified length. */
-	FString GenerateRandomLobbyCode(int32 Length) const;
-	
-	void ShowTutorialPopup();
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCommonActivatableWidget> SettingPopupClass;
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))
@@ -68,15 +46,27 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Quit;
 	// ~ End UI
 	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> SettingPopupClass;
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> ConfirmationDialogueWidgetClass;
-	UPROPERTY()
-	TObjectPtr<UConfirmationDialogueWidget> CachedQuitDialog;
-	
 	UPROPERTY(Transient)
 	FString CachedMatchMenuMapPath = "";
+	
+private:
+	// ~ Begin Button Callbacks
+	UFUNCTION()
+	void HandleCreateSessionClicked();
+	UFUNCTION()
+	void HandleQuickJoinButtonClicked();
+	UFUNCTION()
+	void HandleJoinButtonClicked();
+	// ~ End Button Callbacks
+	
+	/** Generates a random lobby code of the specified length. */
+	FString GenerateRandomLobbyCode(int32 Length) const;
+	
+	/** Displays the tutorial popup */
+	void ShowTutorialPopup();
+	
+	/** Displays the quit confirmation popup */
+	void ShowQuitPopup();
 	
 private:
 	

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "EasyFriendSubsystem.h"
@@ -15,9 +13,9 @@
 #include "Components/VerticalBox.h"
 #include "Framework/TromboneGameInstance.h"
 #include "HAL/PlatformApplicationMisc.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
-#include "UI/UserWidgets/Popup/ConfirmationDialogueWidget.h"
 #include "UI/UserWidgets/Popup/NoticePopupWidget.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
 #include "Utilities/TromboneStatics.h"
@@ -78,7 +76,7 @@ void UMainMenuWidget::Init()
 	if (CB_Quit)
 	{
 		CB_Quit->OnClicked().RemoveAll(this);
-		CB_Quit->OnClicked().AddUObject(this, &ThisClass::HandleQuitButtonClicked);
+		CB_Quit->OnClicked().AddLambda([this] { ShowQuitPopup(); });
 	}
 	
 	if (const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld()))
@@ -246,18 +244,6 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	}));
 }
 
-void UMainMenuWidget::HandleQuitButtonClicked()
-{
-	if (!CachedQuitDialog)
-	{
-		CachedQuitDialog = CreateWidget<UConfirmationDialogueWidget>(GetOwningPlayer(), ConfirmationDialogueWidgetClass);
-	}
-
-	UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
-	const FText Message = GI ? GI->GetUIText(TEXT("Confirmation_QuitGame")) : FText::FromString(TEXT("Default Quit Message"));
-	CachedQuitDialog->ShowDialogue(Message);
-}
-
 void UMainMenuWidget::HandleMatchmakingStarted()
 {
 	SetUIEnabled(false);
@@ -296,21 +282,48 @@ void UMainMenuWidget::ShowTutorialPopup()
 	{
 		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
 		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_No"));
-		const FText RightButtonText = GI->GetUIText(TEXT("Common_Yes"));
+		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
 		
 		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld());
 		
 		FOnPopupAction LeftAction, RightAction;
-		LeftAction.AddLambda([this, Popup]()
-		{
-			Popup->ClosePopup();
-		});
-		RightAction.AddLambda([this]()
+		LeftAction.AddLambda([this]()
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
 		});
+		RightAction.AddLambda([this, Popup]()
+		{
+			Popup->ClosePopup();
+		});
 		
 		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+	}
+}
+
+void UMainMenuWidget::ShowQuitPopup()
+{
+	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		const FText Title = FText::FromString(TEXT(""));
+		const FText Description = GI->GetUIText(TEXT("Confirmation_QuitGame"));
+		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
+		
+		if (UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld()))
+		{
+			FOnPopupAction LeftAction, RightAction;
+			LeftAction.AddLambda([this]()
+			{
+				APlayerController* PC = GetOwningPlayer();
+				UKismetSystemLibrary::QuitGame(GetWorld(), PC, EQuitPreference::Quit, false);
+			});
+			RightAction.AddLambda([this, Popup]()
+			{
+				Popup->ClosePopup();
+			});
+			
+			Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+		}
 	}
 }
