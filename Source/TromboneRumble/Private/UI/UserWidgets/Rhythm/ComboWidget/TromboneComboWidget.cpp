@@ -33,6 +33,16 @@ void UTromboneComboWidget::NativeConstruct()
 	}
 }
 
+void UTromboneComboWidget::NativeDestruct()
+{
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BindRetryTimerHandle);
+		BindRetryTimerHandle.Invalidate();
+	}
+	Super::NativeDestruct();
+}
+
 void UTromboneComboWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
@@ -100,6 +110,8 @@ void UTromboneComboWidget::BindDelegates()
 
 	if (MyPS && RhythmSubsystem && OwnerInstrument.Get() && TromboneCharacter)
 	{
+		GetWorld()->GetTimerManager().ClearTimer(BindRetryTimerHandle);
+
 		MyPS->OnComboChanged.RemoveDynamic(this, &ThisClass::HandleComboChanged);
 		MyPS->OnComboChanged.AddDynamic(this, &ThisClass::HandleComboChanged);
 		OwnerInstrument->OnBuffStateChanged.RemoveDynamic(this, &ThisClass::HandleBuffStatusChanged);
@@ -107,7 +119,12 @@ void UTromboneComboWidget::BindDelegates()
 	}
 	else
 	{
-		FTimerHandle WaitHandle;
-		GetWorld()->GetTimerManager().SetTimer(WaitHandle, this, &ThisClass::BindDelegates, 0.1f, false);
+		GetWorld()->GetTimerManager().SetTimer(
+			BindRetryTimerHandle,
+			this,
+			&ThisClass::BindDelegates,
+			0.1f,
+			false
+		);
 	}
 }

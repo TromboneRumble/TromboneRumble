@@ -45,6 +45,9 @@ void URhythmLeaderBoard::NativeDestruct()
 
 	if (UWorld* World = GetWorld())
 	{
+		World->GetTimerManager().ClearTimer(TimerHandle_RefreshRetry);
+		TimerHandle_RefreshRetry.Invalidate();
+
 		if (AInGameState* InGameState = World->GetGameState<AInGameState>())
 		{
 			InGameState->OnScoreChanged.RemoveDynamic(this, &ThisClass::RefreshLeaderboard);
@@ -71,7 +74,8 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 	{
 		if (UWorld* World = GetWorld())
 		{
-			World->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &URhythmLeaderBoard::RefreshLeaderboard, UpdatedPlayerState));
+			TimerHandle_RefreshRetry = World->GetTimerManager().SetTimerForNextTick(
+				FTimerDelegate::CreateUObject(this, &URhythmLeaderBoard::RefreshLeaderboard, UpdatedPlayerState));
 		}
 		return;
 	}

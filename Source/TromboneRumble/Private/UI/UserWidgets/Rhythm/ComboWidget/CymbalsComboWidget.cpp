@@ -19,6 +19,16 @@ void UCymbalsComboWidget::NativeConstruct()
 	BindDelegates();
 }
 
+void UCymbalsComboWidget::NativeDestruct()
+{
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BindRetryTimerHandle);
+		BindRetryTimerHandle.Invalidate();
+	}
+	Super::NativeDestruct();
+}
+
 void UCymbalsComboWidget::HandleComboChanged_Implementation(ENoteResult InNoteResult, int32 ComboCount)
 {
 	
@@ -41,6 +51,8 @@ void UCymbalsComboWidget::BindDelegates()
 
 	if (MyPS && RhythmSubsystem && OwnerInstrument.Get() && TromboneCharacter)
 	{
+		GetWorld()->GetTimerManager().ClearTimer(BindRetryTimerHandle);
+
 		MyPS->OnComboChanged.RemoveDynamic(this, &ThisClass::HandleComboChanged);
 		MyPS->OnComboChanged.AddDynamic(this, &ThisClass::HandleComboChanged);
 		OwnerInstrument->OnHitSuccess.RemoveDynamic(this, &ThisClass::HandleOnAttack);
@@ -48,7 +60,12 @@ void UCymbalsComboWidget::BindDelegates()
 	}
 	else
 	{
-		FTimerHandle WaitHandle;
-		GetWorld()->GetTimerManager().SetTimer(WaitHandle, this, &ThisClass::BindDelegates, 0.1f, false);
+		GetWorld()->GetTimerManager().SetTimer(
+			BindRetryTimerHandle,
+			this,
+			&ThisClass::BindDelegates,
+			0.1f,
+			false
+		);
 	}
 }

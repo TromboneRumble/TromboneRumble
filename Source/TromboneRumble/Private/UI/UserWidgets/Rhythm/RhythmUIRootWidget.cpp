@@ -38,7 +38,11 @@ void URhythmUIRootWidget::NativeConstruct()
 
 void URhythmUIRootWidget::NativeDestruct()
 {
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RetryBind);
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RetryBind);
+		TimerHandle_RetryBind.Invalidate();
+	}
 	Super::NativeDestruct();
 }
 

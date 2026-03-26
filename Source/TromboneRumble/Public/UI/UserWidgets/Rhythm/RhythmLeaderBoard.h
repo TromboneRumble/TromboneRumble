@@ -54,6 +54,8 @@ protected:
 
 private:
 	
+	FTimerHandle TimerHandle_RefreshRetry;
+
 	UPROPERTY()
 	TMap<TWeakObjectPtr<APlayerState>, URhythmLeaderBoardEntry*> EntryMap;
 

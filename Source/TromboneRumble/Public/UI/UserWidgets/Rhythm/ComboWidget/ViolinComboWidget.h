@@ -25,6 +25,7 @@ public:
 	void SetPercentSmooth(float NewPercent);
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UFUNCTION(BlueprintNativeEvent)
@@ -48,8 +49,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (AllowPrivateAccess = "true"))
 	float InterpSpeed = 5.0f;
 private:
-	void BindDelegates();
 
+	FTimerHandle BindRetryTimerHandle;
+	void BindDelegates();
 
 	float TargetPercent = 0.f;
 	float CurrentPercent = 0.0f;
