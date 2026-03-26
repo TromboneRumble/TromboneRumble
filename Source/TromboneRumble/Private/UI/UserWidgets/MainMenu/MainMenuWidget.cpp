@@ -14,6 +14,7 @@
 #include "Framework/TromboneGameInstance.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "UI/UserWidgets/Popup/NoticePopupWidget.h"
@@ -38,6 +39,11 @@ void UMainMenuWidget::NativeOnInitialized()
 		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
 		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
 		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+	}
+	
+	if (UAppearanceSubsystem* AppearanceSubsystem = GetGameInstance()->GetSubsystem<UAppearanceSubsystem>())
+	{
+		AppearanceSubsystem->ResetColors();
 	}
 }
 
