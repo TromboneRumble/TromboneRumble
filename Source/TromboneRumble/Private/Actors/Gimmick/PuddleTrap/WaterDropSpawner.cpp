@@ -28,6 +28,16 @@ void AWaterDropSpawner::Activate()
 	}
 }
 
+void AWaterDropSpawner::Deactivate()
+{
+	Super::Deactivate();
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+		SpawnTimerHandle.Invalidate();
+	}
+}
+
 void AWaterDropSpawner::SpawnOneDrop()
 {
 	if (!HasAuthority()) return;

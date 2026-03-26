@@ -19,6 +19,7 @@ public:
 	AWaterDropSpawner();
 	
 	virtual void Activate() override;
+	virtual void Deactivate() override;
 
 protected:
 

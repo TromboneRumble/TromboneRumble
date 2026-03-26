@@ -57,7 +57,6 @@ void AInstrumentBase::BeginPlay()
 
 void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
 	if (IsValid(IndicatorInstance))
 	{
 		IndicatorInstance->Destroy();
@@ -68,6 +67,11 @@ void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		IndicatorWidgetInstance->RemoveFromParent();
 		IndicatorWidgetInstance = nullptr;
 	}
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 void AInstrumentBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -343,6 +347,10 @@ void AInstrumentBase::HandleNoteDetected(ENoteResult InNoteResult)
 
 void AInstrumentBase::TryCreateIndicatorWidget()
 {
+	if (!IsValid(this)) return;
+	GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
+
+
 	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
 	if (LocalPC && LocalPC->IsLocalController())
 	{
