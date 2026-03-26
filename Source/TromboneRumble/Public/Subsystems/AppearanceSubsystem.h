@@ -4,6 +4,8 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AppearanceSubsystem.generated.h"
 
+enum class EEasyMatchmakingCompleteResult : uint8;
+
 /* 
  * Managing player’s unique skin color
  */
@@ -20,6 +22,17 @@ public:
 
 	/** Releases a color back to the pool of available colors. Should be called when a player leaves the game. */
 	void ReleaseColor(const FLinearColor& Color);
+	
+protected:
+	
+	/** Called when matchmaking is complete. */
+	UFUNCTION()
+	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	
+private:
+	
+	/** Resets the color management system, clearing all used colors. Useful for starting a new game session. */
+	void ResetColors();
 
 private:
 	
