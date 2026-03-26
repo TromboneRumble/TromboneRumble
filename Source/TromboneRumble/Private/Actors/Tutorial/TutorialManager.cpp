@@ -150,6 +150,12 @@ void ATutorialManager::ProcessTutorial()
 {
 	if (bIsQuestSequenceProcessing) return;
 	
+	if (CurrentIndex < 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CurrentIndex is negative. Failed"));
+		return;
+	}
+	
 	if (CurrentIndex >= TutorialSequenceNames.Num())
 	{
 		ShowTutorialCompletePopup();
