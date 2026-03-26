@@ -242,11 +242,14 @@ void ARhythmNote::BeginPlay()
 
 void ARhythmNote::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	CancelSyncDebugTimer();
 	Super::EndPlay(EndPlayReason);
-	
-	GetWorld()->GetTimerManager().ClearTimer(SyncDebugTimerHandle);
-	
 }
+
+
+
+
+
 
 
 

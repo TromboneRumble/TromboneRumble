@@ -70,6 +70,16 @@ void ALobbyGameMode::BeginPlay()
 	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
+void ALobbyGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+		LobbyTimerHandle.Invalidate();
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 void ALobbyGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer);

@@ -136,6 +136,7 @@ protected:
 public:
 	// ~ Begin APlayerState Interface
 	virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_PlayerName() override;
 	virtual void OnRep_Score() override;

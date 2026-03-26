@@ -236,8 +236,13 @@ void ARhythmActor::CleanupRhythmGame()
 {
 	// 모든 타이머 정지
 	GetWorldTimerManager().ClearTimer(GameStateInitTimerHandle);
+	GameStateInitTimerHandle.Invalidate();
+
 	GetWorldTimerManager().ClearTimer(CheckPlayersTimerHandle);
+	CheckPlayersTimerHandle.Invalidate();
+
 	GetWorldTimerManager().ClearTimer(PlayBackgroundMusicTimerHandle);
+	PlayBackgroundMusicTimerHandle.Invalidate();
 
 	// 사운드 엔진 정지
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)

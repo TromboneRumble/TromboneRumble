@@ -22,6 +22,7 @@ public:
 	// ~IInstrumentEquipHandler Interfaces
 	
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Logout(AController* ExitedPlayer) override;
 
 	void RequestServerTravel(const ELevelState& InLevelState);

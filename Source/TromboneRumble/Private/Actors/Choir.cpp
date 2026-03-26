@@ -44,6 +44,16 @@ void AChoir::BeginPlay()
     }
 }
 
+void AChoir::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    if (GetWorld())
+    {
+        GetWorldTimerManager().ClearTimer(TimerHandle_FaceAnim);
+        TimerHandle_FaceAnim.Invalidate();
+    }
+	Super::EndPlay(EndPlayReason);
+}
+
 void AChoir::InitializeRandomAnimation()
 {
     if (FMath::RandBool())

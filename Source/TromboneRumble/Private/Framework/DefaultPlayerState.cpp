@@ -33,6 +33,16 @@ void ADefaultPlayerState::BeginPlay()
 
 }
 
+void ADefaultPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandle_BindGameState);
+		TimerHandle_BindGameState.Invalidate();
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 
 void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
