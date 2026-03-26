@@ -68,7 +68,7 @@ protected:
 	TObjectPtr<UTextBlock> RhythmScoreText;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> PerfectCountText;
+	TObjectPtr<UTextBlock> ExcellentCountText;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> GoodCountText;

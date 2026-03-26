@@ -175,7 +175,7 @@ void ADefaultPlayerState::HandleNoteDetected(ENoteResult NoteResult)
 		break;
 	case ENoteResult::Excellent:
 		{
-		CurrentScoreData.PerfectCount++;
+		CurrentScoreData.ExcellentCount++;
 		}
 		break;
 	}
@@ -199,8 +199,8 @@ void ADefaultPlayerState::HandleInGameStateChanged(EInGameState InGameState)
 		LogContent += FString::Printf(TEXT("Date: %s\n"), *FDateTime::Now().ToString());
 		LogContent += TEXT("-------------------------------------------\n");
 		LogContent += FString::Printf(TEXT("Total Score: %.2f\n"), CurrentScoreData.TotalScore);
-		LogContent += FString::Printf(TEXT("Perfect Count: %d / Good Count: %d / Miss Count: %d\n"),
-			CurrentScoreData.PerfectCount, CurrentScoreData.GoodCount, CurrentScoreData.MissCount);
+		LogContent += FString::Printf(TEXT("Excellent Count: %d / Good Count: %d / Miss Count: %d\n"),
+			CurrentScoreData.ExcellentCount, CurrentScoreData.GoodCount, CurrentScoreData.MissCount);
 		LogContent += TEXT("-------------------------------------------\n");
 		LogContent += FString::Printf(TEXT("Trombone Buff Score: %.2f\n"), CurrentScoreData.TromboneComboBuffScore);
 		LogContent += FString::Printf(TEXT("Violin Buff Score: %.2f\n"), CurrentScoreData.ViolinBuffScore);

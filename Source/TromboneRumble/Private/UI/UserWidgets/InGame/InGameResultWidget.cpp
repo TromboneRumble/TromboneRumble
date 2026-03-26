@@ -35,7 +35,7 @@ void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 
 
 	// 총 연주 점수 파트
 	if (RhythmScoreText) RhythmScoreText->SetText(FText::AsNumber(FMath::RoundToInt(ScoreData.TotalScore)));
-	if (PerfectCountText) PerfectCountText->SetText(FText::AsNumber(ScoreData.PerfectCount));
+	if (ExcellentCountText) ExcellentCountText->SetText(FText::AsNumber(ScoreData.ExcellentCount));
 	if (GoodCountText) GoodCountText->SetText(FText::AsNumber(ScoreData.GoodCount));
 	if (MissCountText) MissCountText->SetText(FText::AsNumber(ScoreData.MissCount));
 	if (TromboneBuffScoreText) TromboneBuffScoreText->SetText(FText::AsNumber(FMath::RoundToInt(ScoreData.TromboneComboBuffScore)));

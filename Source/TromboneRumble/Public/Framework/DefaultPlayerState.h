@@ -31,7 +31,7 @@ public:
     float TotalScore = 0; 
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score|Rhythm")
-    int32 PerfectCount = 0; // Perfect 맞춘 개수
+    int32 ExcellentCount = 0; // Excellent 맞춘 개수
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score|Rhythm")
     int32 GoodCount = 0;    // Good 맞춘 개수
