@@ -57,6 +57,8 @@ private:
 	void HandleQuickJoinButtonClicked();
 	UFUNCTION()
 	void HandleJoinButtonClicked();
+	UFUNCTION()
+	void HandleTutorialButtonClicked();
 	// ~ End Button Callbacks
 	
 	/** Generates a random lobby code of the specified length. */

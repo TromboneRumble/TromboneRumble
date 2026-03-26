@@ -77,7 +77,7 @@ void UMainMenuWidget::Init()
 	if (CB_Tutorial)
 	{
 		CB_Tutorial->OnClicked().RemoveAll(this);
-		CB_Tutorial->OnClicked().AddLambda([this] { UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial); });
+		CB_Tutorial->OnClicked().AddUObject(this, &ThisClass::HandleTutorialButtonClicked);
 	}
 	if (CB_Quit)
 	{
@@ -248,6 +248,16 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 				
 		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
 	}));
+}
+
+void UMainMenuWidget::HandleTutorialButtonClicked()
+{
+	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+	{
+		Subsystem->MarkTutorialAsCompleted();
+	}
+	
+	UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
 }
 
 void UMainMenuWidget::HandleMatchmakingStarted()
