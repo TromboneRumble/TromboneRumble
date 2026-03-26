@@ -121,7 +121,6 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 	// 데이터 로딩이 완료된 경우 즉시 시작 대기열 진입
 	if (bIsDataLoaded && InSelectedTag == LoadedGameplayTag)
 	{
-		Debug::Print(TEXT("PrepareAndStartRhythmGame - WaitForOtherPlayers"));
 		//TODO : 싱글플레이어에서도 가능하게 하기
 		//bAreOtherPlayersReady = true;
 		WaitForOtherPlayers();
@@ -133,7 +132,6 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 	// 현재 로딩 중이라면, 완료되는 즉시 시작되도록 예약 플래그 설정
 	if (bIsLoadingData)
 	{
-		Debug::Print(TEXT("Prepare And Start RhythmGame - bIsLoadingData"));
 		bStartRequested = true;
 		return;
 	}
@@ -450,7 +448,6 @@ void ARhythmActor::InitGameState()
 			HandleInGameStateChanged(EInGameState::Play);
 		}
 		GetWorldTimerManager().ClearTimer(GameStateInitTimerHandle);
-		Debug::Print(TEXT("[RhythmActor] GameState Initialized Successfully."), -1, FColor::Green);
 	}
 	else
 	{
