@@ -1,21 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Framework/LobbyGameState.h"
-#include "Engine/StaticMeshActor.h"
 #include "Framework/TromboneGameInstance.h"
-#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Utilities/Defines.h"
 
-class UGameDataSubsystem;
-
-void ALobbyGameState::BeginPlay()
+ALobbyGameState::ALobbyGameState()
 {
-	Super::BeginPlay();
-
-	CurrentLobbyState = ELobbyState::WaitingForPlayers;
-	PreviousLobbyState = ELobbyState::Invalid;
+	CurrentLobbyState = ELobbyState::None;
+	PreviousLobbyState = ELobbyState::None;
 }
 
 void ALobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -41,20 +33,6 @@ void ALobbyGameState::SetSelectedSongTag(const FGameplayTag& InTag)
 	SelectedSongTag = InTag;
 	UE_LOG(LogTemp, Warning, TEXT("Selected Song Tag changed to: %s"), *InTag.ToString());
 	OnRep_SelectedSongTag();
-}
-
-void ALobbyGameState::Multicast_RemoveWall_Implementation()
-{
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Wall"), FoundActors);
-	
-	for (AActor* Actor : FoundActors)
-	{
-		if (AStaticMeshActor* Wall = Cast<AStaticMeshActor>(Actor))
-		{
-			Wall->Destroy();
-		}
-	}
 }
 
 void ALobbyGameState::OnRep_LobbyState() const

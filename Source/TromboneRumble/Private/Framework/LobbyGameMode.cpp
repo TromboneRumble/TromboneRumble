@@ -15,6 +15,7 @@
 #include "Items/WeaponBase.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
+#include "Utilities/EnumHelper.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
@@ -22,6 +23,8 @@ ALobbyGameMode::ALobbyGameMode()
 	SpawnedInstrumentCount = 0;
 	EquippedInstrumentCount = 0;
 	DelayTime = 5.0f;
+	
+	LobbyReadyPlayers.Empty();
 }
 
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
@@ -36,7 +39,7 @@ void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* Equipp
 		}
 	}
 	
-	if (++EquippedInstrumentCount >= RegisteredPlayerCount - 1)
+	if (++EquippedInstrumentCount >= SpawnedInstrumentCount)
 	{
 		SetLobbyState(ELobbyState::CountdownToTravel);
 	}
@@ -51,31 +54,40 @@ void ALobbyGameMode::BeginPlay()
 	Super::BeginPlay();
 	
 	LobbyGameState = GetGameState<ALobbyGameState>();
+	if (!LobbyGameState)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("LobbyGameState not found!"));
+		return;
+	}
 	
 	FEasyNamedSession CurrentGameSession;
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
 	OnlineSession->GetSession(NAME_GameSession, CurrentGameSession);
+	
 	if (CurrentGameSession.IsValid())
 	{
 		RegisteredPlayerCount = UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession);
 	}
 	
-	LobbyReadyPlayers.Empty();
+	if (RegisteredPlayerCount <= 0)
+	{
+		const int32 ActualPlayerCount = GetNumPlayers();
+		RegisteredPlayerCount = FMath::Max(ActualPlayerCount, 1);
+	}
+	
 	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
 		GS->OnPlayerLoadingScreenFinished.AddUObject(this, &ThisClass::HandlePlayerLoadingScreenFinished);
+		
 		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
 			APlayerController* PC = It->Get();
-			//호스트가 로딩이 끝난 상태로 월드에 있는 경우 수동으로 HandlePlayerLoadingScreenFinished을 호출
 			if (PC && PC->IsLocalController())
 			{
 				HandlePlayerLoadingScreenFinished(PC);
 			}
 		}
 	}
-
-	SetLobbyState(ELobbyState::WaitingForPlayers);
 }
 
 void ALobbyGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -83,58 +95,55 @@ void ALobbyGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (GetWorld())
 	{
 		GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-		LobbyTimerHandle.Invalidate();
 	}
+	
 	Super::EndPlay(EndPlayReason);
 }
 
 void ALobbyGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer);
-
-	const int32 CurrentPlayers = GetNumPlayers();
 	
-	if (CurrentPlayers >= RegisteredPlayerCount) return;
-
-	const ELobbyState CurrentLobbyState = LobbyGameState->GetCurrentLobbyState();
-	if (CurrentLobbyState == ELobbyState::CountdownToScramble || CurrentLobbyState == ELobbyState::InstrumentScramble)
+	if (const UWorld* World = GetWorld())
 	{
-		SetLobbyState(ELobbyState::WaitingForPlayers);
-	}
-}
-
-void ALobbyGameMode::RequestServerTravel(const ELevelState& InLevelState)
-{
-	if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
-	{
-		GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-	}
-	
-	if (UGameInstance* GameInstance = GetGameInstance())
-	{
-		if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
+		if (const UGameInstance* GameInstance = World->GetGameInstance())
 		{
-			switch (InLevelState)
+			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 			{
-			case ELevelState::MainMenu:
-				PRINT_WITH_CURRENT_CONTEXT(TEXT("MainMenu state is not supported for ServerTravel"));
-				break;
-			case ELevelState::Lobby:
-				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
-				break;
-			case ELevelState::InGame:
-				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
-				break;
-			default:
-				PRINT_WITH_CURRENT_CONTEXT(TEXT("Invalid GameState for ServerTravel"));
-				break;
+				GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+				
+				const int32 RemainingPlayers = GetNumPlayers() - 1;
+				if (RemainingPlayers < 2)
+				{
+					LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
+					const FString MainMenuMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+					RequestServerTravel(MainMenuMapName);
+				}
+				else
+				{
+					LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
+					const FString LobbyMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+					RequestServerTravel(LobbyMapName);
+				}
+				
 			}
 		}
-	}	
+	}
 }
+
 void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 {
-	if (!PC) return;
+	if (!PC)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Invalid PlayerController"));
+		return;
+	}
+	
+	if (LobbyReadyPlayers.Contains(PC))
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("Player %s has already been marked as ready"), *PC->GetName()));
+		return;
+	}
 	
 	LobbyReadyPlayers.AddUnique(PC);
 	if (LobbyReadyPlayers.Num() >= RegisteredPlayerCount)
@@ -145,15 +154,13 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 																TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
 			//const FGameplayTag SelectedSong = TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
 			LobbyGameState->SetSelectedSongTag(SelectedSong);
-			InitializeInstruments();
+			SpawnInstruments();
 		}
-		SetLobbyState(ELobbyState::CountdownToScramble);
 	}
 }
 
-void ALobbyGameMode::InitializeInstruments()
+void ALobbyGameMode::SpawnInstruments()
 {
-
 	if (const UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		const auto* DataSubsystem = GameInstance->GetSubsystem<UGameDataSubsystem>();
@@ -200,60 +207,62 @@ void ALobbyGameMode::InitializeInstruments()
 
 void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 {
-	if (LobbyGameState->GetCurrentLobbyState() == InNewState) return;
-	if (UGameInstance* GameInstance = GetGameInstance())
+	const ELobbyState CurrentState = LobbyGameState->GetCurrentLobbyState();
+	if (CurrentState == InNewState)
 	{
-		if (UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
+		const FString DebugMsg = FString::Printf(TEXT("Lobby is already in state: %s"), *EnumHelper::EnumToString(InNewState));
+		LOG_WITH_CURRENT_CONTEXT(Warning, *DebugMsg);
+		return;
+	}
+	
+	LobbyGameState->SetLobbyState(InNewState);
+
+	switch (InNewState)
+	{
+	case ELobbyState::WaitingForPlayers:
+		break;
+
+	case ELobbyState::CountdownToTravel:
 		{
-			LobbyGameState->SetLobbyState(InNewState);
-
-			switch (InNewState)
-			{
-			case ELobbyState::WaitingForPlayers:
-
-				if (GetWorldTimerManager().IsTimerActive(LobbyTimerHandle))
-				{
-					GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-				}
-				RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main));
-				break;
-
-			case ELobbyState::CountdownToScramble:
-				RequestSetTimer([this]()
-				{
-					SetLobbyState(ELobbyState::InstrumentScramble);
-				});
-				break;
-
-			case ELobbyState::InstrumentScramble:
-				LobbyGameState->Multicast_RemoveWall();
-				break;
-
-			case ELobbyState::CountdownToTravel:
-				RequestSetTimer([this, GameStateSubsystem]() { 
-					RequestServerTravel(GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main));
-				});
-				break;
-
-			default:;
-			}
+			GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+			GetWorldTimerManager().SetTimer(LobbyTimerHandle, this, &ThisClass::OnCountdownToTravel, DelayTime, false);
 		}
+		break;
+
+	default:
+		break;
 	}
 }
 
 void ALobbyGameMode::RequestServerTravel(const FString& MapPath) const
 {
 	UWorld* World = GetWorld();
-	if (!World || World->GetAuthGameMode() == nullptr || MapPath.IsEmpty()) return;
+	if (!World || World->GetAuthGameMode() == nullptr) return;
+	
+	if (MapPath.IsEmpty()) 
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("MapPath is empty"));
+		return;
+	}
 	
 	if (!World->ServerTravel(MapPath))
 	{
-		PRINT_WITH_CURRENT_CONTEXT(TEXT("ServerTravel failed"));
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("ServerTravel failed"));
+		return;
 	}
 }
 
-void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
+void ALobbyGameMode::OnCountdownToTravel()
 {
-	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),DelayTime, false);
+	if (const UWorld* World = GetWorld())
+	{
+		if (const UGameInstance* GameInstance = World->GetGameInstance())
+		{
+			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
+			{
+				const FString InGameMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
+				RequestServerTravel(InGameMapName);
+			}
+		}
+	}
 }

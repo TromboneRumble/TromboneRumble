@@ -59,7 +59,10 @@ void URingHitBoxComponent::BeginPlay()
 
 void URingHitBoxComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	GetWorld()->GetTimerManager().ClearTimer(FlashTimerHandle);
+	if (const UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(FlashTimerHandle);
+	}
 	
 	Super::EndPlay(EndPlayReason);
 }

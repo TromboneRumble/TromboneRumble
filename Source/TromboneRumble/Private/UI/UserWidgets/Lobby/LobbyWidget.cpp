@@ -3,6 +3,7 @@
 #include "UI/UserWidgets/Lobby/LobbyWidget.h"
 #include "CommonTextBlock.h"
 #include "Components/Button.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "Framework/LobbyGameState.h"
 #include "Utilities/Defines.h"
 
@@ -34,6 +35,7 @@ void ULobbyWidget::NativeConstruct()
 void ULobbyWidget::NativeDestruct()
 {
 	GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
+	
 	Super::NativeDestruct();
 }
 
@@ -41,9 +43,9 @@ void ULobbyWidget::OnLobbyStateUpdated(const ELobbyState NewState)
 {
 	if (!CT_Countdown) return;
 	
-	if (NewState == ELobbyState::CountdownToScramble || NewState == ELobbyState::CountdownToTravel)
+	if (NewState == ELobbyState::CountdownToTravel)
 	{
-		InternalCountdownSeconds = CountdownSeconds;
+		InternalCountdownSeconds = UTromboneConfig::Get()->LobbyCountdownTimeSeconds;
 		CT_Countdown->SetText(FText::AsNumber(InternalCountdownSeconds));
 		CT_Countdown->SetVisibility(ESlateVisibility::Visible);
 		GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ULobbyWidget::UpdateCountdown, 1.0f, true);

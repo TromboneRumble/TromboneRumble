@@ -6,7 +6,10 @@ UTromboneConfig::UTromboneConfig()
 {
 	NoticePopupWidgetClass = UNoticePopupWidget::StaticClass();
 	TwoButtonWithoutClosePopupWidgetClass = UTwoButtonWithoutClosePopup::StaticClass();
+	
 	CharacterSkinColors = { FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue, FLinearColor::Yellow, FLinearColor::White };
+	
+	LobbyCountdownTimeSeconds = 5;
 }
 
 const UTromboneConfig* UTromboneConfig::Get()

@@ -38,4 +38,9 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	TArray<FLinearColor> CharacterSkinColors;
 	
+public:
+	/** Time in seconds for the lobby countdown before server travel. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
+	int32 LobbyCountdownTimeSeconds;
+	
 };

@@ -10,7 +10,6 @@
 enum class ELobbyState : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLobbyStateChangedSignature, ELobbyState, NewState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerListChangedSignature, const TArray<FString>&, PlayerNames);
 
 UCLASS()
 class TROMBONERUMBLE_API ALobbyGameState : public AGameStateBase
@@ -18,7 +17,9 @@ class TROMBONERUMBLE_API ALobbyGameState : public AGameStateBase
 	GENERATED_BODY()
 
 public:
-	virtual void BeginPlay() override;
+	/** Default constructor. */
+	ALobbyGameState();
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void SetLobbyState(ELobbyState NewState);
@@ -26,9 +27,6 @@ public:
 	// Host가 게임 시작 버튼 누를때 선택한 곡에 따라 애셋 로딩
 	UFUNCTION(BlueprintCallable)
 	void SetSelectedSongTag(const FGameplayTag& InTag);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_RemoveWall();
 
 public:
 	FOnLobbyStateChangedSignature OnLobbyStateChanged;

@@ -93,11 +93,12 @@ enum class EInGameState : uint8
 UENUM()
 enum class ELobbyState : uint8
 {
+	None,
 	WaitingForPlayers,
-	CountdownToScramble,
+	FallingPlayers,
+	CountdownToStandup,
 	InstrumentScramble,
 	CountdownToTravel,
-	Invalid					= 255 UMETA(Hidden)
 };
 
 UENUM()

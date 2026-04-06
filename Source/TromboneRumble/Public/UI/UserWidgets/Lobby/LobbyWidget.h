@@ -31,9 +31,6 @@ private:
 
 	void UpdateCountdown();
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Config")
-	int32 CountdownSeconds = 5;
-
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Countdown;
 
