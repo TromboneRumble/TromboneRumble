@@ -53,6 +53,21 @@ void AInstrumentBase::BeginPlay()
 	{
 		RhythmSys->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
 	}
+
+	if (HasAuthority())
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), TeleportPointTag, FoundActors);
+
+		for (AActor* Actor : FoundActors)
+		{
+			if (IsValid(Actor))
+			{
+				TeleportPoints.Add(Actor);
+			}
+		}
+		StartTeleportTimer();
+	}
 }
 
 void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -73,6 +88,8 @@ void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		WidgetInitTimerHandle.Invalidate();
 		GetWorld()->GetTimerManager().ClearTimer(IndicatorRetryTimerHandle);
 		IndicatorRetryTimerHandle.Invalidate();
+		GetWorld()->GetTimerManager().ClearTimer(TeleportTimerHandle);
+		TeleportTimerHandle.Invalidate();
 	}
 	Super::EndPlay(EndPlayReason);
 }
@@ -107,6 +124,7 @@ void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 	Super::OnRep_CurrentOwner(OldActor);
 	if (CurrentOwner)
 	{
+		StopTeleportTimer();
 		if (IsOwnerLocallyControlled())
 		{
 			BindToRhythmSubsystem(true);
@@ -129,6 +147,7 @@ void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 	}
 	else
 	{
+		StartTeleportTimer();
 		BindToRhythmSubsystem(false);
 		const APawn* PawnOwner = Cast<APawn>(OldActor);
 		if (PawnOwner && PawnOwner->IsLocallyControlled())
@@ -387,6 +406,51 @@ ADefaultPlayerState* AInstrumentBase::GetOwnerPlayerState() const
 	return nullptr;
 }
 
+
+void AInstrumentBase::StartTeleportTimer()
+{
+	if (!HasAuthority() || TeleportPoints.Num() == 0) return;
+
+	GetWorld()->GetTimerManager().SetTimer(
+		TeleportTimerHandle,
+		this,
+		&AInstrumentBase::TeleportToRandomPoint,
+		TeleportDelay,
+		false
+	);
+}
+
+void AInstrumentBase::StopTeleportTimer()
+{
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TeleportTimerHandle);
+	}
+}
+
+void AInstrumentBase::TeleportToRandomPoint()
+{
+	if (!HasAuthority() || CurrentOwner || TeleportPoints.Num() == 0) return;
+
+	int32 RandomIndex = FMath::RandRange(0, TeleportPoints.Num() - 1);
+	AActor* TargetPoint = TeleportPoints[RandomIndex];
+
+	if (IsValid(TargetPoint))
+	{
+		// 텔레포트 시 물리 충돌 및 속도 처리
+		SkeletalMeshComponent->SetSimulatePhysics(false);
+		SetActorLocationAndRotation(TargetPoint->GetActorLocation(), TargetPoint->GetActorRotation());
+		SkeletalMeshComponent->SetSimulatePhysics(true);
+
+		// 이전 낙하 속도가 남아있지 않도록 초기화
+		SkeletalMeshComponent->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		SkeletalMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
+		TryUpdateIndicatorVisibility();
+	}
+
+	StartTeleportTimer();
+}
 
 void AInstrumentBase::BindToRhythmSubsystem(bool bBind)
 {

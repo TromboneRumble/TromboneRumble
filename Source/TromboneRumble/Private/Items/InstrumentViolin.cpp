@@ -10,13 +10,23 @@
 
 void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 {
-	Super::OnRep_CurrentOwner(OldActor);
 	checkf(ViolinBodyMesh, TEXT("ViolinBodyMesh not valid Actor: %s"), *GetName());
 	checkf(ViolinBowMesh, TEXT("ViolinBowMesh not valid Actor: %s"), *GetName());
 
+	//Mesh 변경만 미리 한 후, Super::OnRep_CurrentOwner을 호출하여 Collision 재설정
 	if (CurrentOwner)
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(ViolinBowMesh);
+	}
+	else
+	{
+		SkeletalMeshComponent->SetSkeletalMesh(ViolinBodyMesh);
+	}
+	Super::OnRep_CurrentOwner(OldActor);
+
+	if (CurrentOwner)
+	{
+		
 
 		if (!ViolinBodyActor)
 		{
@@ -57,7 +67,7 @@ void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 	}
 	else
 	{
-		SkeletalMeshComponent->SetSkeletalMesh(ViolinBodyMesh);
+		
 		if (IsValid(ViolinBodyActor))
 		{
 			ViolinBodyActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);

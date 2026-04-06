@@ -113,11 +113,31 @@ protected:
 	// ~UI
 	ADefaultPlayerState* GetOwnerPlayerState() const;
 
+	// Sound
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
 	TObjectPtr<UAkAudioEvent> InstrumentDropSound;
+	// ~Sound
+
+	// Teleport
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> TeleportPoints;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Teleport")
+	FName TeleportPointTag = TEXT("InstrumentTeleportPoint");
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Teleport")
+	float TeleportDelay = 15.0f;
+
+	FTimerHandle TeleportTimerHandle;
+
+	void StartTeleportTimer();
+	void StopTeleportTimer();
+	void TeleportToRandomPoint();
+	// ~Teleport
 
 private:
 	void BindToRhythmSubsystem(bool bBind);
+
 
 public:
 	FORCEINLINE float GetInstrumentPickUpScore() const { return ScoreData ? ScoreData->InstrumentPickUpScore : 0.0f; }
