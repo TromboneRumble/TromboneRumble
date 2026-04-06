@@ -16,6 +16,9 @@ class TROMBONERUMBLE_API ALobbyGameMode : public ATromboneGameModeBase, public I
 	GENERATED_BODY()
 	
 public:
+	
+	ALobbyGameMode();
+	
 	// IInstrumentEquipHandler Interfaces
 	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
 	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
@@ -29,23 +32,31 @@ public:
 
 private:
 	void HandlePlayerLoadingScreenFinished(APlayerController* PC);
-	void InitializeInstruments() const;
+	void InitializeInstruments();
 	void SetLobbyState(const ELobbyState& InNewState);
 	void RequestServerTravel(const FString& MapPath) const;
 	void RequestSetTimer(TFunction<void()> OnTimerFinished);
 	
 
-private:	
+private:
+	
 	UPROPERTY()
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 
-	UPROPERTY(Transient)
-	FTimerHandle LobbyTimerHandle;
-
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> LobbyReadyPlayers;
+	
+	FTimerHandle LobbyTimerHandle;
 
-	int32 RegisteredPlayerCount = 4;
-	int32 CurrentEquippedInstruments = 0;
-	float Timer = 5.0f;
+	/** Number of players registered for the session */
+	int32 RegisteredPlayerCount;
+	
+	/** Number of Instruments spawned in the lobby. */
+	int32 SpawnedInstrumentCount;
+	
+	/** Number of Instruments equipped by players in the lobby. */
+	int32 EquippedInstrumentCount;
+	
+	/** Delay time before start */
+	float DelayTime;
 };

@@ -16,6 +16,14 @@
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
+ALobbyGameMode::ALobbyGameMode()
+{
+	RegisteredPlayerCount = 0;
+	SpawnedInstrumentCount = 0;
+	EquippedInstrumentCount = 0;
+	DelayTime = 5.0f;
+}
+
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
 	if (!EquippedPlayer || !EquippedItem) return;
@@ -28,7 +36,7 @@ void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* Equipp
 		}
 	}
 	
-	if (++CurrentEquippedInstruments >= RegisteredPlayerCount - 1)
+	if (++EquippedInstrumentCount >= RegisteredPlayerCount - 1)
 	{
 		SetLobbyState(ELobbyState::CountdownToTravel);
 	}
@@ -143,39 +151,50 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 	}
 }
 
-void ALobbyGameMode::InitializeInstruments() const
+void ALobbyGameMode::InitializeInstruments()
 {
-	UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance());
-	auto* DataSub = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
 
-	FGameplayTag SongTag = GameInstance->GetSelectedSongTag();
-	const FRhythmSongDataRow* SongRow = DataSub->GetSongRow(SongTag);
-
-	if (!SongRow)
+	if (const UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SongRow not found"));
-		return;
-	}
+		const auto* DataSubsystem = GameInstance->GetSubsystem<UGameDataSubsystem>();
+		const FGameplayTag SongTag = GameInstance->GetSelectedSongTag();
+		const FRhythmSongDataRow* SongRow = DataSubsystem->GetSongRow(SongTag);
+		if (!SongRow)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SongRow not found"));
+			return;
+		}
+		
+		const auto& InstrumentSounds = SongRow->InstrumentSounds;
+		if (InstrumentSounds.Num() == 0)
+		{
+			LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No instrument sounds found for the selected song"));
+			return;
+		}
+		
+		TArray<AActor*> SpawnPointActors;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
 
-	const auto& InstrumentSounds = SongRow->InstrumentSounds;
-	if (InstrumentSounds.Num() == 0) return;
-	
-	TArray<AActor*> SpawnPointActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
+		if (SpawnPointActors.Num() == 0)
+		{
+			LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No spawn points found for instruments"));
+			return;
+		}
+		
+		SpawnedInstrumentCount = FMath::Clamp(RegisteredPlayerCount - 1, 1, 3);
+		
+		for (int32 i = 0; i < SpawnedInstrumentCount; i++)
+		{
+			const int32 SpawnPointIndex = i % SpawnPointActors.Num();
+			const AActor* SpawnPoint = SpawnPointActors[SpawnPointIndex];
+			const FVector SpawnLocation = SpawnPoint->GetActorLocation();
+			const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 
-	if (SpawnPointActors.Num() == 0) return;
-	
-	for (int32 i = 0; i < RegisteredPlayerCount - 1; ++i)
-	{
-		const int32 SpawnPointIndex = i % SpawnPointActors.Num();
-		const AActor* SpawnPoint = SpawnPointActors[SpawnPointIndex];
-		const FVector SpawnLocation = SpawnPoint->GetActorLocation();
-		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
+			const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
+			TSubclassOf<AWeaponBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
 
-		const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
-		TSubclassOf<AWeaponBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
-
-		GetWorld()->SpawnActor<AWeaponBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
+			GetWorld()->SpawnActor<AWeaponBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
+		}
 	}
 }
 
@@ -236,5 +255,5 @@ void ALobbyGameMode::RequestServerTravel(const FString& MapPath) const
 void ALobbyGameMode::RequestSetTimer(TFunction<void()> OnTimerFinished)
 {
 	GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),Timer, false);
+	GetWorldTimerManager().SetTimer(LobbyTimerHandle, MoveTemp(OnTimerFinished),DelayTime, false);
 }
