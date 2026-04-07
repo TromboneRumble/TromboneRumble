@@ -567,6 +567,10 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	{
 		ApplyRagdoll();
 		PlayFaceSequence(ECharacterFaceState::Ragdoll);
+		if (AkSoundComponent && RagdollBooSound)
+		{
+			AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
+		}
 		OnRagdollDelegate.Broadcast();
 	}
 	else

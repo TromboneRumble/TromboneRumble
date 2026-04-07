@@ -64,10 +64,11 @@ void UNameplateComponent::CreateNameplate()
 	}
 
 	WidgetComponent = NewObject<UWidgetComponent>(GetOwner());
-	WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	WidgetComponent->SetWidgetClass(NameplateWidgetClass);
+	WidgetComponent->SetBlendMode(EWidgetBlendMode::Masked);
 	WidgetComponent->SetDrawSize(NameplateDrawSize);
-	WidgetComponent->SetRelativeScale3D(FVector(0.4f, 0.4f, 0.4f));
+	WidgetComponent->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 	WidgetComponent->SetRelativeLocation(NameplateOffset);
 	WidgetComponent->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	WidgetComponent->RegisterComponent();

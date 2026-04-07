@@ -20,6 +20,7 @@ public:
 	void DeactivateGimmickByType(EGimmickType GimmickType);
 	
 	void ActivateAllGimmicks();
+	void DeactivateAllGimmicks();
 	
 	
 	bool IsGimmickActive(EGimmickType GimmickType) const;
@@ -31,7 +32,7 @@ protected:
 
 	void BindToInGameState(AGameStateBase* NewGameState);
 
-	void DeactivateAllGimmicks();
+	
 
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);

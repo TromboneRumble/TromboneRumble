@@ -6,7 +6,7 @@
 
 class ADefaultPlayerState;
 
-UCLASS()
+UCLASS(Abstract, meta = (DisableNativeTick))
 class TROMBONERUMBLE_API UPlayerNameplateWidget : public UCommonUserWidget
 {
 	GENERATED_BODY()
