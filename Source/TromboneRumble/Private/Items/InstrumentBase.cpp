@@ -161,10 +161,6 @@ void AInstrumentBase::OnRep_CurrentOwner(AActor* OldActor)
 				}
 			}
 		}
-		if (InstrumentDropSound)
-		{
-			UAkGameplayStatics::PostEvent(InstrumentDropSound, this, 0, FOnAkPostEventCallback());
-		}
 	}
 	TryUpdateIndicatorVisibility();
 }

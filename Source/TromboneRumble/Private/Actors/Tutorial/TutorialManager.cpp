@@ -307,17 +307,16 @@ void ATutorialManager::ProcessSequenceSideEffect()
 			RhythmSubsystem->StartRhythmGame(TromboneGamePlayTags::Trombone_Rhythm_Song_MapT);
 		}
 	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_017"))
-	{
-		RhythmSubsystem->PauseRhythmGame();
-	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_018"))
 	{
 		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
 		{
 			MyCharacter->Unequip();
 		}
 		DestroySpawnedInstruments();
+	}
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_021"))
+	{		
 		ATutorialDummy* SpawnedDummy = SpawnDummyCharacter();
 		AInstrumentBase* SpawnedInstrument = SpawnInstrument(EWeaponType::Trombone);
 		if (IsValid(SpawnedInstrument))
@@ -332,21 +331,35 @@ void ATutorialManager::ProcessSequenceSideEffect()
 			MyCharacter->Unequip();
 		}
 	}
-	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_025"))
 	{
-		RhythmSubsystem->ResumeRhythmGame();
-		
 		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
 		{
 			MyCharacter->Unequip();
 		}
+		DestroySpawnedInstruments();
+	}
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_030"))
+	{	
+		SpawnInstruments();
 		if (GimmickManager.IsValid() && GimmickManager.Get())
 		{
 			GimmickManager->ActivateGimmickByType(EGimmickType::Spotlight);
 			GimmickManager->ActivateGimmickByType(EGimmickType::Puddle);
 			GimmickManager->ActivateGimmickByType(EGimmickType::Trash);
 		}
-
+	}
+	else if (TutorialSequenceNames[CurrentIndex] == FName("TutorialSequence_032"))
+	{
+		if (ADefaultTromboneCharacter* MyCharacter = GetPlayerCharacter())
+		{
+			MyCharacter->Unequip();
+		}
+		DestroySpawnedInstruments();
+		if (GimmickManager.IsValid())
+		{
+			GimmickManager->DeactivateAllGimmicks();
+		}
 	}
 }
 
@@ -396,7 +409,10 @@ void ATutorialManager::SpawnInstruments()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Failed to spawn instrument of class %s"), *WeaponClass->GetName());
 		}
-		
+		if (AInstrumentBase* Instrument = Cast<AInstrumentBase>(SpawnedInstrument))
+		{
+			Instrument->SetCanBeSwitched(true);
+		}
 		SpawnedInstruments.Add(SpawnedInstrument);
 	}
 }

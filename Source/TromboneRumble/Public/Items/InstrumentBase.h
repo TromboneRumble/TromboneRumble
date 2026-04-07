@@ -113,11 +113,6 @@ protected:
 	// ~UI
 	ADefaultPlayerState* GetOwnerPlayerState() const;
 
-	// Sound
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Instrument|Sound")
-	TObjectPtr<UAkAudioEvent> InstrumentDropSound;
-	// ~Sound
-
 	// Teleport
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> TeleportPoints;

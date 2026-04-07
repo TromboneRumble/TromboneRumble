@@ -67,6 +67,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Components|Niagara")
 	TObjectPtr<UNiagaraComponent> StunNiagaraComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> RagdollBooSound;
+
+
 	UPROPERTY(EditAnywhere, Category = "Config|Components|Sound")
 	TObjectPtr<UAkComponent> AkSoundComponent;
 

@@ -51,6 +51,7 @@ public:
 	FOnNoteDetectedDelegate OnNoteDetected;
 
 	//BGM의 PlayingID를 세팅해야해서 노트 소환이 아니라, 음악 재생 시점에서 게임 시작했다고 알림
+	UPROPERTY(BlueprintAssignable)
 	FOnRhythmGameStateDelegate OnRhythmGameStateChanged;
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
