@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AkGameplayTypes.h"
 #include "Actors/Gimmick/GimmickBase.h"
 #include "PressurePlateSpawner.generated.h"
 
@@ -26,8 +27,9 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
+
 	UFUNCTION()
-	void OnMusicCueReceived(FName CueName);
+	void OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 
 	UFUNCTION()
 	void OnPlateDestroyed(AActor* DestroyedActor);

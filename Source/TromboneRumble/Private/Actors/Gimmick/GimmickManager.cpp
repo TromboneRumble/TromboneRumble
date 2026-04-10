@@ -81,9 +81,9 @@ void AGimmickManager::BeginPlay()
 	}
 	if (HasAuthority())
 	{
-		if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 		{
-			MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCueName);
+			RS->OnMusicCallback.AddDynamic(this, &ThisClass::OnMusicCallbackReceived);
 		}
 	}
 }
@@ -116,14 +116,20 @@ void AGimmickManager::HandleInGameStateChanged(EInGameState InGameState)
 	}
 }
 
-void AGimmickManager::HandleMusicCueName(FName CueName)
+void AGimmickManager::OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	if (HasAuthority())
+	if (!HasAuthority()) return;
+	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
 	{
-		if (CueName == TEXT("Event_Spotlight_Start"))
+		const FString& CueString = MusicInfo->UserCueName;
+		if (!CueString.IsEmpty())
 		{
-			DeactivateAllGimmicks();
-			ActivateAllGimmicks();
+			const FName CueName(*CueString);
+			if (CueName == TEXT("Event_Spotlight_Start"))
+			{
+				DeactivateAllGimmicks();
+				ActivateAllGimmicks();
+			}
 		}
 	}
 }

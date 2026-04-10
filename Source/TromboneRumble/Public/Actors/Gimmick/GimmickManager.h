@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AkGameplayTypes.h"
 #include "framework/InGameState.h"
 #include "GameFramework/Actor.h"
 #include "GimmickManager.generated.h"
@@ -38,7 +39,7 @@ protected:
 	void HandleInGameStateChanged(EInGameState InGameState);
 
 	UFUNCTION()
-	void HandleMusicCueName(FName CueName);
+	void OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Config")
 	TMap<EGimmickType, TObjectPtr<AGimmickBase>> ManagedGimmicks;

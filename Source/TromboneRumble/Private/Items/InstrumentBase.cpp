@@ -427,7 +427,7 @@ void AInstrumentBase::StopTeleportTimer()
 
 void AInstrumentBase::TeleportToRandomPoint()
 {
-	if (!HasAuthority() || TeleportPoints.Num() == 0) return;
+	if (!HasAuthority() || CurrentOwner || TeleportPoints.Num() == 0 ) return;
 
 	int32 RandomIndex = FMath::RandRange(0, TeleportPoints.Num() - 1);
 	AActor* TargetPoint = TeleportPoints[RandomIndex];

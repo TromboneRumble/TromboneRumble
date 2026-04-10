@@ -137,9 +137,6 @@ private:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void HandleMusicCue(FName CueName);
-
 	//곡이 시작되고 플레이어가 연타하는것을 막기 위해 이벤트로 제어
 	bool bCanDetectNotes = false;
 	// ~Note Detection Logic

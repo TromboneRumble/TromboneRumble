@@ -16,6 +16,10 @@ void ASpotlightManager::Activate()
     
     if (HasAuthority())
     {
+        if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+        {
+            RS->OnMusicCallback.AddDynamic(this, &ThisClass::OnMusicCallbackReceived);
+        }
         TriggerSpotlightSpawn();
     }
 }
@@ -32,9 +36,9 @@ void ASpotlightManager::Deactivate()
             SpawnTimerHandle.Invalidate();
         }
 
-        if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+        if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
         {
-            MusicCueSubsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::CheckSpotlightStart);
+            RS->OnMusicCallback.RemoveDynamic(this, &ThisClass::OnMusicCallbackReceived);
         }
     }
 }
@@ -53,11 +57,19 @@ void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void ASpotlightManager::CheckSpotlightStart(FName CueName)
+void ASpotlightManager::OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-    if (CueName == TEXT("Event_Spotlight_Fever"))
+    if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
     {
-        bIsFeverTime = true;
+        const FString& CueString = MusicInfo->UserCueName;
+        if (!CueString.IsEmpty())
+        {
+            const FName CueName(*CueString);
+            if (CueName == TEXT("Event_Spotlight_Fever"))
+            {
+                bIsFeverTime = true;
+            }
+        }
     }
 }
 

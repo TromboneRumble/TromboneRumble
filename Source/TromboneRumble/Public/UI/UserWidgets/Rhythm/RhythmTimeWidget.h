@@ -20,6 +20,9 @@ UCLASS(Abstract)
 class TROMBONERUMBLE_API URhythmTimeWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable)
+	void ResetProgressBar();
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;

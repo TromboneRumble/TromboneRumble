@@ -16,7 +16,7 @@ void APressurePlateSpawner::Activate()
 	{
 		if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 		{
-			RS->OnMusicUserCue.AddDynamic(this, &ThisClass::OnMusicCueReceived);
+			RS->OnMusicCallback.AddDynamic(this, &ThisClass::OnMusicCallbackReceived);
 		}
 		TriggerPlateSpawn();
 	}
@@ -29,7 +29,7 @@ void APressurePlateSpawner::Deactivate()
 	{
 		if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 		{
-			RS->OnMusicUserCue.RemoveDynamic(this, &ThisClass::OnMusicCueReceived);
+			RS->OnMusicCallback.RemoveDynamic(this, &ThisClass::OnMusicCallbackReceived);
 		}
 		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 	}
@@ -41,12 +41,20 @@ void APressurePlateSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void APressurePlateSpawner::OnMusicCueReceived(FName CueName)
+void APressurePlateSpawner::OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	if (CueName == TEXT("Event_Spotlight_Fever"))
+	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
 	{
-		bIsFeverTime = true;
-		TriggerPlateSpawn();
+		const FString& CueString = MusicInfo->UserCueName;
+		if (!CueString.IsEmpty())
+		{
+			const FName CueName(*CueString);
+			if (CueName == TEXT("Event_Spotlight_Fever"))
+			{
+				bIsFeverTime = true;
+				TriggerPlateSpawn();
+			}
+		}
 	}
 }
 

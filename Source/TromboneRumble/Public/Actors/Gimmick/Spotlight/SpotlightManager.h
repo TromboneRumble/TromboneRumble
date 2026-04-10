@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AkGameplayTypes.h"
 #include "Actors/Gimmick/GimmickBase.h"
 #include "GameFramework/Actor.h"
 #include "SpotlightManager.generated.h"
@@ -28,8 +29,8 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	UFUNCTION()
-	void CheckSpotlightStart(FName CueName);
+    UFUNCTION()
+    void OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	UFUNCTION()
 	void OnSpotlightZoneDestroyed(AActor* DestroyedActor);
 	

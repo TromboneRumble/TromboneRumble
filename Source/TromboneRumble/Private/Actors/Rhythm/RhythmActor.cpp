@@ -217,7 +217,6 @@ void ARhythmActor::BeginPlay()
 	GetCachedActorPoolSubsystem();
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
-	GetCachedRhythmSubsystem()->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCue);
 	GetCachedRhythmSubsystem()->RegisterRhythmActor(this);
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
 	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
@@ -641,7 +640,7 @@ void ARhythmActor::PlayMusic()
 		Callback.BindUFunction(this, FName("HandleBGMCallbacks"));
 		UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
 
-		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue |
+		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_MusicSyncEntry|
 			AkCallbackType::AK_EndOfEvent | AkCallbackType::AK_EnableGetSourcePlayPosition |AkCallbackType::AK_EnableGetMusicPlayPosition;
 		bHasReceivedDurationCallback = false;
 		bHasReceivedMusicStartCallback = false;
@@ -662,7 +661,7 @@ void ARhythmActor::PlayMusic()
 
 void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	GetCachedRhythmSubsystem()->HandleMusicCallbacks(CallbackType, CallbackInfo);
+	GetCachedRhythmSubsystem()->HandleMusicCallbacksFromRhythmActor(CallbackType, CallbackInfo);
 	if (UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
 	{
 		GameDataSubsystem->HandleMusicCallbacks(CallbackType, CallbackInfo);
@@ -677,6 +676,26 @@ void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackI
 	case EAkCallbackType::MusicPlayStarted:
 	{
 		bHasReceivedMusicStartCallback = true;
+	}
+	break;
+	case EAkCallbackType::MusicSyncUserCue:
+	{
+		if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
+		{
+			const FString& CueString = MusicInfo->UserCueName;
+			if (!CueString.IsEmpty())
+			{
+				const FName CueName(*CueString);
+				if (CueName == TEXT("Event_Enable_Click"))
+				{
+					bCanDetectNotes = true;
+				}
+				if (CueName == TEXT("Event_Disable_Click"))
+				{
+					bCanDetectNotes = false;
+				}
+			}
+		}
 	}
 	break;
 	}
@@ -795,19 +814,6 @@ void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedCo
 		GetCachedActorPoolSubsystem()->Release(OtherActor);
 	}
 }
-
-void ARhythmActor::HandleMusicCue(FName CueName)
-{
-	if (CueName == TEXT("Event_Enable_Click"))
-	{
-		bCanDetectNotes = true;
-	}
-	if (CueName == TEXT("Event_Disable_Click"))
-	{
-		bCanDetectNotes = false;
-	}
-}
-
 UActorPoolSubsystem* ARhythmActor::GetCachedActorPoolSubsystem()
 {
 	if (CachedActorPoolSubsystem.IsValid())

@@ -14,7 +14,7 @@ enum class EInstrumentType : uint8;
 class UAkCallbackInfo;
 class UAkMusicSyncCallbackInfo;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMusicUserCue, FName, CueName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMusicCallbackDelegate, EAkCallbackType, CallbackType, UAkCallbackInfo*, CallbackInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentPickedDelegate, EInstrumentType, PrevType, EInstrumentType, NewType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRhythmGameStateDelegate, ERhythmGameState, CurrentGameState);
@@ -39,10 +39,10 @@ public:
 	void EndRhythmGame();
 
 	UFUNCTION()
-	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	void HandleMusicCallbacksFromRhythmActor(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 
 	UPROPERTY(BlueprintAssignable)
-	FOnMusicUserCue OnMusicUserCue;
+	FOnMusicCallbackDelegate OnMusicCallback;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnInstrumentPickedDelegate OnInstrumentPicked;
@@ -60,7 +60,6 @@ protected:
 
 	ERhythmGameState CurrentState = ERhythmGameState::None;
 private:
-	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
 
 	bool isRhythmGameForceStopped = false;

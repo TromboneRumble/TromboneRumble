@@ -10,6 +10,15 @@
 #include "Subsystems/RhythmSubsystem.h"
 
 
+void URhythmTimeWidget::ResetProgressBar()
+{
+	CurrentTime = 0.f;
+	if (MusicProgressBar)
+	{
+		MusicProgressBar->SetPercent(0.f);
+	}
+}
+
 void URhythmTimeWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
