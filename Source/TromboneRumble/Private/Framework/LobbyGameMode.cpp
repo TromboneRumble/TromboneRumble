@@ -11,6 +11,7 @@
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Data/RhythmSongDataRow.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Items/WeaponBase.h"
 #include "Utilities/DebugHelper.h"
@@ -99,6 +100,17 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 			{
 				GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
+				
+				for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+				{
+					if (const APlayerController* PC = It->Get())
+					{
+						if (ADefaultPlayerState* PS = PC->GetPlayerState<ADefaultPlayerState>())
+						{
+							PS->EquippedWeaponClass = nullptr;
+						}
+					}
+				}
 				
 				const int32 RemainingPlayers = GetNumPlayers() - 1;
 				if (RemainingPlayers < 2)
