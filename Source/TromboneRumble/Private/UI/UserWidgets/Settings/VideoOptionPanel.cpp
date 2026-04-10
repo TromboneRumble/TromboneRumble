@@ -51,9 +51,8 @@ void UVideoOptionPanel::HandleApplyButtonClicked()
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
     {
-		const UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
-		const int32 Idx = ResWidget->GetCurrentIndex();
-		const FString ResString = ResWidget->GetOptionsArray()[Idx].ToString();
+		FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptionsArray()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
+		ResString = ResString.Replace(TEXT(" "), TEXT(""));
 
 		FString Left, Right;
 		if (ResString.Split(TEXT("x"), &Left, &Right))
@@ -90,6 +89,7 @@ void UVideoOptionPanel::HandleApplyButtonClicked()
 	}
 
     SaveManagerSubsystem->ApplyAndSaveVideo(NewSettings);
+	UpdateUIFromEngineSettings();
 }
 
 void UVideoOptionPanel::HandleResetButtonClicked()
@@ -98,7 +98,7 @@ void UVideoOptionPanel::HandleResetButtonClicked()
 	
 	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
 	{
-		VideoSettings->LoadSettings();
+		VideoSettings->LoadSettings(true);
 		VideoSettings->ApplySettings(false);
 		UpdateUIFromEngineSettings();
 	}
@@ -277,6 +277,7 @@ void UVideoOptionPanel::UpdateUIFromEngineSettings()
 		}
 	
 		CreatedWidgets[EGraphicsOptionType::WindowMode]->SetSelectedIndex(WindowModeIndex);
+		OnWindowModeChanged(WindowModeIndex);
 	}
 }
 
