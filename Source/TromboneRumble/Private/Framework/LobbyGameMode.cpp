@@ -29,7 +29,7 @@ ALobbyGameMode::ALobbyGameMode()
 
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
-	if (!EquippedPlayer || !EquippedItem) return;
+	if (!IsValid(EquippedPlayer) || !EquippedItem) return;
 	
 	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(EquippedItem))
 	{
@@ -195,6 +195,12 @@ void ALobbyGameMode::SpawnInstruments()
 
 void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
 {
+	if (!LobbyGameState)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("LobbyGameState is null!"));
+		return;
+	}
+	
 	const ELobbyState CurrentState = LobbyGameState->GetCurrentLobbyState();
 	if (CurrentState == InNewState)
 	{
