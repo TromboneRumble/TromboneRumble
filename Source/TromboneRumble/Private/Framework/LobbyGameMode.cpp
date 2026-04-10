@@ -60,20 +60,8 @@ void ALobbyGameMode::BeginPlay()
 		return;
 	}
 	
-	FEasyNamedSession CurrentGameSession;
-	const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	OnlineSession->GetSession(NAME_GameSession, CurrentGameSession);
+	RegisteredPlayerCount = GetNumPlayers();
 	
-	if (CurrentGameSession.IsValid())
-	{
-		RegisteredPlayerCount = UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession);
-	}
-	
-	if (RegisteredPlayerCount <= 0)
-	{
-		const int32 ActualPlayerCount = GetNumPlayers();
-		RegisteredPlayerCount = FMath::Max(ActualPlayerCount, 1);
-	}
 	
 	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
