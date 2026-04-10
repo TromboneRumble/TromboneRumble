@@ -166,11 +166,11 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 		// 실제 플레이어가 존재하는 순위인 경우
 		if (i < SortedPlayers.Num())
 		{
+			PodiumActor->SetPlayerName(SortedPlayers[i]->GetPlayerName());
+			HideActorRecursive(PodiumActor, false);
 			if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(SortedPlayers[i]))
 			{
 				PodiumActor->ApplySkinColor(DefaultPS->GetSkinColor());
-				PodiumActor->SetPlayerName(DefaultPS->GetPlayerName());
-				HideActorRecursive(PodiumActor, false);
 			}
 		}
 		else

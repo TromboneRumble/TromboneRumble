@@ -38,7 +38,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
 	TObjectPtr<UCapsuleComponent> CapsuleComponent = nullptr;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item|Components")
 	TObjectPtr<UInteractionTriggerComponent> InteractTriggerComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item|Components|Sound")

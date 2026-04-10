@@ -75,6 +75,18 @@ void UInteractionTriggerComponent::BeginPlay()
 		TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleBeginOverlap);
 		TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &UInteractionTriggerComponent::HandleEndOverlap);
 		SetCollisionEnabled(bTriggerActive);
+
+		//스폰 시작시 이미 겹쳐있는 액터 처리
+		if (bTriggerActive)
+		{
+			TArray<AActor*> OverlappingActors;
+			TriggerVolume->GetOverlappingActors(OverlappingActors);
+
+			for (AActor* OtherActor : OverlappingActors)
+			{
+				ProcessOverlap(OtherActor);
+			}
+		}
 	}
 }
 
@@ -85,24 +97,24 @@ void UInteractionTriggerComponent::GetLifetimeReplicatedProps(TArray<FLifetimePr
 	DOREPLIFETIME(UInteractionTriggerComponent, bTriggerActive);
 }
 
-void UInteractionTriggerComponent::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UInteractionTriggerComponent::ProcessOverlap(AActor* OtherActor)
 {
-	if (!bTriggerActive || !OtherActor)
-	{
-		// Debug::Print(TEXT("TriggerNotActive or OtherActor is None"));
-		return;
-	}
+	if (!OtherActor) return;
 
 	if (UInteractorComponent* Interactor = OtherActor->FindComponentByClass<UInteractorComponent>())
 	{
 		OverlappingInteractors.Add(Interactor);
 		Interactor->RegisterCandidate(GetOwner());
 	}
-	else
-	{
-		// Debug::Print(TEXT("No UInteractorComponent Found"));
-	}
+}
+
+
+void UInteractionTriggerComponent::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bTriggerActive) return;
+
+	ProcessOverlap(OtherActor);
 }
 
 void UInteractionTriggerComponent::HandleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

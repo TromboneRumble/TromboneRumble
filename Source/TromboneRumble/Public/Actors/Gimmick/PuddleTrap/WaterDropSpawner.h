@@ -7,7 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "WaterDropSpawner.generated.h"
 
-class UBoxComponent;
+class ATargetPoint;
 class AWaterDrop;
 
 UCLASS(Abstract)
@@ -26,13 +26,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gimmick|Config")
 	TSubclassOf<AWaterDrop> WaterDropClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gimmick|Config", meta = (DisplayName = "스폰 가능 지점 목록"))
+	TArray<TObjectPtr<ATargetPoint>> SpawnPoints;
+
 	/** 물방울이 생성되는 시간 간격 (초) 
 	 * 값이 작을수록 물방울이 더 자주 생성되어 떨어집니다. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gimmick|Config", meta = (DisplayName = "물방울 생성 간격"))
 	float SpawnInterval = 10.f;
-	
-	UPROPERTY()
-	TObjectPtr<UBoxComponent> SpawnBox;
 
 	FTimerHandle SpawnTimerHandle;
 
