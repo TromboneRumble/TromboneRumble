@@ -53,7 +53,6 @@ protected:
 
 
 private:
-	
 	FTimerHandle TimerHandle_RefreshRetry;
 
 	UPROPERTY()
