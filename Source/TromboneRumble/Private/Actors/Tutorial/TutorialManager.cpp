@@ -503,27 +503,26 @@ void ATutorialManager::DestroySpawnedDummyCharacter()
 
 void ATutorialManager::ShowTutorialCompletePopup()
 {
-	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndTitle"));
 		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndDescription"));
 		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
 		const FText RightButtonText = GI->GetUIText(TEXT("StringKey_Common_GoToMainMenu"));
-		
-		FOnPopupAction LeftAction, RightAction;
-		LeftAction.AddLambda([this]()
+
+		const TFunction<void()> LeftCallback = [this]()
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
-		});
-		RightAction.AddLambda([this]()
+		};
+
+		const TFunction<void()> RightCallback = [this]()
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
-		});
+		};
 		
-		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld());
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction, false);
 		
-		UTromboneStatics::SetInputConfig(GetWorld(), true, true, true);
+		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
+		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback, false);
 	}
 }
 

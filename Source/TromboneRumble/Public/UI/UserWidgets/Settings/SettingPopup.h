@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/UserWidgets/Common/BaseMenuWidget.h"
-#include "SettingMenuWidget.generated.h"
+#include "UI/UserWidgets/Popup/PopupWidgetBase.h"
+#include "SettingPopup.generated.h"
 
 class ULanguageOptionPanel;
 class UCommonAnimatedSwitcher;
@@ -11,17 +11,14 @@ class UVideoOptionPanel;
 class UAudioOptionPanel;
 
 UCLASS()
-class TROMBONERUMBLE_API USettingMenuWidget : public UBaseMenuWidget
+class TROMBONERUMBLE_API USettingPopup : public UPopupWidgetBase
 {
 	GENERATED_BODY()
-	
-protected:
-	virtual UWidget* NativeGetDesiredFocusTarget() const override;
-	
-	virtual void Init() override;
-	
+
 private:
-	void ChangePanel(UWidget* TargetWidget);
+	
+	/** Changes Options Panel. (e.g. Audio -> Video) */
+	void ChangePanel(UWidget* TargetWidget) const;
 	
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_Settings;
@@ -41,4 +38,11 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Language;
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Back;
+	
+protected:
+	
+	// ~ Begin UUserWidget Interface
+	virtual void NativeConstruct() override;
+	// ~ End UUserWidget Interface
+	
 };

@@ -5,7 +5,7 @@
 #include "PopupWidgetBase.generated.h"
 
 class UCommonButtonBase;
-DECLARE_MULTICAST_DELEGATE(FOnPopupAction);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FK2_OnPopupAction);
 
 UCLASS()
 class TROMBONERUMBLE_API UPopupWidgetBase : public UCommonActivatableWidget
@@ -13,37 +13,62 @@ class TROMBONERUMBLE_API UPopupWidgetBase : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 public:
-	// ~ Begin Popup Options
-	UPROPERTY(EditAnywhere, Category = "Popup|Option")
-	bool bCloseDim = true;
-
-	UPROPERTY(EditAnywhere, Category = "Popup|Option")
-	bool bPlaySound = true;
+	/** Default constructor. */
+	UPopupWidgetBase();
 	
-	UPROPERTY(EditAnywhere, Category = "Popup|Option")
-	bool bPlayAnimation = true;
+	// ~ Begin Popup Options
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bCloseDim;
+
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bPlaySound;
+	
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bPlayAnimation;
 	// ~ End Popup Options
 	
-	FOnPopupAction OnBeforeCloseAction;
-	FOnPopupAction OnAfterCloseAction;
+public:
 	
-	virtual void Init();
+	/** Refreshes the popup. */
 	virtual void Refresh();
+	
+	/** Closes the popup. If bCloseImmediately is true, the popup will be closed immediately without playing the close animation. */
 	virtual void ClosePopup(bool bCloseImmediately = false);
 	
+public:
+	
+	/** @return The delegate called when the popup is opened. */
+	FK2_OnPopupAction OnPopupOpened() { return OnPopupOpenedEvent; }
+	
+	/** @return The delegate called before the popup is closed. */
+	FK2_OnPopupAction OnPopupClosed() { return OnPopupClosedEvent; }
+	
 protected:
+	
+	/** Registers the widget events. e.g. button click events. */
+	virtual void Register();
+	
+private:
+	
+	/** Event when the popup is opened. Called after open animation is finished. */
+	UPROPERTY(BlueprintAssignable, Category = "Events", DisplayName = "On Popup Opened", meta = (AllowPrivateAccess))
+	FK2_OnPopupAction OnPopupOpenedEvent;
+	
+	/** Event when the popup is closed. Called before close animation is started */
+	UPROPERTY(BlueprintAssignable, Category = "Events", DisplayName = "On Popup Closed", meta = (AllowPrivateAccess))
+	FK2_OnPopupAction OnPopupClosedEvent;
+	
+	/** Is the popup currently in the process of closing */
+	bool bIsClosing;
+	
+protected:
+	
+	// ~ Begin UCommonActivatableWidget Interface
+	virtual void NativeOnInitialized() override;
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnDeactivated() override;
-	
-	// ~ Begin Events
-	UFUNCTION()
-	virtual void HandleCloseButtonClicked();
-	
-	UFUNCTION()
-	virtual void OnCloseAnimationFinished();
-	// ~ End Events
-	
-	virtual void SetEnableButtons(bool bInIsEnabled);
+	virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;
+	// ~ End UCommonActivatableWidget Interface
 	
 	// ~ Begin Widgets
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
@@ -55,8 +80,5 @@ protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
 	TObjectPtr<UWidgetAnimation> FadeIn;
 	// ~ End Widgets
-	
-private:
-	bool bIsClosing = false;
 	
 };
