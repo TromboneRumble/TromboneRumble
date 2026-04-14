@@ -38,6 +38,7 @@ class TROMBONERUMBLE_API ATutorialManager : public AActor
 	GENERATED_BODY()
 	
 public:
+	// TODO : 정리하기 (public, protected, private 등등)
 	ATutorialManager();
 	
 	FOnTutorialDialogueSequence OnDialogueSequence;

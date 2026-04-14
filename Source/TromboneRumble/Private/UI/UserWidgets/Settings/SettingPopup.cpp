@@ -1,24 +1,13 @@
-#include "UI/UserWidgets/Settings/SettingMenuWidget.h"
+#include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "CommonAnimatedSwitcher.h"
 #include "CommonButtonBase.h"
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
-#include "Kismet/KismetInternationalizationLibrary.h"
-#include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "UI/UserWidgets/Settings/LanguageOptionPanel.h"
 
-UWidget* USettingMenuWidget::NativeGetDesiredFocusTarget() const
+void USettingPopup::NativeConstruct()
 {
-	if (CB_Audio)
-	{
-		return CB_Audio;
-	}
-	return Super::NativeGetDesiredFocusTarget();
-}
-
-void USettingMenuWidget::Init()
-{
-	Super::Init();
+	Super::NativeConstruct();
 	
 	if (CB_Audio)
 	{
@@ -38,20 +27,18 @@ void USettingMenuWidget::Init()
 	if (CB_Back)
 	{
 		CB_Back->OnClicked().RemoveAll(this);
-		CB_Back->OnClicked().AddUObject(this, &USettingMenuWidget::DeactivateWidget);
 		CB_Back->OnClicked().AddLambda([this]()
 		{
-			GetRootLayout()->PopPopup();
 			if (UOptionPanelBase* ActivePanel = Cast<UOptionPanelBase>(CAS_Settings->GetActiveWidget()))
 			{
 				ActivePanel->Deactivate();
 			}
-			DeactivateWidget();
+			ClosePopup();
 		});
 	}
 }
 
-void USettingMenuWidget::ChangePanel(UWidget* TargetWidget)
+void USettingPopup::ChangePanel(UWidget* TargetWidget) const
 {
 	if (CAS_Settings)
 	{

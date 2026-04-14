@@ -2,10 +2,13 @@
 #include "CommonTextBlock.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
 
-void UTwoButtonWithoutClosePopup::OnInit(const FText& InTitle, const FText& InContent, const FText& LeftText, const FText& RightText, const FOnPopupAction& InLeftButtonDelegate, const FOnPopupAction& InRightButtonDelegate, const bool bShouldClosePopup)
+UTwoButtonWithoutClosePopup::UTwoButtonWithoutClosePopup() 
+	: bShouldClosePopupAfterClick(true)
 {
-	Init();
-	
+}
+
+void UTwoButtonWithoutClosePopup::OnInit(const FText& InTitle, const FText& InContent, const FText& InLeftText, const FText& InRightText, const TFunction<void()> InLeftCallback, const TFunction<void()> InRightCallback, const bool bShouldClosePopup)
+{
 	if (Text_Title)
 	{
 		Text_Title->SetText(InTitle);
@@ -16,54 +19,56 @@ void UTwoButtonWithoutClosePopup::OnInit(const FText& InTitle, const FText& InCo
 	}
 	if (Button_Left)
 	{
-		Button_Left->SetText(LeftText);
+		Button_Left->SetText(InLeftText);
 	}
 	if (Button_Right)
 	{
-		Button_Right->SetText(RightText);
+		Button_Right->SetText(InRightText);
 	}
 	
-	OnLeftButtonClicked = InLeftButtonDelegate;
-	OnRightButtonClicked = InRightButtonDelegate;
+	LeftCallback = InLeftCallback;
+	RightCallback = InRightCallback;
 	bShouldClosePopupAfterClick = bShouldClosePopup;
 }
 
-void UTwoButtonWithoutClosePopup::NativeConstruct()
+void UTwoButtonWithoutClosePopup::Register()
 {
-	Super::NativeConstruct();
+	Super::Register();
 	
 	if (Button_Left)
 	{
+		Button_Left->OnClicked().RemoveAll(this);
 		Button_Left->OnClicked().AddUObject(this, &ThisClass::HandleLeftButtonClicked);
 	}
 	if (Button_Right)
 	{
+		Button_Right->OnClicked().RemoveAll(this);
 		Button_Right->OnClicked().AddUObject(this, &ThisClass::HandleRightButtonClicked);
 	}
 }
 
 void UTwoButtonWithoutClosePopup::HandleLeftButtonClicked()
 {
-	if (OnLeftButtonClicked.IsBound())
-	{
-		OnLeftButtonClicked.Broadcast();
-	}
-	
 	if (bShouldClosePopupAfterClick)
 	{
-		ClosePopup();
+		ClosePopup(true);
+	}
+	
+	if (LeftCallback)
+	{
+		LeftCallback();
 	}
 }
 
 void UTwoButtonWithoutClosePopup::HandleRightButtonClicked()
 {
-	if (OnRightButtonClicked.IsBound())
-	{
-		OnRightButtonClicked.Broadcast();
-	}
-	
 	if (bShouldClosePopupAfterClick)
 	{
-		ClosePopup();
+		ClosePopup(true);
+	}
+	
+	if (RightCallback)
+	{
+		RightCallback();
 	}
 }

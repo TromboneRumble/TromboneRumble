@@ -1,37 +1,29 @@
 #include "UI/UserWidgets/Popup/PopupWidgetBase.h"
 #include "CommonButtonBase.h"
 
-void UPopupWidgetBase::Init()
+UPopupWidgetBase::UPopupWidgetBase()
+	: bCloseDim(true),
+	bPlaySound(true),
+	bPlayAnimation(true),
+	bIsClosing(false)
 {
-	if (!IsInViewport())
-	{
-		AddToViewport();
-	}
-	ActivateWidget();
 }
 
-void UPopupWidgetBase::Refresh()
+void UPopupWidgetBase::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
+	
+	Register();
 }
+
 
 void UPopupWidgetBase::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 	
-	if (Button_Close)
-	{
-		Button_Close->OnClicked().AddUObject(this, &UPopupWidgetBase::HandleCloseButtonClicked);
-	}
+	bIsClosing = false;
+	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	
-	if (Button_Dim)
-	{
-		Button_Dim->SetIsEnabled(bCloseDim);
-		if (bCloseDim)
-		{
-			Button_Dim->OnClicked().AddUObject(this, &UPopupWidgetBase::HandleCloseButtonClicked);
-		}
-	}
-
 	if (bPlayAnimation && FadeIn)
 	{
 		PlayAnimation(FadeIn);
@@ -41,32 +33,45 @@ void UPopupWidgetBase::NativeOnActivated()
 	{
 		// TODO: PlaySound
 	}
+		
 }
 
 void UPopupWidgetBase::NativeOnDeactivated()
 {
-	OnAfterCloseAction.Broadcast();
+	bIsClosing = false;
 	
 	Super::NativeOnDeactivated();
 }
 
-void UPopupWidgetBase::HandleCloseButtonClicked()
+void UPopupWidgetBase::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
 {
-	ClosePopup();
+	Super::OnAnimationFinished_Implementation(Animation);
+	
+	if (Animation == FadeIn)
+	{
+		if (IsAnimationPlayingForward(FadeIn))
+		{
+			OnPopupOpenedEvent.Broadcast();
+		}
+		else
+		{
+			DeactivateWidget();
+		}
+	}
 }
 
-void UPopupWidgetBase::OnCloseAnimationFinished()
+void UPopupWidgetBase::Refresh()
 {
-	UnbindAllFromAnimationFinished(FadeIn);
-	DeactivateWidget();
+	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
 void UPopupWidgetBase::ClosePopup(const bool bCloseImmediately)
 {
 	if (bIsClosing) return;
 	
-	OnBeforeCloseAction.Broadcast();
-	SetEnableButtons(false);
+	bIsClosing = true;
+	OnPopupClosedEvent.Broadcast();
+	
 	SetVisibility(ESlateVisibility::HitTestInvisible);
 
 	if (bCloseImmediately || !FadeIn)
@@ -75,15 +80,25 @@ void UPopupWidgetBase::ClosePopup(const bool bCloseImmediately)
 	}
 	else
 	{
-		FWidgetAnimationDynamicEvent EndDelegate;
-		EndDelegate.BindDynamic(this, &UPopupWidgetBase::OnCloseAnimationFinished);
-		BindToAnimationFinished(FadeIn, EndDelegate);
 		PlayAnimationReverse(FadeIn);
 	}
 }
 
-void UPopupWidgetBase::SetEnableButtons(bool bInIsEnabled)
+void UPopupWidgetBase::Register()
 {
-	if (Button_Close) Button_Close->SetIsEnabled(bInIsEnabled);
-	if (Button_Dim)   Button_Dim->SetIsEnabled(bInIsEnabled);
+	if (Button_Close)
+	{
+		Button_Close->OnClicked().RemoveAll(this);
+		Button_Close->OnClicked().AddUObject(this, &ThisClass::ClosePopup, false);
+	}
+	
+	if (Button_Dim)
+	{
+		Button_Dim->SetIsEnabled(bCloseDim);
+		if (bCloseDim)
+		{
+			Button_Dim->OnClicked().RemoveAll(this);
+			Button_Dim->OnClicked().AddUObject(this, &ThisClass::ClosePopup, false);
+		}
+	}
 }

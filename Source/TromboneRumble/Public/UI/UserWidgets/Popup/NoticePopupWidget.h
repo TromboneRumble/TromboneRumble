@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,10 +12,15 @@ class TROMBONERUMBLE_API UNoticePopupWidget : public UPopupWidgetBase
 	GENERATED_BODY()
 	
 public:
-	virtual void OnInit(const FText& InContent);
-	virtual void OnInit(const FText& InTitle, const FText& InContent);
+	
+	/** Default constructor. */
+	UNoticePopupWidget();
+	
+	void OnInit(const FText& InContent) const;
+	void OnInit(const FText& InTitle, const FText& InContent) const;
 	
 protected:
+	
 	// ~ Begin Widgets
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	TObjectPtr<UCommonTextBlock> Text_Title;
@@ -25,4 +28,9 @@ protected:
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	TObjectPtr<UCommonTextBlock> Text_Content;
 	// ~ End Widgets
+	
+private:
+	
+	FString DefaultTitle;
+	
 };

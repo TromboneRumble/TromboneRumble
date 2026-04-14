@@ -10,13 +10,11 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
-#include "Components/VerticalBox.h"
 #include "Framework/TromboneGameInstance.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "UI/UserWidgets/Popup/NoticePopupWidget.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
 #include "Utilities/TromboneStatics.h"
@@ -71,7 +69,7 @@ void UMainMenuWidget::Init()
 		CB_Settings->OnClicked().RemoveAll(this);
 		CB_Settings->OnClicked().AddLambda([this]
 		{
-			GetRootLayout()->PushPopup(SettingPopupClass);
+			UTromboneStatics::ShowPopup<USettingPopup>(GetWorld());
 		});
 	}
 	if (CB_Tutorial)
@@ -221,10 +219,10 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	
 	if (ET_Code->GetText().IsEmpty())
 	{
-		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
 			const FText Message = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
-			UNoticePopupWidget* NoticePopup = UTromboneStatics::ShowNoticePopup(GetWorld());
+			const UNoticePopupWidget* NoticePopup = UTromboneStatics::ShowPopup<UNoticePopupWidget>(GetWorld());
 			NoticePopup->OnInit(Message);
 		}
 		return;
@@ -294,26 +292,27 @@ FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
 
 void UMainMenuWidget::ShowTutorialPopup()
 {
-	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
 		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
 		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
 		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
 		
-		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld());
-		
-		FOnPopupAction LeftAction, RightAction;
-		LeftAction.AddLambda([this]()
+		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
+
+		const TFunction<void()> LeftCallback = [this]()
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
-		});
-		RightAction.AddLambda([this, Popup]()
+		};
+
+		const TFunction<void()> RightCallback = [this, Popup]()
 		{
 			Popup->ClosePopup();
-		});
+		};
 		
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+		
+		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
 	}
 }
 
@@ -326,20 +325,20 @@ void UMainMenuWidget::ShowQuitPopup()
 		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
 		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
 		
-		if (UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowTwoButtonPopup(GetWorld()))
+		if (UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld()))
 		{
-			FOnPopupAction LeftAction, RightAction;
-			LeftAction.AddLambda([this]()
+			const TFunction<void()> LeftCallback = [this]()
 			{
 				APlayerController* PC = GetOwningPlayer();
 				UKismetSystemLibrary::QuitGame(GetWorld(), PC, EQuitPreference::Quit, false);
-			});
-			RightAction.AddLambda([this, Popup]()
+			};
+
+			const TFunction<void()> RightCallback = [this, Popup]()
 			{
 				Popup->ClosePopup();
-			});
+			};
 			
-			Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftAction, RightAction);
+			Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
 		}
 	}
 }

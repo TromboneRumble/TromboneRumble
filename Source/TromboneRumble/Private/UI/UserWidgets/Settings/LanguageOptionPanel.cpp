@@ -30,6 +30,21 @@ void ULanguageOptionPanel::Init()
 
 void ULanguageOptionPanel::Deactivate()
 {
+	FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
+	for (int32 i = 0; i < SupportedCultures.Num(); ++i)
+	{
+		if (SupportedCultures[i].Equals(CurrentCulture))
+		{
+			CurrentLanguageIndex = i;
+			break;
+		}
+	}
+	
+	if (OC_Language)
+	{
+		OC_Language->SetSelectedIndex(CurrentLanguageIndex);
+	}
+	
 	Super::Deactivate();
 }
 
