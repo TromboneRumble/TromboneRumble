@@ -20,23 +20,22 @@ URingHitBoxComponent::URingHitBoxComponent()
 	SetVisibility(false, false);
 }
 
-void URingHitBoxComponent::OnRegister()
-{
-	Super::OnRegister();
-
-	EnsureMID();
-	ApplyMaterialParams();
-
-	bHasBaseColor = false;
-	CacheBaseColorIfNeeded();
-}
-
 void URingHitBoxComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	EnsureMID();
 	ApplyMaterialParams();
+
+	if (RingMID)
+	{
+		FLinearColor CurrentColor;
+		if (RingMID->GetVectorParameterValue(ColorParamName, CurrentColor))
+		{
+			CachedBaseColor = CurrentColor;
+			bHasBaseColor = true;
+		}
+	}
 
 	//멀티플레이 환경에서 자신만 볼수있게
 	const APawn* PawnOwner = Cast<APawn>(GetOwner());
@@ -140,34 +139,17 @@ void URingHitBoxComponent::OnOwnerStunnedHandler(bool bIsStun)
 void URingHitBoxComponent::EnsureMID()
 {
 	// 이미 만들어져 있으면 재사용
-	if (RingMID) return;
+	if (RingMID || !GetWorld()) return;
 
-	// Element 0에 이미 Material/MI가 들어있으면 Source Material 안 넣어도 됨
-	RingMID = CreateDynamicMaterialInstance(0);
+	UMaterialInterface* BaseMat = RingMatOrigin ? RingMatOrigin.Get() : GetMaterial(0);
+	if (!BaseMat) return;
 
-	//UMaterialInterface* OriginMat = RingMatOrigin.Get();
-	//if (!OriginMat)
-	//{
-	//	RingMID = nullptr;
-	//	CachedParentMat = nullptr;
-	//	return;
-	//}
+	RingMID = CreateDynamicMaterialInstance(0, BaseMat);
 
-	//// 슬롯 0에 MID가 이미 꽂혀있는 경우
-	//if (RingMID && CachedParentMat.Get() == OriginMat)
-	//{
-	//	if (GetMaterial(0) == RingMID)
-	//	{
-	//		return;
-	//	}
-
-	//	// 누가 슬롯 0을 바꿔버린 경우: 다시 꽂아 복구
-	//	SetMaterial(0, RingMID);
-	//	return;
-	//}
-
-	//RingMID = CreateAndSetMaterialInstanceDynamicFromMaterial(0, OriginMat);
-	//CachedParentMat = OriginMat;
+	if (RingMID)
+	{
+		ApplyMaterialParams();
+	}
 }
 
 void URingHitBoxComponent::ApplyMaterialParams()
