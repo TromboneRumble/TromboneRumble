@@ -121,7 +121,7 @@ void UCameraFunctionLibrary::UpdateTopDownCameraOffsetEase(
 
     if (!EasedWorld_Unclamped.IsNearlyZero())
     {
-        FVector TraceStart = ReferenceActor->GetActorLocation();
+        FVector TraceStart = SpringArm->GetComponentLocation();
         FVector TraceEnd = TraceStart + EasedWorld_Unclamped;
 
         FHitResult HitResult;
