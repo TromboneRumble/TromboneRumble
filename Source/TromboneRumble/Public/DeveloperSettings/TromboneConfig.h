@@ -85,4 +85,22 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
 	int32 LobbyCountdownTimeSeconds;
 	
+public:
+	
+	/** Tutorial data table for the tutorial sequence. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Tutorial")
+	TSoftObjectPtr<UDataTable> TutorialDataTable;
+
+	/** Quest data table for the tutorial. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Tutorial")
+	TSoftObjectPtr<UDataTable> QuestDataTable;
+	
+	/** Interval after quest completion before processing the next tutorial sequence (seconds) */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Tutorial", meta = (ClampMin = "0.0", ClampMax = "5.0"))
+	float IntervalAfterQuestCompletion;
+	
+	/** Initial delay before starting the tutorial (seconds) */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Tutorial", meta = (ClampMin = "0.0", ClampMax = "5.0"))
+	float TutorialStartDelay;
+	
 };

@@ -6,6 +6,7 @@
 #include "Data/QuestData.h"
 #include "Framework/LobbyGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "Utilities/TromboneStatics.h"
 
 void ADefaultPlayerController::AcknowledgePossession(APawn* InPawn)
@@ -39,12 +40,11 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (GuideAction)   EIC->BindAction(GuideAction, ETriggerEvent::Started, this, &ThisClass::Handle_Guide);
 		if (EscapeAction)  EIC->BindAction(EscapeAction, ETriggerEvent::Started, this, &ThisClass::Handle_Escape);
 		
-		ATutorialManager* TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-		if (TutorialManager)
+		if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 		{
-			if (MoveAction) EIC->BindAction(MoveAction, ETriggerEvent::Started, TutorialManager, &ATutorialManager::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Move"));
-			if (SprintAction) EIC->BindAction(SprintAction, ETriggerEvent::Started, TutorialManager, &ATutorialManager::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Run"));
-			if (JumpAction) EIC->BindAction(JumpAction, ETriggerEvent::Started, TutorialManager, &ATutorialManager::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Jump"));
+			if (MoveAction) EIC->BindAction(MoveAction, ETriggerEvent::Started, TutorialSub, &UTutorialWorldSubsystem::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Move"));
+			if (SprintAction) EIC->BindAction(SprintAction, ETriggerEvent::Started, TutorialSub, &UTutorialWorldSubsystem::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Run"));
+			if (JumpAction) EIC->BindAction(JumpAction, ETriggerEvent::Started, TutorialSub, &UTutorialWorldSubsystem::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Jump"));
 		}
 	}
 }

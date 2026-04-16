@@ -1,12 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "TutorialQuestWidget.generated.h"
 
-class ATutorialManager;
 class UQuestWidget;
 struct FQuestUIData;
 class UDynamicEntryBox;
@@ -18,14 +15,11 @@ class TROMBONERUMBLE_API UTutorialQuestWidget : public UCommonActivatableWidget
 	GENERATED_BODY()
 public:
 	
-	/** Default constructor. */
-	UTutorialQuestWidget();
-	
 	/** Creates a quest widget for the given quest data. */
-	virtual void CreateQuestWidget(const FQuestUIData& QuestUIData);
+	void CreateQuestWidget(const FQuestUIData& QuestUIData);
 	
 	/** Removes the quest widget of an existing quest. */
-	virtual void ClearQuestWidgets();
+	void ClearQuestWidgets();
 	
 public:
 	
@@ -41,20 +35,18 @@ protected:
 private:
 	
 	/** Handles the quest sequence event from the tutorial manager and creates quest widgets. */
+	UFUNCTION()
 	void HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray);
 	
+	/** Handles the quest completed event from the tutorial manager and updates the corresponding quest widget. */
+	UFUNCTION()
 	void HandleQuestCompleted(const FString& QuestID);
 
-private:
-	
-	/* Reference to the tutorial manager */
-	UPROPERTY()
-	TObjectPtr<ATutorialManager> TutorialManager;
-	
 public:
 	
 	//~ Begin UUserWidget Interface
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	//~ End UUserWidget Interface
 	
 };

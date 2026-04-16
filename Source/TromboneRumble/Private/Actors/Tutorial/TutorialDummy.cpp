@@ -1,13 +1,11 @@
 #include "Actors/Tutorial/TutorialDummy.h"
-#include "Actors/Tutorial/TutorialManager.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Data/QuestData.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 {
 	Super::OnHitReceived_Implementation(HitData);
-	
-	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
 	
 	FString SpecificBasicAction = FString();
 	
@@ -38,8 +36,8 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 			break;
 	}
 
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* Sub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
+		Sub->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
 	}
 }
