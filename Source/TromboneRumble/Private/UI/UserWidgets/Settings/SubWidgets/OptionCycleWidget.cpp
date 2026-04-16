@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
 #include "CommonRotator.h"
 #include "CommonTextBlock.h"
@@ -11,7 +9,7 @@ void UOptionCycleWidget::NativePreConstruct()
 	if (CT_OptionName) CT_OptionName->SetText(TextOptionName);
 }
 
-void UOptionCycleWidget::Init(const FText InName, const TArray<FText> InOptions, const int32 DefaultIndex)
+void UOptionCycleWidget::InitWithOptionName(const FText InName, const TArray<FText> InOptions, const int32 DefaultIndex)
 {
 	TextOptionName = InName;
 	OptionsArray = InOptions;
