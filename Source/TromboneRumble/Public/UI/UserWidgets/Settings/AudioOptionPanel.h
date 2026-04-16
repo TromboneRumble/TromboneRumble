@@ -14,16 +14,18 @@ class TROMBONERUMBLE_API UAudioOptionPanel : public UOptionPanelBase
 	GENERATED_BODY()
 	
 public:
-	virtual void Init() override;
-	virtual void Deactivate() override;
+	virtual void RefreshUI() override;
 	
 protected:
+	virtual void Activate() override;
+	virtual void Deactivate() override;
+	
+	virtual void Register() override;
+	
 	virtual void HandleApplyButtonClicked() override;
 	virtual void HandleResetButtonClicked() override;
 	
 private:
-	void InitSliders() const;
-	void UpdateUIFromSettings(const FAudioSettingData& AudioData) const;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USliderWidgetBase> WBP_MasterSlider;

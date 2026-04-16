@@ -5,9 +5,17 @@
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
 #include "UI/UserWidgets/Settings/LanguageOptionPanel.h"
 
-void USettingPopup::NativeConstruct()
+void USettingPopup::ChangePanel(UWidget* TargetWidget) const
 {
-	Super::NativeConstruct();
+	if (CAS_Settings)
+	{
+		CAS_Settings->SetActiveWidget(TargetWidget);
+	}	
+}
+
+void USettingPopup::Register()
+{
+	Super::Register();
 	
 	if (CB_Audio)
 	{
@@ -24,24 +32,22 @@ void USettingPopup::NativeConstruct()
 		CB_Language->OnClicked().RemoveAll(this);
 		CB_Language->OnClicked().AddLambda([this] { ChangePanel(Widget_LanguageOptions); });
 	}
-	if (CB_Back)
-	{
-		CB_Back->OnClicked().RemoveAll(this);
-		CB_Back->OnClicked().AddLambda([this]()
-		{
-			if (UOptionPanelBase* ActivePanel = Cast<UOptionPanelBase>(CAS_Settings->GetActiveWidget()))
-			{
-				ActivePanel->Deactivate();
-			}
-			ClosePopup();
-		});
-	}
 }
 
-void USettingPopup::ChangePanel(UWidget* TargetWidget) const
+void USettingPopup::Unregister()
 {
-	if (CAS_Settings)
+	Super::Unregister();
+	
+	if (CB_Audio)
 	{
-		CAS_Settings->SetActiveWidget(TargetWidget);
-	}	
+		CB_Audio->OnClicked().RemoveAll(this);
+	}
+	if (CB_Video)
+	{
+		CB_Video->OnClicked().RemoveAll(this);
+	}
+	if (CB_Language)
+	{
+		CB_Language->OnClicked().RemoveAll(this);
+	}
 }

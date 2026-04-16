@@ -15,10 +15,18 @@ class TROMBONERUMBLE_API USettingPopup : public UPopupWidgetBase
 {
 	GENERATED_BODY()
 
+protected:
+	
+	// ~ Begin UPopupWidgetBase Interface
+	virtual void Register() override;
+	virtual void Unregister() override;
+	// ~ End UPopupWidgetBase Interface
+	
 private:
 	
 	/** Changes Options Panel. (e.g. Audio -> Video) */
 	void ChangePanel(UWidget* TargetWidget) const;
+	
 	
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonAnimatedSwitcher> CAS_Settings;
@@ -36,13 +44,5 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Video;
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Language;
-	UPROPERTY(meta = (BindWidgetOptional))
-	TObjectPtr<UCommonButtonBase> CB_Back;
-	
-protected:
-	
-	// ~ Begin UUserWidget Interface
-	virtual void NativeConstruct() override;
-	// ~ End UUserWidget Interface
 	
 };

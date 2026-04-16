@@ -55,11 +55,15 @@ class TROMBONERUMBLE_API UVideoOptionPanel : public UOptionPanelBase
 	GENERATED_BODY()
 	
 public:
-	virtual void NativePreConstruct() override;
+	
+	virtual void RefreshUI() override;
 	
 protected:
+	
 	virtual void HandleApplyButtonClicked() override;
 	virtual void HandleResetButtonClicked() override;
+	
+protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<UOptionCycleWidget> OptionCycleWidgetClass;
@@ -72,9 +76,9 @@ protected:
 	
 	UPROPERTY()
 	TMap<EGraphicsOptionType, UOptionCycleWidget*> CreatedWidgets;
-	
+
+private:
 	void BuildOptions();
-	void UpdateUIFromEngineSettings();
 	
 	UFUNCTION()
 	void OnOverallQualityChanged(int32 NewIndex);
@@ -82,5 +86,11 @@ protected:
 	void OnSubOptionChanged(int32 NewIndex);
 	UFUNCTION()
 	void OnWindowModeChanged(int32 NewIndex);
+	
+public:
+	
+	// ~ Begin UUserWidget Interface
+	virtual void NativePreConstruct() override;
+	// ~ End UUserWidget Interface
 	
 };

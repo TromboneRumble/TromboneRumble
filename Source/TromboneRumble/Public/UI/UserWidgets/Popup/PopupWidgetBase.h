@@ -48,6 +48,9 @@ protected:
 	/** Registers the widget events. e.g. button click events. */
 	virtual void Register();
 	
+	/** Unregisters the widget events. e.g. button click events. */
+	virtual void Unregister();
+	
 private:
 	
 	/** Event when the popup is opened. Called after open animation is finished. */
@@ -64,7 +67,6 @@ private:
 protected:
 	
 	// ~ Begin UCommonActivatableWidget Interface
-	virtual void NativeOnInitialized() override;
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnDeactivated() override;
 	virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;

@@ -9,19 +9,12 @@ UPopupWidgetBase::UPopupWidgetBase()
 {
 }
 
-void UPopupWidgetBase::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
-	
-	Register();
-}
-
-
 void UPopupWidgetBase::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 	
 	bIsClosing = false;
+	Register();
 	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	
 	if (bPlayAnimation && FadeIn)
@@ -39,6 +32,7 @@ void UPopupWidgetBase::NativeOnActivated()
 void UPopupWidgetBase::NativeOnDeactivated()
 {
 	bIsClosing = false;
+	Unregister();
 	
 	Super::NativeOnDeactivated();
 }
@@ -100,5 +94,18 @@ void UPopupWidgetBase::Register()
 			Button_Dim->OnClicked().RemoveAll(this);
 			Button_Dim->OnClicked().AddUObject(this, &ThisClass::ClosePopup, false);
 		}
+	}
+}
+
+void UPopupWidgetBase::Unregister()
+{
+	if (Button_Close)
+	{
+		Button_Close->OnClicked().RemoveAll(this);
+	}
+	
+	if (Button_Dim)
+	{
+		Button_Dim->OnClicked().RemoveAll(this);
 	}
 }

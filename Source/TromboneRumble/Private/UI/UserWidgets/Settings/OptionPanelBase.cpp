@@ -6,16 +6,21 @@ void UOptionPanelBase::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	Init();
-	InitButtons();
-}
-
-void UOptionPanelBase::Init()
-{
 	SaveManagerSubsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	
+	Register();
+	Activate();
 }
 
-void UOptionPanelBase::InitButtons()
+void UOptionPanelBase::NativeDestruct()
+{
+	Deactivate();
+	Unregister();
+	
+	Super::NativeDestruct();
+}
+
+void UOptionPanelBase::Register()
 {
 	if (Button_Apply)
 	{
@@ -27,11 +32,31 @@ void UOptionPanelBase::InitButtons()
 	}
 }
 
+void UOptionPanelBase::Unregister()
+{
+	if (Button_Apply)
+	{
+		Button_Apply->OnClicked().RemoveAll(this);
+	}
+	if (Button_Reset)
+	{
+		Button_Reset->OnClicked().RemoveAll(this);
+	}
+}
+
+void UOptionPanelBase::RefreshUI()
+{
+	// To be overridden by child classes if needed
+}
+
+void UOptionPanelBase::Activate()
+{
+	// To be overridden by child classes if needed
+}
+
 void UOptionPanelBase::Deactivate()
 {
 	// To be overridden by child classes if needed
-	// TODO : SettingMenuWidget에 이벤트 만들어서 적용, 리셋 이벤트 관리하고, Back으로 나갈때도 이벤트 관리해야 함 
-	
 }
 
 void UOptionPanelBase::HandleApplyButtonClicked()
