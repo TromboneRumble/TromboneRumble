@@ -61,21 +61,28 @@ public:
 public:
 	
 	/** Notice popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<UNoticePopupWidget> NoticePopupWidgetClass;
 	
 	/** Two-button without close button popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<UTwoButtonWithoutClosePopup> TwoButtonWithoutClosePopupWidgetClass;
 	
 	/** Escape popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<UEscapePopup> EscapePopupWidgetClass;
 	
 	/** Setting popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<USettingPopup> SettingPopupWidgetClass;
 	
+	/** Project version widget class. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
+	TSubclassOf<UCommonUserWidget> ProjectVersionWidgetClass;
+	
+	/** Performance widget class. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
+	TSubclassOf<UCommonUserWidget> PerformanceWidgetClass;
 
 public:
 	
@@ -112,5 +119,9 @@ public:
 	/** Initial delay before starting the tutorial (seconds) */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Tutorial", meta = (ClampMin = "0.0", ClampMax = "5.0"))
 	float TutorialStartDelay;
+	
+	/** Interval for updating the performance widget (seconds) */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Common", meta = (ClampMin = "0.1", ClampMax = "5.0"))
+	float PerformanceWidgetUpdateInterval;
 	
 };

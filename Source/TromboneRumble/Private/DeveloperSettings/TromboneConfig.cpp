@@ -13,6 +13,8 @@ UTromboneConfig::UTromboneConfig()
 	
 	IntervalAfterQuestCompletion = 1.5f;
 	TutorialStartDelay = 1.0f;
+	
+	PerformanceWidgetUpdateInterval = 0.5f;
 }
 
 const UTromboneConfig* UTromboneConfig::Get()

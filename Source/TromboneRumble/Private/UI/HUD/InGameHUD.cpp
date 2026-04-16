@@ -1,17 +1,21 @@
 #include "UI/HUD/InGameHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "UI/UserWidgets/InGame/SubWidgets/PerformanceWidget.h"
 
 void AInGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// TODO : 얘는 어떻게 관리할까 단순히 z-order 높게?
-	if (PerformanceWidgetClass)
+	if (const UTromboneConfig* Config = UTromboneConfig::Get())
 	{
-		if (UPerformanceWidget* PerformanceWidget = CreateWidget<UPerformanceWidget>(GetWorld(), PerformanceWidgetClass))
+		if (Config->PerformanceWidgetClass)
 		{
-			PerformanceWidget->AddToViewport();
+			if (UCommonUserWidget* Widget = CreateWidget<UCommonUserWidget>(GetWorld(), Config->PerformanceWidgetClass))
+			{
+				Widget->AddToViewport(9999);
+				Widget->SetVisibility(ESlateVisibility::HitTestInvisible);
+			}
 		}
 	}
 }

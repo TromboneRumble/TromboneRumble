@@ -1,7 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/HUD/BaseHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 
 void ABaseHUD::BeginPlay()
@@ -14,6 +13,18 @@ void ABaseHUD::BeginPlay()
 		if (RootUI)
 		{
 			RootUI->AddToViewport();
+		}
+	}
+	
+	if (const UTromboneConfig* Config = UTromboneConfig::Get())
+	{
+		if (Config->ProjectVersionWidgetClass)
+		{
+			if (UCommonUserWidget* Widget = CreateWidget<UCommonUserWidget>(GetWorld(), Config->ProjectVersionWidgetClass))
+			{
+				Widget->AddToViewport(9999);
+				Widget->SetVisibility(ESlateVisibility::HitTestInvisible);
+			}
 		}
 	}
 }

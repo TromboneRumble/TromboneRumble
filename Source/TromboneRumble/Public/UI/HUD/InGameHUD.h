@@ -15,7 +15,4 @@ class TROMBONERUMBLE_API AInGameHUD : public ABaseHUD
 public:
 	virtual void BeginPlay() override;
 	
-private:
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UPerformanceWidget> PerformanceWidgetClass;
 };
