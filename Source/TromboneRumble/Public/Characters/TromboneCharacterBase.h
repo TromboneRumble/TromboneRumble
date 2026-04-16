@@ -156,9 +156,6 @@ private:
 	void HandleBounceProgress(FVector Value);
 	// ~ End Bounce Character
 	
-	// TODO : For Debugging
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
 	int32 StunNiagaraPlayingID = 0;
 	
 public:

@@ -451,16 +451,6 @@ void ATromboneCharacterBase::HandleBounceProgress(FVector Value)
 	}
 }
 
-void ATromboneCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-#if !UE_BUILD_SHIPPING
-	PlayerInputComponent->BindKey(EKeys::O, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugRagdoll);
-	PlayerInputComponent->BindKey(EKeys::P, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugStun);
-#endif
-}
-
 void ATromboneCharacterBase::Server_DebugStun_Implementation()
 {
 	if (bIsStun)
