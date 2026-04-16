@@ -42,10 +42,6 @@ protected:
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> SpawnedInstruments;
 	
-	// TODO : CheatManager랑 함께 공유? 관리?
-	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
-	TMap<EWeaponType, TSubclassOf<AActor>> WeaponClasses;
-	
 	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
 	TMap<EWeaponType, FVector> WeaponSpawnLocations;
 	

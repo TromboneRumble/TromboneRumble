@@ -8,6 +8,9 @@
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "TromboneConfig.generated.h"
 
+class AInstrumentBase;
+enum class EWeaponType : uint8;
+
 /**
  * Config for Trombone Rumble Project.
  */
@@ -73,11 +76,18 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<USettingPopup> SettingPopupWidgetClass;
 	
+
 public:
 	
 	/** Skin color randomly assigned to a character in-game */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	TArray<FLinearColor> CharacterSkinColors;
+	
+public:
+	
+	/** Instrument classes for spawn */	
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Instrument")
+	TMap<EWeaponType, TSoftClassPtr<AInstrumentBase>> InstrumentClasses;
 	
 public:
 	

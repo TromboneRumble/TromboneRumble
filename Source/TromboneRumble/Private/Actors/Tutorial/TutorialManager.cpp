@@ -93,25 +93,31 @@ void ATutorialManager::SpawnInstruments()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
-	for (const auto Elem : WeaponClasses)
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	
+	for (const auto Elem : Config->InstrumentClasses)
 	{
 		const EWeaponType WeaponType = Elem.Key;
-		TSubclassOf<AActor> WeaponClass = Elem.Value;
-		if (!WeaponClass) continue;
+		const TSoftClassPtr<AInstrumentBase>& SoftClassPtr = Elem.Value;
+
+		UClass* LoadedClass = SoftClassPtr.LoadSynchronous();
+		if (!LoadedClass)
+		{
+			LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("Failed to load class: %s"), *EnumHelper::EnumToString(WeaponType)));
+			continue;
+		}
 
 		FVector SpawnLocation = WeaponSpawnLocations.Contains(WeaponType) ? WeaponSpawnLocations[WeaponType] : FVector::ZeroVector;
-		FRotator SpawnRotation = FRotator::ZeroRotator;
-		
-		AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(WeaponClass, SpawnLocation, SpawnRotation, SpawnParams);
-		if (!SpawnedInstrument)
+
+		if (AInstrumentBase* SpawnedInstrument = GetWorld()->SpawnActor<AInstrumentBase>(LoadedClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Failed to spawn instrument of class %s"), *WeaponClass->GetName());
+			SpawnedInstrument->SetCanBeSwitched(true);
+			SpawnedInstruments.Add(SpawnedInstrument);
 		}
-		if (AInstrumentBase* Instrument = Cast<AInstrumentBase>(SpawnedInstrument))
+		else
 		{
-			Instrument->SetCanBeSwitched(true);
+			LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("Failed to spawn instrument: %s"), *LoadedClass->GetName()));
 		}
-		SpawnedInstruments.Add(SpawnedInstrument);
 	}
 }
 
@@ -123,13 +129,15 @@ AInstrumentBase* ATutorialManager::SpawnInstrument(EWeaponType WeaponType)
 		return nullptr;
 	}
 	
-	if (!WeaponClasses.Contains(WeaponType))
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	
+	if (!Config->InstrumentClasses.Contains(WeaponType))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No weapon class found for weapon type %s"), *EnumHelper::EnumToString(WeaponType));
 		return nullptr;
 	}
 
-	const TSubclassOf<AActor> WeaponClass = WeaponClasses[WeaponType];
+	const TSubclassOf<AActor> WeaponClass = Config->InstrumentClasses[WeaponType].LoadSynchronous();
 	if (!WeaponClass)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon class for weapon type %s is null"), *EnumHelper::EnumToString(WeaponType));
