@@ -21,8 +21,20 @@ protected:
 	// ~ Begin UPopupWidgetBase Interface
 	virtual void Register() override;
 	// ~ End UPopupWidgetBase Interface
-	
+
 	// ~ Begin Widgets
+	UPROPERTY(EditAnywhere, Category = "UI|Text")
+	FText ConfirmTitle;
+
+	UPROPERTY(EditAnywhere, Category = "UI|Text")
+	FText ConfirmDescription;
+
+	UPROPERTY(EditAnywhere, Category = "UI|Text")
+	FText ConfirmLeftButton;
+
+	UPROPERTY(EditAnywhere, Category = "UI|Text")
+	FText ConfirmRightButton;
+
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	TObjectPtr<UCommonTextBlock> Text_Title;
 	
