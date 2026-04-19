@@ -165,20 +165,6 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 	}
 }
 
-void ADefaultTromboneCharacter::ToggleGuideUI()
-{
-	TArray<UUserWidget*> FoundWidgets;
-	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, UInGameWidget::StaticClass());
-
-	for (UUserWidget* Widget : FoundWidgets)
-	{
-		if (UInGameWidget* InGameWidget = Cast<UInGameWidget>(Widget))
-		{
-			InGameWidget->ToggleGuideUI();
-			break;
-		}
-	}
-}
 
 EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
 {

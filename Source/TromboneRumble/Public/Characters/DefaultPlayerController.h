@@ -41,8 +41,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> RhythmAction;
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> GuideAction;
-	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> EscapeAction;
 	// ~InputActions
 
@@ -93,7 +91,6 @@ private:
 	void Handle_Interact();
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
-	void Handle_Guide();
 	void Handle_Escape();
 	// ~Input handlers
 

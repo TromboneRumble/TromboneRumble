@@ -7,13 +7,6 @@
 #include "Framework/InGameState.h"
 #include "Utilities/DebugHelper.h"
 
-void UInGameWidget::ToggleGuideUI()
-{
-	const ESlateVisibility CurrentVisibility = InGameCanvas->GetVisibility();
-	const ESlateVisibility TargetVisibility = CurrentVisibility == ESlateVisibility::Visible ? ESlateVisibility::Collapsed : ESlateVisibility::Visible;
-	
-	InGameCanvas->SetVisibility(TargetVisibility);
-}
 
 void UInGameWidget::NativeConstruct()
 {

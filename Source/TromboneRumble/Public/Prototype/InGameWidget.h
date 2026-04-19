@@ -19,8 +19,7 @@ public:
 	{
 		return FUIInputConfig(ECommonInputMode::Game, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways, true);
 	}	
-	
-	void ToggleGuideUI();
+
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> InGameCanvas;

@@ -50,7 +50,6 @@ public:
 	void StartSprint();
 	void StopSprint();
 	void Rhythm(bool bIsPressed);
-	void ToggleGuideUI();
 
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	
