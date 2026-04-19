@@ -5,7 +5,7 @@
 #include "AkGameplayStatics.h"
 #include "Framework/InGameState.h"
 #include "Framework/DefaultPlayerState.h"
-#include "Actors/ResultScene/PodiumActor.h" // APodiumActor 헤더 경로에 맞게 수정해주세요
+#include "Actors/ResultScene/PodiumActor.h"
 #include "Camera/CameraActor.h"
 #include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
@@ -233,6 +233,13 @@ void AResultCutsceneDirector::OnSequenceFinished()
 	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
 		PC->bShowMouseCursor = true;
+	}
+	for (APodiumActor* Podium : PrePlacedPodiums)
+	{
+		if (Podium && !Podium->IsHidden())
+		{
+			Podium->SetNameWidgetVisibility(true);
+		}
 	}
 }
 
