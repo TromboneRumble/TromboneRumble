@@ -56,6 +56,10 @@
 		{
 			"Name": "OnlineFramework",
 			"Enabled": true
+		},
+		{
+			"Name": "PCG",
+			"Enabled": true
 		}
 	]
 }
