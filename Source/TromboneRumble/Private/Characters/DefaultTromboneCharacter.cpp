@@ -27,6 +27,7 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Prototype/InGameWidget.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -242,6 +243,22 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 		ComboWidgetComponent->SetVisibility(true);
 	}
+}
+
+void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (HasAuthority())
+	{
+		if (const UGameStateSubsystem* Sub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+		{
+			if (Sub->GetLevelState() == ELevelState::InGame)
+			{
+				EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+			}
+		}
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
