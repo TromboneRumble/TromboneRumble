@@ -1,15 +1,32 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Utilities/TromboneCheatManager.h"
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
-#include "Framework/TromboneGameInstance.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
+
+void UTromboneCheatManager::Trombone_Help()
+{
+	FString DebugMsg;
+	DebugMsg += TEXT("사용 가능한 명령어:\n");
+	DebugMsg += TEXT("Trombone_SpawnInstrument [InstrumentType] - 스폰할 악기 타입을 입력하여 악기를 소환합니다. (예: Trombone_SpawnInstrument Violin)\n");
+	DebugMsg += TEXT("Trombone_Spotlight - 스포트라이트를 소환합니다.\n");
+	DebugMsg += TEXT("Trombone_Throw [Count] - 쓰레기를 소환합니다. Count는 소환할 쓰레기의 수입니다. (예: Trombone_Throw 10)\n");
+	DebugMsg += TEXT("Trombone_Ragdoll - 래그돌을 실행합니다.\n");
+	DebugMsg += TEXT("Trombone_Stun - 스턴을 실행합니다.\n");
+	DebugMsg += TEXT("Trombone_ResetSettingData - 설정 데이터 초기화\n");
+	DebugMsg += TEXT("--------------------------------\n");
+	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
+	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");
+	DebugMsg += TEXT("--------------------------------\n");
+	DebugMsg += TEXT("대소문자는 상관없습니다.\n");
+
+	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
+}
 
 void UTromboneCheatManager::Trombone_SpawnInstrument(const FString& TypeString)
 {
@@ -29,39 +46,39 @@ void UTromboneCheatManager::Trombone_SpawnInstrument(const FString& TypeString)
 	}
 	
 	EWeaponType Type;
-	if (EnumHelper::StringToEnum<EWeaponType>(TypeString, Type))
+	if (!EnumHelper::StringToEnum<EWeaponType>(TypeString, Type))
 	{
-		APawn* MyPawn = GetOuterAPlayerController()->GetPawn();
-		if (!MyPawn) return;
-
-		if (!WeaponClasses.Contains(Type))
-		{
-			PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Weapon class %s not assigned in CheatManager. talk to developer."), *TypeString));
-			return;
-		}
-
-		FVector SpawnLocation = MyPawn->GetActorLocation() + FVector(0.f, 0.f, 200.f);
-		FRotator SpawnRotation = MyPawn->GetActorRotation();
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = MyPawn;
-		SpawnParams.Instigator = MyPawn;
-
-		AActor* SpawnedInstrument = GetWorld()->SpawnActor<AActor>(
-			WeaponClasses[Type], 
-			SpawnLocation, 
-			SpawnRotation, 
-			SpawnParams
-		);
-
-		if (SpawnedInstrument)
-		{
-			PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Spawned: %s"), *TypeString));
-		}
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("악기 타입이 잘못되었습니다: %s"), *TypeString));
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("가능한 악기 타입: Trombone, Violin, Cymbals"));
+		return;
 	}
-	else
+	
+	APawn* MyPawn = GetOuterAPlayerController()->GetPawn();
+	if (!MyPawn) return;
+	
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	if (Config->InstrumentClasses.Num() == 0)
 	{
-		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Invalid Instrument Type: %s"), *TypeString));
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("No weapon classes assigned in Project Settings. Assign weapon classes"));
+		return;
+	}
+
+	if (!Config->InstrumentClasses.Contains(Type))
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Weapon class %s not assigned in CheatManager. talk to developer."), *TypeString));
+		return;
+	}
+
+	FVector SpawnLocation = MyPawn->GetActorLocation() + FVector(0.f, 0.f, 200.f);
+	FRotator SpawnRotation = MyPawn->GetActorRotation();
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = MyPawn;
+	SpawnParams.Instigator = MyPawn;
+
+	if (GetWorld()->SpawnActor<AActor>(Config->InstrumentClasses[Type].LoadSynchronous(), SpawnLocation, SpawnRotation, SpawnParams))
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("%s 스폰"), *TypeString));
 	}
 }
 

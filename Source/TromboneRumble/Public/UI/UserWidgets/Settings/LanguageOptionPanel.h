@@ -23,10 +23,12 @@ public:
 	/** Default constructor. */
 	ULanguageOptionPanel();
 	
-	virtual void Init() override;
-	virtual void Deactivate() override;
+	virtual void RefreshUI() override;
 	
 protected:
+	virtual void Activate() override;
+	virtual void Deactivate() override;
+	
 	virtual void HandleApplyButtonClicked() override;
 	virtual void HandleResetButtonClicked() override;
 	

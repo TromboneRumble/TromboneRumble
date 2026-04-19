@@ -14,12 +14,14 @@ class TROMBONERUMBLE_API UCommonRotatorWidgetBase : public UCommonUserWidget
 	GENERATED_BODY()
 	
 public:
-	virtual bool Initialize() override;
-	virtual void NativePreConstruct() override;
+	
 	virtual void Init(TArray<FText> InOptions, int32 InDefaultIndex);
 	virtual void SetIsEnabled(bool bInIsEnabled) override;
 	
+	/** Delegate for when the selected option changes. Provides the new index of the selected option. */
 	FOnOptionChanged OnOptionChanged;
+	
+	/** Delegate for when the rotator is rotated with a direction. Provides the new index and the direction of rotation. */
 	FOnRotatedWithDirection& OnRotatedWithDirection() const { return CR_Rotator->OnRotatedWithDirection; }
 
 protected:
@@ -40,6 +42,14 @@ protected:
 	int32 DefaultSelectedIndex = 0;
 	
 public:
+	
+	// ~ Begin UUserWidget Interface
+	virtual bool Initialize() override;
+	virtual void NativePreConstruct() override;
+	// ~ End UUserWidget Interface
+	
+public:
+	
 	// ~ Begin Getter & Setter
 	int32 GetCurrentIndex() const { return CR_Rotator ? CR_Rotator->GetSelectedIndex() : -1; }
 	void SetSelectedIndex(int32 NewIndex);

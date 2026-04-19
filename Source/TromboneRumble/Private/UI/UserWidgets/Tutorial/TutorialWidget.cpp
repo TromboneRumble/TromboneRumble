@@ -3,11 +3,12 @@
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Components/Image.h"
 #include "Input/CommonUIInputTypes.h"
-#include "Kismet/GameplayStatics.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialDialogueWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialQuestWidget.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/TromboneStatics.h"
 
 UTutorialWidget::UTutorialWidget()
@@ -20,17 +21,12 @@ void UTutorialWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnDialogueSequence.AddUObject(this, &ThisClass::HandleDialogueSequence);
-		TutorialManager->OnQuestSequence.AddUObject(this, &ThisClass::HandleQuestSequence);
-		TutorialManager->OnTransitionSequence.AddUObject(this, &ThisClass::HandleTransitionSequence);
-		TutorialManager->OnShowExtraData.AddUObject(this, &ThisClass::HandleOnExtraData);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
+		TutorialSub->OnDialogueSequenceEvent.AddDynamic(this, &ThisClass::HandleDialogueSequence);
+		TutorialSub->OnQuestSequenceEvent.AddDynamic(this, &ThisClass::HandleQuestSequence);
+		TutorialSub->OnTransitionSequenceEvent.AddDynamic(this, &ThisClass::HandleTransitionSequence);
+		TutorialSub->OnShowExtraDataEvent.AddDynamic(this, &ThisClass::HandleOnExtraData);
 	}
 	
 	if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
@@ -39,7 +35,7 @@ void UTutorialWidget::NativeConstruct()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find RootLayout for TutorialWidget."));
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to find RootLayout for TutorialWidget."));
 	}
 	
 	SetUIVisibility(ESlateVisibility::Collapsed);
@@ -47,13 +43,17 @@ void UTutorialWidget::NativeConstruct()
 
 void UTutorialWidget::NativeDestruct()
 {
-	Super::NativeDestruct();
-	
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnDialogueSequence.RemoveAll(this);
-		TutorialManager->OnQuestSequence.RemoveAll(this);
+		TutorialSub->OnDialogueSequenceEvent.RemoveAll(this);
+		TutorialSub->OnQuestSequenceEvent.RemoveAll(this);
+		TutorialSub->OnTransitionSequenceEvent.RemoveAll(this);
+		TutorialSub->OnShowExtraDataEvent.RemoveAll(this);
 	}
+	
+	UnregisterInputActions();
+	
+	Super::NativeDestruct();
 }
 
 void UTutorialWidget::RegisterInputActions()
@@ -124,16 +124,19 @@ void UTutorialWidget::HandleTransitionSequence()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to create FadeWidget for transition sequence."));
-		TutorialManager->ProcessTutorial();
+		if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
+		{
+			TutorialSub->ProcessTutorial();
+		}
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to push FadeWidget for transition sequence."));
 	}
 }
 
 void UTutorialWidget::HandleSkipDialogue()
 {
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->ProcessTutorial();
+		TutorialSub->ProcessTutorial();
 	}
 }
 
@@ -178,18 +181,9 @@ void UTutorialWidget::OnFadeInFinished()
 
 void UTutorialWidget::OnFadeOutFinished()
 {
-	if (IsValid(TutorialManager))
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->ProcessTutorial();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TutorialManager is not valid in OnFadeOutFinished."));
-		ATutorialManager* RetryManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-		if (IsValid(RetryManager))
-		{
-			RetryManager->ProcessTutorial();
-		}
+		TutorialSub->ProcessTutorial();
 	}
 
 	if (IsValid(RootLayout))
@@ -198,7 +192,6 @@ void UTutorialWidget::OnFadeOutFinished()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("RootLayout is not valid in OnFadeOutFinished."));
 		if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
 		{
 			Root->PopFadeOverlay();

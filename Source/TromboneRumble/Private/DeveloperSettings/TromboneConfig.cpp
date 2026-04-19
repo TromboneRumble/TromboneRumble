@@ -10,6 +10,11 @@ UTromboneConfig::UTromboneConfig()
 	CharacterSkinColors = { FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue, FLinearColor::Yellow, FLinearColor::White };
 	
 	LobbyCountdownTimeSeconds = 5;
+	
+	IntervalAfterQuestCompletion = 1.5f;
+	TutorialStartDelay = 1.0f;
+	
+	PerformanceWidgetUpdateInterval = 0.5f;
 }
 
 const UTromboneConfig* UTromboneConfig::Get()

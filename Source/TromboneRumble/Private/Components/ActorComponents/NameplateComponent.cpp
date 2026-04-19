@@ -11,7 +11,6 @@
 UNameplateComponent::UNameplateComponent()
 {
 	bWantsInitializeComponent = true;
-
 	NameplateWidgetClass = TSubclassOf<UUserWidget>();
 	NameplateDrawSize = FVector2D(150.0f, 50.0f);
 	NameplateOffset = FVector(0.0f, 0.0f, 100.0f);
@@ -64,38 +63,47 @@ void UNameplateComponent::CreateNameplate()
 	}
 
 	WidgetComponent = NewObject<UWidgetComponent>(GetOwner());
-	WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	WidgetComponent->SetWidgetClass(NameplateWidgetClass);
+	WidgetComponent->SetBlendMode(EWidgetBlendMode::Masked);
+	WidgetComponent->SetCastShadow(false);
 	WidgetComponent->SetDrawSize(NameplateDrawSize);
-	WidgetComponent->SetRelativeScale3D(FVector(0.4f, 0.4f, 0.4f));
+	WidgetComponent->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 	WidgetComponent->SetRelativeLocation(NameplateOffset);
+	if (APlayerController* LocalPC = GetWorld()->GetFirstPlayerController())
+	{
+		if (ULocalPlayer* LocalPlayer = LocalPC->GetLocalPlayer())
+		{
+			WidgetComponent->SetOwnerPlayer(LocalPlayer);
+		}
+	}
 	WidgetComponent->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	WidgetComponent->RegisterComponent();
 
 	WaitForNameplateWidget();
 }
-
 void UNameplateComponent::WaitForNameplateWidget()
 {
 	UUserWidget* NameplateWidget = WidgetComponent ? WidgetComponent->GetUserWidgetObject() : nullptr;
 	if (NameplateWidget)
 	{
-		if (UPlayerNameplateWidget* Widget = Cast<UPlayerNameplateWidget>(WidgetComponent->GetUserWidgetObject()))
+		APawn* OwningPawn = GetOwner<APawn>();
+		ADefaultPlayerState* PlayerState = OwningPawn ? Cast<ADefaultPlayerState>(OwningPawn->GetPlayerState()) : nullptr;
+
+		if (PlayerState && !PlayerState->GetPlayerName().IsEmpty())
 		{
-			if (ADefaultPlayerState* PlayerState = Cast<ADefaultPlayerState>(GetOwner<APawn>()->GetPlayerState()))
+			if (UPlayerNameplateWidget* Widget = Cast<UPlayerNameplateWidget>(NameplateWidget))
 			{
 				Widget->InitPlayerWidget(PlayerState);
 			}
-		}
 
-		OnNameplateCreatedEvent.Broadcast(NameplateWidget);
-	}
-	else
-	{
-		if (IsValid(this) && IsValid(GetOwner()))
-		{
-			GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::WaitForNameplateWidget);
+			OnNameplateCreatedEvent.Broadcast(NameplateWidget);
+			return;
 		}
+	}
+	if (IsValid(this) && IsValid(GetOwner()))
+	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::WaitForNameplateWidget);
 	}
 }
 

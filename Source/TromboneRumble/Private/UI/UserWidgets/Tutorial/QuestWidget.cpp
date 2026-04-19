@@ -2,6 +2,7 @@
 #include "CommonTextBlock.h"
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Components/Image.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 UQuestWidget::UQuestWidget()
 {

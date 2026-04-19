@@ -46,7 +46,7 @@ private:
 	float RowHeight = 50.f;
 	float MoveSpeed = 10.f;
 
-	
+
 public:
 	FORCEINLINE void SetTargetY(float InTargetY) { TargetY = InTargetY; }
 	FORCEINLINE void SetRowHeight(float InRowHeight) { RowHeight = InRowHeight; }

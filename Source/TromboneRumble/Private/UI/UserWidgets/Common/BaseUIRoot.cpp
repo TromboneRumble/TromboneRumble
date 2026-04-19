@@ -108,7 +108,7 @@ void UBaseUIRoot::PopPopup() const
 {
 	if (PopupStack && PopupStack->GetActiveWidget())
 	{
-		PopupStack->GetActiveWidget()->DeactivateWidget();
+		PopupStack->RemoveWidget(*PopupStack->GetActiveWidget());
 	}
 }
 

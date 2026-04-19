@@ -81,6 +81,13 @@ void ALobbyGameMode::BeginPlay()
 
 void ALobbyGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UGameStateSubsystem* GS = GameInstance->GetSubsystem<UGameStateSubsystem>())
+		{
+			GS->OnPlayerLoadingScreenFinished.RemoveAll(this);
+		}
+	}
 	if (GetWorld())
 	{
 		GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
@@ -112,20 +119,24 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 					}
 				}
 				
+				//에디터 환경에서는 GetNumPlayers()가 로그아웃한 플레이어를 바로 제거하지만,
+				//릴리즈 환경에서는 GetNumPlayers()가 로그아웃한 플레이어를 아직 포함하고 있음
 				const int32 RemainingPlayers = GetNumPlayers() - 1;
-				if (RemainingPlayers < 2)
+				if (RemainingPlayers > 0)
 				{
-					LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
-					const FString MainMenuMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-					RequestServerTravel(MainMenuMapName);
+					if (RemainingPlayers < 2)
+					{
+						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
+						const FString MainMenuMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+						RequestServerTravel(MainMenuMapName);
+					}
+					else
+					{
+						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
+						const FString LobbyMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+						RequestServerTravel(LobbyMapName);
+					}
 				}
-				else
-				{
-					LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
-					const FString LobbyMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
-					RequestServerTravel(LobbyMapName);
-				}
-				
 			}
 		}
 	}

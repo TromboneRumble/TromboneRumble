@@ -1,8 +1,7 @@
 #include "Framework/GameMode/TutorialGameMode.h"
-#include "Actors/Tutorial/TutorialManager.h"
 #include "Data/QuestData.h"
 #include "Items/WeaponBase.h"
-#include "Kismet/GameplayStatics.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "Utilities/Defines.h"
 
 void ATutorialGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
@@ -17,14 +16,9 @@ void ATutorialGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* Equ
 		}
 	}
 	
-	ATutorialManager* TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->ReportAction(EQuestConditionType::EquipInstrument, EQuestConditionParamType::Any, FString());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
+		TutorialSub->ReportAction(EQuestConditionType::EquipInstrument, EQuestConditionParamType::Any, FString());
 	}
 }
 

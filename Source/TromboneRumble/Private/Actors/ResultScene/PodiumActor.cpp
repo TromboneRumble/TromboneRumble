@@ -17,7 +17,7 @@ APodiumActor::APodiumActor()
 	if (NameWidgetComponent)
 	{
 		NameWidgetComponent->SetupAttachment(RootComponent);
-		NameWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		NameWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 		NameWidgetComponent->SetDrawAtDesiredSize(true);
 	}
 	

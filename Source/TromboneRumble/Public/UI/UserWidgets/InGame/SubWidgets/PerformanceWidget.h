@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,7 +11,12 @@ class TROMBONERUMBLE_API UPerformanceWidget : public UCommonUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	
+	UPerformanceWidget();
+	
 protected:
+	virtual void NativeOnInitialized() override;
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
     
     UPROPERTY(meta = (BindWidget))
@@ -25,12 +28,11 @@ protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UCommonTextBlock> Text_MS;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    float UpdateInterval = 0.5f;
 
 private:
     void CalculateAndUpdatePerformances(float InDeltaTime);
 	
-    float DeltaTimeAccumulator = 0.0f;
-    int32 FrameCount = 0;
+    float UpdateInterval;
+    float DeltaTimeAccumulator;
+    int32 FrameCount;
 };

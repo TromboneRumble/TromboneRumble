@@ -8,7 +8,6 @@
 
 struct FQuestUIData;
 class UImage;
-class ATutorialManager;
 class UCommonTextBlock;
 
 UENUM()

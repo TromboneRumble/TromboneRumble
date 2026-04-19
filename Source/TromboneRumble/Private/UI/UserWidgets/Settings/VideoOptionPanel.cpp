@@ -89,7 +89,7 @@ void UVideoOptionPanel::HandleApplyButtonClicked()
 	}
 
     SaveManagerSubsystem->ApplyAndSaveVideo(NewSettings);
-	UpdateUIFromEngineSettings();
+	RefreshUI();
 }
 
 void UVideoOptionPanel::HandleResetButtonClicked()
@@ -100,7 +100,7 @@ void UVideoOptionPanel::HandleResetButtonClicked()
 	{
 		VideoSettings->LoadSettings(true);
 		VideoSettings->ApplySettings(false);
-		UpdateUIFromEngineSettings();
+		RefreshUI();
 	}
 }
 
@@ -158,7 +158,7 @@ void UVideoOptionPanel::BuildOptions()
 				}
 			}
 			
-			NewWidget->Init(Row->DisplayName, Labels, StartIndex);
+			NewWidget->InitWithOptionName(Row->DisplayName, Labels, StartIndex);
 			VB_OptionContainer->AddChild(NewWidget);
 			
 			CreatedWidgets.Add(Row->OptionType, NewWidget);
@@ -180,10 +180,10 @@ void UVideoOptionPanel::BuildOptions()
 		}
 	}
 
-	UpdateUIFromEngineSettings();
+	RefreshUI();
 }
 
-void UVideoOptionPanel::UpdateUIFromEngineSettings()
+void UVideoOptionPanel::RefreshUI()
 {
 	if (!GEngine) return;
 	

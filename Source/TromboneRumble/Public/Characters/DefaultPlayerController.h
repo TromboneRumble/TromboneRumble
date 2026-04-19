@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> RhythmAction;
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputAction> GuideAction;
+	TObjectPtr<UInputAction> EscapeAction;
 	// ~InputActions
 
 	UPROPERTY(BlueprintAssignable, Category = "PlayerState")
@@ -91,7 +91,7 @@ private:
 	void Handle_Interact();
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
-	void Handle_Guide();
+	void Handle_Escape();
 	// ~Input handlers
 
 	bool CanProcessInput();

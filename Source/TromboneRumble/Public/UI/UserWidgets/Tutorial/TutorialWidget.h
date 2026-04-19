@@ -10,7 +10,6 @@ class UBaseUIRoot;
 struct FQuestUIData;
 class UTutorialQuestWidget;
 class UTutorialDialogueWidget;
-class ATutorialManager;
 
 UCLASS()
 class TROMBONERUMBLE_API UTutorialWidget : public UCommonActivatableWidget
@@ -41,10 +40,6 @@ protected:
 	
 private:
 	
-	/** Reference to the tutorial manager */
-	UPROPERTY()
-	TObjectPtr<ATutorialManager> TutorialManager;
-	
 	/** Reference to the root UI layout */
 	UPROPERTY()
 	TObjectPtr<UBaseUIRoot> RootLayout;
@@ -62,19 +57,23 @@ private:
 	void UnregisterInputActions();
 	
 	/** Handles the dialogue sequence event */
+	UFUNCTION()
 	void HandleDialogueSequence(const FText& DialogueString);
 	
 	/** Handles the quest sequence event */
+	UFUNCTION()
 	void HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray);
 	
 	/** Handles the transition sequence event */
+	UFUNCTION()
 	void HandleTransitionSequence();
+	
+	/** Handles the show extra data event */
+	UFUNCTION()
+	void HandleOnExtraData(UTexture2D* Image);
 	
 	/** Handles the skip dialogue input action */
 	void HandleSkipDialogue();
-	
-	/** Handles the show extra data event */
-	void HandleOnExtraData(UTexture2D* Image);
 	
 private:
 	
@@ -87,9 +86,11 @@ private:
 	void OnFadeOutFinished();
 	
 protected:
+	
 	// ~ Begin UCommonActivatableWidget Interface
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	// ~ End UCommonActivatableWidget Interface
+	
 };

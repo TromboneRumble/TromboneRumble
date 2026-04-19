@@ -1,9 +1,9 @@
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
-#include "Actors/Tutorial/TutorialManager.h"
+#include "Data/QuestData.h"
 #include "Engine/TargetPoint.h"
-#include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 ASpotlightManager::ASpotlightManager()
 {
@@ -41,13 +41,6 @@ void ASpotlightManager::Deactivate()
             RS->OnMusicCallback.RemoveDynamic(this, &ThisClass::OnMusicCallbackReceived);
         }
     }
-}
-
-void ASpotlightManager::BeginPlay()
-{
-    Super::BeginPlay();
-    
-    TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
 }
 
 void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -121,9 +114,13 @@ void ASpotlightManager::TriggerSpotlightSpawn()
                 ActiveSpotlightZones.Add(NewZone);
                 NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
                 
-                if (TutorialManager)
+                if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
                 {
-                    NewZone->OnSpotlightBonusEarned.AddUObject(TutorialManager, &ATutorialManager::HandleOnSpotlightBonusEarned);
+                    NewZone->OnSpotlightBonusEarned.AddUObject(TutorialSub, 
+                        &UTutorialWorldSubsystem::ReportAction, 
+                        EQuestConditionType::HitSpotlight, 
+                        EQuestConditionParamType::Any,
+                        FString());
                 }
             }
         }
@@ -159,9 +156,9 @@ void ASpotlightManager::OnSpotlightZoneDestroyed(AActor* DestroyedActor)
     if (ASpotlightZone* Zone = Cast<ASpotlightZone>(DestroyedActor))
     {
         ActiveSpotlightZones.Remove(Zone);
-        if (TutorialManager)
+        if (const UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
         {
-            Zone->OnSpotlightBonusEarned.RemoveAll(TutorialManager);
+            Zone->OnSpotlightBonusEarned.RemoveAll(TutorialSub);
         }
     }
 }

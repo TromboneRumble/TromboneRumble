@@ -8,7 +8,6 @@
 #include "GameFramework/Actor.h"
 #include "SpotlightManager.generated.h"
 
-class ATutorialManager;
 class AInGameState;
 class ATargetPoint;
 class ASpotlightZone;
@@ -25,7 +24,6 @@ public:
 	virtual	void Deactivate() override;
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
@@ -82,9 +80,6 @@ private:
 	
 	UPROPERTY()
 	TSet<TObjectPtr<ASpotlightZone>> ActiveSpotlightZones;
-	
-	UPROPERTY()
-	TObjectPtr<ATutorialManager> TutorialManager; 
 	
 	FTimerHandle SpawnTimerHandle;
 	bool bIsFeverTime = false;

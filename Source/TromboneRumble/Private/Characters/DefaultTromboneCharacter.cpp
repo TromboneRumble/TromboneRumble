@@ -27,6 +27,7 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Prototype/InGameWidget.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
@@ -165,20 +166,6 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 	}
 }
 
-void ADefaultTromboneCharacter::ToggleGuideUI()
-{
-	TArray<UUserWidget*> FoundWidgets;
-	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, UInGameWidget::StaticClass());
-
-	for (UUserWidget* Widget : FoundWidgets)
-	{
-		if (UInGameWidget* InGameWidget = Cast<UInGameWidget>(Widget))
-		{
-			InGameWidget->ToggleGuideUI();
-			break;
-		}
-	}
-}
 
 EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
 {
@@ -256,6 +243,22 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 		ComboWidgetComponent->SetVisibility(true);
 	}
+}
+
+void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (HasAuthority())
+	{
+		if (const UGameStateSubsystem* Sub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+		{
+			if (Sub->GetLevelState() == ELevelState::InGame)
+			{
+				EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
+			}
+		}
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

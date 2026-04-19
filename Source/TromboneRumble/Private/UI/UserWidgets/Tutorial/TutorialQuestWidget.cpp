@@ -1,12 +1,9 @@
 #include "UI/UserWidgets/Tutorial/TutorialQuestWidget.h"
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Components/DynamicEntryBox.h"
-#include "Kismet/GameplayStatics.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "UI/UserWidgets/Tutorial/QuestWidget.h"
-
-UTutorialQuestWidget::UTutorialQuestWidget()
-{
-}
+#include "Utilities/DebugHelper.h"
 
 void UTutorialQuestWidget::HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray)
 {
@@ -36,46 +33,48 @@ void UTutorialQuestWidget::HandleQuestCompleted(const FString& QuestID)
 	}
 }
 
-void UTutorialQuestWidget::NativeOnInitialized()
+void UTutorialQuestWidget::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 	
-	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnQuestSequence.AddUObject(this, &ThisClass::HandleQuestSequence);
-		TutorialManager->OnQuestCompleted.AddUObject(this, &ThisClass::HandleQuestCompleted);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
+		TutorialSub->OnQuestSequenceEvent.AddDynamic(this, &ThisClass::HandleQuestSequence);
+		TutorialSub->OnQuestCompletedEvent.AddDynamic(this, &ThisClass::HandleQuestCompleted);
 	}
 }
 
+void UTutorialQuestWidget::NativeDestruct()
+{
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
+	{
+		TutorialSub->OnQuestSequenceEvent.RemoveAll(this);
+		TutorialSub->OnQuestCompletedEvent.RemoveAll(this);
+	}
+	
+	Super::NativeDestruct();
+}
 
 void UTutorialQuestWidget::CreateQuestWidget(const FQuestUIData& QuestUIData)
 {
-	if (QuestWidgetClass && DEB_QuestList)
+	if (!QuestWidgetClass)
 	{
-		if (UQuestWidget* QuestWidget = DEB_QuestList->CreateEntry<UQuestWidget>(QuestWidgetClass))
-		{
-			QuestWidget->InitQuestWidget(QuestUIData);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Failed to create quest widget entry."));
-		}
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("QuestWidgetClass is not set in the TutorialQuestWidget."));
+		return;
+	}
+	if (!DEB_QuestList)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("DEB_QuestList is not bound in the TutorialQuestWidget."));
+		return;
+	}
+	
+	if (UQuestWidget* QuestWidget = DEB_QuestList->CreateEntry<UQuestWidget>(QuestWidgetClass))
+	{
+		QuestWidget->InitQuestWidget(QuestUIData);
 	}
 	else
 	{
-		if (!QuestWidgetClass)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("QuestWidgetClass is not set in the TutorialQuestWidget."));
-		}
-		if (!DEB_QuestList)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("DEB_QuestList is not bound in the TutorialQuestWidget."));
-		}
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to create quest widget entry"));
 	}
 }
 

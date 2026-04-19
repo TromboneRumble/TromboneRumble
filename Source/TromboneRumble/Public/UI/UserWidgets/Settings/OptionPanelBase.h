@@ -10,22 +10,34 @@ class USaveManagerSubsystem;
 class UCommonTextBlock;
 class UCommonButtonBase;
 
-UCLASS()
+UCLASS(Abstract)
 class TROMBONERUMBLE_API UOptionPanelBase : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	
 public:
-	
-	virtual void Deactivate();
+
+	/** Refreshes the option panel UI to reflect the current settings. */
+	virtual void RefreshUI();
 	
 protected:
 	
-	virtual void Init(); 
-	virtual void InitButtons();
+	/** Activates the option panel */
+	virtual void Activate();
+	
+	/** Deactivates the option panel */
+	virtual void Deactivate();
+	
+	/** Registers the widget events. e.g. button click events. */
+	virtual void Register();
+	
+	/** Unregisters the widget events. e.g. button click events. */
+	virtual void Unregister();
 	
 	virtual void HandleApplyButtonClicked();
 	virtual void HandleResetButtonClicked();
+	
+protected:
 	
 	UPROPERTY()
 	TObjectPtr<USaveManagerSubsystem> SaveManagerSubsystem;
@@ -39,7 +51,9 @@ protected:
 	
 public:
 	
-	// ~ Begin UUserWidget Interface
+	// ~ Begin UCommonActivatableWidget Interface
 	virtual void NativeConstruct() override;
-	// ~ End UUserWidget Interface
+	virtual void NativeDestruct() override;
+	// ~ End UCommonActivatableWidget Interface
+	
 };

@@ -5,28 +5,61 @@
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/Settings/SliderWidgetBase.h"
 
-void UAudioOptionPanel::Init()
+void UAudioOptionPanel::RefreshUI()
 {
-	Super::Init();
+	Super::RefreshUI();
 	
-	InitSliders();
+	if (!SaveManagerSubsystem) return;
 	
-	if (SaveManagerSubsystem)
-	{
-		if (const UTromboneSaveGame* SavedSettings = SaveManagerSubsystem->LoadOrCreateSettings())
-		{
-			UpdateUIFromSettings(SavedSettings->Audio);
-		}
-	}
+	const FAudioSettingData AudioData = SaveManagerSubsystem->GetAudioSettings();
+	
+	if (WBP_MasterSlider) WBP_MasterSlider->SetValue(AudioData.MasterVolume);
+	if (WBP_BGMSlider) WBP_BGMSlider->SetValue(AudioData.BGMVolume);
+	if (WBP_MusicSlider) WBP_MusicSlider->SetValue(AudioData.MusicVolume);
+	if (WBP_SFXSlider) WBP_SFXSlider->SetValue(AudioData.SFXVolume);
+	
+	WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, AudioData.MasterVolume);
+	WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, AudioData.BGMVolume);
+	WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, AudioData.MusicVolume);
+	WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, AudioData.SFXVolume);
+	
+	SaveManagerSubsystem->ApplyAudio(AudioData);
+}
+
+void UAudioOptionPanel::Activate()
+{
+	Super::Activate();
+	
+	RefreshUI();
 }
 
 void UAudioOptionPanel::Deactivate()
 {
 	Super::Deactivate();
 	
-	const FAudioSettingData Data = SaveManagerSubsystem->GetAudioSettings();
-	UpdateUIFromSettings(Data);
-	SaveManagerSubsystem->ApplyAudio(Data);
+	RefreshUI();
+}
+
+void UAudioOptionPanel::Register()
+{
+	Super::Register();
+	
+	WBP_MasterSlider->Init([this](const float Value)
+	{
+		WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, Value);
+	});
+	WBP_BGMSlider->Init([this](const float Value)
+	{
+		WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, Value);
+	});
+	WBP_MusicSlider->Init([this](const float Value)
+	{
+		WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, Value);
+	});
+	WBP_SFXSlider->Init([this](const float Value)
+	{
+		WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, Value);
+	});
 }
 
 void UAudioOptionPanel::HandleApplyButtonClicked()
@@ -46,40 +79,5 @@ void UAudioOptionPanel::HandleResetButtonClicked()
 {
 	Super::HandleResetButtonClicked();
 
-	const FAudioSettingData Data = SaveManagerSubsystem->GetAudioSettings();
-	UpdateUIFromSettings(Data);
-	SaveManagerSubsystem->ApplyAudio(Data);
-}
-
-void UAudioOptionPanel::InitSliders() const
-{
-	WBP_MasterSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, Value);
-	});
-	WBP_BGMSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, Value);
-	});
-	WBP_MusicSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, Value);
-	});
-	WBP_SFXSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, Value);
-	});
-}
-
-void UAudioOptionPanel::UpdateUIFromSettings(const FAudioSettingData& AudioData) const
-{
-	if (WBP_MasterSlider) WBP_MasterSlider->SetValue(AudioData.MasterVolume);
-	if (WBP_BGMSlider) WBP_BGMSlider->SetValue(AudioData.BGMVolume);
-	if (WBP_MusicSlider) WBP_MusicSlider->SetValue(AudioData.MusicVolume);
-	if (WBP_SFXSlider) WBP_SFXSlider->SetValue(AudioData.SFXVolume);
-	
-	WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, AudioData.MasterVolume);
-	WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, AudioData.BGMVolume);
-	WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, AudioData.MusicVolume);
-	WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, AudioData.SFXVolume);
+	RefreshUI();
 }

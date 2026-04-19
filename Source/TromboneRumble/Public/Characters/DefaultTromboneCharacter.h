@@ -50,7 +50,6 @@ public:
 	void StartSprint();
 	void StopSprint();
 	void Rhythm(bool bIsPressed);
-	void ToggleGuideUI();
 
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	
@@ -59,6 +58,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	

@@ -1,0 +1,23 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "CommonButtonBase.h"
+#include "CommonButtonStyleExtension.generated.h"
+
+/** 
+ * UCommonButtonStyle does not support applying UCommonTextStyle to the NormalPressed state
+ */
+UCLASS()
+class TROMBONERUMBLE_API UCommonButtonStyleExtension : public UCommonButtonStyle
+{
+	GENERATED_BODY()
+	
+public:
+	
+	/** The text style to us when pressed */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	TSubclassOf<UCommonTextStyle> NormalPressedTextStyle;
+	
+};
