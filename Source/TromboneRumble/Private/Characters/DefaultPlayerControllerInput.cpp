@@ -38,7 +38,8 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Started, this, &ThisClass::Handle_Rhythm, true);
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Completed, this, &ThisClass::Handle_Rhythm, false);
 		if (EscapeAction)  EIC->BindAction(EscapeAction, ETriggerEvent::Started, this, &ThisClass::Handle_Escape);
-		
+		if (CameraZoomAction) EIC->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_CameraZoom);
+
 		if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 		{
 			if (MoveAction) EIC->BindAction(MoveAction, ETriggerEvent::Started, TutorialSub, &UTutorialWorldSubsystem::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Move"));
@@ -145,6 +146,14 @@ void ADefaultPlayerController::Handle_Escape()
 		UE_LOG(LogTemp, Error, TEXT("Failed to show escape popup"));
 		return;
 	}
+}
+
+void ADefaultPlayerController::Handle_CameraZoom(const FInputActionValue& Value)
+{
+	if (!CanProcessInput()) return;
+	const float Delta = Value.Get<float>();
+	if (FMath::IsNearlyZero(Delta)) return;
+	CachedOwnerCharacter->OnCameraZoom(Delta);
 }
 
 void ADefaultPlayerController::Handle_Attack()

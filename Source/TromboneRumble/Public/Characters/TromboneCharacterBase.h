@@ -57,7 +57,7 @@ public:
 	FEndInvincibleSignature EndInvincibleDelegate;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Data")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
 	int32 SkinMaterialIndex = 1;

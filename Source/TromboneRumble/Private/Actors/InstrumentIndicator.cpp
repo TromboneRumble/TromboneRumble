@@ -2,6 +2,8 @@
 
 
 #include "Actors/InstrumentIndicator.h"
+
+#include "Characters/TromboneCharacterBase.h"
 #include "Items/InstrumentBase.h"
 #include "Components/ActorComponents/FloatingRotatingComponent.h"
 
@@ -27,6 +29,12 @@ void AInstrumentIndicator::ResetBaseLocation(const FVector& InLocation)
 	{
 		FloatingRotatingComponent->ResetBaseLocation(InLocation);
 	}
+}
+
+void AInstrumentIndicator::BeginPlay()
+{
+	Super::BeginPlay();
+	ATromboneCharacterBase::ApplyOccludedStencilToActor(this);
 }
 
 void AInstrumentIndicator::Tick(float DeltaSeconds)

@@ -42,6 +42,8 @@ public:
 	TObjectPtr<UInputAction> RhythmAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> EscapeAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> CameraZoomAction;
 	// ~InputActions
 
 	UPROPERTY(BlueprintAssignable, Category = "PlayerState")
@@ -92,6 +94,7 @@ private:
 	void Handle_SprintPressed();
 	void Handle_SprintReleased();
 	void Handle_Escape();
+	void Handle_CameraZoom(const struct FInputActionValue& Value);
 	// ~Input handlers
 
 	bool CanProcessInput();

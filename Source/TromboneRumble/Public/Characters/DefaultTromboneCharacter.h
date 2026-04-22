@@ -7,6 +7,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Items/InstrumentBase.h"
+#include "BlueprintFunctionLibraries/CameraFunctionLibrary.h"
 #include "DefaultTromboneCharacter.generated.h"
 
 
@@ -55,7 +56,10 @@ public:
 	
 	void Equip(AItemBase* WeaponToEquip);
 	void Unequip();
-	
+
+	/** 마우스 휠 줌 단계 변경. WheelDelta: +1 = 줌인(레벨 감소), -1 = 줌아웃(레벨 증가) */
+	void OnCameraZoom(float WheelDelta);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -68,6 +72,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components|Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
+
+	/** 현재 줌 레벨 (1..3, 기본 2) */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	int32 CurrentZoomLevel = 2;
+
+	/** 목표 Arm Length. BP Tick에서 UpdateTopDownCameraZoomEase에 전달 */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	float DesiredArmLength = 800.f;
+
+	/** 목표 CameraBoom Rotation (Absolute). BP Tick에서 UpdateTopDownCameraZoomEase에 전달 */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	FRotator DesiredBoomRotation = FRotator(-30.f, 0.f, 0.f);
+
+	/** 줌 보간 상태 (이상값 보존용) */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	FCameraZoomLerpState CameraZoomLerpState;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	TObjectPtr<UInteractorComponent> InteractorComponent;

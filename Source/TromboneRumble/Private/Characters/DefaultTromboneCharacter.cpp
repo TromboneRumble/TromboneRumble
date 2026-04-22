@@ -141,6 +141,34 @@ void ADefaultTromboneCharacter::StopSprint()
 	UpdateMaxWalkSpeed();
 }
 
+void ADefaultTromboneCharacter::OnCameraZoom(float WheelDelta)
+{
+	if (!IsLocallyControlled() || !CharacterData) return;
+
+	// 휠 업(+) → 줌 인(레벨 감소), 휠 다운(-) → 줌 아웃(레벨 증가)
+	const int32 Step = (WheelDelta > 0.f) ? -1 : 1;
+	const int32 NewLevel = FMath::Clamp(CurrentZoomLevel + Step, 1, 3);
+	if (NewLevel == CurrentZoomLevel) return;
+	CurrentZoomLevel = NewLevel;
+
+	switch (CurrentZoomLevel)
+	{
+	case 1:
+		DesiredArmLength = CharacterData->CameraArmLengthLevel1;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel1, 0.f, 0.f);
+		break;
+	case 3:
+		DesiredArmLength = CharacterData->CameraArmLengthLevel3;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel3, 0.f, 0.f);
+		break;
+	case 2:
+	default:
+		DesiredArmLength = CharacterData->CameraArmLengthLevel2;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel2, 0.f, 0.f);
+		break;
+	}
+}
+
 void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 {
 	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
@@ -231,8 +259,11 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 	if (IsLocallyControlled())
 	{
-		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
-		CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
+		CurrentZoomLevel = 2;
+		DesiredArmLength = CharacterData->CameraArmLengthLevel2;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel2, 0.f, 0.f);
+		CameraBoom->TargetArmLength = DesiredArmLength;
+		CameraBoom->SetRelativeRotation(DesiredBoomRotation);
 		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
 
 		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
