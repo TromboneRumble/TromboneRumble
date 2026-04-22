@@ -28,6 +28,7 @@ enum class EGimmickType : uint8
 	Spotlight,
 	Puddle,
 	Trash,
+	Present,
 	MAX,
 	None = 255,
 };
@@ -188,6 +189,7 @@ enum class EScoreType : uint8
 	OnHit = 4					UMETA(DisplayName = "OnHit"),
 	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
 	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
+	Present = 7					UMETA(DisplayName = "Present"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)
