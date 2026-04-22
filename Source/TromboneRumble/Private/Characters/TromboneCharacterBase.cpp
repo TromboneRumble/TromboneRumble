@@ -35,6 +35,23 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	InitCharacter();
 }
 
+void ATromboneCharacterBase::ApplyOccludedStencil(UPrimitiveComponent* Prim)
+{
+	if (!Prim) return;
+	Prim->SetRenderCustomDepth(true);
+	Prim->SetCustomDepthStencilValue(TromboneRender::CHARACTER_OCCLUDED_STENCIL);
+}
+
+void ATromboneCharacterBase::ApplyOccludedStencilToActor(AActor* Actor)
+{
+	if (!Actor) return;
+	TArray<UPrimitiveComponent*> Prims;
+	Actor->GetComponents<UPrimitiveComponent>(Prims);
+	for (UPrimitiveComponent* Prim : Prims)
+	{
+		ApplyOccludedStencil(Prim);
+	}
+}
 void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
 {
 	if (SkinMID)
@@ -102,6 +119,8 @@ void ATromboneCharacterBase::BeginPlay()
 			AkSoundComponent->SetListeners(Listeners);
 		}
 	}
+
+	ApplyOccludedStencil(GetMesh());
 
 	SetupCharacterData();
 	BoundBounceTimeline();

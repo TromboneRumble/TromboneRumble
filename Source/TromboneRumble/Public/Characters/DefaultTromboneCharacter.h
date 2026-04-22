@@ -100,6 +100,10 @@ protected:
 	TObjectPtr<USceneComponent> ComboWidgetAnchorComponent;
 	// ~Components
 
+	// 가려졌을 때 X-Ray 실루엣 표시용 PostProcess 머티리얼 (로컬 플레이어 카메라에만 블렌드)
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Camera|Occlusion")
+	TObjectPtr<UMaterialInterface> OcclusionOverlayMaterial;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
 	// ~Components

@@ -242,6 +242,13 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 
 		ComboWidgetComponent->SetVisibility(true);
+
+		// 가려진 캐릭터 실루엣을 위한 PostProcess 머티리얼을 로컬 카메라에만 블렌드
+		if (OcclusionOverlayMaterial && FollowCamera)
+		{
+			FWeightedBlendable Blend(1.0f, OcclusionOverlayMaterial);
+			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
+		}
 	}
 }
 

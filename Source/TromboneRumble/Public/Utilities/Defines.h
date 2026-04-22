@@ -211,3 +211,9 @@ enum class EBarInterpType : uint8
 	Smooth      UMETA(DisplayName = "Smooth (Ease-Out)"),  // 부드러운 감속 (FInterpTo)
 	Constant    UMETA(DisplayName = "Constant (Linear)")   // 일정한 속도 (FInterpConstantTo)
 };
+
+namespace TromboneRender
+{
+	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
+	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
+}

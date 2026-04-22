@@ -44,6 +44,11 @@ public:
 	void ApplySkinColor(const FLinearColor InSkinColor) const;
 	void SetPlayerInput(const bool bShouldEnable);
 
+	// X-Ray 실루엣용 CustomDepth stencil 값 설정 (단일 Primitive 컴포넌트)
+	static void ApplyOccludedStencil(UPrimitiveComponent* Prim);
+	// 지정 액터 내부의 모든 Primitive에만 stencil 적용 (자식 액터는 순회하지 않음)
+	static void ApplyOccludedStencilToActor(AActor* Actor);
+
 	FOnRagdollSignature OnRagdollDelegate;
 	FEndRagdollSignature EndRagdollDelegate;
 	UPROPERTY(BlueprintAssignable)
