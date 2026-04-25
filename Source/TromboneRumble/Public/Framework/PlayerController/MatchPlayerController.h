@@ -4,17 +4,26 @@
 #include "GameFramework/PlayerController.h"
 #include "MatchPlayerController.generated.h"
 
+class UInputAction;
+class UInputMappingContext;
+
 UCLASS()
 class TROMBONERUMBLE_API AMatchPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	/** Default constructor. */
 	AMatchPlayerController();
 
 public:
+
+	UPROPERTY(EditAnywhere, Category = "Input|Voice")
+	TObjectPtr<UInputMappingContext> VoiceMappingContext;
+
+	UPROPERTY(EditAnywhere, Category = "Input|Voice")
+	TObjectPtr<UInputAction> PushToTalkAction;
 
 	/**
 	 * Whether we want to override the view target when AutoManageActiveCameraTarget() is called.
@@ -55,6 +64,11 @@ public:
 	// ~ Begin APlayerController Interface
 	virtual void AutoManageActiveCameraTarget(AActor* SuggestedTarget) override;
 	virtual void PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel) override;
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 	// ~ End APlayerController Interface
-	
+
+private:
+	void Handle_PushToTalkStart();
+	void Handle_PushToTalkEnd();
 };

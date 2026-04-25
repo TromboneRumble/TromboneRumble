@@ -22,13 +22,19 @@ UCLASS()
 class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
+	{
+		return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::LockOnCapture, false);
+	}
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnInitialized() override;
-	
+
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	

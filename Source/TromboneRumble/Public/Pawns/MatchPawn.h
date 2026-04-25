@@ -7,6 +7,8 @@
 class UNameplateComponent;
 class UCapsuleComponent;
 class UArrowComponent;
+class UWidgetComponent;
+class UTromboneVOIPTalker;
 class APlayerStart;
 
 /**
@@ -51,6 +53,31 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	UNameplateComponent* NameplateComponent;
 
+	/** Voice chat talker — configured for 2D (omnidirectional) playback in MatchMenuMap. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
+	TObjectPtr<UTromboneVOIPTalker> VOIPTalker;
+
+	/** Widget shown above the pawn while this player is speaking. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
+	TObjectPtr<UWidgetComponent> SpeakerIndicatorComponent;
+
+	void TryRegisterVOIPTalker();
+
+	UFUNCTION()
+	void HandleVoiceTalkingStateChanged(bool bIsTalking);
+	
+	bool bDesiredSpeakingByPTT = false;
+	void SetSpeakerIconVisible(bool bVisible);
+
+public:
+	// UVOIPTalker::OnTalkingBegin은 Listener에게만 적용되기 때문에, RPC를 통해 SpeakerIcon을 제어
+	// True인 경우에는 해당 플레이어가 PushToTalk 모드를 사용해서 말을 하고 있음.
+	UFUNCTION(Server, Reliable)
+	void Server_SetSpeaking(bool bSpeaking);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetSpeaking(bool bSpeaking);
+
 #if WITH_EDITORONLY_DATA
 	/** Pawn arrow component. */
 	UPROPERTY()
@@ -63,6 +90,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void OnRep_PlayerState() override;
+	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
 	
 };

@@ -6,6 +6,7 @@
 #include "Data/QuestData.h"
 #include "Framework/LobbyGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/VoiceChatSubsystem.h"
 #include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "Utilities/TromboneStatics.h"
 
@@ -39,6 +40,11 @@ void ADefaultPlayerController::SetupInputComponent()
 		if (RhythmAction)  EIC->BindAction(RhythmAction, ETriggerEvent::Completed, this, &ThisClass::Handle_Rhythm, false);
 		if (EscapeAction)  EIC->BindAction(EscapeAction, ETriggerEvent::Started, this, &ThisClass::Handle_Escape);
 		if (CameraZoomAction) EIC->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &ThisClass::Handle_CameraZoom);
+		if (PushToTalkAction)
+		{
+			EIC->BindAction(PushToTalkAction, ETriggerEvent::Started,   this, &ThisClass::Handle_PushToTalkStart);
+			EIC->BindAction(PushToTalkAction, ETriggerEvent::Completed, this, &ThisClass::Handle_PushToTalkEnd);
+		}
 
 		if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 		{
@@ -164,6 +170,48 @@ void ADefaultPlayerController::Handle_Attack()
 void ADefaultPlayerController::Handle_Rhythm(const bool bPressed)
 {
 	if (CanProcessInput()) CachedOwnerCharacter->Rhythm(bPressed);
+}
+
+void ADefaultPlayerController::Handle_PushToTalkStart()
+{
+	if (const ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			if (VCS->GetTalkMode() == EVoiceTalkMode::PushToTalk)
+			{
+				VCS->BeginLocalTalk();
+				
+				// UVOIPTalker::OnTalkingBegin은 듣는 사람한테만 적용되기 때문에
+				// 본인이 이야기를 하고 있다를 UI로 표시하기 위해서 따로 RPC를 보내야함.
+				if (ADefaultTromboneCharacter* Char = CachedOwnerCharacter.Get())
+				{
+					Char->Server_SetSpeaking(true);
+				}
+			}
+		}
+	}
+}
+
+void ADefaultPlayerController::Handle_PushToTalkEnd()
+{
+	if (const ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			if (VCS->GetTalkMode() == EVoiceTalkMode::PushToTalk)
+			{
+				VCS->EndLocalTalk();
+
+				// UVOIPTalker::OnTalkingEnd는 듣는 사람한테만 적용되기 때문에
+				// 본인이 이야기가 끝남을 UI로 표시하기 위해서 따로 RPC를 보내야함.
+				if (ADefaultTromboneCharacter* Char = CachedOwnerCharacter.Get())
+				{
+					Char->Server_SetSpeaking(false);
+				}
+			}
+		}
+	}
 }
 
 bool ADefaultPlayerController::CanProcessInput()

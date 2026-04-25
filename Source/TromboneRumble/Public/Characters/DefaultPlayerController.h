@@ -44,6 +44,8 @@ public:
 	TObjectPtr<UInputAction> EscapeAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> CameraZoomAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> PushToTalkAction;
 	// ~InputActions
 
 	UPROPERTY(BlueprintAssignable, Category = "PlayerState")
@@ -95,6 +97,8 @@ private:
 	void Handle_SprintReleased();
 	void Handle_Escape();
 	void Handle_CameraZoom(const struct FInputActionValue& Value);
+	void Handle_PushToTalkStart();
+	void Handle_PushToTalkEnd();
 	// ~Input handlers
 
 	bool CanProcessInput();
