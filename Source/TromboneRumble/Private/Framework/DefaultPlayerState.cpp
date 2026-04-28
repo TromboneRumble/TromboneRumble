@@ -1,4 +1,7 @@
 #include "Framework/DefaultPlayerState.h"
+#include "OnlineSessionSettings.h"
+#include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Framework/InGameState.h"
 #include "Framework/LobbyGameState.h"
@@ -7,6 +10,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "HAL/PlatformFileManager.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Pawns/MatchPawn.h"
 #include "Utilities/DebugHelper.h"
 
@@ -282,4 +286,32 @@ void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
 {
 	SkinColor = InSkinColor;
 	OnRep_SkinColor();
+}
+
+bool ADefaultPlayerState::IsHost() const
+{
+	const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld());
+	if (!Subsystem)
+	{
+		return false;
+	}
+
+	const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+	if (!SessionInterface.IsValid())
+	{
+		return false;
+	}
+
+	const FNamedOnlineSession* CurrentSession = SessionInterface->GetNamedSession(NAME_GameSession);
+	if (!CurrentSession)
+	{
+		return false;
+	}
+
+	if (GetUniqueId().IsValid() && CurrentSession->OwningUserId.IsValid())
+	{
+		return *GetUniqueId() == *CurrentSession->OwningUserId;
+	}
+
+	return false;
 }
