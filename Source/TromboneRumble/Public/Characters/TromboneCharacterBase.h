@@ -103,6 +103,22 @@ private:
 	bool IsFacingUp() const;
 	float PoseSnapshotInterval = 0.1f;
 
+	void TryApplyPendingImpulse();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ApplyExplosiveImpulse(FVector ImpactPoint, float Radius, float Strength);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_RecoverRagdollAtLocation(FVector RecoverLocation, FRotator RecoverRotation);
+
+	FVector PendingImpulsePoint = FVector::ZeroVector;
+	float PendingImpulseRadius = 0.f;
+	float PendingImpulseStrength = 0.f;
+	bool bHasPendingExplosiveImpulse = false;
+
+	FVector PendingRecoverLocation = FVector::ZeroVector;
+	FRotator PendingRecoverRotation = FRotator::ZeroRotator;
+
 	void UpdateSkinFromPlayerState();
 	
 	void ApplyFlagPhysics();

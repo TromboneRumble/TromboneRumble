@@ -93,20 +93,15 @@ void APressurePlateBase::OnTimelineFinished()
 
 void APressurePlateBase::Server_OnPlateActivated_Implementation()
 {
-	if (!HasAuthority() || SpawningActorClasses.Num() == 0) return;
-
-	int32 RandomIndex = FMath::RandRange(0, SpawningActorClasses.Num() - 1);
-	TSubclassOf<AActor> SelectedClass = SpawningActorClasses[RandomIndex];
-
-	if (!SelectedClass) return;
-
+	if (!HasAuthority() || SpawningActorClass == nullptr) return;
+	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	FVector SpawnLocation = GetActorLocation();
 
-	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(SelectedClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(SpawningActorClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 
 	if (SpawnedActor && SpawnedActor->Implements<UInteractable>())
 	{

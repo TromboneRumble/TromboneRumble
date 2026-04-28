@@ -182,6 +182,11 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 	{
 	case EHitReactionType::Ragdoll:
 		OnRagdoll();
+		if (HitData.ExplosionStrength > 0.f)
+		{
+			Multicast_ApplyExplosiveImpulse(HitData.ImpactPoint, HitData.ExplosionRadius, HitData.ExplosionStrength);
+		}
+		break;
 	case EHitReactionType::Stun:
 		OnStun();
 		break;
@@ -190,7 +195,10 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 		break;
 	}
 
-	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
+	if (HitData.HitReaction != EHitReactionType::Ragdoll && HitData.KnockbackForce > 0.f)
+	{
+		LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
+	}
 }
 
 void ATromboneCharacterBase::OnRep_SkinColor()
@@ -277,22 +285,50 @@ void ATromboneCharacterBase::EndRagdoll()
 {
 	if (!HasAuthority()) return;
 
+	const FVector PelvisLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
+	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
+	const float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+	FVector TargetCapsuleLocation = PelvisLocation;
+	const FRotator TargetCapsuleRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
+
+	FHitResult HitResult;
+	const FVector TraceStart = PelvisLocation;
+	const FVector TraceEnd = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+	{
+		TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
+	}
+
 	bIsRagdoll = false;
-	OnRep_IsRagdoll();
-	
+	Multicast_RecoverRagdollAtLocation(TargetCapsuleLocation, TargetCapsuleRotation);
+
 	bIsInvincible = true;
 	OnRep_IsInvincible();
-	
+
 	GetWorld()->GetTimerManager().SetTimer(
-		InvincibilityTimerHandle, 
+		InvincibilityTimerHandle,
 		[this]()
 		{
 			bIsInvincible = false;
 			OnRep_IsInvincible();
-		}, 
-		CharacterData->InvincibilityDurationAfterRagdoll, 
+		},
+		CharacterData->InvincibilityDurationAfterRagdoll,
 		false
 	);
+}
+
+void ATromboneCharacterBase::Multicast_RecoverRagdollAtLocation_Implementation(FVector RecoverLocation, FRotator RecoverRotation)
+{
+	PendingRecoverLocation = RecoverLocation;
+	PendingRecoverRotation = RecoverRotation;
+
+	UnapplyRagdoll();
+	PlayFaceSequence(ECharacterFaceState::Blink);
+	EndRagdollDelegate.Broadcast();
 }
 
 void ATromboneCharacterBase::OnStun()
@@ -354,47 +390,97 @@ void ATromboneCharacterBase::ApplyRagdoll()
 	SetPlayerInput(false);
 
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-    
+
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    
-	GetMesh()->SetSimulatePhysics(true);
+	
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->WakeAllRigidBodies();
 
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		AnimInst->SetIsRagdolling(true);
 	}
+
+	TryApplyPendingImpulse();
+	
+	// 같은 프레임에서 SimulatePhysics가 아직 propagate되지 않은 경우 다음 tick에 재시도.
+	if (bHasPendingExplosiveImpulse && GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::TryApplyPendingImpulse);
+	}
+}
+
+void ATromboneCharacterBase::TryApplyPendingImpulse()
+{
+	if (!bHasPendingExplosiveImpulse) return;
+
+	USkeletalMeshComponent* MeshComp = GetMesh();
+	if (!MeshComp || !MeshComp->IsSimulatingPhysics()) return;
+
+	// 본이 sleep 상태이거나 막 활성화된 경우 wake 시켜야 임펄스가 반영됨.
+	MeshComp->WakeAllRigidBodies();
+
+	MeshComp->AddRadialImpulse(
+		PendingImpulsePoint,
+		PendingImpulseRadius,
+		PendingImpulseStrength,
+		ERadialImpulseFalloff::RIF_Linear,
+		true);
+
+	bHasPendingExplosiveImpulse = false;
+}
+
+void ATromboneCharacterBase::Multicast_ApplyExplosiveImpulse_Implementation(FVector ImpactPoint, float Radius, float Strength)
+{
+	PendingImpulsePoint = ImpactPoint;
+	PendingImpulseRadius = Radius;
+	PendingImpulseStrength = Strength;
+	bHasPendingExplosiveImpulse = true;
+
+	// 같은 프레임에 SetSimulatePhysics가 호출됐다면 Chaos가 다음 sub-step부터 본을 시뮬하기 시작하므로,
+	// 즉시 시도하고도 실패하면 다음 tick에서 한번 더 시도해서 보장.
+	TryApplyPendingImpulse();
+
+	if (bHasPendingExplosiveImpulse && GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::TryApplyPendingImpulse);
+	}
 }
 
 void ATromboneCharacterBase::UnapplyRagdoll()
 {
-    const FVector PelvisLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
-    const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->SaveRagdollPoseSnapshot();
+	}
+	
+	GetMesh()->SetAllBodiesSimulatePhysics(false);
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->AttachToComponent(
+		GetCapsuleComponent(),
+		FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	
+	SetActorLocationAndRotation(
+		PendingRecoverLocation,
+		PendingRecoverRotation,
+		false,
+		nullptr,
+		ETeleportType::TeleportPhysics);
 
-    FVector TargetCapsuleLocation = PelvisLocation;
-    const FRotator TargetCapsuleRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
-
-    const float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-
-    FHitResult HitResult;
-    FVector Start = PelvisLocation;
-    FVector End = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
-    FCollisionQueryParams QueryParams;
-    QueryParams.AddIgnoredActor(this);
-    
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
-    {
-       TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
-    }
-
-    SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation);
-    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
-
+	// mesh를 capsule 기준 default relative transform으로 정렬.
+	GetMesh()->SetRelativeLocationAndRotation(
+		FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		FRotator(0.0f, -90.0f, 0.0f),
+		/*bSweep=*/false,
+		/*OutSweepHit=*/nullptr,
+		ETeleportType::TeleportPhysics);
+	
 	GetWorld()->GetTimerManager().SetTimer(
-		TimerHandler_DelayedSavePostSnapshot, 
-		this, 
-		&ThisClass::DelayedSavePoseSnapshot, 
+		TimerHandler_DelayedSavePostSnapshot,
+		this,
+		&ThisClass::DelayedSavePoseSnapshot,
 		PoseSnapshotInterval,
 		false
 	);
@@ -418,10 +504,10 @@ void ATromboneCharacterBase::DelayedSavePoseSnapshot()
 void ATromboneCharacterBase::InternalUnapplyRagdoll()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
+
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetCharacterMovement()->Velocity = FVector::ZeroVector;
-	
+
 	GetMesh()->SetSimulatePhysics(false);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -429,6 +515,7 @@ void ATromboneCharacterBase::InternalUnapplyRagdoll()
 	
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
+		AnimInst->SetIsRagdolling(false);
 		AnimInst->PlayGetUpMontage(IsFacingUp());
 	}
 
@@ -581,12 +668,6 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 			AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
 		}
 		OnRagdollDelegate.Broadcast();
-	}
-	else
-	{
-		UnapplyRagdoll();
-		PlayFaceSequence(ECharacterFaceState::Blink);
-		EndRagdollDelegate.Broadcast();
 	}
 }
 

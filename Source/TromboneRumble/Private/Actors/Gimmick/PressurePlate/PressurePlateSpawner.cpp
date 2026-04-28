@@ -114,6 +114,12 @@ void APressurePlateSpawner::TriggerPlateSpawn()
 			if (NewPlate)
 			{
 				SpawnMap.Add(ChosenPoint, NewPlate);
+				
+				int32 RandomIndex = FMath::RandRange(0, SpawningActorClasses.Num() - 1);
+				TSubclassOf<AActor> SelectedClass = SpawningActorClasses[RandomIndex];
+				if (!SelectedClass) return;
+				NewPlate->SetSpawningClass(SelectedClass);
+				
 				NewPlate->OnDestroyed.AddDynamic(this, &APressurePlateSpawner::OnPlateDestroyed);
 			}
 		}

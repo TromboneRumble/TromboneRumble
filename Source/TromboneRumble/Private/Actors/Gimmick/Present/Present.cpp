@@ -19,7 +19,6 @@ APresent::APresent()
 	SetRootComponent(GiftMesh);
 	GiftMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GiftMesh->SetCollisionObjectType(ECC_WorldDynamic);
-	GiftMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	GiftMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	
 	OverlapSphere = CreateDefaultSubobject<USphereComponent>(TEXT("OverlapSphere"));
