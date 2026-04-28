@@ -12,6 +12,7 @@ class TROMBONERUMBLE_API UPlayerNameplateWidget : public UCommonUserWidget
 	GENERATED_BODY()
 	
 public:
+	
 	/** Default constructor. */
 	UPlayerNameplateWidget();
 	
@@ -24,12 +25,16 @@ protected:
 public:
 
 	/** Initializes the player widget. */
-	UFUNCTION(BlueprintCallable, Category = "Default")
+	UFUNCTION(BlueprintCallable, Category = "Nameplate")
 	virtual void InitPlayerWidget(ADefaultPlayerState* InOwningPlayerState);
 
 	/** @return Whether the owning player is the local player. */
-	UFUNCTION(BlueprintPure, Category = "Default")
+	UFUNCTION(BlueprintPure, Category = "Nameplate")
 	bool IsLocallyControlledPlayer() const;
+	
+	/** @return Whether the owning player is the host player. */
+	UFUNCTION(BlueprintPure, Category = "Nameplate")
+	bool IsHostPlayer() const;
 	
 protected:
 
@@ -38,14 +43,7 @@ protected:
 	virtual void OnPlayerNameChanged(const FString& PlayerName);
 
 protected:
-
-	/**
-	 * Event when the player widget is initialized. Called after the native OnInitialized() event.
-	 * At this point the owning player is set, and relevant events are bound.
-	 */
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCosmetic, Category = "Events", DisplayName = "On Player Widget Initialized")
-	void K2_OnPlayerWidgetInitialized();
-
+	
 	/** Event when the owning player's name changes (including the first time it replicates). */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCosmetic, Category = "Events", DisplayName = "On Player Name Changed")
 	void K2_OnPlayerNameChanged(const FString& PlayerName);

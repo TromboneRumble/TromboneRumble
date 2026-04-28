@@ -14,9 +14,7 @@ void UPlayerNameplateWidget::InitPlayerWidget(ADefaultPlayerState* InOwningPlaye
 		OwningPlayerState = InOwningPlayerState;
 		
 		OwningPlayerState->OnPlayerNameChanged.AddDynamic(this, &ThisClass::OnPlayerNameChanged);
-
-		K2_OnPlayerWidgetInitialized();
-
+		
 		const FString PlayerName = OwningPlayerState->GetPlayerName();
 		if (!PlayerName.IsEmpty())
 		{
@@ -44,4 +42,9 @@ bool UPlayerNameplateWidget::IsLocallyControlledPlayer() const
 	}
 	
 	return false;
+}
+
+bool UPlayerNameplateWidget::IsHostPlayer() const
+{
+	return OwningPlayerState ? OwningPlayerState->IsHost() : false;
 }

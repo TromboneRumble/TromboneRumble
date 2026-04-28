@@ -1,19 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/InGameMode.h"
-#include "EngineUtils.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
-#include "Framework/TromboneGameInstance.h"
 #include "EasyOnlineSession.h"
 #include "EasySessionTypes.h"
 #include "EasySessionUtils.h"
-
-AInGameMode::AInGameMode()
-{
-	bUseSeamlessTravel = true;
-}
 
 void AInGameMode::BeginPlay()
 {

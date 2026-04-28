@@ -8,6 +8,9 @@
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "TromboneConfig.generated.h"
 
+enum class EToastSystemPolicy : uint8;
+class UToastItemWidget;
+class UToastContainerWidget;
 class AInstrumentBase;
 enum class EWeaponType : uint8;
 
@@ -83,6 +86,14 @@ public:
 	/** Performance widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
 	TSubclassOf<UCommonUserWidget> PerformanceWidgetClass;
+	
+	/** Toast container widget class. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Toast")
+	TSoftClassPtr<UToastContainerWidget> ToastContainerWidgetClass;
+	
+	/** Simple toast widget class. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Toast")
+	TSoftClassPtr<UToastItemWidget> SimpleToastWidgetClass;
 
 public:
 	
@@ -101,6 +112,12 @@ public:
 	/** Time in seconds for the lobby countdown before server travel. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
 	int32 LobbyCountdownTimeSeconds;
+	
+public:
+	
+	/** Toast system policy for the entire game */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|UI")
+	EToastSystemPolicy ToastSystemPolicy;
 	
 public:
 	

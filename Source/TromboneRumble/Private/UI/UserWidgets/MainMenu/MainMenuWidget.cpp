@@ -10,12 +10,13 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
+#include "Data/UIData.h"
 #include "Framework/TromboneGameInstance.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
+#include "Subsystems/ToastSubsystem.h"
 #include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
 #include "Utilities/TromboneStatics.h"
 
@@ -219,12 +220,18 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	
 	if (ET_Code->GetText().IsEmpty())
 	{
-		if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		UToastSubsystem* ToastSubsystem = GetGameInstance()->GetSubsystem<UToastSubsystem>();
+		const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
+		
+		if (!ToastSubsystem || !GI)
 		{
-			const FText Message = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
-			const UNoticePopupWidget* NoticePopup = UTromboneStatics::ShowPopup<UNoticePopupWidget>(GetWorld());
-			NoticePopup->OnInit(Message);
+			return;
 		}
+		
+		const FText EmptyLobbyCodeWarningText = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
+		const FToastRequest Request(EmptyLobbyCodeWarningText);
+		ToastSubsystem->ShowToast(Request);
+		
 		return;
 	}
 	
