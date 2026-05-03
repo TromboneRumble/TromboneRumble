@@ -61,7 +61,7 @@ void UToastSubsystem::ProcessNextToastInternal(const FToastRequest& InRequest)
 	if (!ToastContainer && ToastContainerClass)
 	{
 		ToastContainer = CreateWidget<UToastContainerWidget>(GetWorld(), ToastContainerClass);
-		ToastContainer->AddToViewport();
+		ToastContainer->AddToViewport(10000);
 	}
 
 	if (UToastItemWidget* NewToast = GetOrCreateToastWidget())
