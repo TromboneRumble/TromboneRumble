@@ -36,6 +36,12 @@ private:
 	void ProcessNextToastInternal(const FToastRequest& InRequest);
 	
 	void ProcessNextToast();
+	
+	/** Handle when changing level */
+	void OnPostLoadMap(UWorld* NewWorld);
+	
+	/** Must clear toast pool on level changed */
+	void ClearToastPool();
 
 private:
 	

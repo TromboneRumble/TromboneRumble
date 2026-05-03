@@ -23,9 +23,9 @@ void UToastSubsystem::ShowToast(const FToastRequest& InRequest)
 			if (UToastItemWidget* CurrentToast = Cast<UToastItemWidget>(ToastWidget))
 			{
 				CurrentToast->CloseToastImmediately(); 
+				return;
 			}
 		}
-		return;
 	}
 
 	if (!bIsToastShowing)
@@ -38,7 +38,11 @@ UToastItemWidget* UToastSubsystem::GetOrCreateToastWidget()
 {
 	if (ToastPool.Num() > 0)
 	{
-		return ToastPool.Pop();
+		UToastItemWidget* Widget = ToastPool.Pop();
+		if (IsValid(Widget)) 
+		{
+			return Widget;
+		}
 	}
 	
 	if (SimpleToastItemClass)
@@ -84,6 +88,25 @@ void UToastSubsystem::ProcessNextToast()
 	}
 }
 
+void UToastSubsystem::OnPostLoadMap(UWorld* NewWorld)
+{
+	ClearToastPool();
+}
+
+void UToastSubsystem::ClearToastPool()
+{
+	if (ToastContainer)
+	{
+		ToastContainer->RemoveFromParent();
+		ToastContainer = nullptr;
+	}
+
+	ToastPool.Empty();
+    
+	bIsToastShowing = false;
+	ToastQueue.Empty();
+}
+
 void UToastSubsystem::ReturnToPool(UToastItemWidget* ToastWidget)
 {
 	if (ToastWidget && !ToastPool.Contains(ToastWidget))
@@ -95,6 +118,8 @@ void UToastSubsystem::ReturnToPool(UToastItemWidget* ToastWidget)
 void UToastSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &ThisClass::OnPostLoadMap);
 	
 	if (const UTromboneConfig* Config = UTromboneConfig::Get())
 	{
@@ -114,5 +139,7 @@ void UToastSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UToastSubsystem::Deinitialize()
 {
+	ClearToastPool();
+	
 	Super::Deinitialize();
 }
