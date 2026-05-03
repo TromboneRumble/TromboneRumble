@@ -5,7 +5,7 @@
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "RHI.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
+#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
 void UVideoOptionPanel::NativePreConstruct()
 {
@@ -120,7 +120,7 @@ void UVideoOptionPanel::BuildOptions()
 	{
 		if (!Row) continue;
 
-		if (UOptionCycleWidget* NewWidget = CreateWidget<UOptionCycleWidget>(this, OptionCycleWidgetClass))
+		if (UOptionCycleRowWidget* NewWidget = CreateWidget<UOptionCycleRowWidget>(this, OptionCycleWidgetClass))
 		{
 			TArray<FText> Labels = Row->OptionLabels;
 			const int32 StartIndex = Row->DefaultIndex;
@@ -154,24 +154,24 @@ void UVideoOptionPanel::BuildOptions()
 				}
 			}
 			
-			NewWidget->InitWithOptionName(Row->DisplayName, Labels, StartIndex);
+			NewWidget->ForceInit(Row->DisplayName, Labels, StartIndex);
 			VB_OptionContainer->AddChild(NewWidget);
 			
 			CreatedWidgets.Add(Row->OptionType, NewWidget);
 			
 			if (Row->OptionType == EGraphicsOptionType::OverallQuality)
 			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
+				NewWidget->OnRotatedWithDirection().AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
 			}
 			else if (Row->OptionType == EGraphicsOptionType::WindowMode)
 			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
+				NewWidget->OnRotatedWithDirection().AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
 			}
 			else if (Row->OptionType != EGraphicsOptionType::Resolution &&
 					 Row->OptionType != EGraphicsOptionType::VSync &&
 					 Row->OptionType != EGraphicsOptionType::WindowMode)
 			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
+				NewWidget->OnRotatedWithDirection().AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
 			}
 		}
 	}
@@ -273,7 +273,7 @@ void UVideoOptionPanel::RefreshUI()
 		}
 	
 		CreatedWidgets[EGraphicsOptionType::WindowMode]->SetSelectedIndex(WindowModeIndex);
-		OnWindowModeChanged(WindowModeIndex);
+		OnWindowModeChanged(WindowModeIndex, ERotatorDirection::Right);
 	}
 }
 
@@ -288,10 +288,10 @@ void UVideoOptionPanel::ReapplySavedSettings()
 	}
 }
 
-void UVideoOptionPanel::OnOverallQualityChanged(const int32 NewIndex)
+void UVideoOptionPanel::OnOverallQualityChanged(const int32 Value, ERotatorDirection RotatorDir)
 {
 	const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptionsArray().Num() - 1;
-	if (NewIndex == CustomIndex) return;
+	if (Value == CustomIndex) return;
 
 	for (const auto& Elem : CreatedWidgets)
 	{
@@ -300,12 +300,12 @@ void UVideoOptionPanel::OnOverallQualityChanged(const int32 NewIndex)
 			Elem.Key != EGraphicsOptionType::VSync &&
 			Elem.Key != EGraphicsOptionType::WindowMode)
 		{
-			Elem.Value->SetSelectedIndex(NewIndex);
+			Elem.Value->SetSelectedIndex(Value);
 		}
 	}
 }
 
-void UVideoOptionPanel::OnSubOptionChanged(int32 NewIndex)
+void UVideoOptionPanel::OnSubOptionChanged(int32 Value, ERotatorDirection RotatorDir)
 {
 	if (CreatedWidgets.Contains(EGraphicsOptionType::OverallQuality))
 	{
@@ -314,13 +314,13 @@ void UVideoOptionPanel::OnSubOptionChanged(int32 NewIndex)
 	}
 }
 
-void UVideoOptionPanel::OnWindowModeChanged(const int32 NewIndex)
+void UVideoOptionPanel::OnWindowModeChanged(const int32 Value, ERotatorDirection RotatorDir)
 {
 	if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
 	{
-		const bool bIsWindowed = (NewIndex == 2);
+		const bool bIsWindowed = (Value == 2);
         
-		UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
+		UOptionCycleRowWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
 		ResWidget->SetIsEnabled(bIsWindowed);
 	}
 }

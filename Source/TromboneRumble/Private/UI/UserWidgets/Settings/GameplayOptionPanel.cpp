@@ -3,8 +3,8 @@
 #include "UI/UserWidgets/Settings/GameplayOptionPanel.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "UI/UserWidgets/Common/CommonCheckBoxRowWidget.h"
-#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
+#include "UI/UserWidgets/Common/CheckBoxRowWidget.h"
+#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 #include "Utilities/EnumHelper.h"
 
 void UGameplayOptionPanel::RefreshUI()

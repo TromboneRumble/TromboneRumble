@@ -1,6 +1,6 @@
 #include "UI/UserWidgets/Settings/LanguageOptionPanel.h"
 #include "Kismet/KismetInternationalizationLibrary.h"
-#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
+#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
 ULanguageOptionPanel::ULanguageOptionPanel()
 	: SupportedCultures( {TEXT("ko"), TEXT("en")}), 

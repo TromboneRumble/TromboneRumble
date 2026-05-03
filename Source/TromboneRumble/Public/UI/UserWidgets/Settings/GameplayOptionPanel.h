@@ -6,8 +6,8 @@
 #include "OptionPanelBase.h"
 #include "GameplayOptionPanel.generated.h"
 
-class UOptionCycleWidget;
-class UCommonCheckBoxRowWidget;
+class UOptionCycleRowWidget;
+class UCheckBoxRowWidget;
 
 UCLASS()
 class TROMBONERUMBLE_API UGameplayOptionPanel : public UOptionPanelBase
@@ -26,8 +26,8 @@ protected:
 protected:
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonCheckBoxRowWidget> CBR_ShouldShowUsernameInGame;
+	TObjectPtr<UCheckBoxRowWidget> CBR_ShouldShowUsernameInGame;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOptionCycleWidget> OC_VOIP;
+	TObjectPtr<UOptionCycleRowWidget> OC_VOIP;
 };

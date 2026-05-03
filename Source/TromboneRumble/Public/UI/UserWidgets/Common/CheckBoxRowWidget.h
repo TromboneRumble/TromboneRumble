@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
-#include "CommonCheckBoxRowWidget.generated.h"
+#include "CheckBoxRowWidget.generated.h"
 
 class UCommonButtonBase;
 
 UCLASS()
-class TROMBONERUMBLE_API UCommonCheckBoxRowWidget : public UCommonUserWidget
+class TROMBONERUMBLE_API UCheckBoxRowWidget : public UCommonUserWidget
 {
 	GENERATED_BODY()
 	
@@ -21,11 +21,9 @@ protected:
 public:
 	
 	/** Sets the checkbox state. */
-	UFUNCTION(BlueprintCallable, Category = "CheckBox")
 	void SetChecked(bool bChecked);
 	
 	/** @return The checkbox state. */
-	UFUNCTION(BlueprintPure, Category = "CheckBox")
 	bool IsChecked() const;
 
 };

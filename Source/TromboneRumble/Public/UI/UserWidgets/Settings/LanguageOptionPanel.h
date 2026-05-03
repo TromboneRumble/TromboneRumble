@@ -4,7 +4,7 @@
 #include "UI/UserWidgets/Settings/OptionPanelBase.h"
 #include "LanguageOptionPanel.generated.h"
 
-class UOptionCycleWidget;
+class UOptionCycleRowWidget;
 
 UENUM()
 enum class ELanguageType : uint8
@@ -35,7 +35,7 @@ protected:
 protected:
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOptionCycleWidget> OC_Language;
+	TObjectPtr<UOptionCycleRowWidget> OC_Language;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FString> SupportedCultures;
