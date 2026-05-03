@@ -3,6 +3,7 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Data/WwiseData.h"
 #include "SaveData/TromboneSaveGame.h"
+#include "Utilities/EnumHelper.h"
 
 void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -127,4 +128,44 @@ void USaveManagerSubsystem::ApplyGameplay(const FGameplaySettingData& Settings)
 void USaveManagerSubsystem::InternalSave()
 {
     UGameplayStatics::SaveGameToSlot(CachedSettings, SlotName, UserIndex);
+}
+
+void USaveManagerSubsystem::DumpTromboneSettings() const
+{
+    if (!CachedSettings)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[SaveManager] Dump failed: CachedSettings is null."));
+        return;
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("===================================================="));
+    UE_LOG(LogTemp, Log, TEXT("          [Trombone Rumble] Current Settings        "));
+    UE_LOG(LogTemp, Log, TEXT("===================================================="));
+
+    // Audio
+    const FAudioSettingData& Audio = CachedSettings->Audio;
+    UE_LOG(LogTemp, Log, TEXT("[Audio] Master: %.2f | BGM: %.2f | Music: %.2f | SFX: %.2f"), 
+        Audio.MasterVolume, Audio.BGMVolume, Audio.MusicVolume, Audio.SFXVolume);
+
+    // Gameplay
+    const FGameplaySettingData& Gameplay = CachedSettings->Gameplay;
+    const FString VOIPString = EnumHelper::EnumToString(Gameplay.VOIPSetting);
+    UE_LOG(LogTemp, Log, TEXT("[Gameplay] Show Username: %s | VOIP Setting: %s"), 
+        Gameplay.bShouldShowUsernameInGame ? TEXT("True") : TEXT("False"), *VOIPString);
+
+    // Player
+    const FPlayerData& Player = CachedSettings->PlayerData;
+    UE_LOG(LogTemp, Log, TEXT("[Player] Is First Time: %s"), 
+        Player.bIsFirstTimePlayer ? TEXT("True") : TEXT("False"));
+
+    // Video
+    if (const UGameUserSettings* VideoSettings = GEngine ? GEngine->GetGameUserSettings() : nullptr)
+    {
+        const FIntPoint Res = VideoSettings->GetScreenResolution();
+        const int32 Quality = VideoSettings->GetOverallScalabilityLevel();
+        UE_LOG(LogTemp, Log, TEXT("[Video] Resolution: %dx%d | Scalability: %d"), 
+            Res.X, Res.Y, Quality);
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("===================================================="));
 }

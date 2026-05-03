@@ -32,6 +32,11 @@ void USettingPopup::Register()
 		CB_Language->OnClicked().RemoveAll(this);
 		CB_Language->OnClicked().AddLambda([this] { ChangePanel(Widget_LanguageOptions); });
 	}
+	if (CB_Gameplay)
+	{
+		CB_Gameplay->OnClicked().RemoveAll(this);
+		CB_Gameplay->OnClicked().AddLambda([this] { ChangePanel(Widget_GameplayOptions); });
+	}
 }
 
 void USettingPopup::Unregister()
@@ -49,5 +54,9 @@ void USettingPopup::Unregister()
 	if (CB_Language)
 	{
 		CB_Language->OnClicked().RemoveAll(this);
+	}
+	if (CB_Gameplay)
+	{
+		CB_Gameplay->OnClicked().RemoveAll(this);
 	}
 }

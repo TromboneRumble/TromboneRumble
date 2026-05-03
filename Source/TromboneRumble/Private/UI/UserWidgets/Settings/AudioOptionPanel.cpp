@@ -9,7 +9,10 @@ void UAudioOptionPanel::RefreshUI()
 {
 	Super::RefreshUI();
 	
-	if (!SaveManagerSubsystem) return;
+	if (!SaveManagerSubsystem)
+	{
+		return;
+	}
 	
 	const FAudioSettingData AudioData = SaveManagerSubsystem->GetAudioSettings();
 	
@@ -17,27 +20,20 @@ void UAudioOptionPanel::RefreshUI()
 	if (WBP_BGMSlider) WBP_BGMSlider->SetValue(AudioData.BGMVolume);
 	if (WBP_MusicSlider) WBP_MusicSlider->SetValue(AudioData.MusicVolume);
 	if (WBP_SFXSlider) WBP_SFXSlider->SetValue(AudioData.SFXVolume);
+}
+
+void UAudioOptionPanel::ReapplySavedSettings()
+{
+	Super::ReapplySavedSettings();
 	
-	WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, AudioData.MasterVolume);
-	WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, AudioData.BGMVolume);
-	WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, AudioData.MusicVolume);
-	WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, AudioData.SFXVolume);
+	if (!SaveManagerSubsystem)
+	{
+		return;
+	}
+	
+	const FAudioSettingData AudioData = SaveManagerSubsystem->GetAudioSettings();
 	
 	SaveManagerSubsystem->ApplyAudio(AudioData);
-}
-
-void UAudioOptionPanel::Activate()
-{
-	Super::Activate();
-	
-	RefreshUI();
-}
-
-void UAudioOptionPanel::Deactivate()
-{
-	Super::Deactivate();
-	
-	RefreshUI();
 }
 
 void UAudioOptionPanel::Register()
@@ -80,4 +76,5 @@ void UAudioOptionPanel::HandleResetButtonClicked()
 	Super::HandleResetButtonClicked();
 
 	RefreshUI();
+	ReapplySavedSettings();
 }

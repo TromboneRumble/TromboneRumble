@@ -4,6 +4,7 @@
 #include "UI/UserWidgets/Popup/PopupWidgetBase.h"
 #include "SettingPopup.generated.h"
 
+class UOptionPanelBase;
 class ULanguageOptionPanel;
 class UCommonAnimatedSwitcher;
 class UCommonButtonBase;
@@ -37,6 +38,9 @@ private:
 	TObjectPtr<UVideoOptionPanel> Widget_VideoOptions;
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<ULanguageOptionPanel> Widget_LanguageOptions;
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UOptionPanelBase> Widget_GameplayOptions;
+	
 	
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Audio;
@@ -44,5 +48,7 @@ private:
 	TObjectPtr<UCommonButtonBase> CB_Video;
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Language;
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UCommonButtonBase> CB_Gameplay;
 	
 };

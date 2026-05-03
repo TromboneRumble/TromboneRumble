@@ -22,17 +22,18 @@ public:
 	
 	/** Default constructor. */
 	ULanguageOptionPanel();
-	
-	virtual void RefreshUI() override;
-	
+
 protected:
-	virtual void Activate() override;
-	virtual void Deactivate() override;
 	
+	// ~ Begin UOptionPanelBase Interface
+	virtual void RefreshUI() override;
+	virtual void ReapplySavedSettings() override;
 	virtual void HandleApplyButtonClicked() override;
 	virtual void HandleResetButtonClicked() override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOptionCycleWidget> OC_Language;
 	
@@ -40,6 +41,7 @@ protected:
 	TArray<FString> SupportedCultures;
 	
 private:
+	
 	int32 CurrentLanguageIndex;
 	
 };

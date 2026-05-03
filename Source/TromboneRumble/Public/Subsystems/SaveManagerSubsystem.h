@@ -58,9 +58,12 @@ private:
 	const int32 UserIndex = 0;
 	
 public:
+	
 	// ~ Begin Getter
 	TObjectPtr<UTromboneSaveGame> GetSettings() const { return CachedSettings; }
 	FAudioSettingData GetAudioSettings() const { return CachedSettings->Audio; }
 	FGameplaySettingData GetGameplaySettings() const { return CachedSettings->Gameplay; }
 	// ~ End Getter
+	
+	void DumpTromboneSettings() const;
 };

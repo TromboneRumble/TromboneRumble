@@ -54,14 +54,14 @@ class TROMBONERUMBLE_API UVideoOptionPanel : public UOptionPanelBase
 {
 	GENERATED_BODY()
 	
-public:
-	
-	virtual void RefreshUI() override;
-	
 protected:
 	
+	// ~ Begin UOptionPanelBase Interface
+	virtual void RefreshUI() override;
+	virtual void ReapplySavedSettings() override;
 	virtual void HandleApplyButtonClicked() override;
 	virtual void HandleResetButtonClicked() override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
 	

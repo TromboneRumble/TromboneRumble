@@ -3,25 +3,15 @@
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
 
 ULanguageOptionPanel::ULanguageOptionPanel()
-	: CurrentLanguageIndex(0)
+	: SupportedCultures( {TEXT("ko"), TEXT("en")}), 
+	CurrentLanguageIndex(0)
 {
-	SupportedCultures = { TEXT("ko"), TEXT("en") };
 }
 
 void ULanguageOptionPanel::RefreshUI()
 {
 	Super::RefreshUI();
 	
-	if (OC_Language)
-	{
-		OC_Language->SetSelectedIndex(CurrentLanguageIndex);
-	}
-}
-
-void ULanguageOptionPanel::Activate()
-{
-	Super::Activate();
-
 	const FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
 	for (int32 i = 0; i < SupportedCultures.Num(); ++i)
 	{
@@ -32,14 +22,18 @@ void ULanguageOptionPanel::Activate()
 		}
 	}
 	
-	RefreshUI();
+	if (OC_Language)
+	{
+		OC_Language->SetSelectedIndex(CurrentLanguageIndex);
+	}
 }
 
-void ULanguageOptionPanel::Deactivate()
+void ULanguageOptionPanel::ReapplySavedSettings()
 {
-	Super::Deactivate();
+	Super::ReapplySavedSettings();
 	
-	RefreshUI();
+	const FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
+	UKismetInternationalizationLibrary::SetCurrentLanguage(SupportedCultures[CurrentLanguageIndex], true);
 }
 
 void ULanguageOptionPanel::HandleApplyButtonClicked()

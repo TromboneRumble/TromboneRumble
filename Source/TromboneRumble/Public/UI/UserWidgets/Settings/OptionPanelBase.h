@@ -16,17 +16,22 @@ class TROMBONERUMBLE_API UOptionPanelBase : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 public:
-
-	/** Refreshes the option panel UI to reflect the current settings. */
-	virtual void RefreshUI();
+	
+	/** Should automatically Refresh UI on activate? */
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bAutoRefreshUIOnActivate = true;
+	
+	/** Should automatically reapply currently activated option panel's 'saved' settings on deactivate? */
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bAutoReapplySettingsOnDeactivate = true;
 	
 protected:
 	
-	/** Activates the option panel */
-	virtual void Activate();
+	/** Apply 'saved' settings to UI */
+	virtual void RefreshUI();
 	
-	/** Deactivates the option panel */
-	virtual void Deactivate();
+	/** Apply 'saved' settings. does not affect the UI */
+	virtual void ReapplySavedSettings();
 	
 	/** Registers the widget events. e.g. button click events. */
 	virtual void Register();

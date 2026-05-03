@@ -18,6 +18,7 @@ public:
 	virtual void Init(TArray<FText> InOptions, int32 InDefaultIndex);
 	virtual void SetIsEnabled(bool bInIsEnabled) override;
 	
+	// TODO : OnRotatedWithDirection으로 통합되어야 함 (deprecated)
 	/** Delegate for when the selected option changes. Provides the new index of the selected option. */
 	FOnOptionChanged OnOptionChanged;
 	

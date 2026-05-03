@@ -9,13 +9,21 @@ void UOptionPanelBase::NativeConstruct()
 	SaveManagerSubsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
 	
 	Register();
-	Activate();
+	
+	if (bAutoRefreshUIOnActivate)
+	{
+		RefreshUI();
+	}
 }
 
 void UOptionPanelBase::NativeDestruct()
 {
-	Deactivate();
 	Unregister();
+	
+	if (bAutoReapplySettingsOnDeactivate)
+	{
+		ReapplySavedSettings();
+	}
 	
 	Super::NativeDestruct();
 }
@@ -49,22 +57,17 @@ void UOptionPanelBase::RefreshUI()
 	// To be overridden by child classes if needed
 }
 
-void UOptionPanelBase::Activate()
-{
-	// To be overridden by child classes if needed
-}
-
-void UOptionPanelBase::Deactivate()
+void UOptionPanelBase::ReapplySavedSettings()
 {
 	// To be overridden by child classes if needed
 }
 
 void UOptionPanelBase::HandleApplyButtonClicked()
 {
-	// To be overridden by child classes
+	// To be overridden by child classes if needed
 }
 
 void UOptionPanelBase::HandleResetButtonClicked()
 {
-	// To be overridden by child classes
+	// To be overridden by child classes if needed
 }

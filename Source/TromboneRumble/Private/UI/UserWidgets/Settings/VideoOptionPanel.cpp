@@ -96,12 +96,8 @@ void UVideoOptionPanel::HandleResetButtonClicked()
 {
 	Super::HandleResetButtonClicked();
 	
-	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
-	{
-		VideoSettings->LoadSettings(true);
-		VideoSettings->ApplySettings(false);
-		RefreshUI();
-	}
+	ReapplySavedSettings();
+	RefreshUI();
 }
 
 void UVideoOptionPanel::BuildOptions()
@@ -278,6 +274,17 @@ void UVideoOptionPanel::RefreshUI()
 	
 		CreatedWidgets[EGraphicsOptionType::WindowMode]->SetSelectedIndex(WindowModeIndex);
 		OnWindowModeChanged(WindowModeIndex);
+	}
+}
+
+void UVideoOptionPanel::ReapplySavedSettings()
+{
+	Super::ReapplySavedSettings();
+	
+	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+	{
+		VideoSettings->LoadSettings(true);
+		VideoSettings->ApplySettings(false);
 	}
 }
 
