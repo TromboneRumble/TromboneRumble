@@ -22,9 +22,39 @@ void UGameplayOptionPanel::RefreshUI()
 	OC_VOIP->SetSelectedIndex(EnumHelper::EnumToInt(GameplayData.VOIPSetting));
 }
 
-void UGameplayOptionPanel::ReapplySavedSettings()
+void UGameplayOptionPanel::ApplySettingsFromUI(bool bSaveToDisk)
 {
-	Super::ReapplySavedSettings();
+	Super::ApplySettingsFromUI(bSaveToDisk);
+	
+	if (bSaveToDisk)
+	{
+		if (!SaveManagerSubsystem)
+		{
+			return;
+		}
+	
+		VOIPType ParsedVoipType;
+		if (!EnumHelper::IntToEnum(OC_VOIP->GetCurrentIndex(), ParsedVoipType))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid VOIP setting index: %d"), OC_VOIP->GetCurrentIndex());
+			return;
+		}
+	
+		FGameplaySettingData NewGameplayData;
+		NewGameplayData.bShouldShowUsernameInGame = CBR_ShouldShowUsernameInGame->IsChecked();
+		NewGameplayData.VOIPSetting = ParsedVoipType;
+	
+		SaveManagerSubsystem->ApplyGameplay(NewGameplayData, bSaveToDisk);
+	}
+	else
+	{
+		// TODO : 디스크에 저장하지 않고, 옵션 창에서 바로 보여줄 게 있으면 여기서 호출
+	}
+}
+
+void UGameplayOptionPanel::ApplySettingsFromSavedData()
+{
+	Super::ApplySettingsFromSavedData();
 	
 	if (!SaveManagerSubsystem)
 	{
@@ -33,36 +63,40 @@ void UGameplayOptionPanel::ReapplySavedSettings()
 	
 	const FGameplaySettingData GameplayData = SaveManagerSubsystem->GetGameplaySettings();
 	
-	// TODO : 인게임 유저 닉네임 설정 & VOIP 설정 적용 
+	// TODO : 옵션 창에서 바로 보여줄 게 있으면 여기서 호출
 }
 
-void UGameplayOptionPanel::HandleApplyButtonClicked()
+bool UGameplayOptionPanel::IsDirty() const
 {
-	Super::HandleApplyButtonClicked();
-	
+	if (Super::IsDirty())
+	{
+		return true;
+	}
+
 	if (!SaveManagerSubsystem)
 	{
-		return;
+		return false;
 	}
-	
-	VOIPType ParsedVoipType;
-	if (!EnumHelper::IntToEnum(OC_VOIP->GetCurrentIndex(), ParsedVoipType))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid VOIP setting index: %d"), OC_VOIP->GetCurrentIndex());
-		return;
-	}
-	
-	FGameplaySettingData NewGameplayData;
-	NewGameplayData.bShouldShowUsernameInGame = CBR_ShouldShowUsernameInGame->IsChecked();
-	NewGameplayData.VOIPSetting = ParsedVoipType;
-	
-	SaveManagerSubsystem->ApplyAndSaveGameplay(NewGameplayData);
-}
 
-void UGameplayOptionPanel::HandleResetButtonClicked()
-{
-	Super::HandleResetButtonClicked();
-	
-	RefreshUI();
-	ReapplySavedSettings();
+	const FGameplaySettingData SavedData = SaveManagerSubsystem->GetGameplaySettings();
+
+	if (CBR_ShouldShowUsernameInGame && 
+		CBR_ShouldShowUsernameInGame->IsChecked() != SavedData.bShouldShowUsernameInGame)
+	{
+		return true;
+	}
+
+	if (OC_VOIP)
+	{
+		VOIPType CurrentUISelectedVoip;
+		if (EnumHelper::IntToEnum(OC_VOIP->GetCurrentIndex(), CurrentUISelectedVoip))
+		{
+			if (CurrentUISelectedVoip != SavedData.VOIPSetting)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

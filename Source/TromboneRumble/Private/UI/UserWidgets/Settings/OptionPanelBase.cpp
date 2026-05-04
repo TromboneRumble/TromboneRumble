@@ -22,7 +22,7 @@ void UOptionPanelBase::NativeDestruct()
 	
 	if (bAutoReapplySettingsOnDeactivate)
 	{
-		ReapplySavedSettings();
+		ApplySettingsFromSavedData();
 	}
 	
 	Super::NativeDestruct();
@@ -30,44 +30,20 @@ void UOptionPanelBase::NativeDestruct()
 
 void UOptionPanelBase::Register()
 {
-	if (Button_Apply)
-	{
-		Button_Apply->OnClicked().AddUObject(this, &ThisClass::HandleApplyButtonClicked);
-	}
-	if (Button_Reset)
-	{
-		Button_Reset->OnClicked().AddUObject(this, &ThisClass::HandleResetButtonClicked);
-	}
 }
 
 void UOptionPanelBase::Unregister()
 {
-	if (Button_Apply)
-	{
-		Button_Apply->OnClicked().RemoveAll(this);
-	}
-	if (Button_Reset)
-	{
-		Button_Reset->OnClicked().RemoveAll(this);
-	}
 }
 
 void UOptionPanelBase::RefreshUI()
 {
-	// To be overridden by child classes if needed
 }
 
-void UOptionPanelBase::ReapplySavedSettings()
+void UOptionPanelBase::ApplySettingsFromUI(bool bSaveToDisk)
 {
-	// To be overridden by child classes if needed
 }
 
-void UOptionPanelBase::HandleApplyButtonClicked()
+void UOptionPanelBase::ApplySettingsFromSavedData()
 {
-	// To be overridden by child classes if needed
-}
-
-void UOptionPanelBase::HandleResetButtonClicked()
-{
-	// To be overridden by child classes if needed
 }

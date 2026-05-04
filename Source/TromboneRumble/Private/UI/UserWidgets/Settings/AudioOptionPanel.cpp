@@ -22,9 +22,25 @@ void UAudioOptionPanel::RefreshUI()
 	if (WBP_SFXSlider) WBP_SFXSlider->SetValue(AudioData.SFXVolume);
 }
 
-void UAudioOptionPanel::ReapplySavedSettings()
+void UAudioOptionPanel::ApplySettingsFromUI(bool bSaveToDisk)
 {
-	Super::ReapplySavedSettings();
+	Super::ApplySettingsFromUI(bSaveToDisk);
+	
+	if (bSaveToDisk)
+	{
+		FAudioSettingData NewAudio;
+		NewAudio.MasterVolume = WBP_MasterSlider->GetValue();
+		NewAudio.BGMVolume = WBP_BGMSlider->GetValue();
+		NewAudio.MusicVolume = WBP_MusicSlider->GetValue();
+		NewAudio.SFXVolume = WBP_SFXSlider->GetValue();
+
+		SaveManagerSubsystem->ApplyAudio(NewAudio);
+	}
+}
+
+void UAudioOptionPanel::ApplySettingsFromSavedData()
+{
+	Super::ApplySettingsFromSavedData();
 	
 	if (!SaveManagerSubsystem)
 	{
@@ -33,7 +49,45 @@ void UAudioOptionPanel::ReapplySavedSettings()
 	
 	const FAudioSettingData AudioData = SaveManagerSubsystem->GetAudioSettings();
 	
-	SaveManagerSubsystem->ApplyAudio(AudioData);
+	SaveManagerSubsystem->ApplyAudio(AudioData, false);
+}
+
+bool UAudioOptionPanel::IsDirty() const
+{
+	if (Super::IsDirty())
+	{
+		return true;
+	}
+
+	if (!SaveManagerSubsystem)
+	{
+		return false;
+	}
+
+	const FAudioSettingData SavedData = SaveManagerSubsystem->GetAudioSettings();
+	constexpr float ErrorTolerance = 0.001f;
+
+	if (WBP_MasterSlider && !FMath::IsNearlyEqual(WBP_MasterSlider->GetValue(), SavedData.MasterVolume, ErrorTolerance))
+	{
+		return true;
+	}
+
+	if (WBP_BGMSlider && !FMath::IsNearlyEqual(WBP_BGMSlider->GetValue(), SavedData.BGMVolume, ErrorTolerance))
+	{
+		return true;
+	}
+
+	if (WBP_MusicSlider && !FMath::IsNearlyEqual(WBP_MusicSlider->GetValue(), SavedData.MusicVolume, ErrorTolerance))
+	{
+		return true;
+	}
+
+	if (WBP_SFXSlider && !FMath::IsNearlyEqual(WBP_SFXSlider->GetValue(), SavedData.SFXVolume, ErrorTolerance))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void UAudioOptionPanel::Register()
@@ -58,23 +112,12 @@ void UAudioOptionPanel::Register()
 	});
 }
 
-void UAudioOptionPanel::HandleApplyButtonClicked()
+void UAudioOptionPanel::Unregister()
 {
-	Super::HandleApplyButtonClicked();
+	Super::Unregister();
 	
-	FAudioSettingData NewAudio;
-	NewAudio.MasterVolume = WBP_MasterSlider->GetValue();
-	NewAudio.BGMVolume = WBP_BGMSlider->GetValue();
-	NewAudio.MusicVolume = WBP_MusicSlider->GetValue();
-	NewAudio.SFXVolume = WBP_SFXSlider->GetValue();
-
-	SaveManagerSubsystem->ApplyAndSaveAudio(NewAudio);
-}
-
-void UAudioOptionPanel::HandleResetButtonClicked()
-{
-	Super::HandleResetButtonClicked();
-
-	RefreshUI();
-	ReapplySavedSettings();
+	WBP_MasterSlider->Init(nullptr);
+	WBP_BGMSlider->Init(nullptr);
+	WBP_MusicSlider->Init(nullptr);
+	WBP_SFXSlider->Init(nullptr);
 }
