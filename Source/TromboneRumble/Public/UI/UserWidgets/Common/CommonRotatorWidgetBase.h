@@ -41,10 +41,9 @@ private:
 	void RefreshRotator();
 	
 public:
-	
 	// ~ Begin UUserWidget Interface
+	virtual bool Initialize() override;
 	virtual void NativePreConstruct() override;
-	virtual void NativeConstruct() override;
 	virtual void SetIsEnabled(bool bInIsEnabled) override;
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;

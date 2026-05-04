@@ -1,17 +1,22 @@
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 
+bool UCommonRotatorWidgetBase::Initialize()
+{
+	if (Super::Initialize())
+	{
+		InitButtons();
+		
+		return true;
+	}
+	
+	return false;
+}
+
 void UCommonRotatorWidgetBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
 	RefreshRotator();
-}
-
-void UCommonRotatorWidgetBase::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	InitButtons();
 }
 
 void UCommonRotatorWidgetBase::SetIsEnabled(const bool bInIsEnabled)
@@ -70,6 +75,7 @@ void UCommonRotatorWidgetBase::InitButtons()
 	{
 		if (CB_Prev)
 		{
+			CB_Prev->OnClicked().RemoveAll(this);
 			CB_Prev->OnClicked().AddLambda([this]
 			{
 				CR_Rotator->ShiftTextLeft();
@@ -77,6 +83,7 @@ void UCommonRotatorWidgetBase::InitButtons()
 		}
 		if (CB_Next)
 		{
+			CB_Next->OnClicked().RemoveAll(this);
 			CB_Next->OnClicked().AddLambda([this]
 			{
 				CR_Rotator->ShiftTextRight();
