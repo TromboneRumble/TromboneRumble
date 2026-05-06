@@ -234,7 +234,7 @@
     "Type": "Event",
     "GUID": "{5661925E-358B-4DB5-8CD9-19A7BC7F923F}",
     "Language": "SFX",
-    "Hash": "{7BB7D602-216E-F06B-59F7-35F8C07257FA}",
+    "Hash": "{1314CB89-6B68-36F0-9522-87C8C3B1A7D3}",
     "ObjectPath": "Play_Click",
     "ShortName": "Play_Click",
     "Path": "Event/Play_Click.bnk",
@@ -1120,7 +1120,7 @@
     "Type": "Event",
     "GUID": "{B8B84262-D6E0-456A-87E1-6701AE1FEBE2}",
     "Language": "SFX",
-    "Hash": "{A4CF3647-AFD7-1A45-A41E-35246B4D73A4}",
+    "Hash": "{787F4946-44BC-DBC1-C658-8109B5DAAF06}",
     "ObjectPath": "Play_PopUp",
     "ShortName": "Play_PopUp",
     "Path": "Event/Play_PopUp.bnk",
@@ -2150,7 +2150,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{65479D6F-AF38-BB12-A242-7387BC92F737}",
+    "Hash": "{C7D97886-588F-44FA-1F48-C995A467FC27}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -2190,6 +2190,12 @@
       "Name": "Master_LobbyBGM",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Master_LobbyBGM",
       "GUID": "{55DFD7BE-E58A-4714-BDAE-7393826F6CC0}"
+     },
+     {
+      "Id": "1168632360",
+      "Name": "Master_UI",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Master_UI",
+      "GUID": "{45D09297-DBD9-49A8-8411-067F90583508}"
      },
      {
       "Id": "1900298039",
@@ -2261,6 +2267,12 @@
       "Name": "RTPC_BGMVolume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BGMVolume",
       "GUID": "{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"
+     },
+     {
+      "Id": "3141145287",
+      "Name": "RTPC_UIVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_UIVolume",
+      "GUID": "{0362BCD1-CECE-48A9-95A2-C677C79AD6EB}"
      }
     ],
     "SwitchGroups": [
@@ -6390,7 +6402,7 @@
     "Type": "Event",
     "GUID": "{BECEEF13-B67B-4315-AD8F-8A747D65D444}",
     "Language": "SFX",
-    "Hash": "{B22D8C2F-46A3-ED8F-8C58-89776E181FB6}",
+    "Hash": "{0ABBFF61-1186-0BA3-53B3-FA5464E42635}",
     "ObjectPath": "Play_Overlap",
     "ShortName": "Play_Overlap",
     "Path": "Event/Play_Overlap.bnk",
@@ -6427,7 +6439,7 @@
     "Type": "Event",
     "GUID": "{D37B48A0-88ED-470F-9DFB-5153A43B6446}",
     "Language": "SFX",
-    "Hash": "{E949252D-68FD-FE6D-20A9-7D8B4FAE85A7}",
+    "Hash": "{18EDC38F-A651-2920-7082-13B81BF738BD}",
     "ObjectPath": "Play_PopDown",
     "ShortName": "Play_PopDown",
     "Path": "Event/Play_PopDown.bnk",
@@ -6651,6 +6663,6 @@
     ]
    }
   ],
-  "FileHash": "{777B25F9-07CF-DF84-E153-4F38475E4617}"
+  "FileHash": "{3683283A-00E4-D584-7E09-3E10B0C414FF}"
  }
 }

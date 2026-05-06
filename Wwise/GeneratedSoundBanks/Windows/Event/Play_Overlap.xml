@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3795447587" Type="Event" GUID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}" Language="SFX" Hash="{B22D8C2F-46A3-ED8F-8C58-89776E181FB6}">
+		<SoundBank Id="3795447587" Type="Event" GUID="{BECEEF13-B67B-4315-AD8F-8A747D65D444}" Language="SFX" Hash="{0ABBFF61-1186-0BA3-53B3-FA5464E42635}">
 			<ObjectPath>Play_Overlap</ObjectPath>
 			<ShortName>Play_Overlap</ShortName>
 			<Path>Event/Play_Overlap.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{7A4FFB57-E9B3-E974-A64E-CEF8681F218A}</FileHash>
+	<FileHash>{673A8D8D-A415-4C8B-050E-8133CCDCDBBC}</FileHash>
 </SoundBanksInfo>
