@@ -44,7 +44,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{37AA40D1-31D7-CB6D-5A2D-A69805D10452}">
+		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{94C371B7-5DFE-9880-1622-449B11D5AD23}">
 			<ObjectPath>Play_MapD_Main</ObjectPath>
 			<ShortName>Play_MapD_Main</ShortName>
 			<Path>Event/Play_MapD_Main.bnk</Path>
@@ -3159,5 +3159,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F9A23F13-5D52-D36D-3158-57344D458C08}</FileHash>
+	<FileHash>{5D501620-3765-FDCA-B1FB-E3A7F75C4D28}</FileHash>
 </SoundBanksInfo>

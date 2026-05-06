@@ -76948,7 +76948,7 @@
 													<MusicCue Name="Event_BadGimmick_Start" ID="{0A4AEABE-7B8D-494B-A67A-33DF684597F2}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="8823.52941176471"/>
+															<Property Name="TimeMs" Type="Real64" Value="8675.67340718563"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -76958,7 +76958,7 @@
 													<MusicCue Name="Event_Spotlight_Start" ID="{E855E022-0CA5-4C00-8444-E969E6CFC570}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="8911.76470588235"/>
+															<Property Name="TimeMs" Type="Real64" Value="8470.58823529412"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -76968,7 +76968,7 @@
 													<MusicCue Name="Event_Spotlight_Fever" ID="{52628B84-58A5-4A14-8F74-DF283D781B61}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="170029.411764706"/>
+															<Property Name="TimeMs" Type="Real64" Value="136793.349960567"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -76978,7 +76978,7 @@
 													<MusicCue Name="Event_Enable_Click" ID="{BAD9283D-9F13-426C-A29F-5DC02318CEB0}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="8117.64705882353"/>
+															<Property Name="TimeMs" Type="Real64" Value="6877.99758409708"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -76988,7 +76988,7 @@
 													<MusicCue Name="Event_Disable_Click" ID="{7598B540-E79B-4A5C-9B07-6C011FDA8CBB}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="199764.705882353"/>
+															<Property Name="TimeMs" Type="Real64" Value="166322.848029891"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
