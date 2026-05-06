@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2984157360" Type="Event" GUID="{4BBBF6F8-9F59-4DD7-8033-CDD733496F4E}" Language="SFX" Hash="{B6BEECEA-31BE-4511-1B4C-FA57525B8E9A}">
+			<ObjectPath>MIDI_MapD_V</ObjectPath>
+			<ShortName>MIDI_MapD_V</ShortName>
+			<Path>Event/MIDI_MapD_V.bnk</Path>
+			<Media>
+				<File Id="265244913" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_D_Marker.wav</ShortName>
+					<Path>Media/265244913.wem</Path>
+					<CachePath>SFX/Map_D_Marker_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="747447272" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_D_Main.wav</ShortName>
+					<Path>Media/747447272.wem</Path>
+					<CachePath>SFX/Map_D_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="747682339" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_D_Violin.wav</ShortName>
+					<Path>Media/747682339.wem</Path>
+					<CachePath>SFX/Map_D_Violin_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="2984157360" Name="MIDI_MapD_V" ObjectPath="\Events\Default Work Unit\Music\Map_D_Rhythm\MIDI_MapD_V" GUID="{4BBBF6F8-9F59-4DD7-8033-CDD733496F4E}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="265244913"/>
+						<MediaRef Id="747447272"/>
+						<MediaRef Id="747682339"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{A85D9D20-93B5-2BA9-2CCA-45A78958B05B}</FileHash>
+</SoundBanksInfo>

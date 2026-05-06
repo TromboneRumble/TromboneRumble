@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3947379111",
+    "Type": "Event",
+    "GUID": "{D37B48A0-88ED-470F-9DFB-5153A43B6446}",
+    "Language": "SFX",
+    "Hash": "{E949252D-68FD-FE6D-20A9-7D8B4FAE85A7}",
+    "ObjectPath": "Play_PopDown",
+    "ShortName": "Play_PopDown",
+    "Path": "Event/Play_PopDown.bnk",
+    "Media": [
+     {
+      "Id": "559369503",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Pop_Down.wav",
+      "Path": "Media/559369503.wem",
+      "CachePath": "SFX/UI_Pop_Down_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3947379111",
+      "Name": "Play_PopDown",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_PopDown",
+      "GUID": "{D37B48A0-88ED-470F-9DFB-5153A43B6446}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.18072917",
+      "DurationMax": "0.18072917",
+      "MediaRefs": [
+       {
+        "Id": "559369503"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{122F0967-7774-E938-66E6-270A4C19D467}"
+ }
+}

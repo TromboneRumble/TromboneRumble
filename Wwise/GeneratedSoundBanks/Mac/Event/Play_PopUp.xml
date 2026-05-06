@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="948866160" Type="Event" GUID="{B8B84262-D6E0-456A-87E1-6701AE1FEBE2}" Language="SFX" Hash="{A4CF3647-AFD7-1A45-A41E-35246B4D73A4}">
+			<ObjectPath>Play_PopUp</ObjectPath>
+			<ShortName>Play_PopUp</ShortName>
+			<Path>Event/Play_PopUp.bnk</Path>
+			<Media>
+				<File Id="511945321" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Pop_Up.wav</ShortName>
+					<Path>Media/511945321.wem</Path>
+					<CachePath>SFX/UI_Pop_Up_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="948866160" Name="Play_PopUp" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_PopUp" GUID="{B8B84262-D6E0-456A-87E1-6701AE1FEBE2}" DurationType="OneShot" DurationMin="0.24583334" DurationMax="0.24583334">
+					<MediaRefs>
+						<MediaRef Id="511945321"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{F51C6467-04CD-4917-F7EF-C8E61B343B83}</FileHash>
+</SoundBanksInfo>
