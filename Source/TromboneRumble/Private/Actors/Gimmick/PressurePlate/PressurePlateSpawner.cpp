@@ -52,7 +52,6 @@ void APressurePlateSpawner::OnMusicCallbackReceived(EAkCallbackType CallbackType
 			if (CueName == TEXT("Event_Spotlight_Fever"))
 			{
 				bIsFeverTime = true;
-				TriggerPlateSpawn();
 			}
 		}
 	}
@@ -79,11 +78,12 @@ void APressurePlateSpawner::OnPlateDestroyed(AActor* DestroyedActor)
 
 void APressurePlateSpawner::TriggerPlateSpawn()
 {
-	if (!HasAuthority()) return;
-
+	if (!HasAuthority()) return;	
+	if (PressurePlateClass == nullptr || SpawnPoints.IsEmpty() || SpawningActorClasses.IsEmpty()) return;
+	
 	const int32 MaxCount = bIsFeverTime ? MaxPlates_Fever : MaxPlates_Normal;
 
-	if (SpawnMap.Num() < MaxCount)
+	if (!SpawnMap.IsEmpty() && SpawnMap.Num() < MaxCount)
 	{
 		//TriggerPoint중에 사용 가능한 Point반환
 		TArray<TObjectPtr<ATargetPoint>> AvailablePoints;
