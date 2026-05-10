@@ -16,7 +16,6 @@ class TROMBONERUMBLE_API USaveManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
 	/** Load settings from slot, if not exist, create new settings with default values */
 	UTromboneSaveGame* LoadOrCreateSettings();
@@ -27,20 +26,18 @@ public:
 	/** Reset all settings to default values and save */
 	void ResetToDefaultSettings();
 	
+public:
+	
 	/** Apply and save audio settings */
-	void ApplyAndSaveAudio(const FAudioSettingData& NewAudio);
+	void ApplyAudio(const FAudioSettingData& InAudioData, bool bSaveData = true);
 	
 	/** Apply and save gameplay settings */
-	void ApplyAndSaveGameplay(const FGameplaySettingData& NewGameplay);
+	void ApplyGameplay(const FGameplaySettingData& InGameplayData, bool bSaveData = true);
 	
-	/** Apply and save video settings */
-	void ApplyAndSaveVideo(const FGraphicsSettingData& NewVideo);
-
-	/** Apply audio settings without saving */
-	void ApplyAudio(const FAudioSettingData& Settings);
+	/** Apply video settings (save is optional) */
+	void ApplyVideo(const FGraphicsSettingData& InVideoData, bool bSaveData = true);
 	
-	/** Apply gameplay settings without saving */
-	void ApplyGameplay(const FGameplaySettingData& Settings);
+public:
 	
 	/** if player is first time player, show tutorial popup */
 	bool ShouldShowTutorialPopup() const;
@@ -58,9 +55,17 @@ private:
 	const int32 UserIndex = 0;
 	
 public:
+	
 	// ~ Begin Getter
 	TObjectPtr<UTromboneSaveGame> GetSettings() const { return CachedSettings; }
 	FAudioSettingData GetAudioSettings() const { return CachedSettings->Audio; }
 	FGameplaySettingData GetGameplaySettings() const { return CachedSettings->Gameplay; }
 	// ~ End Getter
+	
+	// ~ Begin UGameInstanceSubsystem Interface
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	// ~ End UGameInstanceSubsystem Interface
+	
+	void DumpTromboneSettings() const;
+	
 };

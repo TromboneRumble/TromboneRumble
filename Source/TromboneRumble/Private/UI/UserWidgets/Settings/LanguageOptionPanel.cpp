@@ -1,63 +1,97 @@
 #include "UI/UserWidgets/Settings/LanguageOptionPanel.h"
 #include "Kismet/KismetInternationalizationLibrary.h"
-#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
+#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
-ULanguageOptionPanel::ULanguageOptionPanel()
-	: CurrentLanguageIndex(0)
+void ULanguageOptionPanel::Register()
 {
-	SupportedCultures = { TEXT("ko"), TEXT("en") };
+	Super::Register();
+	
+	if (OC_Language)
+	{
+		OC_Language->OnRotatedWithDirection().RemoveAll(this);
+		OC_Language->OnRotatedWithDirection().AddDynamic(this, &ThisClass::OnLanguageRotated);
+	}
+}
+
+void ULanguageOptionPanel::Unregister()
+{
+	Super::Unregister();
+	
+	if (OC_Language)
+	{
+		OC_Language->OnRotatedWithDirection().RemoveAll(this);
+	}
 }
 
 void ULanguageOptionPanel::RefreshUI()
 {
 	Super::RefreshUI();
 	
-	if (OC_Language)
-	{
-		OC_Language->SetSelectedIndex(CurrentLanguageIndex);
-	}
-}
-
-void ULanguageOptionPanel::Activate()
-{
-	Super::Activate();
-
+	int32 TargetIndex = 0;
 	const FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentLanguage();
 	for (int32 i = 0; i < SupportedCultures.Num(); ++i)
 	{
 		if (SupportedCultures[i].Equals(CurrentCulture))
 		{
-			CurrentLanguageIndex = i;
+			TargetIndex = i;
 			break;
 		}
 	}
 	
-	RefreshUI();
-}
-
-void ULanguageOptionPanel::Deactivate()
-{
-	Super::Deactivate();
-	
-	RefreshUI();
-}
-
-void ULanguageOptionPanel::HandleApplyButtonClicked()
-{
-	Super::HandleApplyButtonClicked();
-
-	const int32 SelectedIndex = OC_Language->GetCurrentIndex();
-	if (SelectedIndex >= 0 && SelectedIndex < SupportedCultures.Num())
+	if (OC_Language)
 	{
-		const FString NewCulture = SupportedCultures[SelectedIndex];
-		UKismetInternationalizationLibrary::SetCurrentLanguage(NewCulture, true);
-		CurrentLanguageIndex = SelectedIndex;
+		OC_Language->SetSelectedIndex(TargetIndex);
 	}
 }
 
-void ULanguageOptionPanel::HandleResetButtonClicked()
+void ULanguageOptionPanel::ApplySettingsFromUI(bool bSaveToDisk)
 {
-	Super::HandleResetButtonClicked();
+	Super::ApplySettingsFromUI(bSaveToDisk);
 	
-	RefreshUI();
+	const int32 SelectedIndex = OC_Language->GetCurrentIndex();
+	
+	if (SupportedCultures.IsValidIndex(SelectedIndex))
+	{
+		const FString NewCulture = SupportedCultures[SelectedIndex];
+		UKismetInternationalizationLibrary::SetCurrentLanguage(NewCulture, bSaveToDisk);
+	}
+}
+
+void ULanguageOptionPanel::ApplySettingsFromSavedData()
+{
+	Super::ApplySettingsFromSavedData();
+	
+	const FString CurrentCulture = GConfig->GetStr(TEXT("Internationalization"), TEXT("Language"), GGameUserSettingsIni);
+	
+	if (!CurrentCulture.IsEmpty())
+	{
+		UKismetInternationalizationLibrary::SetCurrentLanguage(CurrentCulture, false);
+	}
+}
+
+bool ULanguageOptionPanel::IsDirty() const
+{
+	if (Super::IsDirty())
+	{
+		return true;
+	}
+	
+	const FString CurrentCulture = GConfig->GetStr(TEXT("Internationalization"), TEXT("Language"), GGameUserSettingsIni);
+	
+	if (!CurrentCulture.IsEmpty())
+	{
+		const int32 SelectedIndex = OC_Language->GetCurrentIndex();
+	    
+		if (SupportedCultures.IsValidIndex(SelectedIndex))
+		{
+			return !SupportedCultures[SelectedIndex].Equals(CurrentCulture);
+		}
+	}
+	
+	return false;
+}
+
+void ULanguageOptionPanel::OnLanguageRotated(int32 Value, ERotatorDirection RotatorDir)
+{
+	ApplySettingsFromUI(false);
 }

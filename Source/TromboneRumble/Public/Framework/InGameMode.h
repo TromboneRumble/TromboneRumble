@@ -3,17 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "Interfaces/ItemEquipHandler.h"
+#include "GameMode/TromboneGameModeBase.h"
 #include "InGameMode.generated.h"
 
 UCLASS()
-class TROMBONERUMBLE_API AInGameMode : public AGameModeBase
+class TROMBONERUMBLE_API AInGameMode : public ATromboneGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AInGameMode();
 	
 	virtual void BeginPlay() override;
 	

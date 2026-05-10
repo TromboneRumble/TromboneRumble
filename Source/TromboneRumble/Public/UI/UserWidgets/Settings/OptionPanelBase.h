@@ -16,17 +16,33 @@ class TROMBONERUMBLE_API UOptionPanelBase : public UCommonActivatableWidget
 	GENERATED_BODY()
 	
 public:
-
-	/** Refreshes the option panel UI to reflect the current settings. */
+	
+	/** Should automatically Refresh UI on activate? */
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bAutoRefreshUIOnActivate = true;
+	
+	/** Should automatically reapply currently activated option panel's 'saved' data on deactivate? */
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bAutoReapplySettingsOnDeactivate = true;
+	
+public:
+	
+	/** Synchronize ui from saved data */
 	virtual void RefreshUI();
+
+	/**
+	 * Apply the values from the UI to the actual settings.
+	 * @param bSaveToDisk if true, changes will be saved to the disk.
+	 */
+	virtual void ApplySettingsFromUI(bool bSaveToDisk = true);
+	
+	/** Apply the values from the saved data */
+	virtual void ApplySettingsFromSavedData();
+	
+	/** @return Whether there are any changes in this options panel */
+	virtual bool IsDirty() const { return false; }
 	
 protected:
-	
-	/** Activates the option panel */
-	virtual void Activate();
-	
-	/** Deactivates the option panel */
-	virtual void Deactivate();
 	
 	/** Registers the widget events. e.g. button click events. */
 	virtual void Register();
@@ -34,21 +50,11 @@ protected:
 	/** Unregisters the widget events. e.g. button click events. */
 	virtual void Unregister();
 	
-	virtual void HandleApplyButtonClicked();
-	virtual void HandleResetButtonClicked();
-	
 protected:
 	
 	UPROPERTY()
 	TObjectPtr<USaveManagerSubsystem> SaveManagerSubsystem;
-	
-	// ~ Begin Common UIs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> Button_Apply;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> Button_Reset;
-	// ~ End Common UIs
-	
+
 public:
 	
 	// ~ Begin UCommonActivatableWidget Interface

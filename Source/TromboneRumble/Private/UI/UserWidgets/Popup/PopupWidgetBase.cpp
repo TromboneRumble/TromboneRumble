@@ -2,11 +2,13 @@
 #include "CommonButtonBase.h"
 
 UPopupWidgetBase::UPopupWidgetBase()
-	: bCloseDim(true),
+	: bAllowBackAction(true),
+	bCloseDim(true),
 	bPlaySound(true),
 	bPlayAnimation(true),
 	bIsClosing(false)
 {
+	bIsBackHandler = true;
 }
 
 void UPopupWidgetBase::NativeOnActivated()
@@ -52,6 +54,15 @@ void UPopupWidgetBase::OnAnimationFinished_Implementation(const UWidgetAnimation
 			DeactivateWidget();
 		}
 	}
+}
+
+bool UPopupWidgetBase::NativeOnHandleBackAction()
+{
+	if (bAllowBackAction)
+	{
+		ClosePopup(false);
+	}
+	return true;
 }
 
 void UPopupWidgetBase::Refresh()

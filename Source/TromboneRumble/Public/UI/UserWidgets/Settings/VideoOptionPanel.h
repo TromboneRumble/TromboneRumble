@@ -1,11 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonRotator.h"
 #include "OptionPanelBase.h"
 #include "VideoOptionPanel.generated.h"
 
 class UVerticalBox;
-class UOptionCycleWidget;
+class UOptionCycleRowWidget;
 
 UENUM()
 enum class EGraphicsOptionType : uint8
@@ -56,17 +57,17 @@ class TROMBONERUMBLE_API UVideoOptionPanel : public UOptionPanelBase
 	
 public:
 	
+	// ~ Begin UOptionPanelBase Interface
 	virtual void RefreshUI() override;
-	
-protected:
-	
-	virtual void HandleApplyButtonClicked() override;
-	virtual void HandleResetButtonClicked() override;
+	virtual void ApplySettingsFromUI(bool bSaveToDisk) override;
+	virtual void ApplySettingsFromSavedData() override;
+	virtual bool IsDirty() const override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UOptionCycleWidget> OptionCycleWidgetClass;
+	TSubclassOf<UOptionCycleRowWidget> OptionCycleWidgetClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UDataTable> GraphicsOptionsDataTable;
@@ -75,17 +76,17 @@ protected:
 	TObjectPtr<UVerticalBox> VB_OptionContainer;
 	
 	UPROPERTY()
-	TMap<EGraphicsOptionType, UOptionCycleWidget*> CreatedWidgets;
+	TMap<EGraphicsOptionType, UOptionCycleRowWidget*> CreatedWidgets;
 
 private:
 	void BuildOptions();
 	
 	UFUNCTION()
-	void OnOverallQualityChanged(int32 NewIndex);
+	void OnOverallQualityChanged(int32 Value, ERotatorDirection RotatorDir);
 	UFUNCTION()
-	void OnSubOptionChanged(int32 NewIndex);
+	void OnSubOptionChanged(int32 Value, ERotatorDirection RotatorDir);
 	UFUNCTION()
-	void OnWindowModeChanged(int32 NewIndex);
+	void OnWindowModeChanged(int32 Value, ERotatorDirection RotatorDir);
 	
 public:
 	

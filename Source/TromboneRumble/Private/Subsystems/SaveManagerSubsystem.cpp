@@ -2,7 +2,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Data/WwiseData.h"
+#include "Kismet/KismetInternationalizationLibrary.h"
 #include "SaveData/TromboneSaveGame.h"
+#include "Utilities/EnumHelper.h"
 
 void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -50,15 +52,22 @@ void USaveManagerSubsystem::ResetToDefaultSettings()
 
 void USaveManagerSubsystem::ApplyAllSettings()
 {
-    ApplyAudio(CachedSettings->Audio);
-    ApplyGameplay(CachedSettings->Gameplay);
+    ApplyAudio(CachedSettings->Audio, false);
+    ApplyGameplay(CachedSettings->Gameplay, false);
 
-    if (!GEngine) return;
-    
-    if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+    if (GEngine)
     {
-        VideoSettings->LoadSettings();
-        VideoSettings->ApplySettings(true);
+        if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+        {
+            VideoSettings->LoadSettings();
+            VideoSettings->ApplySettings(false);
+        }
+    }
+    
+    if (GConfig)
+    {
+        const FString CurrentCulture = GConfig->GetStr(TEXT("Internationalization"), TEXT("Language"), GGameUserSettingsIni);
+        UKismetInternationalizationLibrary::SetCurrentLanguage(CurrentCulture, false);
     }
 }
 
@@ -71,60 +80,102 @@ UTromboneSaveGame* USaveManagerSubsystem::LoadOrCreateSettings()
     return Cast<UTromboneSaveGame>(UGameplayStatics::CreateSaveGameObject(UTromboneSaveGame::StaticClass()));
 }
 
-void USaveManagerSubsystem::ApplyAndSaveAudio(const FAudioSettingData& NewAudio)
+void USaveManagerSubsystem::ApplyAudio(const FAudioSettingData& InAudioData, bool bSaveData)
 {
-    CachedSettings->Audio = NewAudio;
-    InternalSave();
-    ApplyAudio(NewAudio);
+    WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, InAudioData.MasterVolume);
+    WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, InAudioData.BGMVolume);
+    WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, InAudioData.MusicVolume);
+    WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, InAudioData.SFXVolume);
+    
+    if (bSaveData)
+    {
+        CachedSettings->Audio = InAudioData;
+        InternalSave();
+    }
 }
 
-void USaveManagerSubsystem::ApplyAndSaveGameplay(const FGameplaySettingData& NewGameplay)
+void USaveManagerSubsystem::ApplyGameplay(const FGameplaySettingData& InGameplayData, bool bSaveData)
 {
-    CachedSettings->Gameplay = NewGameplay;
-    InternalSave();
-    ApplyGameplay(NewGameplay);
+    // TODO : 게임 플레이 적용 구문
+    
+    if (bSaveData)
+    {
+        CachedSettings->Gameplay = InGameplayData;
+        InternalSave();
+    }
 }
 
-void USaveManagerSubsystem::ApplyAndSaveVideo(const FGraphicsSettingData& NewVideo)
+void USaveManagerSubsystem::ApplyVideo(const FGraphicsSettingData& InVideoData, bool bSaveData)
 {
     if (!GEngine) return;
     
     if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
     {
-        VideoSettings->SetOverallScalabilityLevel(NewVideo.OverallQuality);
+        VideoSettings->SetOverallScalabilityLevel(InVideoData.OverallQuality);
         
-        VideoSettings->SetViewDistanceQuality(NewVideo.ViewDistance);
-        VideoSettings->SetAntiAliasingQuality(NewVideo.AntiAliasing);
-        VideoSettings->SetPostProcessingQuality(NewVideo.PostProcess);
-        VideoSettings->SetShadowQuality(NewVideo.Shadow);
-        VideoSettings->SetGlobalIlluminationQuality(NewVideo.GlobalIllumination);
-        VideoSettings->SetReflectionQuality(NewVideo.Reflections);
-        VideoSettings->SetTextureQuality(NewVideo.Texture);
-        VideoSettings->SetVisualEffectQuality(NewVideo.Effects);
+        VideoSettings->SetViewDistanceQuality(InVideoData.ViewDistance);
+        VideoSettings->SetAntiAliasingQuality(InVideoData.AntiAliasing);
+        VideoSettings->SetPostProcessingQuality(InVideoData.PostProcess);
+        VideoSettings->SetShadowQuality(InVideoData.Shadow);
+        VideoSettings->SetGlobalIlluminationQuality(InVideoData.GlobalIllumination);
+        VideoSettings->SetReflectionQuality(InVideoData.Reflections);
+        VideoSettings->SetTextureQuality(InVideoData.Texture);
+        VideoSettings->SetVisualEffectQuality(InVideoData.Effects);
         
-        VideoSettings->SetScreenResolution(NewVideo.Resolution);
-        VideoSettings->SetVSyncEnabled(NewVideo.bVSync);
-        VideoSettings->SetFullscreenMode(NewVideo.WindowMode);
+        VideoSettings->SetScreenResolution(InVideoData.Resolution);
+        VideoSettings->SetVSyncEnabled(InVideoData.bVSync);
+        VideoSettings->SetFullscreenMode(InVideoData.WindowMode);
         
-        VideoSettings->ApplySettings(true);
-        VideoSettings->SaveSettings();
+        VideoSettings->ApplySettings(false);
+        
+        if (bSaveData)
+        {
+            VideoSettings->SaveSettings();
+        }
     }
-}
-
-void USaveManagerSubsystem::ApplyAudio(const FAudioSettingData& Settings)
-{
-    WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, Settings.MasterVolume);
-    WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, Settings.BGMVolume);
-    WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, Settings.MusicVolume);
-    WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, Settings.SFXVolume);
-}
-
-void USaveManagerSubsystem::ApplyGameplay(const FGameplaySettingData& Settings)
-{
-    // TODO
 }
 
 void USaveManagerSubsystem::InternalSave()
 {
     UGameplayStatics::SaveGameToSlot(CachedSettings, SlotName, UserIndex);
+}
+
+void USaveManagerSubsystem::DumpTromboneSettings() const
+{
+    if (!CachedSettings)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[SaveManager] Dump failed: CachedSettings is null."));
+        return;
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("===================================================="));
+    UE_LOG(LogTemp, Log, TEXT("          [Trombone Rumble] Current Settings        "));
+    UE_LOG(LogTemp, Log, TEXT("===================================================="));
+
+    // Audio
+    const FAudioSettingData& Audio = CachedSettings->Audio;
+    UE_LOG(LogTemp, Log, TEXT("[Audio] Master: %.2f | BGM: %.2f | Music: %.2f | SFX: %.2f"), 
+        Audio.MasterVolume, Audio.BGMVolume, Audio.MusicVolume, Audio.SFXVolume);
+
+    // Gameplay
+    const FGameplaySettingData& Gameplay = CachedSettings->Gameplay;
+    const FString VOIPString = EnumHelper::EnumToString(Gameplay.VOIPSetting);
+    UE_LOG(LogTemp, Log, TEXT("[Gameplay] Show Username: %s | VOIP Setting: %s"), 
+        Gameplay.bShouldShowUsernameInGame ? TEXT("True") : TEXT("False"), *VOIPString);
+
+    // Player
+    const FPlayerData& Player = CachedSettings->PlayerData;
+    UE_LOG(LogTemp, Log, TEXT("[Player] Is First Time: %s"), 
+        Player.bIsFirstTimePlayer ? TEXT("True") : TEXT("False"));
+
+    // Video
+    if (const UGameUserSettings* VideoSettings = GEngine ? GEngine->GetGameUserSettings() : nullptr)
+    {
+        const FIntPoint Res = VideoSettings->GetScreenResolution();
+        const int32 Quality = VideoSettings->GetOverallScalabilityLevel();
+        UE_LOG(LogTemp, Log, TEXT("[Video] Resolution: %dx%d | Scalability: %d"), 
+            Res.X, Res.Y, Quality);
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("===================================================="));
 }

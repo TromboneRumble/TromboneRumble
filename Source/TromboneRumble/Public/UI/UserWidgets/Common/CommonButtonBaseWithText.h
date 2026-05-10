@@ -24,6 +24,7 @@ protected:
 protected:
 	
 	// ~ Begin UCommonButtonBase Interface
+	virtual void NativeOnHovered() override;
 	virtual void NativeOnPressed() override;
 	virtual void NativeOnReleased() override;
 	// ~ End UCommonButtonBase Interface

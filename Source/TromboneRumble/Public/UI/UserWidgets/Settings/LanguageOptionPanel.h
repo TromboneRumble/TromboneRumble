@@ -4,7 +4,8 @@
 #include "UI/UserWidgets/Settings/OptionPanelBase.h"
 #include "LanguageOptionPanel.generated.h"
 
-class UOptionCycleWidget;
+enum class ERotatorDirection : uint8;
+class UOptionCycleRowWidget;
 
 UENUM()
 enum class ELanguageType : uint8
@@ -20,26 +21,34 @@ class TROMBONERUMBLE_API ULanguageOptionPanel : public UOptionPanelBase
 	
 public:
 	
-	/** Default constructor. */
-	ULanguageOptionPanel();
+	UPROPERTY(EditAnywhere, Category = "Options")
+	TArray<FString> SupportedCultures = { TEXT("ko"), TEXT("en") };
+
+public:
 	
+	// ~ Begin UOptionPanelBase Interface
 	virtual void RefreshUI() override;
+	virtual void ApplySettingsFromUI(bool bSaveToDisk) override;
+	virtual void ApplySettingsFromSavedData() override;
+	virtual bool IsDirty() const override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
-	virtual void Activate() override;
-	virtual void Deactivate() override;
 	
-	virtual void HandleApplyButtonClicked() override;
-	virtual void HandleResetButtonClicked() override;
+	// ~ Begin UOptionPanelBase Interface
+	virtual void Register() override;
+	virtual void Unregister() override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
+	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOptionCycleWidget> OC_Language;
-	
-	UPROPERTY(EditAnywhere)
-	TArray<FString> SupportedCultures;
-	
+	TObjectPtr<UOptionCycleRowWidget> OC_Language;
+
 private:
-	int32 CurrentLanguageIndex;
+	
+	UFUNCTION()
+	void OnLanguageRotated(int32 Value, ERotatorDirection RotatorDir);
+	
 	
 };

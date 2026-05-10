@@ -11,11 +11,9 @@ class AInGameState;
 
 /**
  * Delegate triggered when the player's name changes.
- *
  * @param PlayerName The new player name.
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerNameChanged, const FString&, PlayerName);
-
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnLocalScoreChanged, APlayerState*, PlayerState, int32, AddedAmount, EScoreType, ScoreType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
@@ -149,5 +147,6 @@ public:
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
 	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
     FORCEINLINE FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
+	bool IsHost() const;
 	// ~ End Getter & Setter
 };

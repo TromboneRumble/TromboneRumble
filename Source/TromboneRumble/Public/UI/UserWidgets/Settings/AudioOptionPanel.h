@@ -14,16 +14,20 @@ class TROMBONERUMBLE_API UAudioOptionPanel : public UOptionPanelBase
 	GENERATED_BODY()
 	
 public:
+	
+	// ~ Begin UOptionPanelBase Interface
 	virtual void RefreshUI() override;
+	virtual void ApplySettingsFromUI(bool bSaveToDisk) override;
+	virtual void ApplySettingsFromSavedData() override;
+	virtual bool IsDirty() const override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
-	virtual void Activate() override;
-	virtual void Deactivate() override;
 	
+	// ~ Begin UOptionPanelBase Interface
 	virtual void Register() override;
-	
-	virtual void HandleApplyButtonClicked() override;
-	virtual void HandleResetButtonClicked() override;
+	virtual void Unregister() override;
+	// ~ End UOptionPanelBase Interface
 	
 private:
 	

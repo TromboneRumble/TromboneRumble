@@ -6,6 +6,17 @@
 #include "GameFramework/SaveGame.h"
 #include "TromboneSaveGame.generated.h"
 
+UENUM()
+enum class VOIPType : uint8
+{
+	/** VOIP is not used */
+	None,
+	
+	PushToTalk,
+	
+	Auto,
+};
+
 USTRUCT()
 struct FPlayerData
 {
@@ -30,7 +41,12 @@ struct FGameplaySettingData
 {
 	GENERATED_BODY()
 	
-	UPROPERTY() float TestProperty = 0.0f;
+	UPROPERTY() 
+	bool bShouldShowUsernameInGame = true;
+	
+	UPROPERTY() 
+	VOIPType VOIPSetting = VOIPType::Auto;
+	
 };
 
 USTRUCT(BlueprintType)
