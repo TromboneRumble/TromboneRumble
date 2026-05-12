@@ -382,6 +382,8 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	GetWorldTimerManager().ClearTimer(XRayTraceTimerHandle);
+
 	if (HasAuthority())
 	{
 		if (const UGameStateSubsystem* Sub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
