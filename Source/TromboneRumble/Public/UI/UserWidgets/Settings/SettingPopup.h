@@ -52,13 +52,13 @@ protected:
 	TObjectPtr<UGameplayOptionPanel> Widget_GameplayOptions;
 	
 	
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Audio;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Video;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Language;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Gameplay;
 	
 private:

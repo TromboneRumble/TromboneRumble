@@ -59,6 +59,7 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 						Comp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 						Comp->SetReceivesDecals(false);
 					}
+					ATromboneCharacterBase::ApplyOccludedStencilToActor(CymbalsHalfActor);
 				}
 			}
 		}

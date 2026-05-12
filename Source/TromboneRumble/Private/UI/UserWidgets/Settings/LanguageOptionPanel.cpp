@@ -61,12 +61,8 @@ void ULanguageOptionPanel::ApplySettingsFromSavedData()
 {
 	Super::ApplySettingsFromSavedData();
 	
-	const FString CurrentCulture = GConfig->GetStr(TEXT("Internationalization"), TEXT("Language"), GGameUserSettingsIni);
-	
-	if (!CurrentCulture.IsEmpty())
-	{
-		UKismetInternationalizationLibrary::SetCurrentLanguage(CurrentCulture, false);
-	}
+	const FString CurrentLanguage = UKismetInternationalizationLibrary::GetCurrentLanguage();
+	UKismetInternationalizationLibrary::SetCurrentLanguage(CurrentLanguage, false);
 }
 
 bool ULanguageOptionPanel::IsDirty() const
@@ -76,22 +72,12 @@ bool ULanguageOptionPanel::IsDirty() const
 		return true;
 	}
 	
-	const FString CurrentCulture = GConfig->GetStr(TEXT("Internationalization"), TEXT("Language"), GGameUserSettingsIni);
-	
-	if (!CurrentCulture.IsEmpty())
-	{
-		const int32 SelectedIndex = OC_Language->GetCurrentIndex();
-	    
-		if (SupportedCultures.IsValidIndex(SelectedIndex))
-		{
-			return !SupportedCultures[SelectedIndex].Equals(CurrentCulture);
-		}
-	}
-	
+	// language apply immediately upon selection, it always returns false
 	return false;
 }
 
 void ULanguageOptionPanel::OnLanguageRotated(int32 Value, ERotatorDirection RotatorDir)
 {
+	// if select a language, applied to the game immediately
 	ApplySettingsFromUI(false);
 }
