@@ -64,11 +64,8 @@ void USaveManagerSubsystem::ApplyAllSettings()
         }
     }
     
-    if (GConfig)
-    {
-        const FString CurrentCulture = GConfig->GetStr(TEXT("Internationalization"), TEXT("Language"), GGameUserSettingsIni);
-        UKismetInternationalizationLibrary::SetCurrentLanguage(CurrentCulture, false);
-    }
+    const FString CurrentLanguage = UKismetInternationalizationLibrary::GetCurrentLanguage();
+    UKismetInternationalizationLibrary::SetCurrentLanguage(CurrentLanguage, false);
 }
 
 UTromboneSaveGame* USaveManagerSubsystem::LoadOrCreateSettings()
