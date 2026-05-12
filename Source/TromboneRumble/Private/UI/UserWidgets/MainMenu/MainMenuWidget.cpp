@@ -228,7 +228,7 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 			return;
 		}
 		
-		const FText EmptyLobbyCodeWarningText = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
+		const FText EmptyLobbyCodeWarningText = GI->GetCommonUIText(TEXT("Common_EnterLobbyCode"));
 		const FToastRequest Request(EmptyLobbyCodeWarningText);
 		ToastSubsystem->ShowToast(Request);
 		
@@ -303,8 +303,8 @@ void UMainMenuWidget::ShowTutorialPopup()
 	{
 		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
 		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
+		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
 		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
 
@@ -328,9 +328,9 @@ void UMainMenuWidget::ShowQuitPopup()
 	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
 		const FText Title = FText::FromString(TEXT(""));
-		const FText Description = GI->GetUIText(TEXT("Confirmation_QuitGame"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
+		const FText Description = GI->GetCommonUIText(TEXT("Confirmation_QuitGame"));
+		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
 		if (UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld()))
 		{

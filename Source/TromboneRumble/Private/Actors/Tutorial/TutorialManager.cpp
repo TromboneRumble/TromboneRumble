@@ -221,8 +221,8 @@ void ATutorialManager::ShowTutorialCompletePopup() const
 	{
 		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndTitle"));
 		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndDescription"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetUIText(TEXT("StringKey_Common_GoToMainMenu"));
+		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetCommonUIText(TEXT("StringKey_Common_GoToMainMenu"));
 
 		const TFunction<void()> LeftCallback = [this]()
 		{

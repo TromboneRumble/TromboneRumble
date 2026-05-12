@@ -150,15 +150,11 @@ void USettingPopup::ShowIsDirtyNoticePopup()
 	UPopupWidgetBase::ClosePopup(true);
 	
 	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{
-		// TODO : 다국어 적용
-		// const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
-		// const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
-		
+	{		
 		const FText Title = FText::FromString(TEXT(""));
-		const FText Description = FText::FromString(TEXT("저장하지 않은 변경 사항이 있습니다. 종료하기 전에 변경 사항을 적용하시겠습니까?"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
+		const FText Description = GI->GetCommonUIText(TEXT("SettingPopup_AskConfirmation"));
+		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		const FText RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
 		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
 

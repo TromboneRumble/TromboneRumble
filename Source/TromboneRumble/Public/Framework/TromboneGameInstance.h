@@ -66,7 +66,7 @@ public:
     int32 GetSessionPlayerNumber() const { return SessionPlayerNumber; }
 
     UFUNCTION(BlueprintCallable, Category = "UI")
-    FText GetUIText(const FString& Key) const;
+    FText GetCommonUIText(const FString& Key) const;
     FText GetTutorialUIText(const FString& Key) const;
     // ~ End Getter & Setter
 };
