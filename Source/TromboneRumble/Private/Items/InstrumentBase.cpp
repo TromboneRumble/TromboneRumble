@@ -69,7 +69,6 @@ void AInstrumentBase::BeginPlay()
 		}
 		StartTeleportTimer();
 	}
-	ATromboneCharacterBase::ApplyOccludedStencilToActor(this);
 }
 
 void AInstrumentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)

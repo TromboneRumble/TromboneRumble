@@ -75,8 +75,6 @@ void ACrown::HandleLeaderChanged(APlayerState* NewLeader, APlayerState* OldLeade
 
 			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
 			AttachToComponent(Char->GetMesh(), Rules, TEXT("socket_crown"));
-
-			ATromboneCharacterBase::ApplyOccludedStencilToActor(this);
 		}
 	}
 }

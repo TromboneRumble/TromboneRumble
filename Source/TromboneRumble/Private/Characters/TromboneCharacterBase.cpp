@@ -120,7 +120,11 @@ void ATromboneCharacterBase::BeginPlay()
 		}
 	}
 
-	ApplyOccludedStencil(GetMesh());
+	// 로컬 플레이어 캐릭터만 X-Ray stencil=252 적용 (원격 캐릭터는 X-Ray 미표시)
+	if (IsLocallyControlled())
+	{
+		ApplyOccludedStencil(GetMesh());
+	}
 
 	SetupCharacterData();
 	BoundBounceTimeline();

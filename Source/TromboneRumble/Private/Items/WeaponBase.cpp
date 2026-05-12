@@ -34,6 +34,11 @@ AWeaponBase::AWeaponBase()
 	}
 }
 
+void AWeaponBase::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void AWeaponBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

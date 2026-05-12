@@ -2,7 +2,6 @@
 
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Animation/CharacterAnimInstance.h"
-#include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/WeaponDataAsset.h"
 #include "GameFramework/Character.h"
@@ -163,8 +162,6 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 			CurrentWeapon = NewInstrument;
 			CurrentWeapon->SetCanAttack(true);
 			CurrentWeapon->EndAttack();
-
-			ATromboneCharacterBase::ApplyOccludedStencilToActor(NewInstrument);
 		}
 	}
 	else

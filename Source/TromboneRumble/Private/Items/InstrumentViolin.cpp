@@ -3,7 +3,6 @@
 
 #include "Items/InstrumentViolin.h"
 
-#include "Characters/TromboneCharacterBase.h"
 #include "Data/InstrumentScoreData.h"
 #include "GameFramework/Character.h"
 #include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
@@ -48,7 +47,6 @@ void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 						Comp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 						Comp->SetReceivesDecals(false);
 					}
-					ATromboneCharacterBase::ApplyOccludedStencilToActor(ViolinBodyActor);
 				}
 			}
 		}

@@ -363,10 +363,19 @@ void ADefaultTromboneCharacter::BeginPlay()
 		ComboWidgetComponent->SetVisibility(true);
 
 		// 가려진 캐릭터 실루엣을 위한 PostProcess 머티리얼을 로컬 카메라에만 블렌드
+		// 초기 weight=0.0 (OFF); CheckXRayOcclusion() 타이머가 XRayBlocker 감지 시 1.0으로 올림
 		if (OcclusionOverlayMaterial && FollowCamera)
 		{
-			FWeightedBlendable Blend(1.0f, OcclusionOverlayMaterial);
+			FWeightedBlendable Blend(0.0f, OcclusionOverlayMaterial);
 			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
+			
+			// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
+			GetWorldTimerManager().SetTimer(
+				XRayTraceTimerHandle,
+				this,
+				&ThisClass::CheckXRayOcclusion,
+				0.05f,
+				true);
 		}
 	}
 }
@@ -445,6 +454,43 @@ void ADefaultTromboneCharacter::UpdateMaxWalkSpeed()
 		const float FinalSpeed = CharacterAttributes ? CharacterAttributes->GetMoveSpeed() : BaseSpeed;
 
 		Move->MaxWalkSpeed = FinalSpeed;
+	}
+}
+
+void ADefaultTromboneCharacter::CheckXRayOcclusion()
+{
+	if (!OcclusionOverlayMaterial || !FollowCamera) return;
+
+	// 카메라 위치 → 캐릭터 중심까지 멀티 트레이스
+	const FVector Start = FollowCamera->GetComponentLocation();
+	const FVector End   = GetActorLocation();
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	TArray<FHitResult> Hits;
+	GetWorld()->LineTraceMultiByChannel(Hits, Start, End, ECC_Visibility, Params);
+
+	// 트레이스 결과 중 XRayBlocker 태그가 있는 액터가 하나라도 있으면 X-Ray ON
+	bool bXRayActive = false;
+	for (const FHitResult& Hit : Hits)
+	{
+		if (Hit.GetActor() && Hit.GetActor()->ActorHasTag(FName("XRayBlocker")))
+		{
+			bXRayActive = true;
+			break;
+		}
+	}
+
+	// blendable 배열에서 OcclusionOverlayMaterial을 찾아 weight 업데이트
+	const float NewWeight = bXRayActive ? 1.0f : 0.0f;
+	for (FWeightedBlendable& Blendable : FollowCamera->PostProcessSettings.WeightedBlendables.Array)
+	{
+		if (Blendable.Object == OcclusionOverlayMaterial)
+		{
+			Blendable.Weight = NewWeight;
+			break;
+		}
 	}
 }
 

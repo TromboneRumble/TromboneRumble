@@ -165,6 +165,11 @@ private:
 	void Server_InteractItem(AItemBase* InteractedItem);
 	// ~Server RPCs
 	
+	//카메라→캐릭터 트레이스로 XRayBlocker 태그 감지
+	FTimerHandle XRayTraceTimerHandle;
+	UFUNCTION()
+	void CheckXRayOcclusion();
+	
 	// Delegate Callback Handlers
 	UFUNCTION()
 	void HandleInteractableAvailableChanged(bool bAvailable);
