@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{65479D6F-AF38-BB12-A242-7387BC92F737}",
+    "Hash": "{C7D97886-588F-44FA-1F48-C995A467FC27}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -50,6 +50,12 @@
       "Name": "Master_LobbyBGM",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Master_LobbyBGM",
       "GUID": "{55DFD7BE-E58A-4714-BDAE-7393826F6CC0}"
+     },
+     {
+      "Id": "1168632360",
+      "Name": "Master_UI",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Master_UI",
+      "GUID": "{45D09297-DBD9-49A8-8411-067F90583508}"
      },
      {
       "Id": "1900298039",
@@ -121,6 +127,12 @@
       "Name": "RTPC_BGMVolume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_BGMVolume",
       "GUID": "{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"
+     },
+     {
+      "Id": "3141145287",
+      "Name": "RTPC_UIVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_UIVolume",
+      "GUID": "{0362BCD1-CECE-48A9-95A2-C677C79AD6EB}"
      }
     ],
     "SwitchGroups": [
@@ -683,6 +695,6 @@
     ]
    }
   ],
-  "FileHash": "{89928B7D-5804-46FA-AA94-6BCE00B6A833}"
+  "FileHash": "{CD26C285-60E2-BA45-1616-EF39838AB567}"
  }
 }

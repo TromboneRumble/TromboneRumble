@@ -15,6 +15,7 @@
 				<GameParameter Name="RTPC_MusicVolume" ID="{3EC485DA-A658-45AE-AB28-DDC1045E60EB}"/>
 				<GameParameter Name="RTPC_SFXVolume" ID="{6BB75C83-4CCF-480B-88F5-B69F326C8A5F}"/>
 				<GameParameter Name="RTPC_BGMVolume" ID="{F994632B-5461-4C7E-8FE6-97B6CAF3D6CE}"/>
+				<GameParameter Name="RTPC_UIVolume" ID="{0362BCD1-CECE-48A9-95A2-C677C79AD6EB}"/>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>

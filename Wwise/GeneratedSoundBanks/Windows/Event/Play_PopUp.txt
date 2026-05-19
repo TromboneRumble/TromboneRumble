@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	948866160	Play_PopUp			\Default Work Unit\UI_SFX\Play_PopUp	
+
