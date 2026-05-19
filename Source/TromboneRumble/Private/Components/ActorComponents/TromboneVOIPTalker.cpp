@@ -2,10 +2,12 @@
 
 #include "Components/ActorComponents/TromboneVOIPTalker.h"
 #include "Components/AudioComponent.h"
+#include "Engine/LocalPlayer.h"
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/VoiceInterface.h"
 #include "OnlineSubsystem.h"
 #include "Sound/SoundAttenuation.h"
+#include "Subsystems/VoiceChatSubsystem.h"
 
 UTromboneVOIPTalker::UTromboneVOIPTalker(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -61,6 +63,14 @@ void UTromboneVOIPTalker::RegisterTalker(APlayerState* InPlayerState)
 			}
 		}
 	}
+
+	if (ULocalPlayer* LP = GetWorld()->GetFirstLocalPlayerFromController())
+	{
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			VCS->ApplyVolumeToTalker(InPlayerState);
+		}
+	}
 }
 
 void UTromboneVOIPTalker::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -85,7 +95,7 @@ void UTromboneVOIPTalker::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UTromboneVOIPTalker::SetVolumeMultiplier(float InVolume)
 {
-	PendingVolumeMultiplier = FMath::Clamp(InVolume, 0.0f, 1.0f);
+	PendingVolumeMultiplier = FMath::Clamp(InVolume, 0.0f, 4.0f);
 
 	// If we're currently receiving a talk stream, apply immediately to the live audio component.
 	if (UAudioComponent* AudioComp = CachedAudioComponent.Get())

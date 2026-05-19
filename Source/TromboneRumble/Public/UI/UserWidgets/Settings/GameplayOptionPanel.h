@@ -6,7 +6,6 @@
 #include "OptionPanelBase.h"
 #include "GameplayOptionPanel.generated.h"
 
-class UOptionCycleRowWidget;
 class UCheckBoxRowWidget;
 
 UCLASS()
@@ -27,7 +26,4 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCheckBoxRowWidget> CBR_ShouldShowUsernameInGame;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOptionCycleRowWidget> OC_VOIP;
 };

@@ -9,15 +9,28 @@
 #include "UI/UserWidgets/OnScreenIndicator/OSI_RhythmRankWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/VoiceChatSubsystem.h"
 
 void ADefaultPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// TODO : ADefaultPlayerController 정리하기!!!
 
 	const UGameInstance* GameInstance = GetGameInstance();
 	if (!GameInstance || !IsLocalController()) return;
+	
+	if (const ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			VCS->EnsureLocalTalkerRegistered();
+			if (VCS->GetTalkMode() == EVoipMode::AutoVoice)
+				VCS->BeginLocalTalk();
+			else
+				VCS->EndLocalTalk();
+		}
+	}
 
 	if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
 	{

@@ -178,7 +178,7 @@ void ADefaultPlayerController::Handle_PushToTalkStart()
 	{
 		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
 		{
-			if (VCS->GetTalkMode() == EVoiceTalkMode::PushToTalk)
+			if (VCS->GetTalkMode() == EVoipMode::PushToTalk)
 			{
 				VCS->BeginLocalTalk();
 				
@@ -199,7 +199,7 @@ void ADefaultPlayerController::Handle_PushToTalkEnd()
 	{
 		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
 		{
-			if (VCS->GetTalkMode() == EVoiceTalkMode::PushToTalk)
+			if (VCS->GetTalkMode() == EVoipMode::PushToTalk)
 			{
 				VCS->EndLocalTalk();
 

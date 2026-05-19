@@ -35,6 +35,9 @@ public class TromboneRumble : ModuleRules
 			"Lobby",
 			"Projects",
 			"Voice",
+			"AudioCapture",
+			"AudioCaptureCore",
+			"AudioMixer"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

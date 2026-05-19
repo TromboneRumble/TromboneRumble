@@ -1,4 +1,5 @@
 #include "Pawns/MatchPawn.h"
+#include "UI/UserWidgets/Lobby/VoiceVolumeRowWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
@@ -45,6 +46,16 @@ AMatchPawn::AMatchPawn()
 		SpeakerIndicatorComponent->SetCastShadow(false);
 		SpeakerIndicatorComponent->SetVisibility(true);
 		SpeakerIndicatorComponent->SetHiddenInGame(false);
+	}
+
+	VoiceSliderComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("VoiceSliderComponent"));
+	if (VoiceSliderComponent)
+	{
+		VoiceSliderComponent->SetupAttachment(SkeletalMeshComponent, FName("head"));
+		VoiceSliderComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		VoiceSliderComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		VoiceSliderComponent->bReceivesDecals = 0;
+		VoiceSliderComponent->SetCastShadow(false);
 	}
 
 #if WITH_EDITORONLY_DATA
@@ -172,6 +183,30 @@ void AMatchPawn::TryRegisterVOIPTalker()
 	VOIPTalker->OnTalkingStateChanged.RemoveDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
 	VOIPTalker->OnTalkingStateChanged.AddDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
 	VOIPTalker->RegisterTalker(PS);
+	TryInitVoiceSlider();
+}
+
+void AMatchPawn::TryInitVoiceSlider()
+{
+	if (bVoiceSliderInitialized || !VoiceSliderComponent) return;
+
+	ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>();
+	if (!DPS) return;
+
+	if (const APlayerController* LocalPC = GetWorld()->GetFirstPlayerController())
+	{
+		if (ULocalPlayer* LocalPlayer = LocalPC->GetLocalPlayer())
+		{
+			VoiceSliderComponent->SetOwnerPlayer(LocalPlayer);
+		}
+	}
+
+	VoiceSliderComponent->InitWidget();
+	if (UVoiceVolumeRowWidget* SliderWidget = Cast<UVoiceVolumeRowWidget>(VoiceSliderComponent->GetUserWidgetObject()))
+	{
+		SliderWidget->Init(DPS, IsLocallyControlled());
+		bVoiceSliderInitialized = true;
+	}
 }
 
 void AMatchPawn::HandleVoiceTalkingStateChanged(bool bIsTalking)

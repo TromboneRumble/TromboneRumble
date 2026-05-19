@@ -5,6 +5,8 @@
 #include "Kismet/KismetInternationalizationLibrary.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Utilities/EnumHelper.h"
+#include "Subsystems/VoiceChatSubsystem.h"
+#include "Engine/LocalPlayer.h"
 
 void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -83,7 +85,19 @@ void USaveManagerSubsystem::ApplyAudio(const FAudioSettingData& InAudioData, boo
     WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, InAudioData.BGMVolume);
     WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, InAudioData.MusicVolume);
     WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, InAudioData.SFXVolume);
-    
+
+    if (UGameInstance* GI = GetGameInstance())
+    {
+        if (ULocalPlayer* LP = GI->GetFirstGamePlayer())
+        {
+            if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+            {
+                VCS->ApplyMicrophoneSettings(InAudioData.MicrophoneDeviceIndex, InAudioData.VoiceSendVolume);
+                VCS->SetNoiseSuppression(InAudioData.bNoiseSuppression);
+            }
+        }
+    }
+
     if (bSaveData)
     {
         CachedSettings->Audio = InAudioData;
@@ -93,8 +107,17 @@ void USaveManagerSubsystem::ApplyAudio(const FAudioSettingData& InAudioData, boo
 
 void USaveManagerSubsystem::ApplyGameplay(const FGameplaySettingData& InGameplayData, bool bSaveData)
 {
-    // TODO : 게임 플레이 적용 구문
-    
+    if (UGameInstance* GI = GetGameInstance())
+    {
+        if (ULocalPlayer* LP = GI->GetFirstGamePlayer())
+        {
+            if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+            {
+                VCS->SetTalkMode(InGameplayData.VOIPSetting);
+            }
+        }
+    }
+
     if (bSaveData)
     {
         CachedSettings->Gameplay = InGameplayData;

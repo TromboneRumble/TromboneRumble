@@ -65,9 +65,20 @@ void AMatchPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsLocalController() && VoiceMappingContext)
+	if (!IsLocalController()) return;
+
+	if (const ULocalPlayer* LP = GetLocalPlayer())
 	{
-		if (const ULocalPlayer* LP = GetLocalPlayer())
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			VCS->EnsureLocalTalkerRegistered();
+			if (VCS->GetTalkMode() == EVoipMode::AutoVoice)
+				VCS->BeginLocalTalk();
+			else
+				VCS->EndLocalTalk();
+		}
+
+		if (VoiceMappingContext)
 		{
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
@@ -97,7 +108,7 @@ void AMatchPlayerController::Handle_PushToTalkStart()
 	{
 		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
 		{
-			if (VCS->GetTalkMode() == EVoiceTalkMode::PushToTalk)
+			if (VCS->GetTalkMode() == EVoipMode::PushToTalk)
 			{
 				VCS->BeginLocalTalk();
 				
@@ -118,7 +129,7 @@ void AMatchPlayerController::Handle_PushToTalkEnd()
 	{
 		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
 		{
-			if (VCS->GetTalkMode() == EVoiceTalkMode::PushToTalk)
+			if (VCS->GetTalkMode() == EVoipMode::PushToTalk)
 			{
 				VCS->EndLocalTalk();
 

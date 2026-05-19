@@ -141,6 +141,15 @@ public:
 	virtual void CopyProperties(APlayerState* PlayerState) override;	
 	// ~ End APlayerState Interface
 	
+	UPROPERTY(ReplicatedUsing = OnRep_VoiceSendVolume)
+	float VoiceSendVolume = 1.0f;
+
+	UFUNCTION()
+	void OnRep_VoiceSendVolume();
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetVoiceSendVolume(float Volume);
+
 	// ~ Begin Getter & Setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);

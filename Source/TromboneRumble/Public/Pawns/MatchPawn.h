@@ -61,7 +61,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
 	TObjectPtr<UWidgetComponent> SpeakerIndicatorComponent;
 
+	/** Per-pawn voice volume slider — own pawn: sender volume; other pawns: listener adjustment. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
+	TObjectPtr<UWidgetComponent> VoiceSliderComponent;
+
 	void TryRegisterVOIPTalker();
+	void TryInitVoiceSlider();
+	bool bVoiceSliderInitialized = false;
 
 	UFUNCTION()
 	void HandleVoiceTalkingStateChanged(bool bIsTalking);

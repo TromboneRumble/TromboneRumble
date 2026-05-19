@@ -1,4 +1,5 @@
 #include "Framework/DefaultPlayerState.h"
+#include "Subsystems/VoiceChatSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
@@ -54,6 +55,7 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
+	DOREPLIFETIME(ThisClass, VoiceSendVolume);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
@@ -78,6 +80,7 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 	{
 		DefaultPS->EquippedWeaponClass = this->EquippedWeaponClass;
 		DefaultPS->SkinColor = this->SkinColor;
+		DefaultPS->VoiceSendVolume = this->VoiceSendVolume;
 	}
 }
 
@@ -280,6 +283,32 @@ void ADefaultPlayerState::OnRep_SkinColor()
 			LobbyPawn->UpdateSkinFromPlayerState();
 		}
 	}
+}
+
+void ADefaultPlayerState::OnRep_VoiceSendVolume()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PC = It->Get();
+		if (!PC || !PC->IsLocalController()) continue;
+
+		ULocalPlayer* LP = PC->GetLocalPlayer();
+		if (!LP) continue;
+
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			VCS->ApplyVolumeToTalker(this);
+		}
+	}
+}
+
+void ADefaultPlayerState::Server_SetVoiceSendVolume_Implementation(float Volume)
+{
+	VoiceSendVolume = FMath::Clamp(Volume, 0.0f, 2.0f);
+	OnRep_VoiceSendVolume();
 }
 
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)

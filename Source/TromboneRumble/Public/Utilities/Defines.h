@@ -212,6 +212,14 @@ enum class EBarInterpType : uint8
 	Constant    UMETA(DisplayName = "Constant (Linear)")   // 일정한 속도 (FInterpConstantTo)
 };
 
+UENUM(BlueprintType)
+enum class EVoipMode : uint8
+{
+	None       = 0 UMETA(DisplayName = "None"),        // 음소거: 전송 없음, PTT 키 무시
+	PushToTalk = 1 UMETA(DisplayName = "Push To Talk"),
+	AutoVoice  = 2 UMETA(DisplayName = "Auto Voice"),
+};
+
 namespace TromboneRender
 {
 	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
