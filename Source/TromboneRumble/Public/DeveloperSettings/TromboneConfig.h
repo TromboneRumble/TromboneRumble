@@ -109,6 +109,12 @@ public:
 	
 public:
 	
+	/** Length of the room code. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|MatchMenu")
+	int32 RoomCodeLength;
+	
+public:
+	
 	/** Time in seconds for the lobby countdown before server travel. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
 	int32 LobbyCountdownTimeSeconds;

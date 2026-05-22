@@ -21,6 +21,10 @@ class TROMBONERUMBLE_API UTromboneStatics : public UObject
 	
 public:
 	
+	/** @return Randomly generated room code of specified length. 
+	 * If bClipboardCopy is true, the generated code will also be copied to the clipboard. */
+	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
+	
 	/** Opens a level */
 	static void OpenLevel(const UObject* WorldContextObject, ELevelState Level, bool bAbsolute = true);
 	

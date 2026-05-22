@@ -2,11 +2,29 @@
 #include "NativeGameplayTags.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
+
+FString UTromboneStatics::GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy)
+{
+	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
+	FString RandomCode;
+	for (int32 i = 0; i < CodeLength; ++i)
+	{
+		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
+	}
+	
+	if (bClipboardCopy)
+	{
+		FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
+	}
+	
+	return RandomCode;
+}
 
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelState Level, const bool bAbsolute)
 {

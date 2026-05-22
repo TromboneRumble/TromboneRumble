@@ -7,6 +7,7 @@ UTromboneConfig::UTromboneConfig()
 	: NoticePopupWidgetClass(UNoticePopupWidget::StaticClass()),
 	TwoButtonWithoutClosePopupWidgetClass(UTwoButtonWithoutClosePopup::StaticClass()),
 	CharacterSkinColors( {FLinearColor::Red}),
+	RoomCodeLength(5), 
 	LobbyCountdownTimeSeconds(5), 
 	ToastSystemPolicy(EToastSystemPolicy::Queue),
 	IntervalAfterQuestCompletion(1.5f), 

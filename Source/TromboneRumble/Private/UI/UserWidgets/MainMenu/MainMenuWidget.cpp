@@ -148,22 +148,22 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 		}
 	}
 	
-	FString LobbyCode = GenerateRandomLobbyCode(5);
-
 	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this, LobbyCode](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
 	{
+		const UTromboneConfig* Config = UTromboneConfig::Get();
+		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
+		
 		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
+		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
 		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
-    
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+
+		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
 		int32 Flag = 0;
 		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-		
-		EEasyMatchmakingMode Mode = EEasyMatchmakingMode::CreateOnly;
+
+		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::CreateOnly;
     
 		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
 	}));
@@ -181,20 +181,19 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 		}
 	}
 	
-	FString LobbyCode = GenerateRandomLobbyCode(5);
-	
 	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-			
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this, LobbyCode](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
 	{
+		const UTromboneConfig* Config = UTromboneConfig::Get();
+		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
+		
 		FEasyHostParams HostParams = FEasyHostParams();
 		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
 		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
 		Param.HostParams = HostParams;
-		// Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
 		Param.MinSlotsRequired = 1;
 												
 		int32 Flag = 0;
@@ -241,7 +240,6 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	{
 		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		// Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
 		Param.MinSlotsRequired = 1;
 		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
 												
@@ -281,20 +279,6 @@ void UMainMenuWidget::HandleMatchmakingComplete(const FName SessionName, const E
 void UMainMenuWidget::HandleMatchmakingCanceled()
 {
 	SetUIEnabled(true);
-}
-
-FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
-{
-	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
-	FString RandomCode;
-	for (int32 i = 0; i < Length; ++i)
-	{
-		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
-	}
-	
-	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
-	
-	return RandomCode;
 }
 
 void UMainMenuWidget::ShowTutorialPopup()

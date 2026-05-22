@@ -61,9 +61,6 @@ private:
 	void HandleTutorialButtonClicked();
 	// ~ End Button Callbacks
 	
-	/** Generates a random lobby code of the specified length. */
-	FString GenerateRandomLobbyCode(int32 Length) const;
-	
 	/** Displays the tutorial popup */
 	void ShowTutorialPopup();
 	
