@@ -1,23 +1,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PopupWidgetBase.h"
-#include "NoticePopupWidget.generated.h"
+#include "PopupBase.h"
+#include "NoticePopup.generated.h"
 
 class UCommonTextBlock;
 
 UCLASS()
-class TROMBONERUMBLE_API UNoticePopupWidget : public UPopupWidgetBase
+class TROMBONERUMBLE_API UNoticePopup : public UPopupBase
 {
 	GENERATED_BODY()
 	
 public:
 	
-	/** Default constructor. */
-	UNoticePopupWidget();
-	
-	void OnInit(const FText& InContent) const;
-	void OnInit(const FText& InTitle, const FText& InContent) const;
+	/** Initializes the popup */
+	void Init(const FText& InContent, const FText& InTitle = FText::GetEmpty(), const FText& InCloseButtonText = FText::GetEmpty()) const;
 	
 protected:
 	
@@ -28,9 +25,5 @@ protected:
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	TObjectPtr<UCommonTextBlock> Text_Content;
 	// ~ End Widgets
-	
-private:
-	
-	FString DefaultTitle;
 	
 };

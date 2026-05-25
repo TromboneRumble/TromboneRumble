@@ -1,5 +1,4 @@
 #include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
-
 #include "AkGameplayStatics.h"
 #include "CommonTextBlock.h"
 #include "UI/Styles/CommonButtonStyleExtension.h"

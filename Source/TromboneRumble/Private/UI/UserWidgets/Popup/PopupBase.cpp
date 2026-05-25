@@ -1,17 +1,13 @@
-#include "UI/UserWidgets/Popup/PopupWidgetBase.h"
+#include "UI/UserWidgets/Popup/PopupBase.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
 #include "CommonButtonBase.h"
 
-UPopupWidgetBase::UPopupWidgetBase()
-	: bAllowBackAction(true),
-	bCloseDim(true),
-	bPlaySound(true),
-	bPlayAnimation(true),
-	bIsClosing(false)
+UPopupBase::UPopupBase()
 {
 	bIsBackHandler = true;
 }
 
-void UPopupWidgetBase::NativeOnActivated()
+void UPopupBase::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 	
@@ -28,10 +24,9 @@ void UPopupWidgetBase::NativeOnActivated()
 	{
 		// TODO: PlaySound
 	}
-		
 }
 
-void UPopupWidgetBase::NativeOnDeactivated()
+void UPopupBase::NativeOnDeactivated()
 {
 	bIsClosing = false;
 	Unregister();
@@ -39,7 +34,7 @@ void UPopupWidgetBase::NativeOnDeactivated()
 	Super::NativeOnDeactivated();
 }
 
-void UPopupWidgetBase::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
+void UPopupBase::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
 {
 	Super::OnAnimationFinished_Implementation(Animation);
 	
@@ -56,7 +51,7 @@ void UPopupWidgetBase::OnAnimationFinished_Implementation(const UWidgetAnimation
 	}
 }
 
-bool UPopupWidgetBase::NativeOnHandleBackAction()
+bool UPopupBase::NativeOnHandleBackAction()
 {
 	if (bAllowBackAction)
 	{
@@ -65,12 +60,12 @@ bool UPopupWidgetBase::NativeOnHandleBackAction()
 	return true;
 }
 
-void UPopupWidgetBase::Refresh()
+void UPopupBase::Refresh()
 {
 	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
-void UPopupWidgetBase::ClosePopup(const bool bCloseImmediately)
+void UPopupBase::ClosePopup(const bool bCloseImmediately)
 {
 	if (bIsClosing) return;
 	
@@ -89,7 +84,7 @@ void UPopupWidgetBase::ClosePopup(const bool bCloseImmediately)
 	}
 }
 
-void UPopupWidgetBase::Register()
+void UPopupBase::Register()
 {
 	if (Button_Close)
 	{
@@ -108,7 +103,7 @@ void UPopupWidgetBase::Register()
 	}
 }
 
-void UPopupWidgetBase::Unregister()
+void UPopupBase::Unregister()
 {
 	if (Button_Close)
 	{

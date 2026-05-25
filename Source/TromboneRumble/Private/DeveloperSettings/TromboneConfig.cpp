@@ -1,11 +1,10 @@
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Data/UIData.h"
-#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
-#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 
 UTromboneConfig::UTromboneConfig()
-	: NoticePopupWidgetClass(UNoticePopupWidget::StaticClass()),
-	TwoButtonWithoutClosePopupWidgetClass(UTwoButtonWithoutClosePopup::StaticClass()),
+	: NoticePopupWidgetClass(UNoticePopup::StaticClass()),
+	TwoButtonPopupWidgetClass(UTwoButtonPopup::StaticClass()),
 	CharacterSkinColors( {FLinearColor::Red}),
 	RoomCodeLength(5), 
 	LobbyCountdownTimeSeconds(5), 

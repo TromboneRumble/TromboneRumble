@@ -1,6 +1,5 @@
 #include "UI/UserWidgets/Popup/EscapePopup.h"
 #include "EasyOnlineSession.h"
-#include "Framework/TromboneGameInstance.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/TromboneStatics.h"
@@ -21,7 +20,21 @@ void UEscapePopup::Register()
 	}
 }
 
-void UEscapePopup::HandleOptionButtonClicked()
+void UEscapePopup::Unregister()
+{
+	Super::Unregister();
+	
+	if (Button_Option)
+	{
+		Button_Option->OnClicked().RemoveAll(this);
+	}
+	if (Button_Disconnect)
+	{
+		Button_Disconnect->OnClicked().RemoveAll(this);
+	}
+}
+
+void UEscapePopup::HandleOptionButtonClicked() const
 {
 	const USettingPopup* Popup = UTromboneStatics::ShowPopup<USettingPopup>(GetWorld());
 	if (!Popup)
@@ -31,36 +44,24 @@ void UEscapePopup::HandleOptionButtonClicked()
 	}
 }
 
-void UEscapePopup::HandleDisconnectButtonClicked()
+void UEscapePopup::HandleDisconnectButtonClicked() const
 {
-	UTwoButtonWithoutClosePopup* ConfirmPopup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
-	if (!ConfirmPopup)
+	if (UTwoButtonPopup* ConfirmPopup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
 	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to show disconnect confirmation popup"));
-		return;
-	}
+		FTwoButtonPopupParams Params;
+		Params.Title = ConfirmTitle;
+		Params.Content = ConfirmDescription;
+		Params.LeftButtonText = ConfirmLeftButton;
+		Params.RightButtonText = ConfirmRightButton;
 	
-	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{
-		const FText Title = ConfirmTitle;
-		const FText Description = ConfirmDescription;
-		const FText LeftButtonText = ConfirmLeftButton;
-		const FText RightButtonText = ConfirmRightButton;
-
-		const TFunction<void()> LeftCallback = [this, ConfirmPopup]()
-		{
-			ConfirmPopup->ClosePopup();
-		};
-		const TFunction<void()> RightCallback = [this]()
+		Params.RightCallback = [this]()
 		{
 			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 			{
 				OnlineSession->LeaveGameSession();
 			}
 		};
-		
-		ConfirmPopup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
-	}
 	
-	LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to leave game session"));
+		ConfirmPopup->Init(Params);
+	}
 }

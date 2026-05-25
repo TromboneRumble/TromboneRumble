@@ -109,10 +109,11 @@ void USettingPopup::Unregister()
 	}
 }
 
-void USettingPopup::ClosePopup(bool bCloseImmediately)
+void USettingPopup::ClosePopup(const bool bCloseImmediately)
 {
 	if (IsAnyPanelDirty() && GetWorld())
 	{
+		Super::ClosePopup(true);
 		ShowIsDirtyNoticePopup();
 		return;
 	}
@@ -124,6 +125,7 @@ bool USettingPopup::NativeOnHandleBackAction()
 {
 	if (IsAnyPanelDirty() && GetWorld())
 	{
+		Super::ClosePopup(true);
 		ShowIsDirtyNoticePopup();
 		return true;
 	}
@@ -146,30 +148,26 @@ bool USettingPopup::IsAnyPanelDirty() const
 
 void USettingPopup::ShowIsDirtyNoticePopup()
 {
-	// call parent ClosePopup()
-	UPopupWidgetBase::ClosePopup(true);
-	
 	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{		
-		const FText Title = FText::FromString(TEXT(""));
-		const FText Description = GI->GetCommonUIText(TEXT("SettingPopup_AskConfirmation"));
-		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
-		
-		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
-
-		const TFunction<void()> LeftCallback = [this, Popup]()
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
 		{
-			OnClickApply();
-			Popup->ClosePopup();
-		};
-
-		const TFunction<void()> RightCallback = [this, Popup]()
-		{
-			OnClickReset();
-			Popup->ClosePopup();
-		};
+			FTwoButtonPopupParams Params;
+			Params.Content = GI->GetCommonUIText(TEXT("SettingPopup_AskConfirmation"));
+			Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+			Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
+			Params.LeftCallback = [this]()
+			{
+				OnClickApply();
+			};
+		
+			Params.RightCallback = [this]()
+			{
+				OnClickReset();
+			};
+			
+			Popup->Init(Params);
+		}
 	}
 }
