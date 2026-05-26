@@ -119,8 +119,8 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 					}
 				}
 				
-				//에디터 환경에서는 GetNumPlayers()가 로그아웃한 플레이어를 바로 제거하지만,
-				//릴리즈 환경에서는 GetNumPlayers()가 로그아웃한 플레이어를 아직 포함하고 있음
+				// AGameModeBase::GetNumPlayers()는 PlayerControllerList를 순회하는데,
+				// RemoveController()는 Logout() 완료 후에 호출되므로 이탈 플레이어가 아직 포함됨 → -1 보정
 				const int32 RemainingPlayers = GetNumPlayers() - 1;
 				if (RemainingPlayers > 0)
 				{

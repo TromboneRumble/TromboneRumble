@@ -14,7 +14,8 @@ class TROMBONERUMBLE_API AInGameMode : public ATromboneGameModeBase
 public:
 	
 	virtual void BeginPlay() override;
-	
+	virtual void Logout(AController* ExitedPlayer) override;
+
 	void GameEnd() const;
 	void OnRhythmGameEndedReport();
 
