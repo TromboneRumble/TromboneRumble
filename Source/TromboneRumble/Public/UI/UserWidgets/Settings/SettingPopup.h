@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/UserWidgets/Popup/PopupWidgetBase.h"
+#include "UI/UserWidgets/Popup/PopupBase.h"
 #include "SettingPopup.generated.h"
 
 class UGameplayOptionPanel;
@@ -13,7 +13,7 @@ class UVideoOptionPanel;
 class UAudioOptionPanel;
 
 UCLASS()
-class TROMBONERUMBLE_API USettingPopup : public UPopupWidgetBase
+class TROMBONERUMBLE_API USettingPopup : public UPopupBase
 {
 	GENERATED_BODY()
 
@@ -22,15 +22,12 @@ protected:
 	// ~ Begin UPopupWidgetBase Interface
 	virtual void Register() override;
 	virtual void Unregister() override;
-	virtual void ClosePopup(bool bCloseImmediately = false) override;
+	virtual void ClosePopup(const bool bCloseImmediately = false) override;
 	// ~ End UPopupWidgetBase Interface
 	
 	// ~ Begin UCommonActivatableWidget Interface
 	virtual bool NativeOnHandleBackAction() override;
 	// ~ End UCommonActivatableWidget Interface
-	
-	bool IsAnyPanelDirty() const;
-	void ShowIsDirtyNoticePopup();
 	
 protected:
 	
@@ -68,6 +65,9 @@ private:
 	
 	void OnClickApply();
 	void OnClickReset();
+	
+	bool IsAnyPanelDirty() const;
+	void ShowIsDirtyNoticePopup();
 	
 private:
 	

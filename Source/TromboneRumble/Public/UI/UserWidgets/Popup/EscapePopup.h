@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/UserWidgets/Popup/PopupWidgetBase.h"
+#include "UI/UserWidgets/Popup/PopupBase.h"
 #include "EscapePopup.generated.h"
 
 class UCommonButtonBaseWithText;
@@ -12,7 +12,7 @@ class UCommonTextBlock;
  * Used in-game and tutorial.
  */
 UCLASS()
-class TROMBONERUMBLE_API UEscapePopup : public UPopupWidgetBase
+class TROMBONERUMBLE_API UEscapePopup : public UPopupBase
 {
 	GENERATED_BODY()
 	
@@ -20,6 +20,7 @@ protected:
 	
 	// ~ Begin UPopupWidgetBase Interface
 	virtual void Register() override;
+	virtual void Unregister() override;
 	// ~ End UPopupWidgetBase Interface
 
 	// ~ Begin Widgets
@@ -48,8 +49,8 @@ protected:
 private:
 	
 	UFUNCTION()
-	void HandleOptionButtonClicked();
+	void HandleOptionButtonClicked() const;
 	
 	UFUNCTION()
-	void HandleDisconnectButtonClicked();
+	void HandleDisconnectButtonClicked() const;
 };

@@ -65,7 +65,7 @@ private:
 	void ShowTutorialPopup();
 	
 	/** Displays the quit confirmation popup */
-	void ShowQuitPopup();
+	void ShowQuitPopup() const;
 	
 private:
 	

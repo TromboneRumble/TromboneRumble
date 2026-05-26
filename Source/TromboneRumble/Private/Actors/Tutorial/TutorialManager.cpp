@@ -6,7 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
-#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/EnumHelper.h"
 #include "Utilities/TromboneStatics.h"
@@ -219,24 +219,26 @@ void ATutorialManager::ShowTutorialCompletePopup() const
 {
 	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndTitle"));
-		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndDescription"));
-		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetCommonUIText(TEXT("StringKey_Common_GoToMainMenu"));
-
-		const TFunction<void()> LeftCallback = [this]()
+		FTwoButtonPopupParams Params;
+		Params.Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndTitle"));
+		Params.Content = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndDescription"));
+		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("StringKey_Common_GoToMainMenu"));
+		
+		Params.LeftCallback = [this]()
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
 		};
-
-		const TFunction<void()> RightCallback = [this]()
+		
+		Params.RightCallback = [this]()
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
 		};
 		
-		
-		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback, false);
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		{
+			Popup->Init(Params);
+		}
 	}
 }
 

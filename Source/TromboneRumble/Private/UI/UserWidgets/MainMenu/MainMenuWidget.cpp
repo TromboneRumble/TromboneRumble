@@ -12,12 +12,11 @@
 #include "Components/EditableText.h"
 #include "Data/UIData.h"
 #include "Framework/TromboneGameInstance.h"
-#include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "Subsystems/ToastSubsystem.h"
-#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/TromboneStatics.h"
 
 void UMainMenuWidget::NativeConstruct()
@@ -81,7 +80,7 @@ void UMainMenuWidget::Init()
 	if (CB_Quit)
 	{
 		CB_Quit->OnClicked().RemoveAll(this);
-		CB_Quit->OnClicked().AddLambda([this] { ShowQuitPopup(); });
+		CB_Quit->OnClicked().AddUObject(this, &ThisClass::ShowQuitPopup);
 	}
 	
 	if (const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld()))
@@ -285,51 +284,45 @@ void UMainMenuWidget::ShowTutorialPopup()
 {
 	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
-		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
-		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
+		FTwoButtonPopupParams Params;
+		Params.Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
+		Params.Content = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
+		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
-		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
-
-		const TFunction<void()> LeftCallback = [this]()
-		{
+		Params.LeftCallback = [this]
+		{ 
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
 		};
-
-		const TFunction<void()> RightCallback = [this, Popup]()
+		
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
 		{
-			Popup->ClosePopup();
-		};
-		
-		
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
+			Popup->Init(Params);
+		}
 	}
 }
 
-void UMainMenuWidget::ShowQuitPopup()
+void UMainMenuWidget::ShowQuitPopup() const
 {
-	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const FText Title = FText::FromString(TEXT(""));
-		const FText Description = GI->GetCommonUIText(TEXT("Confirmation_QuitGame"));
-		const FText LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
-		
-		if (UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld()))
+		FTwoButtonPopupParams Params;
+		Params.Title = FText::GetEmpty();
+		Params.Content = GI->GetCommonUIText(TEXT("Confirmation_QuitGame"));
+		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
+    
+		Params.LeftCallback = [this]()
 		{
-			const TFunction<void()> LeftCallback = [this]()
+			if (APlayerController* PC = GetOwningPlayer())
 			{
-				APlayerController* PC = GetOwningPlayer();
 				UKismetSystemLibrary::QuitGame(GetWorld(), PC, EQuitPreference::Quit, false);
-			};
-
-			const TFunction<void()> RightCallback = [this, Popup]()
-			{
-				Popup->ClosePopup();
-			};
-			
-			Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
+			}
+		};
+		
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		{
+			Popup->Init(Params);
 		}
 	}
 }

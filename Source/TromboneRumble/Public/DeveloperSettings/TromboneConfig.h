@@ -3,8 +3,8 @@
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
 #include "UI/UserWidgets/Popup/EscapePopup.h"
-#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
-#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "UI/UserWidgets/Popup/NoticePopup.h"
+#include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "TromboneConfig.generated.h"
 
@@ -37,14 +37,14 @@ public:
 	template<typename T>
 	TSubclassOf<T> GetPopupClass() const
 	{
-		if (T::StaticClass()->IsChildOf(UNoticePopupWidget::StaticClass()))
+		if (T::StaticClass()->IsChildOf(UNoticePopup::StaticClass()))
 		{
 			return Cast<UClass>(NoticePopupWidgetClass);
 		}
     
-		if (T::StaticClass()->IsChildOf(UTwoButtonWithoutClosePopup::StaticClass()))
+		if (T::StaticClass()->IsChildOf(UTwoButtonPopup::StaticClass()))
 		{
-			return Cast<UClass>(TwoButtonWithoutClosePopupWidgetClass);
+			return Cast<UClass>(TwoButtonPopupWidgetClass);
 		}
 		
 		if (T::StaticClass()->IsChildOf(UEscapePopup::StaticClass()))
@@ -65,11 +65,11 @@ public:
 	
 	/** Notice popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UNoticePopupWidget> NoticePopupWidgetClass;
+	TSubclassOf<UNoticePopup> NoticePopupWidgetClass;
 	
 	/** Two-button without close button popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UTwoButtonWithoutClosePopup> TwoButtonWithoutClosePopupWidgetClass;
+	TSubclassOf<UTwoButtonPopup> TwoButtonPopupWidgetClass;
 	
 	/** Escape popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")

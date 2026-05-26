@@ -6,8 +6,8 @@
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "TromboneStatics.generated.h"
 
-class UNoticePopupWidget;
-class UTwoButtonWithoutClosePopup;
+class UNoticePopup;
+class UTwoButtonPopup;
 class UBaseUIRoot;
 enum class ELevelState : uint8;
 
