@@ -79,6 +79,12 @@ void ALobbyGameMode::BeginPlay()
 	}
 }
 
+void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+	RegisteredPlayerCount = GetNumPlayers();
+}
+
 void ALobbyGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (UGameInstance* GameInstance = GetGameInstance())

@@ -231,6 +231,10 @@ void ATromboneCharacterBase::SetupSkeletalMeshComponent()
 
 void ATromboneCharacterBase::SetupCharacterData() const
 {
+	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
+	GetCharacterMovement()->NetworkMaxSmoothUpdateDistance = 128.f;
+	GetCharacterMovement()->NetworkNoSmoothUpdateDistance = 384.f;
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;

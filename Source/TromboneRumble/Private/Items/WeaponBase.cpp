@@ -100,7 +100,11 @@ void AWeaponBase::Equip(AActor* OwnerActor)
 	
 	OnRep_CurrentOwner(CachedActor);
 
-	if (InteractTriggerComponent) InteractTriggerComponent->SetTriggerActive(false);
+	if (InteractTriggerComponent)
+	{
+		InteractTriggerComponent->SetTriggerActive(false);
+		ForceNetUpdate();
+	}
 
 	// Move Speed Gameplay Effect 적용
 	if (EquipMoveSpeedEffectClass)
@@ -285,7 +289,10 @@ void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 	{
 		EndAttack();
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		SetPhysicsEnabled(true);
+		if (HasAuthority())
+		{
+			SetPhysicsEnabled(true);
+		}
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
 		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
