@@ -186,6 +186,7 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 	{
 	case EHitReactionType::Ragdoll:
 		OnRagdoll();
+		break;
 	case EHitReactionType::Stun:
 		OnStun();
 		break;
