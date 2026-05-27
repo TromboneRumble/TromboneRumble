@@ -69,6 +69,8 @@ protected:
 	void TryInitVoiceSlider();
 	bool bVoiceSliderInitialized = false;
 
+	FTimerHandle RetryVOIPRegistrationHandle;
+
 	UFUNCTION()
 	void HandleVoiceTalkingStateChanged(bool bIsTalking);
 	

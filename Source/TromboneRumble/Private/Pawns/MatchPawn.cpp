@@ -141,6 +141,8 @@ void AMatchPawn::BeginPlay()
 
 void AMatchPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
+
 	if (AMatchMenuGameState* GameState = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
 		GameState->HandleMatchPawnPreDestroyed(this);
@@ -184,6 +186,18 @@ void AMatchPawn::TryRegisterVOIPTalker()
 	VOIPTalker->OnTalkingStateChanged.AddDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
 	VOIPTalker->RegisterTalker(PS);
 	TryInitVoiceSlider();
+
+	// RegisterRemoteTalker는 VoiceInterface가 아직 초기화되지 않으면 조용히 실패한다.
+	// 로컬 플레이어 자신은 등록 불필요(no-op). 원격 플레이어 등록 실패 시 1초 후 재시도.
+	if (!IsLocallyControlled() && !VOIPTalker->IsRemoteTalkerRegistered())
+	{
+		GetWorldTimerManager().SetTimer(RetryVOIPRegistrationHandle,
+			this, &AMatchPawn::TryRegisterVOIPTalker, 1.0f, false);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
+	}
 }
 
 void AMatchPawn::TryInitVoiceSlider()

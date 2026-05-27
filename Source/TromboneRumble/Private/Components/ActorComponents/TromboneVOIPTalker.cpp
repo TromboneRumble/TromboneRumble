@@ -95,7 +95,7 @@ void UTromboneVOIPTalker::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UTromboneVOIPTalker::SetVolumeMultiplier(float InVolume)
 {
-	PendingVolumeMultiplier = FMath::Clamp(InVolume, 0.0f, 4.0f);
+	PendingVolumeMultiplier = FMath::Clamp(InVolume, 0.0f, 40.0f);
 
 	// If we're currently receiving a talk stream, apply immediately to the live audio component.
 	if (UAudioComponent* AudioComp = CachedAudioComponent.Get())
