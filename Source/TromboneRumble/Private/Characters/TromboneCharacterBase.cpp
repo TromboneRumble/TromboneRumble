@@ -6,9 +6,12 @@
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "AkComponent.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Materials/MaterialInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
@@ -18,6 +21,7 @@
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
 	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
 	StunNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StunNiagaraComponent"));
 	if (StunNiagaraComponent)
@@ -86,8 +90,10 @@ void ATromboneCharacterBase::SetPlayerInput(const bool bShouldEnable)
 
 void ATromboneCharacterBase::BeginPlay()
 {
-	Super::BeginPlay();
-
+	// 실행 순서:
+	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
+	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
+	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
 	if (UMaterialInterface* CurrentSkinMat = GetMesh()->GetMaterial(SkinMaterialIndex))
 	{
 		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
@@ -98,12 +104,23 @@ void ATromboneCharacterBase::BeginPlay()
 	}
 	if (UMaterialInterface* CurrentFaceMat = GetMesh()->GetMaterial(FaceMaterialIndex))
 	{
+		OriginalFaceMaterial = CurrentFaceMat;
 		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
 		if (!FaceMID)
 		{
 			FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
 		}
 	}
+
+	if (CustomizationComp)
+	{
+		FCustomizationSaveData SaveData;
+		if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+			SaveData = SMS->LoadCustomization();
+		CustomizationComp->LoadFromSaveData(SaveData);
+	}
+
+	Super::BeginPlay();
 
 	PlayFaceSequence(ECharacterFaceState::Blink);
 
@@ -128,6 +145,7 @@ void ATromboneCharacterBase::BeginPlay()
 
 	SetupCharacterData();
 	BoundBounceTimeline();
+
 	UpdateSkinFromPlayerState();
 	ApplyFlagPhysics();
 }
@@ -201,6 +219,21 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 void ATromboneCharacterBase::OnRep_SkinColor()
 {
 	ApplySkinColor(SkinColor);
+}
+
+void ATromboneCharacterBase::ApplyFaceMaterial(UMaterialInterface* Material)
+{
+	// nullptr 전달 시 BeginPlay에서 캐싱된 원본 머티리얼로 복원
+	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
+	if (!Target) return;
+
+	GetMesh()->SetMaterial(FaceMaterialIndex, Target);
+	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+	if (FaceMID)
+	{
+		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
+		FaceMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
+	}
 }
 
 void ATromboneCharacterBase::InitCharacter()

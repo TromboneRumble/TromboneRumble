@@ -7,13 +7,20 @@
 #include "Utilities/EnumHelper.h"
 #include "Subsystems/VoiceChatSubsystem.h"
 #include "Engine/LocalPlayer.h"
+#include "Misc/AES.h"
+#include "Misc/Base64.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/MemoryWriter.h"
 
 void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
-    
+
     CachedSettings = LoadOrCreateSettings();
     ApplyAllSettings();
+    CachedCustomization = LoadCustomizationFromDisk();
 }
 
 bool USaveManagerSubsystem::ShouldShowTutorialPopup() const
@@ -159,6 +166,78 @@ void USaveManagerSubsystem::InternalSave()
 {
     UGameplayStatics::SaveGameToSlot(CachedSettings, SlotName, UserIndex);
 }
+
+// ── Customization persistence ────────────────────────────────────────────────
+
+namespace
+{
+    // AES-256 key (32 bytes). Change before shipping.
+    constexpr uint8 GCustomizationAESKey[32] = {
+        'T','r','o','m','b','o','n','e','R','u','m','b','l','e','2','0',
+        '2','6','C','u','s','t','o','m','i','z','e','K','e','y','!',' '
+    };
+    FString GetCustomizationFilePath()
+    {
+        return FPaths::ProjectSavedDir() / TEXT("SaveGames") / TEXT("TromboneCustomization.dat");
+    }
+}
+
+void USaveManagerSubsystem::SaveCustomization(const FCustomizationSaveData& Data)
+{
+    // 1. Serialize FName fields as FString (portable across sessions)
+    TArray<uint8> RawBytes;
+    FMemoryWriter Writer(RawBytes, true);
+    FString Antenna = Data.AntennaKey.ToString();
+    FString Face    = Data.FaceKey.ToString();
+    FString Costume = Data.CostumeKey.ToString();
+    Writer << Antenna << Face << Costume;
+
+    // 2. Pad to AES block size (16 bytes)
+    const int32 Rem = RawBytes.Num() % FAES::AESBlockSize;
+    if (Rem != 0)
+        RawBytes.AddZeroed(FAES::AESBlockSize - Rem);
+
+    // 3. Encrypt in-place (AES-256)
+    FAES::EncryptData(RawBytes.GetData(), (uint64)RawBytes.Num(), GCustomizationAESKey, 32);
+
+    // 4. Base64 encode → write to file
+    const FString Encoded = FBase64::Encode(RawBytes.GetData(), RawBytes.Num());
+    FFileHelper::SaveStringToFile(Encoded, *GetCustomizationFilePath());
+
+    CachedCustomization = Data;
+}
+
+FCustomizationSaveData USaveManagerSubsystem::LoadCustomization() const
+{
+    return CachedCustomization;
+}
+
+FCustomizationSaveData USaveManagerSubsystem::LoadCustomizationFromDisk() const
+{
+    FString Encoded;
+    if (!FFileHelper::LoadFileToString(Encoded, *GetCustomizationFilePath()))
+        return FCustomizationSaveData{};
+
+    TArray<uint8> RawBytes;
+    if (!FBase64::Decode(Encoded, RawBytes) || RawBytes.IsEmpty())
+        return FCustomizationSaveData{};
+
+    // Decrypt in-place
+    FAES::DecryptData(RawBytes.GetData(), (uint64)RawBytes.Num(), GCustomizationAESKey, 32);
+
+    // Deserialize
+    FMemoryReader Reader(RawBytes, true);
+    FString Antenna, Face, Costume;
+    Reader << Antenna << Face << Costume;
+
+    FCustomizationSaveData Result;
+    Result.AntennaKey = FName(*Antenna);
+    Result.FaceKey    = FName(*Face);
+    Result.CostumeKey = FName(*Costume);
+    return Result;
+}
+
+// ── Debug dump ───────────────────────────────────────────────────────────────
 
 void USaveManagerSubsystem::DumpTromboneSettings() const
 {

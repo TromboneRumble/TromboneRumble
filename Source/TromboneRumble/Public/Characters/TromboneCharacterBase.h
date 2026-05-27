@@ -15,6 +15,8 @@ class UNiagaraComponent;
 class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
 class UInputComponent;
+class UCustomizationComponent;
+class UMaterialInterface;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRagdollSignature);
@@ -44,10 +46,16 @@ public:
 	void ApplySkinColor(const FLinearColor InSkinColor) const;
 	void SetPlayerInput(const bool bShouldEnable);
 
+	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
+	void ApplyFaceMaterial(UMaterialInterface* Material);
+
 	// X-Ray 실루엣용 CustomDepth stencil 값 설정 (단일 Primitive 컴포넌트)
 	static void ApplyOccludedStencil(UPrimitiveComponent* Prim);
 	// 지정 액터 내부의 모든 Primitive에만 stencil 적용 (자식 액터는 순회하지 않음)
 	static void ApplyOccludedStencilToActor(AActor* Actor);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UCustomizationComponent> CustomizationComp;
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FEndRagdollSignature EndRagdollDelegate;
@@ -138,6 +146,9 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+	// BeginPlay에서 FaceMID 생성 직전 원본 머티리얼 캐싱 (커스터마이징 복원용)
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
 	UPROPERTY()
 	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
 

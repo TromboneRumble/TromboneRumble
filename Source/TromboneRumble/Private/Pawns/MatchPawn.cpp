@@ -5,6 +5,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/World.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "Components/ActorComponents/NameplateComponent.h"
 #include "Components/ActorComponents/TromboneVOIPTalker.h"
 #include "Engine/LocalPlayer.h"
@@ -12,6 +13,8 @@
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
+#include "Materials/MaterialInterface.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 
 AMatchPawn::AMatchPawn()
 {
@@ -28,6 +31,7 @@ AMatchPawn::AMatchPawn()
 	SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	
 	NameplateComponent = CreateDefaultSubobject<UNameplateComponent>(TEXT("NameplateComponent"));
+	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
 
 	// Voice chat: 2D (omnidirectional) playback for lobby pawns.
 	VOIPTalker = CreateDefaultSubobject<UTromboneVOIPTalker>(TEXT("VOIPTalker"));
@@ -72,6 +76,22 @@ AMatchPawn::AMatchPawn()
 	AActor::SetReplicateMovement(false);
 }
 
+void AMatchPawn::ApplyFaceMaterial(UMaterialInterface* Material)
+{
+	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
+	if (!Target || !SkeletalMeshComponent) return;
+
+	SkeletalMeshComponent->SetMaterial(FaceMaterialIndex, Target);
+	FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+	if (FaceMID)
+	{
+		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		{
+			FaceMID->SetVectorParameterValue(TEXT("BaseColor"), DPS->GetSkinColor());
+		}
+	}
+}
+
 void AMatchPawn::UpdateSkinFromPlayerState() const
 {
 	if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
@@ -90,6 +110,36 @@ void AMatchPawn::UpdateSkinFromPlayerState() const
 
 void AMatchPawn::BeginPlay()
 {
+	// 실행 순서:
+	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
+	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
+	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
+	if (UMaterialInterface* CurrentSkinMat = SkeletalMeshComponent->GetMaterial(SkinMaterialIndex))
+	{
+		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
+		if (!SkinMID)
+		{
+			SkinMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(SkinMaterialIndex);
+		}
+	}
+	if (UMaterialInterface* CurrentFaceMat = SkeletalMeshComponent->GetMaterial(FaceMaterialIndex))
+	{
+		OriginalFaceMaterial = CurrentFaceMat;
+		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
+		if (!FaceMID)
+		{
+			FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+		}
+	}
+
+	if (CustomizationComp)
+	{
+		FCustomizationSaveData SaveData;
+		if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+			SaveData = SMS->LoadCustomization();
+		CustomizationComp->LoadFromSaveData(SaveData);
+	}
+
 	Super::BeginPlay();
 
 	TryRegisterVOIPTalker();
@@ -117,24 +167,7 @@ void AMatchPawn::BeginPlay()
 	{
 		GameState->HandleMatchPawnCreated(this);
 	}
-	
-	if (UMaterialInterface* CurrentSkinMat = SkeletalMeshComponent->GetMaterial(SkinMaterialIndex))
-	{
-		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
-		if (!SkinMID)
-		{
-			SkinMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(SkinMaterialIndex);
-		}
-	}
-	if (UMaterialInterface* CurrentFaceMat = SkeletalMeshComponent->GetMaterial(FaceMaterialIndex))
-	{
-		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
-		if (!FaceMID)
-		{
-			FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
-		}
-	}
-	
+
 	// Apply a skin color in server side
 	UpdateSkinFromPlayerState();
 }
