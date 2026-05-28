@@ -42,6 +42,7 @@ public:
 	bool IsDirtyFrom(const FCustomizationSaveData& Original) const;
 
 protected:
+	virtual void InitializeComponent() override;
 	virtual void BeginPlay() override;
 
 private:

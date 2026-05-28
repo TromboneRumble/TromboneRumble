@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialInterface.h"
+#include "Pawns/CustomizePawn.h"
 #include "Pawns/MatchPawn.h"
 
 const FName UCustomizationComponent::AntennaSocketName = TEXT("socket_antenna");
@@ -14,19 +15,29 @@ const FName UCustomizationComponent::CostumeSocketName = TEXT("socket_costume");
 UCustomizationComponent::UCustomizationComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	bWantsInitializeComponent = true;
+}
+
+void UCustomizationComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+	CachedDataTable = CustomizationDataTable.LoadSynchronous();
 }
 
 void UCustomizationComponent::BeginPlay()
 {
+	if (!CachedDataTable)
+		CachedDataTable = CustomizationDataTable.LoadSynchronous();
 	Super::BeginPlay();
-	// DataTable은 여기서 동기 로드 (용량이 작으므로 문제 없음)
-	CachedDataTable = CustomizationDataTable.LoadSynchronous();
 }
 
 // ── 공개 인터페이스 ──────────────────────────────────────────────────────────────
 
 void UCustomizationComponent::LoadFromSaveData(const FCustomizationSaveData& Data)
 {
+	if (!CachedDataTable)
+		CachedDataTable = CustomizationDataTable.LoadSynchronous();
+
 	// 저장된 Key가 유효하면 그대로 사용, NAME_None이거나 DataTable에 없으면 Order 0 기본값으로 폴백
 	auto Resolve = [this](ECustomizationSlotType Slot, FName SavedKey) -> FName
 	{
@@ -51,6 +62,9 @@ FCustomizationSaveData UCustomizationComponent::GetCurrentSaveData() const
 
 void UCustomizationComponent::StepPart(ECustomizationSlotType Slot, int32 Direction)
 {
+	if (!CachedDataTable)
+		CachedDataTable = CustomizationDataTable.LoadSynchronous();
+
 	const TArray<FName> Keys = GetSortedKeysForSlot(Slot);
 	if (Keys.IsEmpty()) return;
 
@@ -73,16 +87,43 @@ void UCustomizationComponent::StepPart(ECustomizationSlotType Slot, int32 Direct
 
 void UCustomizationComponent::RandomizeAll()
 {
+	if (!CachedDataTable)
+		CachedDataTable = CustomizationDataTable.LoadSynchronous();
+
+	auto GetCurrentKey = [this](ECustomizationSlotType Slot) -> FName
+	{
+		switch (Slot)
+		{
+		case ECustomizationSlotType::Antenna: return CurrentAntennaKey;
+		case ECustomizationSlotType::Face:    return CurrentFaceKey;
+		case ECustomizationSlotType::Costume: return CurrentCostumeKey;
+		default: return NAME_None;
+		}
+	};
+
 	for (ECustomizationSlotType Slot : { ECustomizationSlotType::Antenna, ECustomizationSlotType::Face, ECustomizationSlotType::Costume })
 	{
-		const TArray<FName> Keys = GetSortedKeysForSlot(Slot);
+		TArray<FName> Keys = GetSortedKeysForSlot(Slot);
 		if (Keys.IsEmpty()) continue;
-		ApplySlot(Slot, Keys[FMath::RandRange(0, Keys.Num() - 1)]);
+		if (Keys.Num() == 1) { ApplySlot(Slot, Keys[0]); continue; }
+
+		const FName CurrentKey = GetCurrentKey(Slot);
+		const int32 CurrentIdx = Keys.IndexOfByKey(CurrentKey);
+
+		if (CurrentIdx == INDEX_NONE)
+		{
+			ApplySlot(Slot, Keys[FMath::RandRange(0, Keys.Num() - 1)]);
+			continue;
+		}
+		const int32 Offset = FMath::RandRange(1, Keys.Num() - 1);
+		ApplySlot(Slot, Keys[(CurrentIdx + Offset) % Keys.Num()]);
 	}
 }
 
 void UCustomizationComponent::SetPartByKey(ECustomizationSlotType Slot, FName Key)
 {
+	if (!CachedDataTable)
+		CachedDataTable = CustomizationDataTable.LoadSynchronous();
 	ApplySlot(Slot, Key);
 }
 
@@ -172,6 +213,10 @@ void UCustomizationComponent::ApplyFace(const FCustomizationPartRow* Row)
 	else if (AMatchPawn* Pawn = Cast<AMatchPawn>(GetOwner()))
 	{
 		Pawn->ApplyFaceMaterial(Mat);
+	}
+	else if (ACustomizePawn* CustomPawn = Cast<ACustomizePawn>(GetOwner()))
+	{
+		CustomPawn->ApplyFaceMaterial(Mat);
 	}
 }
 

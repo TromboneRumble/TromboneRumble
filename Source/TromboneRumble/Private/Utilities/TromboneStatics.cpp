@@ -46,6 +46,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelState::InGame:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
 			break;
+		case ELevelState::Customize:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Customize_Main);
+			break;
 		default:
 			UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::OpenLevel] Unknown level state"));
 			return;

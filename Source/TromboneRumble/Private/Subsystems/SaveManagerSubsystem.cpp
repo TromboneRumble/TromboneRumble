@@ -171,7 +171,8 @@ void USaveManagerSubsystem::InternalSave()
 
 namespace
 {
-    // AES-256 key (32 bytes). Change before shipping.
+    // AES-256 key (32 bytes). 캐주얼한 세이브 파일 직접 편집을 막기 위한 용도.
+    // 바이너리에 포함되므로 리버싱으로 추출 가능 — 유료 아이템 보호는 Phase 7 서버 검증이 담당.
     constexpr uint8 GCustomizationAESKey[32] = {
         'T','r','o','m','b','o','n','e','R','u','m','b','l','e','2','0',
         '2','6','C','u','s','t','o','m','i','z','e','K','e','y','!',' '
