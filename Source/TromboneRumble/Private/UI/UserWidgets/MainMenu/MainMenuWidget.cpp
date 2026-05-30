@@ -72,6 +72,11 @@ void UMainMenuWidget::Init()
 			UTromboneStatics::ShowPopup<USettingPopup>(GetWorld());
 		});
 	}
+	if (CB_Customize)
+	{
+		CB_Customize->OnClicked().RemoveAll(this);
+		CB_Customize->OnClicked().AddUObject(this, &ThisClass::HandleCustomizeButtonClicked);
+	}
 	if (CB_Tutorial)
 	{
 		CB_Tutorial->OnClicked().RemoveAll(this);
@@ -250,6 +255,11 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 				
 		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
 	}));
+}
+
+void UMainMenuWidget::HandleCustomizeButtonClicked()
+{
+	UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Customize);
 }
 
 void UMainMenuWidget::HandleTutorialButtonClicked()

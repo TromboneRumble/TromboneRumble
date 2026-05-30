@@ -19,6 +19,7 @@ public:
 	// ~ Begin AGameModeBase interface
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* ExitedPlayer) override;
+	virtual bool AllowCheats(APlayerController* PC) override;
 	// ~ End AGameModeBase interface
 	
 };

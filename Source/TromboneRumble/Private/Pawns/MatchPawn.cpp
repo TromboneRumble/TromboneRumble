@@ -135,9 +135,20 @@ void AMatchPawn::BeginPlay()
 	if (CustomizationComp)
 	{
 		FCustomizationSaveData SaveData;
-		if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
-			SaveData = SMS->LoadCustomization();
-		CustomizationComp->LoadFromSaveData(SaveData);
+		if (IsLocallyControlled())
+		{
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				SaveData = SMS->LoadCustomization();
+			CustomizationComp->LoadFromSaveData(SaveData);
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				DPS->Server_SetCustomization(SaveData);
+		}
+		else
+		{
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				SaveData = DPS->GetCustomizationData();
+			CustomizationComp->LoadFromSaveData(SaveData);
+		}
 	}
 
 	Super::BeginPlay();
@@ -192,6 +203,35 @@ void AMatchPawn::OnRep_PlayerState()
 
 	// Apply a skin color in client side
 	UpdateSkinFromPlayerState();
+
+	if (IsLocallyControlled())
+	{
+		// BeginPlay 시점에 PlayerState가 null이었을 경우의 fallback
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				DPS->Server_SetCustomization(SMS->LoadCustomization());
+	}
+	else if (CustomizationComp)
+	{
+		// 타 플레이어: OnRep_CustomizationData 미도착 시 즉시 적용
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
+	}
+}
+
+void AMatchPawn::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	if (!IsLocallyControlled()) return;
+	USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (!SMS) return;
+
+	FCustomizationSaveData SaveData = SMS->LoadCustomization();
+	if (CustomizationComp)
+		CustomizationComp->LoadFromSaveData(SaveData);
+	if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		DPS->Server_SetCustomization(SaveData);
 }
 
 void AMatchPawn::PossessedBy(AController* NewController)
@@ -200,6 +240,10 @@ void AMatchPawn::PossessedBy(AController* NewController)
 
 	// Server쪽에서 OnRep_PlayerState가 호출되지 않기 때문에 PossessedBy에서 호출
 	TryRegisterVOIPTalker();
+
+	if (CustomizationComp)
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
 }
 
 void AMatchPawn::TryRegisterVOIPTalker()

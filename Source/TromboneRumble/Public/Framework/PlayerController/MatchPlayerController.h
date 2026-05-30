@@ -66,6 +66,7 @@ public:
 	virtual void PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel) override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void ReceivedPlayer() override;
 	// ~ End APlayerController Interface
 
 private:

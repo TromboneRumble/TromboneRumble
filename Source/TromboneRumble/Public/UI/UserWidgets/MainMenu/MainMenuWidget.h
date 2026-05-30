@@ -39,6 +39,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Join;
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Customize;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Settings;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Tutorial;
@@ -57,6 +59,8 @@ private:
 	void HandleQuickJoinButtonClicked();
 	UFUNCTION()
 	void HandleJoinButtonClicked();
+	UFUNCTION()
+	void HandleCustomizeButtonClicked();
 	UFUNCTION()
 	void HandleTutorialButtonClicked();
 	// ~ End Button Callbacks

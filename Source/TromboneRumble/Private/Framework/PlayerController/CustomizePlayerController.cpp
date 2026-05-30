@@ -12,6 +12,15 @@ ACustomizePlayerController::ACustomizePlayerController()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void ACustomizePlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+#if !UE_BUILD_SHIPPING
+	if (!CheatManager)
+		AddCheats(true);
+#endif
+}
+
 void ACustomizePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

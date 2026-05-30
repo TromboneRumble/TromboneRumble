@@ -38,6 +38,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	virtual void OnRep_Controller() override;
 
 	// ~ Begin ICombatReceiver Interfaces
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;

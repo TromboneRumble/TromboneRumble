@@ -115,9 +115,20 @@ void ATromboneCharacterBase::BeginPlay()
 	if (CustomizationComp)
 	{
 		FCustomizationSaveData SaveData;
-		if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
-			SaveData = SMS->LoadCustomization();
-		CustomizationComp->LoadFromSaveData(SaveData);
+		if (IsLocallyControlled())
+		{
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				SaveData = SMS->LoadCustomization();
+			CustomizationComp->LoadFromSaveData(SaveData);
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				DPS->Server_SetCustomization(SaveData);
+		}
+		else
+		{
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				SaveData = DPS->GetCustomizationData();
+			CustomizationComp->LoadFromSaveData(SaveData);
+		}
 	}
 
 	Super::BeginPlay();
@@ -185,6 +196,10 @@ void ATromboneCharacterBase::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	UpdateSkinFromPlayerState();
+
+	if (CustomizationComp)
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
 }
 
 void ATromboneCharacterBase::OnRep_PlayerState()
@@ -192,6 +207,33 @@ void ATromboneCharacterBase::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	UpdateSkinFromPlayerState();
+
+	if (IsLocallyControlled())
+	{
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				DPS->Server_SetCustomization(SMS->LoadCustomization());
+	}
+	else if (CustomizationComp)
+	{
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
+	}
+}
+
+void ATromboneCharacterBase::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	if (!IsLocallyControlled()) return;
+	USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (!SMS) return;
+
+	FCustomizationSaveData SaveData = SMS->LoadCustomization();
+	if (CustomizationComp)
+		CustomizationComp->LoadFromSaveData(SaveData);
+	if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		DPS->Server_SetCustomization(SaveData);
 }
 
 void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitData)

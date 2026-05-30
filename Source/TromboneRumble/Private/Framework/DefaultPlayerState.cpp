@@ -13,6 +13,7 @@
 #include "HAL/PlatformFileManager.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Pawns/MatchPawn.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultPlayerState::ADefaultPlayerState()
@@ -56,6 +57,7 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
 	DOREPLIFETIME(ThisClass, VoiceSendVolume);
+	DOREPLIFETIME(ThisClass, CustomizationData);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
@@ -81,6 +83,7 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 		DefaultPS->EquippedWeaponClass = this->EquippedWeaponClass;
 		DefaultPS->SkinColor = this->SkinColor;
 		DefaultPS->VoiceSendVolume = this->VoiceSendVolume;
+		DefaultPS->CustomizationData = this->CustomizationData;
 	}
 }
 
@@ -309,6 +312,27 @@ void ADefaultPlayerState::Server_SetVoiceSendVolume_Implementation(float Volume)
 {
 	VoiceSendVolume = FMath::Clamp(Volume, 0.0f, 2.0f);
 	OnRep_VoiceSendVolume();
+}
+
+void ADefaultPlayerState::OnRep_CustomizationData()
+{
+	APawn* Pawn = GetPawn();
+	if (!Pawn) return;
+
+	UCustomizationComponent* Comp = nullptr;
+	if (AMatchPawn* MP = Cast<AMatchPawn>(Pawn))
+		Comp = MP->CustomizationComp;
+	else if (ATromboneCharacterBase* TC = Cast<ATromboneCharacterBase>(Pawn))
+		Comp = TC->CustomizationComp;
+
+	if (Comp)
+		Comp->LoadFromSaveData(CustomizationData);
+}
+
+void ADefaultPlayerState::Server_SetCustomization_Implementation(FCustomizationSaveData InData)
+{
+	CustomizationData = InData;
+	OnRep_CustomizationData();
 }
 
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)

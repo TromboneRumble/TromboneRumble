@@ -21,6 +21,7 @@ protected:
 	virtual void SetupInputComponent() override;
 	virtual void AutoManageActiveCameraTarget(AActor* SuggestedTarget) override;
 	virtual void PlayerTick(float DeltaTime) override;
+	virtual void ReceivedPlayer() override;
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)

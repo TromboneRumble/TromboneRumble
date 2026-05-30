@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Data/CustomizationSaveData.h"
 #include "Utilities/Defines.h"
 #include "DefaultPlayerState.generated.h"
 
@@ -125,6 +126,12 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
+	UPROPERTY(ReplicatedUsing = OnRep_CustomizationData)
+	FCustomizationSaveData CustomizationData;
+
+	UFUNCTION()
+	void OnRep_CustomizationData();
+
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 
@@ -150,10 +157,14 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_SetVoiceSendVolume(float Volume);
 
+	UFUNCTION(Server, Reliable)
+	void Server_SetCustomization(FCustomizationSaveData InData);
+
 	// ~ Begin Getter & Setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
+	FORCEINLINE FCustomizationSaveData GetCustomizationData() const { return CustomizationData; }
 	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
     FORCEINLINE FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
 	bool IsHost() const;

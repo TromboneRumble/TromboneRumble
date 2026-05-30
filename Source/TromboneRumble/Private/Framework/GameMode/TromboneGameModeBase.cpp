@@ -8,6 +8,15 @@ ATromboneGameModeBase::ATromboneGameModeBase()
 	bUseSeamlessTravel = true;
 }
 
+bool ATromboneGameModeBase::AllowCheats(APlayerController* PC)
+{
+#if UE_BUILD_SHIPPING
+	return Super::AllowCheats(PC);
+#else
+	return true;
+#endif
+}
+
 void ATromboneGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
