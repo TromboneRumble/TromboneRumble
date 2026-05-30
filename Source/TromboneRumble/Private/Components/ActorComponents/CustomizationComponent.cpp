@@ -187,6 +187,7 @@ void UCustomizationComponent::ApplyAntenna(const FCustomizationPartRow* Row)
 
 	AntennaComp = NewObject<UStaticMeshComponent>(Owner, TEXT("AntennaComp"));
 	AntennaComp->SetStaticMesh(Mesh);
+	AntennaComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AntennaComp->SetupAttachment(SkelMesh, AntennaSocketName);
 	AntennaComp->RegisterComponent();
 
@@ -239,6 +240,7 @@ void UCustomizationComponent::ApplyCostume(const FCustomizationPartRow* Row)
 
 	CostumeComp = NewObject<UStaticMeshComponent>(Owner, TEXT("CostumeComp"));
 	CostumeComp->SetStaticMesh(Mesh);
+	CostumeComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CostumeComp->SetupAttachment(SkelMesh, CostumeSocketName);
 	CostumeComp->RegisterComponent();
 
