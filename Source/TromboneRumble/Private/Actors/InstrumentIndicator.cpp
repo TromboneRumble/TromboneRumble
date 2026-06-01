@@ -2,6 +2,7 @@
 
 
 #include "Actors/InstrumentIndicator.h"
+
 #include "Items/InstrumentBase.h"
 #include "Components/ActorComponents/FloatingRotatingComponent.h"
 
@@ -27,6 +28,11 @@ void AInstrumentIndicator::ResetBaseLocation(const FVector& InLocation)
 	{
 		FloatingRotatingComponent->ResetBaseLocation(InLocation);
 	}
+}
+
+void AInstrumentIndicator::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void AInstrumentIndicator::Tick(float DeltaSeconds)

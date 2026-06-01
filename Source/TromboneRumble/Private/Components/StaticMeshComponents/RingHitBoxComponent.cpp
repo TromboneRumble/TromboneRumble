@@ -17,6 +17,10 @@ URingHitBoxComponent::URingHitBoxComponent()
 	bReceivesDecals = false;
 	SetCastShadow(false);
 
+	// 피아노/계단 등에 가려져도 링이 항상 바닥 위에 그려지도록 translucent 정렬 우선순위 강제
+	// (머티리얼 M_NoteHitBox의 Disable Depth Test = true 와 함께 작동)
+	SetTranslucentSortPriority(100);
+
 	SetVisibility(false, false);
 }
 

@@ -29,12 +29,18 @@ void AWaterDropSpawner::Activate()
 void AWaterDropSpawner::Deactivate()
 {
 	Super::Deactivate();
-	
+
 	if (GetWorld())
 	{
 		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 		SpawnTimerHandle.Invalidate();
 	}
+}
+
+void AWaterDropSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	Super::EndPlay(EndPlayReason);
 }
 
 void AWaterDropSpawner::SpawnOneDrop()

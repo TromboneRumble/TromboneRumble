@@ -12,7 +12,7 @@ void ABaseHUD::BeginPlay()
 		RootUI = CreateWidget<UBaseUIRoot>(GetWorld(), RootUIClass);
 		if (RootUI)
 		{
-			RootUI->AddToViewport();
+			RootUI->AddToViewport(1000);
 		}
 	}
 	

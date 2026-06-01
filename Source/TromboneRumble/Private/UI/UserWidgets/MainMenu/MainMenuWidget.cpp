@@ -10,13 +10,13 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
+#include "Data/UIData.h"
 #include "Framework/TromboneGameInstance.h"
-#include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "UI/UserWidgets/Popup/NoticePopupWidget.h"
-#include "UI/UserWidgets/Popup/TwoButtonWithoutClosePopup.h"
+#include "Subsystems/ToastSubsystem.h"
+#include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/TromboneStatics.h"
 
 void UMainMenuWidget::NativeConstruct()
@@ -72,6 +72,11 @@ void UMainMenuWidget::Init()
 			UTromboneStatics::ShowPopup<USettingPopup>(GetWorld());
 		});
 	}
+	if (CB_Customize)
+	{
+		CB_Customize->OnClicked().RemoveAll(this);
+		CB_Customize->OnClicked().AddUObject(this, &ThisClass::HandleCustomizeButtonClicked);
+	}
 	if (CB_Tutorial)
 	{
 		CB_Tutorial->OnClicked().RemoveAll(this);
@@ -80,7 +85,7 @@ void UMainMenuWidget::Init()
 	if (CB_Quit)
 	{
 		CB_Quit->OnClicked().RemoveAll(this);
-		CB_Quit->OnClicked().AddLambda([this] { ShowQuitPopup(); });
+		CB_Quit->OnClicked().AddUObject(this, &ThisClass::ShowQuitPopup);
 	}
 	
 	if (const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld()))
@@ -147,22 +152,22 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 		}
 	}
 	
-	FString LobbyCode = GenerateRandomLobbyCode(5);
-
 	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this, LobbyCode](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
 	{
+		const UTromboneConfig* Config = UTromboneConfig::Get();
+		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
+		
 		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
+		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
 		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
-    
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+
+		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
 		int32 Flag = 0;
 		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-		
-		EEasyMatchmakingMode Mode = EEasyMatchmakingMode::CreateOnly;
+
+		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::CreateOnly;
     
 		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
 	}));
@@ -180,20 +185,19 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 		}
 	}
 	
-	FString LobbyCode = GenerateRandomLobbyCode(5);
-	
 	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-			
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this, LobbyCode](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
 	{
+		const UTromboneConfig* Config = UTromboneConfig::Get();
+		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
+		
 		FEasyHostParams HostParams = FEasyHostParams();
 		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
 		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
 		Param.HostParams = HostParams;
-		// Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
 		Param.MinSlotsRequired = 1;
 												
 		int32 Flag = 0;
@@ -219,12 +223,18 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	
 	if (ET_Code->GetText().IsEmpty())
 	{
-		if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		UToastSubsystem* ToastSubsystem = GetGameInstance()->GetSubsystem<UToastSubsystem>();
+		const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
+		
+		if (!ToastSubsystem || !GI)
 		{
-			const FText Message = GI->GetUIText(TEXT("Common_EnterLobbyCode"));
-			const UNoticePopupWidget* NoticePopup = UTromboneStatics::ShowPopup<UNoticePopupWidget>(GetWorld());
-			NoticePopup->OnInit(Message);
+			return;
 		}
+		
+		const FText EmptyLobbyCodeWarningText = GI->GetCommonUIText(TEXT("Common_EnterLobbyCode"));
+		const FToastRequest Request(EmptyLobbyCodeWarningText);
+		ToastSubsystem->ShowToast(Request);
+		
 		return;
 	}
 	
@@ -234,7 +244,6 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 	{
 		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		// Param.MinSlotsRequired = UEasyStatics::GetPartySize(GetWorld());
 		Param.MinSlotsRequired = 1;
 		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
 												
@@ -246,6 +255,11 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 				
 		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
 	}));
+}
+
+void UMainMenuWidget::HandleCustomizeButtonClicked()
+{
+	UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Customize);
 }
 
 void UMainMenuWidget::HandleTutorialButtonClicked()
@@ -276,69 +290,49 @@ void UMainMenuWidget::HandleMatchmakingCanceled()
 	SetUIEnabled(true);
 }
 
-FString UMainMenuWidget::GenerateRandomLobbyCode(int32 Length) const
-{
-	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
-	FString RandomCode;
-	for (int32 i = 0; i < Length; ++i)
-	{
-		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
-	}
-	
-	FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
-	
-	return RandomCode;
-}
-
 void UMainMenuWidget::ShowTutorialPopup()
 {
 	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const FText Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
-		const FText Description = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
+		FTwoButtonPopupParams Params;
+		Params.Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
+		Params.Content = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
+		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
-		UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld());
-
-		const TFunction<void()> LeftCallback = [this]()
-		{
+		Params.LeftCallback = [this]
+		{ 
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
 		};
-
-		const TFunction<void()> RightCallback = [this, Popup]()
+		
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
 		{
-			Popup->ClosePopup();
-		};
-		
-		
-		Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
+			Popup->Init(Params);
+		}
 	}
 }
 
-void UMainMenuWidget::ShowQuitPopup()
+void UMainMenuWidget::ShowQuitPopup() const
 {
-	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		const FText Title = FText::FromString(TEXT(""));
-		const FText Description = GI->GetUIText(TEXT("Confirmation_QuitGame"));
-		const FText LeftButtonText = GI->GetUIText(TEXT("Common_Yes"));
-		const FText RightButtonText = GI->GetUIText(TEXT("Common_No"));
-		
-		if (UTwoButtonWithoutClosePopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonWithoutClosePopup>(GetWorld()))
+		FTwoButtonPopupParams Params;
+		Params.Title = FText::GetEmpty();
+		Params.Content = GI->GetCommonUIText(TEXT("Confirmation_QuitGame"));
+		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
+    
+		Params.LeftCallback = [this]()
 		{
-			const TFunction<void()> LeftCallback = [this]()
+			if (APlayerController* PC = GetOwningPlayer())
 			{
-				APlayerController* PC = GetOwningPlayer();
 				UKismetSystemLibrary::QuitGame(GetWorld(), PC, EQuitPreference::Quit, false);
-			};
-
-			const TFunction<void()> RightCallback = [this, Popup]()
-			{
-				Popup->ClosePopup();
-			};
-			
-			Popup->OnInit(Title, Description, LeftButtonText, RightButtonText, LeftCallback, RightCallback);
+			}
+		};
+		
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		{
+			Popup->Init(Params);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 
 
 #include "Items/InstrumentViolin.h"
+
 #include "Data/InstrumentScoreData.h"
 #include "GameFramework/Character.h"
 #include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
@@ -26,8 +27,6 @@ void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 
 	if (CurrentOwner)
 	{
-		
-
 		if (!ViolinBodyActor)
 		{
 			if (IsValid(ViolinBodyClass))

@@ -20,9 +20,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|PressurePlate")
-	TArray<TSubclassOf<AActor>> SpawningActorClasses;;
-
+	TSubclassOf<AActor> SpawningActorClass = nullptr;
+	
 	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Platform;
@@ -49,8 +48,6 @@ protected:
 	TObjectPtr<UCurveFloat> SpawnRiseCurve;
 	// ~Components
 private:
-
-
 	FVector InitialLocation;
 
 	int32 OverlappingCount = 0;
@@ -75,4 +72,7 @@ private:
 
 	UFUNCTION()
 	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+public:
+	FORCEINLINE void SetSpawningClass(const TSubclassOf<AActor>& InActorClass){SpawningActorClass = InActorClass;}
 };

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Data/CustomizationSaveData.h"
 #include "Utilities/Defines.h"
 #include "DefaultPlayerState.generated.h"
 
@@ -11,11 +12,9 @@ class AInGameState;
 
 /**
  * Delegate triggered when the player's name changes.
- *
  * @param PlayerName The new player name.
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerNameChanged, const FString&, PlayerName);
-
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnLocalScoreChanged, APlayerState*, PlayerState, int32, AddedAmount, EScoreType, ScoreType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
@@ -127,6 +126,12 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
+	UPROPERTY(ReplicatedUsing = OnRep_CustomizationData)
+	FCustomizationSaveData CustomizationData;
+
+	UFUNCTION()
+	void OnRep_CustomizationData();
+
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 
@@ -143,11 +148,25 @@ public:
 	virtual void CopyProperties(APlayerState* PlayerState) override;	
 	// ~ End APlayerState Interface
 	
+	UPROPERTY(ReplicatedUsing = OnRep_VoiceSendVolume)
+	float VoiceSendVolume = 1.0f;
+
+	UFUNCTION()
+	void OnRep_VoiceSendVolume();
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetVoiceSendVolume(float Volume);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetCustomization(FCustomizationSaveData InData);
+
 	// ~ Begin Getter & Setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
+	FORCEINLINE FCustomizationSaveData GetCustomizationData() const { return CustomizationData; }
 	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
     FORCEINLINE FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
+	bool IsHost() const;
 	// ~ End Getter & Setter
 };

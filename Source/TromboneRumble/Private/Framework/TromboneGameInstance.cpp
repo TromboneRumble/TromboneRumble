@@ -71,7 +71,7 @@ void UTromboneGameInstance::InitWWiseEngine()
 	}
 }
 
-FText UTromboneGameInstance::GetUIText(const FString& Key) const
+FText UTromboneGameInstance::GetCommonUIText(const FString& Key) const
 {
 	if (CommonStringTable.IsNull())
 	{

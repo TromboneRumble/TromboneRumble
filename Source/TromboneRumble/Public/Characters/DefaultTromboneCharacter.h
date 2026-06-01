@@ -7,6 +7,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/AttackComponent.h"
 #include "Items/InstrumentBase.h"
+#include "BlueprintFunctionLibraries/CameraFunctionLibrary.h"
 #include "DefaultTromboneCharacter.generated.h"
 
 
@@ -14,6 +15,7 @@ class URageComponent;
 class AWeaponBase;
 struct FInputActionValue;
 class ADefaultPlayerController;
+class UTromboneVOIPTalker;
 
 class UEquipmentComponent;
 class UAkComponent;
@@ -49,25 +51,51 @@ public:
 	void Attack();
 	void StartSprint();
 	void StopSprint();
-	void Rhythm(bool bIsPressed);
-
-	EInstrumentType GetCurrentEquippedInstrumentType() const;
-	
+	void Rhythm(bool bIsPressed);	
 	void Equip(AItemBase* WeaponToEquip);
 	void Unequip();
+
+	/** 마우스 휠 줌 단계 변경. WheelDelta: +1 = 줌인(레벨 감소), -1 = 줌아웃(레벨 증가) */
+	void OnCameraZoom(float WheelDelta);
 	
+	// UVOIPTalker::OnTalkingBegin은 Listener에게만 적용되기 때문에, RPC를 통해 SpeakerIcon을 제어
+	// True인 경우에는 해당 플레이어가 PushToTalk 모드를 사용해서 말을 하고 있음.
+	UFUNCTION(Server, Reliable)
+	void Server_SetSpeaking(bool bSpeaking);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetSpeaking(bool bSpeaking);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
-	
+	virtual void OnRep_PlayerState() override;
+
+protected:
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components|Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components|Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
+
+	/** 현재 줌 레벨 (1..3, 기본 2) */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	int32 CurrentZoomLevel = 2;
+
+	/** 목표 Arm Length. BP Tick에서 UpdateTopDownCameraZoomEase에 전달 */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	float DesiredArmLength = 800.f;
+
+	/** 목표 CameraBoom Rotation (Absolute). BP Tick에서 UpdateTopDownCameraZoomEase에 전달 */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	FRotator DesiredBoomRotation = FRotator(-30.f, 0.f, 0.f);
+
+	/** 줌 보간 상태 (이상값 보존용) */
+	UPROPERTY(BlueprintReadWrite, Category = "Camera|Zoom")
+	FCameraZoomLerpState CameraZoomLerpState;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	TObjectPtr<UInteractorComponent> InteractorComponent;
@@ -98,7 +126,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<USceneComponent> ComboWidgetAnchorComponent;
-	// ~Components
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
+	TObjectPtr<UTromboneVOIPTalker> VOIPTalker;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
+	TObjectPtr<UWidgetComponent> SpeakerIndicatorComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
@@ -117,6 +150,10 @@ protected:
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ARhythmActor> CachedRhythmActor;
+	
+	// 가려졌을 때 X-Ray 실루엣 표시용 PostProcess 머티리얼 (로컬 플레이어 카메라에만 블렌드)
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Camera|Occlusion")
+	TObjectPtr<UMaterialInterface> OcclusionOverlayMaterial;
 
 private:
 	void UpdateMaxWalkSpeed();
@@ -128,6 +165,11 @@ private:
 	void Server_InteractItem(AItemBase* InteractedItem);
 	// ~Server RPCs
 	
+	//카메라→캐릭터 트레이스로 XRayBlocker 태그 감지
+	FTimerHandle XRayTraceTimerHandle;
+	UFUNCTION()
+	void CheckXRayOcclusion();
+	
 	// Delegate Callback Handlers
 	UFUNCTION()
 	void HandleInteractableAvailableChanged(bool bAvailable);
@@ -137,6 +179,8 @@ private:
 	void HandleOnRagdoll();
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
+	UFUNCTION()
+	void HandleVoiceTalkingStateChanged(bool bIsTalking);
 	// ~Delegate Callback Handlers
 
 	ARhythmActor* GetCachedRhythmActor();
@@ -145,6 +189,12 @@ private:
 	
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
+	
+	// Voice Interaction
+	void TryRegisterVOIPTalker();
+	bool bDesiredSpeakingByPTT = false;
+	void SetSpeakerIconVisible(bool bVisible);
+	// ~Voice Interaction
 
 public:
 	// ~ Begin Getters / Setters
@@ -154,5 +204,6 @@ public:
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
 	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
 	FORCEINLINE UEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
+	EInstrumentType GetCurrentEquippedInstrumentType() const;
 	// ~ End Getters / Setters
 };

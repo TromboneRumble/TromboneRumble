@@ -1,19 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/InGameMode.h"
-#include "EngineUtils.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
-#include "Framework/TromboneGameInstance.h"
 #include "EasyOnlineSession.h"
 #include "EasySessionTypes.h"
 #include "EasySessionUtils.h"
-
-AInGameMode::AInGameMode()
-{
-	bUseSeamlessTravel = true;
-}
 
 void AInGameMode::BeginPlay()
 {
@@ -30,6 +23,29 @@ void AInGameMode::BeginPlay()
 	if (GetWorld()->GetNetMode() == NM_Standalone)
 	{
 		SessionPlayerNumber = 1;
+	}
+}
+
+void AInGameMode::Logout(AController* ExitedPlayer)
+{
+	Super::Logout(ExitedPlayer); // 내부에서 UnregisterPlayer 호출 → NumOpenPublicConnections 즉시 갱신됨
+
+	AInGameState* GS = GetGameState<AInGameState>();
+	if (!GS || GS->GetCurrentGameState() == EInGameState::End)
+	{
+		return;
+	}
+
+	FEasyNamedSession CurrentGameSession;
+	if (UEasyOnlineSession* EasySession = UEasyOnlineSession::Get(this))
+	{
+		EasySession->GetSession(NAME_GameSession, CurrentGameSession);
+	}
+	SessionPlayerNumber = FMath::Max(1, UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession));
+
+	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
+	{
+		GameEnd();
 	}
 }
 

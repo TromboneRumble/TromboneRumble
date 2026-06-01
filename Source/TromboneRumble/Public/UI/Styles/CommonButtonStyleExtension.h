@@ -6,8 +6,10 @@
 #include "CommonButtonBase.h"
 #include "CommonButtonStyleExtension.generated.h"
 
+class UAkAudioEvent;
+
 /** 
- * UCommonButtonStyle does not support applying UCommonTextStyle to the NormalPressed state
+ * UCommonButtonStyle does not support applying UCommonTextStyle to the NormalPressed state & Calling WwiseEvent on button events
  */
 UCLASS()
 class TROMBONERUMBLE_API UCommonButtonStyleExtension : public UCommonButtonStyle
@@ -19,5 +21,13 @@ public:
 	/** The text style to us when pressed */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	TSubclassOf<UCommonTextStyle> NormalPressedTextStyle;
+	
+	/** The sound to play when the button is pressed */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	TObjectPtr<UAkAudioEvent> NormalPressedAudioEvent;
+	
+	/** The sound to play when the button is hovered */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	TObjectPtr<UAkAudioEvent> HoveredAudioEvent;
 	
 };

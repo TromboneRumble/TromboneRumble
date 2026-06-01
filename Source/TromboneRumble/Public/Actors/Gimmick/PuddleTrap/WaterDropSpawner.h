@@ -20,6 +20,7 @@ public:
 	
 	virtual void Activate() override;
 	virtual void Deactivate() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 protected:
 

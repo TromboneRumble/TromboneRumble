@@ -20,10 +20,12 @@ public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	
+	// TODO : TromboneStatics로 빼기
 	void PushLoadingOverlay() const;
 	void PushLoadingOverlay(FString InContent) const;
 	void PopLoadingOverlay() const;
 	
+	// TODO : TromboneStatics로 빼기
 	/** Pushes fade overlay
 	 * @return Fade widget that was pushed or currently active fade widget
 	 * @see UFadeWidget

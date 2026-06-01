@@ -16,23 +16,7 @@ void UCommonRotatorWidgetBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	if (CR_Rotator)
-	{
-		CR_Rotator->PopulateTextLabels(OptionsArray);
-		CR_Rotator->SetSelectedItem(DefaultSelectedIndex);
-	}
-}
-
-void UCommonRotatorWidgetBase::Init(const TArray<FText> InOptions, const int32 InDefaultIndex)
-{
-	OptionsArray = InOptions;
-	DefaultSelectedIndex = InDefaultIndex;
-	
-	if (CR_Rotator)
-	{
-		CR_Rotator->PopulateTextLabels(OptionsArray);
-		CR_Rotator->SetSelectedItem(DefaultSelectedIndex);
-	}
+	RefreshRotator();
 }
 
 void UCommonRotatorWidgetBase::SetIsEnabled(const bool bInIsEnabled)
@@ -49,9 +33,32 @@ void UCommonRotatorWidgetBase::SetIsEnabled(const bool bInIsEnabled)
 	}
 }
 
+#if WITH_EDITOR
+void UCommonRotatorWidgetBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+    
+	const FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+    
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(UCommonRotatorWidgetBase, TextOptions))
+	{
+		RefreshRotator();
+	}
+}
+#endif
+
+void UCommonRotatorWidgetBase::RefreshRotator()
+{
+	if (CR_Rotator)
+	{
+		CR_Rotator->PopulateTextLabels(TextOptions);
+		CR_Rotator->SetSelectedItem(DefaultSelectedIndex);
+	}
+}
+
 void UCommonRotatorWidgetBase::SetSelectedIndex(int32 NewIndex)
 {
-	if (!OptionsArray.IsValidIndex(NewIndex)) 
+	if (!TextOptions.IsValidIndex(NewIndex)) 
 	{
 		NewIndex = (DefaultSelectedIndex != -1) ? DefaultSelectedIndex : 0;
 	}
@@ -68,18 +75,18 @@ void UCommonRotatorWidgetBase::InitButtons()
 	{
 		if (CB_Prev)
 		{
+			CB_Prev->OnClicked().RemoveAll(this);
 			CB_Prev->OnClicked().AddLambda([this]
 			{
 				CR_Rotator->ShiftTextLeft();
-				OnOptionChanged.Broadcast(GetCurrentIndex());
 			});
 		}
 		if (CB_Next)
 		{
+			CB_Next->OnClicked().RemoveAll(this);
 			CB_Next->OnClicked().AddLambda([this]
 			{
 				CR_Rotator->ShiftTextRight();
-				OnOptionChanged.Broadcast(GetCurrentIndex());
 			});
 		}
 	}

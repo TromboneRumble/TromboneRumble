@@ -39,6 +39,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Join;
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Customize;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Settings;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Tutorial;
@@ -58,17 +60,16 @@ private:
 	UFUNCTION()
 	void HandleJoinButtonClicked();
 	UFUNCTION()
+	void HandleCustomizeButtonClicked();
+	UFUNCTION()
 	void HandleTutorialButtonClicked();
 	// ~ End Button Callbacks
-	
-	/** Generates a random lobby code of the specified length. */
-	FString GenerateRandomLobbyCode(int32 Length) const;
 	
 	/** Displays the tutorial popup */
 	void ShowTutorialPopup();
 	
 	/** Displays the quit confirmation popup */
-	void ShowQuitPopup();
+	void ShowQuitPopup() const;
 	
 private:
 	

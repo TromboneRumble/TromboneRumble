@@ -178,25 +178,12 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		EMatchType Type = static_cast<EMatchType>(Value);
-		MatchMenuGS->SetMatchType(Type);
+		EMatchType NewMatchType = static_cast<EMatchType>(Value);
+		MatchMenuGS->SetMatchType(NewMatchType);
 		
 		ShowLoadingOverlay();
-		
-		bool bNewHidden = false;
-		switch (Type)
-		{
-			case EMatchType::Public:
-				bNewHidden = false;
-				break;
-			
-			case EMatchType::Custom:
-				bNewHidden = true;
-				break;
-			
-			default: 
-				break;
-		}
+
+		const bool bNewHidden = NewMatchType != EMatchType::Public;
 		
 		FEasySessionSettings UpdatedSettings;
 		UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);

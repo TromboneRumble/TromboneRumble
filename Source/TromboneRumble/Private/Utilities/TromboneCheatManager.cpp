@@ -2,7 +2,9 @@
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "DeveloperSettings/TromboneConfig.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "Utilities/DebugHelper.h"
@@ -19,6 +21,7 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_Ragdoll - 래그돌을 실행합니다.\n");
 	DebugMsg += TEXT("Trombone_Stun - 스턴을 실행합니다.\n");
 	DebugMsg += TEXT("Trombone_ResetSettingData - 설정 데이터 초기화\n");
+	DebugMsg += TEXT("Trombone_SetCustomization [AntennaKey] [FaceKey] [CostumeKey] - 커스터마이징 즉시 변경 및 복제 (None=기본값, 예: Trombone_SetCustomization None Face_02 None)\n");
 	DebugMsg += TEXT("--------------------------------\n");
 	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
 	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");
@@ -141,4 +144,37 @@ void UTromboneCheatManager::Trombone_ResetSettingData()
 			}
 		}
 	}
+}
+
+void UTromboneCheatManager::Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey)
+{
+	APlayerController* PC = GetOuterAPlayerController();
+	if (!PC) return;
+
+	UCustomizationComponent* Comp = PC->GetPawn()
+		? PC->GetPawn()->FindComponentByClass<UCustomizationComponent>()
+		: nullptr;
+	if (!Comp)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("CustomizationComponent 없음 — MatchMenuMap에서 실행하세요"));
+		return;
+	}
+
+	auto ToKey = [](const FString& S) -> FName
+	{
+		return (S.IsEmpty() || S.Equals(TEXT("None"), ESearchCase::IgnoreCase)) ? NAME_None : FName(*S);
+	};
+
+	FCustomizationSaveData Data;
+	Data.AntennaKey = ToKey(AntennaKey);
+	Data.FaceKey    = ToKey(FaceKey);
+	Data.CostumeKey = ToKey(CostumeKey);
+
+	Comp->LoadFromSaveData(Data);
+
+	if (ADefaultPlayerState* DPS = PC->GetPlayerState<ADefaultPlayerState>())
+		DPS->Server_SetCustomization(Data);
+
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
+		TEXT("Customization set — Antenna:%s Face:%s Costume:%s"), *AntennaKey, *FaceKey, *CostumeKey));
 }

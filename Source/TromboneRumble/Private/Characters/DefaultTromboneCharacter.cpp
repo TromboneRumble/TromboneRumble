@@ -2,6 +2,8 @@
 
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/DefaultPlayerController.h"
+#include "Components/ActorComponents/TromboneVOIPTalker.h"
+#include "GameFramework/PlayerState.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -13,6 +15,8 @@
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "Components/ActorComponents/RageComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "Engine/LocalPlayer.h"
 #include "AbilitySystemComponent.h"
 #include "Data/CharacterAttributeSet.h"
 #include "Data/RhythmScoreAttributeSet.h"
@@ -76,6 +80,25 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 		ComboWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ComboWidgetComponent->bReceivesDecals = 0;
 		ComboWidgetComponent->SetCastShadow(false);
+	}
+
+	// Voice chat: positional (3D) playback for in-game characters.
+	VOIPTalker = CreateDefaultSubobject<UTromboneVOIPTalker>(TEXT("VOIPTalker"));
+	if (VOIPTalker)
+	{
+		VOIPTalker->bPositional = true;
+	}
+
+	SpeakerIndicatorComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("SpeakerIndicatorComponent"));
+	if (SpeakerIndicatorComponent)
+	{
+		SpeakerIndicatorComponent->SetupAttachment(GetMesh(), FName("head"));
+		SpeakerIndicatorComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		SpeakerIndicatorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SpeakerIndicatorComponent->bReceivesDecals = 0;
+		SpeakerIndicatorComponent->SetCastShadow(false);
+		SpeakerIndicatorComponent->SetVisibility(true);
+		SpeakerIndicatorComponent->SetHiddenInGame(false);
 	}
 }
 
@@ -141,6 +164,7 @@ void ADefaultTromboneCharacter::StopSprint()
 	UpdateMaxWalkSpeed();
 }
 
+
 void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 {
 	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
@@ -165,20 +189,6 @@ void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 		CachedRhythmActor->DetectLongNoteEnd();
 	}
 }
-
-
-EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
-{
-	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon))
-	{
-		if (const AWeaponBase* InstrumentBase = Cast<AWeaponBase>(Instrument))
-		{
-			return InstrumentBase->GetInstrumentType();
-		}
-	}
-	return EInstrumentType::None;
-}
-
 void ADefaultTromboneCharacter::Equip(AItemBase* WeaponToEquip)
 {
 	if (EquipmentComponent)
@@ -195,9 +205,115 @@ void ADefaultTromboneCharacter::Unequip()
 	EquipmentComponent->TryEquipItem(DefaultWeaponInstance);
 }
 
+void ADefaultTromboneCharacter::OnCameraZoom(float WheelDelta)
+{
+	if (!IsLocallyControlled() || !CharacterData) return;
+
+	// 휠 업(+) → 줌 인(레벨 감소), 휠 다운(-) → 줌 아웃(레벨 증가)
+	const int32 Step = (WheelDelta > 0.f) ? -1 : 1;
+	const int32 NewLevel = FMath::Clamp(CurrentZoomLevel + Step, 1, 3);
+	if (NewLevel == CurrentZoomLevel) return;
+	CurrentZoomLevel = NewLevel;
+
+	switch (CurrentZoomLevel)
+	{
+	case 1:
+		DesiredArmLength = CharacterData->CameraArmLengthLevel1;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel1, 0.f, 0.f);
+		break;
+	case 3:
+		DesiredArmLength = CharacterData->CameraArmLengthLevel3;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel3, 0.f, 0.f);
+		break;
+	case 2:
+	default:
+		DesiredArmLength = CharacterData->CameraArmLengthLevel2;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel2, 0.f, 0.f);
+		break;
+	}
+}
+
+
+void ADefaultTromboneCharacter::Server_SetSpeaking_Implementation(bool bSpeaking)
+{
+	// Forward to all clients (including sender) so every viewport toggles in lockstep.
+	Multicast_SetSpeaking(bSpeaking);
+}
+
+void ADefaultTromboneCharacter::Multicast_SetSpeaking_Implementation(bool bSpeaking)
+{
+	
+	bDesiredSpeakingByPTT = bSpeaking;
+
+	// Defensive re-bind of OwnerPlayer with a forced cycle. UWidgetComponent::SetOwnerPlayer
+	// only triggers RemoveWidgetFromScreen + re-add when the player pointer actually changes.
+	// On the host, the screen-space widget for a client-controlled pawn can end up with a
+	// stale bAddedToScreen=true bound to the wrong (or null) screen layer — re-calling
+	// SetOwnerPlayer with the same player would be a no-op in that case. Cycling through
+	// nullptr forces RemoveWidgetFromScreen so the next tick's UpdateWidgetOnScreen re-adds
+	// the widget to the correct local player's screen layer.
+	if (SpeakerIndicatorComponent)
+	{
+		ULocalPlayer* HostLocalPlayer = nullptr;
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			const TArray<ULocalPlayer*>& LocalPlayers = GI->GetLocalPlayers();
+			if (LocalPlayers.Num() > 0)
+			{
+				HostLocalPlayer = LocalPlayers[0];
+			}
+		}
+
+		if (HostLocalPlayer)
+		{
+			SpeakerIndicatorComponent->SetOwnerPlayer(nullptr);
+			SpeakerIndicatorComponent->SetOwnerPlayer(HostLocalPlayer);
+			SpeakerIndicatorComponent->MarkRenderStateDirty();
+		}
+	}
+	
+	SetSpeakerIconVisible(bSpeaking);
+}
+
 void ADefaultTromboneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TryRegisterVOIPTalker();
+
+	//멀티플레이어 환경에서 Widget을 생성 및 Owner지정
+	if (SpeakerIndicatorComponent)
+	{
+		ULocalPlayer* BoundLocalPlayer = nullptr;
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			const TArray<ULocalPlayer*>& LocalPlayers = GI->GetLocalPlayers();
+			if (LocalPlayers.Num() > 0)
+			{
+				BoundLocalPlayer = LocalPlayers[0];
+			}
+		}
+		if (!BoundLocalPlayer)
+		{
+			if (APlayerController* LocalPC = GetWorld()->GetFirstPlayerController())
+			{
+				BoundLocalPlayer = LocalPC->GetLocalPlayer();
+			}
+		}
+
+		if (BoundLocalPlayer)
+		{
+			SpeakerIndicatorComponent->SetOwnerPlayer(BoundLocalPlayer);
+			SpeakerIndicatorComponent->MarkRenderStateDirty();
+		}
+
+		SpeakerIndicatorComponent->InitWidget();
+		if (UUserWidget* UW = SpeakerIndicatorComponent->GetUserWidgetObject())
+		{
+			UW->SetVisibility(ESlateVisibility::HitTestInvisible);
+			UW->SetRenderOpacity(0.0f);
+		}
+	}
 
 	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
 
@@ -231,8 +347,11 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 	if (IsLocallyControlled())
 	{
-		CameraBoom->TargetArmLength = CharacterData->TargetArmLength;
-		CameraBoom->SetRelativeRotation(FRotator(CharacterData->CameraRelativeRotationPitch, 0.f, 0.f));
+		CurrentZoomLevel = 2;
+		DesiredArmLength = CharacterData->CameraArmLengthLevel2;
+		DesiredBoomRotation = FRotator(CharacterData->CameraPitchLevel2, 0.f, 0.f);
+		CameraBoom->TargetArmLength = DesiredArmLength;
+		CameraBoom->SetRelativeRotation(DesiredBoomRotation);
 		CameraBoom->SetRelativeLocation(FVector(0.f, 0.f, CharacterData->CameraRelativeLocationZ));
 
 		CachedCharacterController = Cast<ADefaultPlayerController>(GetController());
@@ -242,11 +361,29 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 
 		ComboWidgetComponent->SetVisibility(true);
+
+		// 가려진 캐릭터 실루엣을 위한 PostProcess 머티리얼을 로컬 카메라에만 블렌드
+		// 초기 weight=0.0 (OFF); CheckXRayOcclusion() 타이머가 XRayBlocker 감지 시 1.0으로 올림
+		if (OcclusionOverlayMaterial && FollowCamera)
+		{
+			FWeightedBlendable Blend(0.0f, OcclusionOverlayMaterial);
+			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
+			
+			// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
+			GetWorldTimerManager().SetTimer(
+				XRayTraceTimerHandle,
+				this,
+				&ThisClass::CheckXRayOcclusion,
+				0.05f,
+				true);
+		}
 	}
 }
 
 void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	GetWorldTimerManager().ClearTimer(XRayTraceTimerHandle);
+
 	if (HasAuthority())
 	{
 		if (const UGameStateSubsystem* Sub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
@@ -274,8 +411,17 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 
 	if (!HasAuthority()) return;
 
+	// Server쪽에서 OnRep_PlayerState가 호출되지 않기 때문에 PossessedBy에서 호출
+	TryRegisterVOIPTalker();
+
 	SpawnAndEquipDefaultWeapon();
 	SpawnAndEquipPreviouslyEquippedWeapon();
+}
+
+void ADefaultTromboneCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	TryRegisterVOIPTalker();
 }
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
@@ -310,6 +456,43 @@ void ADefaultTromboneCharacter::UpdateMaxWalkSpeed()
 		const float FinalSpeed = CharacterAttributes ? CharacterAttributes->GetMoveSpeed() : BaseSpeed;
 
 		Move->MaxWalkSpeed = FinalSpeed;
+	}
+}
+
+void ADefaultTromboneCharacter::CheckXRayOcclusion()
+{
+	if (!OcclusionOverlayMaterial || !FollowCamera) return;
+
+	// 카메라 위치 → 캐릭터 중심까지 멀티 트레이스
+	const FVector Start = FollowCamera->GetComponentLocation();
+	const FVector End   = GetActorLocation();
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	TArray<FHitResult> Hits;
+	GetWorld()->LineTraceMultiByChannel(Hits, Start, End, ECC_Visibility, Params);
+
+	// 트레이스 결과 중 XRayBlocker 태그가 있는 액터가 하나라도 있으면 X-Ray ON
+	bool bXRayActive = false;
+	for (const FHitResult& Hit : Hits)
+	{
+		if (Hit.GetActor() && Hit.GetActor()->ActorHasTag(FName("XRayBlocker")))
+		{
+			bXRayActive = true;
+			break;
+		}
+	}
+
+	// blendable 배열에서 OcclusionOverlayMaterial을 찾아 weight 업데이트
+	const float NewWeight = bXRayActive ? 1.0f : 0.0f;
+	for (FWeightedBlendable& Blendable : FollowCamera->PostProcessSettings.WeightedBlendables.Array)
+	{
+		if (Blendable.Object == OcclusionOverlayMaterial)
+		{
+			Blendable.Weight = NewWeight;
+			break;
+		}
 	}
 }
 
@@ -370,6 +553,19 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 	}
 }
 
+void ADefaultTromboneCharacter::HandleVoiceTalkingStateChanged(bool bIsTalking)
+{
+	// 해당 Character의 Owner가 PushToTalk 모드를 사용하고 있을 경우에는
+	// V키에서 손을 떼야지만 UI가 사라짐
+	// Auto Input모드일 경우에는 말을 하고 있는 경우에 UI 활성화
+	if (bDesiredSpeakingByPTT && !bIsTalking)
+	{
+		return;
+	}
+	// Auto 모드에서는 말을 하고 있을때만 Widget 보이게 하기
+	SetSpeakerIconVisible(bIsTalking);
+}
+
 ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 {
 	if (CachedRhythmActor.IsValid()) return CachedRhythmActor.Get();
@@ -414,4 +610,57 @@ void ADefaultTromboneCharacter::SpawnAndEquipPreviouslyEquippedWeapon()
 			EquipmentComponent->TryEquipItem(EquippedWeapon);
 		}
 	}
+}
+
+void ADefaultTromboneCharacter::TryRegisterVOIPTalker()
+{
+	if (!VOIPTalker)
+	{
+		return;
+	}
+
+	APlayerState* PS = GetPlayerState();
+	if (!PS)
+	{
+		return;
+	}
+
+	VOIPTalker->OnTalkingStateChanged.RemoveDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
+	VOIPTalker->OnTalkingStateChanged.AddDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
+	VOIPTalker->RegisterTalker(PS);
+}
+
+
+
+void ADefaultTromboneCharacter::SetSpeakerIconVisible(bool bVisible)
+{
+	if (!SpeakerIndicatorComponent)
+	{
+		return;
+	}
+
+	UUserWidget* UW = SpeakerIndicatorComponent->GetUserWidgetObject();
+	if (!UW)
+	{
+		SpeakerIndicatorComponent->InitWidget();
+		UW = SpeakerIndicatorComponent->GetUserWidgetObject();
+	}
+
+	if (UW)
+	{
+		UW->SetVisibility(ESlateVisibility::HitTestInvisible);
+		UW->SetRenderOpacity(bVisible ? 1.0f : 0.0f);
+	}
+}
+
+EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
+{
+	if (AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon))
+	{
+		if (const AWeaponBase* InstrumentBase = Cast<AWeaponBase>(Instrument))
+		{
+			return InstrumentBase->GetInstrumentType();
+		}
+	}
+	return EInstrumentType::None;
 }

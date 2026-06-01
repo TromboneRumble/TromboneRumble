@@ -25,8 +25,7 @@ public:
 
 protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-private:
+	
 
 	UFUNCTION()
 	void OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
@@ -42,6 +41,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Config")
 	TArray<TObjectPtr<ATargetPoint>> SpawnPoints;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|PressurePlate")
+	TArray<TSubclassOf<AActor>> SpawningActorClasses;
+	
 	//압력판이 사라진 후 다시 나올때까지 걸리는 시간
 	UPROPERTY(EditAnywhere, Category = "Config")
 	float RespawnDelay_Normal = 5.0f;

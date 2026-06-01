@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "CommonRotator.h"
 #include "CommonRotatorWidgetBase.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOptionChanged, int32, NewIndex);
 
 UCLASS()
 class TROMBONERUMBLE_API UCommonRotatorWidgetBase : public UCommonUserWidget
@@ -15,37 +13,41 @@ class TROMBONERUMBLE_API UCommonRotatorWidgetBase : public UCommonUserWidget
 	
 public:
 	
-	virtual void Init(TArray<FText> InOptions, int32 InDefaultIndex);
-	virtual void SetIsEnabled(bool bInIsEnabled) override;
+	UPROPERTY(EditAnywhere, Category = "Options");
+	TArray<FText> TextOptions;
 	
-	/** Delegate for when the selected option changes. Provides the new index of the selected option. */
-	FOnOptionChanged OnOptionChanged;
+	UPROPERTY(EditAnywhere, Category = "Options")
+	int32 DefaultSelectedIndex = 0;
+
+public:
 	
 	/** Delegate for when the rotator is rotated with a direction. Provides the new index and the direction of rotation. */
 	FOnRotatedWithDirection& OnRotatedWithDirection() const { return CR_Rotator->OnRotatedWithDirection; }
 
 protected:
-	virtual void InitButtons();	
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonRotator> CR_Rotator;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Prev;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Next;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FText> OptionsArray;
+private:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 DefaultSelectedIndex = 0;
+	void InitButtons();	
+	void RefreshRotator();
 	
 public:
-	
 	// ~ Begin UUserWidget Interface
 	virtual bool Initialize() override;
 	virtual void NativePreConstruct() override;
+	virtual void SetIsEnabled(bool bInIsEnabled) override;
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 	// ~ End UUserWidget Interface
 	
 public:
@@ -53,6 +55,6 @@ public:
 	// ~ Begin Getter & Setter
 	int32 GetCurrentIndex() const { return CR_Rotator ? CR_Rotator->GetSelectedIndex() : -1; }
 	void SetSelectedIndex(int32 NewIndex);
-	const TArray<FText>& GetOptionsArray() const { return OptionsArray; }
+	const TArray<FText>& GetOptionsArray() const { return TextOptions; }
 	// ~ End Getter & Setter
 };

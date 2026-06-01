@@ -37,6 +37,7 @@ void USliderWidgetBase::NativeDestruct()
 	{
 		Slider->OnValueChanged.RemoveAll(this);
 	}
+	OnValueChanged = nullptr;
 	
 	Super::NativeDestruct();
 }

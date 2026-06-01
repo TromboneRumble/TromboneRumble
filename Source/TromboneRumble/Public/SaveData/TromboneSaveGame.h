@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Utilities/Defines.h"
 #include "TromboneSaveGame.generated.h"
 
 USTRUCT()
@@ -15,14 +16,19 @@ struct FPlayerData
 };
 
 USTRUCT()
-struct FAudioSettingData 
+struct FAudioSettingData
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY() float MasterVolume = 0.5f;
 	UPROPERTY() float BGMVolume = 0.5f;
 	UPROPERTY() float MusicVolume = 0.5f;
 	UPROPERTY() float SFXVolume = 0.5f;
+
+	UPROPERTY() float VoiceSendVolume = 1.0f;        // 내 목소리 전송 볼륨 (0.0 ~ 2.0)
+	UPROPERTY() int32 MicrophoneDeviceIndex = 0;     // 선택된 마이크 장치 인덱스
+	UPROPERTY() FString MicrophoneDeviceName = TEXT(""); // 장치 연결 변경 시 이름 기준 재매칭용
+	UPROPERTY() bool bNoiseSuppression = true;       // 보이스챗 잡음 제거
 };
 
 USTRUCT()
@@ -30,7 +36,12 @@ struct FGameplaySettingData
 {
 	GENERATED_BODY()
 	
-	UPROPERTY() float TestProperty = 0.0f;
+	UPROPERTY() 
+	bool bShouldShowUsernameInGame = true;
+	
+	UPROPERTY()
+	EVoipMode VOIPSetting = EVoipMode::PushToTalk;
+	
 };
 
 USTRUCT(BlueprintType)
