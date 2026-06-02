@@ -35,7 +35,12 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
+	TObjectPtr<USphereComponent> TriggerVolume = nullptr;
+
 private:
+	void ProcessOverlap(AActor* OtherActor);
+
 	UFUNCTION()
 	void HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -49,9 +54,6 @@ private:
 	void SetupCollision(UShapeComponent* Shape);
 	void SetCollisionEnabled(bool bEnable);
 	void ForceRemoveThisFromAllInteractors();
-	
-	UPROPERTY(VisibleAnywhere, Category = "Interact")
-	TObjectPtr<USphereComponent> TriggerVolume = nullptr;
 
 	UPROPERTY(Transient, VisibleAnywhere, Category = "Interact")
 	TSet<TWeakObjectPtr<UInteractorComponent>> OverlappingInteractors;

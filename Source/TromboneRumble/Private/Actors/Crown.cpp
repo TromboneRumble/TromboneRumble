@@ -39,11 +39,17 @@ void ACrown::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (UWorld* World = GetWorld())
 	{
+		GetWorldTimerManager().ClearTimer(InitialLeaderTimerHandle);
+		InitialLeaderTimerHandle.Invalidate();
+
 		if (AInGameState* InGameState = World->GetGameState<AInGameState>())
 		{
 			InGameState->OnLeaderChanged.RemoveDynamic(this, &ThisClass::HandleLeaderChanged);
 		}
 	}
+	
+	GetWorldTimerManager().ClearTimer(InitialLeaderTimerHandle);
+	
 	Super::EndPlay(EndPlayReason);
 }
 

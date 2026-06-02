@@ -1,15 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Framework/DefaultPlayerState.h"
+#include "Subsystems/VoiceChatSubsystem.h"
+#include "OnlineSessionSettings.h"
+#include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Framework/InGameState.h"
 #include "Framework/LobbyGameState.h"
-#include "Framework/GameState/MatchMenuGameState.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "HAL/PlatformFileManager.h"
+#include "Interfaces/OnlineSessionInterface.h"
+#include "Pawns/MatchPawn.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "Utilities/DebugHelper.h"
 
 ADefaultPlayerState::ADefaultPlayerState()
@@ -35,6 +39,16 @@ void ADefaultPlayerState::BeginPlay()
 
 }
 
+void ADefaultPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandle_BindGameState);
+		TimerHandle_BindGameState.Invalidate();
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 
 void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -42,16 +56,15 @@ void ADefaultPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(ThisClass, EquippedWeaponClass);
 	DOREPLIFETIME(ThisClass, SkinColor);
+	DOREPLIFETIME(ThisClass, VoiceSendVolume);
+	DOREPLIFETIME(ThisClass, CustomizationData);
 }
 
 void ADefaultPlayerState::OnRep_PlayerName()
 {
 	Super::OnRep_PlayerName();
-
-	if (AMatchMenuGameState* MatchMenuGameState = GetWorld()->GetGameState<AMatchMenuGameState>())
-	{
-		MatchMenuGameState->UpdatePlayerList();
-	}
+	
+	OnPlayerNameChanged.Broadcast(GetPlayerName());
 }
 
 void ADefaultPlayerState::OnRep_Score()
@@ -69,6 +82,8 @@ void ADefaultPlayerState::CopyProperties(APlayerState* PlayerState)
 	{
 		DefaultPS->EquippedWeaponClass = this->EquippedWeaponClass;
 		DefaultPS->SkinColor = this->SkinColor;
+		DefaultPS->VoiceSendVolume = this->VoiceSendVolume;
+		DefaultPS->CustomizationData = this->CustomizationData;
 	}
 }
 
@@ -180,7 +195,7 @@ void ADefaultPlayerState::HandleNoteDetected(ENoteResult NoteResult)
 		break;
 	case ENoteResult::Excellent:
 		{
-		CurrentScoreData.PerfectCount++;
+		CurrentScoreData.ExcellentCount++;
 		}
 		break;
 	}
@@ -204,8 +219,8 @@ void ADefaultPlayerState::HandleInGameStateChanged(EInGameState InGameState)
 		LogContent += FString::Printf(TEXT("Date: %s\n"), *FDateTime::Now().ToString());
 		LogContent += TEXT("-------------------------------------------\n");
 		LogContent += FString::Printf(TEXT("Total Score: %.2f\n"), CurrentScoreData.TotalScore);
-		LogContent += FString::Printf(TEXT("Perfect Count: %d / Good Count: %d / Miss Count: %d\n"),
-			CurrentScoreData.PerfectCount, CurrentScoreData.GoodCount, CurrentScoreData.MissCount);
+		LogContent += FString::Printf(TEXT("Excellent Count: %d / Good Count: %d / Miss Count: %d\n"),
+			CurrentScoreData.ExcellentCount, CurrentScoreData.GoodCount, CurrentScoreData.MissCount);
 		LogContent += TEXT("-------------------------------------------\n");
 		LogContent += FString::Printf(TEXT("Trombone Buff Score: %.2f\n"), CurrentScoreData.TromboneComboBuffScore);
 		LogContent += FString::Printf(TEXT("Violin Buff Score: %.2f\n"), CurrentScoreData.ViolinBuffScore);
@@ -266,11 +281,90 @@ void ADefaultPlayerState::OnRep_SkinColor()
 		{
 			TromboneCharacter->ApplySkinColor(SkinColor);
 		}
+		if (const AMatchPawn* LobbyPawn = Cast<AMatchPawn>(Pawn))
+		{
+			LobbyPawn->UpdateSkinFromPlayerState();
+		}
 	}
+}
+
+void ADefaultPlayerState::OnRep_VoiceSendVolume()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PC = It->Get();
+		if (!PC || !PC->IsLocalController()) continue;
+
+		ULocalPlayer* LP = PC->GetLocalPlayer();
+		if (!LP) continue;
+
+		if (UVoiceChatSubsystem* VCS = LP->GetSubsystem<UVoiceChatSubsystem>())
+		{
+			VCS->ApplyVolumeToTalker(this);
+		}
+	}
+}
+
+void ADefaultPlayerState::Server_SetVoiceSendVolume_Implementation(float Volume)
+{
+	VoiceSendVolume = FMath::Clamp(Volume, 0.0f, 2.0f);
+	OnRep_VoiceSendVolume();
+}
+
+void ADefaultPlayerState::OnRep_CustomizationData()
+{
+	APawn* Pawn = GetPawn();
+	if (!Pawn) return;
+
+	UCustomizationComponent* Comp = nullptr;
+	if (AMatchPawn* MP = Cast<AMatchPawn>(Pawn))
+		Comp = MP->CustomizationComp;
+	else if (ATromboneCharacterBase* TC = Cast<ATromboneCharacterBase>(Pawn))
+		Comp = TC->CustomizationComp;
+
+	if (Comp)
+		Comp->LoadFromSaveData(CustomizationData);
+}
+
+void ADefaultPlayerState::Server_SetCustomization_Implementation(FCustomizationSaveData InData)
+{
+	CustomizationData = InData;
+	OnRep_CustomizationData();
 }
 
 void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
 {
 	SkinColor = InSkinColor;
 	OnRep_SkinColor();
+}
+
+bool ADefaultPlayerState::IsHost() const
+{
+	const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld());
+	if (!Subsystem)
+	{
+		return false;
+	}
+
+	const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+	if (!SessionInterface.IsValid())
+	{
+		return false;
+	}
+
+	const FNamedOnlineSession* CurrentSession = SessionInterface->GetNamedSession(NAME_GameSession);
+	if (!CurrentSession)
+	{
+		return false;
+	}
+
+	if (GetUniqueId().IsValid() && CurrentSession->OwningUserId.IsValid())
+	{
+		return *GetUniqueId() == *CurrentSession->OwningUserId;
+	}
+
+	return false;
 }

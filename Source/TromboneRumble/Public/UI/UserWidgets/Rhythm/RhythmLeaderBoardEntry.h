@@ -27,6 +27,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FLinearColor SkinColor = FLinearColor::White;
 
+	void SetPlayerName(const FString& InName);
 	void UpdateData(const FLinearColor& InSkinColor, int32 InScore, bool bInIsLocalPlayer);
 protected:
 	virtual void NativeConstruct() override;
@@ -36,13 +37,16 @@ protected:
 	TObjectPtr<UTextBlock> ScoreText;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> NameText;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> PlayerBackGround;
 private:
 	float TargetY = 0.f;
 	float RowHeight = 50.f;
 	float MoveSpeed = 10.f;
 
-	
+
 public:
 	FORCEINLINE void SetTargetY(float InTargetY) { TargetY = InTargetY; }
 	FORCEINLINE void SetRowHeight(float InRowHeight) { RowHeight = InRowHeight; }

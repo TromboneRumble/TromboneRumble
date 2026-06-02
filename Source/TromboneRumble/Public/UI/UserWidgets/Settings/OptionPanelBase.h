@@ -10,35 +10,56 @@ class USaveManagerSubsystem;
 class UCommonTextBlock;
 class UCommonButtonBase;
 
-UCLASS()
+UCLASS(Abstract)
 class TROMBONERUMBLE_API UOptionPanelBase : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	
 public:
-	virtual void NativeConstruct() override;
-	virtual void Init(TFunction<void()> BackAction); 
+	
+	/** Should automatically Refresh UI on activate? */
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bAutoRefreshUIOnActivate = true;
+	
+	/** Should automatically reapply currently activated option panel's 'saved' data on deactivate? */
+	UPROPERTY(EditAnywhere, Category = "Options")
+	bool bAutoReapplySettingsOnDeactivate = true;
+	
+public:
+	
+	/** Synchronize ui from saved data */
+	virtual void RefreshUI();
+
+	/**
+	 * Apply the values from the UI to the actual settings.
+	 * @param bSaveToDisk if true, changes will be saved to the disk.
+	 */
+	virtual void ApplySettingsFromUI(bool bSaveToDisk = true);
+	
+	/** Apply the values from the saved data */
+	virtual void ApplySettingsFromSavedData();
+	
+	/** @return Whether there are any changes in this options panel */
+	virtual bool IsDirty() const { return false; }
 	
 protected:
-	virtual void InitButtons();
 	
-	virtual void HandleBackButtonClicked();
-	virtual void HandleApplyButtonClicked();
-	virtual void HandleResetButtonClicked();
+	/** Registers the widget events. e.g. button click events. */
+	virtual void Register();
+	
+	/** Unregisters the widget events. e.g. button click events. */
+	virtual void Unregister();
+	
+protected:
 	
 	UPROPERTY()
 	TObjectPtr<USaveManagerSubsystem> SaveManagerSubsystem;
+
+public:
 	
-	TFunction<void()> OnBackAction;
+	// ~ Begin UCommonActivatableWidget Interface
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+	// ~ End UCommonActivatableWidget Interface
 	
-	// ~ Begin Common UIs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> Text_OptionPanelTitle;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> Button_Back;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> Button_Apply;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> Button_Reset;
-	// ~ End Common UIs
 };

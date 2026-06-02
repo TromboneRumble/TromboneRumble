@@ -1,13 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonRotator.h"
 #include "OptionPanelBase.h"
 #include "VideoOptionPanel.generated.h"
 
 class UVerticalBox;
-class UOptionCycleWidget;
+class UOptionCycleRowWidget;
 
 UENUM()
 enum class EGraphicsOptionType : uint8
@@ -57,17 +56,18 @@ class TROMBONERUMBLE_API UVideoOptionPanel : public UOptionPanelBase
 	GENERATED_BODY()
 	
 public:
-	virtual void NativePreConstruct() override;
-	virtual void NativeConstruct() override;
-	virtual void Init(TFunction<void()> BackAction) override;
+	
+	// ~ Begin UOptionPanelBase Interface
+	virtual void RefreshUI() override;
+	virtual void ApplySettingsFromUI(bool bSaveToDisk) override;
+	virtual void ApplySettingsFromSavedData() override;
+	virtual bool IsDirty() const override;
+	// ~ End UOptionPanelBase Interface
 	
 protected:
-	virtual void HandleBackButtonClicked() override;
-	virtual void HandleApplyButtonClicked() override;
-	virtual void HandleResetButtonClicked() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UOptionCycleWidget> OptionCycleWidgetClass;
+	TSubclassOf<UOptionCycleRowWidget> OptionCycleWidgetClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UDataTable> GraphicsOptionsDataTable;
@@ -76,19 +76,22 @@ protected:
 	TObjectPtr<UVerticalBox> VB_OptionContainer;
 	
 	UPROPERTY()
-	TMap<EGraphicsOptionType, UOptionCycleWidget*> CreatedWidgets;
-	
-	void BuildOptions();
-	void UpdateUIFromEngineSettings();
-	
-	UFUNCTION()
-	void OnOverallQualityChanged(int32 NewIndex);
-	UFUNCTION()
-	void OnSubOptionChanged(int32 NewIndex);
-	UFUNCTION()
-	void OnWindowModeChanged(int32 NewIndex);
-	
+	TMap<EGraphicsOptionType, UOptionCycleRowWidget*> CreatedWidgets;
+
 private:
-	float MinimumResolutionWidth = 1280.0f;
-	float AspectRatio = 1.777f; // 16:9
+	void BuildOptions();
+	
+	UFUNCTION()
+	void OnOverallQualityChanged(int32 Value, ERotatorDirection RotatorDir);
+	UFUNCTION()
+	void OnSubOptionChanged(int32 Value, ERotatorDirection RotatorDir);
+	UFUNCTION()
+	void OnWindowModeChanged(int32 Value, ERotatorDirection RotatorDir);
+	
+public:
+	
+	// ~ Begin UUserWidget Interface
+	virtual void NativePreConstruct() override;
+	// ~ End UUserWidget Interface
+	
 };

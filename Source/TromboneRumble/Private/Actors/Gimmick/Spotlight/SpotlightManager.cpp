@@ -1,9 +1,9 @@
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
-#include "Actors/Tutorial/TutorialManager.h"
+#include "Data/QuestData.h"
 #include "Engine/TargetPoint.h"
-#include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 ASpotlightManager::ASpotlightManager()
 {
@@ -16,10 +16,11 @@ void ASpotlightManager::Activate()
     
     if (HasAuthority())
     {
-        if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+        if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
         {
-            MusicCueSubsystem->OnMusicUserCue.AddDynamic(this, &ThisClass::CheckSpotlightStart);
+            RS->OnMusicCallback.AddDynamic(this, &ThisClass::OnMusicCallbackReceived);
         }
+        TriggerSpotlightSpawn();
     }
 }
 
@@ -29,18 +30,17 @@ void ASpotlightManager::Deactivate()
     
     if (HasAuthority())
     {
-        if (URhythmSubsystem* MusicCueSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+        if (GetWorld())
         {
-            MusicCueSubsystem->OnMusicUserCue.RemoveDynamic(this, &ThisClass::CheckSpotlightStart);
+            GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+            SpawnTimerHandle.Invalidate();
+        }
+
+        if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+        {
+            RS->OnMusicCallback.RemoveDynamic(this, &ThisClass::OnMusicCallbackReceived);
         }
     }
-}
-
-void ASpotlightManager::BeginPlay()
-{
-    Super::BeginPlay();
-    
-    TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
 }
 
 void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -50,15 +50,19 @@ void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void ASpotlightManager::CheckSpotlightStart(FName CueName)
+void ASpotlightManager::OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	if (CueName == TEXT("Event_Spotlight_Start"))
-	{
-        TriggerSpotlightSpawn();
-	}
-    if (CueName == TEXT("Event_Spotlight_Fever"))
+    if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
     {
-        bIsFeverTime = true;
+        const FString& CueString = MusicInfo->UserCueName;
+        if (!CueString.IsEmpty())
+        {
+            const FName CueName(*CueString);
+            if (CueName == TEXT("Event_Spotlight_Fever"))
+            {
+                bIsFeverTime = true;
+            }
+        }
     }
 }
 
@@ -110,9 +114,13 @@ void ASpotlightManager::TriggerSpotlightSpawn()
                 ActiveSpotlightZones.Add(NewZone);
                 NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
                 
-                if (TutorialManager)
+                if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
                 {
-                    NewZone->OnSpotlightBonusEarned.AddUObject(TutorialManager, &ATutorialManager::HandleOnSpotlightBonusEarned);
+                    NewZone->OnSpotlightBonusEarned.AddUObject(TutorialSub, 
+                        &UTutorialWorldSubsystem::ReportAction, 
+                        EQuestConditionType::HitSpotlight, 
+                        EQuestConditionParamType::Any,
+                        FString());
                 }
             }
         }
@@ -148,9 +156,9 @@ void ASpotlightManager::OnSpotlightZoneDestroyed(AActor* DestroyedActor)
     if (ASpotlightZone* Zone = Cast<ASpotlightZone>(DestroyedActor))
     {
         ActiveSpotlightZones.Remove(Zone);
-        if (TutorialManager)
+        if (const UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
         {
-            Zone->OnSpotlightBonusEarned.RemoveAll(TutorialManager);
+            Zone->OnSpotlightBonusEarned.RemoveAll(TutorialSub);
         }
     }
 }

@@ -38,7 +38,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URhythmLeaderBoard> WBP_LeaderBoard;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<URhythmTimeWidget> WBP_RhythmTimeWidget;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))

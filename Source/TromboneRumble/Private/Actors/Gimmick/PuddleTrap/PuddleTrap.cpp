@@ -133,6 +133,9 @@ void APuddleTrap::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			}
 		}
 		ActiveSlowEffects.Empty();
+
+		GetWorldTimerManager().ClearTimer(LifetimeTimerHandle);
+		LifetimeTimerHandle.Invalidate();
 	}
 
 	Super::EndPlay(EndPlayReason);
@@ -171,6 +174,14 @@ void APuddleTrap::OnBoxBeginOverlap(
 	}
 
 	if (!PuddleSlowEffectClass)
+	{
+		return;
+	}
+
+	// 이미 동일한 슬로우 GE가 활성화된 경우 중복 적용 방지
+	FGameplayEffectQuery SlowQuery;
+	SlowQuery.EffectDefinition = PuddleSlowEffectClass;
+	if (ASC->GetActiveEffects(SlowQuery).Num() > 0)
 	{
 		return;
 	}

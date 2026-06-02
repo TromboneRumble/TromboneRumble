@@ -14,7 +14,7 @@ enum class EInstrumentType : uint8;
 class UAkCallbackInfo;
 class UAkMusicSyncCallbackInfo;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMusicUserCue, FName, CueName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMusicCallbackDelegate, EAkCallbackType, CallbackType, UAkCallbackInfo*, CallbackInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentPickedDelegate, EInstrumentType, PrevType, EInstrumentType, NewType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRhythmGameStateDelegate, ERhythmGameState, CurrentGameState);
@@ -39,10 +39,10 @@ public:
 	void EndRhythmGame();
 
 	UFUNCTION()
-	void HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
+	void HandleMusicCallbacksFromRhythmActor(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 
 	UPROPERTY(BlueprintAssignable)
-	FOnMusicUserCue OnMusicUserCue;
+	FOnMusicCallbackDelegate OnMusicCallback;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnInstrumentPickedDelegate OnInstrumentPicked;
@@ -51,6 +51,7 @@ public:
 	FOnNoteDetectedDelegate OnNoteDetected;
 
 	//BGM의 PlayingID를 세팅해야해서 노트 소환이 아니라, 음악 재생 시점에서 게임 시작했다고 알림
+	UPROPERTY(BlueprintAssignable)
 	FOnRhythmGameStateDelegate OnRhythmGameStateChanged;
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -59,7 +60,6 @@ protected:
 
 	ERhythmGameState CurrentState = ERhythmGameState::None;
 private:
-	void OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	void BroadcastUserCue(const FName& CueName);
 
 	bool isRhythmGameForceStopped = false;

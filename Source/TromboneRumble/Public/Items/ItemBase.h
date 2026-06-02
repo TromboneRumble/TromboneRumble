@@ -22,6 +22,7 @@ public:
 	AItemBase();
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// ~ Begin IInteractable Interfaces
@@ -38,7 +39,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
 	TObjectPtr<UCapsuleComponent> CapsuleComponent = nullptr;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Item|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item|Components")
 	TObjectPtr<UInteractionTriggerComponent> InteractTriggerComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item|Components|Sound")

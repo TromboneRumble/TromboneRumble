@@ -1,13 +1,30 @@
 #include "Utilities/TromboneStatics.h"
-#include "EnhancedInputSubsystems.h"
 #include "NativeGameplayTags.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
+
+FString UTromboneStatics::GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy)
+{
+	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
+	FString RandomCode;
+	for (int32 i = 0; i < CodeLength; ++i)
+	{
+		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
+	}
+	
+	if (bClipboardCopy)
+	{
+		FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
+	}
+	
+	return RandomCode;
+}
 
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelState Level, const bool bAbsolute)
 {
@@ -29,6 +46,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelState::InGame:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
 			break;
+		case ELevelState::Customize:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Customize_Main);
+			break;
 		default:
 			UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::OpenLevel] Unknown level state"));
 			return;
@@ -37,46 +57,6 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 	const FString URL = FPackageName::ObjectPathToPackageName(MapPath);
 	UGameplayStatics::OpenLevel(WorldContextObject, FName(*URL), bAbsolute);
 	
-}
-
-void UTromboneStatics::SetInputConfig(const UObject* WorldContextObject, bool bFocusUI, bool bShowCursor, bool bIgnoreInput, bool bRemoveMappingContext)
-{
-	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
-	if (!PC) return;
-	
-	if (bRemoveMappingContext)
-	{
-		if (const auto* LP = PC->GetLocalPlayer())
-		{
-			if (auto* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-			{
-				Subsystem->ClearAllMappings(); 
-			}
-		}
-	}
-
-	PC->bShowMouseCursor = bShowCursor;
-	if (bIgnoreInput)
-	{
-		PC->DisableInput(PC);
-	}
-	else
-	{
-		PC->EnableInput(PC);
-	}
-
-	if (bFocusUI)
-	{
-		FInputModeGameAndUI Mode;
-		Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		Mode.SetHideCursorDuringCapture(false);
-		PC->SetInputMode(Mode);
-	}
-	else
-	{
-		const FInputModeGameOnly Mode;
-		PC->SetInputMode(Mode);
-	}
 }
 
 UBaseUIRoot* UTromboneStatics::GetRootLayout(const APlayerController* PlayerController)

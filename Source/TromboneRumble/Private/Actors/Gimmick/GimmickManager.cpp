@@ -4,6 +4,7 @@
 
 #include "EngineUtils.h"
 #include "Actors/Gimmick/GimmickBase.h"
+#include "Subsystems/RhythmSubsystem.h"
 
 void AGimmickManager::ActivateGimmickByType(const EGimmickType GimmickType)
 {
@@ -66,7 +67,6 @@ void AGimmickManager::BeginPlay()
 	Super::BeginPlay();
 	
 	FindAndRegisterGimmicks();
-	ActivateAllGimmicks();
 
 	if (UWorld* World = GetWorld())
 	{
@@ -77,6 +77,13 @@ void AGimmickManager::BeginPlay()
 		else
 		{
 			World->GameStateSetEvent.AddUObject(this, &ThisClass::BindToInGameState);
+		}
+	}
+	if (HasAuthority())
+	{
+		if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
+		{
+			RS->OnMusicCallback.AddDynamic(this, &ThisClass::OnMusicCallbackReceived);
 		}
 	}
 }
@@ -106,5 +113,23 @@ void AGimmickManager::HandleInGameStateChanged(EInGameState InGameState)
 	if (InGameState == EInGameState::End)
 	{
 		DeactivateAllGimmicks();
+	}
+}
+
+void AGimmickManager::OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
+{
+	if (!HasAuthority()) return;
+	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
+	{
+		const FString& CueString = MusicInfo->UserCueName;
+		if (!CueString.IsEmpty())
+		{
+			const FName CueName(*CueString);
+			if (CueName == TEXT("Event_Spotlight_Start"))
+			{
+				DeactivateAllGimmicks();
+				ActivateAllGimmicks();
+			}
+		}
 	}
 }

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -16,6 +14,10 @@ class TROMBONERUMBLE_API UTromboneCheatManager : public UCheatManager
 	GENERATED_BODY()
 	
 public:
+	
+	UFUNCTION(Exec)
+	void Trombone_Help();
+	
 	UFUNCTION(Exec)
 	void Trombone_SpawnInstrument(const FString& TypeString);
 	
@@ -31,6 +33,10 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_Stun();
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Cheat|Config")
-	TMap<EWeaponType, TSubclassOf<AActor>> WeaponClasses;
+	UFUNCTION(Exec)
+	void Trombone_ResetSettingData();
+
+	UFUNCTION(Exec)
+	void Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey);
+
 };

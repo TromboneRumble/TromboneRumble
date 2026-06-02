@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,37 +7,26 @@
 enum class EEasyMatchmakingCompleteResult : uint8;
 class UCommonActivatableWidget;
 
-enum class EMainMenuType : uint8
-{
-	None,
-	MainMenu,
-	Lobby,
-	Settings
-};
-
 UCLASS()
 class TROMBONERUMBLE_API UMainUIRoot : public UBaseUIRoot
 {
 	GENERATED_BODY()
 	
-public:
-	void PushMenu(EMainMenuType InType) const;
-	
 protected:
 	virtual void Register() override;
-	
-protected:
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> SettingMenuWidgetClass;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> LobbyWidgetClass;
-	
+
 private:
+	
+	/** Called when matchmaking starts. */
 	UFUNCTION()
 	void HandleMatchmakingStarted();
+	
+	/** Called when matchmaking is complete. */
 	UFUNCTION()
-	void HandleMatchmakingCompleted(FName SessionName, EEasyMatchmakingCompleteResult Result);
+	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	
+	/** Called when matchmaking is canceled. */
 	UFUNCTION()
 	void HandleMatchmakingCanceled();
+	
 };

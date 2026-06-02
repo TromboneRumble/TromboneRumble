@@ -25,6 +25,7 @@ class TROMBONERUMBLE_API AWeaponBase : public AItemBase, public IEquipable, publ
 public:
 	AWeaponBase();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
@@ -105,5 +106,6 @@ public:
 	FORCEINLINE void SetCanAttack(const bool bNewCanAttack) { bCanAttack = bNewCanAttack; }
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponData ? WeaponData->WeaponType : EWeaponType::Invalid; }
 	FORCEINLINE float GetAttackCooldown() const { return WeaponData->AttackCooldown; }
+	FORCEINLINE void SetCanBeSwitched(bool InSwitched) { CanBeSwitched = InSwitched; }
 	// ~ End Getters & Setters
 };

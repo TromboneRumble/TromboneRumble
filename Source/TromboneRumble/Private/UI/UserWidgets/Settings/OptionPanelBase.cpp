@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Settings/OptionPanelBase.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "CommonButtonBase.h"
@@ -8,43 +6,44 @@ void UOptionPanelBase::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	InitButtons();
-}
-
-void UOptionPanelBase::Init(const TFunction<void()> BackAction)
-{
-	OnBackAction = BackAction;
 	SaveManagerSubsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	
+	Register();
+	
+	if (bAutoRefreshUIOnActivate)
+	{
+		RefreshUI();
+	}
 }
 
-void UOptionPanelBase::InitButtons()
+void UOptionPanelBase::NativeDestruct()
 {
-	if (Button_Back)
+	Unregister();
+	
+	if (bAutoReapplySettingsOnDeactivate)
 	{
-		Button_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
+		ApplySettingsFromSavedData();
 	}
-	if (Button_Apply)
-	{
-		Button_Apply->OnClicked().AddUObject(this, &ThisClass::HandleApplyButtonClicked);
-	}
-	if (Button_Reset)
-	{
-		Button_Reset->OnClicked().AddUObject(this, &ThisClass::HandleResetButtonClicked);
-	}
+	
+	Super::NativeDestruct();
 }
 
-void UOptionPanelBase::HandleBackButtonClicked()
-{
-	if (OnBackAction)
-	{
-		OnBackAction();
-	}
-}
-
-void UOptionPanelBase::HandleApplyButtonClicked()
+void UOptionPanelBase::Register()
 {
 }
 
-void UOptionPanelBase::HandleResetButtonClicked()
+void UOptionPanelBase::Unregister()
+{
+}
+
+void UOptionPanelBase::RefreshUI()
+{
+}
+
+void UOptionPanelBase::ApplySettingsFromUI(bool bSaveToDisk)
+{
+}
+
+void UOptionPanelBase::ApplySettingsFromSavedData()
 {
 }

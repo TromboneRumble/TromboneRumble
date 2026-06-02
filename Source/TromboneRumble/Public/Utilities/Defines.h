@@ -28,6 +28,7 @@ enum class EGimmickType : uint8
 	Spotlight,
 	Puddle,
 	Trash,
+	Present,
 	MAX,
 	None = 255,
 };
@@ -77,6 +78,16 @@ enum class ELevelState : uint8
 	InGame,
 	MatchMenu,
 	Tutorial,
+	Customize,
+	Invalid = 255 UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class ECustomizationSlotType : uint8
+{
+	Antenna UMETA(DisplayName = "Antenna"),
+	Face    UMETA(DisplayName = "Face"),
+	Costume UMETA(DisplayName = "Costume"),
 	Invalid = 255 UMETA(Hidden)
 };
 
@@ -93,11 +104,12 @@ enum class EInGameState : uint8
 UENUM()
 enum class ELobbyState : uint8
 {
+	None,
 	WaitingForPlayers,
-	CountdownToScramble,
+	FallingPlayers,
+	CountdownToStandup,
 	InstrumentScramble,
 	CountdownToTravel,
-	Invalid					= 255 UMETA(Hidden)
 };
 
 UENUM()
@@ -187,6 +199,7 @@ enum class EScoreType : uint8
 	OnHit = 4					UMETA(DisplayName = "OnHit"),
 	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
 	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
+	Present = 7					UMETA(DisplayName = "Present"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)
@@ -208,3 +221,17 @@ enum class EBarInterpType : uint8
 	Smooth      UMETA(DisplayName = "Smooth (Ease-Out)"),  // 부드러운 감속 (FInterpTo)
 	Constant    UMETA(DisplayName = "Constant (Linear)")   // 일정한 속도 (FInterpConstantTo)
 };
+
+UENUM(BlueprintType)
+enum class EVoipMode : uint8
+{
+	None       = 0 UMETA(DisplayName = "None"),        // 음소거: 전송 없음, PTT 키 무시
+	PushToTalk = 1 UMETA(DisplayName = "Push To Talk"),
+	AutoVoice  = 2 UMETA(DisplayName = "Auto Voice"),
+};
+
+namespace TromboneRender
+{
+	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
+	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
+}

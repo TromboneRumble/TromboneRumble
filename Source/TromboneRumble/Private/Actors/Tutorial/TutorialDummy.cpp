@@ -1,19 +1,13 @@
 #include "Actors/Tutorial/TutorialDummy.h"
-#include "Actors/Tutorial/TutorialManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "Utilities/DebugHelper.h"
-#include "Utilities/EnumHelper.h"
+#include "Components/ActorComponents/EquipmentComponent.h"
+#include "Data/QuestData.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 {
 	Super::OnHitReceived_Implementation(HitData);
 	
-	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-	
 	FString SpecificBasicAction = FString();
-	
-	const FString DebugMsg = FString::Printf(TEXT("Hit received from instigator: %s"), *EnumHelper::EnumToString(HitData.HitInstigator));
-	PRINT_WITH_CURRENT_CONTEXT(DebugMsg);
 	
 	switch (HitData.HitInstigator)
 	{
@@ -28,6 +22,13 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 			break;
 			
 		case EHitInstigatorType::Headbutt:
+			if (HasAuthority())
+			{
+				if (UEquipmentComponent* EquipComp = GetEquipmentComponent())
+				{
+					EquipComp->Server_UnequipItem_Implementation(EEquipmentSlotType::Weapon);
+				}
+			}
 			SpecificBasicAction = "HitWithHead";
 			break;
 		
@@ -35,8 +36,8 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 			break;
 	}
 
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* Sub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
+		Sub->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
 	}
 }

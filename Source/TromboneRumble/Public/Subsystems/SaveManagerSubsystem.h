@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/CustomizationSaveData.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SaveManagerSubsystem.generated.h"
@@ -18,31 +17,67 @@ class TROMBONERUMBLE_API USaveManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
-	void ApplyAllSettings();
+	/** Load settings from slot, if not exist, create new settings with default values */
 	UTromboneSaveGame* LoadOrCreateSettings();
-    
-	void UpdateAndSaveAudio(const FAudioSettingData& NewAudio);
-	void UpdateAndSaveGameplay(const FGameplaySettingData& NewGameplay);
-	void SaveVideo(const FGraphicsSettingData& NewVideo);
-
-	void ApplyAudio(const FAudioSettingData& Settings);
-	void ApplyGameplay(const FGameplaySettingData& Settings);
 	
+	/** Apply all settings (audio, gameplay, video ...) */
+	void ApplyAllSettings();
+	
+	/** Reset all settings to default values and save */
+	void ResetToDefaultSettings();
+	
+public:
+	
+	/** Apply and save audio settings */
+	void ApplyAudio(const FAudioSettingData& InAudioData, bool bSaveData = true);
+	
+	/** Apply and save gameplay settings */
+	void ApplyGameplay(const FGameplaySettingData& InGameplayData, bool bSaveData = true);
+	
+	/** Apply video settings (save is optional) */
+	void ApplyVideo(const FGraphicsSettingData& InVideoData, bool bSaveData = true);
+	
+public:
+	
+	/** if player is first time player, show tutorial popup */
+	bool ShouldShowTutorialPopup() const;
+
+	/** Mark tutorial as completed, will set bIsFirstTimePlayer to false and save */
+	void MarkTutorialAsCompleted();
+
+public:
+
+	/** Save customization selection to encrypted local file */
+	void SaveCustomization(const FCustomizationSaveData& Data);
+
+	/** Return cached customization (loaded from disk on Initialize) */
+	FCustomizationSaveData LoadCustomization() const;
+
 private:
 	void InternalSave();
-	
+	FCustomizationSaveData LoadCustomizationFromDisk() const;
+
 	UPROPERTY()
 	TObjectPtr<UTromboneSaveGame> CachedSettings;
-	
+
+	FCustomizationSaveData CachedCustomization;
+
 	const FString SlotName = TEXT("TromboneSettings");
 	const int32 UserIndex = 0;
 	
 public:
+	
 	// ~ Begin Getter
 	TObjectPtr<UTromboneSaveGame> GetSettings() const { return CachedSettings; }
 	FAudioSettingData GetAudioSettings() const { return CachedSettings->Audio; }
 	FGameplaySettingData GetGameplaySettings() const { return CachedSettings->Gameplay; }
 	// ~ End Getter
+	
+	// ~ Begin UGameInstanceSubsystem Interface
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	// ~ End UGameInstanceSubsystem Interface
+	
+	void DumpTromboneSettings() const;
+	
 };

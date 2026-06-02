@@ -6,6 +6,7 @@
 #include "Data/WeaponDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Items/WeaponBase.h"
+#include "Utilities/DebugHelper.h"
 
 UAttackComponent::UAttackComponent()
 {
@@ -36,7 +37,23 @@ void UAttackComponent::BeginPlay()
 
 void UAttackComponent::Attack()
 {
-	if (!CurrentWeapon || CurrentWeapon->IsDetectHit() || !CurrentWeapon->CanAttack()) return;
+	if (!CurrentWeapon)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No weapon equipped. Cannot perform attack."));
+		return;
+	}
+	
+	if (CurrentWeapon->IsDetectHit())
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("bIsDetectHit is true. Attack is already in progress. Cannot perform another attack."));
+		return;
+	}
+	
+	if (!CurrentWeapon->CanAttack())
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Current weapon cannot attack. Check if the weapon is on cooldown or if there are other restrictions."));
+		return;
+	}
 	
 	if (OwnerCharacter->IsLocallyControlled())
 	{
@@ -92,7 +109,11 @@ void UAttackComponent::Client_OnAttackRejected_Implementation()
 
 void UAttackComponent::PlayAttackEffects() const
 {
-	if (!CurrentWeapon) return;
+	if (!CurrentWeapon)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No weapon equipped. Cannot play attack effects."));
+		return;
+	}
 	
 	const EWeaponType Type = CurrentWeapon->GetWeaponType();
 	if (UAnimMontage* MontageToPlay = AttackMontageMap.FindRef(Type))
@@ -104,12 +125,19 @@ void UAttackComponent::PlayAttackEffects() const
 		{
 			OwnerCharacter->PlayAnimMontage(MontageToPlay);
 		}
+		else
+		{
+			LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Attack montage is already playing. Cannot play again."));
+		}
 	}
 }
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	Server_ExecuteAttackEnd();
+	if (OwnerCharacter)
+	{
+		Server_ExecuteAttackEnd();
+	}
 }
 
 void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)

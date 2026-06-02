@@ -45,6 +45,9 @@ void URhythmLeaderBoard::NativeDestruct()
 
 	if (UWorld* World = GetWorld())
 	{
+		World->GetTimerManager().ClearTimer(TimerHandle_RefreshRetry);
+		TimerHandle_RefreshRetry.Invalidate();
+
 		if (AInGameState* InGameState = World->GetGameState<AInGameState>())
 		{
 			InGameState->OnScoreChanged.RemoveDynamic(this, &ThisClass::RefreshLeaderboard);
@@ -71,7 +74,8 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 	{
 		if (UWorld* World = GetWorld())
 		{
-			World->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &URhythmLeaderBoard::RefreshLeaderboard, UpdatedPlayerState));
+			TimerHandle_RefreshRetry = World->GetTimerManager().SetTimerForNextTick(
+				FTimerDelegate::CreateUObject(this, &URhythmLeaderBoard::RefreshLeaderboard, UpdatedPlayerState));
 		}
 		return;
 	}
@@ -82,18 +86,43 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 	AInGameState* InGameState = World->GetGameState<AInGameState>();
 	if (!InGameState) return;
 
-	UpdateRowHeight();
-
-	// Score 기준 내림차순 정렬
 	TArray<APlayerState*> Players;
 	InGameState->GetPlayersSortedByScore(Players);
+	if (Players.Num() == 0) return;
+
+
+	// PlayerState가 제대로 복제되었는지 확인
+	{
+		bool bAnyDataMissing = false;
+		for (APlayerState* PS : Players)
+		{
+			if (!PS) continue;
+
+			if (PS->GetPlayerName().IsEmpty() || PS->GetPlayerName().Equals(TEXT("Player"), ESearchCase::IgnoreCase))
+			{
+				bAnyDataMissing = true;
+				break;
+			}
+		}
+
+		if (bAnyDataMissing)
+		{
+			GetWorld()->GetTimerManager().SetTimerForNextTick(
+				FTimerDelegate::CreateUObject(this, &ThisClass::RefreshLeaderboard, UpdatedPlayerState));
+			return;
+		}
+	}
+	
+
+
+	// Score 기준 내림차순 정렬
+	UpdateRowHeight();
 
 	if (Players.Num() > MaxVisibleRows)
 	{
 		Players.SetNum(MaxVisibleRows);
 	}
 
-	if (Players.Num() == 0) return;
 
 	const float AdditionalPadding = RowHeight * 0.1f;
 	const float EntryHeight = RowHeight * 0.9f;
@@ -221,6 +250,8 @@ void URhythmLeaderBoard::RefreshLeaderboard(APlayerState* UpdatedPlayerState)
 
 			EntryMap.Add(PS, Entry);
 		}
+
+		Entry->SetPlayerName(PS->GetPlayerName());
 
 		const bool bIsLocal = (LocalPS && PS == LocalPS);
 

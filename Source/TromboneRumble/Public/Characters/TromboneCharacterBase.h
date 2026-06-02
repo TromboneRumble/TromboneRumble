@@ -15,6 +15,8 @@ class UNiagaraComponent;
 class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
 class UInputComponent;
+class UCustomizationComponent;
+class UMaterialInterface;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRagdollSignature);
@@ -31,10 +33,12 @@ public:
 	ATromboneCharacterBase();
 	
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	virtual void OnRep_Controller() override;
 
 	// ~ Begin ICombatReceiver Interfaces
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
@@ -42,6 +46,17 @@ public:
 	
 	void ApplySkinColor(const FLinearColor InSkinColor) const;
 	void SetPlayerInput(const bool bShouldEnable);
+
+	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
+	void ApplyFaceMaterial(UMaterialInterface* Material);
+
+	// X-Ray 실루엣용 CustomDepth stencil 값 설정 (단일 Primitive 컴포넌트)
+	static void ApplyOccludedStencil(UPrimitiveComponent* Prim);
+	// 지정 액터 내부의 모든 Primitive에만 stencil 적용 (자식 액터는 순회하지 않음)
+	static void ApplyOccludedStencilToActor(AActor* Actor);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UCustomizationComponent> CustomizationComp;
 
 	FOnRagdollSignature OnRagdollDelegate;
 	FEndRagdollSignature EndRagdollDelegate;
@@ -51,7 +66,7 @@ public:
 	FEndInvincibleSignature EndInvincibleDelegate;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Data")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
 	int32 SkinMaterialIndex = 1;
@@ -65,6 +80,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Components|Niagara")
 	TObjectPtr<UNiagaraComponent> StunNiagaraComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> RagdollBooSound;
+
 
 	UPROPERTY(EditAnywhere, Category = "Config|Components|Sound")
 	TObjectPtr<UAkComponent> AkSoundComponent;
@@ -110,6 +129,8 @@ private:
 
 	FTimerHandle OnHitTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
+	FTimerHandle TimerHandler_DelayedSavePostSnapshot;
+	FTimerHandle TimerHandler_InternalUnapplyRagdoll;
 
 	bool bIsCanProcessInput = true;
 	
@@ -126,6 +147,9 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+	// BeginPlay에서 FaceMID 생성 직전 원본 머티리얼 캐싱 (커스터마이징 복원용)
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
 	UPROPERTY()
 	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
 
@@ -149,9 +173,6 @@ private:
 	void HandleBounceProgress(FVector Value);
 	// ~ End Bounce Character
 	
-	// TODO : For Debugging
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
 	int32 StunNiagaraPlayingID = 0;
 	
 public:

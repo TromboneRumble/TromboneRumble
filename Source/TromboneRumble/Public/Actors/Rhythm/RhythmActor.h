@@ -53,6 +53,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void CleanupRhythmGame();
 
@@ -135,9 +136,6 @@ private:
 	void OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void HandleMusicCue(FName CueName);
 
 	//곡이 시작되고 플레이어가 연타하는것을 막기 위해 이벤트로 제어
 	bool bCanDetectNotes = false;

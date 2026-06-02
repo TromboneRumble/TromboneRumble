@@ -33,6 +33,16 @@ struct FCameraOffsetLerpState
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) FVector Target = FVector::ZeroVector;
 };
 
+USTRUCT(BlueprintType)
+struct FCameraZoomLerpState
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) float    CurrentArmLength = 800.f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) FRotator CurrentRotation  = FRotator(-30.f, 0.f, 0.f);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) bool     bInitialized     = false;
+};
+
 /**
  * 
  */
@@ -64,6 +74,27 @@ public:
 		ECameraEase EaseType = ECameraEase::EaseOut,
 		bool bKeepCurrentZ = true,
 		bool bZeroWhenNoInput = true
-		
+
+	);
+
+	/// <summary>
+	/// 마우스 휠 줌 전용: TargetArmLength와 CameraBoom의 Rotation을 목표값으로 부드럽게 보간하며,
+	/// 줌아웃 시 벽에 막히면 최대 가능 거리까지만 뻗도록 커스텀 Sphere Sweep으로 클램프한다.
+	/// </summary>
+	/// <param name="DesiredArmLength">목표 Arm Length</param>
+	/// <param name="DesiredRotation">목표 CameraBoom Rotation (Absolute)</param>
+	/// <param name="InOutState">줌 보간 상태(이상값 보존용)</param>
+	/// <param name="InterpSpeed">FInterpTo/RInterpTo 속도</param>
+	/// <param name="CollisionMargin">벽 여유 거리(cm)</param>
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
+	static void UpdateTopDownCameraZoomEase(
+		const UObject* WorldContextObject,
+		USpringArmComponent* SpringArm,
+		AActor* ReferenceActor,
+		float DesiredArmLength,
+		FRotator DesiredRotation,
+		UPARAM(ref) FCameraZoomLerpState& InOutState,
+		float InterpSpeed = 8.f,
+		float CollisionMargin = 10.f
 	);
 };

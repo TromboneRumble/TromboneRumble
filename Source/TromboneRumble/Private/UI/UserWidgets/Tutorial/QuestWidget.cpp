@@ -2,6 +2,7 @@
 #include "CommonTextBlock.h"
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Components/Image.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 UQuestWidget::UQuestWidget()
 {
@@ -26,7 +27,7 @@ void UQuestWidget::InitQuestWidget(const FQuestUIData& QuestUIData)
 	
 	if (Image_Icon)
 	{
-		Image_Icon->SetBrushFromTexture(Icon);
+		Image_Icon->SetBrushFromTexture(Icon, true);
 	}
 	else
 	{
@@ -61,9 +62,9 @@ void UQuestWidget::HandleInProgressStatus()
 	{
 		Image_Status->SetBrushFromTexture(InprogressStatusTexture);
 	}
-	else
+	if (CT_Description)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Image_Status is not bound in the widget."));
+		CT_Description->SetOpacity(1.0f);
 	}
 }
 
@@ -73,8 +74,8 @@ void UQuestWidget::HandleCompletedStatus()
 	{
 		Image_Status->SetBrushFromTexture(CompleteStatusTexture);
 	}
-	else
+	if (CT_Description)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Image_Status is not bound in the widget."));
+		CT_Description->SetOpacity(CompleteDescriptionOpacity);
 	}
 }

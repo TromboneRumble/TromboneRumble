@@ -51,7 +51,7 @@ private:
     TMap<EMenuBGMType, TObjectPtr<UAkAudioEvent>> StopMenuBGMEvents; 
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "Trombone.Rhythm.Song"))
-    FGameplayTag SelectedSongTag = TromboneGamePlayTags::Trombone_Rhythm_Song_MapA;
+    FGameplayTag SelectedSongTag = FGameplayTag::EmptyTag;
     
     int32 SessionPlayerNumber = 2;
     bool bIsMenuMusicPlaying = false;
@@ -66,7 +66,7 @@ public:
     int32 GetSessionPlayerNumber() const { return SessionPlayerNumber; }
 
     UFUNCTION(BlueprintCallable, Category = "UI")
-    FText GetUIText(const FString& Key) const;
+    FText GetCommonUIText(const FString& Key) const;
     FText GetTutorialUIText(const FString& Key) const;
     // ~ End Getter & Setter
 };

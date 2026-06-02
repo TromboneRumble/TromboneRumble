@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,7 +6,6 @@
 
 class UBaseUIRoot;
 class UEasyFriendSubsystem;
-enum class EMainMenuType : uint8;
 class UEasySessionSubsystem;
 
 UCLASS()
@@ -26,7 +23,6 @@ protected:
 	virtual void NativeConstruct() override;
 	
 	virtual void Init();
-	virtual void ShowNoticePopup(const FText& Content);
 	virtual void BindSubsystemCallbacks();
 	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);
@@ -37,11 +33,7 @@ protected:
 	UFUNCTION()
 	virtual void HideLoadingOverlay();
 	
-	void SwitchMenu(EMainMenuType InType);
 	TObjectPtr<UBaseUIRoot> GetRootLayout() const;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> NoticePopupWidgetClass;
 	
 	UPROPERTY(Transient)
 	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;

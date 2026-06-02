@@ -1,11 +1,14 @@
 #include "UI/UserWidgets/Tutorial/TutorialWidget.h"
+#include "CommonBorder.h"
 #include "Actors/Tutorial/TutorialManager.h"
+#include "Components/Image.h"
 #include "Input/CommonUIInputTypes.h"
-#include "Kismet/GameplayStatics.h"
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialDialogueWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialQuestWidget.h"
+#include "Utilities/DebugHelper.h"
 #include "Utilities/TromboneStatics.h"
 
 UTutorialWidget::UTutorialWidget()
@@ -18,26 +21,12 @@ void UTutorialWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnDialogueSequence.AddUObject(this, &ThisClass::HandleDialogueSequence);
-		TutorialManager->OnQuestSequence.AddUObject(this, &ThisClass::HandleQuestSequence);
-		TutorialManager->OnTransitionSequence.AddUObject(this, &ThisClass::HandleTransitionSequence);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
-	}
-	
-	if (WBP_Dialogue)
-	{
-		WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	
-	if (WBP_Quest)
-	{
-		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
+		TutorialSub->OnDialogueSequenceEvent.AddDynamic(this, &ThisClass::HandleDialogueSequence);
+		TutorialSub->OnQuestSequenceEvent.AddDynamic(this, &ThisClass::HandleQuestSequence);
+		TutorialSub->OnTransitionSequenceEvent.AddDynamic(this, &ThisClass::HandleTransitionSequence);
+		TutorialSub->OnShowExtraDataEvent.AddDynamic(this, &ThisClass::HandleOnExtraData);
 	}
 	
 	if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
@@ -46,19 +35,25 @@ void UTutorialWidget::NativeConstruct()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find RootLayout for TutorialWidget."));
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to find RootLayout for TutorialWidget."));
 	}
+	
+	SetUIVisibility(ESlateVisibility::Collapsed);
 }
 
 void UTutorialWidget::NativeDestruct()
 {
-	Super::NativeDestruct();
-	
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnDialogueSequence.RemoveAll(this);
-		TutorialManager->OnQuestSequence.RemoveAll(this);
+		TutorialSub->OnDialogueSequenceEvent.RemoveAll(this);
+		TutorialSub->OnQuestSequenceEvent.RemoveAll(this);
+		TutorialSub->OnTransitionSequenceEvent.RemoveAll(this);
+		TutorialSub->OnShowExtraDataEvent.RemoveAll(this);
 	}
+	
+	UnregisterInputActions();
+	
+	Super::NativeDestruct();
 }
 
 void UTutorialWidget::RegisterInputActions()
@@ -95,14 +90,11 @@ void UTutorialWidget::HandleDialogueSequence(const FText& DialogueString)
 {
 	RegisterInputActions();
 	
+	SetUIVisibility(ESlateVisibility::Collapsed);
+	
 	if (WBP_Dialogue)
 	{
 		WBP_Dialogue->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	
-	if (WBP_Quest)
-	{
-		WBP_Quest->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -110,13 +102,11 @@ void UTutorialWidget::HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDat
 {
 	UnregisterInputActions();
 	
+	SetUIVisibility(ESlateVisibility::Collapsed);
+	
 	if (WBP_Quest)
 	{
 		WBP_Quest->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	if (WBP_Dialogue)
-	{
-		WBP_Dialogue->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -124,19 +114,89 @@ void UTutorialWidget::HandleTransitionSequence()
 {
 	UnregisterInputActions();
 	
-	UFadeWidget* Widget = RootLayout->PushFadeOverlay();
-	Widget->OnFadeOutComplete.AddLambda([this]()
+	if (UFadeWidget* Widget = RootLayout->PushFadeOverlay())
 	{
-		RootLayout->PopFadeOverlay();
-		TutorialManager->ProcessTutorial();
-	});
+		Widget->OnFadeInComplete.Clear();
+		Widget->OnFadeOutComplete.Clear();
+		
+		Widget->OnFadeInComplete.AddUObject(this, &ThisClass::OnFadeInFinished);
+		Widget->OnFadeOutComplete.AddUObject(this, &ThisClass::OnFadeOutFinished);
+	}
+	else
+	{
+		if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
+		{
+			TutorialSub->ProcessTutorial();
+		}
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to push FadeWidget for transition sequence."));
+	}
 }
 
 void UTutorialWidget::HandleSkipDialogue()
 {
-	if (!TutorialManager) return;
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
+	{
+		TutorialSub->ProcessTutorial();
+	}
+}
+
+void UTutorialWidget::HandleOnExtraData(UTexture2D* Image)
+{
+	if (Image_ExtraData && Image)
+	{
+		Image_ExtraData->SetBrushFromTexture(Image, true);
+		Image_ExtraData->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
 	
-	TutorialManager->ProcessTutorial();
+	if (Border_Dim)
+	{
+		Border_Dim->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+}
+
+void UTutorialWidget::SetUIVisibility(const ESlateVisibility NewVisibility)
+{
+	if (WBP_Dialogue)
+	{
+		WBP_Dialogue->SetVisibility(NewVisibility);
+	}
+	if (WBP_Quest)
+	{
+		WBP_Quest->SetVisibility(NewVisibility);
+	}
+	if (Image_ExtraData)
+	{
+		Image_ExtraData->SetVisibility(NewVisibility);
+	}
+	if (Border_Dim)
+	{
+		Border_Dim->SetVisibility(NewVisibility);
+	}
+}
+
+void UTutorialWidget::OnFadeInFinished()
+{
+	SetUIVisibility(ESlateVisibility::Collapsed);
+}
+
+void UTutorialWidget::OnFadeOutFinished()
+{
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
+	{
+		TutorialSub->ProcessTutorial();
+	}
+
+	if (IsValid(RootLayout))
+	{
+		RootLayout->PopFadeOverlay();
+	}
+	else
+	{
+		if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
+		{
+			Root->PopFadeOverlay();
+		}
+	}
 }
 
 TOptional<FUIInputConfig> UTutorialWidget::GetDesiredInputConfig() const

@@ -9,6 +9,14 @@
 #include "Components/TextBlock.h"
 
 
+void URhythmLeaderBoardEntry::SetPlayerName(const FString& InName)
+{
+	if (NameText)
+	{
+		NameText->SetText(FText::FromString(InName));
+	}
+}
+
 void URhythmLeaderBoardEntry::UpdateData(const FLinearColor& InSkinColor, int32 InScore, bool bInIsLocalPlayer)
 {
 	Score = InScore;

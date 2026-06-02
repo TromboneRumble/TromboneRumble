@@ -1,8 +1,21 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/InGame/SubWidgets/PerformanceWidget.h"
 #include "CommonTextBlock.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "GameFramework/PlayerState.h"
+
+UPerformanceWidget::UPerformanceWidget()
+	: UpdateInterval(0.5f),
+	  DeltaTimeAccumulator(0.0f),
+	  FrameCount(0)
+{
+}
+
+void UPerformanceWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	UpdateInterval = UTromboneConfig::Get()->PerformanceWidgetUpdateInterval;
+}
 
 void UPerformanceWidget::NativeTick(const FGeometry& MyGeometry, const float InDeltaTime)
 {

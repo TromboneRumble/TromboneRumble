@@ -1,218 +1,34 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
-#include "CommonTextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameUserSettings.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "RHI.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleWidget.h"
-#include "Utilities/DebugHelper.h"
+#include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
 void UVideoOptionPanel::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-}
-
-void UVideoOptionPanel::NativeConstruct()
-{
-	Super::NativeConstruct();
+	
 	BuildOptions();
+	RefreshUI();
 }
 
-void UVideoOptionPanel::Init(const TFunction<void()> BackAction)
+void UVideoOptionPanel::RefreshUI()
 {
-	Super::Init(BackAction);
-}
-
-void UVideoOptionPanel::HandleBackButtonClicked()
-{
-	Super::HandleBackButtonClicked();
+	Super::RefreshUI();
 	
-	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+	if (!GEngine)
 	{
-		VideoSettings->LoadSettings();
-		UpdateUIFromEngineSettings();
+		return;
 	}
-}
-
-void UVideoOptionPanel::HandleApplyButtonClicked()
-{
-    Super::HandleApplyButtonClicked();
-    
-    if (!SaveManagerSubsystem) return;
-
-    FGraphicsSettingData NewSettings;
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::OverallQuality))
-       NewSettings.OverallQuality = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetCurrentIndex();
-    
-    if (CreatedWidgets.Contains(EGraphicsOptionType::ViewDistance))
-       NewSettings.ViewDistance = CreatedWidgets[EGraphicsOptionType::ViewDistance]->GetCurrentIndex();
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::AntiAliasing))
-       NewSettings.AntiAliasing = CreatedWidgets[EGraphicsOptionType::AntiAliasing]->GetCurrentIndex();
-    
-    if (CreatedWidgets.Contains(EGraphicsOptionType::PostProcess))
-       NewSettings.PostProcess = CreatedWidgets[EGraphicsOptionType::PostProcess]->GetCurrentIndex();
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::Shadow))
-       NewSettings.Shadow = CreatedWidgets[EGraphicsOptionType::Shadow]->GetCurrentIndex();
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::GlobalIllumination))
-       NewSettings.GlobalIllumination = CreatedWidgets[EGraphicsOptionType::GlobalIllumination]->GetCurrentIndex();
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::Reflections))
-       NewSettings.Reflections = CreatedWidgets[EGraphicsOptionType::Reflections]->GetCurrentIndex();
-    
-    if (CreatedWidgets.Contains(EGraphicsOptionType::Texture))
-       NewSettings.Texture = CreatedWidgets[EGraphicsOptionType::Texture]->GetCurrentIndex();
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::Effects))
-       NewSettings.Effects = CreatedWidgets[EGraphicsOptionType::Effects]->GetCurrentIndex();
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
-    {
-		const UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
-		const int32 Idx = ResWidget->GetCurrentIndex();
-		const FString ResString = ResWidget->GetOptionsArray()[Idx].ToString();
-
-		FString Left, Right;
-		if (ResString.Split(TEXT("x"), &Left, &Right))
-		{
-			NewSettings.Resolution = FIntPoint(FCString::Atoi(*Left), FCString::Atoi(*Right));
-		}
-    }
-
-    if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
-       NewSettings.bVSync = CreatedWidgets[EGraphicsOptionType::VSync]->GetCurrentIndex() == 1;
-	
-	if (CreatedWidgets.Contains(EGraphicsOptionType::WindowMode))
-	{
-		const int32 WindowModeIdx = CreatedWidgets[EGraphicsOptionType::WindowMode]->GetCurrentIndex();
-    
-		EWindowMode::Type NewWindowMode;
-		switch (WindowModeIdx)
-		{
-			case 0: 
-				NewWindowMode = EWindowMode::Fullscreen;
-				break;
-			case 1:
-				NewWindowMode = EWindowMode::WindowedFullscreen;
-				break;
-			case 2:
-				NewWindowMode = EWindowMode::Windowed;
-				break;
-			default:
-				NewWindowMode = EWindowMode::WindowedFullscreen;
-				break;
-		}
-    
-		NewSettings.WindowMode = NewWindowMode;
-	}
-
-    SaveManagerSubsystem->SaveVideo(NewSettings);
-}
-
-void UVideoOptionPanel::HandleResetButtonClicked()
-{
-	Super::HandleResetButtonClicked();
-	
-	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
-	{
-		VideoSettings->LoadSettings();
-		VideoSettings->ApplySettings(false);
-		UpdateUIFromEngineSettings();
-	}
-}
-
-void UVideoOptionPanel::BuildOptions()
-{
-	if (!GraphicsOptionsDataTable || !OptionCycleWidgetClass || !VB_OptionContainer) return;
-	
-	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
-	{
-		VideoSettings->LoadSettings();
-	}
-
-	VB_OptionContainer->ClearChildren();
-	CreatedWidgets.Empty();
-
-	static const FString ContextString(TEXT("Graphics Option Context"));
-	TArray<FGraphicsOptionRow*> AllRows;
-	GraphicsOptionsDataTable->GetAllRows<FGraphicsOptionRow>(ContextString, AllRows);
-
-	for (const FGraphicsOptionRow* Row : AllRows)
-	{
-		if (!Row) continue;
-
-		if (UOptionCycleWidget* NewWidget = CreateWidget<UOptionCycleWidget>(this, OptionCycleWidgetClass))
-		{
-			TArray<FText> Labels = Row->OptionLabels;
-			const int32 StartIndex = Row->DefaultIndex;
-
-			if (Row->OptionType == EGraphicsOptionType::Resolution)
-			{
-				TArray<FIntPoint> SupportedResolutions;
-
-				if (UKismetSystemLibrary::GetSupportedFullscreenResolutions(SupportedResolutions))
-				{
-					TArray<FText> ValidLabels;
-					for (const FText& Label : Labels)
-					{
-						FString LabelStr = Label.ToString();
-						FString Left, Right;
-
-						if (LabelStr.Split(TEXT("x"), &Left, &Right))
-						{
-							const int32 Width = FCString::Atoi(*Left);
-							const int32 Height = FCString::Atoi(*Right);
-							FIntPoint TargetRes(Width, Height);
-
-							if (SupportedResolutions.Contains(TargetRes))
-							{
-								ValidLabels.Add(Label);
-							}
-						}
-					}
-        
-					Labels = ValidLabels;
-				}
-			}
-			
-			NewWidget->Init(Row->DisplayName, Labels, StartIndex);
-			VB_OptionContainer->AddChild(NewWidget);
-			
-			CreatedWidgets.Add(Row->OptionType, NewWidget);
-			
-			if (Row->OptionType == EGraphicsOptionType::OverallQuality)
-			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
-			}
-			else if (Row->OptionType == EGraphicsOptionType::WindowMode)
-			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
-			}
-			else if (Row->OptionType != EGraphicsOptionType::Resolution &&
-					 Row->OptionType != EGraphicsOptionType::VSync &&
-					 Row->OptionType != EGraphicsOptionType::WindowMode)
-			{
-				NewWidget->OnOptionChanged.AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
-			}
-		}
-	}
-
-	UpdateUIFromEngineSettings();
-}
-
-void UVideoOptionPanel::UpdateUIFromEngineSettings()
-{
-	if (!GEngine) return;
 	
     const UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings();
-    if (!VideoSettings || CreatedWidgets.Num() == 0) return;
+    if (!VideoSettings || CreatedWidgets.Num() == 0)
+    {
+    	return;
+    }
 
 	if (CreatedWidgets.Contains(EGraphicsOptionType::OverallQuality))
 	{
@@ -301,13 +117,250 @@ void UVideoOptionPanel::UpdateUIFromEngineSettings()
 		}
 	
 		CreatedWidgets[EGraphicsOptionType::WindowMode]->SetSelectedIndex(WindowModeIndex);
+		OnWindowModeChanged(WindowModeIndex, ERotatorDirection::Right);
 	}
 }
 
-void UVideoOptionPanel::OnOverallQualityChanged(const int32 NewIndex)
+void UVideoOptionPanel::ApplySettingsFromUI(bool bSaveToDisk)
+{
+	Super::ApplySettingsFromUI(bSaveToDisk);
+	
+	if (!SaveManagerSubsystem)
+	{
+	    return;
+	}
+
+    FGraphicsSettingData NewSettings;
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::OverallQuality))
+       NewSettings.OverallQuality = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetCurrentIndex();
+    
+    if (CreatedWidgets.Contains(EGraphicsOptionType::ViewDistance))
+       NewSettings.ViewDistance = CreatedWidgets[EGraphicsOptionType::ViewDistance]->GetCurrentIndex();
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::AntiAliasing))
+       NewSettings.AntiAliasing = CreatedWidgets[EGraphicsOptionType::AntiAliasing]->GetCurrentIndex();
+    
+    if (CreatedWidgets.Contains(EGraphicsOptionType::PostProcess))
+       NewSettings.PostProcess = CreatedWidgets[EGraphicsOptionType::PostProcess]->GetCurrentIndex();
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::Shadow))
+       NewSettings.Shadow = CreatedWidgets[EGraphicsOptionType::Shadow]->GetCurrentIndex();
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::GlobalIllumination))
+       NewSettings.GlobalIllumination = CreatedWidgets[EGraphicsOptionType::GlobalIllumination]->GetCurrentIndex();
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::Reflections))
+       NewSettings.Reflections = CreatedWidgets[EGraphicsOptionType::Reflections]->GetCurrentIndex();
+    
+    if (CreatedWidgets.Contains(EGraphicsOptionType::Texture))
+       NewSettings.Texture = CreatedWidgets[EGraphicsOptionType::Texture]->GetCurrentIndex();
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::Effects))
+       NewSettings.Effects = CreatedWidgets[EGraphicsOptionType::Effects]->GetCurrentIndex();
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
+    {
+		FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptionsArray()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
+		ResString = ResString.Replace(TEXT(" "), TEXT(""));
+
+		FString Left, Right;
+		if (ResString.Split(TEXT("x"), &Left, &Right))
+		{
+			NewSettings.Resolution = FIntPoint(FCString::Atoi(*Left), FCString::Atoi(*Right));
+		}
+    }
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
+       NewSettings.bVSync = CreatedWidgets[EGraphicsOptionType::VSync]->GetCurrentIndex() == 1;
+	
+	if (CreatedWidgets.Contains(EGraphicsOptionType::WindowMode))
+	{
+		const int32 WindowModeIdx = CreatedWidgets[EGraphicsOptionType::WindowMode]->GetCurrentIndex();
+    
+		EWindowMode::Type NewWindowMode;
+		switch (WindowModeIdx)
+		{
+			case 0: 
+				NewWindowMode = EWindowMode::Fullscreen;
+				break;
+			case 1:
+				NewWindowMode = EWindowMode::WindowedFullscreen;
+				break;
+			case 2:
+				NewWindowMode = EWindowMode::Windowed;
+				break;
+			default:
+				NewWindowMode = EWindowMode::WindowedFullscreen;
+				break;
+		}
+    
+		NewSettings.WindowMode = NewWindowMode;
+	}
+
+	SaveManagerSubsystem->ApplyVideo(NewSettings, bSaveToDisk);
+}
+
+void UVideoOptionPanel::ApplySettingsFromSavedData()
+{
+	Super::ApplySettingsFromSavedData();
+	
+	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+	{
+		VideoSettings->LoadSettings(true);
+		VideoSettings->ApplySettings(false);
+	}
+}
+
+bool UVideoOptionPanel::IsDirty() const
+{
+    if (Super::IsDirty())
+    {
+    	return true;
+    }
+
+    if (!GEngine)
+    {
+    	return false;
+    }
+	
+    UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings();
+    if (!VideoSettings || CreatedWidgets.Num() == 0)
+    {
+    	return false;
+    }
+
+    auto IsQualityDirty = [&](EGraphicsOptionType Type, int32 (UGameUserSettings::*GetFunc)() const) -> bool
+    {
+        if (CreatedWidgets.Contains(Type))
+        {
+            return CreatedWidgets[Type]->GetCurrentIndex() != (VideoSettings->*GetFunc)();
+        }
+        return false;
+    };
+
+    if (IsQualityDirty(EGraphicsOptionType::ViewDistance, &UGameUserSettings::GetViewDistanceQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::AntiAliasing, &UGameUserSettings::GetAntiAliasingQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::PostProcess, &UGameUserSettings::GetPostProcessingQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::Shadow, &UGameUserSettings::GetShadowQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::GlobalIllumination, &UGameUserSettings::GetGlobalIlluminationQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::Reflections, &UGameUserSettings::GetReflectionQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::Texture, &UGameUserSettings::GetTextureQuality)) return true;
+    if (IsQualityDirty(EGraphicsOptionType::Effects, &UGameUserSettings::GetVisualEffectQuality)) return true;
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
+    {
+        bool bUI_VSync = CreatedWidgets[EGraphicsOptionType::VSync]->GetCurrentIndex() == 1;
+        if (bUI_VSync != VideoSettings->IsVSyncEnabled()) return true;
+    }
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::WindowMode))
+    {
+        const int32 UI_WindowModeIdx = CreatedWidgets[EGraphicsOptionType::WindowMode]->GetCurrentIndex();
+        EWindowMode::Type UI_Mode = (UI_WindowModeIdx == 0) ? EWindowMode::Fullscreen : 
+                                    (UI_WindowModeIdx == 1) ? EWindowMode::WindowedFullscreen : 
+                                    EWindowMode::Windowed;
+
+        if (UI_Mode != VideoSettings->GetFullscreenMode()) return true;
+    }
+
+    if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
+    {
+        FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptionsArray()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
+        ResString = ResString.Replace(TEXT(" "), TEXT(""));
+
+        FString Left, Right;
+        if (ResString.Split(TEXT("x"), &Left, &Right))
+        {
+            FIntPoint UI_Res(FCString::Atoi(*Left), FCString::Atoi(*Right));
+            if (UI_Res != VideoSettings->GetScreenResolution()) return true;
+        }
+    }
+
+    return false;
+}
+
+void UVideoOptionPanel::BuildOptions()
+{
+	if (!GraphicsOptionsDataTable || !OptionCycleWidgetClass || !VB_OptionContainer) return;
+	
+	if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
+	{
+		VideoSettings->LoadSettings();
+	}
+
+	VB_OptionContainer->ClearChildren();
+	CreatedWidgets.Empty();
+
+	static const FString ContextString(TEXT("Graphics Option Context"));
+	TArray<FGraphicsOptionRow*> AllRows;
+	GraphicsOptionsDataTable->GetAllRows<FGraphicsOptionRow>(ContextString, AllRows);
+
+	for (const FGraphicsOptionRow* Row : AllRows)
+	{
+		if (!Row) continue;
+
+		if (UOptionCycleRowWidget* NewWidget = CreateWidget<UOptionCycleRowWidget>(this, OptionCycleWidgetClass))
+		{
+			TArray<FText> Labels = Row->OptionLabels;
+			const int32 StartIndex = Row->DefaultIndex;
+
+			if (Row->OptionType == EGraphicsOptionType::Resolution)
+			{
+				TArray<FIntPoint> SupportedResolutions;
+
+				if (UKismetSystemLibrary::GetSupportedFullscreenResolutions(SupportedResolutions))
+				{
+					TArray<FText> ValidLabels;
+					for (const FText& Label : Labels)
+					{
+						FString LabelStr = Label.ToString();
+						FString Left, Right;
+
+						if (LabelStr.Split(TEXT("x"), &Left, &Right))
+						{
+							const int32 Width = FCString::Atoi(*Left);
+							const int32 Height = FCString::Atoi(*Right);
+							FIntPoint TargetRes(Width, Height);
+
+							if (SupportedResolutions.Contains(TargetRes))
+							{
+								ValidLabels.Add(Label);
+							}
+						}
+					}
+        
+					Labels = ValidLabels;
+				}
+			}
+			
+			NewWidget->ForceInit(Row->DisplayName, Labels, StartIndex);
+			VB_OptionContainer->AddChild(NewWidget);
+			
+			CreatedWidgets.Add(Row->OptionType, NewWidget);
+			
+			if (Row->OptionType == EGraphicsOptionType::OverallQuality)
+			{
+				NewWidget->OnRotatedWithDirection().AddDynamic(this, &UVideoOptionPanel::OnOverallQualityChanged);
+			}
+			else if (Row->OptionType == EGraphicsOptionType::WindowMode)
+			{
+				NewWidget->OnRotatedWithDirection().AddDynamic(this, &UVideoOptionPanel::OnWindowModeChanged);
+			}
+			else if (Row->OptionType != EGraphicsOptionType::Resolution &&
+					 Row->OptionType != EGraphicsOptionType::VSync &&
+					 Row->OptionType != EGraphicsOptionType::WindowMode)
+			{
+				NewWidget->OnRotatedWithDirection().AddDynamic(this, &UVideoOptionPanel::OnSubOptionChanged);
+			}
+		}
+	}
+}
+
+void UVideoOptionPanel::OnOverallQualityChanged(const int32 Value, ERotatorDirection RotatorDir)
 {
 	const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptionsArray().Num() - 1;
-	if (NewIndex == CustomIndex) return;
+	if (Value == CustomIndex) return;
 
 	for (const auto& Elem : CreatedWidgets)
 	{
@@ -316,12 +369,12 @@ void UVideoOptionPanel::OnOverallQualityChanged(const int32 NewIndex)
 			Elem.Key != EGraphicsOptionType::VSync &&
 			Elem.Key != EGraphicsOptionType::WindowMode)
 		{
-			Elem.Value->SetSelectedIndex(NewIndex);
+			Elem.Value->SetSelectedIndex(Value);
 		}
 	}
 }
 
-void UVideoOptionPanel::OnSubOptionChanged(int32 NewIndex)
+void UVideoOptionPanel::OnSubOptionChanged(int32 Value, ERotatorDirection RotatorDir)
 {
 	if (CreatedWidgets.Contains(EGraphicsOptionType::OverallQuality))
 	{
@@ -330,13 +383,13 @@ void UVideoOptionPanel::OnSubOptionChanged(int32 NewIndex)
 	}
 }
 
-void UVideoOptionPanel::OnWindowModeChanged(const int32 NewIndex)
+void UVideoOptionPanel::OnWindowModeChanged(const int32 Value, ERotatorDirection RotatorDir)
 {
 	if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
 	{
-		const bool bIsWindowed = (NewIndex == 2);
+		const bool bIsWindowed = (Value == 2);
         
-		UOptionCycleWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
+		UOptionCycleRowWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
 		ResWidget->SetIsEnabled(bIsWindowed);
 	}
 }

@@ -4,11 +4,12 @@
 #include "CommonActivatableWidget.h"
 #include "TutorialWidget.generated.h"
 
+class UCommonBorder;
+class UImage;
 class UBaseUIRoot;
 struct FQuestUIData;
 class UTutorialQuestWidget;
 class UTutorialDialogueWidget;
-class ATutorialManager;
 
 UCLASS()
 class TROMBONERUMBLE_API UTutorialWidget : public UCommonActivatableWidget
@@ -27,15 +28,17 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTutorialQuestWidget> WBP_Quest;
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_ExtraData;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonBorder> Border_Dim;
+	
 	/** Input actions to skip dialogue */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TArray<FDataTableRowHandle> SkipActionRowArray;
 	
 private:
-	
-	/** Reference to the tutorial manager */
-	UPROPERTY()
-	TObjectPtr<ATutorialManager> TutorialManager;
 	
 	/** Reference to the root UI layout */
 	UPROPERTY()
@@ -54,21 +57,40 @@ private:
 	void UnregisterInputActions();
 	
 	/** Handles the dialogue sequence event */
+	UFUNCTION()
 	void HandleDialogueSequence(const FText& DialogueString);
 	
 	/** Handles the quest sequence event */
+	UFUNCTION()
 	void HandleQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray);
 	
 	/** Handles the transition sequence event */
+	UFUNCTION()
 	void HandleTransitionSequence();
+	
+	/** Handles the show extra data event */
+	UFUNCTION()
+	void HandleOnExtraData(UTexture2D* Image);
 	
 	/** Handles the skip dialogue input action */
 	void HandleSkipDialogue();
 	
+private:
+	
+	/** Set visibility of the tutorial UI */
+	void SetUIVisibility(ESlateVisibility NewVisibility);
+	
+private:
+	
+	void OnFadeInFinished();
+	void OnFadeOutFinished();
+	
 protected:
+	
 	// ~ Begin UCommonActivatableWidget Interface
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	// ~ End UCommonActivatableWidget Interface
+	
 };

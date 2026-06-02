@@ -1,9 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Data/CustomizationSaveData.h"
 #include "Utilities/Defines.h"
 #include "DefaultPlayerState.generated.h"
 
@@ -11,6 +10,11 @@ class AWeaponBase;
 class URhythmSubsystem;
 class AInGameState;
 
+/**
+ * Delegate triggered when the player's name changes.
+ * @param PlayerName The new player name.
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerNameChanged, const FString&, PlayerName);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnLocalScoreChanged, APlayerState*, PlayerState, int32, AddedAmount, EScoreType, ScoreType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboChanged, ENoteResult, InNoteResult, int32, ComboCount);
@@ -26,7 +30,7 @@ public:
     float TotalScore = 0; 
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score|Rhythm")
-    int32 PerfectCount = 0; // Perfect 맞춘 개수
+    int32 ExcellentCount = 0; // Excellent 맞춘 개수
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score|Rhythm")
     int32 GoodCount = 0;    // Good 맞춘 개수
@@ -79,13 +83,10 @@ class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 
 public:
 	ADefaultPlayerState();
-
-    virtual void BeginPlay() override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void OnRep_PlayerName() override;
-	virtual void OnRep_Score() override;
-	virtual void CopyProperties(APlayerState* PlayerState) override;	
-
+	
+	/** Event when the player's name changes. */
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPlayerNameChanged OnPlayerNameChanged;
 
 	// 클라이언트 PlayerState 에서 점수가 바뀌면 GameState에 알림.
 	UPROPERTY(BlueprintAssignable)
@@ -125,6 +126,12 @@ protected:
 	UFUNCTION()
 	void OnRep_SkinColor();
 
+	UPROPERTY(ReplicatedUsing = OnRep_CustomizationData)
+	FCustomizationSaveData CustomizationData;
+
+	UFUNCTION()
+	void OnRep_CustomizationData();
+
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 
@@ -132,11 +139,34 @@ protected:
     FRumbleScoreData CurrentScoreData;
 
 public:
-	//getter setter
+	// ~ Begin APlayerState Interface
+	virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_PlayerName() override;
+	virtual void OnRep_Score() override;
+	virtual void CopyProperties(APlayerState* PlayerState) override;	
+	// ~ End APlayerState Interface
+	
+	UPROPERTY(ReplicatedUsing = OnRep_VoiceSendVolume)
+	float VoiceSendVolume = 1.0f;
+
+	UFUNCTION()
+	void OnRep_VoiceSendVolume();
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetVoiceSendVolume(float Volume);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetCustomization(FCustomizationSaveData InData);
+
+	// ~ Begin Getter & Setter
 	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
 	void SetSkinColor(const FLinearColor& InSkinColor);
 	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
+	FORCEINLINE FCustomizationSaveData GetCustomizationData() const { return CustomizationData; }
 	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
     FORCEINLINE FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
-	// ~getter setter
+	bool IsHost() const;
+	// ~ End Getter & Setter
 };

@@ -1,9 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
-#include "EasyExternalUILibrary.h"
 #include "EasyMatchmakingManager.h"
 #include "EasyMatchmakingPolicy.h"
 #include "EasyOnlineSession.h"
@@ -12,11 +9,9 @@
 #include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
-#include "OnlineSubsystemUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/Button.h"
-#include "Components/EditableText.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "Interfaces/OnlineSessionInterface.h"
@@ -108,11 +103,6 @@ void UMatchMenuWidget::Init()
 		CB_Back->OnClicked().RemoveAll(this);
 		CB_Back->OnClicked().AddUObject(this, &ThisClass::HandleBackButtonClicked);
 	}
-	if (CB_Invite)
-	{
-		CB_Invite->OnClicked().RemoveAll(this);
-		CB_Invite->OnClicked().AddUObject(this, &ThisClass::HandleInviteButtonClicked);
-	}
 	if (CR_MatchType)
 	{
 		CR_MatchType->OnRotatedWithDirection().RemoveAll(this);
@@ -127,9 +117,6 @@ void UMatchMenuWidget::BindGameStateEvents()
 	
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		MatchMenuGS->OnPlayerListChanged.AddDynamic(this, &ThisClass::OnPlayerListChanged);
-		OnPlayerListChanged(MatchMenuGS->GetPlayerList());
-		
 		MatchMenuGS->OnMatchTypeChanged.AddDynamic(this, &ThisClass::OnMatchTypeChanged);
 		OnMatchTypeChanged(MatchMenuGS->GetCurrentMatchType());
 	}
@@ -139,23 +126,8 @@ void UMatchMenuWidget::RemoveGameStateEvents()
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		MatchMenuGS->OnPlayerListChanged.RemoveAll(this);
 		MatchMenuGS->OnMatchTypeChanged.RemoveAll(this);
 	}
-}
-
-void UMatchMenuWidget::OnPlayerListChanged(const TArray<FString>& PlayerNames)
-{
-	if (!CT_PlayerList || bIsStarted) return;
-
-	FString FormattedPlayerList;
-
-	for (int32 i = 0; i < PlayerNames.Num(); ++i)
-	{
-		FormattedPlayerList.Append(FString::Printf(TEXT("%d. %s\n"), i + 1, *PlayerNames[i]));
-	}
-	
-	CT_PlayerList->SetText(FText::FromString(FormattedPlayerList));
 }
 
 void UMatchMenuWidget::OnMatchTypeChanged(EMatchType NewType)
@@ -178,7 +150,16 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 		TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
 		ReservationManager->SetHostReservations(Reservations);
 	}
-
+	
+	FEasySessionSettings UpdatedSettings;
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+			
+	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
+	UpdatedSettings.bAllowJoinInProgress = false;
+		
+	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
+	OnlineSession->StartOnlineSession(NAME_GameSession);
+	
 	FString URL = TEXT("/Game/Levels/LobbyMap");
 	UEasyStatics::ServerTravelToLevel(this, URL);
 }
@@ -193,35 +174,16 @@ void UMatchMenuWidget::HandleBackButtonClicked()
 	UGameplayStatics::OpenLevel(this, FName(*URL), true);
 }
 
-void UMatchMenuWidget::HandleInviteButtonClicked()
-{
-	EEasyResultType OutResult;
-	UEasyExternalUILibrary::ShowInviteUI(GetOwningPlayer(), NAME_GameSession, OutResult);
-}
-
 void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		EMatchType Type = static_cast<EMatchType>(Value);
-		MatchMenuGS->SetMatchType(Type);
+		EMatchType NewMatchType = static_cast<EMatchType>(Value);
+		MatchMenuGS->SetMatchType(NewMatchType);
 		
 		ShowLoadingOverlay();
-		
-		bool bNewHidden = false;
-		switch (Type)
-		{
-			case EMatchType::Public:
-				bNewHidden = false;
-				break;
-			
-			case EMatchType::Custom:
-				bNewHidden = true;
-				break;
-			
-			default: 
-				break;
-		}
+
+		const bool bNewHidden = NewMatchType != EMatchType::Public;
 		
 		FEasySessionSettings UpdatedSettings;
 		UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
@@ -238,7 +200,7 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 			ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		}
 				
-		OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings);
+		OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true, ExtraSessionSettings);
 	}
 }
 
@@ -271,6 +233,4 @@ void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 	
 	CB_Start->SetIsEnabled(bEnabled);
 	CB_Back->SetIsEnabled(bEnabled);
-	CB_Invite->SetIsEnabled(bEnabled);
-	CT_Code->SetIsEnabled(bEnabled);
 }

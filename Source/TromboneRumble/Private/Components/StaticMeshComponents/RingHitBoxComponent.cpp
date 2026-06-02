@@ -17,18 +17,11 @@ URingHitBoxComponent::URingHitBoxComponent()
 	bReceivesDecals = false;
 	SetCastShadow(false);
 
+	// 피아노/계단 등에 가려져도 링이 항상 바닥 위에 그려지도록 translucent 정렬 우선순위 강제
+	// (머티리얼 M_NoteHitBox의 Disable Depth Test = true 와 함께 작동)
+	SetTranslucentSortPriority(100);
+
 	SetVisibility(false, false);
-}
-
-void URingHitBoxComponent::OnRegister()
-{
-	Super::OnRegister();
-
-	EnsureMID();
-	ApplyMaterialParams();
-
-	bHasBaseColor = false;
-	CacheBaseColorIfNeeded();
 }
 
 void URingHitBoxComponent::BeginPlay()
@@ -37,6 +30,16 @@ void URingHitBoxComponent::BeginPlay()
 
 	EnsureMID();
 	ApplyMaterialParams();
+
+	if (RingMID)
+	{
+		FLinearColor CurrentColor;
+		if (RingMID->GetVectorParameterValue(ColorParamName, CurrentColor))
+		{
+			CachedBaseColor = CurrentColor;
+			bHasBaseColor = true;
+		}
+	}
 
 	//멀티플레이 환경에서 자신만 볼수있게
 	const APawn* PawnOwner = Cast<APawn>(GetOwner());
@@ -55,6 +58,16 @@ void URingHitBoxComponent::BeginPlay()
 			DefaultTromboneCharacter->OnStunStateChanged.AddDynamic(this, &ThisClass::OnOwnerStunnedHandler);
 		}
 	}
+}
+
+void URingHitBoxComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (const UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(FlashTimerHandle);
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 #if WITH_EDITOR
@@ -130,34 +143,17 @@ void URingHitBoxComponent::OnOwnerStunnedHandler(bool bIsStun)
 void URingHitBoxComponent::EnsureMID()
 {
 	// 이미 만들어져 있으면 재사용
-	if (RingMID) return;
+	if (RingMID || !GetWorld()) return;
 
-	// Element 0에 이미 Material/MI가 들어있으면 Source Material 안 넣어도 됨
-	RingMID = CreateDynamicMaterialInstance(0);
+	UMaterialInterface* BaseMat = RingMatOrigin ? RingMatOrigin.Get() : GetMaterial(0);
+	if (!BaseMat) return;
 
-	//UMaterialInterface* OriginMat = RingMatOrigin.Get();
-	//if (!OriginMat)
-	//{
-	//	RingMID = nullptr;
-	//	CachedParentMat = nullptr;
-	//	return;
-	//}
+	RingMID = CreateDynamicMaterialInstance(0, BaseMat);
 
-	//// 슬롯 0에 MID가 이미 꽂혀있는 경우
-	//if (RingMID && CachedParentMat.Get() == OriginMat)
-	//{
-	//	if (GetMaterial(0) == RingMID)
-	//	{
-	//		return;
-	//	}
-
-	//	// 누가 슬롯 0을 바꿔버린 경우: 다시 꽂아 복구
-	//	SetMaterial(0, RingMID);
-	//	return;
-	//}
-
-	//RingMID = CreateAndSetMaterialInstanceDynamicFromMaterial(0, OriginMat);
-	//CachedParentMat = OriginMat;
+	if (RingMID)
+	{
+		ApplyMaterialParams();
+	}
 }
 
 void URingHitBoxComponent::ApplyMaterialParams()

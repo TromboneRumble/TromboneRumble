@@ -25,15 +25,19 @@ public class TromboneRumble : ModuleRules
 			"AkAudio", 
 			"WwiseSoundEngine", 
 			"Niagara", 
-			"CommonUI", 
-			"CommonInput", 
-			"ApplicationCore", 
-			"EasySessions", 
-			"RHI", 
-			"MovieScene", 
-			"LevelSequence", 
-			"Lobby", 
+			"CommonUI",
+			"CommonInput",
+			"ApplicationCore",
+			"EasySessions",
+			"RHI",
+			"MovieScene",
+			"LevelSequence",
+			"Lobby",
 			"Projects",
+			"Voice",
+			"AudioCapture",
+			"AudioCaptureCore",
+			"AudioMixer"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

@@ -22,23 +22,43 @@ UCLASS()
 class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
+	{
+		return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::LockOnCapture, false);
+	}
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnInitialized() override;
-	
+
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
+	
+protected:
+	
+	// ~ Begin UIs
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonButtonBase> CB_Start;
+	
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonButtonBase> CB_Back;
+	
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonTextBlock> CT_Code;
+	
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
+	// ~ End UIs
 	
 private:
 	// ~ Begin GameState Events
 	void BindGameStateEvents();
 	void RemoveGameStateEvents();
 	
-	UFUNCTION()
-	void OnPlayerListChanged(const TArray<FString>& PlayerNames);
 	UFUNCTION()
 	void OnMatchTypeChanged(EMatchType NewType);
 	// ~ End GameState Events
@@ -49,28 +69,8 @@ private:
 	UFUNCTION()
 	void HandleBackButtonClicked();
 	UFUNCTION()
-	void HandleInviteButtonClicked();
-	UFUNCTION()
 	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
 	// ~ End UI Events
-	
-	// ~ Begin UIs
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Start;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Back;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Invite;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> CT_Code;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonTextBlock> CT_PlayerList;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
-	// ~ End UIs
 	
 	UPROPERTY(Transient)
 	FString CachedMainMenuMapPath = "";

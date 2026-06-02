@@ -2,8 +2,9 @@
 
 
 #include "Actors/ResultScene/PodiumActor.h"
-
 #include "Utilities/Defines.h"
+#include "Components/WidgetComponent.h"
+#include "UI/UserWidgets/InGame/PodiumNameWidget.h"
 
 APodiumActor::APodiumActor()
 {
@@ -11,12 +12,40 @@ APodiumActor::APodiumActor()
 
 	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
+
+	NameWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameWidgetComponent"));
+	if (NameWidgetComponent)
+	{
+		NameWidgetComponent->SetupAttachment(RootComponent);
+		NameWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		NameWidgetComponent->SetDrawAtDesiredSize(true);
+	}
+	
 }
 
 void APodiumActor::ApplySkinColor(const FLinearColor& InSkinColor)
 {
 	if (SkinMID) SkinMID->SetVectorParameterValue(TEXT("BaseColor"), InSkinColor);
 	if (FaceMID) FaceMID->SetVectorParameterValue(TEXT("BaseColor"), InSkinColor);
+}
+
+void APodiumActor::SetPlayerName(const FString& InName)
+{
+	if (NameWidgetComponent)
+	{
+		if (UPodiumNameWidget* NameWidget = Cast<UPodiumNameWidget>(NameWidgetComponent->GetUserWidgetObject()))
+		{
+			NameWidget->SetPlayerName(InName);
+		}
+	}
+}
+
+void APodiumActor::SetNameWidgetVisibility(bool bVisible)
+{
+	if (NameWidgetComponent)
+	{
+		NameWidgetComponent->SetVisibility(bVisible);
+	}
 }
 
 
@@ -38,6 +67,21 @@ void APodiumActor::BeginPlay()
 	{
 		PlayFaceSequence(ECharacterFaceState::Cry);
 	}
+
+	if (NameWidgetComponent)
+	{
+		NameWidgetComponent->SetVisibility(false);
+	}
+}
+
+void APodiumActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(FaceSequenceTimerHandle);
+		FaceSequenceTimerHandle.Invalidate();
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 void APodiumActor::PlayFaceSequence(ECharacterFaceState TargetState)

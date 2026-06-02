@@ -98,6 +98,11 @@ void ASpotlightZone::BeginPlay()
 
 void ASpotlightZone::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(LifecycleTimerHandle);
+		LifecycleTimerHandle.Invalidate();
+	}
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
 		if (URhythmSubsystem* RhythmSubsystem = GameInstance->GetSubsystem<URhythmSubsystem>())
@@ -284,7 +289,9 @@ bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* InCharacter)
 
 void ASpotlightZone::StartLifecycleTimer(const float InDuration, void(ASpotlightZone::* InTimerMethod)())
 {
-	GetWorldTimerManager().SetTimer(LifecycleTimerHandle, this, InTimerMethod, InDuration, false);
+	FTimerDelegate TimerDel;
+	TimerDel.BindUObject(this, InTimerMethod);
+	GetWorldTimerManager().SetTimer(LifecycleTimerHandle, TimerDel, InDuration, false);
 }
 
 void ASpotlightZone::OnWarningFinished()

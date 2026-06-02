@@ -1,9 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameMode/TromboneGameModeBase.h"
 #include "Interfaces/ItemEquipHandler.h"
 #include "Utilities/Defines.h"
 #include "LobbyGameMode.generated.h"
@@ -13,49 +11,57 @@ class ADefaultPlayerState;
 class ALobbyGameState;
 
 UCLASS()
-class TROMBONERUMBLE_API ALobbyGameMode : public AGameModeBase, public IItemEquipHandler
+class TROMBONERUMBLE_API ALobbyGameMode : public ATromboneGameModeBase, public IItemEquipHandler
 {
 	GENERATED_BODY()
 	
 public:
+	
+	/** Default constructor. */
 	ALobbyGameMode();
-
+	
 	// IInstrumentEquipHandler Interfaces
 	virtual void HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem) override;
 	virtual void HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem) override;
 	// ~IInstrumentEquipHandler Interfaces
-	
-	virtual void BeginPlay() override;
-	virtual void PostLogin(APlayerController* NewPlayer) override;
-	virtual void Logout(AController* ExitedPlayer) override;
-
-	void RequestServerTravel(const ELevelState& InLevelState);
 
 private:
 	void HandlePlayerLoadingScreenFinished(APlayerController* PC);
-	void InitializeInstruments() const;
+	void SpawnInstruments();
 	void SetLobbyState(const ELobbyState& InNewState);
 	void RequestServerTravel(const FString& MapPath) const;
-	void RequestSetTimer(TFunction<void()> OnTimerFinished);
 	
+	/** Called when all player equipped with instrument */
+	void OnCountdownToTravel();
 
-private:	
-	FLinearColor AssignUniqueColorToCharacter();
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<FLinearColor> AvailableColors;
-	TArray<FLinearColor> UsedColors;
+private:
 	
 	UPROPERTY()
 	TObjectPtr<ALobbyGameState> LobbyGameState;
 
-	UPROPERTY(Transient)
-	FTimerHandle LobbyTimerHandle;
-
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> LobbyReadyPlayers;
+	
+	FTimerHandle LobbyTimerHandle;
 
-	int32 RegisteredPlayerCount = 4;
-	int32 CurrentEquippedInstruments = 0;
-	float Timer = 5.0f;
+	/** Number of players registered for the session */
+	int32 RegisteredPlayerCount;
+	
+	/** Number of Instruments spawned in the lobby. */
+	int32 SpawnedInstrumentCount;
+	
+	/** Number of Instruments equipped by players in the lobby. */
+	int32 EquippedInstrumentCount;
+	
+	/** Delay time before start */
+	float DelayTime;
+	
+public:
+	
+	// ~ Begin AGameModeBase Interface
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual void Logout(AController* ExitedPlayer) override;
+	// ~ End AGameModeBase Interface
 };

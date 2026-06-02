@@ -8,7 +8,6 @@
 
 struct FQuestUIData;
 class UImage;
-class ATutorialManager;
 class UCommonTextBlock;
 
 UENUM()
@@ -47,6 +46,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* InprogressStatusTexture;
+	
+	UPROPERTY(EditDefaultsOnly)
+	float CompleteDescriptionOpacity = 0.3f;
 	
 protected:
 	

@@ -6,9 +6,12 @@
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "AkComponent.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Materials/MaterialInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
@@ -18,6 +21,7 @@
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
 	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
 	StunNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StunNiagaraComponent"));
 	if (StunNiagaraComponent)
@@ -35,6 +39,23 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	InitCharacter();
 }
 
+void ATromboneCharacterBase::ApplyOccludedStencil(UPrimitiveComponent* Prim)
+{
+	if (!Prim) return;
+	Prim->SetRenderCustomDepth(true);
+	Prim->SetCustomDepthStencilValue(TromboneRender::CHARACTER_OCCLUDED_STENCIL);
+}
+
+void ATromboneCharacterBase::ApplyOccludedStencilToActor(AActor* Actor)
+{
+	if (!Actor) return;
+	TArray<UPrimitiveComponent*> Prims;
+	Actor->GetComponents<UPrimitiveComponent>(Prims);
+	for (UPrimitiveComponent* Prim : Prims)
+	{
+		ApplyOccludedStencil(Prim);
+	}
+}
 void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
 {
 	if (SkinMID)
@@ -69,8 +90,10 @@ void ATromboneCharacterBase::SetPlayerInput(const bool bShouldEnable)
 
 void ATromboneCharacterBase::BeginPlay()
 {
-	Super::BeginPlay();
-
+	// 실행 순서:
+	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
+	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
+	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
 	if (UMaterialInterface* CurrentSkinMat = GetMesh()->GetMaterial(SkinMaterialIndex))
 	{
 		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
@@ -81,12 +104,34 @@ void ATromboneCharacterBase::BeginPlay()
 	}
 	if (UMaterialInterface* CurrentFaceMat = GetMesh()->GetMaterial(FaceMaterialIndex))
 	{
+		OriginalFaceMaterial = CurrentFaceMat;
 		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
 		if (!FaceMID)
 		{
 			FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
 		}
 	}
+
+	if (CustomizationComp)
+	{
+		FCustomizationSaveData SaveData;
+		if (IsLocallyControlled())
+		{
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				SaveData = SMS->LoadCustomization();
+			CustomizationComp->LoadFromSaveData(SaveData);
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				DPS->Server_SetCustomization(SaveData);
+		}
+		else
+		{
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				SaveData = DPS->GetCustomizationData();
+			CustomizationComp->LoadFromSaveData(SaveData);
+		}
+	}
+
+	Super::BeginPlay();
 
 	PlayFaceSequence(ECharacterFaceState::Blink);
 
@@ -103,10 +148,28 @@ void ATromboneCharacterBase::BeginPlay()
 		}
 	}
 
+	// 로컬 플레이어 캐릭터만 X-Ray stencil=252 적용 (원격 캐릭터는 X-Ray 미표시)
+	if (IsLocallyControlled())
+	{
+		ApplyOccludedStencil(GetMesh());
+	}
+
 	SetupCharacterData();
 	BoundBounceTimeline();
+
 	UpdateSkinFromPlayerState();
 	ApplyFlagPhysics();
+}
+
+void ATromboneCharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(InvincibilityTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(FaceSequenceTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandler_DelayedSavePostSnapshot);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandler_InternalUnapplyRagdoll);
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void ATromboneCharacterBase::Tick(float DeltaSeconds)
@@ -133,6 +196,10 @@ void ATromboneCharacterBase::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	UpdateSkinFromPlayerState();
+
+	if (CustomizationComp)
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
 }
 
 void ATromboneCharacterBase::OnRep_PlayerState()
@@ -140,6 +207,33 @@ void ATromboneCharacterBase::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	UpdateSkinFromPlayerState();
+
+	if (IsLocallyControlled())
+	{
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				DPS->Server_SetCustomization(SMS->LoadCustomization());
+	}
+	else if (CustomizationComp)
+	{
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
+	}
+}
+
+void ATromboneCharacterBase::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	if (!IsLocallyControlled()) return;
+	USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (!SMS) return;
+
+	FCustomizationSaveData SaveData = SMS->LoadCustomization();
+	if (CustomizationComp)
+		CustomizationComp->LoadFromSaveData(SaveData);
+	if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		DPS->Server_SetCustomization(SaveData);
 }
 
 void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitData)
@@ -152,6 +246,7 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 	{
 	case EHitReactionType::Ragdoll:
 		OnRagdoll();
+		break;
 	case EHitReactionType::Stun:
 		OnStun();
 		break;
@@ -166,6 +261,21 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 void ATromboneCharacterBase::OnRep_SkinColor()
 {
 	ApplySkinColor(SkinColor);
+}
+
+void ATromboneCharacterBase::ApplyFaceMaterial(UMaterialInterface* Material)
+{
+	// nullptr 전달 시 BeginPlay에서 캐싱된 원본 머티리얼로 복원
+	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
+	if (!Target) return;
+
+	GetMesh()->SetMaterial(FaceMaterialIndex, Target);
+	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+	if (FaceMID)
+	{
+		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
+		FaceMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
+	}
 }
 
 void ATromboneCharacterBase::InitCharacter()
@@ -196,6 +306,10 @@ void ATromboneCharacterBase::SetupSkeletalMeshComponent()
 
 void ATromboneCharacterBase::SetupCharacterData() const
 {
+	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
+	GetCharacterMovement()->NetworkMaxSmoothUpdateDistance = 128.f;
+	GetCharacterMovement()->NetworkNoSmoothUpdateDistance = 384.f;
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -329,6 +443,7 @@ void ATromboneCharacterBase::ApplyRagdoll()
     
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
@@ -360,9 +475,8 @@ void ATromboneCharacterBase::UnapplyRagdoll()
     SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation);
     GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
 
-	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(
-		Handle, 
+		TimerHandler_DelayedSavePostSnapshot, 
 		this, 
 		&ThisClass::DelayedSavePoseSnapshot, 
 		PoseSnapshotInterval,
@@ -377,9 +491,8 @@ void ATromboneCharacterBase::DelayedSavePoseSnapshot()
 		AnimInst->SaveRagdollPoseSnapshot();
 	}
 
-	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(
-		Handle, 
+		TimerHandler_InternalUnapplyRagdoll, 
 		this, 
 		&ThisClass::InternalUnapplyRagdoll, 
 		PoseSnapshotInterval,
@@ -396,6 +509,7 @@ void ATromboneCharacterBase::InternalUnapplyRagdoll()
 	GetMesh()->SetSimulatePhysics(false);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
@@ -438,16 +552,6 @@ void ATromboneCharacterBase::HandleBounceProgress(FVector Value)
 	{
 		GetMesh()->SetRelativeScale3D(Value);
 	}
-}
-
-void ATromboneCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-#if !UE_BUILD_SHIPPING
-	PlayerInputComponent->BindKey(EKeys::O, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugRagdoll);
-	PlayerInputComponent->BindKey(EKeys::P, IE_Pressed, this, &ATromboneCharacterBase::Server_DebugStun);
-#endif
 }
 
 void ATromboneCharacterBase::Server_DebugStun_Implementation()
@@ -556,6 +660,10 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	{
 		ApplyRagdoll();
 		PlayFaceSequence(ECharacterFaceState::Ragdoll);
+		if (AkSoundComponent && RagdollBooSound)
+		{
+			AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
+		}
 		OnRagdollDelegate.Broadcast();
 	}
 	else

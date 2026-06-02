@@ -20,9 +20,18 @@ struct FHitData
 
 	UPROPERTY()
 	EHitInstigatorType HitInstigator = EHitInstigatorType::None;
-	
+
 	UPROPERTY()
 	EHitReactionType HitReaction = EHitReactionType::None;
+
+	UPROPERTY()
+	FVector ImpactPoint = FVector::ZeroVector;
+
+	UPROPERTY()
+	float ExplosionRadius = 0.0f;
+
+	UPROPERTY()
+	float ExplosionStrength = 0.0f;
 };
 
 // This class does not need to be modified.

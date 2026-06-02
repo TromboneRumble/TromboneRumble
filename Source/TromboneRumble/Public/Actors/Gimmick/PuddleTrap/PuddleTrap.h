@@ -59,15 +59,15 @@ protected:
 	//~Components
 
 	/** 웅덩이가 생성된 후 최소 크기에서 최종 크기까지 커지는 데 걸리는 시간 (초) */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "확장 소요 시간"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "확장 소요 시간"))
 	float GrowDuration = 0.5f;
 
 	/** 웅덩이가 최대 크기를 유지하는 시간이며, 이 시간이 지나면 서서히 사라지기 시작합니다. (초) */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "소멸 시작 대기 시간"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "소멸 시작 대기 시간"))
 	float FadeDelay = 10.f;
 
 	/** 웅덩이가 완전히 투명해져서 사라질 때까지 걸리는 시간 (초) */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "소멸 단계 지속 시간"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "소멸 단계 지속 시간"))
 	float FadeDuration = 1.f;
 
 private:

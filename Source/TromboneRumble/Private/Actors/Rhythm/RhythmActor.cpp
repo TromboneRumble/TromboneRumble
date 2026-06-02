@@ -121,9 +121,8 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 	// 데이터 로딩이 완료된 경우 즉시 시작 대기열 진입
 	if (bIsDataLoaded && InSelectedTag == LoadedGameplayTag)
 	{
-		Debug::Print(TEXT("PrepareAndStartRhythmGame - WaitForOtherPlayers"));
 		//TODO : 싱글플레이어에서도 가능하게 하기
-		bAreOtherPlayersReady = true;
+		//bAreOtherPlayersReady = true;
 		WaitForOtherPlayers();
 		
 		return;
@@ -133,7 +132,6 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 	// 현재 로딩 중이라면, 완료되는 즉시 시작되도록 예약 플래그 설정
 	if (bIsLoadingData)
 	{
-		Debug::Print(TEXT("Prepare And Start RhythmGame - bIsLoadingData"));
 		bStartRequested = true;
 		return;
 	}
@@ -219,7 +217,6 @@ void ARhythmActor::BeginPlay()
 	GetCachedActorPoolSubsystem();
 	GetCachedRhythmSubsystem()->OnInstrumentPicked.AddDynamic(this, &ThisClass::OnInstrumentPickedHandler);
 	GetCachedRhythmSubsystem()->OnNoteDetected.AddDynamic(this, &ThisClass::OnNoteDetectedHandler);
-	GetCachedRhythmSubsystem()->OnMusicUserCue.AddDynamic(this, &ThisClass::HandleMusicCue);
 	GetCachedRhythmSubsystem()->RegisterRhythmActor(this);
 	NoteSpawnComponent->SetOutputBusVolume(0.f);
 	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
@@ -228,12 +225,23 @@ void ARhythmActor::BeginPlay()
 	}
 }
 
+void ARhythmActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	CleanupRhythmGame();
+	Super::EndPlay(EndPlayReason);
+}
+
 void ARhythmActor::CleanupRhythmGame()
 {
 	// 모든 타이머 정지
 	GetWorldTimerManager().ClearTimer(GameStateInitTimerHandle);
+	GameStateInitTimerHandle.Invalidate();
+
 	GetWorldTimerManager().ClearTimer(CheckPlayersTimerHandle);
+	CheckPlayersTimerHandle.Invalidate();
+
 	GetWorldTimerManager().ClearTimer(PlayBackgroundMusicTimerHandle);
+	PlayBackgroundMusicTimerHandle.Invalidate();
 
 	// 사운드 엔진 정지
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
@@ -399,7 +407,7 @@ void ARhythmActor::StartRhythmGame()
 		PlayBackgroundMusicTimerHandle,
 		this,
 		&ThisClass::PlayMusic,
-		2.9f,
+		2.8f,
 		false
 	);
 }
@@ -450,7 +458,6 @@ void ARhythmActor::InitGameState()
 			HandleInGameStateChanged(EInGameState::Play);
 		}
 		GetWorldTimerManager().ClearTimer(GameStateInitTimerHandle);
-		Debug::Print(TEXT("[RhythmActor] GameState Initialized Successfully."), -1, FColor::Green);
 	}
 	else
 	{
@@ -540,10 +547,15 @@ void ARhythmActor::OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrume
 	else
 	{
 
-		if (ARhythmNoteSpawner* FoundSpawner = RhythmNoteSpawners.FindChecked(NewType))
+		if (TObjectPtr<ARhythmNoteSpawner>* FoundPtr = RhythmNoteSpawners.Find(NewType))
 		{
-			NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+			ARhythmNoteSpawner* FoundSpawner = FoundPtr->Get();
+			if (IsValid(FoundSpawner))
+			{
+				NoteHearingComponent->SetSwitch(FoundSpawner->GetChangeSwitch(), FString(TEXT("")), FString(TEXT("")));
+			}
 		}
+
 		if (RhythmNoteDestroyer)
 		{
 			RhythmNoteDestroyer->SetBoxExtent(FVector(RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent, RhythmDestroyerBoxExtent));
@@ -628,7 +640,7 @@ void ARhythmActor::PlayMusic()
 		Callback.BindUFunction(this, FName("HandleBGMCallbacks"));
 		UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
 
-		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue |
+		const int32 CallbackMask = AkCallbackType::AK_MusicPlayStarted | AkCallbackType::AK_Duration | AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_MusicSyncEntry|
 			AkCallbackType::AK_EndOfEvent | AkCallbackType::AK_EnableGetSourcePlayPosition |AkCallbackType::AK_EnableGetMusicPlayPosition;
 		bHasReceivedDurationCallback = false;
 		bHasReceivedMusicStartCallback = false;
@@ -649,7 +661,7 @@ void ARhythmActor::PlayMusic()
 
 void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	GetCachedRhythmSubsystem()->HandleMusicCallbacks(CallbackType, CallbackInfo);
+	GetCachedRhythmSubsystem()->HandleMusicCallbacksFromRhythmActor(CallbackType, CallbackInfo);
 	if (UGameDataSubsystem* GameDataSubsystem = GetGameInstance()->GetSubsystem<UGameDataSubsystem>())
 	{
 		GameDataSubsystem->HandleMusicCallbacks(CallbackType, CallbackInfo);
@@ -664,6 +676,26 @@ void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackI
 	case EAkCallbackType::MusicPlayStarted:
 	{
 		bHasReceivedMusicStartCallback = true;
+	}
+	break;
+	case EAkCallbackType::MusicSyncUserCue:
+	{
+		if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
+		{
+			const FString& CueString = MusicInfo->UserCueName;
+			if (!CueString.IsEmpty())
+			{
+				const FName CueName(*CueString);
+				if (CueName == TEXT("Event_Enable_Click"))
+				{
+					bCanDetectNotes = true;
+				}
+				if (CueName == TEXT("Event_Disable_Click"))
+				{
+					bCanDetectNotes = false;
+				}
+			}
+		}
 	}
 	break;
 	}
@@ -782,19 +814,6 @@ void ARhythmActor::OnRhythmDestroyBeginOverlap(UPrimitiveComponent* OverlappedCo
 		GetCachedActorPoolSubsystem()->Release(OtherActor);
 	}
 }
-
-void ARhythmActor::HandleMusicCue(FName CueName)
-{
-	if (CueName == TEXT("Event_Enable_Click"))
-	{
-		bCanDetectNotes = true;
-	}
-	if (CueName == TEXT("Event_Disable_Click"))
-	{
-		bCanDetectNotes = false;
-	}
-}
-
 UActorPoolSubsystem* ARhythmActor::GetCachedActorPoolSubsystem()
 {
 	if (CachedActorPoolSubsystem.IsValid())

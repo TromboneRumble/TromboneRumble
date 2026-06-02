@@ -20,6 +20,7 @@ public:
 	void ResetBaseLocation(const FVector& InLocation);
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

@@ -1,21 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MainMenuWidget.generated.h"
 
-enum class EEasyMatchmakingState : uint8;
+enum class EEasyMatchmakingCompleteResult : uint8;
 class UCommonButtonBase;
-enum class EMainMenuType : uint8;
-class UEasySessionSubsystem;
 class UEditableText;
-class UMatchMenuWidget;
-class UConfirmationDialogueWidget;
-class UCommonAnimatedSwitcher;
-class UVideoOptionPanel;
-class UAudioOptionPanel;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
@@ -32,22 +23,10 @@ protected:
 	virtual void BindSubsystemCallbacks() override;
 	virtual void RemoveSubsystemCallbacks() override;
 	
-private:
-	// ~ Begin Button Callbacks
-	UFUNCTION()
-	void HandleCreateSessionClicked();
-	UFUNCTION()
-	void HandleQuickJoinButtonClicked();
-	UFUNCTION()
-	void HandleJoinButtonClicked();
-	UFUNCTION()
-	void HandleQuitButtonClicked();
-	// ~ End Button Callbacks
+protected:
 	
-	UFUNCTION()
-	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
-	
-	FString GenerateRandomLobbyCode(int32 Length) const;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCommonActivatableWidget> SettingPopupClass;
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))
@@ -60,18 +39,50 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Join;
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButtonBase> CB_Customize;
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Settings;
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Guide;
+	TObjectPtr<UCommonButtonBase> CB_Tutorial;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Quit;
 	// ~ End UI
 	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> ConfirmationDialogueWidgetClass;
-	UPROPERTY()
-	TObjectPtr<UConfirmationDialogueWidget> CachedQuitDialog;
-	
 	UPROPERTY(Transient)
 	FString CachedMatchMenuMapPath = "";
+	
+private:
+	// ~ Begin Button Callbacks
+	UFUNCTION()
+	void HandleCreateSessionClicked();
+	UFUNCTION()
+	void HandleQuickJoinButtonClicked();
+	UFUNCTION()
+	void HandleJoinButtonClicked();
+	UFUNCTION()
+	void HandleCustomizeButtonClicked();
+	UFUNCTION()
+	void HandleTutorialButtonClicked();
+	// ~ End Button Callbacks
+	
+	/** Displays the tutorial popup */
+	void ShowTutorialPopup();
+	
+	/** Displays the quit confirmation popup */
+	void ShowQuitPopup() const;
+	
+private:
+	
+	/** Called when matchmaking starts. */
+	UFUNCTION()
+	void HandleMatchmakingStarted();
+	
+	/** Called when matchmaking is complete. */
+	UFUNCTION()
+	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	
+	/** Called when matchmaking is canceled. */
+	UFUNCTION()
+	void HandleMatchmakingCanceled();
+	
 };

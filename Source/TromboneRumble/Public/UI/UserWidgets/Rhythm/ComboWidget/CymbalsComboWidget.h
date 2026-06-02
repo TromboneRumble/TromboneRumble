@@ -25,6 +25,7 @@ public:
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleComboChanged(ENoteResult InNoteResult, int32 ComboCount);
@@ -32,6 +33,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HandleOnAttack(AActor* HitActor);
 
+	FTimerHandle BindRetryTimerHandle;
 
 	// Animations
 

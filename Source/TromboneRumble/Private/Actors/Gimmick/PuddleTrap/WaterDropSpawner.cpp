@@ -3,14 +3,12 @@
 #include "Actors/Gimmick/PuddleTrap/WaterDropSpawner.h"
 #include "Components/BoxComponent.h"
 #include "Actors/Gimmick/PuddleTrap/WaterDrop.h"
+#include "Engine/TargetPoint.h"
 
 AWaterDropSpawner::AWaterDropSpawner()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
-	SpawnBox = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnBox"));
-	SetRootComponent(SpawnBox);
-	SpawnBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AWaterDropSpawner::Activate()
@@ -28,25 +26,30 @@ void AWaterDropSpawner::Activate()
 	}
 }
 
+void AWaterDropSpawner::Deactivate()
+{
+	Super::Deactivate();
+
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+		SpawnTimerHandle.Invalidate();
+	}
+}
+
+void AWaterDropSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	Super::EndPlay(EndPlayReason);
+}
+
 void AWaterDropSpawner::SpawnOneDrop()
 {
 	if (!HasAuthority()) return;
-	if (!WaterDropClass || !SpawnBox) return;
+	if (!WaterDropClass || SpawnPoints.IsEmpty()) return;
 
-	const FVector Origin = SpawnBox->GetComponentLocation();
-	const FVector Extent = SpawnBox->GetScaledBoxExtent();
-
-	// Box 안에서 랜덤 X,Y, 맨 위 Z에서 스폰
-	const float RandX = FMath::FRandRange(-Extent.X, Extent.X);
-	const float RandY = FMath::FRandRange(-Extent.Y, Extent.Y);
-	const float SpawnZ = Origin.Z + Extent.Z; // 상단 면
-
-	const FVector SpawnLocation = FVector(
-		Origin.X + RandX,
-		Origin.Y + RandY,
-		SpawnZ);
-
-	const FRotator SpawnRotation = FRotator::ZeroRotator;
+	const int32 RandIndex = FMath::RandRange(0, SpawnPoints.Num() - 1);
+	TObjectPtr<ATargetPoint> ChosenPoint = SpawnPoints[RandIndex];
 
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride =
@@ -54,7 +57,8 @@ void AWaterDropSpawner::SpawnOneDrop()
 
 	GetWorld()->SpawnActor<AWaterDrop>(
 		WaterDropClass,
-		FTransform(SpawnRotation, SpawnLocation),
+		ChosenPoint->GetActorLocation(),
+		ChosenPoint->GetActorRotation(),
 		Params);
 }
 

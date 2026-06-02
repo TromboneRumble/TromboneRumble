@@ -121,7 +121,7 @@ void UCameraFunctionLibrary::UpdateTopDownCameraOffsetEase(
 
     if (!EasedWorld_Unclamped.IsNearlyZero())
     {
-        FVector TraceStart = ReferenceActor->GetActorLocation();
+        FVector TraceStart = SpringArm->GetComponentLocation();
         FVector TraceEnd = TraceStart + EasedWorld_Unclamped;
 
         FHitResult HitResult;
@@ -172,4 +172,66 @@ void UCameraFunctionLibrary::UpdateTopDownCameraOffsetEase(
     // 5. 최종 위치 적용 (VInterpTo를 사용해 1프레임 튀는 현상 흡수)
     // 15.f는 보간 속도입니다. 수치가 높을수록 빠릿하게 따라가고, 낮을수록 부드럽습니다.
     SpringArm->TargetOffset = FMath::VInterpTo(SpringArm->TargetOffset, FinalLocal, DeltaTime, 100.f);
+}
+
+void UCameraFunctionLibrary::UpdateTopDownCameraZoomEase(
+    const UObject* WorldContextObject,
+    USpringArmComponent* SpringArm,
+    AActor* ReferenceActor,
+    float DesiredArmLength,
+    FRotator DesiredRotation,
+    FCameraZoomLerpState& InOutState,
+    float InterpSpeed,
+    float CollisionMargin)
+{
+    if (!WorldContextObject || !SpringArm || !ReferenceActor) return;
+    const UWorld* World = WorldContextObject->GetWorld();
+    if (!World) return;
+
+    const float DeltaTime = World->GetDeltaSeconds();
+
+    // 초기 프레임: SpringArm의 현재 값으로 시드
+    if (!InOutState.bInitialized)
+    {
+        InOutState.CurrentArmLength = SpringArm->TargetArmLength;
+        InOutState.CurrentRotation  = SpringArm->GetRelativeRotation();
+        InOutState.bInitialized     = true;
+    }
+
+    // Arm Length와 Rotation을 동시에 목표값으로 부드럽게 보간 (벽과 무관한 "이상값")
+    InOutState.CurrentArmLength = FMath::FInterpTo(
+        InOutState.CurrentArmLength, DesiredArmLength, DeltaTime, InterpSpeed);
+    InOutState.CurrentRotation = FMath::RInterpTo(
+        InOutState.CurrentRotation, DesiredRotation, DeltaTime, InterpSpeed);
+
+    // Rotation 먼저 적용 (다음 sweep 방향이 올바르게 나오도록)
+    SpringArm->SetRelativeRotation(InOutState.CurrentRotation);
+
+    // TargetOffset이 반영된 스프링암 원점에서 카메라 뒤 방향으로 Sphere Sweep
+    const FTransform& SATx = SpringArm->GetComponentTransform();
+    const FVector OriginWorld = SpringArm->GetComponentLocation()
+                              + SATx.TransformVectorNoScale(SpringArm->TargetOffset);
+    const FVector BackDir  = -SpringArm->GetForwardVector();
+    const FVector TraceEnd = OriginWorld + BackDir * InOutState.CurrentArmLength;
+
+    float ClampedArm = InOutState.CurrentArmLength;
+
+    FHitResult HitResult;
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(ReferenceActor);
+
+    const bool bHit = World->SweepSingleByChannel(
+        HitResult, OriginWorld, TraceEnd, FQuat::Identity,
+        SpringArm->ProbeChannel,
+        FCollisionShape::MakeSphere(SpringArm->ProbeSize),
+        QueryParams);
+
+    if (bHit)
+    {
+        const float MaxAllowed = FMath::Max(0.f, HitResult.Distance - CollisionMargin);
+        ClampedArm = FMath::Min(ClampedArm, MaxAllowed);
+    }
+
+    // 이상값은 InOutState에 보존 → 벽이 치워지면 자연스럽게 원하는 거리로 복귀
+    SpringArm->TargetArmLength = ClampedArm;
 }

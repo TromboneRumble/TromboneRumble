@@ -19,7 +19,7 @@ void URhythmSubsystem::StartRhythmGame(const FGameplayTag& InGamePlayTag)
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem StartRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
@@ -33,7 +33,7 @@ void URhythmSubsystem::PauseRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem PauseRhythmGame: No Rhythm Actor Found"));
 	}
 }
 
@@ -47,7 +47,7 @@ void URhythmSubsystem::ResumeRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem ResumeRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
@@ -62,7 +62,7 @@ void URhythmSubsystem::StopRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem StopRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
@@ -76,51 +76,54 @@ void URhythmSubsystem::EndRhythmGame()
 	}
 	else
 	{
-		Debug::Print(TEXT("RhythmSubsystem : No Rhythm Actor Found"));
+		Debug::Print(TEXT("RhythmSubsystem EndRhythmGame : No Rhythm Actor Found"));
 	}
 }
 
-void URhythmSubsystem::HandleMusicCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
+void URhythmSubsystem::HandleMusicCallbacksFromRhythmActor(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
 {
-	
-	if (CallbackType == EAkCallbackType::MusicSyncUserCue)
+	OnMusicCallback.Broadcast(CallbackType, CallbackInfo);
+
+	switch (CallbackType)
 	{
-		OnMusicAkCallback(CallbackType, CallbackInfo);
-	}
-	else if (CallbackType == EAkCallbackType::EndOfEvent)
-	{
+	case EAkCallbackType::EndOfEvent:
 		if (!isRhythmGameForceStopped)
 		{
 			RhythmActor->StopRhythmGame();
 			OnRhythmGameStateChanged.Broadcast(ERhythmGameState::Ended);
 			CurrentState = ERhythmGameState::Ended;
 		}
+		break;
+	case EAkCallbackType::Marker:
+		break;
+	case EAkCallbackType::Duration:
+		break;
+	case EAkCallbackType::Starvation:
+		break;
+	case EAkCallbackType::MusicPlayStarted:
+		break;
+	case EAkCallbackType::MusicSyncBeat:
+		break;
+	case EAkCallbackType::MusicSyncBar:
+		break;
+	case EAkCallbackType::MusicSyncEntry:
+		break;
+	case EAkCallbackType::MusicSyncExit:
+		break;
+	case EAkCallbackType::MusicSyncGrid:
+		break;
+	case EAkCallbackType::MusicSyncUserCue:
+		break;
+	case EAkCallbackType::MusicSyncPoint:
+		break;
+	case EAkCallbackType::MIDIEvent:
+		break;
 	}
 }
 
 void URhythmSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-}
-
-void URhythmSubsystem::OnMusicAkCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
-{
-	if (CallbackType != EAkCallbackType::MusicSyncUserCue || !CallbackInfo) return;
-
-	if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
-	{
-		const FString& CueString = MusicInfo->UserCueName;
-		if (!CueString.IsEmpty())
-		{
-			const FName CueName(*CueString);
-			BroadcastUserCue(CueName);
-		}
-	}
-}
-
-void URhythmSubsystem::BroadcastUserCue(const FName& CueName)
-{
-	OnMusicUserCue.Broadcast(CueName);
 }
 
 void URhythmSubsystem::RegisterRhythmActor(ARhythmActor* InActor)

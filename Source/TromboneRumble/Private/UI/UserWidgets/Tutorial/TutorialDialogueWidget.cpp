@@ -1,45 +1,37 @@
 #include "UI/UserWidgets/Tutorial/TutorialDialogueWidget.h"
 #include "CommonTextBlock.h"
 #include "Actors/Tutorial/TutorialManager.h"
-#include "Kismet/GameplayStatics.h"
-
-UTutorialDialogueWidget::UTutorialDialogueWidget()
-{
-}
+#include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 void UTutorialDialogueWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	TutorialManager = Cast<ATutorialManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATutorialManager::StaticClass()));
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnDialogueSequence.AddUObject(this, &ThisClass::SetDialogueText);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find TutorialManager in the world."));
+		TutorialSub->OnDialogueSequenceEvent.AddDynamic(this, &ThisClass::OnTutorialDialogueSequence);
 	}
 }
 
 void UTutorialDialogueWidget::NativeDestruct()
 {
-	Super::NativeDestruct();
-	
-	if (TutorialManager)
+	if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 	{
-		TutorialManager->OnDialogueSequence.RemoveAll(this);
+		TutorialSub->OnDialogueSequenceEvent.RemoveAll(this);
 	}
+	
+	Super::NativeDestruct();
 }
 
-void UTutorialDialogueWidget::SetDialogueText(const FText& DialogueString)
+void UTutorialDialogueWidget::OnTutorialDialogueSequence(const FText& DialogueString)
 {
 	if (CT_Dialogue)
 	{
 		CT_Dialogue->SetText(DialogueString);
 	}
-	else
+
+	if (BounceAnim && Image_Speaker)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CT_Dialogue is not bound in the widget."));
+		PlayAnimation(BounceAnim);
 	}
 }

@@ -35,37 +35,28 @@ protected:
 	UFUNCTION()
 	void StartExplosionExpansion();
 
-	UFUNCTION()
-	void UpdateExplosionRadius(float Value);
-
-	UFUNCTION()
-	void OnExpansionFinished();
-
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USphereComponent> ExplosionSphere;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UTimelineComponent> EmissiveTimeline;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	TObjectPtr<UTimelineComponent> ExpansionTimeline;
-
 	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
 	TObjectPtr<UCurveFloat> EmissiveCurve;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
-	TObjectPtr<UCurveFloat> ExpansionCurve;
-
-	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
 	float PreExplosionTime = 2.f;
 
-private:
-	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
-	float MaxRadius = 600.f;
+	UPROPERTY(EditAnywhere, Category = "Config|Gimmick", meta = (ClampMin = "0.0"))
+	float ExplosionStrength = 1500.f;
+
+	UPROPERTY(EditAnywhere, Category = "Config|Gimmick", meta = (ClampMin = "0.0"))
+	float UpwardImpulseBoost = 800.f;
 	
-	UPROPERTY(EditAnywhere, Category = "Config|Gimmick")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Config|Gimmick")
 	EHitInstigatorType HitInstigatorType = EHitInstigatorType::PressurePlate;
 
+private:
 	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
 };

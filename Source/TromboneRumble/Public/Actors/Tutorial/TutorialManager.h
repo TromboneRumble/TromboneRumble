@@ -2,29 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Data/QuestData.h"
+#include "Items/InstrumentBase.h"
 #include "TutorialManager.generated.h"
 
-class UTromboneGameInstance;
+struct FQuestUIData;
+class AGimmickManager;
+class UAkSwitchValue;
+class ATutorialDummy;
 class ADefaultTromboneCharacter;
-enum class ENoteResult : uint8;
-class URhythmSubsystem;
 enum class EWeaponType : uint8;
-enum class EQuestConditionParamType : uint8;
-enum class EQuestConditionType : uint8;
-struct FActiveQuestData;
-
-struct FQuestUIData
-{
-	FString QuestID;
-	FText Description;
-	UTexture2D* Icon;
-};
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialDialogueSequence, const FText& /*DialogueString*/);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTutorialQuestSequence, const TArray<FQuestUIData>& /*QuestUIData*/);
-DECLARE_MULTICAST_DELEGATE(FOnTutorialTransitionSequence);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, const FString& /*QuestID*/);
 
 UCLASS()
 class TROMBONERUMBLE_API ATutorialManager : public AActor
@@ -32,73 +18,29 @@ class TROMBONERUMBLE_API ATutorialManager : public AActor
 	GENERATED_BODY()
 	
 public:
-	ATutorialManager();
 	
-	FOnTutorialDialogueSequence OnDialogueSequence;
-	FOnTutorialQuestSequence OnQuestSequence;
-	FOnTutorialTransitionSequence OnTransitionSequence;
-	FOnQuestCompleted OnQuestCompleted;
-	
-	virtual void BeginPlay() override;
-	
-	void ReportAction(EQuestConditionType Condition, EQuestConditionParamType ConditionParam_0, FString ConditionParam_1 = FString());
-	bool IsClearAllActiveQuests() const;
-	
-	void InitializeTutorial();
-	void ProcessTutorial();
-	void ProcessDialogueSequence();
-	void ProcessQuestSequence();
-	void ProcessTransitionSequence();
-	void ProcessSequenceSideEffect();
-	
+	/** Spawn All instruments */
 	void SpawnInstruments();
-	void SpawnDummyCharacter();
 	
-	void ShowTutorialCompletePopup();
+	void ShowTutorialCompletePopup() const;
 	
-	ADefaultTromboneCharacter* GetPlayerCharacter() const;
+	void ToggleTutorialBGM(bool bIsOn);
 	
-	UFUNCTION()
-	void HandleOnNoteDetected(ENoteResult NoteResult);
-	UFUNCTION()
-	void HandleOnSpotlightBonusEarned();
+	void UnequipMyCharacter();
+	
+	void DestroySpawnedInstruments();
+	
+	void SpawnDummyCharacterWithInstrument(EWeaponType WeaponType);
+	
+	void ActivateGimmicks();
+	
+	void DeactivateGimmicks();
 	
 protected:
 	
-	/** Currently active quests. Key is QuestID (1001 ...) */
-	UPROPERTY(VisibleAnywhere)
-	TMap<FString, FActiveQuestData> CurrentActiveQuest;
-	
-	/** Tutorial sequence Row names. Key is TutorialSequence_001 ... */
+	/** Spawned instrument actors during the tutorial, used for destroy */
 	UPROPERTY()
-	TArray<FName> TutorialSequenceNames;
-	
-	/** Tutorial sequence index */
-	int32 CurrentIndex = -1;
-	
-	/** Timer handle for ProcessTutorial() delay */
-	FTimerHandle TimerHandle_Tutorial;
-	
-	/** Quest sequence is currently in progress. Prevents processing sequence while quest */
-	bool bIsQuestSequenceProcessing = false;
-	
-	/** Interval after quest completion before processing the next tutorial sequence (seconds) */
-	float IntervalAfterQuestCompletion = 1.5f;
-	
-	UPROPERTY()
-	TObjectPtr<URhythmSubsystem> RhythmSubsystem;
-	UPROPERTY()
-	TObjectPtr<UTromboneGameInstance> TromboneGameInstance;
-	
-	UPROPERTY(EditAnywhere, Category = "Tutorial")
-	TObjectPtr<UDataTable> TutorialDataTable;
-	
-	UPROPERTY(EditAnywhere, Category = "Tutorial")
-	TObjectPtr<UDataTable> QuestDataTable;
-	
-	// TODO : CheatManager랑 함께 공유? 관리?
-	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
-	TMap<EWeaponType, TSubclassOf<AActor>> WeaponClasses;
+	TArray<TObjectPtr<AActor>> SpawnedInstruments;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
 	TMap<EWeaponType, FVector> WeaponSpawnLocations;
@@ -108,4 +50,46 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
 	FVector DummyCharacterSpawnLocation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
+	TObjectPtr<UAkAudioEvent> TutorialBGMEvent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tutorial")
+	TObjectPtr<UAkSwitchValue> TutorialBGMOffSwitch = nullptr;
+	
+private:
+	
+	UFUNCTION()
+	void OnTutorialDialogueSequence(const FText& DialogueString);
+	
+	UFUNCTION()
+	void OnTutorialQuestSequence(const TArray<FQuestUIData>& QuestUIDataArray);
+	
+	UFUNCTION()
+	void OnTutorialTransitionSequence();
+	
+	/** Spawn specific instrument */
+	AInstrumentBase* SpawnInstrument(EWeaponType WeaponType);
+	
+	/** Toggle player input on/off */
+	void TogglePlayerInput(bool bIsEnabled);
+	
+private:
+	
+	/** @return My character */
+	ADefaultTromboneCharacter* GetCachedPlayerCharacter();
+	
+	/** @return GimmickManager */
+	AGimmickManager* GetCachedGimmickManager();
+	
+	TWeakObjectPtr<ADefaultTromboneCharacter> CachedPlayerCharacter = nullptr;
+	
+	TWeakObjectPtr<AGimmickManager> CachedGimmickManager = nullptr;
+	
+protected:
+	
+	// ~ Begin Actor Interface
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	// ~ End Actor Interface
 };

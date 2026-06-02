@@ -5,7 +5,7 @@
 #include "AkGameplayStatics.h"
 #include "Framework/InGameState.h"
 #include "Framework/DefaultPlayerState.h"
-#include "Actors/ResultScene/PodiumActor.h" // APodiumActor 헤더 경로에 맞게 수정해주세요
+#include "Actors/ResultScene/PodiumActor.h"
 #include "Camera/CameraActor.h"
 #include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
@@ -32,33 +32,25 @@ void AResultCutsceneDirector::SkipResultSequence()
 
 void AResultCutsceneDirector::PlayZoomSequence(bool bForward)
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	AInGameState* GameState = Cast<AInGameState>(GetWorld()->GetGameState());
-	if (!PC || !GameState) return;
+	
+	if (CachedLocalPlayerRankIndex == -1) return;
 
-
-	if (APlayerState* LocalPS = PC->PlayerState)
+	if (ZoomSequences.IsValidIndex(CachedLocalPlayerRankIndex) && ZoomSequences[CachedLocalPlayerRankIndex])
 	{
-		int32 Rank = GameState->GetPlayerRank(LocalPS);
-		int32 RankIndex = Rank - 1;
-
-		if (ZoomSequences.IsValidIndex(RankIndex) && ZoomSequences[RankIndex])
+		if (!ZoomSequencePlayer)
 		{
-			if (!ZoomSequencePlayer)
-			{
-				ALevelSequenceActor* OutActor;
-				ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[RankIndex], FMovieSceneSequencePlaybackSettings(), OutActor);
-			}
+			ALevelSequenceActor* OutActor;
+			ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[CachedLocalPlayerRankIndex], FMovieSceneSequencePlaybackSettings(), OutActor);
+		}
 
-			if (bForward)
-			{
-				ZoomSequencePlayer->Play();
-			}
-			else
-			{
-				ZoomSequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(ZoomSequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump));
-				ZoomSequencePlayer->PlayReverse();
-			}
+		if (bForward)
+		{
+			ZoomSequencePlayer->Play();
+		}
+		else
+		{
+			ZoomSequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(ZoomSequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump));
+			ZoomSequencePlayer->PlayReverse();
 		}
 	}
 }
@@ -100,6 +92,18 @@ void AResultCutsceneDirector::BeginPlay()
 	}
 }
 
+void AResultCutsceneDirector::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UWorld* World = GetWorld())
+	{
+		if (AInGameState* GameState = Cast<AInGameState>(World->GetGameState()))
+		{
+			GameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
+		}
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 void AResultCutsceneDirector::BindToInGameState(AGameStateBase* NewGameState)
 {
 	if (AInGameState* GameState = Cast<AInGameState>(NewGameState))
@@ -135,6 +139,10 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 
 	if (!GameState || !PC) return;
 
+	if (APlayerState* LocalPS = PC->PlayerState)
+	{
+		CachedLocalPlayerRankIndex = GameState->GetPlayerRank(LocalPS) - 1;
+	}
 	if (APawn* CurrentPawn = PC->GetPawn())
 	{
 		PC->DisableInput(PC);
@@ -158,10 +166,11 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 		// 실제 플레이어가 존재하는 순위인 경우
 		if (i < SortedPlayers.Num())
 		{
+			PodiumActor->SetPlayerName(SortedPlayers[i]->GetPlayerName());
+			HideActorRecursive(PodiumActor, false);
 			if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(SortedPlayers[i]))
 			{
 				PodiumActor->ApplySkinColor(DefaultPS->GetSkinColor());
-				HideActorRecursive(PodiumActor, false);
 			}
 		}
 		else
@@ -224,6 +233,13 @@ void AResultCutsceneDirector::OnSequenceFinished()
 	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
 		PC->bShowMouseCursor = true;
+	}
+	for (APodiumActor* Podium : PrePlacedPodiums)
+	{
+		if (Podium && !Podium->IsHidden())
+		{
+			Podium->SetNameWidgetVisibility(true);
+		}
 	}
 }
 
