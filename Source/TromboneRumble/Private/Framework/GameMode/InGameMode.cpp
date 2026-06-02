@@ -1,12 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Framework/InGameMode.h"
+#include "Framework/GameMode/InGameMode.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
 #include "EasyOnlineSession.h"
 #include "EasySessionTypes.h"
 #include "EasySessionUtils.h"
+#include "Characters/DefaultPlayerController.h"
+#include "Framework/TromboneGameInstance.h"
+#include "Utilities/TromboneStatics.h"
 
 void AInGameMode::BeginPlay()
 {
@@ -24,6 +27,16 @@ void AInGameMode::BeginPlay()
 	{
 		SessionPlayerNumber = 1;
 	}
+}
+
+void AInGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearAllTimersForObject(this);
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void AInGameMode::Logout(AController* ExitedPlayer)
@@ -45,14 +58,6 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 
 	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
 	{
-		GameEnd();
-	}
-}
-
-void AInGameMode::GameEnd() const
-{
-	if (AInGameState* GS = GetGameState<AInGameState>())
-	{
 		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
 	}
 }
@@ -62,7 +67,45 @@ void AInGameMode::OnRhythmGameEndedReport()
 	RhythmGameEndedPlayerCount++;
 	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
 	{
-		GameEnd();
+		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		{
+			GI->SaveResultSceneData();
+		}
+		
+		if (AInGameState* GS = GetGameState<AInGameState>())
+		{
+			GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
+			
+			for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+			{
+				if (ADefaultPlayerController* PC = Cast<ADefaultPlayerController>(It->Get()))
+				{
+					if (!PC->IsLocalController())
+					{
+						PC->Client_RequestTravelToResultLevelAndLeaveSession(); 
+					}
+				}
+			}
+		}
+	}
+}
+
+void AInGameMode::OnClientTravelToResultLevelAndLeaveSession()
+{
+	ClientsTravelToResultSceneCount++;
+    
+	if (ClientsTravelToResultSceneCount >= SessionPlayerNumber - 1)
+	{
+		GetWorldTimerManager().SetTimer(TimerHandle_TravelToResultLevel, FTimerDelegate::CreateLambda([this]()
+		{
+			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+			{
+				OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateLambda([this](FName Name, bool bSuccess)
+				{
+					UTromboneStatics::OpenLevel(this, ELevelType::ResultScene);
+				}));
+			}
+		}), 0.5f, false);
 	}
 }
 
@@ -86,9 +129,9 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 	//현재 접속한 플레이어가 로딩까지 완료되었다면
 	if (InGameReadyPlayers.Num() >= CurrentPlayerCount)
 	{
-		if (AInGameState* InGameState = GetGameState<AInGameState>())
+		if (AInGameState* GS = GetGameState<AInGameState>())
 		{
-			InGameState->Multicast_BroadCastInGameStateChanged(EInGameState::Play);
+			GS->Multicast_BroadCastInGameStateChanged(EInGameState::Play);
 		}
 	}
 }

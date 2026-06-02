@@ -7,6 +7,8 @@
 #include "InGameResultWidget.generated.h"
 
 
+struct FPlayerResultSceneData;
+struct FRumbleScoreData;
 class UImage;
 class UCanvasPanel;
 class UOverlay;
@@ -31,8 +33,7 @@ public:
 		return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways,false);
 	}
 
-	UFUNCTION(BlueprintCallable, Category = "UI|Result")
-	void SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank);
+	void SetResultData(const FPlayerResultSceneData& InResultData, int32 PlayerRank);
 
 	void HideSkipButtonAndShowButtons();
 

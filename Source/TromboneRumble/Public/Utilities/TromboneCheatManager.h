@@ -13,7 +13,8 @@ class TROMBONERUMBLE_API UTromboneCheatManager : public UCheatManager
 {
 	GENERATED_BODY()
 	
-public:
+/** Gameplay Console Commands */
+public: 
 	
 	UFUNCTION(Exec)
 	void Trombone_Help();
@@ -39,4 +40,8 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey);
 
+public:
+	
+	UFUNCTION(Exec)
+	void Trombone_Dump_LevelStateSubsystem();
 };

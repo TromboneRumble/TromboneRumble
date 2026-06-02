@@ -55,8 +55,6 @@ public:
 
 	
 protected:
-	virtual void BeginPlay() override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void RecalculateLeader();
 
@@ -74,20 +72,31 @@ protected:
 	int32 RhythmGameEndedPlayerCount = 0;
 
 private:
+	
 	// 현재 1등을 반환. 없으면 nullptr
-	UFUNCTION(BlueprintCallable)
 	APlayerState* GetTopScoringPlayer() const;
+	
 public:
-	UFUNCTION(BlueprintCallable)
+	
+	// ~ Begin AGameStateBase Interface
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	// ~ End AGameStateBase Interface
+
+protected:
+	
+	// ~ Begin AActor Interface
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	// ~ End AActor Interface
+	
+public:
+	
 	void GetPlayersSortedByScore(TArray<APlayerState*>& OutPlayers) const;
 
-	UFUNCTION(BlueprintCallable)
 	int32 GetPlayerRank(APlayerState* Player) const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE APlayerState* GetCurrentLeader() const { return CurrentLeader; }
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE EInGameState GetCurrentGameState() const { return CurrentGameState; }
 	
 };

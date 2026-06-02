@@ -84,7 +84,7 @@ void UCustomizeMenuWidget::Handle_Apply()
 	if (!CustomizationComp) return;
 	if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
 		SMS->SaveCustomization(CustomizationComp->GetCurrentSaveData());
-	UTromboneStatics::OpenLevel(this, ELevelState::MainMenu);
+	UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
 }
 
 void UCustomizeMenuWidget::Handle_Back()
@@ -92,7 +92,7 @@ void UCustomizeMenuWidget::Handle_Back()
 	if (CustomizationComp && CustomizationComp->IsDirtyFrom(OriginalSaveData))
 		ShowBackPopup();
 	else
-		UTromboneStatics::OpenLevel(this, ELevelState::MainMenu);
+		UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
 }
 
 void UCustomizeMenuWidget::ShowBackPopup()
@@ -111,9 +111,9 @@ void UCustomizeMenuWidget::ShowBackPopup()
 		if (CustomizationComp)
 			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
 				SMS->SaveCustomization(CustomizationComp->GetCurrentSaveData());
-		UTromboneStatics::OpenLevel(this, ELevelState::MainMenu);
+		UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
 	};
-	Params.RightCallback = [this]() { UTromboneStatics::OpenLevel(this, ELevelState::MainMenu); };
+	Params.RightCallback = [this]() { UTromboneStatics::OpenLevel(this, ELevelType::MainMenu); };
 
 	if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
 		Popup->Init(Params);

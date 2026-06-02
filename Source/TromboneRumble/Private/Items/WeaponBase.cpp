@@ -235,7 +235,7 @@ bool AWeaponBase::IsCanSweep() const
 	{
 		return false;
 	}
-	if (GameStateSubsystem->GetLevelState() != ELevelState::InGame && GameStateSubsystem->GetLevelState() != ELevelState::Tutorial)
+	if (GameStateSubsystem->GetLevelState() != ELevelType::InGame && GameStateSubsystem->GetLevelState() != ELevelType::Tutorial)
 	{
 		return false;
 	}

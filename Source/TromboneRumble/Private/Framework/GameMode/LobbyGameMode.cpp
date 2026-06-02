@@ -1,12 +1,8 @@
-#include "Framework/LobbyGameMode.h"
+#include "Framework/GameMode/LobbyGameMode.h"
 #include "AkGameplayStatics.h"
-#include "EasyOnlineSession.h"
-#include "EasySessionTypes.h"
-#include "EasySessionUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/LobbyGameState.h"
-#include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/GameDataSubsystem.h"
@@ -133,13 +129,13 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 					if (RemainingPlayers < 2)
 					{
 						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
-						const FString MainMenuMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+						const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
 						RequestServerTravel(MainMenuMapName);
 					}
 					else
 					{
 						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
-						const FString LobbyMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+						const FString LobbyMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
 						RequestServerTravel(LobbyMapName);
 					}
 				}
@@ -283,7 +279,7 @@ void ALobbyGameMode::OnCountdownToTravel()
 		{
 			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 			{
-				const FString InGameMapName = GameStateSubsystem->GetMapNameForTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
+				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
 				RequestServerTravel(InGameMapName);
 			}
 		}

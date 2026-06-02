@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
+#include "EasyOnlineSession.h"
 #include "Components/TextBlock.h"
-#include "Framework/DefaultPlayerState.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
 #include "EasySessionSubsystem.h"
@@ -11,27 +10,23 @@
 #include "Components/Button.h"
 #include "Components/Overlay.h"
 #include "Components/Image.h"
+#include "Framework/TromboneGameInstance.h"
+#include "Utilities/TromboneStatics.h"
 
-void UInGameResultWidget::SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank)
+void UInGameResultWidget::SetResultData(const FPlayerResultSceneData& InResultData, int32 PlayerRank)
 {
-	if (!PlayerState) return;
-
-	FRumbleScoreData ScoreData = PlayerState->GetScoreData();
-
 	if (RankImage && RankTextures.IsValidIndex(PlayerRank - 1))
 	{
-		UTexture2D* TargetTexture = RankTextures[PlayerRank - 1].LoadSynchronous();
-		if (TargetTexture)
+		if (UTexture2D* TargetTexture = RankTextures[PlayerRank - 1].LoadSynchronous())
 		{
 			RankImage->SetBrushFromTexture(TargetTexture);
 		}
 	}
 
+	const FRumbleScoreData& ScoreData = InResultData.SpecificScoreData;
+	
 	// 최종 합산 점수
-	if (TotalScoreText)
-	{
-		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerState->GetScore()))));
-	}
+	if (TotalScoreText) TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("%d"), FMath::RoundToInt(InResultData.Score))));
 
 	// 총 연주 점수 파트
 	if (RhythmScoreText) RhythmScoreText->SetText(FText::AsNumber(FMath::RoundToInt(ScoreData.TotalScore)));
@@ -198,20 +193,12 @@ void UInGameResultWidget::HandleExitButtonClicked()
 	{
 		Director->StopBGM();
 	}
-	if (const UGameInstance* GI = GetGameInstance())
+	
+	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 	{
-		if (UEasySessionSubsystem* SessionSubsystem = GI->GetSubsystem<UEasySessionSubsystem>())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[InGameResultWidget] Requested session destruction."));
-			SessionSubsystem->DestroySession();
-		}
-		else if (APlayerController* PC = GetOwningPlayer())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[InGameResultWidget] SessionSubsystem not found. Falling back to direct travel."));
-			const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-			PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
-		}
+		OnlineSession->LeaveGameSession();
 	}
+	// UTromboneStatics::OpenLevel(this, ELevelState::MainMenu);
 }
 
 void UInGameResultWidget::OnDestroySessionSuccess()

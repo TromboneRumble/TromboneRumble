@@ -71,13 +71,14 @@ enum class EEquipmentSlotType : uint8
 };
 
 UENUM()
-enum class ELevelState : uint8
+enum class ELevelType : uint8
 {
 	MainMenu,
 	Lobby,
 	InGame,
 	MatchMenu,
 	Tutorial,
+	ResultScene,
 	Customize,
 	Invalid = 255 UMETA(Hidden)
 };

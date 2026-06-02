@@ -6,6 +6,7 @@
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
@@ -146,6 +147,7 @@ void UTromboneCheatManager::Trombone_ResetSettingData()
 	}
 }
 
+
 void UTromboneCheatManager::Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey)
 {
 	APlayerController* PC = GetOuterAPlayerController();
@@ -175,6 +177,19 @@ void UTromboneCheatManager::Trombone_SetCustomization(const FString& AntennaKey,
 	if (ADefaultPlayerState* DPS = PC->GetPlayerState<ADefaultPlayerState>())
 		DPS->Server_SetCustomization(Data);
 
-	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
-		TEXT("Customization set — Antenna:%s Face:%s Costume:%s"), *AntennaKey, *FaceKey, *CostumeKey));
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Customization set — Antenna:%s Face:%s Costume:%s"), *AntennaKey, *FaceKey, *CostumeKey));
+}
+
+void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()
+{
+	if (const UWorld* World = GetWorld())
+	{
+		if (const UGameInstance* GI = World->GetGameInstance())
+		{
+			if (const UGameStateSubsystem* Subsystem = GI->GetSubsystem<UGameStateSubsystem>())
+			{
+				Subsystem->DumpSettings();
+			}
+		}
+	}
 }

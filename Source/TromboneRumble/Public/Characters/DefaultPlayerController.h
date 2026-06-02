@@ -58,7 +58,7 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	UFUNCTION()
-	void HandleLevelStateChanged(ELevelState NewState);
+	void HandleLevelStateChanged(ELevelType NewState);
 
 	UFUNCTION()
 	void HandlePlayerStateAdded(APlayerState* InPlayerState);
@@ -77,6 +77,16 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void Server_RhythmGameFinished();
+	
+public:
+	
+	UFUNCTION(Server, Reliable)
+	void Server_ReportClientTravelToResultLevelAndLeaveSession();
+	
+	UFUNCTION(Client, Reliable)
+	void Client_RequestTravelToResultLevelAndLeaveSession();
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UOSI_RhythmRankWidget> RhythmRankWidgetClass;

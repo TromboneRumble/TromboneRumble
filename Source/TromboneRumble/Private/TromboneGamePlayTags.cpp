@@ -4,16 +4,17 @@ namespace TromboneGamePlayTags
 {
 	//태그를 정의
 	//TromboneMaps
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_ProtoTypeInGameMap, "Trombone.Maps.ProtoTypeInGameMap");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MainMenu_Main, "Trombone.Maps.MainMenu.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MatchMenu_Main, "Trombone.Maps.MatchMenu.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_Main, "Trombone.Maps.Lobby.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_Main, "Trombone.Maps.InGame.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Tutorial_Main, "Trombone.Maps.Tutorial.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Customize_Main, "Trombone.Maps.Customize.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MK, "Trombone.Maps.InGame.MK");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_HW, "Trombone.Maps.InGame.HW");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MJ, "Trombone.Maps.InGame.MJ");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_ProtoTypeInGameMap,	"Trombone.Maps.ProtoTypeInGameMap");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MainMenu_Main,			"Trombone.Maps.MainMenu.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MatchMenu_Main,		"Trombone.Maps.MatchMenu.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_Main,			"Trombone.Maps.Lobby.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_Main,			"Trombone.Maps.InGame.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Tutorial_Main,			"Trombone.Maps.Tutorial.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_ResultScene_Main,		"Trombone.Maps.ResultScene.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Customize_Main, 		"Trombone.Maps.Customize.Main");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MK,				"Trombone.Maps.InGame.MK");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_HW,				"Trombone.Maps.InGame.HW");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MJ,				"Trombone.Maps.InGame.MJ");
 
 	// RhythmGame Broadcast Messages
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_OnLayoutChanged, "Trombone.Rhythm.OnLayoutChanged");
