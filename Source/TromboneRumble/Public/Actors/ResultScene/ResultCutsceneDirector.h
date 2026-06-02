@@ -27,18 +27,19 @@ public:
 	void SkipResultSequence();
 	void PlayZoomSequence(bool bForward);
 	void StopBGM();
+	
 protected:
+	
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	void BindToInGameState(AGameStateBase* NewGameState);
-
-	UFUNCTION()
-	void HandleInGameStateChanged(EInGameState NewState);
-
+	
 	UFUNCTION()
 	void OnSequenceFinished();
-
+	
+private:
+	
+	void PlayResultCutscene();
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
 	TSubclassOf<UUserWidget> ResultWidgetClass;
 

@@ -4,6 +4,7 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
@@ -138,6 +139,20 @@ void UTromboneCheatManager::Trombone_ResetSettingData()
 			{
 				Subsystem->ResetToDefaultSettings();
 				PRINT_WITH_CURRENT_CONTEXT(TEXT("Tutorial data reset"));
+			}
+		}
+	}
+}
+
+void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()
+{
+	if (const UWorld* World = GetWorld())
+	{
+		if (const UGameInstance* GI = World->GetGameInstance())
+		{
+			if (const UGameStateSubsystem* Subsystem = GI->GetSubsystem<UGameStateSubsystem>())
+			{
+				Subsystem->DumpSettings();
 			}
 		}
 	}

@@ -23,13 +23,13 @@ ADefaultPlayerState::ADefaultPlayerState()
 void ADefaultPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	if (URhythmSubsystem* RhythmSubsystem = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
 	{
 		RhythmSubsystem->OnRhythmGameStateChanged.AddDynamic(this, &ThisClass::HandleRhythmGameStateChanged);
 		RhythmSubsystem->OnNoteDetected.AddDynamic(this, &ThisClass::HandleNoteDetected);
 		RhythmSubsystem->OnInstrumentPicked.AddDynamic(this, &ThisClass::HandleOnInstrumentPicked);
 	}
-	
 
 	// 멀티플레이 환경에서 GameState가 늦게 바인딩 될 수 있음
 	GetWorldTimerManager().SetTimer(TimerHandle_BindGameState, this, &ThisClass::TryBindGameState, 0.5f, true);
@@ -42,9 +42,9 @@ void ADefaultPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (GetWorld())
 	{
-		GetWorldTimerManager().ClearTimer(TimerHandle_BindGameState);
-		TimerHandle_BindGameState.Invalidate();
+		GetWorldTimerManager().ClearAllTimersForObject(this);
 	}
+	
 	Super::EndPlay(EndPlayReason);
 }
 

@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameMode/TromboneGameModeBase.h"
+#include "TromboneGameModeBase.h"
 #include "MatchGameMode.generated.h"
 
 UCLASS()

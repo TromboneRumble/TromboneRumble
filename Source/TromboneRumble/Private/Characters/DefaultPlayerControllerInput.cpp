@@ -2,10 +2,7 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Actors/Tutorial/TutorialManager.h"
 #include "Data/QuestData.h"
-#include "Framework/LobbyGameMode.h"
-#include "Kismet/GameplayStatics.h"
 #include "Subsystems/VoiceChatSubsystem.h"
 #include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 #include "Utilities/TromboneStatics.h"
@@ -55,7 +52,7 @@ void ADefaultPlayerController::SetupInputComponent()
 	}
 }
 
-void ADefaultPlayerController::HandleLevelStateChanged(ELevelState NewState)
+void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 {
 	if (const ULocalPlayer* Lp = GetLocalPlayer())
 	{
@@ -65,13 +62,13 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelState NewState)
 
 			switch (NewState)
 			{
-			case ELevelState::InGame:
+			case ELevelType::InGame:
 				; // intentional fall through
 				
-			case ELevelState::Tutorial:
+			case ELevelType::Tutorial:
 				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
 				break;
-			case ELevelState::Lobby:
+			case ELevelType::Lobby:
 				if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
 				break;
 				

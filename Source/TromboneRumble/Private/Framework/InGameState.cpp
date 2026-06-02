@@ -1,17 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Framework/InGameState.h"
 #include "GameFramework/PlayerState.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Net/UnrealNetwork.h"
-#include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 void AInGameState::AddPlayerState(APlayerState* PlayerState)
 {
 	Super::AddPlayerState(PlayerState);
+    
     OnPlayerStateAdded.Broadcast(PlayerState);
+    
     if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(PlayerState))
     {
         DefaultPS->OnLocalScoreChanged.AddDynamic(this, &ThisClass::HandleLocalScoreChanged);

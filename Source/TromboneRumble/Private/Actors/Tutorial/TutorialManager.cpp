@@ -227,12 +227,12 @@ void ATutorialManager::ShowTutorialCompletePopup() const
 		
 		Params.LeftCallback = [this]()
 		{
-			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
 		};
 		
 		Params.RightCallback = [this]()
 		{
-			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::MainMenu);
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::MainMenu);
 		};
 		
 		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))

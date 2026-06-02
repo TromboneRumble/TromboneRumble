@@ -9,7 +9,7 @@
 class UNoticePopup;
 class UTwoButtonPopup;
 class UBaseUIRoot;
-enum class ELevelState : uint8;
+enum class ELevelType : uint8;
 
 /**
  *  Utility class for static functions in Trombone Rumble Project.
@@ -26,7 +26,8 @@ public:
 	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
 	
 	/** Opens a level */
-	static void OpenLevel(const UObject* WorldContextObject, ELevelState Level, bool bAbsolute = true);
+	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"), Category = "TromboneStatics|Game")
+	static void OpenLevel(const UObject* WorldContextObject, ELevelType Level, bool bAbsolute = true);
 	
 	/** @return The root UI layout widget
 	 *  @see UBaseUIRoot

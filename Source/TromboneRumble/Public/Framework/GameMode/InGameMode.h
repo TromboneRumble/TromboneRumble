@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameMode/TromboneGameModeBase.h"
+#include "TromboneGameModeBase.h"
 #include "InGameMode.generated.h"
 
 UCLASS()
@@ -13,17 +13,25 @@ class TROMBONERUMBLE_API AInGameMode : public ATromboneGameModeBase
 
 public:
 	
-	virtual void BeginPlay() override;
-	
-	void GameEnd() const;
 	void OnRhythmGameEndedReport();
+	
+	void OnClientTravelToResultLevelAndLeaveSession();
 
 	UFUNCTION()
 	void HandlePlayerLoadingFinished(APlayerController* PC);
+	
+protected:
+	
+	virtual void BeginPlay() override;
 
 private:
+	
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> InGameReadyPlayers;
+	
 	int32 SessionPlayerNumber = 1;
+	
 	int32 RhythmGameEndedPlayerCount = 0;
+	
+	int32 ClientsTravelToResultSceneCount = 0;
 };

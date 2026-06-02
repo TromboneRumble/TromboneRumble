@@ -259,7 +259,7 @@ void UMainMenuWidget::HandleTutorialButtonClicked()
 		Subsystem->MarkTutorialAsCompleted();
 	}
 	
-	UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
+	UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
 }
 
 void UMainMenuWidget::HandleMatchmakingStarted()
@@ -292,7 +292,7 @@ void UMainMenuWidget::ShowTutorialPopup()
 		
 		Params.LeftCallback = [this]
 		{ 
-			UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Tutorial);
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
 		};
 		
 		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))

@@ -74,20 +74,18 @@ protected:
 	int32 RhythmGameEndedPlayerCount = 0;
 
 private:
+	
 	// 현재 1등을 반환. 없으면 nullptr
-	UFUNCTION(BlueprintCallable)
 	APlayerState* GetTopScoringPlayer() const;
+	
 public:
-	UFUNCTION(BlueprintCallable)
+	
 	void GetPlayersSortedByScore(TArray<APlayerState*>& OutPlayers) const;
 
-	UFUNCTION(BlueprintCallable)
 	int32 GetPlayerRank(APlayerState* Player) const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE APlayerState* GetCurrentLeader() const { return CurrentLeader; }
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE EInGameState GetCurrentGameState() const { return CurrentGameState; }
 	
 };
