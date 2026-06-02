@@ -36,8 +36,10 @@ public:
 	
 	UFUNCTION(Exec)
 	void Trombone_ResetSettingData();
-	
-	
+
+	UFUNCTION(Exec)
+	void Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey);
+
 public:
 	
 	UFUNCTION(Exec)

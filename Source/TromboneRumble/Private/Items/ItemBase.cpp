@@ -12,6 +12,8 @@ AItemBase::AItemBase()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	AActor::SetReplicateMovement(true);
+	NetUpdateFrequency = 60.0f;
+	MinNetUpdateFrequency = 15.0f;
 	
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
 	SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -30,6 +32,16 @@ AItemBase::AItemBase()
 	{
 		AkSoundComponent->SetupAttachment(RootComponent);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
+	}
+}
+
+void AItemBase::BeginPlay()
+{
+	Super::BeginPlay();
+	if (!HasAuthority())
+	{
+		SkeletalMeshComponent->SetSimulatePhysics(false);
+		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(false);
 	}
 }
 

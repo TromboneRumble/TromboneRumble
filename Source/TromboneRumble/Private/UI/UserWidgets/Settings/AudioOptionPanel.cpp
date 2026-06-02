@@ -231,7 +231,7 @@ void UAudioOptionPanel::Register()
 			if (UVoiceChatSubsystem* VCS = GetVCS())
 			{
 				//마이크 기본 옵션이 너무 작아서 임의로 늘림
-				VCS->SetMicTestVolume(Value * 1000.0f);
+				VCS->SetMicTestVolume(Value * 2000.0f);
 			}
 		});
 	}

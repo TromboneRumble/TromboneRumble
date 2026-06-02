@@ -144,6 +144,15 @@ void AMatchPlayerController::Handle_PushToTalkEnd()
 	}
 }
 
+void AMatchPlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+#if !UE_BUILD_SHIPPING
+	if (!CheatManager)
+		AddCheats(true);
+#endif
+}
+
 void AMatchPlayerController::PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel)
 {
 	Super::PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel);

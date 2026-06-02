@@ -42,7 +42,6 @@ void ADefaultPlayerController::SetupInputComponent()
 			EIC->BindAction(PushToTalkAction, ETriggerEvent::Started,   this, &ThisClass::Handle_PushToTalkStart);
 			EIC->BindAction(PushToTalkAction, ETriggerEvent::Completed, this, &ThisClass::Handle_PushToTalkEnd);
 		}
-
 		if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
 		{
 			if (MoveAction) EIC->BindAction(MoveAction, ETriggerEvent::Started, TutorialSub, &UTutorialWorldSubsystem::ReportAction, EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, FString("Move"));
@@ -71,7 +70,6 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 			case ELevelType::Lobby:
 				if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
 				break;
-				
 			default:
 				UE_LOG(LogTemp, Warning, TEXT("[ADefaultPlayerController::HandleLevelStateChanged] Unknown Level! InGame Input applied by default."));
 				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);

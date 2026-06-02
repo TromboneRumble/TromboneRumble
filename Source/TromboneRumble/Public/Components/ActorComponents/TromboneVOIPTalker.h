@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Voice")
 	void RegisterTalker(APlayerState* InPlayerState);
 
+	/** Returns true if RegisterRemoteTalker succeeded for the associated PlayerState. */
+	bool IsRemoteTalkerRegistered() const { return RegisteredRemoteTalkerId.IsValid(); }
+
 	/** Apply a per-listener volume multiplier (0..1) to voice playback.
 	 *  Stored as a pending value and also applied immediately to the cached UAudioComponent
 	 *  if the remote player is currently talking. Re-applied on each subsequent OnTalkingBegin. */

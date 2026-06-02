@@ -2,7 +2,9 @@
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "DeveloperSettings/TromboneConfig.h"
+#include "Framework/DefaultPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
@@ -20,6 +22,7 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_Ragdoll - 래그돌을 실행합니다.\n");
 	DebugMsg += TEXT("Trombone_Stun - 스턴을 실행합니다.\n");
 	DebugMsg += TEXT("Trombone_ResetSettingData - 설정 데이터 초기화\n");
+	DebugMsg += TEXT("Trombone_SetCustomization [AntennaKey] [FaceKey] [CostumeKey] - 커스터마이징 즉시 변경 및 복제 (None=기본값, 예: Trombone_SetCustomization None Face_02 None)\n");
 	DebugMsg += TEXT("--------------------------------\n");
 	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
 	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");

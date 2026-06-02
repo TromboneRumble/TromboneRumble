@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/CustomizationSaveData.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SaveManagerSubsystem.generated.h"
@@ -41,16 +42,27 @@ public:
 	
 	/** if player is first time player, show tutorial popup */
 	bool ShouldShowTutorialPopup() const;
-	
+
 	/** Mark tutorial as completed, will set bIsFirstTimePlayer to false and save */
 	void MarkTutorialAsCompleted();
-	
+
+public:
+
+	/** Save customization selection to encrypted local file */
+	void SaveCustomization(const FCustomizationSaveData& Data);
+
+	/** Return cached customization (loaded from disk on Initialize) */
+	FCustomizationSaveData LoadCustomization() const;
+
 private:
 	void InternalSave();
-	
+	FCustomizationSaveData LoadCustomizationFromDisk() const;
+
 	UPROPERTY()
 	TObjectPtr<UTromboneSaveGame> CachedSettings;
-	
+
+	FCustomizationSaveData CachedCustomization;
+
 	const FString SlotName = TEXT("TromboneSettings");
 	const int32 UserIndex = 0;
 	

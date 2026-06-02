@@ -108,4 +108,7 @@ private:
 
 	// 잡음 제거 활성 시 voice.MicNoiseGateThreshold에 적용할 값
 	static constexpr float NoiseSuppressionThreshold = 0.15f;
+
+	void OnEngineNetworkFailure(UWorld* World, UNetDriver* NetDriver,
+		ENetworkFailure::Type FailureType, const FString& ErrorString);
 };

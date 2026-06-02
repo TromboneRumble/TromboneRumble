@@ -61,6 +61,7 @@ public:
 	// ~ Begin AGameModeBase Interface
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* ExitedPlayer) override;
 	// ~ End AGameModeBase Interface
 };

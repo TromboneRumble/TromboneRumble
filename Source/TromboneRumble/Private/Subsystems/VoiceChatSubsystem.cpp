@@ -14,6 +14,8 @@
 #include "HAL/IConsoleManager.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "SaveData/TromboneSaveGame.h"
+#include "Engine/Engine.h"
+#include "EngineUtils.h"
 
 void UVoiceChatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -34,10 +36,19 @@ void UVoiceChatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 			}
 		}
 	}
+
+	if (GEngine)
+	{
+		GEngine->OnNetworkFailure().AddUObject(this, &UVoiceChatSubsystem::OnEngineNetworkFailure);
+	}
 }
 
 void UVoiceChatSubsystem::Deinitialize()
 {
+	if (GEngine)
+	{
+		GEngine->OnNetworkFailure().RemoveAll(this);
+	}
 	EndMicTest();
 	EndLocalTalk();
 	Super::Deinitialize();
@@ -200,7 +211,8 @@ void UVoiceChatSubsystem::ApplyVolumeToTalker(APlayerState* PS)
 	}
 
 	const float ListenerOverride = GetRemotePlayerVolume(PS);
-	const float FinalVolume = SendVolume * ListenerOverride;
+	constexpr float VoipBaselineBoost = 10.0f;
+	const float FinalVolume = SendVolume * ListenerOverride * VoipBaselineBoost;
 
 	const APawn* OwnerPawn = PS->GetPawn();
 	if (!OwnerPawn) return;
@@ -318,5 +330,24 @@ void UVoiceChatSubsystem::SetNoiseSuppression(bool bEnabled)
 	if (MicCaptureComp)
 	{
 		MicCaptureComp->SetNoiseSuppression(bEnabled);
+	}
+}
+
+void UVoiceChatSubsystem::OnEngineNetworkFailure(
+	UWorld* World, UNetDriver* NetDriver,
+	ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	if (!World) return;
+
+	// SeamlessTravel 도중 연결 끊김 시 VoipListenerSynthComponent가 FScene::Release() 전에
+	// 정리되지 않아 FAudioDevice::Flush()에서 크래시 발생.
+	// BroadcastNetworkFailure(Frame N)는 BeginTearingDown(Frame N+1) 직전이므로
+	// 여기서 VOIP talker를 파괴하면 VoipSynthComponent가 FScene::Release() 전에 정상 해제된다.
+	for (TActorIterator<APawn> It(World); It; ++It)
+	{
+		if (UTromboneVOIPTalker* Talker = (*It)->FindComponentByClass<UTromboneVOIPTalker>())
+		{
+			Talker->DestroyComponent();
+		}
 	}
 }

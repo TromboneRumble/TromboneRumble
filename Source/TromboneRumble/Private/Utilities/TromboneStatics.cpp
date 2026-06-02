@@ -46,6 +46,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelType::InGame:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
 			break;
+		case ELevelType::Customize:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Customize_Main);
+			break;
 		case ELevelType::ResultScene:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_ResultScene_Main);
 			break;

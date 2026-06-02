@@ -19,10 +19,6 @@ public:
 
 	UFUNCTION()
 	void HandlePlayerLoadingFinished(APlayerController* PC);
-	
-protected:
-	
-	virtual void BeginPlay() override;
 
 private:
 	
@@ -34,4 +30,16 @@ private:
 	int32 RhythmGameEndedPlayerCount = 0;
 	
 	int32 ClientsTravelToResultSceneCount = 0;
+	
+public:
+	
+	// ~ Begin AGameModeBase Interface
+	virtual void Logout(AController* ExitedPlayer) override;
+	// ~ End AGameModeBase Interface
+	
+protected:
+	
+	// ~ Begin AActor Interface
+	virtual void BeginPlay() override;
+	// ~ End AActor Interface
 };

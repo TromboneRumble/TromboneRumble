@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Data/CustomizationSaveData.h"
 #include "Utilities/Defines.h"
 #include "DefaultPlayerState.generated.h"
 
@@ -133,6 +134,12 @@ public:
 	
 protected:
 
+	UPROPERTY(ReplicatedUsing = OnRep_CustomizationData)
+	FCustomizationSaveData CustomizationData;
+
+	UFUNCTION()
+	void OnRep_CustomizationData();
+
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 
@@ -177,6 +184,12 @@ public:
 	
 #pragma endregion
 
+	UFUNCTION(Server, Reliable)
+	void Server_SetCustomization(FCustomizationSaveData InData);
+
+	// ~ Begin Getter & Setter
+	FORCEINLINE FCustomizationSaveData GetCustomizationData() const { return CustomizationData; }
+	
 public:
 	
 	// ~ Begin APlayerState Interface

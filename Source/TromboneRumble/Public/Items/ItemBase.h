@@ -22,6 +22,7 @@ public:
 	AItemBase();
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// ~ Begin IInteractable Interfaces

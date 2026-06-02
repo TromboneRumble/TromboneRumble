@@ -79,6 +79,16 @@ enum class ELevelType : uint8
 	MatchMenu,
 	Tutorial,
 	ResultScene,
+	Customize,
+	Invalid = 255 UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class ECustomizationSlotType : uint8
+{
+	Antenna UMETA(DisplayName = "Antenna"),
+	Face    UMETA(DisplayName = "Face"),
+	Costume UMETA(DisplayName = "Costume"),
 	Invalid = 255 UMETA(Hidden)
 };
 
