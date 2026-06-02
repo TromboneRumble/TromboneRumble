@@ -154,14 +154,7 @@ void AResultCutsceneDirector::PlayResultCutscene()
 	CachedLocalPlayerRankIndex = GI->GetLocalPlayerRank();
 	
 	TArray<FPlayerResultSceneData> ResultData = GI->CachedResultSceneData;
-	ResultData.Sort([](const FPlayerResultSceneData& A, const FPlayerResultSceneData& B)
-	{
-		if (A.Score == B.Score)
-		{
-			return A.Nickname < B.Nickname;
-		}
-		return A.Score < B.Score;
-	});
+	ResultData.Sort();
 	
 	for (int32 i = 0; i < PrePlacedPodiums.Num(); ++i)
 	{

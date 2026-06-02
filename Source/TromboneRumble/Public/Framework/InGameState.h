@@ -55,8 +55,6 @@ public:
 
 	
 protected:
-	virtual void BeginPlay() override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void RecalculateLeader();
 
@@ -77,6 +75,19 @@ private:
 	
 	// 현재 1등을 반환. 없으면 nullptr
 	APlayerState* GetTopScoringPlayer() const;
+	
+public:
+	
+	// ~ Begin AGameStateBase Interface
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	// ~ End AGameStateBase Interface
+
+protected:
+	
+	// ~ Begin AActor Interface
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	// ~ End AActor Interface
 	
 public:
 	

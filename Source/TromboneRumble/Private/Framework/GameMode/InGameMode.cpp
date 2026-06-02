@@ -29,6 +29,16 @@ void AInGameMode::BeginPlay()
 	}
 }
 
+void AInGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearAllTimersForObject(this);
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void AInGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer); // 내부에서 UnregisterPlayer 호출 → NumOpenPublicConnections 즉시 갱신됨
@@ -48,10 +58,7 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 
 	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
 	{
-		if (AInGameState* GS = GetGameState<AInGameState>())
-		{
-			GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
-		}
+		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
 	}
 }
 
@@ -89,8 +96,7 @@ void AInGameMode::OnClientTravelToResultLevelAndLeaveSession()
     
 	if (ClientsTravelToResultSceneCount >= SessionPlayerNumber - 1)
 	{
-		FTimerHandle ServerLeaveTimer;
-		GetWorldTimerManager().SetTimer(ServerLeaveTimer, FTimerDelegate::CreateLambda([this]()
+		GetWorldTimerManager().SetTimer(TimerHandle_TravelToResultLevel, FTimerDelegate::CreateLambda([this]()
 		{
 			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 			{

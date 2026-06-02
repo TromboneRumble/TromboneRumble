@@ -12,6 +12,7 @@
 class UAkComponent;
 class UAkAudioEvent;
 
+// TODO : Define으로 빼야되는데, Define도 세분화가 필요
 USTRUCT(Blueprintable)
 struct FPlayerResultSceneData
 {
@@ -27,6 +28,16 @@ struct FPlayerResultSceneData
     
     /** is this my data? */
     bool bIsLocalPlayer = false;
+    
+    // Descending
+    bool operator<(const FPlayerResultSceneData& Other) const
+    {
+        if (FMath::IsNearlyEqual(Score, Other.Score))
+        {
+            return Nickname < Other.Nickname;
+        }
+        return Score > Other.Score;
+    }
 };
 
 UCLASS(Abstract)
@@ -35,10 +46,6 @@ class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 	GENERATED_BODY()
     
 public:
-    
-    //~ Begin UGameInstance Interface
-    virtual TSubclassOf<UOnlineSession> GetOnlineSessionClass() override;
-    //~ End UGameInstance Interface
     
     /** Save in-game data when travel to the result  */
     void SaveResultSceneData();
@@ -61,12 +68,6 @@ public:
 
     /** @return My(Local) rhythm rank */
     int32 GetLocalPlayerRank(); 
-
-protected:
-    
-    // ~ Begin UGameInstance Interface
-    virtual void OnStart() override;
-    // ~ End UGameInstance Interface
 
 protected:
     
@@ -107,4 +108,16 @@ public:
     FText GetTutorialUIText(const FString& Key) const;
     
     // ~ End Getter & Setter
+    
+public:
+    
+    //~ Begin UGameInstance Interface
+    virtual TSubclassOf<UOnlineSession> GetOnlineSessionClass() override;
+    //~ End UGameInstance Interface
+    
+protected:
+    
+    // ~ Begin UGameInstance Interface
+    virtual void OnStart() override;
+    // ~ End UGameInstance Interface
 };

@@ -31,6 +31,8 @@ private:
 	
 	int32 ClientsTravelToResultSceneCount = 0;
 	
+	FTimerHandle TimerHandle_TravelToResultLevel;
+	
 public:
 	
 	// ~ Begin AGameModeBase Interface
@@ -41,5 +43,6 @@ protected:
 	
 	// ~ Begin AActor Interface
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	// ~ End AActor Interface
 };

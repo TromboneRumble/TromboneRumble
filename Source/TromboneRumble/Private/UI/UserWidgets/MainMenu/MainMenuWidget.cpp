@@ -259,7 +259,7 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 
 void UMainMenuWidget::HandleCustomizeButtonClicked()
 {
-	UTromboneStatics::OpenLevel(GetWorld(), ELevelState::Customize);
+	UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Customize);
 }
 
 void UMainMenuWidget::HandleTutorialButtonClicked()

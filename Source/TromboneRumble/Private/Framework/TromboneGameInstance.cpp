@@ -91,15 +91,7 @@ const FPlayerResultSceneData& UTromboneGameInstance::GetLocalPlayerResultSceneDa
 
 int32 UTromboneGameInstance::GetLocalPlayerRank()
 {
-	// Descending
-	CachedResultSceneData.Sort([] (const FPlayerResultSceneData& A, const FPlayerResultSceneData& B)
-	{
-		if (A.Score == B.Score)
-		{
-			return A.Nickname < B.Nickname;
-		}
-		return A.Score > B.Score;
-	});
+	CachedResultSceneData.Sort();
 	
 	for (int Rank = 0; Rank < CachedResultSceneData.Num(); Rank++)
 	{

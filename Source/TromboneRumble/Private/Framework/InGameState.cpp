@@ -25,7 +25,9 @@ void AInGameState::RemovePlayerState(APlayerState* PlayerState)
         DefaultPS->OnLocalScoreChanged.RemoveDynamic(this, &ThisClass::HandleLocalScoreChanged);
     }
     OnPlayerStateRemoved.Broadcast(PlayerState);
+    
 	Super::RemovePlayerState(PlayerState);
+    
     OnScoreChanged.Broadcast(PlayerState);
 }
 
@@ -40,7 +42,7 @@ void AInGameState::HandleLocalScoreChanged(APlayerState* UpdatedPlayerState, int
     OnScoreChanged.Broadcast(UpdatedPlayerState);
 }
 
-void AInGameState::HandleScoreChanged(APlayerState* UpdatePlayerState)
+void AInGameState::HandleScoreChanged(APlayerState* /* UpdatePlayerState */)
 {
     RecalculateLeader();
 }
@@ -48,7 +50,15 @@ void AInGameState::HandleScoreChanged(APlayerState* UpdatePlayerState)
 void AInGameState::BeginPlay()
 {
 	Super::BeginPlay();
+    
     OnScoreChanged.AddDynamic(this, &ThisClass::HandleScoreChanged);
+}
+
+void AInGameState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    OnScoreChanged.RemoveAll(this);
+    
+    Super::EndPlay(EndPlayReason);
 }
 
 void AInGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
