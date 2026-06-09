@@ -10,12 +10,10 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
-#include "Data/UIData.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "Subsystems/ToastSubsystem.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/TromboneStatics.h"
 
@@ -105,7 +103,6 @@ void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 {
 	Super::SetUIEnabled(bEnabled);
 	
-	ET_Code->SetIsEnabled(bEnabled);
 	CB_QuickJoin->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
 	CB_Settings->SetIsEnabled(bEnabled);
@@ -221,40 +218,7 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 		}
 	}
 	
-	if (ET_Code->GetText().IsEmpty())
-	{
-		UToastSubsystem* ToastSubsystem = GetGameInstance()->GetSubsystem<UToastSubsystem>();
-		const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
-		
-		if (!ToastSubsystem || !GI)
-		{
-			return;
-		}
-		
-		const FText EmptyLobbyCodeWarningText = GI->GetCommonUIText(TEXT("Common_EnterLobbyCode"));
-		const FToastRequest Request(EmptyLobbyCodeWarningText);
-		ToastSubsystem->ShowToast(Request);
-		
-		return;
-	}
-	
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-			
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
-	{
-		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		Param.MinSlotsRequired = 1;
-		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
-												
-		int32 Flag = 0;
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::NoHost);
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-	
-		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::Default;
-				
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
-	}));
+	UTromboneStatics::ShowPopup<UJoinCodePopup>(GetWorld());
 }
 
 void UMainMenuWidget::HandleCustomizeButtonClicked()

@@ -30,9 +30,6 @@ protected:
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UEditableText> ET_Code;
-	
-	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_CreateSession;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_QuickJoin;

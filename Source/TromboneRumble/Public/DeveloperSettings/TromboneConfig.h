@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
 #include "UI/UserWidgets/Popup/EscapePopup.h"
+#include "UI/UserWidgets/Popup/JoinCodePopup.h"
 #include "UI/UserWidgets/Popup/NoticePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "UI/UserWidgets/Settings/SettingPopup.h"
@@ -56,6 +57,11 @@ public:
 		{
 			return Cast<UClass>(SettingPopupWidgetClass);
 		}
+		
+		if (T::StaticClass()->IsChildOf(UJoinCodePopup::StaticClass()))
+		{
+			return Cast<UClass>(JoinCodePopupWidgetClass);
+		}
 
 		UE_LOG(LogTemp, Error, TEXT("No matching popup class found for type %s. Please check if it's added in UTromboneConfig."), *T::StaticClass()->GetName());
 		return nullptr;
@@ -78,6 +84,10 @@ public:
 	/** Setting popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<USettingPopup> SettingPopupWidgetClass;
+	
+	/** Join Code popup widget class */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
+	TSubclassOf<UJoinCodePopup> JoinCodePopupWidgetClass;
 	
 	/** Project version widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
