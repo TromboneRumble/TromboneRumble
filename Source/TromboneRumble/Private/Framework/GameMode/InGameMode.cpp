@@ -11,24 +11,6 @@
 #include "Framework/TromboneGameInstance.h"
 #include "Utilities/TromboneStatics.h"
 
-void AInGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	FEasyNamedSession CurrentGameSession;
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	OnlineSession->GetSession(NAME_GameSession, CurrentGameSession);
-	if (CurrentGameSession.IsValid())
-	{
-		SessionPlayerNumber = UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession);
-	}
-
-	if (GetWorld()->GetNetMode() == NM_Standalone)
-	{
-		SessionPlayerNumber = 1;
-	}
-}
-
 void AInGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (GetWorld())
@@ -48,15 +30,10 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 	{
 		return;
 	}
+	
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
 
-	FEasyNamedSession CurrentGameSession;
-	if (UEasyOnlineSession* EasySession = UEasyOnlineSession::Get(this))
-	{
-		EasySession->GetSession(NAME_GameSession, CurrentGameSession);
-	}
-	SessionPlayerNumber = FMath::Max(1, UEasyStatics::GetNamedSessionPlayerCount(CurrentGameSession));
-
-	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
+	if (RhythmGameEndedPlayerCount >= CurrentSessionPlayerCount)
 	{
 		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
 	}
@@ -64,8 +41,10 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 
 void AInGameMode::OnRhythmGameEndedReport()
 {
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+	
 	RhythmGameEndedPlayerCount++;
-	if (RhythmGameEndedPlayerCount >= SessionPlayerNumber)
+	if (RhythmGameEndedPlayerCount >= CurrentSessionPlayerCount)
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
@@ -88,13 +67,19 @@ void AInGameMode::OnRhythmGameEndedReport()
 			}
 		}
 	}
+	
+	if (CurrentSessionPlayerCount == 1)
+	{
+		OnClientTravelToResultLevelAndLeaveSession();
+	}
 }
 
 void AInGameMode::OnClientTravelToResultLevelAndLeaveSession()
 {
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+
 	ClientsTravelToResultSceneCount++;
-    
-	if (ClientsTravelToResultSceneCount >= SessionPlayerNumber - 1)
+	if (ClientsTravelToResultSceneCount >= CurrentSessionPlayerCount - 1)
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle_TravelToResultLevel, FTimerDelegate::CreateLambda([this]()
 		{
@@ -116,12 +101,14 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 		return;
 	}
 
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+	
 	//로딩이 완료된 플레이어
 	InGameReadyPlayers.AddUnique(PC);
 
 	//현재 접속한 플레이어
 	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
-	if (CurrentPlayerCount < SessionPlayerNumber)
+	if (CurrentPlayerCount < CurrentSessionPlayerCount)
 	{
 		return;
 	}

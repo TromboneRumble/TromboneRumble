@@ -25,8 +25,6 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> InGameReadyPlayers;
 	
-	int32 SessionPlayerNumber = 1;
-	
 	int32 RhythmGameEndedPlayerCount = 0;
 	
 	int32 ClientsTravelToResultSceneCount = 0;
@@ -42,7 +40,6 @@ public:
 protected:
 	
 	// ~ Begin AActor Interface
-	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	// ~ End AActor Interface
 };
