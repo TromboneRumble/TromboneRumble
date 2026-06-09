@@ -4,8 +4,8 @@
 #include "CommonActivatableWidget.h"
 #include "PopupBase.generated.h"
 
+class UCommonButtonBaseExtensionWithText;
 class UAkAudioEvent;
-class UCommonButtonBaseWithText;
 class UCommonButtonBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPopupAction);
@@ -99,7 +99,7 @@ protected:
 	TObjectPtr<UCommonButtonBase> Button_Dim;
 
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseWithText> Button_Close;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Close;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
 	TObjectPtr<UWidgetAnimation> FadeIn;

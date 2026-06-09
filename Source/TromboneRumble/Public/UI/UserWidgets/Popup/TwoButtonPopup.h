@@ -4,7 +4,6 @@
 #include "UI/UserWidgets/Popup/PopupBase.h"
 #include "TwoButtonPopup.generated.h"
 
-class UCommonButtonBaseWithText;
 class UCommonTextBlock;
 
 /** Parameters for initializing the two-button popup. */
@@ -51,10 +50,10 @@ protected:
 	TObjectPtr<UCommonTextBlock> Text_Content;
 		
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseWithText> Button_Left;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Left;
 	
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseWithText> Button_Right;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Right;
 	// ~ End UI
 	
 private:

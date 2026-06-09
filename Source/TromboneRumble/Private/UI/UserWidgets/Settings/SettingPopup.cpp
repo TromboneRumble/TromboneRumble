@@ -2,6 +2,7 @@
 #include "CommonAnimatedSwitcher.h"
 #include "CommonButtonBase.h"
 #include "Framework/TromboneGameInstance.h"
+#include "Groups/CommonButtonGroupBase.h"
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "UI/UserWidgets/Settings/GameplayOptionPanel.h"
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
@@ -106,6 +107,26 @@ void USettingPopup::Unregister()
 	if (Button_Reset)
 	{
 		Button_Reset->OnClicked().RemoveAll(this);
+	}
+}
+
+void USettingPopup::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	CategoryButtonGroup = NewObject<UCommonButtonGroupBase>(this);
+	if (CategoryButtonGroup)
+	{
+		CategoryButtonGroup->AddWidget(CB_Audio);
+		CategoryButtonGroup->AddWidget(CB_Video);
+		CategoryButtonGroup->AddWidget(CB_Language);
+		CategoryButtonGroup->AddWidget(CB_Gameplay);
+		
+		if (CB_Audio)
+		{
+			CB_Audio->SetIsSelected(true, false);
+			ChangePanel(Widget_AudioOptions);
+		}
 	}
 }
 

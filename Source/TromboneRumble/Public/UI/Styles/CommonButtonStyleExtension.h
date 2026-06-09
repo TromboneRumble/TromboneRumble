@@ -10,6 +10,7 @@ class UAkAudioEvent;
 
 /** 
  * UCommonButtonStyle does not support applying UCommonTextStyle to the NormalPressed state & Calling WwiseEvent on button events
+ * @see UCommonButtonBaseExtensionWithText
  */
 UCLASS()
 class TROMBONERUMBLE_API UCommonButtonStyleExtension : public UCommonButtonStyle
@@ -28,6 +29,6 @@ public:
 	
 	/** The sound to play when the button is hovered */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	TObjectPtr<UAkAudioEvent> HoveredAudioEvent;
+	TObjectPtr<UAkAudioEvent> NormalHoveredAudioEvent;
 	
 };

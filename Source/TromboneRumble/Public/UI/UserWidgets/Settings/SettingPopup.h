@@ -4,6 +4,7 @@
 #include "UI/UserWidgets/Popup/PopupBase.h"
 #include "SettingPopup.generated.h"
 
+class UCommonButtonGroupBase;
 class UGameplayOptionPanel;
 class UOptionPanelBase;
 class ULanguageOptionPanel;
@@ -16,16 +17,22 @@ UCLASS()
 class TROMBONERUMBLE_API USettingPopup : public UPopupBase
 {
 	GENERATED_BODY()
+	
+public:
 
+	// ~ Begin UPopupWidget Interface
+	virtual void ClosePopup(const bool bCloseImmediately = false) override;
+	// ~ End UPopupWidget Interface
+	
 protected:
 	
-	// ~ Begin UPopupWidgetBase Interface
+	// ~ Begin UPopupWidget Interface
 	virtual void Register() override;
 	virtual void Unregister() override;
-	virtual void ClosePopup(const bool bCloseImmediately = false) override;
-	// ~ End UPopupWidgetBase Interface
+	// ~ End UPopupWidget Interface
 	
 	// ~ Begin UCommonActivatableWidget Interface
+	virtual void NativeConstruct() override;
 	virtual bool NativeOnHandleBackAction() override;
 	// ~ End UCommonActivatableWidget Interface
 	
@@ -73,5 +80,8 @@ private:
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UOptionPanelBase>> OptionPanels;
+	
+	UPROPERTY()
+	TObjectPtr<UCommonButtonGroupBase> CategoryButtonGroup;
 	
 };

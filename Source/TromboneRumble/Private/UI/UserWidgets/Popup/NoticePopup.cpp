@@ -1,6 +1,6 @@
 #include "UI/UserWidgets/Popup/NoticePopup.h"
 #include "CommonTextBlock.h"
-#include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 
 void UNoticePopup::Init(const FText& InContent, const FText& InTitle, const FText& InCloseButtonText) const
 {	
