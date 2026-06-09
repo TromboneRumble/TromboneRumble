@@ -94,6 +94,13 @@ UCommonActivatableWidget* UBaseUIRoot::PushPopup(const TSubclassOf<UCommonActiva
 {
 	if (PopupStack)
 	{
+		// Preventing same popup pushed multiple times
+		const UCommonActivatableWidget* ActivePopup = PopupStack->GetActiveWidget();
+		if (ActivePopup != nullptr && ActivePopup->GetClass() == PopupClass)
+		{
+			return Cast<UCommonActivatableWidget>(PopupStack->GetActiveWidget());
+		}
+			
 		if (UCommonActivatableWidget* PushedPopup = PopupStack->AddWidget(PopupClass))
 		{
 			return PushedPopup;
