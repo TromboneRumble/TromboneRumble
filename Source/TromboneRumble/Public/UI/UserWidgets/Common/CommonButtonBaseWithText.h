@@ -4,6 +4,7 @@
 #include "CommonButtonBase.h"
 #include "CommonButtonBaseWithText.generated.h"
 
+class UCommonButtonStyleExtension;
 class UCommonTextBlock;
 
 UCLASS()
@@ -24,6 +25,7 @@ protected:
 protected:
 	
 	// ~ Begin UCommonButtonBase Interface
+	virtual void NativeConstruct() override;
 	virtual void NativeOnHovered() override;
 	virtual void NativeOnPressed() override;
 	virtual void NativeOnReleased() override;
@@ -33,5 +35,8 @@ protected:
 	
 	/** if NormalPressedTextStyle is applied, OnReleased will reset the text style to NormalTextStyle */
 	bool bIsNormalPressedTextStyleApplied = false;
+	
+	UPROPERTY()
+	const UCommonButtonStyleExtension* CachedButtonStyleExtension = nullptr;
 	
 };

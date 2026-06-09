@@ -11,16 +11,20 @@ void UCommonButtonBaseWithText::SetText(const FText& InText) const
 	}
 }
 
+void UCommonButtonBaseWithText::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	CachedButtonStyleExtension = Cast<UCommonButtonStyleExtension>(GetStyleCDO());
+}
+
 void UCommonButtonBaseWithText::NativeOnHovered()
 {
 	Super::NativeOnHovered();
 	
-	if (const UCommonButtonStyleExtension* ButtonStyleExtension = Cast<UCommonButtonStyleExtension>(GetStyleCDO()))
+	if (CachedButtonStyleExtension && CachedButtonStyleExtension->HoveredAudioEvent)
 	{
-		if (ButtonStyleExtension->HoveredAudioEvent)
-		{
-			UAkGameplayStatics::PostEvent(ButtonStyleExtension->HoveredAudioEvent, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
-		}
+		UAkGameplayStatics::PostEvent(CachedButtonStyleExtension->HoveredAudioEvent, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
 	}
 }
 
@@ -28,18 +32,15 @@ void UCommonButtonBaseWithText::NativeOnPressed()
 {
 	Super::NativeOnPressed();
 	
-	if (const UCommonButtonStyleExtension* ButtonStyleExtension = Cast<UCommonButtonStyleExtension>(GetStyleCDO()))
+	if (CachedButtonStyleExtension && CachedButtonStyleExtension->NormalPressedTextStyle)
 	{
-		if (ButtonStyleExtension->NormalPressedTextStyle)
-		{
-			CT_ButtonText->SetStyle(ButtonStyleExtension->NormalPressedTextStyle);
-			bIsNormalPressedTextStyleApplied = true;
-		}
-		
-		if (ButtonStyleExtension->NormalPressedAudioEvent)
-		{
-			UAkGameplayStatics::PostEvent(ButtonStyleExtension->NormalPressedAudioEvent, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
-		}
+		CT_ButtonText->SetStyle(CachedButtonStyleExtension->NormalPressedTextStyle);
+		bIsNormalPressedTextStyleApplied = true;
+	}
+
+	if (CachedButtonStyleExtension && CachedButtonStyleExtension->NormalPressedAudioEvent)
+	{
+		UAkGameplayStatics::PostEvent(CachedButtonStyleExtension->NormalPressedAudioEvent, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
 	}
 }
 
