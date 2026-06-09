@@ -1,4 +1,7 @@
 #include "UI/UserWidgets/Popup/PopupBase.h"
+
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseWithText.h"
 #include "CommonButtonBase.h"
 
@@ -20,14 +23,19 @@ void UPopupBase::NativeOnActivated()
 		PlayAnimation(FadeIn);
 	}
 
-	if (bPlaySound)
+	if (bPlaySound && OpenSound)
 	{
-		// TODO: PlaySound
+		UAkGameplayStatics::PostEvent(OpenSound, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
 	}
 }
 
 void UPopupBase::NativeOnDeactivated()
 {
+	if (bPlaySound && CloseSound)
+	{
+		UAkGameplayStatics::PostEvent(CloseSound, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
+	}
+	
 	bIsClosing = false;
 	Unregister();
 	

@@ -4,6 +4,7 @@
 #include "CommonActivatableWidget.h"
 #include "PopupBase.generated.h"
 
+class UAkAudioEvent;
 class UCommonButtonBaseWithText;
 class UCommonButtonBase;
 
@@ -36,6 +37,14 @@ public:
 	/** If true, the popup will play animation when opened and closed. */
 	UPROPERTY(EditAnywhere, Category = "Options")
 	bool bPlayAnimation = true;
+	
+	/** The sound to play when the popup is opened */
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (EditCondition = "bPlaySound"))
+	TObjectPtr<UAkAudioEvent> OpenSound;
+	
+	/** The sound to play when the popup is closed */
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (EditCondition = "bPlaySound"))
+	TObjectPtr<UAkAudioEvent> CloseSound;
 	
 	// ~ End Popup Options
 	
