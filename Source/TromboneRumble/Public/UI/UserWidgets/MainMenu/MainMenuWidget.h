@@ -19,10 +19,7 @@ protected:
 
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
-	
-	virtual void BindSubsystemCallbacks() override;
-	virtual void RemoveSubsystemCallbacks() override;
-	
+
 protected:
 	
 	UPROPERTY(EditDefaultsOnly)

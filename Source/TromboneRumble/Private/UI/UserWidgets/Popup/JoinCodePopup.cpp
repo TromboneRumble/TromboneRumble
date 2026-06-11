@@ -4,7 +4,7 @@
 #include "CommonButtonBase.h"
 #include "EasyMatchmakingManager.h"
 #include "EasyMatchmakingPolicy.h"
-#include "EasySessionSettings.h"
+#include "EasySessions.h"
 #include "Components/EditableText.h"
 #include "Data/UIData.h"
 #include "Framework/TromboneGameInstance.h"
@@ -57,15 +57,9 @@ void UJoinCodePopup::OnClickJoinCode()
 		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
 		Param.MinSlotsRequired = 1;
-		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
+		Param.ExtraQuerySettings.Add(FEasyQuerySetting(SETTING_LOBBYCODE, LobbyCode, EOnlineComparisonOp::Equals));
 												
-		int32 Flag = 0;
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::NoHost);
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-
-		constexpr EEasyMatchmakingMode Mode = EEasyMatchmakingMode::Default;
-				
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
+		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, static_cast<int32>(EEasyMatchmakingFlags::NoHost), EEasyMatchmakingMode::Default);
 	}));
 	
 	ClosePopup();

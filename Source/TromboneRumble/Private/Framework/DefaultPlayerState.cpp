@@ -343,13 +343,8 @@ void ADefaultPlayerState::SetSkinColor(const FLinearColor& InSkinColor)
 
 bool ADefaultPlayerState::IsHost() const
 {
-	const IOnlineSubsystem* Subsystem = Online::GetSubsystem(GetWorld());
-	if (!Subsystem)
-	{
-		return false;
-	}
-
-	const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+	const IOnlineSubsystem* OnlineSubsystem = Online::GetSubsystem(GetWorld());
+	const IOnlineSessionPtr SessionInterface = OnlineSubsystem ? OnlineSubsystem->GetSessionInterface() : nullptr;
 	if (!SessionInterface.IsValid())
 	{
 		return false;

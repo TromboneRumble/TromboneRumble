@@ -5,10 +5,11 @@
 #include "EasyMatchmakingPolicy.h"
 #include "EasyOnlineSession.h"
 #include "EasyReservationManager.h"
-#include "EasySessionSettings.h"
+#include "EasySessions.h"
 #include "EasySessionUtils.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/Button.h"
@@ -35,7 +36,6 @@ void UMatchMenuWidget::NativeConstruct()
 
 void UMatchMenuWidget::NativeDestruct()
 {
-	RemoveSubsystemCallbacks();
 	RemoveGameStateEvents();
 
 	Super::NativeDestruct();
@@ -52,8 +52,8 @@ void UMatchMenuWidget::NativeOnActivated()
 		UE_LOG(LogTemp, Error, TEXT("Session interface is not valid"));
 		return;
 	}
-	
-	FNamedOnlineSession* NamedSession = SessionInterface->GetNamedSession(NAME_GameSession);
+
+	const FNamedOnlineSession* NamedSession = SessionInterface->GetNamedSession(NAME_GameSession);
 	if (!NamedSession)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No session data found"));
@@ -61,7 +61,7 @@ void UMatchMenuWidget::NativeOnActivated()
 	}
 	
 	FString OutCode;
-	if (!NamedSession->SessionSettings.Get(GKey_Lobby_Code, OutCode))
+	if (!NamedSession->SessionSettings.Get(SETTING_LOBBYCODE, OutCode))
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to get lobby code from session settings"));
 		return;
@@ -146,8 +146,8 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 	bIsStarted = true;
 	UEasyReservationManager* ReservationManager = UEasyReservationManager::Get(this);
 	if (ReservationManager->IsReservationHost())
-	{ 
-		TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
+	{
+		const TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
 		ReservationManager->SetHostReservations(Reservations);
 	}
 	
@@ -159,8 +159,8 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 		
 	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
 	OnlineSession->StartOnlineSession(NAME_GameSession);
-	
-	FString URL = TEXT("/Game/Levels/LobbyMap");
+
+	const FString URL = TEXT("/Game/Levels/LobbyMap");
 	UEasyStatics::ServerTravelToLevel(this, URL);
 }
 
@@ -178,7 +178,7 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
-		EMatchType NewMatchType = static_cast<EMatchType>(Value);
+		const EMatchType NewMatchType = static_cast<EMatchType>(Value);
 		MatchMenuGS->SetMatchType(NewMatchType);
 		
 		ShowLoadingOverlay();
@@ -195,9 +195,9 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 		TArray<FEasySessionSetting> ExtraSessionSettings = TArray<FEasySessionSetting>();
 		
 		FString LobbyCode;
-		if (UpdatedSettings.GetSessionSetting(GKey_Lobby_Code, LobbyCode))
+		if (UpdatedSettings.GetSessionSetting(SETTING_LOBBYCODE, LobbyCode))
 		{
-			ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
+			ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		}
 				
 		OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true, ExtraSessionSettings);
