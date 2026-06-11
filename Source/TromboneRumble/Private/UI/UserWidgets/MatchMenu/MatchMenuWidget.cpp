@@ -1,22 +1,18 @@
 #include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
-#include "CommonTextBlock.h"
 #include "EasyMatchmakingManager.h"
 #include "EasyMatchmakingPolicy.h"
 #include "EasyOnlineSession.h"
 #include "EasyReservationManager.h"
 #include "EasySessions.h"
 #include "EasySessionStatics.h"
-#include "OnlineSessionSettings.h"
-#include "OnlineSubsystem.h"
-#include "OnlineSubsystemUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/Button.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Framework/GameState/MatchMenuGameState.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 
 void UMatchMenuWidget::NativeConstruct()
@@ -39,41 +35,6 @@ void UMatchMenuWidget::NativeDestruct()
 	RemoveGameStateEvents();
 
 	Super::NativeDestruct();
-}
-
-void UMatchMenuWidget::NativeOnActivated()
-{
-	Super::NativeOnActivated();
-	
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	IOnlineSessionPtr SessionInterface = OnlineSubsystem ? OnlineSubsystem->GetSessionInterface() : nullptr;
-	if (!SessionInterface.IsValid())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Session interface is not valid"));
-		return;
-	}
-
-	const FNamedOnlineSession* NamedSession = SessionInterface->GetNamedSession(NAME_GameSession);
-	if (!NamedSession)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No session data found"));
-		return;
-	}
-	
-	FString OutCode;
-	if (!NamedSession->SessionSettings.Get(SETTING_LOBBYCODE, OutCode))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to get lobby code from session settings"));
-		return;
-	}
-	
-	if (!CT_Code)
-	{
-		UE_LOG(LogTemp, Error, TEXT("CT_Code is not bound in the widget"));
-		return;
-	}
-
-	CT_Code->SetText(FText::FromString(OutCode));
 }
 
 void UMatchMenuWidget::NativeOnInitialized()
