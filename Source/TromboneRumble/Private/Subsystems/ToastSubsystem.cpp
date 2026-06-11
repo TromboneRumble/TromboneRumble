@@ -12,6 +12,24 @@ UToastSubsystem::UToastSubsystem()
 {
 }
 
+UToastSubsystem* UToastSubsystem::Get(const UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return nullptr;
+	}
+    
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		if (const UGameInstance* GI = World->GetGameInstance())
+		{
+			return GI->GetSubsystem<UToastSubsystem>();
+		}
+	}
+	
+	return nullptr;
+}
+
 void UToastSubsystem::ShowToast(const FToastRequest& InRequest)
 {
 	ToastQueue.Enqueue(InRequest);

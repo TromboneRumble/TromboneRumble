@@ -49,12 +49,6 @@ protected:
 	UFUNCTION()
 	void HandleExitButtonClicked();
 
-	UFUNCTION()
-	void OnDestroySessionSuccess();
-
-	UFUNCTION()
-	void OnDestroySessionFailure();
-
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> RankImage;
 
@@ -128,9 +122,9 @@ protected:
 
 
 private:
-	UPROPERTY(Transient)
-	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
+	
 	TWeakObjectPtr<AResultCutsceneDirector> Director;
+	
 public:
 	void SetDirector(AResultCutsceneDirector* InDirector);
 };

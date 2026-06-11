@@ -3,9 +3,6 @@
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
 #include "EasyOnlineSession.h"
 #include "Components/TextBlock.h"
-#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "TromboneGamePlayTags.h"
-#include "EasySessionSubsystem.h"
 #include "Actors/ResultScene/ResultCutsceneDirector.h"
 #include "Components/Button.h"
 #include "Components/Overlay.h"
@@ -116,15 +113,6 @@ void UInGameResultWidget::NativeConstruct()
 	{
 		ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::Collapsed);
 	}
-
-
-	if (!SessionsSubsystem)
-	{
-		const UGameInstance* GameInstance = GetGameInstance();
-		SessionsSubsystem = GameInstance->GetSubsystem<UEasySessionSubsystem>();
-		SessionsSubsystem->OnDestroySessionSuccess.AddUObject(this, &ThisClass::OnDestroySessionSuccess);
-		SessionsSubsystem->OnDestroySessionFailure.AddUObject(this, &ThisClass::OnDestroySessionFailure);
-	}
 }
 
 void UInGameResultWidget::HandleSkipClicked()
@@ -197,25 +185,6 @@ void UInGameResultWidget::HandleExitButtonClicked()
 	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 	{
 		OnlineSession->LeaveGameSession();
-	}
-	// UTromboneStatics::OpenLevel(this, ELevelState::MainMenu);
-}
-
-void UInGameResultWidget::OnDestroySessionSuccess()
-{
-	if (APlayerController* PC = GetOwningPlayer())
-	{
-		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
-	}
-}
-
-void UInGameResultWidget::OnDestroySessionFailure()
-{
-	if (APlayerController* PC = GetOwningPlayer())
-	{
-		const FString MainMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-		PC->ClientTravel(MainMenuMapPath, ETravelType::TRAVEL_Absolute);
 	}
 }
 

@@ -6,7 +6,7 @@
 #include "Framework/InGameState.h"
 #include "EasyOnlineSession.h"
 #include "EasySessionTypes.h"
-#include "EasySessionUtils.h"
+#include "EasySessionStatics.h"
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Utilities/TromboneStatics.h"
@@ -31,7 +31,7 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 		return;
 	}
 	
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 
 	if (RhythmGameEndedPlayerCount >= CurrentSessionPlayerCount)
 	{
@@ -41,7 +41,7 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 
 void AInGameMode::OnRhythmGameEndedReport()
 {
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 	
 	RhythmGameEndedPlayerCount++;
 	if (RhythmGameEndedPlayerCount >= CurrentSessionPlayerCount)
@@ -76,7 +76,7 @@ void AInGameMode::OnRhythmGameEndedReport()
 
 void AInGameMode::OnClientTravelToResultLevelAndLeaveSession()
 {
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 
 	ClientsTravelToResultSceneCount++;
 	if (ClientsTravelToResultSceneCount >= CurrentSessionPlayerCount - 1)
@@ -101,7 +101,7 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 		return;
 	}
 
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetSessionPlayerCount(this);
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 	
 	//로딩이 완료된 플레이어
 	InGameReadyPlayers.AddUnique(PC);
