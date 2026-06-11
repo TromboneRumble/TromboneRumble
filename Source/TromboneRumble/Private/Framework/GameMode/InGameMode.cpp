@@ -6,7 +6,7 @@
 #include "Framework/InGameState.h"
 #include "EasyOnlineSession.h"
 #include "EasySessionTypes.h"
-#include "EasySessionUtils.h"
+#include "EasySessionStatics.h"
 #include "Characters/DefaultPlayerController.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Utilities/TromboneStatics.h"

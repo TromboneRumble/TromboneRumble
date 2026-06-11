@@ -6,7 +6,7 @@
 #include "EasyOnlineSession.h"
 #include "EasyReservationManager.h"
 #include "EasySessions.h"
-#include "EasySessionUtils.h"
+#include "EasySessionStatics.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
