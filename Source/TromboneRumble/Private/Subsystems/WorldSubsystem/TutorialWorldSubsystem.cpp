@@ -1,4 +1,5 @@
 #include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
+#include "TromboneGamePlayTags.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Actors/Tutorial/TutorialManager.h"
 #include "Data/TutorialData.h"

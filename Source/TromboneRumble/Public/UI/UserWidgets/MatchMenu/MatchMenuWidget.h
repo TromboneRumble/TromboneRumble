@@ -7,16 +7,12 @@
 #include "Utilities/Defines.h"
 #include "MatchMenuWidget.generated.h"
 
-enum class EEasyMatchmakingCompleteResult : uint8;
-enum class EEasyMatchmakingState : uint8;
-class UTromboneGameInstance;
-enum class ERotatorDirection : uint8;
+class UCommonButtonBaseExtensionWithText;
 class UCommonRotatorWidgetBase;
-enum class EMatchType : uint8;
-class UCommonRotator;
 class UCommonTextBlock;
-class UEasySessionSubsystem;
-class UCommonButtonBase;
+enum class EEasyMatchmakingState : uint8;
+enum class ERotatorDirection : uint8;
+enum class EMatchType : uint8;
 
 UCLASS()
 class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
@@ -32,7 +28,6 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	virtual void NativeOnActivated() override;
 	virtual void NativeOnInitialized() override;
 
 	virtual void Init() override;
@@ -42,13 +37,10 @@ protected:
 	
 	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UCommonButtonBase> CB_Start;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> CB_Start;
 	
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UCommonButtonBase> CB_Back;
-	
-	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UCommonTextBlock> CT_Code;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> CB_Back;
 	
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;

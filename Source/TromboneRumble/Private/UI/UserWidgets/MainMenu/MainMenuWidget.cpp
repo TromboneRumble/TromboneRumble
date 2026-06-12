@@ -1,21 +1,15 @@
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
-#include "EasyFriendSubsystem.h"
 #include "EasyMatchmakingManager.h"
 #include "EasyMatchmakingPolicy.h"
-#include "EasySessionSettings.h"
-#include "EasySessionSubsystem.h"
-#include "EasySessionUtils.h"
-#include "OnlineSubsystemUtils.h"
+#include "EasySessions.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
-#include "Data/UIData.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "Subsystems/ToastSubsystem.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/TromboneStatics.h"
 
@@ -87,57 +81,18 @@ void UMainMenuWidget::Init()
 		CB_Quit->OnClicked().RemoveAll(this);
 		CB_Quit->OnClicked().AddUObject(this, &ThisClass::ShowQuitPopup);
 	}
-	
-	if (const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld()))
-	{
-		const IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
-		if (Sessions.IsValid())
-		{
-			if (Sessions->GetNamedSession(NAME_GameSession))
-			{
-				Sessions->DestroySession(NAME_GameSession);
-			}
-		}
-	}
 }
 
 void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 {
 	Super::SetUIEnabled(bEnabled);
 	
-	ET_Code->SetIsEnabled(bEnabled);
 	CB_QuickJoin->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
 	CB_Settings->SetIsEnabled(bEnabled);
 	CB_Tutorial->SetIsEnabled(bEnabled);
 	CB_Quit->SetIsEnabled(bEnabled);
 	CB_CreateSession->SetIsEnabled(bEnabled);
-}
-
-void UMainMenuWidget::BindSubsystemCallbacks()
-{
-	Super::BindSubsystemCallbacks();
-	
-	if (SessionsSubsystem)
-	{
-	}
-	
-	if (FriendsSubsystem)
-	{
-	}
-}
-
-void UMainMenuWidget::RemoveSubsystemCallbacks()
-{
-	Super::RemoveSubsystemCallbacks();
-	
-	if (SessionsSubsystem)
-	{
-	}
-	
-	if (FriendsSubsystem)
-	{
-	}
 }
 
 void UMainMenuWidget::HandleCreateSessionClicked()
@@ -161,15 +116,11 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 		FEasyHostParams HostParams = FEasyHostParams();
 		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
 		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
 
 		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
-		int32 Flag = 0;
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-
-		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::CreateOnly;
     
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
+		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, 0, EEasyMatchmakingMode::CreateOnly);
 	}));
 }
 
@@ -194,18 +145,13 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 		FEasyHostParams HostParams = FEasyHostParams();
 		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
 		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(GKey_Lobby_Code, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		
 		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
 		Param.HostParams = HostParams;
 		Param.MinSlotsRequired = 1;
 												
-		int32 Flag = 0;
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-
-		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::Default;
-				
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
+		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, 0, EEasyMatchmakingMode::Default);
 	}));
 }
 
@@ -221,40 +167,7 @@ void UMainMenuWidget::HandleJoinButtonClicked()
 		}
 	}
 	
-	if (ET_Code->GetText().IsEmpty())
-	{
-		UToastSubsystem* ToastSubsystem = GetGameInstance()->GetSubsystem<UToastSubsystem>();
-		const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
-		
-		if (!ToastSubsystem || !GI)
-		{
-			return;
-		}
-		
-		const FText EmptyLobbyCodeWarningText = GI->GetCommonUIText(TEXT("Common_EnterLobbyCode"));
-		const FToastRequest Request(EmptyLobbyCodeWarningText);
-		ToastSubsystem->ShowToast(Request);
-		
-		return;
-	}
-	
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-			
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
-	{
-		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		Param.MinSlotsRequired = 1;
-		Param.ExtraQuerySettings.Add(FEasyQuerySetting(GKey_Lobby_Code, LobbyCode, EOnlineComparisonOp::Equals));
-												
-		int32 Flag = 0;
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::NoHost);
-		Flag |= static_cast<int32>(EEasyMatchmakingFlags::SkipEloChecks);
-	
-		const EEasyMatchmakingMode Mode = EEasyMatchmakingMode::Default;
-				
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, Flag, Mode);
-	}));
+	UTromboneStatics::ShowPopup<UJoinCodePopup>(GetWorld());
 }
 
 void UMainMenuWidget::HandleCustomizeButtonClicked()

@@ -126,8 +126,10 @@ void ATromboneCharacterBase::BeginPlay()
 		else
 		{
 			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			{
 				SaveData = DPS->GetCustomizationData();
-			CustomizationComp->LoadFromSaveData(SaveData);
+				CustomizationComp->LoadFromSaveData(SaveData);
+			}
 		}
 	}
 

@@ -21,8 +21,11 @@ public:
 	/** Default constructor */
 	UToastSubsystem();
 	
+	/** Get toast subsystem */
+	UFUNCTION(BlueprintPure, Category = "Trombone|Subsystem", DisplayName = "Get Toast Subsystem", meta = (WorldContext = "WorldContextObject"))
+	static UToastSubsystem* Get(const UObject* WorldContextObject);
+	
 	/** Show a toast message with the given request data. */
-	UFUNCTION(BlueprintCallable, Category = "UI|Toast")
 	void ShowToast(const FToastRequest& InRequest);
 	
 	/** Return a toast widget to the pool */
