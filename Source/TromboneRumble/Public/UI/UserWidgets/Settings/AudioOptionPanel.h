@@ -42,6 +42,8 @@ private:
 	TObjectPtr<USliderWidgetBase> WBP_MusicSlider;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USliderWidgetBase> WBP_SFXSlider;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USliderWidgetBase> WBP_UISlider;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOptionCycleRowWidget> OC_Microphone;

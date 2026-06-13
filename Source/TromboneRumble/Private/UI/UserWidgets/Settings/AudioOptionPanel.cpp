@@ -25,12 +25,8 @@ void UAudioOptionPanel::RefreshUI()
 	if (WBP_BGMSlider) WBP_BGMSlider->SetValue(AudioData.BGMVolume);
 	if (WBP_MusicSlider) WBP_MusicSlider->SetValue(AudioData.MusicVolume);
 	if (WBP_SFXSlider) WBP_SFXSlider->SetValue(AudioData.SFXVolume);
-
-	// 내 목소리 볼륨: 저장값 0~2 → 슬라이더 0~1로 정규화
-	if (WBP_VoiceVolumeSlider)
-	{
-		WBP_VoiceVolumeSlider->SetValue(AudioData.VoiceSendVolume * 0.5f);
-	}
+	if (WBP_UISlider) WBP_UISlider->SetValue(AudioData.UIVolume);
+	if (WBP_VoiceVolumeSlider) WBP_VoiceVolumeSlider->SetValue(AudioData.VoiceSendVolume * 0.5f); // 내 목소리 볼륨: 저장값 0~2 → 슬라이더 0~1로 정규화
 
 	// 마이크 사이클 위젯: 저장된 장치 이름으로 매칭, 실패 시 인덱스로 폴백
 	if (OC_Microphone && !CachedMicNames.IsEmpty())
@@ -80,17 +76,13 @@ void UAudioOptionPanel::ApplySettingsFromUI(bool bSaveToDisk)
 	if (bSaveToDisk)
 	{
 		FAudioSettingData NewAudio;
-		NewAudio.MasterVolume = WBP_MasterSlider->GetValue();
-		NewAudio.BGMVolume = WBP_BGMSlider->GetValue();
-		NewAudio.MusicVolume = WBP_MusicSlider->GetValue();
-		NewAudio.SFXVolume = WBP_SFXSlider->GetValue();
-
-		// 내 목소리 볼륨: 슬라이더 0~1 → 저장값 0~2
-		if (WBP_VoiceVolumeSlider)
-		{
-			NewAudio.VoiceSendVolume = WBP_VoiceVolumeSlider->GetValue() * 2.0f;
-		}
-
+		if (WBP_MasterSlider) NewAudio.MasterVolume = WBP_MasterSlider->GetValue();
+		if (WBP_BGMSlider) NewAudio.BGMVolume = WBP_BGMSlider->GetValue();
+		if (WBP_MusicSlider) NewAudio.MusicVolume = WBP_MusicSlider->GetValue();
+		if (WBP_SFXSlider) NewAudio.SFXVolume = WBP_SFXSlider->GetValue();
+		if (WBP_UISlider) NewAudio.UIVolume = WBP_UISlider->GetValue();
+		if (WBP_VoiceVolumeSlider) NewAudio.VoiceSendVolume = WBP_VoiceVolumeSlider->GetValue() * 2.0f; // 내 목소리 볼륨: 슬라이더 0~1 → 저장값 0~2
+		
 		if (OC_Microphone)
 		{
 			const int32 SelectedIdx = GetSelectedMicDeviceIndex();
@@ -164,6 +156,11 @@ bool UAudioOptionPanel::IsDirty() const
 	{
 		return true;
 	}
+	
+	if (WBP_UISlider && !FMath::IsNearlyEqual(WBP_UISlider->GetValue(), SavedData.UIVolume, ErrorTolerance))
+	{
+		return true;
+	}
 
 	if (WBP_VoiceVolumeSlider &&
 		!FMath::IsNearlyEqual(WBP_VoiceVolumeSlider->GetValue() * 2.0f, SavedData.VoiceSendVolume, ErrorTolerance))
@@ -207,23 +204,14 @@ void UAudioOptionPanel::Register()
 {
 	Super::Register();
 
-	WBP_MasterSlider->Init([this](const float Value)
+	if (WBP_MasterSlider)
 	{
-		WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, Value);
-	});
-	WBP_BGMSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, Value);
-	});
-	WBP_MusicSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, Value);
-	});
-	WBP_SFXSlider->Init([this](const float Value)
-	{
-		WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, Value);
-	});
-
+		WBP_MasterSlider->Init([](const float Value){ WwiseRTPC::SetVolume(WwiseRTPC::MasterVolume, Value); });
+	}
+	if (WBP_BGMSlider) WBP_BGMSlider->Init([](const float Value) { WwiseRTPC::SetVolume(WwiseRTPC::BGMVolume, Value); });
+	if (WBP_MusicSlider) WBP_MusicSlider->Init([](const float Value) { WwiseRTPC::SetVolume(WwiseRTPC::MusicVolume, Value); });
+	if (WBP_SFXSlider) WBP_SFXSlider->Init([](const float Value) { WwiseRTPC::SetVolume(WwiseRTPC::SFXVolume, Value); });
+	if (WBP_UISlider) WBP_UISlider->Init([](const float Value) { WwiseRTPC::SetVolume(WwiseRTPC::UIVolume, Value); });
 	if (WBP_VoiceVolumeSlider)
 	{
 		WBP_VoiceVolumeSlider->Init([this](const float Value)
@@ -287,10 +275,11 @@ void UAudioOptionPanel::Unregister()
 
 	Super::Unregister();
 
-	WBP_MasterSlider->Init(nullptr);
-	WBP_BGMSlider->Init(nullptr);
-	WBP_MusicSlider->Init(nullptr);
-	WBP_SFXSlider->Init(nullptr);
+	if (WBP_MasterSlider) WBP_MasterSlider->Init(nullptr);
+	if (WBP_BGMSlider) WBP_BGMSlider->Init(nullptr);
+	if (WBP_MusicSlider) WBP_MusicSlider->Init(nullptr);
+	if (WBP_SFXSlider) WBP_SFXSlider->Init(nullptr);
+	if (WBP_UISlider) WBP_UISlider->Init(nullptr);
 	if (WBP_VoiceVolumeSlider) WBP_VoiceVolumeSlider->Init(nullptr);
 }
 
