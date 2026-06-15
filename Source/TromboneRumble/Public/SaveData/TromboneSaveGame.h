@@ -24,6 +24,7 @@ struct FAudioSettingData
 	UPROPERTY() float BGMVolume = 0.5f;
 	UPROPERTY() float MusicVolume = 0.5f;
 	UPROPERTY() float SFXVolume = 0.5f;
+	UPROPERTY() float UIVolume = 0.5f;
 
 	UPROPERTY() float VoiceSendVolume = 1.0f;        // 내 목소리 전송 볼륨 (0.0 ~ 2.0)
 	UPROPERTY() int32 MicrophoneDeviceIndex = 0;     // 선택된 마이크 장치 인덱스

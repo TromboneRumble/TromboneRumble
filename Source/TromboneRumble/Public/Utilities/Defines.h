@@ -29,6 +29,7 @@ enum class EGimmickType : uint8
 	Puddle,
 	Trash,
 	Present,
+	PressurePlate,
 	MAX,
 	None = 255,
 };
