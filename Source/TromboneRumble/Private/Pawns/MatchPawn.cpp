@@ -1,5 +1,5 @@
 #include "Pawns/MatchPawn.h"
-#include "UI/UserWidgets/Lobby/VoiceVolumeRowWidget.h"
+#include "UI/UserWidgets/MatchMenu/VoiceVolumeRowWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
@@ -40,22 +40,10 @@ AMatchPawn::AMatchPawn()
 		VOIPTalker->bPositional = false;
 	}
 
-	SpeakerIndicatorComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("SpeakerIndicatorComponent"));
-	if (SpeakerIndicatorComponent)
-	{
-		SpeakerIndicatorComponent->SetupAttachment(SkeletalMeshComponent, FName("head"));
-		SpeakerIndicatorComponent->SetWidgetSpace(EWidgetSpace::Screen);
-		SpeakerIndicatorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SpeakerIndicatorComponent->bReceivesDecals = 0;
-		SpeakerIndicatorComponent->SetCastShadow(false);
-		SpeakerIndicatorComponent->SetVisibility(true);
-		SpeakerIndicatorComponent->SetHiddenInGame(false);
-	}
-
 	VoiceSliderComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("VoiceSliderComponent"));
 	if (VoiceSliderComponent)
 	{
-		VoiceSliderComponent->SetupAttachment(SkeletalMeshComponent, FName("head"));
+		VoiceSliderComponent->SetupAttachment(CapsuleComponent);
 		VoiceSliderComponent->SetWidgetSpace(EWidgetSpace::Screen);
 		VoiceSliderComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		VoiceSliderComponent->bReceivesDecals = 0;
@@ -110,10 +98,6 @@ void AMatchPawn::UpdateSkinFromPlayerState() const
 
 void AMatchPawn::BeginPlay()
 {
-	// 실행 순서:
-	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
-	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
-	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
 	if (UMaterialInterface* CurrentSkinMat = SkeletalMeshComponent->GetMaterial(SkinMaterialIndex))
 	{
 		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
@@ -154,25 +138,6 @@ void AMatchPawn::BeginPlay()
 	Super::BeginPlay();
 
 	TryRegisterVOIPTalker();
-
-	// 멀티플레이 환경에서 UI 생성 및 Owner설정
-	if (SpeakerIndicatorComponent)
-	{
-		if (APlayerController* LocalPC = GetWorld()->GetFirstPlayerController())
-		{
-			if (ULocalPlayer* LocalPlayer = LocalPC->GetLocalPlayer())
-			{
-				SpeakerIndicatorComponent->SetOwnerPlayer(LocalPlayer);
-			}
-		}
-
-		SpeakerIndicatorComponent->InitWidget();
-		if (UUserWidget* UW = SpeakerIndicatorComponent->GetUserWidgetObject())
-		{
-			UW->SetVisibility(ESlateVisibility::HitTestInvisible);
-			UW->SetRenderOpacity(0.0f);
-		}
-	}
 
 	if (AMatchMenuGameState* GameState = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
@@ -259,8 +224,6 @@ void AMatchPawn::TryRegisterVOIPTalker()
 		return;
 	}
 	
-	VOIPTalker->OnTalkingStateChanged.RemoveDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
-	VOIPTalker->OnTalkingStateChanged.AddDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
 	VOIPTalker->RegisterTalker(PS);
 	TryInitVoiceSlider();
 
@@ -300,19 +263,6 @@ void AMatchPawn::TryInitVoiceSlider()
 	}
 }
 
-void AMatchPawn::HandleVoiceTalkingStateChanged(bool bIsTalking)
-{
-	// 해당 Pawn의 Owner가 PushToTalk 모드를 사용하고 있을 경우에는
-	// V키에서 손을 떼야지만 UI가 사라짐
-	// Auto Input모드일 경우에는 말을 하고 있는 경우에 UI 활성화
-	if (bDesiredSpeakingByPTT && !bIsTalking)
-	{
-		return;
-	}
-
-	SetSpeakerIconVisible(bIsTalking);
-}
-
 void AMatchPawn::Server_SetSpeaking_Implementation(bool bSpeaking)
 {
 	Multicast_SetSpeaking(bSpeaking);
@@ -320,28 +270,9 @@ void AMatchPawn::Server_SetSpeaking_Implementation(bool bSpeaking)
 
 void AMatchPawn::Multicast_SetSpeaking_Implementation(bool bSpeaking)
 {
-	bDesiredSpeakingByPTT = bSpeaking;
-
-	SetSpeakerIconVisible(bSpeaking);
-}
-
-void AMatchPawn::SetSpeakerIconVisible(bool bVisible)
-{
-	if (!SpeakerIndicatorComponent)
+	// 표시 로직은 UI(MatchPawnSpeakerWidget)가 담당. 여기서는 PTT 상태만 VOIPTalker로 위임.
+	if (VOIPTalker)
 	{
-		return;
-	}
-
-	UUserWidget* UW = SpeakerIndicatorComponent->GetUserWidgetObject();
-	if (!UW)
-	{
-		SpeakerIndicatorComponent->InitWidget();
-		UW = SpeakerIndicatorComponent->GetUserWidgetObject();
-	}
-
-	if (UW)
-	{
-		UW->SetVisibility(ESlateVisibility::HitTestInvisible);
-		UW->SetRenderOpacity(bVisible ? 1.0f : 0.0f);
+		VOIPTalker->SetPushToTalkSpeaking(bSpeaking);
 	}
 }

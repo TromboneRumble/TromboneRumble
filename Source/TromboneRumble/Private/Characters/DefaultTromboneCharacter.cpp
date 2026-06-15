@@ -26,6 +26,7 @@
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Items/InstrumentBase.h"
+#include "UI/UserWidgets/InGame/InGameSpeakerWidget.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -242,9 +243,6 @@ void ADefaultTromboneCharacter::Server_SetSpeaking_Implementation(bool bSpeaking
 
 void ADefaultTromboneCharacter::Multicast_SetSpeaking_Implementation(bool bSpeaking)
 {
-	
-	bDesiredSpeakingByPTT = bSpeaking;
-
 	// Defensive re-bind of OwnerPlayer with a forced cycle. UWidgetComponent::SetOwnerPlayer
 	// only triggers RemoveWidgetFromScreen + re-add when the player pointer actually changes.
 	// On the host, the screen-space widget for a client-controlled pawn can end up with a
@@ -271,8 +269,12 @@ void ADefaultTromboneCharacter::Multicast_SetSpeaking_Implementation(bool bSpeak
 			SpeakerIndicatorComponent->MarkRenderStateDirty();
 		}
 	}
-	
-	SetSpeakerIconVisible(bSpeaking);
+
+	// 표시 로직은 UI(InGameSpeakerWidget)가 담당. 여기서는 PTT 상태만 VOIPTalker로 위임.
+	if (VOIPTalker)
+	{
+		VOIPTalker->SetPushToTalkSpeaking(bSpeaking);
+	}
 }
 
 void ADefaultTromboneCharacter::BeginPlay()
@@ -308,10 +310,9 @@ void ADefaultTromboneCharacter::BeginPlay()
 		}
 
 		SpeakerIndicatorComponent->InitWidget();
-		if (UUserWidget* UW = SpeakerIndicatorComponent->GetUserWidgetObject())
+		if (UInGameSpeakerWidget* SpeakerWidget = Cast<UInGameSpeakerWidget>(SpeakerIndicatorComponent->GetUserWidgetObject()))
 		{
-			UW->SetVisibility(ESlateVisibility::HitTestInvisible);
-			UW->SetRenderOpacity(0.0f);
+			SpeakerWidget->Init(VOIPTalker);
 		}
 	}
 
@@ -553,19 +554,6 @@ void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotTyp
 	}
 }
 
-void ADefaultTromboneCharacter::HandleVoiceTalkingStateChanged(bool bIsTalking)
-{
-	// 해당 Character의 Owner가 PushToTalk 모드를 사용하고 있을 경우에는
-	// V키에서 손을 떼야지만 UI가 사라짐
-	// Auto Input모드일 경우에는 말을 하고 있는 경우에 UI 활성화
-	if (bDesiredSpeakingByPTT && !bIsTalking)
-	{
-		return;
-	}
-	// Auto 모드에서는 말을 하고 있을때만 Widget 보이게 하기
-	SetSpeakerIconVisible(bIsTalking);
-}
-
 ARhythmActor* ADefaultTromboneCharacter::GetCachedRhythmActor()
 {
 	if (CachedRhythmActor.IsValid()) return CachedRhythmActor.Get();
@@ -625,33 +613,10 @@ void ADefaultTromboneCharacter::TryRegisterVOIPTalker()
 		return;
 	}
 
-	VOIPTalker->OnTalkingStateChanged.RemoveDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
-	VOIPTalker->OnTalkingStateChanged.AddDynamic(this, &ThisClass::HandleVoiceTalkingStateChanged);
 	VOIPTalker->RegisterTalker(PS);
 }
 
 
-
-void ADefaultTromboneCharacter::SetSpeakerIconVisible(bool bVisible)
-{
-	if (!SpeakerIndicatorComponent)
-	{
-		return;
-	}
-
-	UUserWidget* UW = SpeakerIndicatorComponent->GetUserWidgetObject();
-	if (!UW)
-	{
-		SpeakerIndicatorComponent->InitWidget();
-		UW = SpeakerIndicatorComponent->GetUserWidgetObject();
-	}
-
-	if (UW)
-	{
-		UW->SetVisibility(ESlateVisibility::HitTestInvisible);
-		UW->SetRenderOpacity(bVisible ? 1.0f : 0.0f);
-	}
-}
 
 EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() const
 {

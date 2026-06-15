@@ -179,8 +179,6 @@ private:
 	void HandleOnRagdoll();
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
-	UFUNCTION()
-	void HandleVoiceTalkingStateChanged(bool bIsTalking);
 	// ~Delegate Callback Handlers
 
 	ARhythmActor* GetCachedRhythmActor();
@@ -192,8 +190,6 @@ private:
 	
 	// Voice Interaction
 	void TryRegisterVOIPTalker();
-	bool bDesiredSpeakingByPTT = false;
-	void SetSpeakerIconVisible(bool bVisible);
 	// ~Voice Interaction
 
 public:

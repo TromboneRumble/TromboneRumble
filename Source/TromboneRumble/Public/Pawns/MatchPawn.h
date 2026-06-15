@@ -54,23 +54,19 @@ protected:
 
 	/** Pawn collision component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCapsuleComponent* CapsuleComponent;
+	TObjectPtr<UCapsuleComponent> CapsuleComponent;
 	
 	/** Pawn skeletal mesh component. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* SkeletalMeshComponent;
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 	
 	/** Pawn nameplate component. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	UNameplateComponent* NameplateComponent;
+	TObjectPtr<UNameplateComponent> NameplateComponent;
 
 	/** Voice chat talker — configured for 2D (omnidirectional) playback in MatchMenuMap. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
 	TObjectPtr<UTromboneVOIPTalker> VOIPTalker;
-
-	/** Widget shown above the pawn while this player is speaking. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
-	TObjectPtr<UWidgetComponent> SpeakerIndicatorComponent;
 
 	/** Per-pawn voice volume slider — own pawn: sender volume; other pawns: listener adjustment. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
@@ -82,14 +78,11 @@ protected:
 
 	FTimerHandle RetryVOIPRegistrationHandle;
 
-	UFUNCTION()
-	void HandleVoiceTalkingStateChanged(bool bIsTalking);
-	
-	bool bDesiredSpeakingByPTT = false;
-	void SetSpeakerIconVisible(bool bVisible);
-
 public:
-	// UVOIPTalker::OnTalkingBegin은 Listener에게만 적용되기 때문에, RPC를 통해 SpeakerIcon을 제어
+	/** @return The voice talker for this pawn, so UI widgets can bind to its talking-state delegate. */
+	UTromboneVOIPTalker* GetVOIPTalker() const { return VOIPTalker; }
+
+	// UVOIPTalker::OnTalkingBegin은 Listener에게만 적용되기 때문에, RPC를 통해 자기표시(PTT) 상태를 전파.
 	// True인 경우에는 해당 플레이어가 PushToTalk 모드를 사용해서 말을 하고 있음.
 	UFUNCTION(Server, Reliable)
 	void Server_SetSpeaking(bool bSpeaking);

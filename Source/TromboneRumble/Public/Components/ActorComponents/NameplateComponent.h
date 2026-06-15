@@ -31,10 +31,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Nameplate")
 	TSubclassOf<UUserWidget> NameplateWidgetClass;
 
-	/** Draw size of the nameplate widget's 'canvas'. Does not scale the actual widget. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Nameplate")
-	FVector2D NameplateDrawSize;
-
 	/** Nameplate offset from the center of the actor. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Nameplate")
 	FVector NameplateOffset;
