@@ -163,9 +163,16 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 	{
 		if (LobbyGameState)
 		{
-			const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA : 
-																TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
-			//const FGameplayTag SelectedSong = TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
+			//TODO : SelectedSong 하드코딩 수정
+			
+			// InGameMap 노래들
+			//const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA : 
+			//													TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
+			
+			// 눈맵 노래
+			const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapC : 
+																TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
+			
 			LobbyGameState->SetSelectedSongTag(SelectedSong);
 			SpawnInstruments();
 		}
@@ -279,7 +286,9 @@ void ALobbyGameMode::OnCountdownToTravel()
 		{
 			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 			{
-				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
+				//TODO : InGame맵 이동 로직 UI로 수정
+				//const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
+				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Snow);
 				RequestServerTravel(InGameMapName);
 			}
 		}

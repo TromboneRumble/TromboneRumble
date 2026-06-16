@@ -12,7 +12,6 @@ UNameplateComponent::UNameplateComponent()
 {
 	bWantsInitializeComponent = true;
 	NameplateWidgetClass = TSubclassOf<UUserWidget>();
-	NameplateDrawSize = FVector2D(150.0f, 50.0f);
 	NameplateOffset = FVector(0.0f, 0.0f, 100.0f);
 
 	WidgetComponent = nullptr;
@@ -67,7 +66,7 @@ void UNameplateComponent::CreateNameplate()
 	WidgetComponent->SetWidgetClass(NameplateWidgetClass);
 	WidgetComponent->SetBlendMode(EWidgetBlendMode::Masked);
 	WidgetComponent->SetCastShadow(false);
-	WidgetComponent->SetDrawSize(NameplateDrawSize);
+	WidgetComponent->SetDrawAtDesiredSize(true);
 	WidgetComponent->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 	WidgetComponent->SetRelativeLocation(NameplateOffset);
 	if (APlayerController* LocalPC = GetWorld()->GetFirstPlayerController())

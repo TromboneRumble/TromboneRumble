@@ -15,6 +15,7 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MK,				"Trombone.Maps.InGame.MK");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_HW,				"Trombone.Maps.InGame.HW");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MJ,				"Trombone.Maps.InGame.MJ");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_Snow,			"Trombone.Maps.InGame.Snow");
 
 	// RhythmGame Broadcast Messages
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_OnLayoutChanged, "Trombone.Rhythm.OnLayoutChanged");
