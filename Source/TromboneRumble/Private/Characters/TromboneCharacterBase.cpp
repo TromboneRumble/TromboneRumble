@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/TromboneCharacterBase.h"
-
 #include "NiagaraComponent.h"
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "AkComponent.h"
 #include "Components/ActorComponents/CustomizationComponent.h"
+#include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Subsystems/SaveManagerSubsystem.h"
@@ -23,6 +23,7 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
 	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
+	RagdollComponent = CreateDefaultSubobject<UTromboneRagdollComponent>(TEXT("RagdollComponent"));
 	StunNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StunNiagaraComponent"));
 	if (StunNiagaraComponent)
 	{
@@ -35,6 +36,7 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
+	
 	
 	InitCharacter();
 }
@@ -435,57 +437,6 @@ void ATromboneCharacterBase::UnapplyStun()
 	SetPlayerInput(true);
 }
 
-void ATromboneCharacterBase::ApplyRagdoll()
-{
-	SetPlayerInput(false);
-
-    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-    
-    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    
-	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
-	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
-	{
-		AnimInst->SetIsRagdolling(true);
-	}
-}
-
-void ATromboneCharacterBase::UnapplyRagdoll()
-{
-    const FVector PelvisLocation = GetMesh()->GetSocketLocation(PelvisBoneName);
-    const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
-
-    FVector TargetCapsuleLocation = PelvisLocation;
-    const FRotator TargetCapsuleRotation = FRotator(0.0f, PelvisRotation.Yaw + 90.0f, 0.0f);
-
-    const float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-
-    FHitResult HitResult;
-    FVector Start = PelvisLocation;
-    FVector End = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
-    FCollisionQueryParams QueryParams;
-    QueryParams.AddIgnoredActor(this);
-    
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
-    {
-       TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
-    }
-
-    SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation);
-    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
-
-	GetWorld()->GetTimerManager().SetTimer(
-		TimerHandler_DelayedSavePostSnapshot, 
-		this, 
-		&ThisClass::DelayedSavePoseSnapshot, 
-		PoseSnapshotInterval,
-		false
-	);
-}
-
 void ATromboneCharacterBase::DelayedSavePoseSnapshot()
 {
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
@@ -658,9 +609,37 @@ void ATromboneCharacterBase::ApplyFlagPhysics()
 
 void ATromboneCharacterBase::OnRep_IsRagdoll()
 {
+	if (RagdollComponent)
+	{
+		RagdollComponent->HandleRagdollChanged(bIsRagdoll);
+	}
+	
 	if (bIsRagdoll)
 	{
-		ApplyRagdoll();
+		if (USkeletalMeshComponent* CharMesh = GetMesh())
+		{
+			if (HasAuthority())
+			{
+				constexpr float ExplosionForce = 2000.0f;
+				constexpr float DirectionForce = 1000.0f;
+
+				FVector RandomHorizontalDirection = FMath::VRand();
+				RandomHorizontalDirection.Z = 0.0f;
+				RandomHorizontalDirection.Normalize();
+
+				const FVector ForwardImpulse = RandomHorizontalDirection * DirectionForce;
+				const FVector UpwardImpulse = FVector::UpVector * ExplosionForce;
+				const FVector FinalCombinedImpulse = UpwardImpulse + ForwardImpulse;
+
+				// CharMesh->AddImpulseToAllBodiesBelow(FinalCombinedImpulse, PelvisBoneName, false, true);
+			}
+		}
+		
+		if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+		{
+			AnimInst->SetIsRagdolling(true);
+		}
+		
 		PlayFaceSequence(ECharacterFaceState::Ragdoll);
 		if (AkSoundComponent && RagdollBooSound)
 		{
@@ -670,7 +649,13 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	}
 	else
 	{
-		UnapplyRagdoll();
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandler_DelayedSavePostSnapshot, 
+			this, 
+			&ThisClass::DelayedSavePoseSnapshot, 
+			PoseSnapshotInterval,
+			false
+		);
 		PlayFaceSequence(ECharacterFaceState::Blink);
 		EndRagdollDelegate.Broadcast();
 	}

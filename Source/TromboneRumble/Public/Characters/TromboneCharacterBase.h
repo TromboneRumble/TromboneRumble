@@ -9,12 +9,12 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class UTromboneRagdollComponent;
 class UAkAudioEvent;
 class UAkComponent;
 class UNiagaraComponent;
 class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
-class UInputComponent;
 class UCustomizationComponent;
 class UMaterialInterface;
 
@@ -90,6 +90,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Animation")
 	TObjectPtr<UCurveVector> BounceCurve;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Components")
+	TObjectPtr<UTromboneRagdollComponent> RagdollComponent;
 
 private:
 	void InitCharacter();
@@ -105,8 +108,6 @@ private:
 	void ApplyStun();
 	void UnapplyStun();
 	
-	void ApplyRagdoll();
-	void UnapplyRagdoll();
 	void DelayedSavePoseSnapshot();
 	void InternalUnapplyRagdoll();
 	bool IsFacingUp() const;
