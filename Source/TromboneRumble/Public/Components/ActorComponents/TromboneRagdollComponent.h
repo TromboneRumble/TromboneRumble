@@ -18,9 +18,6 @@ struct FRagdollNetState
 	FVector_NetQuantize PelvisLocation = FVector::ZeroVector;
 
 	UPROPERTY()
-	FQuat PelvisRotation = FQuat::Identity;
-	
-	UPROPERTY()
 	FVector_NetQuantize PelvisVelocity = FVector::ZeroVector;
 };
 

@@ -156,6 +156,7 @@ private:
 
 	FName PelvisBoneName = "pelvis";
 	
+	// TODO : 컴포지션으로 빼기
 	// ~ Begin Face Expression Region
 	void PlayFaceSequence(ECharacterFaceState TargetState);
 	void InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence);

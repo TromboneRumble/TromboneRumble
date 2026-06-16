@@ -352,6 +352,7 @@ void ATromboneCharacterBase::OnRagdoll()
 	bIsRagdoll = true;
 	OnRep_IsRagdoll();
 	
+	// TODO : 공중에선 타이머 안흘러가게 개선
 	GetWorld()->GetTimerManager().SetTimer(
 		OnHitTimerHandle, 
 		this, 
@@ -616,25 +617,6 @@ void ATromboneCharacterBase::OnRep_IsRagdoll()
 	
 	if (bIsRagdoll)
 	{
-		if (USkeletalMeshComponent* CharMesh = GetMesh())
-		{
-			if (HasAuthority())
-			{
-				constexpr float ExplosionForce = 2000.0f;
-				constexpr float DirectionForce = 1000.0f;
-
-				FVector RandomHorizontalDirection = FMath::VRand();
-				RandomHorizontalDirection.Z = 0.0f;
-				RandomHorizontalDirection.Normalize();
-
-				const FVector ForwardImpulse = RandomHorizontalDirection * DirectionForce;
-				const FVector UpwardImpulse = FVector::UpVector * ExplosionForce;
-				const FVector FinalCombinedImpulse = UpwardImpulse + ForwardImpulse;
-
-				// CharMesh->AddImpulseToAllBodiesBelow(FinalCombinedImpulse, PelvisBoneName, false, true);
-			}
-		}
-		
 		if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
 		{
 			AnimInst->SetIsRagdolling(true);

@@ -1,8 +1,6 @@
 ﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
-
-#include "Animation/CharacterAnimInstance.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -113,7 +111,6 @@ void UTromboneRagdollComponent::Server_UpdateRagdollTransform()
 	
 	FRagdollNetState NewState;
 	NewState.PelvisLocation = OwnerMesh->GetBodyInstance(PelvisBoneName)->GetUnrealWorldTransform().GetLocation();
-	NewState.PelvisRotation = OwnerMesh->GetBodyInstance(PelvisBoneName)->GetUnrealWorldTransform().GetRotation();
 	NewState.PelvisVelocity = OwnerMesh->GetPhysicsLinearVelocity(PelvisBoneName);
 	
 	ServerRagdollState = NewState;
@@ -168,14 +165,11 @@ void UTromboneRagdollComponent::Client_InterpolateRagdoll(float DeltaTime)
     const FVector CurrentVelocity = OwnerMesh->GetPhysicsLinearVelocity(PelvisBoneName);
     const FVector NewVelocity = FMath::VInterpTo(CurrentVelocity, TargetVelocity, DeltaTime, VelocityInterpSpeed);
 
-    // 골반에만 속도를 부여하여 나머지 연결된 부위는 관성에 의해 알아서 따라가게
     OwnerMesh->SetPhysicsLinearVelocity(NewVelocity, false, PelvisBoneName);
 }
 
 void UTromboneRagdollComponent::OnRep_ServerRagdollState()
 {
-	// 리플레시 빈도가 너무 잦아 로그가 무한히 찍히는 타이밍 이슈 방지를 위해 
-	// 필요한 경우 에러 로그 보정 필터를 가동하거나 UI 갱신 유무 확인
 }
 
 
