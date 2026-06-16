@@ -18,11 +18,11 @@ static bool TryGetGameStateFromMapTag(const FGameplayTag& MapTag, ELevelType& Ou
 	TArray<FString> Parts;
 	TagStr.ParseIntoArray(Parts, TEXT("."), true);
 
-	// Trombone.Maps.<Level>.Main 형태만 통과
-	if (Parts.Num() < 4 || 
+	// Trombone.Maps.<Level>.<Leaf> 형태만 통과
+	// Leaf 세그먼트(Main/Snow/MK 등)는 제한하지 않음 → 한 LevelType에 여러 맵 등록 가능
+	if (Parts.Num() < 4 ||
 		Parts[0] != *TromboneGamePlayTags::ProjectName ||
-		Parts[1] != *TromboneGamePlayTags::MapsCategory ||
-		Parts[3] != *TromboneGamePlayTags::ActuallyUsedMap)
+		Parts[1] != *TromboneGamePlayTags::MapsCategory)
 	{
 		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (Not Trombone.Maps): %s"), *TagStr));
 		return false;
