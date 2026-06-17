@@ -14,9 +14,11 @@ namespace TromboneGamePlayTags
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_Main);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Tutorial_Main);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Customize_Main);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_ResultScene_Main);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_MK);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_HW);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_MJ);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_Snow);
 
 	//RhythmGame Broadcast Messages
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_OnLayoutChanged);
@@ -26,6 +28,7 @@ namespace TromboneGamePlayTags
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapA);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapB);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapC);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapD);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_MapT);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_EasyMapA);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_Song_EasyMapB);
@@ -33,4 +36,10 @@ namespace TromboneGamePlayTags
 
 	//GameplayEffects
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Buff_Speed);
+	
+	/** Strings */
+	const FString ProjectName = TEXT("Trombone");
+	const FString MapsCategory = TEXT("Maps");
+	const FString ActuallyUsedMap = TEXT("Main");
+	const FString MapsRootPath = ProjectName + TEXT(".") + MapsCategory;
 }

@@ -1,46 +1,45 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Subsystems/GameStateSubsystem.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 
-static bool TryGetGameStateFromMapTag(const FGameplayTag& MapTag, ELevelState& OutState)
+static bool TryGetGameStateFromMapTag(const FGameplayTag& MapTag, ELevelType& OutState)
 {
 	// 자식 태그가 있으면 안 됨
 	const FGameplayTagContainer Children = UGameplayTagsManager::Get().RequestGameplayTagChildren(MapTag);
-	if (Children.Num() > 0) return false;
+	if (Children.Num() > 0)
+	{
+		return false;
+	}
 
-	// "Trombone.Maps.InGame.Main"
+	// e.g. Trombone.Maps.InGame.Main
 	const FString TagStr = MapTag.ToString();
 	TArray<FString> Parts;
 	TagStr.ParseIntoArray(Parts, TEXT("."), true);
 
-	// "Trombone.Maps.<State>.<MapName>" 형태만 통과
-	if (Parts.Num() < 4)
-	{
-		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (Need 4 tokens): %s"), *TagStr));
-		return false;
-	}
-
-	if (Parts[0] != TEXT("Trombone") || Parts[1] != TEXT("Maps"))
+	// Trombone.Maps.<Level>.<Leaf> 형태만 통과
+	// Leaf 세그먼트(Main/Snow/MK 등)는 제한하지 않음 → 한 LevelType에 여러 맵 등록 가능
+	if (Parts.Num() < 4 ||
+		Parts[0] != *TromboneGamePlayTags::ProjectName ||
+		Parts[1] != *TromboneGamePlayTags::MapsCategory)
 	{
 		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (Not Trombone.Maps): %s"), *TagStr));
 		return false;
 	}
 
-	const FString& StateStr = Parts[2]; // "InGame", "Lobby", "MainMenu"
+	const FString& LevelNameString = Parts[2]; // "InGame", "Lobby", "MainMenu"
 
 	// enum 이름과 동일하면 자동 변환 가능
-	const UEnum* Enum = StaticEnum<ELevelState>();
-	const int64 Value = Enum ? Enum->GetValueByNameString(StateStr) : INDEX_NONE;
+	const UEnum* Enum = StaticEnum<ELevelType>();
+	const int64 Value = Enum ? Enum->GetValueByNameString(LevelNameString) : INDEX_NONE;
 	if (Value == INDEX_NONE)
 	{
 		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (No EGameState match): %s"), *StateStr));
 		return false;
 	}
 
-	OutState = static_cast<ELevelState>(Value);
+	OutState = static_cast<ELevelType>(Value);
 	return true;
 }
 
@@ -48,18 +47,17 @@ void UGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	CurrentLevelState = ELevelState::MainMenu;
+	CurrentLevelType = ELevelType::MainMenu;
 
 	// 루트 태그
-	const FGameplayTag MapsRoot = FGameplayTag::RequestGameplayTag(TEXT("Trombone.Maps"));
+	const FGameplayTag MapsRoot = FGameplayTag::RequestGameplayTag(*TromboneGamePlayTags::MapsRootPath);
 
 	// 하위 태그 전부 수집
-	const FGameplayTagContainer Children =
-		UGameplayTagsManager::Get().RequestGameplayTagChildren(MapsRoot);
+	const FGameplayTagContainer Children = UGameplayTagsManager::Get().RequestGameplayTagChildren(MapsRoot);
 
 	for (const FGameplayTag& Tag : Children)
 	{
-		ELevelState State;
+		ELevelType State;
 		if (!TryGetGameStateFromMapTag(Tag, State))
 		{
 			continue;
@@ -68,13 +66,18 @@ void UGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		AddMapPathFromGameTag(Tag, State);
 	}
 
-	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UGameStateSubsystem::OnPostLoadMap);
+	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &ThisClass::OnPreLoadMap);
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &ThisClass::OnPostLoadMap);
 	
 	OnPostLoadMap(GetWorld());
 }
 
 void UGameStateSubsystem::Deinitialize()
 {
+	if (FCoreUObjectDelegates::PreLoadMap.IsBoundToObject(this))
+	{
+		FCoreUObjectDelegates::PreLoadMap.RemoveAll(this);
+	}
 	if (FCoreUObjectDelegates::PostLoadMapWithWorld.IsBoundToObject(this))
 	{
 		FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
@@ -83,42 +86,38 @@ void UGameStateSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
+void UGameStateSubsystem::OnPreLoadMap(const FString& InMapName)
+{
+	if (!UpdateLevelStateFromMapName(InMapName))
+	{
+		SetLevelState(ELevelType::Invalid);
+	}
+}
+
 void UGameStateSubsystem::OnPostLoadMap(UWorld* InLoadedWorld)
 {
 	if (!InLoadedWorld)
 	{
-		SetLevelState(ELevelState::Invalid);
+		SetLevelState(ELevelType::Invalid);
 		return;
 	}
-
-	const FString& LoadedMapName = InLoadedWorld->GetMapName();
-
-	for (const TPair<FGameplayTag, FString>& Pair : MapTagToMapNameMap)
+	
+	if (!UpdateLevelStateFromMapName(InLoadedWorld->GetMapName()))
 	{
-		const FString& CachedMapName = Pair.Value;
-		if (!CachedMapName.IsEmpty() && LoadedMapName.Contains(CachedMapName))
-		{
-			if (const ELevelState* FoundState = MapTagToLevelStateMap.Find(Pair.Key))
-			{
-				SetLevelState(*FoundState);
-				return;
-			}
-		}
+		SetLevelState(ELevelType::Invalid);
 	}
-	// 어떤 것도 매칭 안 되면 Invalid
-	SetLevelState(ELevelState::Invalid);
 }
 
-void UGameStateSubsystem::SetLevelState(const ELevelState& InNewState)
+void UGameStateSubsystem::SetLevelState(const ELevelType& InNewState)
 {
-	if (CurrentLevelState != InNewState)
+	if (CurrentLevelType != InNewState)
 	{
-		CurrentLevelState = InNewState;
-		OnLevelStateChanged.Broadcast(CurrentLevelState);
+		CurrentLevelType = InNewState;
+		OnLevelStateChanged.Broadcast(CurrentLevelType);
 	}
 }
 
-void UGameStateSubsystem::AddMapPathFromGameTag(const FGameplayTag& InTag, const ELevelState& InLevelState)
+void UGameStateSubsystem::AddMapPathFromGameTag(const FGameplayTag& InTag, const ELevelType& InLevelState)
 {
 	if (!InTag.IsValid())
 	{
@@ -126,21 +125,117 @@ void UGameStateSubsystem::AddMapPathFromGameTag(const FGameplayTag& InTag, const
 	}
 
 	const FString MapPath = UTromboneFunctionLibrary::GetMapPathByTag(InTag);
-	const FString CachedMapName = FPackageName::GetShortName(MapPath);
+	const FString MapString = FPackageName::GetShortName(MapPath);
 
-	if (!CachedMapName.IsEmpty())
+	if (!MapString.IsEmpty())
 	{
-		MapTagToMapNameMap.Add(InTag, CachedMapName);
-		MapTagToLevelStateMap.Add(InTag, InLevelState);
+		MapTagToMapNameMap.Add(InTag, MapString);
+		MapTagToLevelTypeMap.Add(InTag, InLevelState);
 	}
-
 }
 
-FString UGameStateSubsystem::GetMapNameForTag(const FGameplayTag& MapTag) const
+bool UGameStateSubsystem::UpdateLevelStateFromMapName(const FString& InMapName)
+{
+	if (InMapName.IsEmpty())
+	{
+		return false;
+	}
+
+	const FString ShortMapName = FPackageName::GetShortName(InMapName);
+
+	for (const TPair<FGameplayTag, FString>& Pair : MapTagToMapNameMap)
+	{
+		const FString& CachedMapName = Pair.Value;
+       
+		if (!CachedMapName.IsEmpty() && ShortMapName.Contains(CachedMapName))
+		{
+			if (const ELevelType* FoundState = MapTagToLevelTypeMap.Find(Pair.Key))
+			{
+				SetLevelState(*FoundState);
+				return true;
+			}
+		}
+	}
+    
+	return false;
+}
+
+FString UGameStateSubsystem::GetLevelStringFromTag(const FGameplayTag& MapTag) const
 {
 	if (const FString* FoundName = MapTagToMapNameMap.Find(MapTag))
 	{
 		return *FoundName;
 	}
 	return FString();
+}
+
+ELevelType UGameStateSubsystem::GetLevelState() const
+{	
+	if (CurrentLevelType != ELevelType::Invalid)
+	{
+		return CurrentLevelType;
+	}
+
+	if (const UWorld* CurrentWorld = GetWorld())
+	{
+		const FString LoadedMapName = CurrentWorld->GetMapName();
+
+		for (const TPair<FGameplayTag, FString>& Pair : MapTagToMapNameMap)
+		{
+			const FString& CachedMapName = Pair.Value;
+			if (!CachedMapName.IsEmpty() && LoadedMapName.Contains(CachedMapName))
+			{
+				if (const ELevelType* FoundState = MapTagToLevelTypeMap.Find(Pair.Key))
+				{
+					return *FoundState;
+				}
+			}
+		}
+	}
+
+	return CurrentLevelType;
+}
+
+void UGameStateSubsystem::DumpSettings() const
+{
+    UE_LOG(LogTemp, Log, TEXT("=========================================================================================="));
+    UE_LOG(LogTemp, Log, TEXT(" [UGameStateSubsystem::Trombone_LevelState_Dump] - Registered Maps & States"));
+    UE_LOG(LogTemp, Log, TEXT("=========================================================================================="));
+    
+    // 1. 현재 전역 상태 정보 출력
+    const UEnum* EnumPtr = StaticEnum<ELevelType>();
+    FString CurrentStateStr = EnumPtr ? EnumPtr->GetNameStringByValue(static_cast<int64>(CurrentLevelType)) : TEXT("Unknown");
+    
+    UE_LOG(LogTemp, Log, TEXT(" * Current Level State : %s"), *CurrentStateStr);
+    UE_LOG(LogTemp, Log, TEXT(" * Total Registered Maps: %d"), MapTagToMapNameMap.Num());
+    UE_LOG(LogTemp, Log, TEXT("------------------------------------------------------------------------------------------"));
+    
+    // 테이블 헤더 출력
+    UE_LOG(LogTemp, Log, TEXT(" %-40s | %-25s | %-15s"), TEXT("Gameplay Tag"), TEXT("Cached Map Name"), TEXT("Level State"));
+    UE_LOG(LogTemp, Log, TEXT("------------------------------------------------------------------------------------------"));
+
+    // 2. 루프를 돌며 맵 구조 정보 출력
+    for (const TPair<FGameplayTag, FString>& Pair : MapTagToMapNameMap)
+    {
+        const FGameplayTag& MapTag = Pair.Key;
+        const FString& CachedMapName = Pair.Value;
+        
+        // 매칭되는 레벨 상태 찾기
+        FString StateStr = TEXT("Invalid");
+        if (const ELevelType* FoundState = MapTagToLevelTypeMap.Find(MapTag))
+        {
+            if (EnumPtr)
+            {
+                StateStr = EnumPtr->GetNameStringByValue(static_cast<int64>(*FoundState));
+            }
+        }
+
+        // 가로 정렬폭(%-40s 등)을 맞춰서 깔끔하게 출력
+        UE_LOG(LogTemp, Log, TEXT(" %-40s | %-25s | %-15s"), 
+            *MapTag.ToString(), 
+            *CachedMapName, 
+            *StateStr);
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("=========================================================================================="));
 }

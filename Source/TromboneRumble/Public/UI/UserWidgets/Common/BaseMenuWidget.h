@@ -23,8 +23,6 @@ protected:
 	virtual void NativeConstruct() override;
 	
 	virtual void Init();
-	virtual void BindSubsystemCallbacks();
-	virtual void RemoveSubsystemCallbacks();
 	virtual void SetUIEnabled(const bool bEnabled);
 	
 	UFUNCTION()
@@ -35,9 +33,4 @@ protected:
 	
 	TObjectPtr<UBaseUIRoot> GetRootLayout() const;
 	
-	UPROPERTY(Transient)
-	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
-	
-	UPROPERTY(Transient)
-	TObjectPtr<UEasyFriendSubsystem> FriendsSubsystem;
 };

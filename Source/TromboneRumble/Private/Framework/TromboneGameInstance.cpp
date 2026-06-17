@@ -4,11 +4,38 @@
 #include "EasyOnlineSession.h"
 #include "AkGameplayStatics.h"
 #include "EasyConfig.h"
+#include "EngineUtils.h"
 
 TSubclassOf<UOnlineSession> UTromboneGameInstance::GetOnlineSessionClass()
 {
 	const UEasyConfig* Config = UEasyConfig::Get();
 	return Config->OnlineSessionClass;
+}
+
+void UTromboneGameInstance::SaveResultSceneData()
+{
+	CachedResultSceneData.Empty();
+
+	const APlayerState* LocalPS = GetWorld()->GetFirstPlayerController()->GetPlayerState<APlayerState>();
+	if (LocalPS == nullptr)
+	{
+		return;
+	}
+	
+	for (APlayerState* PS : TActorRange<APlayerState>(GetWorld()))
+	{
+		if (const ADefaultPlayerState* DPS = Cast<ADefaultPlayerState>(PS))
+		{
+			FPlayerResultSceneData Data;
+			Data.Nickname = DPS->GetPlayerName();
+			Data.Score = DPS->GetScore();
+			Data.SpecificScoreData = DPS->GetScoreData();
+			Data.PlayerSkinColor = DPS->GetSkinColor();
+			Data.bIsLocalPlayer = (DPS == LocalPS);
+
+			CachedResultSceneData.Add(Data);
+		}
+	}
 }
 
 void UTromboneGameInstance::OnStart()
@@ -46,13 +73,43 @@ void UTromboneGameInstance::StopMenuBGM()
 	}
 }
 
+const FPlayerResultSceneData& UTromboneGameInstance::GetLocalPlayerResultSceneData()
+{
+	for (const auto& SingleData : CachedResultSceneData)
+	{
+		if (SingleData.bIsLocalPlayer)
+		{
+			return SingleData;
+		}
+	}
+	
+	// If there is no local player data, create and return it
+	// this situation should not actually occur
+	CachedResultSceneData.Add(FPlayerResultSceneData());
+	return CachedResultSceneData.Last();
+}
+
+int32 UTromboneGameInstance::GetLocalPlayerRank()
+{
+	CachedResultSceneData.Sort();
+	
+	for (int Rank = 0; Rank < CachedResultSceneData.Num(); Rank++)
+	{
+		if (CachedResultSceneData[Rank].bIsLocalPlayer)
+		{
+			return Rank + 1;
+		}
+	}
+	
+	return -1;
+}
+
 void UTromboneGameInstance::InitWWiseEngine()
 {
 	{
 		AkMemSettings DefaultMemorySettings;
 		AK::MemoryMgr::GetDefaultSettings(DefaultMemorySettings);
 		AKRESULT InitResult = AK::MemoryMgr::Init(&DefaultMemorySettings);
-		//UE_LOG(LogTemp, Warning, TEXT("MemoryManagerInitResult : %d"), (int32)InitResult);
 	}
 
 	{
@@ -67,7 +124,6 @@ void UTromboneGameInstance::InitWWiseEngine()
 		AkPlatformInitSettings DefaultPlatformSettings;
 		AK::SoundEngine::GetDefaultPlatformInitSettings(DefaultPlatformSettings);
 		AKRESULT InitResult = AK::SoundEngine::Init(&DefaultInitSettings, &DefaultPlatformSettings);
-		//UE_LOG(LogTemp, Warning, TEXT("SoundEngineInitResult : %d"), (int32)InitResult);
 	}
 }
 

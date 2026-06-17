@@ -5,6 +5,7 @@
 #include "PlayerNameplateWidget.generated.h"
 
 class ADefaultPlayerState;
+class UMatchPawnSpeakerWidget;
 
 UCLASS()
 class TROMBONERUMBLE_API UPlayerNameplateWidget : public UCommonUserWidget
@@ -21,6 +22,10 @@ protected:
 	/** Player state of the owning player. */
 	UPROPERTY(Transient)
 	ADefaultPlayerState* OwningPlayerState;
+
+	/** Speaker indicator embedded in the nameplate. Optional so non-speaker nameplates still work. */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UMatchPawnSpeakerWidget> SpeakerWidget;
 
 public:
 

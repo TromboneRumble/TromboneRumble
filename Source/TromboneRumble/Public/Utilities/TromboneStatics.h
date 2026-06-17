@@ -1,32 +1,61 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "TromboneStatics.generated.h"
 
+struct FToastRequest;
 class UNoticePopup;
 class UTwoButtonPopup;
 class UBaseUIRoot;
-enum class ELevelState : uint8;
+enum class ELevelType : uint8;
 
 /**
  *  Utility class for static functions in Trombone Rumble Project.
  */
 UCLASS()
-class TROMBONERUMBLE_API UTromboneStatics : public UObject
+class TROMBONERUMBLE_API UTromboneStatics : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	
 public:
 	
-	/** @return Randomly generated room code of specified length. 
-	 * If bClipboardCopy is true, the generated code will also be copied to the clipboard. */
-	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
+	/** 
+	 * Copies the current session's room code to the clipboard.
+	 *
+	 * @return Whether the room code was successfully copied or not.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "TromboneStatics|Utils", meta = (WorldContext = "WorldContextObject"))
+	static bool CopyRoomCodeToClipboard(const UObject* WorldContextObject);
 	
 	/** Opens a level */
-	static void OpenLevel(const UObject* WorldContextObject, ELevelState Level, bool bAbsolute = true);
+	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|Game", meta = (WorldContext = "WorldContextObject"))
+	static void OpenLevel(const UObject* WorldContextObject, ELevelType Level, bool bAbsolute = true);
+
+	/**
+	 * Creates FToastRequest with given parameters
+	 *
+	 * @return Created toast request data structure
+	 */
+	UFUNCTION(BlueprintPure, Category = "TromboneStatics|UI", meta = (DisplayName = "Make Toast Request", ReturnDisplayName = "Request"))
+	static FToastRequest MakeToastRequest(const FText& Message, EToastPosition Position = EToastPosition::BottomCenter, float DisplayDuration = 2.0f);
+
+	/**
+	 * Displays a toast message with given FToastRequest
+	 *
+	 * @return Whether toast was successfully displayed or not
+	 */
+	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI", meta = (WorldContext = "WorldContextObject"))
+	static bool ShowToast(const UObject* WorldContextObject, FToastRequest Request);
+	
+public:
+	
+	/** @return Randomly generated room code of specified length. 
+	* If bClipboardCopy is true, the generated code will also be copied to the clipboard. */
+	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
 	
 	/** @return The root UI layout widget
 	 *  @see UBaseUIRoot

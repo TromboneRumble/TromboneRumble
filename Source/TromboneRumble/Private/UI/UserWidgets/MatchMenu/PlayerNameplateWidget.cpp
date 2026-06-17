@@ -1,5 +1,7 @@
 #include "UI/UserWidgets/MatchMenu/PlayerNameplateWidget.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Pawns/MatchPawn.h"
+#include "UI/UserWidgets/MatchMenu/MatchPawnSpeakerWidget.h"
 #include "Utilities/DebugHelper.h"
 
 UPlayerNameplateWidget::UPlayerNameplateWidget()
@@ -12,13 +14,22 @@ void UPlayerNameplateWidget::InitPlayerWidget(ADefaultPlayerState* InOwningPlaye
 	if (InOwningPlayerState)
 	{
 		OwningPlayerState = InOwningPlayerState;
-		
+
 		OwningPlayerState->OnPlayerNameChanged.AddDynamic(this, &ThisClass::OnPlayerNameChanged);
-		
+
 		const FString PlayerName = OwningPlayerState->GetPlayerName();
 		if (!PlayerName.IsEmpty())
 		{
 			OnPlayerNameChanged(PlayerName);
+		}
+
+		// 스피커 표시는 폰의 VOIPTalker 델리게이트에 직접 바인딩한다.
+		if (SpeakerWidget)
+		{
+			if (AMatchPawn* MatchPawn = OwningPlayerState->GetPawn<AMatchPawn>())
+			{
+				SpeakerWidget->Init(MatchPawn->GetVOIPTalker());
+			}
 		}
 		return;
 	}

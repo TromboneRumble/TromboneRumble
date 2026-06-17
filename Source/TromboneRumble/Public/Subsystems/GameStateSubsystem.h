@@ -11,8 +11,7 @@
 
 struct FGameplayTag;
 
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelStateChangedSignature, ELevelState, NewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelStateChangedSignature, ELevelType, NewState);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerLoadingScreenFinishedSignature, APlayerController*);
 
 UCLASS()
@@ -21,6 +20,7 @@ class TROMBONERUMBLE_API UGameStateSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
@@ -28,25 +28,31 @@ public:
 	FOnPlayerLoadingScreenFinishedSignature OnPlayerLoadingScreenFinished;
 
 protected:
-	UFUNCTION()
+	
+	void OnPreLoadMap(const FString& InMapName);
 	void OnPostLoadMap(UWorld* InLoadedWorld);
 
-	void SetLevelState(const ELevelState& InNewState);
-
+	void SetLevelState(const ELevelType& InNewState);
 
 private:
-	void AddMapPathFromGameTag(const FGameplayTag& InTag, const ELevelState& InLevelState);
+	
+	void AddMapPathFromGameTag(const FGameplayTag& InTag, const ELevelType& InLevelState);
+	
+	bool UpdateLevelStateFromMapName(const FString& InMapName);
 
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	ELevelState CurrentLevelState;
+	ELevelType CurrentLevelType;
 
 	UPROPERTY(Transient)
 	TMap<FGameplayTag, FString> MapTagToMapNameMap;
 
 	UPROPERTY(Transient)
-	TMap<FGameplayTag, ELevelState> MapTagToLevelStateMap;
+	TMap<FGameplayTag, ELevelType> MapTagToLevelTypeMap;
+	
 public:
+	
 	// Getter Setter
-	FString GetMapNameForTag(const FGameplayTag& MapTag) const;
-	FORCEINLINE ELevelState GetLevelState() const { return CurrentLevelState; }
+	FString GetLevelStringFromTag(const FGameplayTag& MapTag) const;
+	ELevelType GetLevelState() const;
+	
+	void DumpSettings() const;
 };

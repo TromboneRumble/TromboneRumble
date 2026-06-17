@@ -2,10 +2,9 @@
 
 #include "AsyncLoadingScreen.h"
 #include "Characters/DefaultPlayerController.h"
-#include "Framework/LobbyGameMode.h"
 #include "Framework/DefaultPlayerState.h"
-#include "Framework/InGameMode.h"
 #include "Framework/InGameState.h"
+#include "Framework/GameMode/InGameMode.h"
 #include "UI/UserWidgets/OnScreenIndicator/OSI_RhythmRankWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -53,7 +52,7 @@ void ADefaultPlayerController::BeginPlay()
 		this, &ADefaultPlayerController::HandleLoadingScreenFinished);
 
 	//	이미 Lobby 맵 안에 있는데 AsyncLoadingScreen 쪽 이벤트가 안 올 수도 있는 상황(클라가 중간 합류) 대비.
-	if (GameStateSubsystem->GetLevelState() == ELevelState::Lobby)
+	if (GameStateSubsystem->GetLevelState() == ELevelType::Lobby)
 	{
 		// 여기서 한 번 직접 호출해 줌.
 		// 만약 나중에 실제 OnLoadingScreenFinished가 또 불리면

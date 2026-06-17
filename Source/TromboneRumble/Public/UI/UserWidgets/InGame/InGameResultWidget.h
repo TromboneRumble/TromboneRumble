@@ -7,6 +7,8 @@
 #include "InGameResultWidget.generated.h"
 
 
+struct FPlayerResultSceneData;
+struct FRumbleScoreData;
 class UImage;
 class UCanvasPanel;
 class UOverlay;
@@ -31,8 +33,7 @@ public:
 		return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown, EMouseLockMode::LockAlways,false);
 	}
 
-	UFUNCTION(BlueprintCallable, Category = "UI|Result")
-	void SetResultData(ADefaultPlayerState* PlayerState, int32 PlayerRank);
+	void SetResultData(const FPlayerResultSceneData& InResultData, int32 PlayerRank);
 
 	void HideSkipButtonAndShowButtons();
 
@@ -47,12 +48,6 @@ protected:
 	void HandleViewLeaderboardClicked(); // 순위표 보기 (상세에서 뒤로가기)
 	UFUNCTION()
 	void HandleExitButtonClicked();
-
-	UFUNCTION()
-	void OnDestroySessionSuccess();
-
-	UFUNCTION()
-	void OnDestroySessionFailure();
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> RankImage;
@@ -127,9 +122,9 @@ protected:
 
 
 private:
-	UPROPERTY(Transient)
-	TObjectPtr<UEasySessionSubsystem> SessionsSubsystem;
+	
 	TWeakObjectPtr<AResultCutsceneDirector> Director;
+	
 public:
 	void SetDirector(AResultCutsceneDirector* InDirector);
 };

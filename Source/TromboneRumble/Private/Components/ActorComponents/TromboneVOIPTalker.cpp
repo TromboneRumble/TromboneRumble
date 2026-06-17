@@ -104,6 +104,22 @@ void UTromboneVOIPTalker::SetVolumeMultiplier(float InVolume)
 	}
 }
 
+void UTromboneVOIPTalker::SetPushToTalkSpeaking(bool bSpeaking)
+{
+	bPTTSpeaking = bSpeaking;
+	UpdateAndBroadcast();
+}
+
+void UTromboneVOIPTalker::UpdateAndBroadcast()
+{
+	const bool bCombined = bPTTSpeaking || bAutoTalking;
+	if (bCombined != bLastBroadcast)
+	{
+		bLastBroadcast = bCombined;
+		OnTalkingStateChanged.Broadcast(bCombined);
+	}
+}
+
 void UTromboneVOIPTalker::OnTalkingBegin(UAudioComponent* AudioComponent)
 {
 	Super::OnTalkingBegin(AudioComponent);
@@ -115,7 +131,8 @@ void UTromboneVOIPTalker::OnTalkingBegin(UAudioComponent* AudioComponent)
 		AudioComponent->SetVolumeMultiplier(PendingVolumeMultiplier);
 	}
 
-	OnTalkingStateChanged.Broadcast(true);
+	bAutoTalking = true;
+	UpdateAndBroadcast();
 }
 
 void UTromboneVOIPTalker::OnTalkingEnd()
@@ -123,5 +140,7 @@ void UTromboneVOIPTalker::OnTalkingEnd()
 	Super::OnTalkingEnd();
 
 	CachedAudioComponent.Reset();
-	OnTalkingStateChanged.Broadcast(false);
+	bAutoTalking = false;
+	// While PTT is held, the combined state stays true so the indicator doesn't flicker during pauses.
+	UpdateAndBroadcast();
 }

@@ -126,8 +126,10 @@ void ATromboneCharacterBase::BeginPlay()
 		else
 		{
 			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			{
 				SaveData = DPS->GetCustomizationData();
-			CustomizationComp->LoadFromSaveData(SaveData);
+				CustomizationComp->LoadFromSaveData(SaveData);
+			}
 		}
 	}
 
@@ -636,7 +638,7 @@ void ATromboneCharacterBase::ApplyFlagPhysics()
 	if (!GI) return;
 
 	const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
-	if (!GameStateSubsystem || GameStateSubsystem->GetLevelState() != ELevelState::InGame) return;
+	if (!GameStateSubsystem || GameStateSubsystem->GetLevelState() != ELevelType::InGame) return;
 	
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	

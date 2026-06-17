@@ -4,7 +4,7 @@
 #include "UI/UserWidgets/Popup/PopupBase.h"
 #include "EscapePopup.generated.h"
 
-class UCommonButtonBaseWithText;
+class UCommonButtonBaseExtensionWithText;
 class UCommonTextBlock;
 
 /**
@@ -40,10 +40,10 @@ protected:
 	TObjectPtr<UCommonTextBlock> Text_Title;
 	
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseWithText> Button_Option;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Option;
 	
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseWithText> Button_Disconnect;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Disconnect;
 	// ~ End Widgets
 
 private:

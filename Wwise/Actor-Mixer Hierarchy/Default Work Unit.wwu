@@ -3154,7 +3154,7 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+									<ObjectRef Name="Master_UI" ID="{45D09297-DBD9-49A8-8411-067F90583508}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -3190,7 +3190,7 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+									<ObjectRef Name="Master_UI" ID="{45D09297-DBD9-49A8-8411-067F90583508}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -3293,6 +3293,64 @@
 							</ChildrenList>
 							<ActiveSourceList>
 								<ActiveSource Name="UI_Rhythm_Success_Perfect" ID="{9D48D962-06D0-41B5-9331-CE6AA33EAA80}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_Pop_Down" ID="{BD87C72A-BCFA-43C7-BE47-B4F050D00808}" ShortID="572647256">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-13</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_UI" ID="{45D09297-DBD9-49A8-8411-067F90583508}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Pop_Down" ID="{99CD091C-68CC-4766-9AD0-1CE2BAB47B30}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Pop_Down.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="559369503"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Pop_Down" ID="{99CD091C-68CC-4766-9AD0-1CE2BAB47B30}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_Pop_Up" ID="{36EABCB1-51E2-453A-BC23-B7E9A1E2070C}" ShortID="456596504">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-13</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_UI" ID="{45D09297-DBD9-49A8-8411-067F90583508}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Pop_Up" ID="{A920E62F-4CB1-446F-B137-9EA858D4CB37}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Pop_Up.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="511945321"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Pop_Up" ID="{A920E62F-4CB1-446F-B137-9EA858D4CB37}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>

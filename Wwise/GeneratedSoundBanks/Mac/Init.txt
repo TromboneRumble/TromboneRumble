@@ -13,6 +13,7 @@ Game Parameter	ID	Name			Wwise Object Path	Notes
 	2644490154	RTPC_SFXVolume			\Default Work Unit\RTPC_SFXVolume	
 	2928161104	Curtains			\Factory Acoustic Textures\Textures\Curtains	
 	3062363417	RTPC_BGMVolume			\Default Work Unit\RTPC_BGMVolume	
+	3141145287	RTPC_UIVolume			\Default Work Unit\RTPC_UIVolume	
 	3195498748	Cork_Tiles			\Factory Acoustic Textures\Textures\Cork_Tiles	
 	3670307564	Drywall			\Factory Acoustic Textures\Textures\Drywall	
 	4168643977	Acoustic_Banner			\Factory Acoustic Textures\Textures\Acoustic_Banner	
@@ -20,6 +21,7 @@ Game Parameter	ID	Name			Wwise Object Path	Notes
 
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	1058308940	Master_LobbyBGM			\Default Work Unit\Master Audio Bus\Master_LobbyBGM	
+	1168632360	Master_UI			\Default Work Unit\Master Audio Bus\Master_UI	
 	1900298039	Master_Music			\Default Work Unit\Master Audio Bus\Master_Music	
 	3462011115	Master_SFX			\Default Work Unit\Master Audio Bus\Master_SFX	
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	

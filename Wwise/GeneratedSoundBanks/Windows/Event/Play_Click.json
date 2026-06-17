@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{5661925E-358B-4DB5-8CD9-19A7BC7F923F}",
     "Language": "SFX",
-    "Hash": "{7BB7D602-216E-F06B-59F7-35F8C07257FA}",
+    "Hash": "{1314CB89-6B68-36F0-9522-87C8C3B1A7D3}",
     "ObjectPath": "Play_Click",
     "ShortName": "Play_Click",
     "Path": "Event/Play_Click.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{74705D0C-A529-A902-AFE4-8B8032280717}"
+  "FileHash": "{285C1FB6-7CEC-E485-D28F-C5163074E631}"
  }
 }

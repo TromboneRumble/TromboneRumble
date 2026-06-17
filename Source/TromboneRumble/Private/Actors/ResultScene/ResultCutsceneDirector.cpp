@@ -1,16 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Actors/ResultScene/ResultCutsceneDirector.h"
-
 #include "AkGameplayStatics.h"
 #include "Framework/InGameState.h"
-#include "Framework/DefaultPlayerState.h"
 #include "Actors/ResultScene/PodiumActor.h"
 #include "Camera/CameraActor.h"
-#include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
 #include "Blueprint/UserWidget.h"
+#include "Framework/TromboneGameInstance.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
 #include "Wwise/API/WwiseSoundEngineAPI.h"
 
@@ -32,15 +31,14 @@ void AResultCutsceneDirector::SkipResultSequence()
 
 void AResultCutsceneDirector::PlayZoomSequence(bool bForward)
 {
-	
 	if (CachedLocalPlayerRankIndex == -1) return;
 
-	if (ZoomSequences.IsValidIndex(CachedLocalPlayerRankIndex) && ZoomSequences[CachedLocalPlayerRankIndex])
+	if (ZoomSequences.IsValidIndex(CachedLocalPlayerRankIndex - 1) && ZoomSequences[CachedLocalPlayerRankIndex - 1])
 	{
 		if (!ZoomSequencePlayer)
 		{
 			ALevelSequenceActor* OutActor;
-			ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[CachedLocalPlayerRankIndex], FMovieSceneSequencePlaybackSettings(), OutActor);
+			ZoomSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), ZoomSequences[CachedLocalPlayerRankIndex - 1], FMovieSceneSequencePlaybackSettings(), OutActor);
 		}
 
 		if (bForward)
@@ -70,19 +68,7 @@ void AResultCutsceneDirector::StopBGM()
 void AResultCutsceneDirector::BeginPlay()
 {
 	Super::BeginPlay();
-	if (UWorld* World = GetWorld())
-	{
-		if (AInGameState* GameState = Cast<AInGameState>(GetWorld()->GetGameState()))
-		{
-			GameState->OnInGameStateChanged.AddDynamic(this, &AResultCutsceneDirector::HandleInGameStateChanged);
-		}
-		else
-		{
-			World->GameStateSetEvent.AddUObject(this, &ThisClass::BindToInGameState);
-		}
-	}
 	
-
 	for (APodiumActor* Podium : PrePlacedPodiums)
 	{
 		if (Podium)
@@ -90,27 +76,24 @@ void AResultCutsceneDirector::BeginPlay()
 			Podium->SetActorHiddenInGame(true);
 		}
 	}
+	
+	if (const UGameStateSubsystem* GameStateSubsystem = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+	{
+		if (GameStateSubsystem->GetLevelState() == ELevelType::ResultScene)
+		{
+			PlayResultCutscene();
+		}
+	}
 }
 
 void AResultCutsceneDirector::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (UWorld* World = GetWorld())
+	if (!GetWorld())
 	{
-		if (AInGameState* GameState = Cast<AInGameState>(World->GetGameState()))
-		{
-			GameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
-		}
+		return;
 	}
+	
 	Super::EndPlay(EndPlayReason);
-}
-
-void AResultCutsceneDirector::BindToInGameState(AGameStateBase* NewGameState)
-{
-	if (AInGameState* GameState = Cast<AInGameState>(NewGameState))
-	{
-		GameState->OnInGameStateChanged.RemoveDynamic(this, &ThisClass::HandleInGameStateChanged);
-		GameState->OnInGameStateChanged.AddDynamic(this, &ThisClass::HandleInGameStateChanged);
-	}
 }
 
 void HideActorRecursive(AActor* TargetActor, bool bHidden)
@@ -130,19 +113,31 @@ void HideActorRecursive(AActor* TargetActor, bool bHidden)
 	}
 }
 
-void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
+void AResultCutsceneDirector::OnSequenceFinished()
 {
-	if (NewState != EInGameState::End) return;
+	if (CachedResultWidget.IsValid())
+	{
+		CachedResultWidget->HideSkipButtonAndShowButtons();
+	}
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		PC->bShowMouseCursor = true;
+	}
+	for (APodiumActor* Podium : PrePlacedPodiums)
+	{
+		if (Podium && !Podium->IsHidden())
+		{
+			Podium->SetNameWidgetVisibility(true);
+		}
+	}
+}
 
-	AInGameState* GameState = Cast<AInGameState>(GetWorld()->GetGameState());
+void AResultCutsceneDirector::PlayResultCutscene()
+{
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 
-	if (!GameState || !PC) return;
-
-	if (APlayerState* LocalPS = PC->PlayerState)
-	{
-		CachedLocalPlayerRankIndex = GameState->GetPlayerRank(LocalPS) - 1;
-	}
+	if (!PC) return;
+	
 	if (APawn* CurrentPawn = PC->GetPawn())
 	{
 		PC->DisableInput(PC);
@@ -154,24 +149,23 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 		PC->SetViewTargetWithBlend(CutsceneCamera, 0.0f);
 	}
 
-	//플레이어 수에 따라서 색깔 설정 및 보이게 하기
-	TArray<APlayerState*> SortedPlayers;
-	GameState->GetPlayersSortedByScore(SortedPlayers);
-
+	// result data : podium actor enabled & skin color
+	UTromboneGameInstance* GI = GetGameInstance<UTromboneGameInstance>();
+	CachedLocalPlayerRankIndex = GI->GetLocalPlayerRank();
+	
+	TArray<FPlayerResultSceneData> ResultData = GI->CachedResultSceneData;
+	ResultData.Sort();
+	
 	for (int32 i = 0; i < PrePlacedPodiums.Num(); ++i)
 	{
 		APodiumActor* PodiumActor = PrePlacedPodiums[i];
 		if (!PodiumActor) continue;
 
-		// 실제 플레이어가 존재하는 순위인 경우
-		if (i < SortedPlayers.Num())
+		if (i < ResultData.Num())
 		{
-			PodiumActor->SetPlayerName(SortedPlayers[i]->GetPlayerName());
+			PodiumActor->SetPlayerName(ResultData[i].Nickname);
 			HideActorRecursive(PodiumActor, false);
-			if (ADefaultPlayerState* DefaultPS = Cast<ADefaultPlayerState>(SortedPlayers[i]))
-			{
-				PodiumActor->ApplySkinColor(DefaultPS->GetSkinColor());
-			}
+			PodiumActor->ApplySkinColor(ResultData[i].PlayerSkinColor);
 		}
 		else
 		{
@@ -204,7 +198,7 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 			{
 				CachedResultWidget = ResultWidget;
 				ResultWidget->SetDirector(this);
-				ResultWidget->SetResultData(Cast<ADefaultPlayerState>(PC->PlayerState), GameState->GetPlayerRank(PC->PlayerState));
+				ResultWidget->SetResultData(GI->GetLocalPlayerResultSceneData(), GI->GetLocalPlayerRank());
 				ResultWidget->AddToViewport();
 
 				PC->bShowMouseCursor = false;
@@ -223,24 +217,3 @@ void AResultCutsceneDirector::HandleInGameStateChanged(EInGameState NewState)
 		OnSequenceFinished();
 	}
 }
-
-void AResultCutsceneDirector::OnSequenceFinished()
-{
-	if (CachedResultWidget.IsValid())
-	{
-		CachedResultWidget->HideSkipButtonAndShowButtons();
-	}
-	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
-	{
-		PC->bShowMouseCursor = true;
-	}
-	for (APodiumActor* Podium : PrePlacedPodiums)
-	{
-		if (Podium && !Podium->IsHidden())
-		{
-			Podium->SetNameWidgetVisibility(true);
-		}
-	}
-}
-
-

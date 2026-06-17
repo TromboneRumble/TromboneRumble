@@ -19,19 +19,13 @@ protected:
 
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
-	
-	virtual void BindSubsystemCallbacks() override;
-	virtual void RemoveSubsystemCallbacks() override;
-	
+
 protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCommonActivatableWidget> SettingPopupClass;
 	
 	// ~ Begin UI
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UEditableText> ET_Code;
-	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_CreateSession;
 	UPROPERTY(meta = (BindWidget))

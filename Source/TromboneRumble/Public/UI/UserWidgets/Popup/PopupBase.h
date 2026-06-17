@@ -4,7 +4,8 @@
 #include "CommonActivatableWidget.h"
 #include "PopupBase.generated.h"
 
-class UCommonButtonBaseWithText;
+class UCommonButtonBaseExtensionWithText;
+class UAkAudioEvent;
 class UCommonButtonBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPopupAction);
@@ -36,6 +37,14 @@ public:
 	/** If true, the popup will play animation when opened and closed. */
 	UPROPERTY(EditAnywhere, Category = "Options")
 	bool bPlayAnimation = true;
+	
+	/** The sound to play when the popup is opened */
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (EditCondition = "bPlaySound"))
+	TObjectPtr<UAkAudioEvent> OpenSound;
+	
+	/** The sound to play when the popup is closed */
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (EditCondition = "bPlaySound"))
+	TObjectPtr<UAkAudioEvent> CloseSound;
 	
 	// ~ End Popup Options
 	
@@ -90,7 +99,7 @@ protected:
 	TObjectPtr<UCommonButtonBase> Button_Dim;
 
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseWithText> Button_Close;
+	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Close;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
 	TObjectPtr<UWidgetAnimation> FadeIn;

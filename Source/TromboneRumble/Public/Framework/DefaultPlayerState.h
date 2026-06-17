@@ -82,7 +82,10 @@ class TROMBONERUMBLE_API ADefaultPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
+	
 	ADefaultPlayerState();
+	
+#pragma region Events
 	
 	/** Event when the player's name changes. */
 	UPROPERTY(BlueprintAssignable, Category = "Events")
@@ -94,37 +97,42 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnComboChanged OnComboChanged;
-
-	void AddScore(int32 Amount, EScoreType ScoreType);
-	UFUNCTION(Server, Reliable)
-	void Server_AddScore(int32 Amount, EScoreType ScoreType);
-
-	void HandleCombo(ENoteResult InResult);
-
-	UPROPERTY(VisibleInstanceOnly, Replicated)
-	TSubclassOf<AWeaponBase> EquippedWeaponClass;
 	
-protected:
-    FTimerHandle TimerHandle_BindGameState;
-    void TryBindGameState();
+#pragma endregion
 
-    UFUNCTION()
-    void HandleRhythmGameStateChanged(ERhythmGameState NewState);
-
-    UFUNCTION()
-    void HandleNoteDetected(ENoteResult NoteResult);
-
-    UFUNCTION()
-    void HandleInGameStateChanged(EInGameState InGameState);
-
-    UFUNCTION()
-    void HandleOnInstrumentPicked(EInstrumentType PrevType, EInstrumentType NewType);
-
+#pragma region Character Skin Color
+	
+public:
+	
+	void SetSkinColor(const FLinearColor& InSkinColor);
+	
+	FLinearColor GetSkinColor() const { return SkinColor; }
+	
 	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
 	FLinearColor SkinColor = FLinearColor::Black;
+	
+private:
 
 	UFUNCTION()
 	void OnRep_SkinColor();
+	
+#pragma endregion
+	
+#pragma region Gameplay
+	
+public:
+	
+	void AddScore(int32 Amount, EScoreType ScoreType);
+	
+	void HandleCombo(ENoteResult InResult);
+	
+	float GetRhythmScore() const { return GetScore(); }
+	
+	int32 GetCurrentCombo() const { return CurrentCombo; }
+	
+	FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
+	
+protected:
 
 	UPROPERTY(ReplicatedUsing = OnRep_CustomizationData)
 	FCustomizationSaveData CustomizationData;
@@ -135,18 +143,35 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 
-    UPROPERTY(BlueprintReadOnly, Category = "PlayerState")
-    FRumbleScoreData CurrentScoreData;
+	UPROPERTY(BlueprintReadOnly, Category = "PlayerState")
+	FRumbleScoreData CurrentScoreData;
+	
+private:
+	
+	UFUNCTION(Server, Reliable)
+	void Server_AddScore(int32 Amount, EScoreType ScoreType);
+	
+	UFUNCTION()
+	void HandleRhythmGameStateChanged(ERhythmGameState NewState);
 
+	UFUNCTION()
+	void HandleNoteDetected(ENoteResult NoteResult);
+
+	UFUNCTION()
+	void HandleInGameStateChanged(EInGameState InGameState);
+
+	UFUNCTION()
+	void HandleOnInstrumentPicked(EInstrumentType PrevType, EInstrumentType NewType);
+	
+	void TryBindGameState();
+	
+	FTimerHandle TimerHandle_BindGameState;
+	
+#pragma endregion
+	
+#pragma region Voice
+	
 public:
-	// ~ Begin APlayerState Interface
-	virtual void BeginPlay() override;
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void OnRep_PlayerName() override;
-	virtual void OnRep_Score() override;
-	virtual void CopyProperties(APlayerState* PlayerState) override;	
-	// ~ End APlayerState Interface
 	
 	UPROPERTY(ReplicatedUsing = OnRep_VoiceSendVolume)
 	float VoiceSendVolume = 1.0f;
@@ -156,17 +181,36 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void Server_SetVoiceSendVolume(float Volume);
+	
+#pragma endregion
 
 	UFUNCTION(Server, Reliable)
 	void Server_SetCustomization(FCustomizationSaveData InData);
 
 	// ~ Begin Getter & Setter
-	FORCEINLINE float GetRhythmScore() const { return GetScore(); }
-	void SetSkinColor(const FLinearColor& InSkinColor);
-	FORCEINLINE FLinearColor GetSkinColor() const { return SkinColor; }
 	FORCEINLINE FCustomizationSaveData GetCustomizationData() const { return CustomizationData; }
-	FORCEINLINE int32 GetCurrentCombo() const { return CurrentCombo; }
-    FORCEINLINE FRumbleScoreData GetScoreData() const { return CurrentScoreData; }
+	
+public:
+	
+	// ~ Begin APlayerState Interface
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_PlayerName() override;
+	virtual void OnRep_Score() override;
+	// ~ End APlayerState Interface
+	
+protected:
+	
+	// ~ Begin APlayerState Interface
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void CopyProperties(APlayerState* PlayerState) override;	
+	// ~ End APlayerState Interface
+	
+public:
+	
 	bool IsHost() const;
-	// ~ End Getter & Setter
+	
+	UPROPERTY(VisibleInstanceOnly, Replicated)
+	TSubclassOf<AWeaponBase> EquippedWeaponClass;
+	
 };
