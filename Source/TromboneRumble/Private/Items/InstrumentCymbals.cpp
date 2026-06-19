@@ -73,6 +73,16 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 					FAttachmentTransformRules::SnapToTargetIncludingScale,
 					FName(TEXT("socket_Cymbal_r"))
 				);
+
+				// 로컬 플레이어가 든 경우에만 반쪽 심벌즈도 X-Ray 실루엣에 포함
+				if (IsOwnerLocallyControlled())
+				{
+					ATromboneCharacterBase::ApplyOccludedStencilToActor(CymbalsHalfActor);
+				}
+				else
+				{
+					ATromboneCharacterBase::ClearOccludedStencilFromActor(CymbalsHalfActor);
+				}
 			}
 		}
 	}
@@ -83,6 +93,7 @@ void AInstrumentCymbals::OnRep_CurrentOwner(AActor* OldActor)
 		{
 			CymbalsHalfActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 			CymbalsHalfActor->SetActorHiddenInGame(true);
+			ATromboneCharacterBase::ClearOccludedStencilFromActor(CymbalsHalfActor);
 		}
 	}
 }

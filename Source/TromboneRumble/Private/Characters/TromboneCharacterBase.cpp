@@ -46,6 +46,12 @@ void ATromboneCharacterBase::ApplyOccludedStencil(UPrimitiveComponent* Prim)
 	Prim->SetCustomDepthStencilValue(TromboneRender::CHARACTER_OCCLUDED_STENCIL);
 }
 
+void ATromboneCharacterBase::ClearOccludedStencil(UPrimitiveComponent* Prim)
+{
+	if (!Prim) return;
+	Prim->SetRenderCustomDepth(false);
+}
+
 void ATromboneCharacterBase::ApplyOccludedStencilToActor(AActor* Actor)
 {
 	if (!Actor) return;
@@ -54,6 +60,17 @@ void ATromboneCharacterBase::ApplyOccludedStencilToActor(AActor* Actor)
 	for (UPrimitiveComponent* Prim : Prims)
 	{
 		ApplyOccludedStencil(Prim);
+	}
+}
+
+void ATromboneCharacterBase::ClearOccludedStencilFromActor(AActor* Actor)
+{
+	if (!Actor) return;
+	TArray<UPrimitiveComponent*> Prims;
+	Actor->GetComponents<UPrimitiveComponent>(Prims);
+	for (UPrimitiveComponent* Prim : Prims)
+	{
+		ClearOccludedStencil(Prim);
 	}
 }
 void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const

@@ -29,11 +29,14 @@
 #include "UI/UserWidgets/InGame/InGameSpeakerWidget.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Prototype/InGameWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
+
+const FName ADefaultTromboneCharacter::SilhouetteColorParamName(TEXT("SilhouetteColor"));
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -365,18 +368,26 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 		// 가려진 캐릭터 실루엣을 위한 PostProcess 머티리얼을 로컬 카메라에만 블렌드
 		// 초기 weight=0.0 (OFF); CheckXRayOcclusion() 타이머가 XRayBlocker 감지 시 1.0으로 올림
+		// 실루엣 색상을 로컬 플레이어 피부색으로 주입하기 위해 동적 인스턴스(MID)를 블렌드한다.
 		if (OcclusionOverlayMaterial && FollowCamera)
 		{
-			FWeightedBlendable Blend(0.0f, OcclusionOverlayMaterial);
-			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
-			
-			// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
-			GetWorldTimerManager().SetTimer(
-				XRayTraceTimerHandle,
-				this,
-				&ThisClass::CheckXRayOcclusion,
-				0.05f,
-				true);
+			OcclusionOverlayMID = UMaterialInstanceDynamic::Create(OcclusionOverlayMaterial, this);
+			if (OcclusionOverlayMID)
+			{
+				// 현재 피부색으로 초기화 (색이 이미 도착한 경우 대비. 이후 ApplySkinColor에서 갱신)
+				OcclusionOverlayMID->SetVectorParameterValue(SilhouetteColorParamName, GetSkinColor());
+
+				FWeightedBlendable Blend(0.0f, OcclusionOverlayMID);
+				FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
+
+				// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
+				GetWorldTimerManager().SetTimer(
+					XRayTraceTimerHandle,
+					this,
+					&ThisClass::CheckXRayOcclusion,
+					0.05f,
+					true);
+			}
 		}
 	}
 }
@@ -485,15 +496,26 @@ void ADefaultTromboneCharacter::CheckXRayOcclusion()
 		}
 	}
 
-	// blendable 배열에서 OcclusionOverlayMaterial을 찾아 weight 업데이트
+	// blendable 배열에서 OcclusionOverlayMID를 찾아 weight 업데이트
 	const float NewWeight = bXRayActive ? 1.0f : 0.0f;
 	for (FWeightedBlendable& Blendable : FollowCamera->PostProcessSettings.WeightedBlendables.Array)
 	{
-		if (Blendable.Object == OcclusionOverlayMaterial)
+		if (Blendable.Object == OcclusionOverlayMID)
 		{
 			Blendable.Weight = NewWeight;
 			break;
 		}
+	}
+}
+
+void ADefaultTromboneCharacter::ApplySkinColor(const FLinearColor InSkinColor) const
+{
+	Super::ApplySkinColor(InSkinColor);
+
+	// 로컬 플레이어 카메라에만 존재하는 X-Ray 실루엣 MID 색상을 피부색으로 갱신
+	if (OcclusionOverlayMID)
+	{
+		OcclusionOverlayMID->SetVectorParameterValue(SilhouetteColorParamName, InSkinColor);
 	}
 }
 

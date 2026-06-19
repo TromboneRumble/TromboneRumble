@@ -44,7 +44,8 @@ public:
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces
 	
-	void ApplySkinColor(const FLinearColor InSkinColor) const;
+	virtual void ApplySkinColor(const FLinearColor InSkinColor) const;
+	FLinearColor GetSkinColor() const { return SkinColor; }
 	void SetPlayerInput(const bool bShouldEnable);
 
 	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
@@ -52,8 +53,12 @@ public:
 
 	// X-Ray 실루엣용 CustomDepth stencil 값 설정 (단일 Primitive 컴포넌트)
 	static void ApplyOccludedStencil(UPrimitiveComponent* Prim);
+	// X-Ray 실루엣용 CustomDepth 렌더 해제 (무기 드롭/원격 소유 시 등)
+	static void ClearOccludedStencil(UPrimitiveComponent* Prim);
 	// 지정 액터 내부의 모든 Primitive에만 stencil 적용 (자식 액터는 순회하지 않음)
 	static void ApplyOccludedStencilToActor(AActor* Actor);
+	// 지정 액터 내부의 모든 Primitive의 CustomDepth 렌더 해제
+	static void ClearOccludedStencilFromActor(AActor* Actor);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCustomizationComponent> CustomizationComp;
