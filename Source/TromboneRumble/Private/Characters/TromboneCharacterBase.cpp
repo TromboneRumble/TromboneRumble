@@ -75,13 +75,19 @@ void ATromboneCharacterBase::ClearOccludedStencilFromActor(AActor* Actor)
 }
 void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
 {
+	// 머리(leader)
 	if (SkinMID)
 	{
-		SkinMID->SetVectorParameterValue(TEXT("BaseColor"), InSkinColor);
+		SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
 	}
 	if (FaceMID)
 	{
-		FaceMID->SetVectorParameterValue(TEXT("BaseColor"), InSkinColor);
+		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
+	}
+	// 몸통(costume)·안테나 follower 메시
+	if (CustomizationComp)
+	{
+		CustomizationComp->ApplyPartsSkinColor(InSkinColor);
 	}
 }
 
@@ -111,22 +117,15 @@ void ATromboneCharacterBase::BeginPlay()
 	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
 	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
 	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
-	if (UMaterialInterface* CurrentSkinMat = GetMesh()->GetMaterial(SkinMaterialIndex))
+	// 머티리얼 슬롯은 인덱스 하드코딩 대신 슬롯 이름("skin"/"face")으로 조회
+	SkinMID = UCustomizationComponent::EnsureSlotMID(GetMesh(), TromboneMaterial::SkinSlotName);
+
+	const int32 FaceIndex = GetMesh()->GetMaterialIndex(TromboneMaterial::FaceSlotName);
+	if (FaceIndex != INDEX_NONE)
 	{
-		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
-		if (!SkinMID)
-		{
-			SkinMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(SkinMaterialIndex);
-		}
-	}
-	if (UMaterialInterface* CurrentFaceMat = GetMesh()->GetMaterial(FaceMaterialIndex))
-	{
-		OriginalFaceMaterial = CurrentFaceMat;
-		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
-		if (!FaceMID)
-		{
-			FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
-		}
+		// MID 생성 전 원본 face 머티리얼 캐싱 (커스터마이징 복원용)
+		OriginalFaceMaterial = GetMesh()->GetMaterial(FaceIndex);
+		FaceMID = UCustomizationComponent::EnsureSlotMID(GetMesh(), TromboneMaterial::FaceSlotName);
 	}
 
 	if (CustomizationComp)
@@ -288,12 +287,15 @@ void ATromboneCharacterBase::ApplyFaceMaterial(UMaterialInterface* Material)
 	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
 	if (!Target) return;
 
-	GetMesh()->SetMaterial(FaceMaterialIndex, Target);
-	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+	const int32 FaceIndex = GetMesh()->GetMaterialIndex(TromboneMaterial::FaceSlotName);
+	if (FaceIndex == INDEX_NONE) return;
+
+	GetMesh()->SetMaterial(FaceIndex, Target);
+	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceIndex);
 	if (FaceMID)
 	{
 		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
-		FaceMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
+		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
 	}
 }
 

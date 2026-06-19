@@ -74,10 +74,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
-	int32 SkinMaterialIndex = 1;
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
-	int32 FaceMaterialIndex = 2;
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
 	FName FaceExpressionParameterName = FName("ExpressionIndex");
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")

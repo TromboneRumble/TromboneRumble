@@ -13,8 +13,10 @@
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "Utilities/Defines.h"
 
 AMatchPawn::AMatchPawn()
 {
@@ -69,13 +71,16 @@ void AMatchPawn::ApplyFaceMaterial(UMaterialInterface* Material)
 	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
 	if (!Target || !SkeletalMeshComponent) return;
 
-	SkeletalMeshComponent->SetMaterial(FaceMaterialIndex, Target);
-	FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+	const int32 FaceIndex = SkeletalMeshComponent->GetMaterialIndex(TromboneMaterial::FaceSlotName);
+	if (FaceIndex == INDEX_NONE) return;
+
+	SkeletalMeshComponent->SetMaterial(FaceIndex, Target);
+	FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceIndex);
 	if (FaceMID)
 	{
 		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
 		{
-			FaceMID->SetVectorParameterValue(TEXT("BaseColor"), DPS->GetSkinColor());
+			FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, DPS->GetSkinColor());
 		}
 	}
 }
@@ -87,33 +92,30 @@ void AMatchPawn::UpdateSkinFromPlayerState() const
 		const FLinearColor SkinColor = DPS->GetSkinColor();
 		if (SkinMID)
 		{
-			SkinMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
+			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
 		}
 		if (FaceMID)
 		{
-			FaceMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
+			FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
+		}
+		// 몸통(costume)·안테나 follower 메시도 동일 색
+		if (CustomizationComp)
+		{
+			CustomizationComp->ApplyPartsSkinColor(SkinColor);
 		}
 	}
 }
 
 void AMatchPawn::BeginPlay()
 {
-	if (UMaterialInterface* CurrentSkinMat = SkeletalMeshComponent->GetMaterial(SkinMaterialIndex))
+	// 머티리얼 슬롯은 인덱스 하드코딩 대신 슬롯 이름("skin"/"face")으로 조회
+	SkinMID = UCustomizationComponent::EnsureSlotMID(SkeletalMeshComponent, TromboneMaterial::SkinSlotName);
+
+	const int32 FaceIndex = SkeletalMeshComponent ? SkeletalMeshComponent->GetMaterialIndex(TromboneMaterial::FaceSlotName) : INDEX_NONE;
+	if (FaceIndex != INDEX_NONE)
 	{
-		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
-		if (!SkinMID)
-		{
-			SkinMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(SkinMaterialIndex);
-		}
-	}
-	if (UMaterialInterface* CurrentFaceMat = SkeletalMeshComponent->GetMaterial(FaceMaterialIndex))
-	{
-		OriginalFaceMaterial = CurrentFaceMat;
-		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
-		if (!FaceMID)
-		{
-			FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
-		}
+		OriginalFaceMaterial = SkeletalMeshComponent->GetMaterial(FaceIndex);
+		FaceMID = UCustomizationComponent::EnsureSlotMID(SkeletalMeshComponent, TromboneMaterial::FaceSlotName);
 	}
 
 	if (CustomizationComp)

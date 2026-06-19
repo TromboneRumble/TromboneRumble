@@ -31,27 +31,12 @@ public:
 
 	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
 	void ApplyFaceMaterial(UMaterialInterface* Material);
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCustomizationComponent> CustomizationComp;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
-	int32 SkinMaterialIndex = 1;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
-	int32 FaceMaterialIndex = 2;
-	
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
 	
 protected:
-
+	
 	/** Pawn collision component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
@@ -63,7 +48,13 @@ protected:
 	/** Pawn nameplate component. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UNameplateComponent> NameplateComponent;
-
+	
+#if WITH_EDITORONLY_DATA
+	/** Pawn arrow component. */
+	UPROPERTY()
+	UArrowComponent* ArrowComponent;
+#endif
+	
 	/** Voice chat talker — configured for 2D (omnidirectional) playback in MatchMenuMap. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
 	TObjectPtr<UTromboneVOIPTalker> VOIPTalker;
@@ -71,6 +62,15 @@ protected:
 	/** Per-pawn voice volume slider — own pawn: sender volume; other pawns: listener adjustment. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
 	TObjectPtr<UWidgetComponent> VoiceSliderComponent;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
 
 	void TryRegisterVOIPTalker();
 	void TryInitVoiceSlider();
@@ -90,12 +90,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_SetSpeaking(bool bSpeaking);
 
-#if WITH_EDITORONLY_DATA
-	/** Pawn arrow component. */
-	UPROPERTY()
-	UArrowComponent* ArrowComponent;
-#endif
-	
+
 public:
 
 	//~ Begin APawn Interface
@@ -106,4 +101,7 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
 	
+	// 모듈러 커스터마이징의 leader(메인) 메시 — CustomizationComponent가 follower를 붙일 대상
+	USkeletalMeshComponent* GetMeshComponent() const { return SkeletalMeshComponent; }
+
 };
