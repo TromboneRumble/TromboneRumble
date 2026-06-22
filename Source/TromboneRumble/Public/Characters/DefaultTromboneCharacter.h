@@ -12,6 +12,7 @@
 
 
 class URageComponent;
+class UMaterialInstanceDynamic;
 class AWeaponBase;
 struct FInputActionValue;
 class ADefaultPlayerController;
@@ -72,6 +73,9 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
+	// 피부색 적용 시 X-Ray 실루엣 MID 색상도 함께 갱신 (로컬 플레이어 한정)
+	virtual void ApplySkinColor(const FLinearColor InSkinColor) const override;
 
 protected:
 	// Components
@@ -154,6 +158,14 @@ protected:
 	// 가려졌을 때 X-Ray 실루엣 표시용 PostProcess 머티리얼 (로컬 플레이어 카메라에만 블렌드)
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Camera|Occlusion")
 	TObjectPtr<UMaterialInterface> OcclusionOverlayMaterial;
+
+	// OcclusionOverlayMaterial의 동적 인스턴스. SilhouetteColor를 로컬 플레이어 피부색으로 주입.
+	// 로컬 플레이어 카메라에만 존재(원격 캐릭터에서는 null)
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> OcclusionOverlayMID;
+
+	// X-Ray 실루엣 색상으로 사용할 PostProcess 머티리얼의 VectorParameter 이름
+	static const FName SilhouetteColorParamName;
 
 private:
 	void UpdateMaxWalkSpeed();

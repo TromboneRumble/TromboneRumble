@@ -237,3 +237,11 @@ namespace TromboneRender
 	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
 	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
 }
+
+namespace TromboneMaterial
+{
+	// 머티리얼 슬롯/파라미터 이름
+	inline const FName SkinSlotName(TEXT("skin"));
+	inline const FName FaceSlotName(TEXT("face"));
+	inline const FName BaseColorParam(TEXT("BaseColor"));
+}
