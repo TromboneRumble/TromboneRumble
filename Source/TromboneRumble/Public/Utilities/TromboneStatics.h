@@ -1,12 +1,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Defines.h"
 #include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "TromboneStatics.generated.h"
 
+class UFadeWidget;
+class ULoadingOverlayWidget;
 struct FToastRequest;
 class UNoticePopup;
 class UTwoButtonPopup;
@@ -34,6 +37,8 @@ public:
 	/** Opens a level */
 	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|Game", meta = (WorldContext = "WorldContextObject"))
 	static void OpenLevel(const UObject* WorldContextObject, ELevelType Level, bool bAbsolute = true);
+	
+public:
 
 	/**
 	 * Creates FToastRequest with given parameters
@@ -50,6 +55,30 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI", meta = (WorldContext = "WorldContextObject"))
 	static bool ShowToast(const UObject* WorldContextObject, FToastRequest Request);
+
+	/**
+	 * Shows a loading overlay
+	 * 
+	 * @return Added loading overlay widget
+	 */
+	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI")
+	static ULoadingOverlayWidget* ShowLoadingOverlay(const APlayerController* PlayerController);
+
+	/**
+	 * Shows a fade overlay
+	 * 
+	 * @return Added fade overlay widget
+	 */
+	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI")
+	static UFadeWidget* ShowFadeOverlay(const APlayerController* PlayerController);
+
+	/**
+	 * Pops the topmost overlay from the stack
+	 * 
+	 * @return true if overlay was successfully popped, false otherwise
+	 */
+	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI")
+	static bool PopOverlay(const APlayerController* PlayerController);
 	
 public:
 	
@@ -108,7 +137,7 @@ T* UTromboneStatics::ShowPopup(const UObject* WorldContextObject)
 		return nullptr;
 	}
 	
-	UCommonActivatableWidget* Popup = RootUI->PushPopup(PopupClass);
+	UCommonActivatableWidget* Popup = RootUI->AddWidgetToStack(PopupClass, EUIStackType::Popup);
 	if (!Popup)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] Failed to push popup of type %s to RootUI"), *T::StaticClass()->GetName());

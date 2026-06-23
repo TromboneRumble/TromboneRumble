@@ -1,124 +1,105 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "CommonActivatableWidget.h"
-#include "UI/UserWidgets/Common/FadeWidget.h"
-#include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
+#include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "Utilities/DebugHelper.h"
+#include "Utilities/Defines.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
 void UBaseUIRoot::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	if (DefaultWidgetClass && UIStack)
+	if (DefaultWidgetClass && BaseStack)
 	{
-		UIStack->AddWidget(DefaultWidgetClass);
+		BaseStack->AddWidget(DefaultWidgetClass);
 	}
-}
-
-void UBaseUIRoot::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	Register();
 }
 
 void UBaseUIRoot::NativeDestruct()
 {
-	if (UIStack)
+	if (BaseStack)
 	{
-		UIStack->ClearWidgets();
+		BaseStack->ClearWidgets();
+	}
+	if (PopupStack)
+	{
+		PopupStack->ClearWidgets();
+	}
+	if (OverlayStack)
+	{
+		OverlayStack->ClearWidgets();
 	}
 	
 	Super::NativeDestruct();
 }
 
-void UBaseUIRoot::PushLoadingOverlay() const
+UCommonActivatableWidget* UBaseUIRoot::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType) const
 {
-	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<ULoadingOverlayWidget>())
-		return;
-	
-	if (LoadingOverlayWidgetClass)
+	if (!WidgetClass)
 	{
-		OverlayStack->AddWidget(LoadingOverlayWidgetClass);
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Invalid WidgetClass."));
+		return nullptr;
 	}
-}
 
-void UBaseUIRoot::PushLoadingOverlay(FString InContent) const
-{
-	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<ULoadingOverlayWidget>())
-		return;
-	
-	if (LoadingOverlayWidgetClass)
+	UCommonActivatableWidgetStack* TargetStack = GetStackByType(StackType);
+	if (!TargetStack)
 	{
-		OverlayStack->AddWidget<ULoadingOverlayWidget>(LoadingOverlayWidgetClass, [this, InContent](ULoadingOverlayWidget& OverlayWidget) 
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Invalid StackType."));
+		return nullptr;
+	}
+
+	if (const UCommonActivatableWidget* ActiveWidget = TargetStack->GetActiveWidget())
+	{
+		if (ActiveWidget->GetClass() == WidgetClass)
 		{
-			OverlayWidget.InitWithContent(InContent);
-		});
-	}
-}
-
-void UBaseUIRoot::PopLoadingOverlay() const
-{
-	if (OverlayStack && OverlayStack->GetActiveWidget())
-	{
-		OverlayStack->GetActiveWidget()->DeactivateWidget();
-	}
-}
-
-UFadeWidget* UBaseUIRoot::PushFadeOverlay() const
-{
-	if (OverlayStack && OverlayStack->GetActiveWidget() && OverlayStack->GetActiveWidget()->IsA<UFadeWidget>())
-	{
-		return Cast<UFadeWidget>(OverlayStack->GetActiveWidget());
-	}
-	
-	if (FadeWidgetClass)
-	{
-		return OverlayStack->AddWidget<UFadeWidget>(FadeWidgetClass);
-	}
-	
-	return nullptr;
-}
-
-void UBaseUIRoot::PopFadeOverlay() const
-{
-	if (OverlayStack && OverlayStack->GetActiveWidget())
-	{
-		OverlayStack->GetActiveWidget()->DeactivateWidget();
-	}
-}
-
-UCommonActivatableWidget* UBaseUIRoot::PushPopup(const TSubclassOf<UCommonActivatableWidget> PopupClass) const
-{
-	if (PopupStack)
-	{
-		// Preventing same popup pushed multiple times
-		const UCommonActivatableWidget* ActivePopup = PopupStack->GetActiveWidget();
-		if (ActivePopup != nullptr && ActivePopup->GetClass() == PopupClass)
-		{
-			return Cast<UCommonActivatableWidget>(PopupStack->GetActiveWidget());
-		}
-			
-		if (UCommonActivatableWidget* PushedPopup = PopupStack->AddWidget(PopupClass))
-		{
-			return PushedPopup;
+			return TargetStack->GetActiveWidget();
 		}
 	}
-	
-	LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to push popup."));
-	return nullptr;
+
+	return TargetStack->AddWidget(WidgetClass);
 }
 
-void UBaseUIRoot::PopPopup() const
+bool UBaseUIRoot::PopStack(const EUIStackType StackType) const
 {
-	if (PopupStack && PopupStack->GetActiveWidget())
+	if (const UCommonActivatableWidgetStack* TargetStack = GetStackByType(StackType))
 	{
-		PopupStack->RemoveWidget(*PopupStack->GetActiveWidget());
+		if (UCommonActivatableWidget* ActiveWidget = TargetStack->GetActiveWidget())
+		{
+			ActiveWidget->DeactivateWidget();
+			return true;
+		}
+	}
+	return false;
+}
+
+void UBaseUIRoot::SetBaseUIEnabled(const bool bEnabled) const
+{
+	if (BaseStack)
+	{
+		if (UCommonActivatableWidget* ActiveWidget = BaseStack->GetActiveWidget())
+		{
+			if (UBaseMenuWidget* MenuWidget = Cast<UBaseMenuWidget>(ActiveWidget))
+			{
+				MenuWidget->SetUIEnabled(bEnabled);
+			}
+		}
 	}
 }
 
-void UBaseUIRoot::Register()
+UCommonActivatableWidgetStack* UBaseUIRoot::GetStackByType(const EUIStackType StackType) const
 {
+	switch (StackType)
+	{
+	case EUIStackType::Base:
+		return BaseStack;
+	case EUIStackType::Popup:
+		return PopupStack;
+	case EUIStackType::Overlay:
+		return OverlayStack;
+	default:
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Invalid StackType."));
+		return nullptr;
+	}
 }

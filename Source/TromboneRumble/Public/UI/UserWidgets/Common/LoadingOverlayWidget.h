@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -15,16 +15,13 @@ class TROMBONERUMBLE_API ULoadingOverlayWidget : public UCommonActivatableWidget
 	
 public:
 	
-	UFUNCTION(BlueprintCallable, Category = "Loading")
-	virtual void InitDefault();
-	
-	UFUNCTION(BlueprintCallable, Category = "Loading")
-	virtual void InitWithContent(const FString& InContent = TEXT(""));
+	UFUNCTION(BlueprintCallable, Category = "LoadingWidget")
+	virtual void InitWithContent(const FText& InContent = FText::GetEmpty());
 	
 protected:
 	
 	UPROPERTY(EditDefaultsOnly)
-	FString DefaultContent = TEXT("Loading...");
+	FText DefaultContent = FText::FromString("Loading...");
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> CT_Content;

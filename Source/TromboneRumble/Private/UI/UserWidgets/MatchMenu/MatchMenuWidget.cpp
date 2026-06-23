@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
+#include "Utilities/TromboneStatics.h"
 
 void UMatchMenuWidget::NativeConstruct()
 {
@@ -47,8 +48,6 @@ void UMatchMenuWidget::NativeOnInitialized()
 
 void UMatchMenuWidget::Init()
 {
-	Super::Init();
-	
 	const APlayerController* PC = GetOwningPlayer();
 	if (!PC) return;
 	const bool bIsHost = PC->HasAuthority();
@@ -139,10 +138,10 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 {
 	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
 	{
+		UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
+		
 		const EMatchType NewMatchType = static_cast<EMatchType>(Value);
 		MatchMenuGS->SetMatchType(NewMatchType);
-		
-		ShowLoadingOverlay();
 
 		const bool bNewHidden = NewMatchType != EMatchType::Public;
 		
@@ -169,17 +168,17 @@ void UMatchMenuWidget::HandleMatchmakingUpdated(const EEasyMatchmakingState Matc
 {
 	if (UEasyStatics::IsMatchmaking(GetWorld()))
 	{
-		ShowLoadingOverlay();
+		UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
 	}
 	else
 	{
-		HideLoadingOverlay();
+		UTromboneStatics::PopOverlay(GetOwningPlayer());
 	}
 }
 
 void UMatchMenuWidget::HandleOnUpdateCompleteInMatchmaking(bool bWasSuccessful)
 {
-	HideLoadingOverlay();
+	UTromboneStatics::PopOverlay(GetOwningPlayer());
 	
 	if (bWasSuccessful)
 	{
@@ -190,8 +189,6 @@ void UMatchMenuWidget::HandleOnUpdateCompleteInMatchmaking(bool bWasSuccessful)
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 {
-	Super::SetUIEnabled(bEnabled);
-	
 	CB_Start->SetIsEnabled(bEnabled);
 	CB_Back->SetIsEnabled(bEnabled);
 }

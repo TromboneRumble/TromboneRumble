@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -6,24 +8,26 @@
 
 enum class EEasyMatchmakingCompleteResult : uint8;
 class UCommonButtonBase;
-class UEditableText;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
 {
 	GENERATED_BODY()
 	
-protected:
-	virtual void NativeConstruct() override;
-	virtual void NativeOnInitialized() override;
-
+public:
+	
+	// ~ Begin UBaseMenuWidget Interface
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
-
+	// ~ End UBaseMenuWidget Interface
+	
 protected:
 	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> SettingPopupClass;
+	// ~ Begin UCommonActivatableWidget Interface
+	virtual void NativeOnInitialized() override;
+	// ~ End UCommonActivatableWidget Interface
+
+protected:
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))
@@ -42,10 +46,8 @@ protected:
 	TObjectPtr<UCommonButtonBase> CB_Quit;
 	// ~ End UI
 	
-	UPROPERTY(Transient)
-	FString CachedMatchMenuMapPath = "";
-	
 private:
+	
 	// ~ Begin Button Callbacks
 	UFUNCTION()
 	void HandleCreateSessionClicked();
@@ -64,19 +66,5 @@ private:
 	
 	/** Displays the quit confirmation popup */
 	void ShowQuitPopup() const;
-	
-private:
-	
-	/** Called when matchmaking starts. */
-	UFUNCTION()
-	void HandleMatchmakingStarted();
-	
-	/** Called when matchmaking is complete. */
-	UFUNCTION()
-	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
-	
-	/** Called when matchmaking is canceled. */
-	UFUNCTION()
-	void HandleMatchmakingCanceled();
 	
 };

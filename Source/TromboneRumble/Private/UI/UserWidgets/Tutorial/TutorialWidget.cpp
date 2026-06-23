@@ -114,7 +114,12 @@ void UTutorialWidget::HandleTransitionSequence()
 {
 	UnregisterInputActions();
 	
-	if (UFadeWidget* Widget = RootLayout->PushFadeOverlay())
+	RootLayout->AddWidgetToStack<UFadeWidget>(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay, [](UFadeWidget& FadeWidget)
+	{
+		
+	});
+		
+	if (UFadeWidget* Widget = UTromboneStatics::ShowFadeOverlay(GetOwningPlayer()))
 	{
 		Widget->OnFadeInComplete.Clear();
 		Widget->OnFadeOutComplete.Clear();
@@ -185,18 +190,8 @@ void UTutorialWidget::OnFadeOutFinished()
 	{
 		TutorialSub->ProcessTutorial();
 	}
-
-	if (IsValid(RootLayout))
-	{
-		RootLayout->PopFadeOverlay();
-	}
-	else
-	{
-		if (UBaseUIRoot* Root = UTromboneStatics::GetRootLayout(GetOwningPlayer()))
-		{
-			Root->PopFadeOverlay();
-		}
-	}
+	
+	UTromboneStatics::PopOverlay(GetOwningPlayer());
 }
 
 TOptional<FUIInputConfig> UTutorialWidget::GetDesiredInputConfig() const

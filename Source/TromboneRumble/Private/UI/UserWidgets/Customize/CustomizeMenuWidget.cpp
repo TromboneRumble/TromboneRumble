@@ -10,8 +10,6 @@
 
 void UCustomizeMenuWidget::Init()
 {
-	Super::Init();
-
 	if (APlayerController* PC = GetOwningPlayer())
 	{
 		if (ACustomizePawn* Pawn = Cast<ACustomizePawn>(PC->GetPawn()))

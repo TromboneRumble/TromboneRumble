@@ -1,22 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
 #include "CommonTextBlock.h"
 
-void ULoadingOverlayWidget::InitDefault()
+void ULoadingOverlayWidget::InitWithContent(const FText& InContent)
 {
-	if (CT_Content)
-	{
-		CT_Content->SetText(FText::FromString(DefaultContent));
-	}
-}
-
-void ULoadingOverlayWidget::InitWithContent(const FString& InContent)
-{
-	FString FinalContent = InContent.IsEmpty() ? DefaultContent : InContent;
+	const FText FinalContent = InContent.IsEmpty() ? DefaultContent : InContent;
 	
 	if (CT_Content)
 	{
-		CT_Content->SetText(FText::FromString(FinalContent));
+		CT_Content->SetText(FinalContent);
 	}
 }

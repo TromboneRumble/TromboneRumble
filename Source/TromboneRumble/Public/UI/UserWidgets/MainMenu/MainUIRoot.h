@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -5,7 +7,6 @@
 #include "MainUIRoot.generated.h"
 
 enum class EEasyMatchmakingCompleteResult : uint8;
-class UCommonActivatableWidget;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainUIRoot : public UBaseUIRoot
@@ -13,7 +14,9 @@ class TROMBONERUMBLE_API UMainUIRoot : public UBaseUIRoot
 	GENERATED_BODY()
 	
 protected:
-	virtual void Register() override;
+	
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 private:
 	

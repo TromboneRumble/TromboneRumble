@@ -1,14 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonActivatableWidget.h"
 #include "CommonUserWidget.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
 #include "BaseUIRoot.generated.h"
 
-class UFadeWidget;
-class UCommonActivatableWidget;
-class UCommonActivatableWidgetStack;
+enum class EUIStackType;
 
 UCLASS()
 class TROMBONERUMBLE_API UBaseUIRoot : public UCommonUserWidget
@@ -16,39 +16,40 @@ class TROMBONERUMBLE_API UBaseUIRoot : public UCommonUserWidget
 	GENERATED_BODY()
 	
 public:
-	virtual void NativePreConstruct() override;
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
 	
-	// TODO : TromboneStatics로 빼기
-	void PushLoadingOverlay() const;
-	void PushLoadingOverlay(FString InContent) const;
-	void PopLoadingOverlay() const;
-	
-	// TODO : TromboneStatics로 빼기
-	/** Pushes fade overlay
-	 * @return Fade widget that was pushed or currently active fade widget
-	 * @see UFadeWidget
+	/** Pushes a new widget of the specified class onto the given UI stack.
+	 * @param WidgetClass The class of the widget to create.
+	 * @param StackType The target UI stack where the widget will be added.
+	 * @return Created widget instance.
 	 */
-	UFadeWidget* PushFadeOverlay() const;
-	
-	/** Pops the fade overlay */
-	void PopFadeOverlay() const;
-	
-	/** Pushes a popup widget of the specified class to the popup stack.
-	 * @return The instance of the popup widget that was pushed
+	UCommonActivatableWidget* AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType) const;
+
+	/** Pushes a new widget of the specified class onto the given UI stack and initializes it.
+	 * @param WidgetClass same as above
+	 * @param StackType same as above
+	 * @param InstanceInitFunc A callback function to initialize the widget instance.
+	 * @return Created widget instance.
 	 */
-	UCommonActivatableWidget* PushPopup(TSubclassOf<UCommonActivatableWidget> PopupClass) const;
+	template <typename T>
+	T* AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType, TFunctionRef<void(T&)> InstanceInitFunc) const;
+
+	/** Pops the top widget from the specified UI stack.
+	 * @param StackType same as above
+	 * @return True if a widget was successfully removed, false otherwise.
+	 */
+	bool PopStack(const EUIStackType StackType) const;
 	
-	/** Pops the topmost popup widget from the popup stack. */
-	void PopPopup() const;
+	/** Enabling/Disabling the base UI */
+	void SetBaseUIEnabled(const bool bEnabled) const;
+
+protected:
+	
+	UCommonActivatableWidgetStack* GetStackByType(const EUIStackType StackType) const;
 	
 protected:
-	virtual void Register();
 	
-protected:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	TObjectPtr<UCommonActivatableWidgetStack> UIStack;
+	TObjectPtr<UCommonActivatableWidgetStack> BaseStack;
 	
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	TObjectPtr<UCommonActivatableWidgetStack> PopupStack;
@@ -58,10 +59,30 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCommonActivatableWidget> DefaultWidgetClass;
+
+protected:
 	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> LoadingOverlayWidgetClass;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCommonActivatableWidget> FadeWidgetClass;
+	// ~ Begin UCommonUserWidget Interface
+	virtual void NativePreConstruct() override;
+	virtual void NativeDestruct() override;
+	// ~ End UCommonUserWidget Interface
 };
+
+template <typename T>
+T* UBaseUIRoot::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType, TFunctionRef<void(T&)> InstanceInitFunc) const
+{
+	if (!WidgetClass) return nullptr;
+
+	UCommonActivatableWidgetStack* TargetStack = GetStackByType(StackType);
+	if (!TargetStack) return nullptr;
+
+	if (const UCommonActivatableWidget* ActiveWidget = TargetStack->GetActiveWidget())
+	{
+		if (ActiveWidget->GetClass() == WidgetClass)
+		{
+			return Cast<T>(TargetStack->GetActiveWidget());
+		}
+	}
+
+	return TargetStack->AddWidget<T>(WidgetClass, InstanceInitFunc);
+}

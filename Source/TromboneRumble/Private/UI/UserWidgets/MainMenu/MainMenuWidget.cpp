@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "EasyMatchmakingManager.h"
@@ -13,25 +15,9 @@
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/TromboneStatics.h"
 
-void UMainMenuWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	const FString MatchMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
-	checkf(!MatchMenuMapPath.IsEmpty(), TEXT("Match menu map path not found. Please set it in GameMapDeveloperSettings."));
-	CachedMatchMenuMapPath = MatchMenuMapPath;
-}
-
 void UMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-	
-	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
-	{
-		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
-		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
-		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
-	}
 	
 	if (UAppearanceSubsystem* AppearanceSubsystem = GetGameInstance()->GetSubsystem<UAppearanceSubsystem>())
 	{
@@ -41,8 +27,6 @@ void UMainMenuWidget::NativeOnInitialized()
 
 void UMainMenuWidget::Init()
 {
-	Super::Init();
-	
 	if (CB_CreateSession)
 	{
 		CB_CreateSession->OnClicked().RemoveAll(this);
@@ -85,8 +69,6 @@ void UMainMenuWidget::Init()
 
 void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 {
-	Super::SetUIEnabled(bEnabled);
-	
 	CB_QuickJoin->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
 	CB_Settings->SetIsEnabled(bEnabled);
@@ -184,24 +166,6 @@ void UMainMenuWidget::HandleTutorialButtonClicked()
 	}
 	
 	UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
-}
-
-void UMainMenuWidget::HandleMatchmakingStarted()
-{
-	SetUIEnabled(false);
-}
-
-void UMainMenuWidget::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
-{
-	if (Result == EEasyMatchmakingCompleteResult::Failure || Result == EEasyMatchmakingCompleteResult::NoResults)
-	{
-		SetUIEnabled(true);
-	}
-}
-
-void UMainMenuWidget::HandleMatchmakingCanceled()
-{
-	SetUIEnabled(true);
 }
 
 void UMainMenuWidget::ShowTutorialPopup()

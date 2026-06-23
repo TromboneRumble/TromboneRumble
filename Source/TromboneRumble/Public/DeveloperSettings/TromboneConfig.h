@@ -97,6 +97,14 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
 	TSubclassOf<UCommonUserWidget> PerformanceWidgetClass;
 	
+	/** Loading overlay widget class. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
+	TSubclassOf<UCommonActivatableWidget> LoadingWidgetClass;
+	
+	/** Fade overlay widget class. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
+	TSubclassOf<UCommonActivatableWidget> FadeWidgetClass;
+
 	/** Toast container widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Toast")
 	TSoftClassPtr<UToastContainerWidget> ToastContainerWidgetClass;

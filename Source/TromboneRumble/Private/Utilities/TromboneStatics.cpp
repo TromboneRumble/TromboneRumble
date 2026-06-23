@@ -9,6 +9,8 @@
 #include "Subsystems/ToastSubsystem.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "UI/UserWidgets/Common/FadeWidget.h"
+#include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -99,6 +101,45 @@ bool UTromboneStatics::ShowToast(const UObject* WorldContextObject, const FToast
 		}
 	}
 	
+	return false;
+}
+
+ULoadingOverlayWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerController* PlayerController)
+{
+	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	{
+		if (UCommonActivatableWidget* AddedWidget = RootLayout->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
+		{
+			if (ULoadingOverlayWidget* LoadingWidget = Cast<ULoadingOverlayWidget>(AddedWidget))
+			{
+				return LoadingWidget;
+			}
+		}
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to show loading overlay"));
+	return nullptr;
+}
+
+UFadeWidget* UTromboneStatics::ShowFadeOverlay(const APlayerController* PlayerController)
+{
+	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	{
+		return Cast<UFadeWidget>(RootLayout->AddWidgetToStack(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay));
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to show fade overlay"));
+	return nullptr;
+}
+
+bool UTromboneStatics::PopOverlay(const APlayerController* PlayerController)
+{
+	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	{
+		return RootLayout->PopStack(EUIStackType::Overlay);
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to pop overlay"));
 	return false;
 }
 

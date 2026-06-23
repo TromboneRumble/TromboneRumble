@@ -18,6 +18,6 @@ void UMatchUIRoot::PushMenu(const EMatchMenuType InType) const
 	
 	if (TargetWidgetClass)
 	{
-		UIStack->AddWidget(TargetWidgetClass);
+		BaseStack->AddWidget(TargetWidgetClass);
 	}
 }

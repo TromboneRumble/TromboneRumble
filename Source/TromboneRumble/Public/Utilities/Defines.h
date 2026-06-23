@@ -4,6 +4,14 @@
 #include "Defines.generated.h"
 
 UENUM()
+enum class EUIStackType
+{
+	Base,
+	Popup,
+	Overlay
+};
+
+UENUM()
 enum class EMatchType : uint8
 {
 	Public = 0,
