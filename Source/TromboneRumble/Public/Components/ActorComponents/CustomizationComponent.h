@@ -9,7 +9,8 @@
 #include "Utilities/Defines.h"
 #include "CustomizationComponent.generated.h"
 
-class UStaticMeshComponent;
+class USkeletalMeshComponent;
+class UMaterialInstanceDynamic;
 class UDataTable;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -41,6 +42,15 @@ public:
 	// Original 대비 변경 여부 (Back 버튼 dirty 체크용)
 	bool IsDirtyFrom(const FCustomizationSaveData& Original) const;
 
+	// follower(costume/antenna) 메시의 skin 슬롯에 피부색 적용. 머리(leader)는 owner가 별도 처리
+	void ApplyPartsSkinColor(const FLinearColor& InColor) const;
+
+	// 파츠 스킨컬러 틴트 on/off. CustomizeMap(ACustomizePawn)은 false로 두어 기본 머티리얼 그대로 표시
+	void SetApplyPartsSkinColor(bool bEnable) { bApplyPartsSkinColor = bEnable; }
+
+	// 슬롯 이름으로 인덱스를 찾아 MID를 확보(없으면 생성). 슬롯이 없으면 nullptr.
+	static UMaterialInstanceDynamic* EnsureSlotMID(USkeletalMeshComponent* Mesh, FName SlotName);
+
 protected:
 	virtual void InitializeComponent() override;
 	virtual void BeginPlay() override;
@@ -50,6 +60,18 @@ private:
 	void ApplyAntenna(const FCustomizationPartRow* Row);
 	void ApplyFace(const FCustomizationPartRow* Row);
 	void ApplyCostume(const FCustomizationPartRow* Row);
+
+	// costume/antenna 공통: 기존 컴포넌트 정리 → SkeletalMesh follower 생성 → LeaderPose 연결 → skin/스텐실 적용
+	void ApplyFollowerPart(const FCustomizationPartRow* Row,
+		TObjectPtr<USkeletalMeshComponent>& Comp,
+		TObjectPtr<UMaterialInstanceDynamic>& SkinMID,
+		const TCHAR* CompName);
+
+	// owner 타입에 맞는 leader(메인) 스켈레탈 메시 반환. follower 오인을 막기 위해 명시적으로 결정
+	USkeletalMeshComponent* ResolveLeaderMesh() const;
+
+	// owner PlayerState의 현재 피부색 (없으면 Black)
+	FLinearColor GetOwnerSkinColor() const;
 
 	TArray<FName> GetSortedKeysForSlot(ECustomizationSlotType Slot) const;
 	const FCustomizationPartRow* FindRowByKey(FName Key) const;
@@ -67,10 +89,16 @@ private:
 	FName CurrentCostumeKey = NAME_None;
 
 	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> AntennaComp;
+	TObjectPtr<USkeletalMeshComponent> AntennaComp;
 	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> CostumeComp;
+	TObjectPtr<USkeletalMeshComponent> CostumeComp;
 
-	static const FName AntennaSocketName;
-	static const FName CostumeSocketName;
+	// follower 메시의 skin 슬롯 MID (피부색 동기화용)
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> AntennaSkinMID;
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> CostumeSkinMID;
+
+	// false면 파츠에 스킨컬러를 입히지 않고 기본 머티리얼 그대로 사용 (CustomizeMap용)
+	bool bApplyPartsSkinColor = true;
 };

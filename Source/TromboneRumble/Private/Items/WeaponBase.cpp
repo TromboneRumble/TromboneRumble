@@ -284,6 +284,15 @@ void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 		SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, true);
 		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
+		if (IsOwnerLocallyControlled())
+		{
+			ATromboneCharacterBase::ApplyOccludedStencil(SkeletalMeshComponent);
+		}
+		else
+		{
+			ATromboneCharacterBase::ClearOccludedStencil(SkeletalMeshComponent);
+		}
 	}
 	else
 	{
@@ -295,6 +304,7 @@ void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 		}
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
 		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		ATromboneCharacterBase::ClearOccludedStencil(SkeletalMeshComponent);
 	}
 }
 bool AWeaponBase::IsOwnerLocallyControlled() const

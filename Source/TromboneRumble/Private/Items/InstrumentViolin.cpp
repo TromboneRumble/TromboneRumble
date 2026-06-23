@@ -3,6 +3,7 @@
 
 #include "Items/InstrumentViolin.h"
 
+#include "Characters/TromboneCharacterBase.h"
 #include "Data/InstrumentScoreData.h"
 #include "GameFramework/Character.h"
 #include "UI/UserWidgets/Rhythm/ComboWidget/ViolinComboWidget.h"
@@ -61,16 +62,27 @@ void AInstrumentViolin::OnRep_CurrentOwner(AActor* OldActor)
 					FAttachmentTransformRules::SnapToTargetIncludingScale,
 					FName(TEXT("socket_Violin"))
 				);
+
+				// 로컬 플레이어가 든 경우에만 바이올린 본체도 X-Ray 실루엣에 포함
+				if (IsOwnerLocallyControlled())
+				{
+					ATromboneCharacterBase::ApplyOccludedStencilToActor(ViolinBodyActor);
+				}
+				else
+				{
+					ATromboneCharacterBase::ClearOccludedStencilFromActor(ViolinBodyActor);
+				}
 			}
 		}
 	}
 	else
 	{
-		
+
 		if (IsValid(ViolinBodyActor))
 		{
 			ViolinBodyActor->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 			ViolinBodyActor->SetActorHiddenInGame(true);
+			ATromboneCharacterBase::ClearOccludedStencilFromActor(ViolinBodyActor);
 		}
 		if (ActiveBuffHandle.IsValid())
 		{
