@@ -93,6 +93,7 @@ void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 	CB_Tutorial->SetIsEnabled(bEnabled);
 	CB_Quit->SetIsEnabled(bEnabled);
 	CB_CreateSession->SetIsEnabled(bEnabled);
+	CB_Customize->SetIsEnabled(bEnabled);
 }
 
 void UMainMenuWidget::HandleCreateSessionClicked()
