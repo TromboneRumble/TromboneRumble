@@ -81,6 +81,9 @@ private:
     
     void InitWWiseEngine();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "OnlineSession"))
+    bool bConnectionWasLost = false;
+    
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UAkComponent> GlobalBGMComponent;
     
