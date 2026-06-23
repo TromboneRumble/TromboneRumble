@@ -13,7 +13,7 @@ struct FRagdollNetState
 {
 	GENERATED_BODY()
 	
-	/** for reduce bandwidth */
+	/** using FVector_NetQuantize for reduce bandwidth */
 	UPROPERTY()
 	FVector_NetQuantize PelvisLocation = FVector::ZeroVector;
 
@@ -23,10 +23,10 @@ struct FRagdollNetState
 
 /** URagdollComponent
  * Synchronizes ragdoll simulation in co-op
- * Replicates server's pelvis transform and velocity.
+ * Only replicates server's pelvis location and velocity (not rotation).
  * Applying velocity interpolation to the pelvis, allowing the rest of the physics body to follow naturally
  */
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS()
 class TROMBONERUMBLE_API UTromboneRagdollComponent : public UActorComponent
 {
 	GENERATED_BODY()

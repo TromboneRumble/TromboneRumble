@@ -43,3 +43,9 @@ namespace TromboneGamePlayTags
 	const FString ActuallyUsedMap = TEXT("Main");
 	const FString MapsRootPath = ProjectName + TEXT(".") + MapsCategory;
 }
+
+namespace TromboneBones
+{
+	const FName Pelvis = TEXT("pelvis");
+	const FName Flage = TEXT("flage01");
+}

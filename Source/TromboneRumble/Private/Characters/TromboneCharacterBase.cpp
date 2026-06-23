@@ -5,6 +5,7 @@
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "AkComponent.h"
+#include "TromboneGamePlayTags.h"
 #include "Components/ActorComponents/CustomizationComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Data/CharacterDataAsset.h"
@@ -16,7 +17,6 @@
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/Defines.h"
-#include "Utilities/DebugHelper.h"
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
@@ -578,7 +578,7 @@ bool ATromboneCharacterBase::IsFacingUp() const
 {
 	if (!GetMesh()) return true;
 
-	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(PelvisBoneName);
+	const FRotator PelvisRotation = GetMesh()->GetSocketRotation(TromboneBones::Pelvis);
 	const FVector PelvisUp = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::Z);
     
 	return (FVector::DotProduct(PelvisUp, FVector::UpVector) > 0.0f);
@@ -603,9 +603,8 @@ void ATromboneCharacterBase::ApplyFlagPhysics()
 	FlagAnimData.MaxAngularForce = 0.0f;
 	FlagAnimData.MaxLinearForce = 0.0f;
 
-	FName BoneName = FName("flage01");
-	GetMesh()->SetAllBodiesBelowSimulatePhysics(BoneName, true, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(BoneName, FlagAnimData, true);
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(TromboneBones::Flage, true, true);
+	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(TromboneBones::Flage, FlagAnimData, true);
 }
 
 void ATromboneCharacterBase::OnRep_IsRagdoll()

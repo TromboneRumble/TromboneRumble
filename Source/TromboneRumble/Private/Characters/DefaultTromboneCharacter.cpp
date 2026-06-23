@@ -24,16 +24,13 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/ActorComponents/InterpolateSpringArmComponent.h"
 #include "Items/InstrumentBase.h"
 #include "UI/UserWidgets/InGame/InGameSpeakerWidget.h"
-
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
-#include "Prototype/InGameWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -42,13 +39,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(GetMesh(), FName("pelvis"));
-	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->bDoCollisionTest = false;
-	CameraBoom->bUsePawnControlRotation = false;
-
+	CameraBoom = CreateDefaultSubobject<UInterpolateSpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetMesh(), TromboneBones::Pelvis);
+	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation

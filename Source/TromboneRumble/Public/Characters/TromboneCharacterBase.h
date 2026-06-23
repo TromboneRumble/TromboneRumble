@@ -153,8 +153,6 @@ private:
 	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
 	UPROPERTY()
 	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
-
-	FName PelvisBoneName = "pelvis";
 	
 	// TODO : 컴포지션으로 빼기
 	// ~ Begin Face Expression Region
