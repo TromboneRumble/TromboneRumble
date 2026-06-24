@@ -95,6 +95,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UTromboneRagdollComponent> RagdollComponent;
 
+	// false면 SkinColor를 skin/face MID에 틴트하지 않고 머티리얼 기본색 사용 (PlayerState 없는 더미용)
+	bool bApplySkinColorTint = true;
+
 private:
 	void InitCharacter();
 	void SetupCapsuleComponent();

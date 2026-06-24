@@ -77,14 +77,17 @@ void ATromboneCharacterBase::ClearOccludedStencilFromActor(AActor* Actor)
 }
 void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
 {
-	// 머리(leader)
-	if (SkinMID)
+	// 머리(leader). bApplySkinColorTint=false면 머티리얼 기본색 유지 (PlayerState 없는 더미)
+	if (bApplySkinColorTint)
 	{
-		SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
-	}
-	if (FaceMID)
-	{
-		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
+		if (SkinMID)
+		{
+			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
+		}
+		if (FaceMID)
+		{
+			FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
+		}
 	}
 	// 몸통(costume)·안테나 follower 메시
 	if (CustomizationComp)
@@ -294,9 +297,10 @@ void ATromboneCharacterBase::ApplyFaceMaterial(UMaterialInterface* Material)
 
 	GetMesh()->SetMaterial(FaceIndex, Target);
 	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceIndex);
-	if (FaceMID)
+	if (FaceMID && bApplySkinColorTint)
 	{
 		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
+		// bApplySkinColorTint=false면 머티리얼 기본 BaseColor 유지 (PlayerState 없는 더미)
 		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
 	}
 }

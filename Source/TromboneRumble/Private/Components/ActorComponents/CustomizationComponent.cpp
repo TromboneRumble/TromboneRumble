@@ -28,7 +28,19 @@ void UCustomizationComponent::BeginPlay()
 {
 	if (!CachedDataTable)
 		CachedDataTable = CustomizationDataTable.LoadSynchronous();
+
 	Super::BeginPlay();
+
+	// owner가 LoadFromSaveData를 한 번도 호출하지 않은 경우(예: 빙의되지 않는 TutorialDummy)
+	// 최소한 Order 0 기본 파츠를 부착해 머리만 보이는 현상을 방지한다.
+	const bool bNothingApplied =
+		CurrentAntennaKey == NAME_None &&
+		CurrentFaceKey    == NAME_None &&
+		CurrentCostumeKey == NAME_None;
+	if (bNothingApplied)
+	{
+		LoadFromSaveData(FCustomizationSaveData());
+	}
 }
 
 // ── 공개 인터페이스 ──────────────────────────────────────────────────────────────
