@@ -31,6 +31,7 @@ void UTromboneGameInstance::SaveResultSceneData()
 			Data.Score = DPS->GetScore();
 			Data.SpecificScoreData = DPS->GetScoreData();
 			Data.PlayerSkinColor = DPS->GetSkinColor();
+			Data.Customization = DPS->GetCustomizationData();
 			Data.bIsLocalPlayer = (DPS == LocalPS);
 
 			CachedResultSceneData.Add(Data);

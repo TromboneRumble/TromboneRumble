@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Components/ActorComponents/CustomizationComponent.h"
+#include "Actors/ResultScene/PodiumActor.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/DataTable.h"
@@ -202,6 +203,10 @@ void UCustomizationComponent::ApplyFace(const FCustomizationPartRow* Row)
 	{
 		CustomPawn->ApplyFaceMaterial(Mat);
 	}
+	else if (APodiumActor* Podium = Cast<APodiumActor>(GetOwner()))
+	{
+		Podium->ApplyFaceMaterial(Mat);
+	}
 }
 
 void UCustomizationComponent::ApplyCostume(const FCustomizationPartRow* Row)
@@ -238,6 +243,7 @@ void UCustomizationComponent::ApplyFollowerPart(const FCustomizationPartRow* Row
 	Comp = NewObject<USkeletalMeshComponent>(Owner, CompName);
 	Comp->SetSkeletalMeshAsset(Mesh);
 	Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Comp->SetReceivesDecals(false);
 	Comp->SetupAttachment(Leader);
 	Comp->RegisterComponent();
 	Owner->AddInstanceComponent(Comp);
@@ -297,6 +303,10 @@ USkeletalMeshComponent* UCustomizationComponent::ResolveLeaderMesh() const
 	{
 		return CustomPawn->GetMeshComponent();
 	}
+	if (const APodiumActor* Podium = Cast<APodiumActor>(Owner))
+	{
+		return Podium->GetMeshComponent();
+	}
 	return Owner->FindComponentByClass<USkeletalMeshComponent>();
 }
 
@@ -308,6 +318,11 @@ FLinearColor UCustomizationComponent::GetOwnerSkinColor() const
 		{
 			return DPS->GetSkinColor();
 		}
+	}
+	// PodiumActor는 PlayerState가 없으므로 외부에서 주입된 피부색을 사용
+	if (const APodiumActor* Podium = Cast<APodiumActor>(GetOwner()))
+	{
+		return Podium->GetSkinColor();
 	}
 	return FLinearColor::Black;
 }
