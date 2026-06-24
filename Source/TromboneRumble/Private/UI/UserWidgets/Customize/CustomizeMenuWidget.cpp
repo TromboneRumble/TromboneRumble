@@ -30,6 +30,11 @@ void UCustomizeMenuWidget::Init()
 	if (CB_Back)         { CB_Back->OnClicked().RemoveAll(this);         CB_Back->OnClicked().AddUObject(this, &ThisClass::Handle_Back); }
 }
 
+TOptional<FUIInputConfig> UCustomizeMenuWidget::GetDesiredInputConfig() const
+{
+	return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::CaptureDuringMouseDown, EMouseLockMode::LockOnCapture, false);
+}
+
 void UCustomizeMenuWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();

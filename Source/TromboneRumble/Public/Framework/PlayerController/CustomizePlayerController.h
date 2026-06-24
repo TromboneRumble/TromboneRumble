@@ -39,6 +39,13 @@ private:
 
 	bool bMouseHeld = false;
 	float RotationVelocity = 0.f;
+	float TargetRotationVelocity = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Customize|Rotation")
+	float RotationSensitivity = 2.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Customize|Rotation")
+	float RotationSmoothingSpeed = 20.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Customize|Rotation")
 	float DecelerationRate = 3.f;

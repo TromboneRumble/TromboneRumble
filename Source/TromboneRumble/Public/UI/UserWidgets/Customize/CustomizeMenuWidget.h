@@ -16,6 +16,8 @@ class TROMBONERUMBLE_API UCustomizeMenuWidget : public UBaseMenuWidget
 protected:
 	virtual void Init() override;
 	virtual void NativeOnActivated() override;
+	
+	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_AntennaNext;
