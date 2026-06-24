@@ -5,18 +5,23 @@
 #include "Framework/InGameState.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "TromboneGamePlayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "Utilities/DebugHelper.h"
 
 ACrown::ACrown()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 
 void ACrown::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 1등이 정해지기 전(전원 0점)에는 스폰 위치에 보이지 않도록 숨김
+	SetActorHiddenInGame(true);
+
 	if (UWorld* World = GetWorld())
 	{
 		if (AInGameState* InGameState = World->GetGameState<AInGameState>())
@@ -55,15 +60,14 @@ void ACrown::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ACrown::HandleLeaderChanged(APlayerState* NewLeader, APlayerState* OldLeader)
 {
-	// 기존 Attach 해제
-	if (AttachedCharacter.IsValid())
-	{
-		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		AttachedCharacter = nullptr;
-	}
+	// 부착 방식이 아니라 Tick에서 pelvis 위치를 추적하므로 대상 캐릭터만 갱신한다.
+	AttachedCharacter = nullptr;
+	BobTime = 0.f;
 
 	if (!NewLeader)
 	{
+		// 1등이 없으면 숨김 (빈 공간에 남지 않도록)
+		SetActorHiddenInGame(true);
 		return;
 	}
 
@@ -72,11 +76,27 @@ void ACrown::HandleLeaderChanged(APlayerState* NewLeader, APlayerState* OldLeade
 		if (ADefaultTromboneCharacter* Char = Cast<ADefaultTromboneCharacter>(Pawn))
 		{
 			AttachedCharacter = Char;
-
-			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
-			AttachToComponent(Char->GetMesh(), Rules, TEXT("socket_crown"));
+			SetActorHiddenInGame(false);
 		}
 	}
+}
+
+void ACrown::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	ACharacter* Char = AttachedCharacter.Get();
+	if (!Char || !Char->GetMesh())
+	{
+		return;
+	}
+
+	BobTime += DeltaSeconds;
+	const float ZOffset = HoverHeight + BobAmplitude * FMath::Sin(BobTime * BobSpeed);
+
+	// pelvis(몸 중심/물리 루트) 월드 위치 + 월드 수직 오프셋 → 고개 숙임/레그돌과 무관하게 세로축 고정
+	const FVector PelvisLoc = Char->GetMesh()->GetSocketLocation(TromboneBones::Pelvis);
+	SetActorLocation(PelvisLoc + FVector(0.f, 0.f, ZOffset));
 }
 
 void ACrown::TryAttachToInitialLeader()
