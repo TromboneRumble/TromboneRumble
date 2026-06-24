@@ -63,4 +63,7 @@ private:
 	UFUNCTION() void Handle_Back();
 
 	void ShowBackPopup();
+
+	/** CustomizationComp 캐싱 + 디스크 저장 데이터를 dirty 비교 베이스라인으로 캡처 */
+	void CaptureBaseline();
 };
