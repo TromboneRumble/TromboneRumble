@@ -141,6 +141,7 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
 
 void UCharacterAnimInstance::SaveRagdollPoseSnapshot()
 {
+    // TODO : 하드코딩 제거
     RagdollSnapshotName = TEXT("RagdollSnapshot");
     SavePoseSnapshot(RagdollSnapshotName);
     bIsRagdollBlending = true;

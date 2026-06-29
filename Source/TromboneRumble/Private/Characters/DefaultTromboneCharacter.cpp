@@ -14,6 +14,7 @@
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "Components/ActorComponents/RageComponent.h"
+#include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/LocalPlayer.h"
@@ -312,7 +313,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 		}
 	}
 
-	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
+	if (RagdollComponent)
+	{
+		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::Unequip);
+	}
 
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Weapon;
@@ -532,11 +536,6 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 			PS->AddScore(InstrumentBase->GetInstrumentPickUpScore(), EScoreType::InstrumentPickedUp);
 		}
 	}
-}
-
-void ADefaultTromboneCharacter::HandleOnRagdoll()
-{
-	Unequip();
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)

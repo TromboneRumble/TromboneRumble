@@ -18,11 +18,8 @@ class UCharacterDataAsset;
 class UCustomizationComponent;
 class UMaterialInterface;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRagdollSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndRagdollSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStunStateChanged, bool, bIsStunned);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInvincibleSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndInvincibleSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInvincibleSignature);
 
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
@@ -31,14 +28,6 @@ class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICom
 
 public:
 	ATromboneCharacterBase();
-	
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void Tick(float DeltaSeconds) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_PlayerState() override;
-	virtual void OnRep_Controller() override;
 
 	// ~ Begin ICombatReceiver Interfaces
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
@@ -63,12 +52,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCustomizationComponent> CustomizationComp;
 
-	FOnRagdollSignature OnRagdollDelegate;
-	FEndRagdollSignature EndRagdollDelegate;
-	UPROPERTY(BlueprintAssignable)
 	FOnStunStateChanged OnStunStateChanged;
-	FOnInvincibleSignature OnInvincibleDelegate;
-	FEndInvincibleSignature EndInvincibleDelegate;
+	FInvincibleSignature OnInvincibleDelegate;
+	FInvincibleSignature EndInvincibleDelegate;
 
 protected:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Config|Data")
@@ -99,31 +85,26 @@ protected:
 	bool bApplySkinColorTint = true;
 
 private:
-	void InitCharacter();
-	void SetupCapsuleComponent();
-	void SetupSkeletalMeshComponent();
 	void SetupCharacterData() const;
 
-	void OnRagdoll();
-	void EndRagdoll();
 	void OnStun();
 	void EndStun();
 
 	void ApplyStun();
 	void UnapplyStun();
-	
-	void DelayedSavePoseSnapshot();
-	void InternalUnapplyRagdoll();
-	bool IsFacingUp() const;
-	float PoseSnapshotInterval = 0.1f;
+
+	UFUNCTION()
+	void HandleRagdollStarted();
+	UFUNCTION()
+	void HandleRagdollEnded();
+	UFUNCTION()
+	void HandleRagdollGetUp();
 
 	void UpdateSkinFromPlayerState();
 	
 	void ApplyFlagPhysics();
 
 	// Replication Notifies
-	UFUNCTION()
-	void OnRep_IsRagdoll();
 	UFUNCTION()
 	void OnRep_IsStun();
 	UFUNCTION()
@@ -134,15 +115,11 @@ private:
 
 	FTimerHandle OnHitTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
-	FTimerHandle TimerHandler_DelayedSavePostSnapshot;
-	FTimerHandle TimerHandler_InternalUnapplyRagdoll;
 
 	bool bIsCanProcessInput = true;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_IsInvincible)
 	bool bIsInvincible = false;
-	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
-	bool bIsRagdoll = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsStun)
 	bool bIsStun = false;
 	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
@@ -187,9 +164,22 @@ public:
 	void Server_DebugRagdoll();
 
 public:
+	
+	// ~ Begin ACharacter Interface
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+	virtual void OnRep_Controller() override;
+	// ~ End ACharacter Interface
+	
+public:
+	
 	//~ Begin Setter
 	bool IsStun() const { return bIsStun; }
-	bool IsRagdoll() const { return bIsRagdoll; }
+	bool IsRagdoll() const;
 	bool IsCanProcessInput() const { return bIsCanProcessInput; }
 	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }
 	//~ End Setter

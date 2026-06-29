@@ -253,3 +253,9 @@ namespace TromboneMaterial
 	inline const FName FaceSlotName(TEXT("face"));
 	inline const FName BaseColorParam(TEXT("BaseColor"));
 }
+
+namespace TromboneBones
+{
+	const FName Pelvis = TEXT("pelvis");
+	const FName Flage = TEXT("flage01");
+}

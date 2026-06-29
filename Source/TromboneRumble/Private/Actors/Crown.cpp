@@ -5,9 +5,6 @@
 #include "Framework/InGameState.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Characters/DefaultTromboneCharacter.h"
-#include "TromboneGamePlayTags.h"
-#include "Kismet/GameplayStatics.h"
-#include "Utilities/DebugHelper.h"
 
 ACrown::ACrown()
 {

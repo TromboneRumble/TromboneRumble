@@ -54,6 +54,8 @@ public:
 	void StopSprint();
 	void Rhythm(bool bIsPressed);	
 	void Equip(AItemBase* WeaponToEquip);
+	
+	UFUNCTION()
 	void Unequip();
 
 	/** 마우스 휠 줌 단계 변경. WheelDelta: +1 = 줌인(레벨 감소), -1 = 줌아웃(레벨 증가) */
@@ -187,8 +189,6 @@ private:
 	void HandleInteractableAvailableChanged(bool bAvailable);
 	UFUNCTION()
 	void HandleInteractSuccess(AActor* InteractedActor);
-	UFUNCTION()
-	void HandleOnRagdoll();
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 	// ~Delegate Callback Handlers
