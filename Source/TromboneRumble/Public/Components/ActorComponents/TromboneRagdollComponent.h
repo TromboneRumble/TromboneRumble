@@ -81,7 +81,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "추적 강도"))
 	float TrackingIntensity = 10.0f;
 
-	/** 접지 판정을 위해 펠비스에서 아래로 트레이스하는 거리 (cm) */
+	/** The distance traced downward from the pelvis to determine grounding (cm) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 접지 트레이스 거리"))
 	float RagdollGroundTraceDistance = 60.0f;
 	
@@ -99,15 +99,14 @@ private:
 	UFUNCTION()
 	void OnRep_IsRagdoll();
 	
-	/** 래그돌 종료 후 포즈 스냅샷 저장 → 기상 처리로 이어지는 타이머 체인 */
 	void DelayedSavePoseSnapshot();
 	
-	void InternalUnapplyRagdoll();
+	void UnapplyRagdoll();
 
 	/** @return true if the front of the pelvis is facing toward the sky, otherwise false. */
 	bool IsFacingUp() const;
 	
-	/** 서버: 펠비스 아래로 트레이스해 접지 여부 판정 */
+	/** @return true if the pelvis is close enough to the ground, otherwise false. */
 	bool IsRagdollGrounded() const;
 
 	void Server_UpdateRagdollTransform();
@@ -133,15 +132,9 @@ private:
 
 	float TimeSinceLastNetUpdate = 0.0f;
 
-	/** 래그돌이 바닥에 머문 누적 시간. 공중에 뜨면 0으로 초기화 (서버 전용) */
+	/** Time spent on the ground during ragdoll */
 	float RagdollGroundedTime = 0.0f;
-
-	/** 포즈 스냅샷 저장/기상 처리 사이의 지연 (초) */
-	float PoseSnapshotInterval = 0.1f;
-
-	FTimerHandle TimerHandler_DelayedSavePostSnapshot;
-	FTimerHandle TimerHandler_InternalUnapplyRagdoll;
-
+	
 	/** Maximum difference for pelvis location synchronization (DebugMode) */
 	float PelvisLocationMaxError = 0.0f;
 

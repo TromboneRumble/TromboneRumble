@@ -176,14 +176,10 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		OwnerCharacter->SetActorLocation(TargetCapsuleLocation);
 		OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
 		
-		GetWorld()->GetTimerManager().SetTimer(
-			TimerHandler_DelayedSavePostSnapshot,
-			this,
-			&ThisClass::DelayedSavePoseSnapshot,
-			PoseSnapshotInterval,
-			false
+		GetWorld()->GetTimerManager().SetTimerForNextTick(
+		   FTimerDelegate::CreateUObject(this, &ThisClass::DelayedSavePoseSnapshot)
 		);
-
+		
 		OnRagdollEnded.Broadcast();
 	}
 }
@@ -195,16 +191,12 @@ void UTromboneRagdollComponent::DelayedSavePoseSnapshot()
 		AnimInst->SaveRagdollPoseSnapshot();
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(
-		TimerHandler_InternalUnapplyRagdoll,
-		this,
-		&ThisClass::InternalUnapplyRagdoll,
-		PoseSnapshotInterval,
-		false
+	GetWorld()->GetTimerManager().SetTimerForNextTick(
+	   FTimerDelegate::CreateUObject(this, &ThisClass::UnapplyRagdoll)
 	);
 }
 
-void UTromboneRagdollComponent::InternalUnapplyRagdoll()
+void UTromboneRagdollComponent::UnapplyRagdoll()
 {
 	OwnerCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
