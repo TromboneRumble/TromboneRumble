@@ -1,15 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "Utilities/Defines.h"
 #include "MatchMenuWidget.generated.h"
 
+class AMatchMenuGameState;
 class UCommonButtonBaseExtensionWithText;
 class UCommonRotatorWidgetBase;
-class UCommonTextBlock;
 enum class EEasyMatchmakingState : uint8;
 enum class ERotatorDirection : uint8;
 enum class EMatchType : uint8;
@@ -20,18 +21,16 @@ class TROMBONERUMBLE_API UMatchMenuWidget : public UBaseMenuWidget
 	GENERATED_BODY()
 
 public:
+	
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override
 	{
 		return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::LockOnCapture, false);
 	}
-
-protected:
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
-	virtual void NativeOnInitialized() override;
-
+	
+	// ~ Begin UBaseMenuWidget Interface
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
+	// ~ End UBaseMenuWidget Interface
 	
 protected:
 	
@@ -44,15 +43,18 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
+
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UCommonRotatorWidgetBase> CR_Map;
 	// ~ End UIs
 	
 private:
-	// ~ Begin GameState Events
-	void BindGameStateEvents();
-	void RemoveGameStateEvents();
 	
+	// ~ Begin GameState Events
 	UFUNCTION()
 	void OnMatchTypeChanged(EMatchType NewType);
+	UFUNCTION()
+	void OnSelectedMapChanged(FGameplayTag NewMapTag);
 	// ~ End GameState Events
 	
 	// ~ Begin UI Events
@@ -62,17 +64,29 @@ private:
 	void HandleBackButtonClicked();
 	UFUNCTION()
 	void HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir);
+	UFUNCTION()
+	void HandleOnRotatedMap(int32 Value, ERotatorDirection RotatorDir);
 	// ~ End UI Events
+
+	void InitSelectableMaps();
 	
-	UPROPERTY(Transient)
-	FString CachedMainMenuMapPath = "";
-	UPROPERTY(Transient)
-	FString CachedLobbyMapPath = "";
+	UFUNCTION()
+	void HandleOnUpdateMatchComplete(bool bWasSuccessful);
+	
+private:
 	
 	bool bIsStarted = false;
 	
-	UFUNCTION()
-	void HandleMatchmakingUpdated(const EEasyMatchmakingState MatchmakingState, const int32 MatchmakingTime);
-	UFUNCTION()
-	void HandleOnUpdateCompleteInMatchmaking(bool bWasSuccessful);
+	UPROPERTY(Transient)
+	TArray<FGameplayTag> CachedSelectableMaps;
+	
+	UPROPERTY(Transient)
+	TWeakObjectPtr<AMatchMenuGameState> CachedMatchMenuGS;
+	
+protected:
+	
+	// ~ Begin UCommonActivatableWidget Interface
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+	// End UCommonActivatableWidget Interface
 };

@@ -10,19 +10,19 @@ UCLASS()
 class TROMBONERUMBLE_API UCommonRotatorWidgetBase : public UCommonUserWidget
 {
 	GENERATED_BODY()
-	
-public:
-	
-	UPROPERTY(EditAnywhere, Category = "Options");
-	TArray<FText> TextOptions;
-	
-	UPROPERTY(EditAnywhere, Category = "Options")
-	int32 DefaultSelectedIndex = 0;
 
 public:
 	
 	/** Delegate for when the rotator is rotated with a direction. Provides the new index and the direction of rotation. */
 	FOnRotatedWithDirection& OnRotatedWithDirection() const { return CR_Rotator->OnRotatedWithDirection; }
+	
+protected:
+	
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (AllowPrivateAccess = "true"))
+	TArray<FText> TextOptions;
+	
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (AllowPrivateAccess = "true"))
+	int32 DefaultSelectedIndex = 0;
 
 protected:
 	
@@ -41,20 +41,27 @@ private:
 	void RefreshRotator();
 	
 public:
+	
 	// ~ Begin UUserWidget Interface
 	virtual bool Initialize() override;
-	virtual void NativePreConstruct() override;
 	virtual void SetIsEnabled(bool bInIsEnabled) override;
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 	// ~ End UUserWidget Interface
 	
+protected:
+	
+	// ~ Begin UUserWidget Interface
+	virtual void NativePreConstruct() override;
+	// ~ End UUserWidget Interface
+
 public:
 	
 	// ~ Begin Getter & Setter
 	int32 GetCurrentIndex() const { return CR_Rotator ? CR_Rotator->GetSelectedIndex() : -1; }
 	void SetSelectedIndex(int32 NewIndex);
-	const TArray<FText>& GetOptionsArray() const { return TextOptions; }
+	const TArray<FText>& GetOptions() const { return TextOptions; }
+	void SetOptions(const TArray<FText>& InOptions);
 	// ~ End Getter & Setter
 };

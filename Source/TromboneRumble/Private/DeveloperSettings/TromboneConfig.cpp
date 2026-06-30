@@ -1,5 +1,6 @@
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Data/UIData.h"
+#include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 
 UTromboneConfig::UTromboneConfig()
@@ -7,6 +8,7 @@ UTromboneConfig::UTromboneConfig()
 	TwoButtonPopupWidgetClass(UTwoButtonPopup::StaticClass()),
 	CharacterSkinColors( {FLinearColor::Red}),
 	RoomCodeLength(5), 
+	DefaultInGameMap(TromboneGamePlayTags::Trombone_Maps_InGame_OrchestraStage), 
 	LobbyCountdownTimeSeconds(5), 
 	ToastSystemPolicy(EToastSystemPolicy::Queue),
 	IntervalAfterQuestCompletion(1.5f), 

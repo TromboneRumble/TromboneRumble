@@ -12,7 +12,10 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "DeveloperSettings/TromboneConfig.h"
+#include "Online/OnlineSessionNames.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
+#include "Utilities/Defines.h"
 #include "Utilities/TromboneStatics.h"
 
 void UMainMenuWidget::NativeOnInitialized()
@@ -97,9 +100,10 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
 		
 		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
+		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
 		HostParams.bHidden = true;
 		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_MAPNAME, Config->DefaultInGameMap.ToString(), EOnlineDataAdvertisementType::ViaOnlineService));
 
 		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
     
@@ -126,7 +130,7 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
 		
 		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
+		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
 		HostParams.bHidden = true;
 		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		

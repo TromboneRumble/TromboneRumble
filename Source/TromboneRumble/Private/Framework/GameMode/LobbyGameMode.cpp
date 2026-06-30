@@ -1,6 +1,11 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "Framework/GameMode/LobbyGameMode.h"
 #include "AkGameplayStatics.h"
+#include "EasyOnlineSession.h"
+#include "EasySessionStatics.h"
 #include "TromboneGamePlayTags.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/LobbyGameState.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,6 +15,7 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Items/WeaponBase.h"
+#include "Online/OnlineSessionNames.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
@@ -129,14 +135,36 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 					if (RemainingPlayers < 2)
 					{
 						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
-						const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-						RequestServerTravel(MainMenuMapName);
+						const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
+						UEasyStatics::ServerTravelToLevel(this, MainMenuMapName);
 					}
 					else
 					{
 						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
-						const FString LobbyMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
-						RequestServerTravel(LobbyMapName);
+						
+						FGameplayTag InGameTag;
+						// fallback : Default InGame Map
+						if (const UTromboneConfig* Config = UTromboneConfig::Get())
+						{
+							InGameTag = Config->DefaultInGameMap;
+						}
+						
+						FString SavedInGameTagStr;
+						if (const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+						{
+							if (OnlineSession->GetSessionSetting(NAME_GameSession, SETTING_MAPNAME, SavedInGameTagStr) && !SavedInGameTagStr.IsEmpty())
+							{
+								const FGameplayTag Found = FGameplayTag::RequestGameplayTag(FName(*SavedInGameTagStr), false);
+								if (Found.IsValid())
+								{
+									InGameTag = Found;
+								}
+							}
+						}
+						const FGameplayTag LobbyCategory = FGameplayTag::RequestGameplayTag(FName(*TromboneGamePlayTags::LobbyPath), false);
+						const FGameplayTag LobbyTag = UTromboneFunctionLibrary::GetSiblingMapTag(InGameTag, LobbyCategory);
+						const FString LobbyMapName = GameStateSubsystem->GetLevelStringFromTag(LobbyTag);
+						UEasyStatics::ServerTravelToLevel(this, LobbyMapName);
 					}
 				}
 			}
@@ -286,10 +314,28 @@ void ALobbyGameMode::OnCountdownToTravel()
 		{
 			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 			{
-				//TODO : InGame맵 이동 로직 UI로 수정
-				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
-				//const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Snow);
-				RequestServerTravel(InGameMapName);
+				FGameplayTag InGameTag;
+				// fallback : Default InGame Map
+				if (const UTromboneConfig* Config = UTromboneConfig::Get())
+				{
+					InGameTag = Config->DefaultInGameMap;
+				}
+
+				FString SavedInGameTagStr;
+				if (const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+				{
+					if (OnlineSession->GetSessionSetting(NAME_GameSession, SETTING_MAPNAME, SavedInGameTagStr) && !SavedInGameTagStr.IsEmpty())
+					{
+						const FGameplayTag FoundTag = FGameplayTag::RequestGameplayTag(FName(*SavedInGameTagStr), false);
+						if (FoundTag.IsValid())
+						{
+							InGameTag = FoundTag;
+						}
+					}
+				}
+
+				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(InGameTag);
+				UEasyStatics::ServerTravelToLevel(this, InGameMapName);
 			}
 		}
 	}

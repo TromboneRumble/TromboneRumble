@@ -228,14 +228,20 @@ void AWeaponBase::Client_OnHitSuccess_Implementation(AActor* HitActor)
 bool AWeaponBase::IsCanSweep() const
 {
 	const UGameInstance* GI = GetWorld()->GetGameInstance();
-	if (!GI) return false;
+	if (!GI)
+	{
+		return false;
+	}
 
-	UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
+	const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
 	if (!GameStateSubsystem)
 	{
 		return false;
 	}
-	if (GameStateSubsystem->GetLevelState() != ELevelType::InGame && GameStateSubsystem->GetLevelState() != ELevelType::Tutorial)
+	
+	if (GameStateSubsystem->GetLevelState() != ELevelType::OrchestraStage && 
+		GameStateSubsystem->GetLevelState() != ELevelType::SnowField && 
+		GameStateSubsystem->GetLevelState() != ELevelType::Tutorial)
 	{
 		return false;
 	}

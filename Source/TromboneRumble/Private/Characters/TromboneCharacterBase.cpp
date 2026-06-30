@@ -569,25 +569,30 @@ void ATromboneCharacterBase::ExecuteFaceStep()
 
 void ATromboneCharacterBase::ApplyFlagPhysics()
 {
-	const UGameInstance* GI = GetWorld()->GetGameInstance();
-	if (!GI) return;
+	if (!GetWorld() || !GetWorld()->GetGameInstance())
+	{
+		return;
+	}
 
-	const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>();
-	if (!GameStateSubsystem || GameStateSubsystem->GetLevelState() != ELevelType::InGame) return;
-	
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
-	FPhysicalAnimationData FlagAnimData;
-	FlagAnimData.bIsLocalSimulation = false;
-	FlagAnimData.OrientationStrength = 10.0f;
-	FlagAnimData.AngularVelocityStrength = 5.0f;
-	FlagAnimData.PositionStrength = 10.0f;
-	FlagAnimData.VelocityStrength = 0.0f;
-	FlagAnimData.MaxAngularForce = 0.0f;
-	FlagAnimData.MaxLinearForce = 0.0f;
+	if (const UGameStateSubsystem* GameStateSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+	{
+		if (GameStateSubsystem->GetLevelState() == ELevelType::OrchestraStage || GameStateSubsystem->GetLevelState() == ELevelType::SnowField)
+		{
+			GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			
+			FPhysicalAnimationData FlagAnimData;
+			FlagAnimData.bIsLocalSimulation = false;
+			FlagAnimData.OrientationStrength = 10.0f;
+			FlagAnimData.AngularVelocityStrength = 5.0f;
+			FlagAnimData.PositionStrength = 10.0f;
+			FlagAnimData.VelocityStrength = 0.0f;
+			FlagAnimData.MaxAngularForce = 0.0f;
+			FlagAnimData.MaxLinearForce = 0.0f;
 
-	GetMesh()->SetAllBodiesBelowSimulatePhysics(TromboneBones::Flage, true, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(TromboneBones::Flage, FlagAnimData, true);
+			GetMesh()->SetAllBodiesBelowSimulatePhysics(TromboneBones::Flage, true, true);
+			PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(TromboneBones::Flage, FlagAnimData, true);
+		}
+	}
 }
 
 void ATromboneCharacterBase::OnRep_IsStun()

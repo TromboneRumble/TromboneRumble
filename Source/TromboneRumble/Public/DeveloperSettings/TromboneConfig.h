@@ -1,7 +1,10 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
+#include "GameplayTagContainer.h"
 #include "UI/UserWidgets/Popup/EscapePopup.h"
 #include "UI/UserWidgets/Popup/JoinCodePopup.h"
 #include "UI/UserWidgets/Popup/NoticePopup.h"
@@ -130,6 +133,12 @@ public:
 	/** Length of the room code. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|MatchMenu")
 	int32 RoomCodeLength;
+
+	/**
+	 * InGame map that is displayed by default when a session is created. Host can change this in the match menu.
+	 */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|MatchMenu", meta = (Categories = "Trombone.Maps.InGame"))
+	FGameplayTag DefaultInGameMap;
 	
 public:
 	

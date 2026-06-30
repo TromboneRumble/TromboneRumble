@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -83,12 +85,17 @@ UENUM()
 enum class ELevelType : uint8
 {
 	MainMenu,
-	Lobby,
-	InGame,
 	MatchMenu,
 	Tutorial,
 	ResultScene,
 	Customize,
+	
+	OrchestraStageLobby,
+	SnowFieldLobby,
+	
+	OrchestraStage,
+	SnowField,
+	
 	Invalid = 255 UMETA(Hidden)
 };
 
