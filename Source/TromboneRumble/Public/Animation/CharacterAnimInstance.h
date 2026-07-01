@@ -55,7 +55,7 @@ protected:
 	EInstrumentType CurrentInstrumentType = EInstrumentType::None;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
-	bool bIsRagdolling;
+	bool bIsRagdoll;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
 	bool bIsRagdollBlending;
@@ -76,7 +76,10 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
 	TObjectPtr<UAnimMontage> GetUpBackMontage;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
+	FName RagdollSnapshotSlotName = TEXT("RagdollSnapshot");
+
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
 
@@ -97,6 +100,6 @@ private:
 public:
 	//~ Begin Setters
 	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
-	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
+	void SetIsRagdoll(const bool bNewIsRagdoll) { bIsRagdoll = bNewIsRagdoll; }
 	//~ End Setters
 };

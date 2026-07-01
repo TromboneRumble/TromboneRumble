@@ -177,7 +177,7 @@ void ATromboneCharacterBase::BeginPlay()
 	{
 		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::HandleRagdollStarted);
 		RagdollComponent->OnRagdollEnded.AddDynamic(this, &ThisClass::HandleRagdollEnded);
-		RagdollComponent->OnRagdollGetUp.AddDynamic(this, &ThisClass::HandleRagdollGetUp);
+		RagdollComponent->OnRagdollPhysicsDisabled.AddDynamic(this, &ThisClass::HandleRagdollGetUp);
 	}
 
 	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());

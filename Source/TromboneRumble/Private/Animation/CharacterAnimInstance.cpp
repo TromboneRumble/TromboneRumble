@@ -120,7 +120,7 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
 void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 {
     bIsRagdollBlending = false;
-    bIsRagdolling = false;
+    bIsRagdoll = false;
     FOnMontageEnded EndedDelegate;
     EndedDelegate.BindUObject(this, &UCharacterAnimInstance::OnGetUpMontageEnded);
 
@@ -141,8 +141,7 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
 
 void UCharacterAnimInstance::SaveRagdollPoseSnapshot()
 {
-    // TODO : 하드코딩 제거
-    RagdollSnapshotName = TEXT("RagdollSnapshot");
+    RagdollSnapshotName = RagdollSnapshotSlotName;
     SavePoseSnapshot(RagdollSnapshotName);
     bIsRagdollBlending = true;
 }
