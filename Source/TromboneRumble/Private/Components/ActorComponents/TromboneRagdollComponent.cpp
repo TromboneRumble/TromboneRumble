@@ -173,9 +173,16 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 			PRINT_WITH_CURRENT_CONTEXT(TEXT("Warning: Failed to find ground for capsule placement after ragdoll. Using pelvis location as fallback."));
 		}
 
-		OwnerCharacter->SetActorLocation(TargetCapsuleLocation);
-		OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
-		
+		FRotator TargetCapsuleRotation = OwnerCharacter->GetActorRotation();
+		FVector PelvisForward = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::X);
+		PelvisForward.Z = 0.0f;
+		if (!PelvisForward.IsNearlyZero(0.1f))
+		{
+			TargetCapsuleRotation.Yaw = PelvisForward.Rotation().Yaw + 90.0f;
+		}
+
+		OwnerCharacter->SetActorLocationAndRotation(TargetCapsuleLocation, TargetCapsuleRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
 		GetWorld()->GetTimerManager().SetTimerForNextTick(
 		   FTimerDelegate::CreateUObject(this, &ThisClass::DelayedSavePoseSnapshot)
 		);
@@ -208,6 +215,8 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
+	OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
+	
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
 	{
 		AnimInst->PlayGetUpMontage(IsFacingUp());
