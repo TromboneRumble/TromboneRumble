@@ -15,12 +15,16 @@ struct FRagdollNetState
 {
 	GENERATED_BODY()
 	
-	/** using FVector_NetQuantize for reduce bandwidth */
+	/** using FVector_NetQuantize for reduce bandwidth. */
 	UPROPERTY()
 	FVector_NetQuantize PelvisLocation = FVector::ZeroVector;
 
 	UPROPERTY()
 	FVector_NetQuantize PelvisVelocity = FVector::ZeroVector;
+
+	/** Server world time when this state was captured. */
+	UPROPERTY()
+	float Timestamp = 0.0f;
 };
 
 /** UTromboneRagdollComponent
@@ -72,6 +76,10 @@ protected:
 	/** Network update rate per second */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "네트워크 업데이트 주기"))
 	float PacketsPerSecond = 30.0f;
+
+	/** 외삽 시 상한 시간으로, 패킷 손실 시 목표 위치가 너무 멀리 예측되는 것을 방지 */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "최대 외삽 시간"))
+	float MaxExtrapolationTime = 0.25f;
 	
 	/** Squared distance threshold for forcing a hard location snap (cm^2) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "골반 위치 강제 동기화 거리"))
@@ -94,8 +102,7 @@ protected:
 	TObjectPtr<UCurveFloat> RagdollBlendOutCurve = nullptr;
 
 	/** if true, enables visual debug and screen error logging
-	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state.
-	 */
+	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "디버그 모드"))
 	bool bEnableDebug = false;
 	

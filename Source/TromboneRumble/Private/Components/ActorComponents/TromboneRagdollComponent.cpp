@@ -5,6 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 UTromboneRagdollComponent::UTromboneRagdollComponent()
@@ -328,6 +330,10 @@ void UTromboneRagdollComponent::Server_UpdateRagdollTransform()
 	FRagdollNetState NewState;
 	NewState.PelvisLocation = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis)->GetUnrealWorldTransform().GetLocation();
 	NewState.PelvisVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
+	if (const AGameStateBase* GameState = GetWorld()->GetGameState())
+	{
+		NewState.Timestamp = GameState->GetServerWorldTimeSeconds();
+	}
 	
 	ServerRagdollState = NewState;
 }
@@ -348,13 +354,44 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     }
 
     const FVector CurrentPelvisLoc = PelvisBody->GetUnrealWorldTransform().GetLocation();
-    const FVector TargetPelvisLoc = ServerRagdollState.PelvisLocation;
-	
-	if (bEnableDebug && GetWorld())
+
+	const UWorld* World = GetWorld();
+	float PacketAge = 0.0f;
+	if (World && World->GetGameState() && ServerRagdollState.Timestamp > 0.0f)
+	{		
+		/** GetServerWorldTimeSeconds는 서버 시간을 복제할 때 RTT/2를 보정하지 않으므로, 실제 서버 시간보다 RTT/2만큼 느리다.
+		 *  이 RTT/2는 서버에서 날아온 래그돌 패킷의 RTT/2와 동일하므로, 
+		 *  'GetServerWorldTimeSeconds - ServerRagdollState.TimeStamp'를 계산할 때 두 RTT/2가 서로 상쇄되어
+		 *  패킷이 서버에서 클라까지 날라오는 데 걸린 시간은 계산에서 빠지게 된다.
+		 *  이를 보정하기 위해 RTT/2만큼 더해준다.
+		 */
+		PacketAge = World->GetGameState()->GetServerWorldTimeSeconds() - ServerRagdollState.Timestamp;
+
+		if (const APlayerController* LocalPC = World->GetFirstPlayerController())
+		{
+			if (const APlayerState* LocalPlayerState = LocalPC->PlayerState)
+			{
+				// 엔진에서 핑 == RTT. '서버->클라'와 '클라->서버' 편도 시간이 다를 수 있으니 이 값은 RTT/2는 '서버->클라' 편도 지연의 근사값
+				PacketAge += LocalPlayerState->GetPingInMilliseconds() * 0.001f * 0.5f;
+			}
+		}
+
+		PacketAge = FMath::Clamp(PacketAge, 0.0f, MaxExtrapolationTime);
+	}
+
+	const FVector ServerVelocity = ServerRagdollState.PelvisVelocity;
+	FVector TargetPelvisLoc = FVector(ServerRagdollState.PelvisLocation) + ServerVelocity * PacketAge;
+	if (World && !ServerVelocity.IsNearlyZero(1.0f))
 	{
-		DrawDebugSphere(GetWorld(), CurrentPelvisLoc, 10.0f, 8, FColor::Green, false, -1.0f, 0, 1.0f);
-		DrawDebugSphere(GetWorld(), TargetPelvisLoc, 10.0f, 8, FColor::Red, false, -1.0f, 0, 1.0f);
-		DrawDebugLine(GetWorld(), CurrentPelvisLoc, TargetPelvisLoc, FColor::Yellow, false, -1.0f, 0, 1.5f);
+		// 중력가속도(등가속 운동) 반영
+		TargetPelvisLoc.Z += 0.5f * World->GetGravityZ() * PacketAge * PacketAge;
+	}
+	
+	if (bEnableDebug && World)
+	{
+		DrawDebugSphere(World, CurrentPelvisLoc, 10.0f, 8, FColor::Green, false, -1.0f, 0, 1.0f);
+		DrawDebugSphere(World, TargetPelvisLoc, 10.0f, 8, FColor::Red, false, -1.0f, 0, 1.0f);
+		DrawDebugLine(World, CurrentPelvisLoc, TargetPelvisLoc, FColor::Yellow, false, -1.0f, 0, 1.5f);
 		
 		const float Distance = FVector::Dist(CurrentPelvisLoc, TargetPelvisLoc);
 		PelvisLocationMaxError = std::max(Distance, PelvisLocationMaxError);
@@ -371,7 +408,7 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     }
 
     const FVector ToTarget = TargetPelvisLoc - CurrentPelvisLoc;
-    const FVector TargetVelocity = ServerRagdollState.PelvisVelocity + ToTarget * TrackingIntensity;
+    const FVector TargetVelocity = ServerVelocity + ToTarget * TrackingIntensity;
     const FVector CurrentVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
     const FVector NewVelocity = FMath::VInterpTo(CurrentVelocity, TargetVelocity, DeltaTime, VelocityInterpSpeed);
 
