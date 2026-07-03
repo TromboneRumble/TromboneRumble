@@ -246,12 +246,8 @@ void UTromboneRagdollComponent::TickRagdollBlendOut(const float DeltaTime)
 	}
 
 	BlendOutAlpha = FMath::Clamp(BlendOutAlpha + DeltaTime / RagdollBlendOutDuration, 0.0f, 1.0f);
-
-	const float EasedAlpha = RagdollBlendOutCurve
-		? RagdollBlendOutCurve->GetFloatValue(BlendOutAlpha)
-		: BlendOutAlpha;
-
-	const float PhysicsWeight = FMath::Lerp(1.0f, 0.0f, EasedAlpha);
+	
+	const float PhysicsWeight = FMath::Lerp(1.0f, 0.0f, BlendOutAlpha);
 	OwnerMesh->SetAllBodiesPhysicsBlendWeight(PhysicsWeight);
 
 	if (BlendOutAlpha >= 1.0f)

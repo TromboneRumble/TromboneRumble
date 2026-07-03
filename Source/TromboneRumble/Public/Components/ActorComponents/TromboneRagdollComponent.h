@@ -6,8 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "TromboneRagdollComponent.generated.h"
 
-class UCurveFloat;
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRagdollSignature);
 
 USTRUCT(BlueprintType)
@@ -96,10 +94,6 @@ protected:
 	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
 	float RagdollBlendOutDuration = 0.2f;
-
-	/** Optional easing curve for the blend-out (X: 0-1 normalized time -> Y: 0-1 blend alpha). Linear if unset. */
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "블렌드 이징 커브"))
-	TObjectPtr<UCurveFloat> RagdollBlendOutCurve = nullptr;
 
 	/** if true, enables visual debug and screen error logging
 	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state. */
