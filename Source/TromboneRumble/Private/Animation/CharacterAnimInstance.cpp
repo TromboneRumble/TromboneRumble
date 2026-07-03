@@ -120,8 +120,6 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
 
 void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 {
-    bIsRagdollBlending = false;
-    bIsRagdoll = false;
     FOnMontageEnded EndedDelegate;
     EndedDelegate.BindUObject(this, &UCharacterAnimInstance::OnGetUpMontageEnded);
 
@@ -140,11 +138,4 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
     {
         OwnerCharacter->SetPlayerInput(true);
     }
-}
-
-void UCharacterAnimInstance::SaveRagdollPoseSnapshot()
-{
-    RagdollSnapshotName = RagdollSnapshotSlotName;
-    SavePoseSnapshot(RagdollSnapshotName);
-    bIsRagdollBlending = true;
 }

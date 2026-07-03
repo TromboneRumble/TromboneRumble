@@ -183,11 +183,6 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		OwnerMesh->SetAllBodiesPhysicsBlendWeight(1.0f);
 		OwnerMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-		
-		if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
-		{
-			AnimInst->SetIsRagdoll(true);
-		}
 
 		OnRagdollStarted.Broadcast();
 	}
@@ -220,34 +215,15 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 			OwnerMesh->SetAllPhysicsPosition(DesiredPelvisLoc - PelvisOffset);
 		}
 		
-		GetWorld()->GetTimerManager().SetTimerForNextTick(
-		   FTimerDelegate::CreateUObject(this, &ThisClass::SavePoseSnapshot)
-		);
+		if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
+		{
+			AnimInst->PlayGetUpMontage(IsFacingUp());
+		}
+
+		BeginRagdollBlendOut();
 
 		OnRagdollEnded.Broadcast();
 	}
-}
-
-void UTromboneRagdollComponent::SavePoseSnapshot()
-{
-	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
-	{
-		AnimInst->SaveRagdollPoseSnapshot();
-	}
-	
-	GetWorld()->GetTimerManager().SetTimerForNextTick(
-	   FTimerDelegate::CreateUObject(this, &ThisClass::PlayGetUpMontage)
-	);
-}
-
-void UTromboneRagdollComponent::PlayGetUpMontage()
-{
-	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
-	{
-		AnimInst->PlayGetUpMontage(IsFacingUp());
-	}
-
-	BeginRagdollBlendOut();
 }
 
 void UTromboneRagdollComponent::BeginRagdollBlendOut()
@@ -440,9 +416,5 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     OwnerMesh->SetPhysicsLinearVelocity(NewVelocity, false, TromboneBones::Pelvis);
 }
 
-void UTromboneRagdollComponent::OnRep_ServerRagdollState()
-{
-	// Don't have anything to do right now.
-}
 
 

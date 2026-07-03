@@ -119,10 +119,6 @@ private:
 
 	UFUNCTION()
 	void OnRep_IsRagdoll();
-	
-	void SavePoseSnapshot();
-
-	void PlayGetUpMontage();
 
 	void UnapplyRagdoll();
 
@@ -147,9 +143,6 @@ private:
 	
 	void Client_InterpolateRagdollVelocity(float DeltaTime);
 
-	UFUNCTION()
-	void OnRep_ServerRagdollState();
-	
 private:
 	
 	UPROPERTY()
@@ -161,7 +154,7 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
 
-	UPROPERTY(ReplicatedUsing = OnRep_ServerRagdollState)
+	UPROPERTY(Replicated)
 	FRagdollNetState ServerRagdollState;
 
 	/** Authoritative get-up capsule location, computed once by the server */
