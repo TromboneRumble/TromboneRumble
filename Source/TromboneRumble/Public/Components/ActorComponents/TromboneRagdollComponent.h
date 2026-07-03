@@ -122,6 +122,8 @@ private:
 	
 	void SavePoseSnapshot();
 
+	void PlayGetUpMontage();
+
 	void UnapplyRagdoll();
 
 	/** Starts the physics-to-animation blend-out (ragdoll bodies are still simulating at this point). */

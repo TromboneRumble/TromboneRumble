@@ -175,7 +175,9 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 
 		OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        
+		
+		OwnerMesh->bOnlyAllowAutonomousTickPose = false;
+
 		OwnerMesh->SetSimulatePhysics(true);
 		OwnerMesh->SetEnableGravity(true);
 		OwnerMesh->SetAllBodiesPhysicsBlendWeight(1.0f);
@@ -234,8 +236,18 @@ void UTromboneRagdollComponent::SavePoseSnapshot()
 	}
 	
 	GetWorld()->GetTimerManager().SetTimerForNextTick(
-	   FTimerDelegate::CreateUObject(this, &ThisClass::UnapplyRagdoll)
+	   FTimerDelegate::CreateUObject(this, &ThisClass::PlayGetUpMontage)
 	);
+}
+
+void UTromboneRagdollComponent::PlayGetUpMontage()
+{
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
+	{
+		AnimInst->PlayGetUpMontage(IsFacingUp());
+	}
+
+	BeginRagdollBlendOut();
 }
 
 void UTromboneRagdollComponent::BeginRagdollBlendOut()
@@ -266,12 +278,6 @@ void UTromboneRagdollComponent::TickRagdollBlendOut(const float DeltaTime)
 	const float PhysicsWeight = FMath::Lerp(1.0f, 0.0f, EasedAlpha);
 	OwnerMesh->SetAllBodiesPhysicsBlendWeight(PhysicsWeight);
 
-	if (bEnableDebug && GEngine)
-	{
-		const FString DebugMsg = FString::Printf(TEXT("Ragdoll blend-out: alpha=%.2f weight=%.2f"), BlendOutAlpha, PhysicsWeight);
-		GEngine->AddOnScreenDebugMessage(12346, DeltaTime, FColor::Orange, DebugMsg);
-	}
-
 	if (BlendOutAlpha >= 1.0f)
 	{
 		FinishRagdollBlendOut();
@@ -283,6 +289,7 @@ void UTromboneRagdollComponent::FinishRagdollBlendOut()
 	bIsBlendingOut = false;
 	OwnerMesh->SetAllBodiesPhysicsBlendWeight(0.0f);
 	
+	UnapplyRagdoll();
 	SetComponentTickEnabled(bIsRagdoll || bIsBlendingOut);
 }
 
@@ -303,14 +310,12 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	if (OwnerCharacter->HasAuthority())
 	{
 		OwnerCharacter->SetReplicateMovement(true);
+
+		if (OwnerCharacter->GetRemoteRole() == ROLE_AutonomousProxy && OwnerCharacter->GetNetConnection() != nullptr)
+		{
+			OwnerMesh->bOnlyAllowAutonomousTickPose = true;
+		}
 	}
-	
-	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
-	{
-		AnimInst->PlayGetUpMontage(IsFacingUp());
-	}
-	
-	BeginRagdollBlendOut();
 
 	OnRagdollPhysicsDisabled.Broadcast();
 }

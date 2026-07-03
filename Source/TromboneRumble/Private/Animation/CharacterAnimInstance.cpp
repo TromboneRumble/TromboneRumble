@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Animation/CharacterAnimInstance.h"
+#include "AlphaBlend.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -126,7 +127,9 @@ void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 
     if (UAnimMontage* TargetMontage = bIsFacingUp ? GetUpBackMontage : GetUpFrontMontage)
     {
-        Montage_Play(TargetMontage);
+        FAlphaBlendArgs BlendIn;
+        BlendIn.BlendTime = 0.0f;
+        Montage_PlayWithBlendIn(TargetMontage, BlendIn);
         Montage_SetEndDelegate(EndedDelegate, TargetMontage);
     }
 }
