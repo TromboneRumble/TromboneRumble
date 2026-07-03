@@ -96,6 +96,7 @@ void UTromboneRagdollComponent::StartRagdoll()
 	}
 
 	RagdollGroundedTime = 0.0f;
+	OwnerCharacter->SetReplicateMovement(false);
 
 	bIsRagdoll = true;
 	OnRep_IsRagdoll();
@@ -121,6 +122,8 @@ void UTromboneRagdollComponent::StopRagdoll()
 
 	bIsRagdoll = false;
 	OnRep_IsRagdoll();
+
+	OwnerCharacter->ForceNetUpdate();
 }
 
 void UTromboneRagdollComponent::Server_ComputeGetUpTransform()
@@ -175,6 +178,7 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
         
 		OwnerMesh->SetSimulatePhysics(true);
 		OwnerMesh->SetEnableGravity(true);
+		OwnerMesh->SetAllBodiesPhysicsBlendWeight(1.0f);
 		OwnerMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 		
@@ -198,17 +202,22 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		}
 		
 		const FRotator TargetCapsuleRotation(0.0f, TargetYaw, 0.0f);
-		OwnerCharacter->SetActorLocationAndRotation(GetUpLocation, TargetCapsuleRotation, false, nullptr, ETeleportType::TeleportPhysics);
+		OwnerCharacter->SetActorLocationAndRotation(GetUpLocation, TargetCapsuleRotation, false, nullptr, ETeleportType::None);
+
+		const FBodyInstance* PelvisBody = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis);
+		const FBodyInstance* RootBody = OwnerMesh->GetBodyInstance();
+		if (PelvisBody && RootBody)
+		{
+			const FVector CurrentPelvisLoc = PelvisBody->GetUnrealWorldTransform().GetLocation();
+			FVector DesiredPelvisLoc = CurrentPelvisLoc;
+			DesiredPelvisLoc.X = GetUpLocation.X;
+			DesiredPelvisLoc.Y = GetUpLocation.Y;
+
+			const FVector CurrentRootBodyLoc = RootBody->GetUnrealWorldTransform().GetLocation();
+			const FVector PelvisOffset = CurrentPelvisLoc - CurrentRootBodyLoc;
+			OwnerMesh->SetAllPhysicsPosition(DesiredPelvisLoc - PelvisOffset);
+		}
 		
-		const FVector CurrentPelvisLoc = OwnerMesh->GetSocketLocation(TromboneBones::Pelvis);
-		FVector DesiredPelvisLoc = CurrentPelvisLoc;
-		DesiredPelvisLoc.X = GetUpLocation.X;
-		DesiredPelvisLoc.Y = GetUpLocation.Y;
-
-		const FVector CurrentRootBodyLoc = OwnerMesh->GetBodyInstance()->GetUnrealWorldTransform().GetLocation();
-		const FVector PelvisOffset = CurrentPelvisLoc - CurrentRootBodyLoc;
-		OwnerMesh->SetAllPhysicsPosition(DesiredPelvisLoc - PelvisOffset);
-
 		GetWorld()->GetTimerManager().SetTimerForNextTick(
 		   FTimerDelegate::CreateUObject(this, &ThisClass::SavePoseSnapshot)
 		);
@@ -222,10 +231,11 @@ void UTromboneRagdollComponent::SavePoseSnapshot()
 	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
 	{
 		AnimInst->SaveRagdollPoseSnapshot();
-		AnimInst->PlayGetUpMontage(IsFacingUp());
 	}
 	
-	BeginRagdollBlendOut();
+	GetWorld()->GetTimerManager().SetTimerForNextTick(
+	   FTimerDelegate::CreateUObject(this, &ThisClass::UnapplyRagdoll)
+	);
 }
 
 void UTromboneRagdollComponent::BeginRagdollBlendOut()
@@ -272,9 +282,7 @@ void UTromboneRagdollComponent::FinishRagdollBlendOut()
 {
 	bIsBlendingOut = false;
 	OwnerMesh->SetAllBodiesPhysicsBlendWeight(0.0f);
-
-	UnapplyRagdoll();
-
+	
 	SetComponentTickEnabled(bIsRagdoll || bIsBlendingOut);
 }
 
@@ -291,7 +299,19 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
+
+	if (OwnerCharacter->HasAuthority())
+	{
+		OwnerCharacter->SetReplicateMovement(true);
+	}
 	
+	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
+	{
+		AnimInst->PlayGetUpMontage(IsFacingUp());
+	}
+	
+	BeginRagdollBlendOut();
+
 	OnRagdollPhysicsDisabled.Broadcast();
 }
 
