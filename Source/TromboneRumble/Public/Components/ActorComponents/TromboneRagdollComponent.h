@@ -6,8 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "TromboneRagdollComponent.generated.h"
 
-class ATromboneCharacterBase;
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRagdollSignature);
 
 USTRUCT(BlueprintType)
@@ -15,18 +13,22 @@ struct FRagdollNetState
 {
 	GENERATED_BODY()
 	
-	/** using FVector_NetQuantize for reduce bandwidth */
+	/** using FVector_NetQuantize for reduce bandwidth. */
 	UPROPERTY()
 	FVector_NetQuantize PelvisLocation = FVector::ZeroVector;
 
 	UPROPERTY()
 	FVector_NetQuantize PelvisVelocity = FVector::ZeroVector;
+
+	/** Server world time when this state was captured. */
+	UPROPERTY()
+	float Timestamp = 0.0f;
 };
 
-/** URagdollComponent
- * Synchronizes ragdoll simulation in co-op
- * Only replicates server's pelvis location and velocity (not rotation).
- * Applying velocity interpolation to the pelvis, allowing the rest of the physics body to follow naturally
+/** UTromboneRagdollComponent
+ * Synchronizes ragdoll simulation in co-op.
+ * While ragdolling, only the server's pelvis location and velocity are replicated (not rotation) -
+ * applying velocity interpolation to the pelvis lets the rest of the physics body follow naturally
  */
 UCLASS()
 class TROMBONERUMBLE_API UTromboneRagdollComponent : public UActorComponent
@@ -53,11 +55,11 @@ public:
 	/** Event when ragdoll is started. */
 	FRagdollSignature OnRagdollStarted;
 	
-	/** Event when ragdoll is ended. (bIsRagdoll = false) */
+	/** Event when ragdoll is ended. At this point, get-up animation is started and still simulating physics */
 	FRagdollSignature OnRagdollEnded;
 	
-	/** Event when ragdoll get-up is completed. */
-	FRagdollSignature OnRagdollGetUp;
+	/** Event when ragdoll physics are disabled. */
+	FRagdollSignature OnRagdollPhysicsDisabled;
 	
 protected:
 	
@@ -72,6 +74,10 @@ protected:
 	/** Network update rate per second */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "네트워크 업데이트 주기"))
 	float PacketsPerSecond = 30.0f;
+
+	/** 외삽 시 상한 시간으로, 패킷 손실 시 목표 위치가 너무 멀리 예측되는 것을 방지 */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "최대 외삽 시간"))
+	float MaxExtrapolationTime = 0.25f;
 	
 	/** Squared distance threshold for forcing a hard location snap (cm^2) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "골반 위치 강제 동기화 거리"))
@@ -84,24 +90,40 @@ protected:
 	/** The distance traced downward from the pelvis to determine grounding (cm) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 접지 트레이스 거리"))
 	float RagdollGroundTraceDistance = 60.0f;
-	
-	/** if true, enables visual debug and screen error logging (== DebugMode)
-	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state.
-	 */
+
+	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
+	float RagdollBlendOutDuration = 0.2f;
+
+	/** if true, enables visual debug and screen error logging
+	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "디버그 모드"))
 	bool bEnableDebug = false;
 	
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 시 하늘로 날리기", EditCondition = "bEnableDebug"))
 	bool bEnableImpulseOnRagdollStart = false;
 
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "하늘로 날리는 힘", EditCondition = "bEnableImpulseOnRagdollStart"))
+	float UpForce = 5000.f;
+	
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "랜덤 XY 방향 범위", EditCondition = "bEnableImpulseOnRagdollStart"))
+	float RandomRangeXY = 1500.f;
+	
 private:
 
 	UFUNCTION()
 	void OnRep_IsRagdoll();
-	
-	void DelayedSavePoseSnapshot();
-	
+
 	void UnapplyRagdoll();
+
+	/** Starts the physics-to-animation blend-out (ragdoll bodies are still simulating at this point). */
+	void BeginRagdollBlendOut();
+
+	/** Ramps SetAllBodiesPhysicsBlendWeight from 1 (physics) to 0 (animation) over RagdollBlendOutDuration. */
+	void TickRagdollBlendOut(float DeltaTime);
+
+	/** Called once the blend-out reaches 0; hands off to UnapplyRagdoll for the final discrete cleanup. */
+	void FinishRagdollBlendOut();
 
 	/** @return true if the front of the pelvis is facing toward the sky, otherwise false. */
 	bool IsFacingUp() const;
@@ -109,13 +131,12 @@ private:
 	/** @return true if the pelvis is close enough to the ground, otherwise false. */
 	bool IsRagdollGrounded() const;
 
+	void Server_ComputeGetUpTransform();
+
 	void Server_UpdateRagdollTransform();
 	
-	void Client_InterpolateRagdoll(float DeltaTime);
+	void Client_InterpolateRagdollVelocity(float DeltaTime);
 
-	UFUNCTION()
-	void OnRep_ServerRagdollState();
-	
 private:
 	
 	UPROPERTY()
@@ -127,16 +148,26 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
 
-	UPROPERTY(ReplicatedUsing = OnRep_ServerRagdollState)
+	UPROPERTY(Replicated)
 	FRagdollNetState ServerRagdollState;
+
+	/** Authoritative get-up capsule location, computed once by the server */
+	UPROPERTY(Replicated)
+	FVector_NetQuantize GetUpLocation = FVector::ZeroVector;
 
 	float TimeSinceLastNetUpdate = 0.0f;
 
 	/** Time spent on the ground during ragdoll */
 	float RagdollGroundedTime = 0.0f;
-	
+
 	/** Maximum difference for pelvis location synchronization (DebugMode) */
 	float PelvisLocationMaxError = 0.0f;
+
+	/** True while ramping SetAllBodiesPhysicsBlendWeight from 1 to 0 after the get-up montage has started. */
+	bool bIsBlendingOut = false;
+
+	/** Normalized [0,1] progress through the blend-out window. */
+	float BlendOutAlpha = 0.0f;
 
 public:
 	

@@ -23,7 +23,6 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
 	void PlayGetUpMontage(bool bIsFacingUp);
-	void SaveRagdollPoseSnapshot();
 	
 protected:
 	UFUNCTION()
@@ -54,15 +53,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Instrument")
 	EInstrumentType CurrentInstrumentType = EInstrumentType::None;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
-	bool bIsRagdolling;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
-	bool bIsRagdollBlending;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Ragdoll")
-	FName RagdollSnapshotName;
-	
 	UPROPERTY(BlueprintReadOnly, Category = "Stun")
 	bool bIsStunned = false;
 
@@ -76,7 +66,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
 	TObjectPtr<UAnimMontage> GetUpBackMontage;
-	
+
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
 
@@ -97,6 +87,5 @@ private:
 public:
 	//~ Begin Setters
 	void SetIsAttacking(const bool bNewIsAttacking) { bIsAttacking = bNewIsAttacking; }
-	void SetIsRagdolling(const bool bNewIsRagdolling) { bIsRagdolling = bNewIsRagdolling; }
 	//~ End Setters
 };

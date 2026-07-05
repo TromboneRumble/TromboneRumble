@@ -5,8 +5,9 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
-#include "Utilities/DebugHelper.h"
 
 UTromboneRagdollComponent::UTromboneRagdollComponent()
 {
@@ -24,8 +25,6 @@ void UTromboneRagdollComponent::BeginPlay()
 	{
 		OwnerMesh = OwnerCharacter->GetMesh();
 	}
-	
-	Server_UpdateRagdollTransform();
 }
 
 void UTromboneRagdollComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -34,6 +33,8 @@ void UTromboneRagdollComponent::EndPlay(const EEndPlayReason::Type EndPlayReason
 	{
 		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 	}
+
+	bIsBlendingOut = false;
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -67,18 +68,24 @@ void UTromboneRagdollComponent::TickComponent(const float DeltaTime, const ELeve
 			Server_UpdateRagdollTransform();
 		}
 	}
-	else
+	else if (!bIsBlendingOut)
 	{
-		Client_InterpolateRagdoll(DeltaTime);
+		Client_InterpolateRagdollVelocity(DeltaTime);
+	}
+
+	if (bIsBlendingOut)
+	{
+		TickRagdollBlendOut(DeltaTime);
 	}
 }
 
-void UTromboneRagdollComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+void UTromboneRagdollComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, bIsRagdoll);
 	DOREPLIFETIME(ThisClass, ServerRagdollState);
+	DOREPLIFETIME(ThisClass, GetUpLocation);
 }
 
 void UTromboneRagdollComponent::StartRagdoll()
@@ -88,18 +95,15 @@ void UTromboneRagdollComponent::StartRagdoll()
 		return;
 	}
 
+	RagdollGroundedTime = 0.0f;
+	
 	bIsRagdoll = true;
 	OnRep_IsRagdoll();
-	
-	RagdollGroundedTime = 0.0f;
 
 	if (bEnableDebug && bEnableImpulseOnRagdollStart)
 	{
-		constexpr float UpForce = 5000.f;
-		constexpr float RandomRange = 1500.f;
-
-		const float RandomX = FMath::FRandRange(-RandomRange, RandomRange);
-		const float RandomY = FMath::FRandRange(-RandomRange, RandomRange);
+		const float RandomX = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
+		const float RandomY = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
 
 		const FVector LaunchVelocity = FVector(RandomX, RandomY, UpForce);
 		OwnerMesh->AddImpulse(LaunchVelocity, TromboneBones::Pelvis, true);
@@ -113,8 +117,38 @@ void UTromboneRagdollComponent::StopRagdoll()
 		return;
 	}
 
+	Server_ComputeGetUpTransform();
+
 	bIsRagdoll = false;
 	OnRep_IsRagdoll();
+
+	OwnerCharacter->ForceNetUpdate();
+}
+
+void UTromboneRagdollComponent::Server_ComputeGetUpTransform()
+{
+	const FVector PelvisLocation = OwnerMesh->GetSocketLocation(TromboneBones::Pelvis);
+
+	FVector TargetCapsuleLocation = PelvisLocation;
+
+	const float CapsuleHalfHeight = OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+	FHitResult HitResult;
+	const FVector Start = PelvisLocation;
+	const FVector End = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(OwnerCharacter);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
+	{
+		TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Server_ComputeGetUpTransform] Failed to find ground for capsule placement after ragdoll. Using pelvis location(%s) as fallback."), *PelvisLocation.ToString());
+	}
+
+	GetUpLocation = TargetCapsuleLocation;
 }
 
 void UTromboneRagdollComponent::OnRep_IsRagdoll()
@@ -126,74 +160,125 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 	
 	if (bEnableDebug)
 	{
-		const FString DebugMsg = FString::Printf(TEXT("Max Error : %.2f"), PelvisLocationMaxError);
+		const FString DebugMsg = FString::Printf(TEXT("Max Distance in Server & Client : %.2f"), PelvisLocationMaxError);
 		if (GEngine) GEngine->AddOnScreenDebugMessage(12345, 5.0f, FColor::Red, DebugMsg);
 		PelvisLocationMaxError = 0.0f;
 	}
 	
-	SetComponentTickEnabled(bIsRagdoll);
+	SetComponentTickEnabled(bIsRagdoll || bIsBlendingOut);
 	
 	if (bIsRagdoll)
 	{
+		bIsBlendingOut = false;
+		BlendOutAlpha = 0.0f;
+
 		OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        
+		
+		/** 래그돌 동안 이동 리플리케이션을 끈다.
+		 *  켜 두면 Simulated Proxy에 이동 업데이트가 도착할 때마다 CMC가 캡슐을 서버 위치로 되돌려 로컬 캡슐 스냅을 무효화하고,
+		 *  캡슐 위치 차이로 bJustTeleported = true가 되면 TeleportPhysics 이동이 된다.
+		 *  메시는 캡슐에 부착된 자식이므로 부모가 움직이면 자식의 트랜스폼도 업데이트 되고 텔레포트 타입도 그대로 전달된다.
+		 *  이때 UpdateKinematicBonesToAnim(PhysAnim.cpp)에서는 TeleportPhysics면 시뮬레이션 중인 래그돌 바디도 강제로 위치를 변경해버린다.
+		 *  이 변경되는 위치는 지난 프레임의 애니메이션 포즈(래그돌 중엔 갱신이 안 된 Stale 데이터)인지라 메시가 튀는 현상이 발생한다.
+		 *
+		 *  래그돌 위치 동기화는 이 컴포넌트의 골반 동기화가, 기상 위치는 GetUpLocation이 담당하므로 이동 리플리케이션은 래그돌 동안 불필요하다.
+		 */
+		OwnerCharacter->SetReplicateMovement(false);
+		
+		/** 서버에서 원격 클라이언트가 조종하는 캐릭터는 서버 이동 패킷이 올 때만 애니메이션을 틱하는데,
+		 * ([ACharacter::PossessedBy]에서 bOnlyAllowAutonomousTickPose가 true로 설정. 엔진 단에서의 서버 연산 최적화)
+		 * 래그돌/기상 애니메이션 재생 중에는 클라이언트가 MOVE_None이라 이동 패킷을 안 보내기 때문에
+		 * 서버에서 해당 캐릭터의 애니메이션 업데이트가 멈춰 기상 몽타주가 0초 시점에서 T포즈가 보여진다.
+		 * 래그돌 중에는 일반 컴포넌트 틱으로 애니메이션이 연산되도록 한다.
+		 */
+		OwnerMesh->bOnlyAllowAutonomousTickPose = false;
+		
 		OwnerMesh->SetSimulatePhysics(true);
+		OwnerMesh->SetEnableGravity(true);
+		OwnerMesh->SetAllBodiesPhysicsBlendWeight(1.0f);
 		OwnerMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-		
-		if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
-		{
-			AnimInst->SetIsRagdolling(true);
-		}
 
 		OnRagdollStarted.Broadcast();
 	}
 	else
 	{
-		const FVector PelvisLocation = OwnerMesh->GetSocketLocation(TromboneBones::Pelvis);
 		const FRotator PelvisRotation = OwnerMesh->GetSocketRotation(TromboneBones::Pelvis);
 
-		FVector TargetCapsuleLocation = PelvisLocation;
-
-		const float CapsuleHalfHeight = OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-
-		FHitResult HitResult;
-		const FVector Start = PelvisLocation;
-		const FVector End = PelvisLocation - FVector(0.0f, 0.0f, CapsuleHalfHeight * 2.0f);
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(OwnerCharacter);
-    
-		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
+		float TargetYaw = OwnerCharacter->GetActorRotation().Yaw;
+		FVector PelvisForward = FRotationMatrix(PelvisRotation).GetScaledAxis(EAxis::X);
+		PelvisForward.Z = 0.0f;
+		if (!PelvisForward.IsNearlyZero(0.1f))
 		{
-			TargetCapsuleLocation = HitResult.ImpactPoint + FVector(0.0f, 0.0f, CapsuleHalfHeight + 2.0f);
+			TargetYaw = PelvisForward.Rotation().Yaw + 90.0f;
 		}
-		else
+		
+		const FRotator TargetCapsuleRotation(0.0f, TargetYaw, 0.0f);
+		OwnerCharacter->SetActorLocationAndRotation(GetUpLocation, TargetCapsuleRotation, false, nullptr, ETeleportType::None);
+
+		const FBodyInstance* PelvisBody = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis);
+		const FBodyInstance* RootBody = OwnerMesh->GetBodyInstance();
+		if (PelvisBody && RootBody)
 		{
-			PRINT_WITH_CURRENT_CONTEXT(TEXT("Warning: Failed to find ground for capsule placement after ragdoll. Using pelvis location as fallback."));
+			const FVector CurrentPelvisLoc = PelvisBody->GetUnrealWorldTransform().GetLocation();
+			FVector DesiredPelvisLoc = CurrentPelvisLoc;
+			DesiredPelvisLoc.X = GetUpLocation.X;
+			DesiredPelvisLoc.Y = GetUpLocation.Y;
+
+			const FVector CurrentRootBodyLoc = RootBody->GetUnrealWorldTransform().GetLocation();
+			const FVector PelvisOffset = CurrentPelvisLoc - CurrentRootBodyLoc;
+			OwnerMesh->SetAllPhysicsPosition(DesiredPelvisLoc - PelvisOffset);
+		}
+		
+		if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
+		{
+			AnimInst->PlayGetUpMontage(IsFacingUp());
 		}
 
-		OwnerCharacter->SetActorLocation(TargetCapsuleLocation);
-		OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
-		
-		GetWorld()->GetTimerManager().SetTimerForNextTick(
-		   FTimerDelegate::CreateUObject(this, &ThisClass::DelayedSavePoseSnapshot)
-		);
-		
+		BeginRagdollBlendOut();
+
 		OnRagdollEnded.Broadcast();
 	}
 }
 
-void UTromboneRagdollComponent::DelayedSavePoseSnapshot()
+void UTromboneRagdollComponent::BeginRagdollBlendOut()
 {
-	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
+	bIsBlendingOut = true;
+	BlendOutAlpha = 0.0f;
+	SetComponentTickEnabled(true);
+
+	OwnerMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+	OwnerMesh->SetAllPhysicsAngularVelocityInRadians(FVector::ZeroVector);
+	OwnerMesh->SetEnableGravity(false);
+}
+
+void UTromboneRagdollComponent::TickRagdollBlendOut(const float DeltaTime)
+{
+	if (RagdollBlendOutDuration <= KINDA_SMALL_NUMBER)
 	{
-		AnimInst->SaveRagdollPoseSnapshot();
+		FinishRagdollBlendOut();
+		return;
 	}
 
-	GetWorld()->GetTimerManager().SetTimerForNextTick(
-	   FTimerDelegate::CreateUObject(this, &ThisClass::UnapplyRagdoll)
-	);
+	BlendOutAlpha = FMath::Clamp(BlendOutAlpha + DeltaTime / RagdollBlendOutDuration, 0.0f, 1.0f);
+	
+	const float PhysicsWeight = FMath::Lerp(1.0f, 0.0f, BlendOutAlpha);
+	OwnerMesh->SetAllBodiesPhysicsBlendWeight(PhysicsWeight);
+
+	if (BlendOutAlpha >= 1.0f)
+	{
+		FinishRagdollBlendOut();
+	}
+}
+
+void UTromboneRagdollComponent::FinishRagdollBlendOut()
+{
+	bIsBlendingOut = false;
+	OwnerMesh->SetAllBodiesPhysicsBlendWeight(0.0f);
+	
+	UnapplyRagdoll();
+	SetComponentTickEnabled(bIsRagdoll || bIsBlendingOut);
 }
 
 void UTromboneRagdollComponent::UnapplyRagdoll()
@@ -208,13 +293,19 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	if (UCharacterAnimInstance* AnimInst = Cast<UCharacterAnimInstance>(OwnerMesh->GetAnimInstance()))
+	OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
+
+	if (OwnerCharacter->HasAuthority())
 	{
-		AnimInst->PlayGetUpMontage(IsFacingUp());
+		OwnerCharacter->SetReplicateMovement(true);
+
+		if (OwnerCharacter->GetRemoteRole() == ROLE_AutonomousProxy && OwnerCharacter->GetNetConnection() != nullptr)
+		{
+			OwnerMesh->bOnlyAllowAutonomousTickPose = true;
+		}
 	}
 
-	// TODO : getup 브로드캐스팅 타이밍 명확하게
-	OnRagdollGetUp.Broadcast();
+	OnRagdollPhysicsDisabled.Broadcast();
 }
 
 bool UTromboneRagdollComponent::IsFacingUp() const
@@ -252,39 +343,68 @@ void UTromboneRagdollComponent::Server_UpdateRagdollTransform()
 	FRagdollNetState NewState;
 	NewState.PelvisLocation = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis)->GetUnrealWorldTransform().GetLocation();
 	NewState.PelvisVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
+	if (const AGameStateBase* GameState = GetWorld()->GetGameState())
+	{
+		NewState.Timestamp = GameState->GetServerWorldTimeSeconds();
+	}
 	
 	ServerRagdollState = NewState;
 }
 
-void UTromboneRagdollComponent::Client_InterpolateRagdoll(const float DeltaTime)
+void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float DeltaTime)
 {
     if (!OwnerMesh)
     {
-	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolateRagdoll] SkeletalMeshComponent is NULL"));
+	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolatePelvisVelocity] SkeletalMeshComponent is NULL"));
     	return;
     }
 	
-	if (!OwnerCharacter)
-    {
-		UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolateRagdoll] Character is NULL"));
-    	return;
-    }
-
     const FBodyInstance* PelvisBody = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis);
     if (!PelvisBody)
     {
-	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolateRagdoll] Pelvis BodyInstance is NULL"));
+	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolatePelvisVelocity] Pelvis BodyInstance is NULL"));
     	return;
     }
 
     const FVector CurrentPelvisLoc = PelvisBody->GetUnrealWorldTransform().GetLocation();
-    const FVector TargetPelvisLoc = ServerRagdollState.PelvisLocation;
-	
-	if (bEnableDebug && GetWorld())
+
+	const UWorld* World = GetWorld();
+	float PacketAge = 0.0f;
+	if (World && World->GetGameState() && ServerRagdollState.Timestamp > 0.0f)
+	{		
+		/** GetServerWorldTimeSeconds는 서버 시간을 복제할 때 RTT/2를 보정하지 않으므로, 실제 서버 시간보다 RTT/2만큼 느리다.
+		 *  이 RTT/2는 서버에서 날아온 래그돌 패킷의 RTT/2와 동일하므로, 
+		 *  'GetServerWorldTimeSeconds - ServerRagdollState.TimeStamp'를 계산할 때 두 RTT/2가 서로 상쇄되어
+		 *  패킷이 서버에서 클라까지 날라오는 데 걸린 시간은 계산에서 빠지게 된다.
+		 *  이를 보정하기 위해 RTT/2만큼 더해준다.
+		 */
+		PacketAge = World->GetGameState()->GetServerWorldTimeSeconds() - ServerRagdollState.Timestamp;
+
+		if (const APlayerController* LocalPC = World->GetFirstPlayerController())
+		{
+			if (const APlayerState* LocalPlayerState = LocalPC->PlayerState)
+			{
+				// 엔진에서 핑 == RTT. '서버->클라'와 '클라->서버' 편도 시간이 다를 수 있으니 이 값은 RTT/2는 '서버->클라' 편도 지연의 근사값
+				PacketAge += LocalPlayerState->GetPingInMilliseconds() * 0.001f * 0.5f;
+			}
+		}
+
+		PacketAge = FMath::Clamp(PacketAge, 0.0f, MaxExtrapolationTime);
+	}
+
+	const FVector ServerVelocity = ServerRagdollState.PelvisVelocity;
+	FVector TargetPelvisLoc = FVector(ServerRagdollState.PelvisLocation) + ServerVelocity * PacketAge;
+	if (World && !ServerVelocity.IsNearlyZero(1.0f))
 	{
-		DrawDebugSphere(GetWorld(), CurrentPelvisLoc, 10.0f, 8, FColor::Green, false, -1.0f, 0, 1.0f);
-		DrawDebugSphere(GetWorld(), TargetPelvisLoc, 10.0f, 8, FColor::Red, false, -1.0f, 0, 1.0f);
-		DrawDebugLine(GetWorld(), CurrentPelvisLoc, TargetPelvisLoc, FColor::Yellow, false, -1.0f, 0, 1.5f);
+		/** 중력가속도(등가속 운동) 반영 */
+		TargetPelvisLoc.Z += 0.5f * World->GetGravityZ() * PacketAge * PacketAge;
+	}
+	
+	if (bEnableDebug && World)
+	{
+		DrawDebugSphere(World, CurrentPelvisLoc, 10.0f, 8, FColor::Green, false, -1.0f, 0, 1.0f);
+		DrawDebugSphere(World, TargetPelvisLoc, 10.0f, 8, FColor::Red, false, -1.0f, 0, 1.0f);
+		DrawDebugLine(World, CurrentPelvisLoc, TargetPelvisLoc, FColor::Yellow, false, -1.0f, 0, 1.5f);
 		
 		const float Distance = FVector::Dist(CurrentPelvisLoc, TargetPelvisLoc);
 		PelvisLocationMaxError = std::max(Distance, PelvisLocationMaxError);
@@ -301,15 +421,12 @@ void UTromboneRagdollComponent::Client_InterpolateRagdoll(const float DeltaTime)
     }
 
     const FVector ToTarget = TargetPelvisLoc - CurrentPelvisLoc;
-    const FVector TargetVelocity = ServerRagdollState.PelvisVelocity + ToTarget * TrackingIntensity;
+    const FVector TargetVelocity = ServerVelocity + ToTarget * TrackingIntensity;
     const FVector CurrentVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
     const FVector NewVelocity = FMath::VInterpTo(CurrentVelocity, TargetVelocity, DeltaTime, VelocityInterpSpeed);
 
     OwnerMesh->SetPhysicsLinearVelocity(NewVelocity, false, TromboneBones::Pelvis);
 }
 
-void UTromboneRagdollComponent::OnRep_ServerRagdollState()
-{
-}
 
 

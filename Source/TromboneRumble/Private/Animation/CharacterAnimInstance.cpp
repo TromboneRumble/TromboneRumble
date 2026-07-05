@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Animation/CharacterAnimInstance.h"
+#include "AlphaBlend.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -119,14 +120,14 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
 
 void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 {
-    bIsRagdollBlending = false;
-    bIsRagdolling = false;
     FOnMontageEnded EndedDelegate;
     EndedDelegate.BindUObject(this, &UCharacterAnimInstance::OnGetUpMontageEnded);
 
     if (UAnimMontage* TargetMontage = bIsFacingUp ? GetUpBackMontage : GetUpFrontMontage)
     {
-        Montage_Play(TargetMontage);
+        FAlphaBlendArgs BlendIn;
+        BlendIn.BlendTime = 0.0f;
+        Montage_PlayWithBlendIn(TargetMontage, BlendIn);
         Montage_SetEndDelegate(EndedDelegate, TargetMontage);
     }
 }
@@ -137,12 +138,4 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
     {
         OwnerCharacter->SetPlayerInput(true);
     }
-}
-
-void UCharacterAnimInstance::SaveRagdollPoseSnapshot()
-{
-    // TODO : 하드코딩 제거
-    RagdollSnapshotName = TEXT("RagdollSnapshot");
-    SavePoseSnapshot(RagdollSnapshotName);
-    bIsRagdollBlending = true;
 }

@@ -44,7 +44,7 @@ protected:
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
 
-	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
+	UPROPERTY(meta = (BindWidgetOptional, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UCommonRotatorWidgetBase> CR_Map;
 	// ~ End UIs
 	
