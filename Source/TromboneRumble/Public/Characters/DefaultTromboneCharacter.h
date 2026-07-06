@@ -202,6 +202,8 @@ private:
 	
 	// Voice Interaction
 	void TryRegisterVOIPTalker();
+
+	FTimerHandle RetryVOIPRegistrationHandle;
 	// ~Voice Interaction
 
 public:

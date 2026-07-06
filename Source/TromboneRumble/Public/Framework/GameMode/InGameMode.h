@@ -12,9 +12,9 @@ class TROMBONERUMBLE_API AInGameMode : public ATromboneGameModeBase
 	GENERATED_BODY()
 
 public:
-	
-	void OnRhythmGameEndedReport();
-	
+
+	void OnRhythmGameEndedReport(APlayerController* PC);
+
 	void OnClientTravelToResultLevelAndLeaveSession();
 
 	UFUNCTION()
@@ -22,14 +22,22 @@ public:
 
 private:
 	
+	void TryStartInGamePlay();
+	
 	UPROPERTY()
 	TArray<TObjectPtr<APlayerController>> InGameReadyPlayers;
-	
-	int32 RhythmGameEndedPlayerCount = 0;
-	
+
+	// 리듬게임 종료를 보고한 플레이어 (Ended 브로드캐스트 경로가 둘이라 중복 보고 무시용)
+	UPROPERTY()
+	TArray<TObjectPtr<APlayerController>> RhythmEndedPlayers;
+
+	bool bInGamePlayStarted = false;
+
 	int32 ClientsTravelToResultSceneCount = 0;
-	
+
 	FTimerHandle TimerHandle_TravelToResultLevel;
+
+	FTimerHandle TimerHandle_RetryStartInGame;
 	
 public:
 	

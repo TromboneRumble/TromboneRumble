@@ -392,6 +392,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	GetWorldTimerManager().ClearTimer(XRayTraceTimerHandle);
+	GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
 
 	if (HasAuthority())
 	{
@@ -628,6 +629,16 @@ void ADefaultTromboneCharacter::TryRegisterVOIPTalker()
 	}
 
 	VOIPTalker->RegisterTalker(PS);
+
+	if (!IsLocallyControlled() && !VOIPTalker->IsRemoteTalkerRegistered())
+	{
+		GetWorldTimerManager().SetTimer(RetryVOIPRegistrationHandle,
+			this, &ADefaultTromboneCharacter::TryRegisterVOIPTalker, 1.0f, false);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
+	}
 }
 
 

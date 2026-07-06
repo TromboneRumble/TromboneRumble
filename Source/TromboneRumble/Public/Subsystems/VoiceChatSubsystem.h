@@ -106,8 +106,13 @@ private:
 	bool bMicTestActive = false;
 	bool bNoiseSuppressionEnabled = true;
 
-	// 잡음 제거 활성 시 voice.MicNoiseGateThreshold에 적용할 값
-	static constexpr float NoiseSuppressionThreshold = 0.15f;
+	// voice.MicNoiseGateThreshold에 적용할 값 (linear amplitude 0~1 기준).
+	// 캡처 PCM에 직접 적용되므로 말소리 피크(보통 0.05~0.3)보다 충분히 낮아야 음성이 안 잘림.
+	static constexpr float NoiseSuppressionThreshold = 0.03f;
+	// 잡음 제거 OFF에서도 완전 무음 구간까지 송신하지 않도록 유지하는 최소 게이트
+	static constexpr float NoiseGateBaseThreshold = 0.01f;
+	// voice.SilenceDetectionThreshold — 이 값 이하 구간은 아예 패킷으로 안 실림
+	static constexpr float SilenceDetectionThreshold = 0.005f;
 
 	void OnEngineNetworkFailure(UWorld* World, UNetDriver* NetDriver,
 		ENetworkFailure::Type FailureType, const FString& ErrorString);

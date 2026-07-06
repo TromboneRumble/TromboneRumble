@@ -10,7 +10,7 @@ void ADefaultPlayerController::Server_RhythmGameFinished_Implementation()
 {
 	if (AInGameMode* GM = Cast<AInGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		GM->OnRhythmGameEndedReport();
+		GM->OnRhythmGameEndedReport(this);
 	}
 }
 

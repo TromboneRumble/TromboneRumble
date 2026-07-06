@@ -33,18 +33,23 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 	
 	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 
-	if (RhythmGameEndedPlayerCount >= CurrentSessionPlayerCount)
+	if (RhythmEndedPlayers.Num() >= CurrentSessionPlayerCount)
 	{
 		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
 	}
 }
 
-void AInGameMode::OnRhythmGameEndedReport()
+void AInGameMode::OnRhythmGameEndedReport(APlayerController* PC)
 {
+	if (!PC)
+	{
+		return;
+	}
+
 	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 	
-	RhythmGameEndedPlayerCount++;
-	if (RhythmGameEndedPlayerCount >= CurrentSessionPlayerCount)
+	RhythmEndedPlayers.AddUnique(PC);
+	if (RhythmEndedPlayers.Num() >= CurrentSessionPlayerCount)
 	{
 		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 		{
@@ -57,11 +62,11 @@ void AInGameMode::OnRhythmGameEndedReport()
 			
 			for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 			{
-				if (ADefaultPlayerController* PC = Cast<ADefaultPlayerController>(It->Get()))
+				if (ADefaultPlayerController* EachPC = Cast<ADefaultPlayerController>(It->Get()))
 				{
-					if (!PC->IsLocalController())
+					if (!EachPC->IsLocalController())
 					{
-						PC->Client_RequestTravelToResultLevelAndLeaveSession(); 
+						EachPC->Client_RequestTravelToResultLevelAndLeaveSession();
 					}
 				}
 			}
@@ -101,10 +106,26 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 		return;
 	}
 
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
-	
 	//로딩이 완료된 플레이어
 	InGameReadyPlayers.AddUnique(PC);
+
+	TryStartInGamePlay();
+
+	if (!bInGamePlayStarted)
+	{
+		GetWorldTimerManager().SetTimer(TimerHandle_RetryStartInGame,
+			this, &AInGameMode::TryStartInGamePlay, 0.5f, true);
+	}
+}
+
+void AInGameMode::TryStartInGamePlay()
+{
+	if (bInGamePlayStarted)
+	{
+		return;
+	}
+
+	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 
 	//현재 접속한 플레이어
 	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
@@ -118,6 +139,8 @@ void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
 	{
 		if (AInGameState* GS = GetGameState<AInGameState>())
 		{
+			bInGamePlayStarted = true;
+			GetWorldTimerManager().ClearTimer(TimerHandle_RetryStartInGame);
 			GS->Multicast_BroadCastInGameStateChanged(EInGameState::Play);
 		}
 	}
