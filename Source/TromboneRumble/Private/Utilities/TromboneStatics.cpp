@@ -12,7 +12,6 @@
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
-#include "UI/UserWidgets/Common/LoadingOverlayWidget.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -119,16 +118,13 @@ bool UTromboneStatics::ShowToast(const UObject* WorldContextObject, const FToast
 	return false;
 }
 
-ULoadingOverlayWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerController* PlayerController)
+UCommonActivatableWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerController* PlayerController)
 {
 	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
 	{
-		if (UCommonActivatableWidget* AddedWidget = RootLayout->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
+		if (UCommonActivatableWidget* LoadingOverlayWidget = RootLayout->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
 		{
-			if (ULoadingOverlayWidget* LoadingWidget = Cast<ULoadingOverlayWidget>(AddedWidget))
-			{
-				return LoadingWidget;
-			}
+			return LoadingOverlayWidget;
 		}
 	}
 	
