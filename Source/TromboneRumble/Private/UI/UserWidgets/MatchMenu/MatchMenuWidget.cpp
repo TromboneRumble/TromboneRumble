@@ -73,7 +73,6 @@ void UMatchMenuWidget::Init()
 		CR_Map->OnRotatedWithDirection().RemoveAll(this);
 		CR_Map->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMap);
 		CR_Map->SetIsEnabled(bIsHost);
-		CR_Map->SetVisibility(ESlateVisibility::Hidden); // TODO : 매치메뉴에서 맵 선택 UI를 숨김. 추후 필요시 활성화
 	}
 }
 
