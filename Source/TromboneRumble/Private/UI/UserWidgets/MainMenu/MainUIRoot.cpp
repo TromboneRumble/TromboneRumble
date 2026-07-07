@@ -2,6 +2,7 @@
 
 #include "UI/UserWidgets/MainMenu/MainUIRoot.h"
 #include "EasyMatchmakingManager.h"
+#include "Framework/TromboneGameInstance.h"
 #include "Utilities/TromboneStatics.h"
 
 void UMainUIRoot::NativeConstruct()
@@ -53,7 +54,9 @@ void UMainUIRoot::HandleMatchmakingCanceled()
 	UTromboneStatics::PopOverlay(GetOwningPlayer());
 	SetBaseUIEnabled(true);
 	
-	// TODO : 로컬라이징
-	const FText ToastMessage = FText::FromString(TEXT("Matchmaking canceled."));
-	UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
+	if (const UTromboneGameInstance* GI = GetGameInstance<UTromboneGameInstance>())
+	{
+		const FText ToastMessage = GI->GetCommonUIText("Matchmaking_Cancel");
+		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
+	}
 }
