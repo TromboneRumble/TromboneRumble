@@ -14,7 +14,7 @@ class TROMBONERUMBLE_API AMatchMenuBackgroundSwitcher : public AActor
 
 protected:
 	
-	/** 로비 맵 태그 → 배경 서브레벨 매핑. 레벨에 배치된 인스턴스에서 채움 */
+	/** 사용할 매치 메뉴 레벨 */
 	UPROPERTY(EditAnywhere, Category = "Background", meta = (Categories = "Trombone.Maps.Lobby"))
 	TMap<FGameplayTag, TSoftObjectPtr<UWorld>> BackgroundLevels;
 

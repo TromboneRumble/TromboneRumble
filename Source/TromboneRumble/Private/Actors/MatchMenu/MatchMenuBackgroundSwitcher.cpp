@@ -33,13 +33,13 @@ void AMatchMenuBackgroundSwitcher::BindToGameState(AGameStateBase* GameState)
     }
 
     MatchMenuGS->OnSelectedMapChanged.AddDynamic(this, &ThisClass::HandleSelectedMapChanged);
-    // 초기 상태는 페이드 없이 즉시 적용 (늦게 합류한 클라 포함)
-    BeginSwitch(MatchMenuGS->GetSelectedLobbyMap(), /*bInstant*/ true);
+    
+    BeginSwitch(MatchMenuGS->GetSelectedLobbyMap(), true);
 }
 
 void AMatchMenuBackgroundSwitcher::HandleSelectedMapChanged(FGameplayTag NewMapTag)
 {
-    BeginSwitch(NewMapTag, /*bInstant*/ false);
+    BeginSwitch(NewMapTag, false);
 }
 
 void AMatchMenuBackgroundSwitcher::BeginSwitch(const FGameplayTag NewMapTag, const bool bInstant)
@@ -74,7 +74,7 @@ void AMatchMenuBackgroundSwitcher::BeginSwitch(const FGameplayTag NewMapTag, con
 
 void AMatchMenuBackgroundSwitcher::SwapLevels()
 {
-    // 이전 배경 언로드 (콜백 불필요)
+    // 이전 배경 언로드
     if (const TSoftObjectPtr<UWorld>* OldLevel = BackgroundLevels.Find(CurrentTag))
     {
         FLatentActionInfo UnloadInfo;
