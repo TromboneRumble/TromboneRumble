@@ -54,7 +54,7 @@ void UEscapePopup::HandleDisconnectButtonClicked() const
 		Params.LeftButtonText = ConfirmLeftButton;
 		Params.RightButtonText = ConfirmRightButton;
 	
-		Params.RightCallback = [this]()
+		Params.LeftCallback = [this]()
 		{
 			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 			{

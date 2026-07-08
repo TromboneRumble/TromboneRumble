@@ -223,7 +223,7 @@ void ATutorialManager::ShowTutorialCompletePopup() const
 		Params.Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndTitle"));
 		Params.Content = GI->GetTutorialUIText(TEXT("StringKey_TutorialEndDescription"));
 		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
-		Params.RightButtonText = GI->GetCommonUIText(TEXT("StringKey_Common_GoToMainMenu"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 		
 		Params.LeftCallback = [this]()
 		{
