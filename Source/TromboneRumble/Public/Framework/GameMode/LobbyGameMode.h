@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "TromboneGameModeBase.h"
 #include "Interfaces/ItemEquipHandler.h"
 #include "Utilities/Defines.h"
@@ -27,6 +28,12 @@ public:
 
 private:
 	void HandlePlayerLoadingScreenFinished(APlayerController* PC);
+
+	/** Resolves the currently selected InGame map tag (SETTING_MAPNAME, falls back to DefaultInGameMap). */
+	FGameplayTag ResolveSelectedInGameMapTag() const;
+	/** Randomly picks a rhythm song tag matching the given InGame map (server-authoritative). */
+	FGameplayTag PickRandomSongForMap(const FGameplayTag& InGameMapTag) const;
+
 	void SpawnInstruments();
 	void SetLobbyState(const ELobbyState& InNewState);
 	void RequestServerTravel(const FString& MapPath) const;

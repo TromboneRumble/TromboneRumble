@@ -191,20 +191,52 @@ void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
 	{
 		if (LobbyGameState)
 		{
-			//TODO : SelectedSong 하드코딩 수정
-			
-			// InGameMap 노래들
-			const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA : 
-																TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
-			
-			// 눈맵 노래
-			//const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapC : 
-			//													TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
-			
+			// 실제 로드될 InGameMap과 동일한 소스로 곡을 결정해 곡/스테이지가 어긋나지 않도록 함
+			const FGameplayTag InGameMapTag = ResolveSelectedInGameMapTag();
+			const FGameplayTag SelectedSong = PickRandomSongForMap(InGameMapTag);
+
 			LobbyGameState->SetSelectedSongTag(SelectedSong);
 			SpawnInstruments();
 		}
 	}
+}
+
+FGameplayTag ALobbyGameMode::ResolveSelectedInGameMapTag() const
+{
+	FGameplayTag InGameTag;
+	// fallback : Default InGame Map
+	if (const UTromboneConfig* Config = UTromboneConfig::Get())
+	{
+		InGameTag = Config->DefaultInGameMap;
+	}
+
+	FString SavedInGameTagStr;
+	if (const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+	{
+		if (OnlineSession->GetSessionSetting(NAME_GameSession, SETTING_MAPNAME, SavedInGameTagStr) && !SavedInGameTagStr.IsEmpty())
+		{
+			const FGameplayTag FoundTag = FGameplayTag::RequestGameplayTag(FName(*SavedInGameTagStr), false);
+			if (FoundTag.IsValid())
+			{
+				InGameTag = FoundTag;
+			}
+		}
+	}
+
+	return InGameTag;
+}
+
+FGameplayTag ALobbyGameMode::PickRandomSongForMap(const FGameplayTag& InGameMapTag) const
+{
+	if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_SnowField)
+	{
+		return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapC
+								 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
+	}
+
+	// OrchestraStage 및 그 외 폴백
+	return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA
+							 : TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
 }
 
 void ALobbyGameMode::SpawnInstruments()
@@ -314,26 +346,7 @@ void ALobbyGameMode::OnCountdownToTravel()
 		{
 			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
 			{
-				FGameplayTag InGameTag;
-				// fallback : Default InGame Map
-				if (const UTromboneConfig* Config = UTromboneConfig::Get())
-				{
-					InGameTag = Config->DefaultInGameMap;
-				}
-
-				FString SavedInGameTagStr;
-				if (const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-				{
-					if (OnlineSession->GetSessionSetting(NAME_GameSession, SETTING_MAPNAME, SavedInGameTagStr) && !SavedInGameTagStr.IsEmpty())
-					{
-						const FGameplayTag FoundTag = FGameplayTag::RequestGameplayTag(FName(*SavedInGameTagStr), false);
-						if (FoundTag.IsValid())
-						{
-							InGameTag = FoundTag;
-						}
-					}
-				}
-
+				const FGameplayTag InGameTag = ResolveSelectedInGameMapTag();
 				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(InGameTag);
 				UEasyStatics::ServerTravelToLevel(this, InGameMapName);
 			}

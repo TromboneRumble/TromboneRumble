@@ -479,9 +479,13 @@ void ADefaultTromboneCharacter::CheckXRayOcclusion()
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
+	
+	FCollisionObjectQueryParams ObjParams;
+	ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
 	TArray<FHitResult> Hits;
-	GetWorld()->LineTraceMultiByChannel(Hits, Start, End, ECC_Visibility, Params);
+	GetWorld()->LineTraceMultiByObjectType(Hits, Start, End, ObjParams, Params);
 
 	// 트레이스 결과 중 XRayBlocker 태그가 있는 액터가 하나라도 있으면 X-Ray ON
 	bool bXRayActive = false;
