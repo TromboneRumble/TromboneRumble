@@ -62,7 +62,7 @@ public:
 	 * @return Added loading overlay widget
 	 */
 	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI")
-	static ULoadingOverlayWidget* ShowLoadingOverlay(const APlayerController* PlayerController);
+	static UCommonActivatableWidget* ShowLoadingOverlay(const APlayerController* PlayerController);
 
 	/**
 	 * Shows a fade overlay
