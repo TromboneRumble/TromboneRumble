@@ -49,6 +49,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	FVector Velocity;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float LocomotionPlayRate = 1.0f;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Instrument")
 	EInstrumentType CurrentInstrumentType = EInstrumentType::None;

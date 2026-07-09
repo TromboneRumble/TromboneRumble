@@ -335,9 +335,12 @@ void ADefaultTromboneCharacter::BeginPlay()
 	{
 		const float InitialSpeed = GetCharacterMovement()->MaxWalkSpeed;
 		CharacterAttributes->InitMoveSpeed(InitialSpeed);
-
-		// 혹시 OnRep 전에 바로 반영되도록 한 번 더 보정
+		
 		GetCharacterMovement()->MaxWalkSpeed = CharacterAttributes->GetMoveSpeed();
+		
+		CharacterAttributes->InitGroundFriction(GetCharacterMovement()->GroundFriction);
+		CharacterAttributes->InitBrakingDeceleration(GetCharacterMovement()->BrakingDecelerationWalking);
+		CharacterAttributes->InitLocomotionPlayRate(1.f);
 	}
 	// ~GAS 초기화
 
@@ -657,4 +660,9 @@ EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() co
 		}
 	}
 	return EInstrumentType::None;
+}
+
+float ADefaultTromboneCharacter::GetLocomotionPlayRate() const
+{
+	return CharacterAttributes ? CharacterAttributes->GetLocomotionPlayRate() : 1.f;
 }

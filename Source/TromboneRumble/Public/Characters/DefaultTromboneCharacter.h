@@ -215,5 +215,8 @@ public:
 	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
 	FORCEINLINE UEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
+
+	// 얼음 위 걷기 애니메이션 배속 (AnimInstance 가 로코모션 Play Rate 로 사용). 속성 없으면 1.0
+	float GetLocomotionPlayRate() const;
 	// ~ End Getters / Setters
 };

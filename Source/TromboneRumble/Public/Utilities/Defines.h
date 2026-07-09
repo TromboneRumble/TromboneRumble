@@ -40,6 +40,7 @@ enum class EGimmickType : uint8
 	Trash,
 	Present,
 	PressurePlate,
+	Ice,
 	MAX,
 	None = 255,
 };
