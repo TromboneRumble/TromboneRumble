@@ -144,7 +144,11 @@ public:
 	
 	/** Time in seconds for the lobby countdown before server travel. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
-	int32 LobbyCountdownTimeSeconds;
+	int32 LobbyGameStartDelaySeconds;
+
+	/** Time in seconds for the lobby get-up countdown when all players is ragdoll */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
+	int32 LobbyRagdollGetUpDelaySeconds;
 	
 public:
 	

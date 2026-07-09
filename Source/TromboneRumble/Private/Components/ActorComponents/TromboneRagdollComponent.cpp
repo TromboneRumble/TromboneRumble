@@ -21,9 +21,19 @@ void UTromboneRagdollComponent::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	if (OwnerCharacter)
+	OwnerMesh = OwnerCharacter ? OwnerCharacter->GetMesh() : nullptr;
+
+	/** 서버에서 이미 래그돌 중인 폰이 리플리케이션으로 스폰되면(늦은 합류 등) OnRep이 BeginPlay보다 먼저 와서 무시되므로 
+	 *	여기서 재적용. 캐릭터의 OnRagdollStarted 바인딩이 이 함수 이후에 이뤄지므로 반드시 다음 틱에 실행. */
+	if (bIsRagdoll)
 	{
-		OwnerMesh = OwnerCharacter->GetMesh();
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			if (bIsRagdoll)
+			{
+				OnRep_IsRagdoll();
+			}
+		}));
 	}
 }
 
@@ -50,7 +60,7 @@ void UTromboneRagdollComponent::TickComponent(const float DeltaTime, const ELeve
 			if (IsRagdollGrounded())
 			{
 				RagdollGroundedTime += DeltaTime;
-				if (RagdollGroundedTime >= RagdollDuration)
+				if (bAutoGetUpEnabled && RagdollGroundedTime >= RagdollDuration)
 				{
 					StopRagdoll();
 				}
@@ -90,7 +100,13 @@ void UTromboneRagdollComponent::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 
 void UTromboneRagdollComponent::StartRagdoll()
 {
-	if (!OwnerCharacter || !OwnerCharacter->HasAuthority() || bIsRagdoll)
+	if (!OwnerCharacter)
+	{
+		OwnerCharacter = Cast<ACharacter>(GetOwner());
+		OwnerMesh = OwnerCharacter ? OwnerCharacter->GetMesh() : nullptr;
+	}
+
+	if (!OwnerCharacter || !OwnerMesh || !OwnerCharacter->HasAuthority() || bIsRagdoll)
 	{
 		return;
 	}
@@ -305,7 +321,7 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 		}
 	}
 
-	OnRagdollPhysicsDisabled.Broadcast();
+	OnRagdollPhysicsEnabled.Broadcast();
 }
 
 bool UTromboneRagdollComponent::IsFacingUp() const

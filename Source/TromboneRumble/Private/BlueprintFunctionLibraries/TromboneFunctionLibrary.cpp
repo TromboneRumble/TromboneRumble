@@ -74,6 +74,19 @@ FGameplayTag UTromboneFunctionLibrary::LobbyToInGameTag(const FGameplayTag Lobby
     return GetSiblingMapTag(LobbyTag, InGameCategory);
 }
 
+FGameplayTag UTromboneFunctionLibrary::PickRandomSongForMap(const FGameplayTag InGameMapTag)
+{
+    if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_SnowField)
+    {
+        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapC
+                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
+    }
+
+    // OrchestraStage 및 그 외 폴백
+    return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA
+                             : TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
+}
+
 void UTromboneFunctionLibrary::PrintDebug(const FString& Msg, const int32 InKey, const FLinearColor Color, const float Duration,
                                           const bool bRandomColor, const bool bLog)
 {

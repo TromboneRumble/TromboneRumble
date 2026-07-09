@@ -58,7 +58,14 @@ void ATutorialManager::TogglePlayerInput(bool bIsEnabled)
 {
 	if (ADefaultTromboneCharacter* MyCharacter = GetCachedPlayerCharacter())
 	{
-		MyCharacter->SetPlayerInput(bIsEnabled);
+		if (bIsEnabled)
+		{
+			MyCharacter->RemoveInputBlock(EInputBlockReason::Tutorial);
+		}
+		else
+		{
+			MyCharacter->AddInputBlock(EInputBlockReason::Tutorial);
+		}
 	}
 }
 
