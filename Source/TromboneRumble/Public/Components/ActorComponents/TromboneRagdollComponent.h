@@ -26,9 +26,9 @@ struct FRagdollNetState
 };
 
 /** UTromboneRagdollComponent
- * Synchronizes ragdoll simulation in co-op.
- * While ragdolling, only the server's pelvis location and velocity are replicated (not rotation) -
- * applying velocity interpolation to the pelvis lets the rest of the physics body follow naturally
+ * 래그돌(물리 시뮬레이션) 중 위치 동기화를 수행하는 컴포넌트.
+ * 서버의 골반 위치와 속도만 동기화하고, 회전은 동기화하지 않는다. 
+ * 속도 보간을 적용함으로써 나머지 물리 바디가 자연스럽게 따라오도록 한다.
  */
 UCLASS()
 class TROMBONERUMBLE_API UTromboneRagdollComponent : public UActorComponent
@@ -49,7 +49,13 @@ public:
 	void StopRagdoll();
 	
 	bool IsRagdoll() const { return bIsRagdoll; }
-	
+
+	/** Server only. */
+	void SetAutoGetUpEnabled(const bool bEnabled) { bAutoGetUpEnabled = bEnabled; }
+
+	/** @return true if the pelvis is close enough to the ground, otherwise false. */
+	bool IsRagdollGrounded() const;
+
 public:
 
 	/** Event when ragdoll is started. */
@@ -58,8 +64,8 @@ public:
 	/** Event when ragdoll is ended. At this point, get-up animation is started and still simulating physics */
 	FRagdollSignature OnRagdollEnded;
 	
-	/** Event when ragdoll physics are disabled. */
-	FRagdollSignature OnRagdollPhysicsDisabled;
+	/** Event when physics are enabled. */
+	FRagdollSignature OnRagdollPhysicsEnabled;
 	
 protected:
 	
@@ -94,7 +100,7 @@ protected:
 	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
 	float RagdollBlendOutDuration = 0.2f;
-
+	
 	/** if true, enables visual debug and screen error logging
 	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "디버그 모드"))
@@ -127,9 +133,6 @@ private:
 
 	/** @return true if the front of the pelvis is facing toward the sky, otherwise false. */
 	bool IsFacingUp() const;
-	
-	/** @return true if the pelvis is close enough to the ground, otherwise false. */
-	bool IsRagdollGrounded() const;
 
 	void Server_ComputeGetUpTransform();
 
@@ -159,6 +162,9 @@ private:
 
 	/** Time spent on the ground during ragdoll */
 	float RagdollGroundedTime = 0.0f;
+
+	/** If false, does not automatically get up after being grounded. Server Only. */
+	bool bAutoGetUpEnabled = true;
 
 	/** Maximum difference for pelvis location synchronization (DebugMode) */
 	float PelvisLocationMaxError = 0.0f;

@@ -147,6 +147,6 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
 {
     if (Montage == GetUpFrontMontage || Montage == GetUpBackMontage)
     {
-        OwnerCharacter->SetPlayerInput(true);
+        OwnerCharacter->RemoveInputBlock(EInputBlockReason::Ragdoll);
     }
 }

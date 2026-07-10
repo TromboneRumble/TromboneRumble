@@ -39,6 +39,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "GameMaps")
 	static FGameplayTag LobbyToInGameTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag LobbyTag);
 
+	/** Randomly select a rhythm song tag that matches the given in-game map */
+	UFUNCTION(BlueprintPure, Category = "Rhythm")
+	static FGameplayTag PickRandomSongForMap(UPARAM(meta = (Categories = "Trombone.Maps.InGame")) FGameplayTag InGameMapTag);
+
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Debug",

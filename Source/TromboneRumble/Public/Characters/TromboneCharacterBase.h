@@ -21,6 +21,20 @@ class UMaterialInterface;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStunStateChanged, bool, bIsStunned);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInvincibleSignature);
 
+/** EInputBlockReason 
+ * 여러 시스템(래그돌, 튜토리얼, 서버 등등)에서 입력을 차단할 수 있는데, 
+ * 이를 비트 마스킹으로 관리하여 서로의 잠금을 덮어쓰지 않도록 함
+ */
+enum class EInputBlockReason : uint8
+{
+	None       = 0,
+	ServerLock = 1 << 0,
+	Ragdoll    = 1 << 1,
+	Stun       = 1 << 2,
+	Tutorial   = 1 << 3,
+};
+
+/** TODO : 온갖 기능이 다 들어있는 캐릭터 코드 정리하기 */
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
 {
@@ -35,7 +49,15 @@ public:
 	
 	virtual void ApplySkinColor(const FLinearColor InSkinColor) const;
 	FLinearColor GetSkinColor() const { return SkinColor; }
-	void SetPlayerInput(const bool bShouldEnable);
+	
+	/** Add a reason for the input lock */
+	void AddInputBlock(EInputBlockReason Reason);
+	
+	/** Remove a reason for the input lock */
+	void RemoveInputBlock(EInputBlockReason Reason);
+
+	/** ServerLock 비트를 리플리케이트해 각 머신의 비트 마스크에 적용. Server Only. */
+	void Server_SetInputEnabled(const bool bEnable);
 
 	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
 	void ApplyFaceMaterial(UMaterialInterface* Material);
@@ -98,13 +120,15 @@ private:
 	UFUNCTION()
 	void HandleRagdollEnded();
 	UFUNCTION()
-	void HandleRagdollGetUp();
+	void HandleRagdollPhysicsEnabled();
 
 	void UpdateSkinFromPlayerState();
 	
 	void ApplyFlagPhysics();
 
 	// Replication Notifies
+	UFUNCTION()
+	void OnRep_InputEnabled();
 	UFUNCTION()
 	void OnRep_IsStun();
 	UFUNCTION()
@@ -113,11 +137,16 @@ private:
 	void OnRep_SkinColor();
 	// ~Replication Notifies
 
+	void ApplyEngineInputEnabled(const bool bEnable);
+
 	FTimerHandle OnHitTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
 
-	bool bIsCanProcessInput = true;
-	
+	/** Reasons for currently active input blocking. not replicated */
+	uint8 InputBlockMask = 0;
+
+	UPROPERTY(ReplicatedUsing = OnRep_InputEnabled)
+	bool bInputEnabled = true;
 	UPROPERTY(ReplicatedUsing = OnRep_IsInvincible)
 	bool bIsInvincible = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsStun)
@@ -180,7 +209,8 @@ public:
 	//~ Begin Setter
 	bool IsStun() const { return bIsStun; }
 	bool IsRagdoll() const;
-	bool IsCanProcessInput() const { return bIsCanProcessInput; }
+	bool IsInputBlocked() const { return InputBlockMask != 0; }
 	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }
+	UTromboneRagdollComponent* GetRagdollComponent() const { return RagdollComponent; }
 	//~ End Setter
 };

@@ -111,15 +111,35 @@ void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) cons
 	}
 }
 
-void ATromboneCharacterBase::SetPlayerInput(const bool bShouldEnable)
+void ATromboneCharacterBase::AddInputBlock(const EInputBlockReason Reason)
 {
-	bIsCanProcessInput = bShouldEnable;
+	const uint8 OldMask = InputBlockMask;
+	InputBlockMask |= static_cast<uint8>(Reason);
 
+	if (OldMask == 0 && InputBlockMask != 0)
+	{
+		ApplyEngineInputEnabled(false);
+	}
+}
+
+void ATromboneCharacterBase::RemoveInputBlock(const EInputBlockReason Reason)
+{
+	const uint8 OldMask = InputBlockMask;
+	InputBlockMask &= ~static_cast<uint8>(Reason);
+
+	if (OldMask != 0 && InputBlockMask == 0)
+	{
+		ApplyEngineInputEnabled(true);
+	}
+}
+
+void ATromboneCharacterBase::ApplyEngineInputEnabled(const bool bEnable)
+{
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (IsLocallyControlled())
 		{
-			if (bShouldEnable)
+			if (bEnable)
 			{
 				EnableInput(PlayerController);
 			}
@@ -128,6 +148,29 @@ void ATromboneCharacterBase::SetPlayerInput(const bool bShouldEnable)
 				DisableInput(PlayerController);
 			}
 		}
+	}
+}
+
+void ATromboneCharacterBase::Server_SetInputEnabled(const bool bEnable)
+{
+	if (!HasAuthority() || bInputEnabled == bEnable)
+	{
+		return;
+	}
+
+	bInputEnabled = bEnable;
+	OnRep_InputEnabled();
+}
+
+void ATromboneCharacterBase::OnRep_InputEnabled()
+{
+	if (bInputEnabled)
+	{
+		RemoveInputBlock(EInputBlockReason::ServerLock);
+	}
+	else
+	{
+		AddInputBlock(EInputBlockReason::ServerLock);
 	}
 }
 
@@ -177,7 +220,7 @@ void ATromboneCharacterBase::BeginPlay()
 	{
 		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::HandleRagdollStarted);
 		RagdollComponent->OnRagdollEnded.AddDynamic(this, &ThisClass::HandleRagdollEnded);
-		RagdollComponent->OnRagdollPhysicsDisabled.AddDynamic(this, &ThisClass::HandleRagdollGetUp);
+		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::HandleRagdollPhysicsEnabled);
 	}
 
 	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
@@ -232,6 +275,7 @@ void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	
 	DOREPLIFETIME(ThisClass, bIsStun);
 	DOREPLIFETIME(ThisClass, bIsInvincible);
+	DOREPLIFETIME(ThisClass, bInputEnabled);
 	DOREPLIFETIME(ThisClass, SkinColor);
 }
 
@@ -382,7 +426,8 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 		OnRep_IsStun();
 	}
 
-	SetPlayerInput(false);
+	/** TODO : UCharacterAnimInstance::OnGetUpMontageEnded에서 래그돌 입력 차단을 해제하는데, 여기서 콜백을 넘겨주는 식으로 개선 못하나? */
+	AddInputBlock(EInputBlockReason::Ragdoll);
 	PlayFaceSequence(ECharacterFaceState::Ragdoll);
 	if (AkSoundComponent && RagdollBooSound)
 	{
@@ -412,7 +457,7 @@ void ATromboneCharacterBase::HandleRagdollEnded()
 	PlayFaceSequence(ECharacterFaceState::Blink);
 }
 
-void ATromboneCharacterBase::HandleRagdollGetUp()
+void ATromboneCharacterBase::HandleRagdollPhysicsEnabled()
 {
 	ApplyFlagPhysics();
 }
@@ -460,15 +505,19 @@ void ATromboneCharacterBase::EndStun()
 void ATromboneCharacterBase::ApplyStun()
 {
 	StopAnimMontage();
-	SetPlayerInput(false);
+	AddInputBlock(EInputBlockReason::Stun);
 }
 
 void ATromboneCharacterBase::UnapplyStun()
 {
-	if (IsRagdoll()) return;
+	RemoveInputBlock(EInputBlockReason::Stun);
+
+	if (IsRagdoll())
+	{
+		return;
+	}
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	SetPlayerInput(true);
 }
 
 void ATromboneCharacterBase::UpdateSkinFromPlayerState()
