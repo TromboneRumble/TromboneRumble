@@ -86,6 +86,12 @@ private:
 	TObjectPtr<UAkSwitchValue> NormalFootstepSwitch = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkSwitchValue> WaterFootstepSwitch = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkSwitchValue> RockFootStepSwitch = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkSwitchValue> SnowFootStepSwitch = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkSwitchValue> IceFootStepSwitch = nullptr;
 
 public:
 	//~ Begin Setters

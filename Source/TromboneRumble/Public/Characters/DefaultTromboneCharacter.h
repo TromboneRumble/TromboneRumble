@@ -214,6 +214,7 @@ public:
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
 	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
 	FORCEINLINE UEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
+	FORCEINLINE bool IsSprinting() const { return bIsSprinting; }
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 
 	// 얼음 위 걷기 애니메이션 배속 (AnimInstance 가 로코모션 Play Rate 로 사용). 속성 없으면 1.0

@@ -41,6 +41,7 @@ enum class EGimmickType : uint8
 	Present,
 	PressurePlate,
 	Ice,
+	Blizzard,
 	MAX,
 	None = 255,
 };
@@ -142,6 +143,7 @@ enum class EHitInstigatorType : uint8
 	Garbage_Paper,
 	Garbage_Chair,
 	PressurePlate,
+	Blizzard,
 };
 
 UENUM()

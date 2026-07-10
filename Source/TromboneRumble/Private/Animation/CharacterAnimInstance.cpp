@@ -101,6 +101,15 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
     case SurfaceType1:
         SwitchValue = WaterFootstepSwitch ? WaterFootstepSwitch : NormalFootstepSwitch;
         break;
+    case SurfaceType2:
+        SwitchValue = RockFootStepSwitch ? RockFootStepSwitch : NormalFootstepSwitch;
+        break;
+    case SurfaceType3:
+        SwitchValue = SnowFootStepSwitch ? SnowFootStepSwitch : NormalFootstepSwitch;
+        break;
+    case SurfaceType4:
+        SwitchValue = IceFootStepSwitch ? IceFootStepSwitch : NormalFootstepSwitch;
+        break;
     default:
         SwitchValue = NormalFootstepSwitch;
         break;
