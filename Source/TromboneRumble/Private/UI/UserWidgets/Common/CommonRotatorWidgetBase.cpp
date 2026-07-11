@@ -56,6 +56,12 @@ void UCommonRotatorWidgetBase::RefreshRotator()
 	}
 }
 
+void UCommonRotatorWidgetBase::SetOptions(const TArray<FText>& InOptions)
+{
+	TextOptions = InOptions;
+	RefreshRotator();
+}
+
 void UCommonRotatorWidgetBase::SetSelectedIndex(int32 NewIndex)
 {
 	if (!TextOptions.IsValidIndex(NewIndex)) 

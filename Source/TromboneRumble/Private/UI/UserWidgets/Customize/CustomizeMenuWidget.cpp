@@ -10,16 +10,7 @@
 
 void UCustomizeMenuWidget::Init()
 {
-	Super::Init();
-
-	if (APlayerController* PC = GetOwningPlayer())
-	{
-		if (ACustomizePawn* Pawn = Cast<ACustomizePawn>(PC->GetPawn()))
-		{
-			CustomizationComp = Pawn->CustomizationComp;
-			OriginalSaveData = CustomizationComp->GetCurrentSaveData();
-		}
-	}
+	CaptureBaseline();
 
 	if (CB_AntennaNext)  { CB_AntennaNext->OnClicked().RemoveAll(this);  CB_AntennaNext->OnClicked().AddUObject(this, &ThisClass::Handle_AntennaNext); }
 	if (CB_AntennaPrev)  { CB_AntennaPrev->OnClicked().RemoveAll(this);  CB_AntennaPrev->OnClicked().AddUObject(this, &ThisClass::Handle_AntennaPrev); }
@@ -32,16 +23,32 @@ void UCustomizeMenuWidget::Init()
 	if (CB_Back)         { CB_Back->OnClicked().RemoveAll(this);         CB_Back->OnClicked().AddUObject(this, &ThisClass::Handle_Back); }
 }
 
+TOptional<FUIInputConfig> UCustomizeMenuWidget::GetDesiredInputConfig() const
+{
+	return FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::CaptureDuringMouseDown, EMouseLockMode::LockOnCapture, false);
+}
+
 void UCustomizeMenuWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 	if (!CustomizationComp)
-		if (APlayerController* PC = GetOwningPlayer())
-			if (ACustomizePawn* Pawn = Cast<ACustomizePawn>(PC->GetPawn()))
-			{
-				CustomizationComp = Pawn->CustomizationComp;
-				OriginalSaveData = CustomizationComp->GetCurrentSaveData();
-			}
+		CaptureBaseline();
+}
+
+void UCustomizeMenuWidget::CaptureBaseline()
+{
+	APlayerController* PC = GetOwningPlayer();
+	if (!PC) return;
+
+	ACustomizePawn* Pawn = Cast<ACustomizePawn>(PC->GetPawn());
+	if (!Pawn) return;
+
+	CustomizationComp = Pawn->CustomizationComp;
+
+	// 베이스라인은 "디스크에 저장된 외형" — 위젯/폰 초기화 순서와 무관하게 항상 캐시되어 있는
+	// SaveManager의 저장 데이터를 기준으로 잡아야 변경 없는데 dirty로 오판하지 않는다.
+	if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+		OriginalSaveData = SMS->LoadCustomization();
 }
 
 void UCustomizeMenuWidget::Handle_AntennaNext()

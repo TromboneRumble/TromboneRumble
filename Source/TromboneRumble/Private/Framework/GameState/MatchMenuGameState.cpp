@@ -1,13 +1,19 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "Net/UnrealNetwork.h"
+#include "TromboneGamePlayTags.h"
+#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "Utilities/DebugHelper.h"
 
 AMatchMenuGameState::AMatchMenuGameState()
 {
 	LocalPlayerStartTag = TEXT("Local");
 	PlayerStartMappings = TMap<APlayerStart*, APawn*>();
+	SelectedLobbyMapTag = TromboneGamePlayTags::Trombone_Maps_Lobby_OrchestraStage;
 }
 
 void AMatchMenuGameState::HandleMatchPawnCreated(APawn* PlayerPawn)
@@ -97,6 +103,11 @@ void AMatchMenuGameState::OnRep_CurrentMatchType()
 	OnMatchTypeChanged.Broadcast(CurrentMatchType);
 }
 
+void AMatchMenuGameState::OnRep_SelectedLobbyMap()
+{
+	OnSelectedMapChanged.Broadcast(SelectedLobbyMapTag);
+}
+
 void AMatchMenuGameState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
@@ -115,6 +126,19 @@ void AMatchMenuGameState::PostInitializeComponents()
 			PlayerStartMappings.Add(PlayerStart, nullptr);
 		}
 	}
+	
+	if (HasAuthority())
+	{
+		if (const UTromboneConfig* Config = UTromboneConfig::Get())
+		{
+			const FGameplayTag LobbyCategory = FGameplayTag::RequestGameplayTag(FName(*TromboneGamePlayTags::LobbyPath), false);
+			const FGameplayTag DefaultLobby = UTromboneFunctionLibrary::GetSiblingMapTag(Config->DefaultInGameMap, LobbyCategory);
+			if (DefaultLobby.IsValid())
+			{
+				SelectedLobbyMapTag = DefaultLobby;
+			}
+		}
+	}
 }
 
 void AMatchMenuGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -122,14 +146,29 @@ void AMatchMenuGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(ThisClass, CurrentMatchType);
+	DOREPLIFETIME(ThisClass, SelectedLobbyMapTag);
 }
 
 void AMatchMenuGameState::SetMatchType(const EMatchType NewType)
 {
-	if (!HasAuthority()) return;
+	if (!HasAuthority())
+	{
+		return;
+	}
 
 	CurrentMatchType = NewType;
 	OnRep_CurrentMatchType();
+}
+
+void AMatchMenuGameState::SetSelectedLobbyMap(const FGameplayTag NewLobbyTag)
+{
+	if (!HasAuthority() || !NewLobbyTag.IsValid())
+	{
+		return;
+	}
+
+	SelectedLobbyMapTag = NewLobbyTag;
+	OnRep_SelectedLobbyMap();
 }
 
 int32 AMatchMenuGameState::GetCurrentPlayerCount() const

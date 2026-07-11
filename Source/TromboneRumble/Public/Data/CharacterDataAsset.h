@@ -99,10 +99,6 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Movement|Inertia", meta = (DisplayName = "지면 마찰력"))
     float GroundFriction = 3.0f;
     
-    /** 래그돌 상태가 지속되는 시간입니다. (초) */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Reactions", meta = (DisplayName = "래그돌 지속 시간"))
-    float RagdollDuration = 2.5f;
-    
     /** 스턴 상태가 지속되는 시간입니다. (초) */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Reactions", meta = (DisplayName = "스턴 지속 시간"))
     float StunDuration = 1.5f;

@@ -12,6 +12,7 @@
 #include "Interfaces/VoiceInterface.h"
 #include "Components/AmplifiedAudioCaptureComponent.h"
 #include "HAL/IConsoleManager.h"
+#include "Net/VoiceConfig.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "SaveData/TromboneSaveGame.h"
 #include "Engine/Engine.h"
@@ -36,6 +37,11 @@ void UVoiceChatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 			}
 		}
 	}
+
+	// 침묵 감지 임계값 고정: 엔진 기본 0.08(linear amplitude)은 일반 말소리 피크보다 높아
+	// 송신 단계에서 음성이 잘려 상대에게 작고 끊기게 들린다. ini [SystemSettings]와 이중 안전장치.
+	UVOIPStatics::SetMicThreshold(SilenceDetectionThreshold);
+	SetNoiseSuppression(bNoiseSuppressionEnabled);
 
 	if (GEngine)
 	{
@@ -239,6 +245,13 @@ TArray<FString> UVoiceChatSubsystem::GetAvailableMicDeviceNames()
 
 void UVoiceChatSubsystem::ApplyMicrophoneSettings(int32 DeviceIndex, float VoiceSendVolume)
 {
+	// 실제 캡처 게인에 적용: VoiceCaptureWindows::ProcessData()가 이 CVar를 읽어
+	// 인코딩 전 PCM 샘플에 곱한다. (복제되는 VoiceSendVolume은 청취자 재생 배수 전용)
+	if (IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.MicInputGain")))
+	{
+		CVar->Set(FMath::Clamp(VoiceSendVolume, 0.0f, 2.0f), ECVF_SetByGameSetting);
+	}
+
 	const APlayerController* PC = GetOwningPlayerController();
 	if (!PC) return;
 
@@ -320,10 +333,11 @@ void UVoiceChatSubsystem::SetNoiseSuppression(bool bEnabled)
 {
 	bNoiseSuppressionEnabled = bEnabled;
 
-	// 실제 VoIP 경로: VoiceCaptureWindows::ProcessData()가 이 CVar를 읽어 noise gate를 적용
+	// 실제 VoIP 경로: VoiceCaptureWindows::ProcessData()가 이 CVar를 읽어 noise gate를 적용.
+	// OFF에서도 0이 아닌 최소 게이트를 유지해 무음 구간의 배경 잡음 송신(대역폭 낭비)을 막는다.
 	if (IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.MicNoiseGateThreshold")))
 	{
-		CVar->Set(bEnabled ? NoiseSuppressionThreshold : 0.0f, ECVF_SetByGameSetting);
+		CVar->Set(bEnabled ? NoiseSuppressionThreshold : NoiseGateBaseThreshold, ECVF_SetByGameSetting);
 	}
 
 	// 마이크 테스트 경로: AmplifiedAudioCaptureComponent에도 반영

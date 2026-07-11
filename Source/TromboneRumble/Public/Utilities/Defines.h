@@ -1,7 +1,17 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Defines.generated.h"
+
+UENUM()
+enum class EUIStackType
+{
+	Base,
+	Popup,
+	Overlay
+};
 
 UENUM()
 enum class EMatchType : uint8
@@ -30,6 +40,8 @@ enum class EGimmickType : uint8
 	Trash,
 	Present,
 	PressurePlate,
+	Ice,
+	Blizzard,
 	MAX,
 	None = 255,
 };
@@ -75,12 +87,17 @@ UENUM()
 enum class ELevelType : uint8
 {
 	MainMenu,
-	Lobby,
-	InGame,
 	MatchMenu,
 	Tutorial,
 	ResultScene,
 	Customize,
+	
+	OrchestraStageLobby,
+	SnowFieldLobby,
+	
+	OrchestraStage,
+	SnowField,
+	
 	Invalid = 255 UMETA(Hidden)
 };
 
@@ -126,6 +143,7 @@ enum class EHitInstigatorType : uint8
 	Garbage_Paper,
 	Garbage_Chair,
 	PressurePlate,
+	Blizzard,
 };
 
 UENUM()
@@ -236,4 +254,18 @@ namespace TromboneRender
 {
 	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
 	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
+}
+
+namespace TromboneMaterial
+{
+	// 머티리얼 슬롯/파라미터 이름
+	inline const FName SkinSlotName(TEXT("skin"));
+	inline const FName FaceSlotName(TEXT("face"));
+	inline const FName BaseColorParam(TEXT("BaseColor"));
+}
+
+namespace TromboneBones
+{
+	const FName Pelvis = TEXT("pelvis");
+	const FName Flage = TEXT("flage01");
 }

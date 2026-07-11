@@ -165,7 +165,9 @@ void AResultCutsceneDirector::PlayResultCutscene()
 		{
 			PodiumActor->SetPlayerName(ResultData[i].Nickname);
 			HideActorRecursive(PodiumActor, false);
+			// 순서 중요: ApplySkinColor가 CachedSkinColor를 채운 뒤 ApplyCustomization이 그 색으로 파츠/Face를 틴트
 			PodiumActor->ApplySkinColor(ResultData[i].PlayerSkinColor);
+			PodiumActor->ApplyCustomization(ResultData[i].Customization);
 		}
 		else
 		{

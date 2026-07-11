@@ -2,20 +2,27 @@
 
 namespace TromboneGamePlayTags
 {
-	//태그를 정의
-	//TromboneMaps
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_ProtoTypeInGameMap,	"Trombone.Maps.ProtoTypeInGameMap");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MainMenu_Main,			"Trombone.Maps.MainMenu.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_MatchMenu_Main,		"Trombone.Maps.MatchMenu.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_Main,			"Trombone.Maps.Lobby.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_Main,			"Trombone.Maps.InGame.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Tutorial_Main,			"Trombone.Maps.Tutorial.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_ResultScene_Main,		"Trombone.Maps.ResultScene.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Customize_Main, 		"Trombone.Maps.Customize.Main");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MK,				"Trombone.Maps.InGame.MK");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_HW,				"Trombone.Maps.InGame.HW");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_MJ,				"Trombone.Maps.InGame.MJ");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_Snow,			"Trombone.Maps.InGame.Snow");
+
+	// 게임 흐름에 사용되는 맵들 (인게임 제외 OutGame들)
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_MainMenu,			"Trombone.Maps.OutGame.MainMenu");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_MatchMenu,			"Trombone.Maps.OutGame.MatchMenu");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_Tutorial,			"Trombone.Maps.OutGame.Tutorial");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_Customize, 		"Trombone.Maps.OutGame.Customize");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_ResultScene,		"Trombone.Maps.OutGame.ResultScene");
+
+	// 로비 맵
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_OrchestraStage,		"Trombone.Maps.Lobby.OrchestraStage");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_SnowField,			"Trombone.Maps.Lobby.SnowField");
+	
+	// 인게임 맵
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_OrchestraStage,		"Trombone.Maps.InGame.OrchestraStage");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_SnowField,			"Trombone.Maps.InGame.SnowField");
+
+	// 테스트 맵
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Test_Proto,				"Trombone.Maps.Test.Proto");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Test_MK,					"Trombone.Maps.Test.MK");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Test_HW,					"Trombone.Maps.Test.HW");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Test_MJ,					"Trombone.Maps.Test.MJ");
 
 	// RhythmGame Broadcast Messages
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Rhythm_OnLayoutChanged, "Trombone.Rhythm.OnLayoutChanged");

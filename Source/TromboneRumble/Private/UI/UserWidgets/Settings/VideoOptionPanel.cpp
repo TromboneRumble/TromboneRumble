@@ -36,7 +36,7 @@ void UVideoOptionPanel::RefreshUI()
     
 		if (OverallLevel == -1)
 		{
-			const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptionsArray().Num() - 1;
+			const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptions().Num() - 1;
 			CreatedWidgets[EGraphicsOptionType::OverallQuality]->SetSelectedIndex(CustomIndex);
 		}
 		else
@@ -73,7 +73,7 @@ void UVideoOptionPanel::RefreshUI()
 		const FIntPoint CurrentRes = VideoSettings->GetScreenResolution();
 		const FString CurrentResStr = FString::Printf(TEXT("%dx%d"), CurrentRes.X, CurrentRes.Y);
     
-		const TArray<FText>& ResOptions = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptionsArray();
+		const TArray<FText>& ResOptions = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptions();
 		int32 TargetIdx = -1;
 
 		for (int32 i = 0; i < ResOptions.Num(); ++i)
@@ -161,7 +161,7 @@ void UVideoOptionPanel::ApplySettingsFromUI(bool bSaveToDisk)
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
     {
-		FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptionsArray()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
+		FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptions()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
 		ResString = ResString.Replace(TEXT(" "), TEXT(""));
 
 		FString Left, Right;
@@ -266,7 +266,7 @@ bool UVideoOptionPanel::IsDirty() const
 
     if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
     {
-        FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptionsArray()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
+        FString ResString = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptions()[CreatedWidgets[EGraphicsOptionType::Resolution]->GetCurrentIndex()].ToString();
         ResString = ResString.Replace(TEXT(" "), TEXT(""));
 
         FString Left, Right;
@@ -359,7 +359,7 @@ void UVideoOptionPanel::BuildOptions()
 
 void UVideoOptionPanel::OnOverallQualityChanged(const int32 Value, ERotatorDirection RotatorDir)
 {
-	const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptionsArray().Num() - 1;
+	const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptions().Num() - 1;
 	if (Value == CustomIndex) return;
 
 	for (const auto& Elem : CreatedWidgets)
@@ -378,7 +378,7 @@ void UVideoOptionPanel::OnSubOptionChanged(int32 Value, ERotatorDirection Rotato
 {
 	if (CreatedWidgets.Contains(EGraphicsOptionType::OverallQuality))
 	{
-		const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptionsArray().Num() - 1;
+		const int32 CustomIndex = CreatedWidgets[EGraphicsOptionType::OverallQuality]->GetOptions().Num() - 1;
 		CreatedWidgets[EGraphicsOptionType::OverallQuality]->SetSelectedIndex(CustomIndex);
 	}
 }

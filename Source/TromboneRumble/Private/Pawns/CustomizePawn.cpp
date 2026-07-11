@@ -1,8 +1,12 @@
 #include "Pawns/CustomizePawn.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/ActorComponents/CustomizationComponent.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "Utilities/Defines.h"
 
 ACustomizePawn::ACustomizePawn()
 {
@@ -19,24 +23,19 @@ ACustomizePawn::ACustomizePawn()
 	SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 
 	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
+	// CustomizeMap은 스킨컬러 틴트 없이 파츠를 기본 머티리얼 그대로 표시
+	CustomizationComp->SetApplyPartsSkinColor(false);
 
 	AActor::SetReplicateMovement(false);
 }
 
 void ACustomizePawn::BeginPlay()
 {
-	if (UMaterialInterface* CurrentSkinMat = SkeletalMeshComponent->GetMaterial(SkinMaterialIndex))
+	// 스킨컬러 틴트를 적용하지 않음 — face 표정 교체 복원용 기본 머티리얼만 캐싱
+	const int32 FaceIndex = SkeletalMeshComponent ? SkeletalMeshComponent->GetMaterialIndex(TromboneMaterial::FaceSlotName) : INDEX_NONE;
+	if (FaceIndex != INDEX_NONE)
 	{
-		SkinMID = Cast<UMaterialInstanceDynamic>(CurrentSkinMat);
-		if (!SkinMID)
-			SkinMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(SkinMaterialIndex);
-	}
-	if (UMaterialInterface* CurrentFaceMat = SkeletalMeshComponent->GetMaterial(FaceMaterialIndex))
-	{
-		OriginalFaceMaterial = CurrentFaceMat;
-		FaceMID = Cast<UMaterialInstanceDynamic>(CurrentFaceMat);
-		if (!FaceMID)
-			FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
+		OriginalFaceMaterial = SkeletalMeshComponent->GetMaterial(FaceIndex);
 	}
 
 	if (CustomizationComp)
@@ -48,44 +47,16 @@ void ACustomizePawn::BeginPlay()
 	}
 
 	Super::BeginPlay();
-
-	UpdateSkinFromPlayerState();
-}
-
-void ACustomizePawn::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	UpdateSkinFromPlayerState();
-}
-
-void ACustomizePawn::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	UpdateSkinFromPlayerState();
 }
 
 void ACustomizePawn::ApplyFaceMaterial(UMaterialInterface* Material)
 {
+	// 스킨컬러 틴트 없이 표정 머티리얼만 교체 (기본 머티리얼 그대로)
 	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
 	if (!Target || !SkeletalMeshComponent) return;
 
-	SkeletalMeshComponent->SetMaterial(FaceMaterialIndex, Target);
-	FaceMID = SkeletalMeshComponent->CreateAndSetMaterialInstanceDynamic(FaceMaterialIndex);
-	if (FaceMID)
-	{
-		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-			FaceMID->SetVectorParameterValue(TEXT("BaseColor"), DPS->GetSkinColor());
-	}
-}
+	const int32 FaceIndex = SkeletalMeshComponent->GetMaterialIndex(TromboneMaterial::FaceSlotName);
+	if (FaceIndex == INDEX_NONE) return;
 
-void ACustomizePawn::UpdateSkinFromPlayerState() const
-{
-	if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-	{
-		const FLinearColor SkinColor = DPS->GetSkinColor();
-		if (SkinMID)
-			SkinMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
-		if (FaceMID)
-			FaceMID->SetVectorParameterValue(TEXT("BaseColor"), SkinColor);
-	}
+	SkeletalMeshComponent->SetMaterial(FaceIndex, Target);
 }

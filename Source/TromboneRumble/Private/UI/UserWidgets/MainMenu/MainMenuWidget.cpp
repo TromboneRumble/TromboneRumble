@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "EasyMatchmakingManager.h"
@@ -10,28 +12,15 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "DeveloperSettings/TromboneConfig.h"
+#include "Online/OnlineSessionNames.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
+#include "Utilities/Defines.h"
 #include "Utilities/TromboneStatics.h"
-
-void UMainMenuWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	const FString MatchMenuMapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
-	checkf(!MatchMenuMapPath.IsEmpty(), TEXT("Match menu map path not found. Please set it in GameMapDeveloperSettings."));
-	CachedMatchMenuMapPath = MatchMenuMapPath;
-}
 
 void UMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-	
-	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
-	{
-		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
-		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
-		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
-	}
 	
 	if (UAppearanceSubsystem* AppearanceSubsystem = GetGameInstance()->GetSubsystem<UAppearanceSubsystem>())
 	{
@@ -41,8 +30,6 @@ void UMainMenuWidget::NativeOnInitialized()
 
 void UMainMenuWidget::Init()
 {
-	Super::Init();
-	
 	if (CB_CreateSession)
 	{
 		CB_CreateSession->OnClicked().RemoveAll(this);
@@ -85,14 +72,13 @@ void UMainMenuWidget::Init()
 
 void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 {
-	Super::SetUIEnabled(bEnabled);
-	
 	CB_QuickJoin->SetIsEnabled(bEnabled);
 	CB_Join->SetIsEnabled(bEnabled);
 	CB_Settings->SetIsEnabled(bEnabled);
 	CB_Tutorial->SetIsEnabled(bEnabled);
 	CB_Quit->SetIsEnabled(bEnabled);
 	CB_CreateSession->SetIsEnabled(bEnabled);
+	CB_Customize->SetIsEnabled(bEnabled);
 }
 
 void UMainMenuWidget::HandleCreateSessionClicked()
@@ -114,9 +100,10 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
 		
 		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
+		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
 		HostParams.bHidden = true;
 		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_MAPNAME, Config->DefaultInGameMap.ToString(), EOnlineDataAdvertisementType::ViaOnlineService));
 
 		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
     
@@ -143,7 +130,7 @@ void UMainMenuWidget::HandleQuickJoinButtonClicked()
 		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
 		
 		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = TEXT("/Game/Levels/MatchMenuMap");
+		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
 		HostParams.bHidden = true;
 		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
 		
@@ -183,24 +170,6 @@ void UMainMenuWidget::HandleTutorialButtonClicked()
 	}
 	
 	UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
-}
-
-void UMainMenuWidget::HandleMatchmakingStarted()
-{
-	SetUIEnabled(false);
-}
-
-void UMainMenuWidget::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
-{
-	if (Result == EEasyMatchmakingCompleteResult::Failure || Result == EEasyMatchmakingCompleteResult::NoResults)
-	{
-		SetUIEnabled(true);
-	}
-}
-
-void UMainMenuWidget::HandleMatchmakingCanceled()
-{
-	SetUIEnabled(true);
 }
 
 void UMainMenuWidget::ShowTutorialPopup()

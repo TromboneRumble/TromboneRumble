@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "Utilities/TromboneStatics.h"
 #include "EasyOnlineSession.h"
 #include "EasySessions.h"
@@ -9,6 +11,7 @@
 #include "Subsystems/ToastSubsystem.h"
 #include "UI/HUD/BaseHUD.h"
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "UI/UserWidgets/Common/FadeWidget.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
@@ -52,29 +55,42 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 	FString MapPath;
 	switch (Level)
 	{
-		case ELevelType::MainMenu:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
+		// InGame
+		case ELevelType::OrchestraStage:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_OrchestraStage);
 			break;
-		case ELevelType::Lobby:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
+		case ELevelType::SnowField:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_SnowField);
+			break;
+		
+		// Lobby
+		case ELevelType::OrchestraStageLobby:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_OrchestraStage);
+			break;
+		case ELevelType::SnowFieldLobby:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_SnowField);
+			break;
+		
+		// OutGame
+		case ELevelType::MainMenu:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
 			break;
 		case ELevelType::MatchMenu:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_MatchMenu_Main);
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
 			break;
 		case ELevelType::Tutorial:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Tutorial_Main);
-			break;
-		case ELevelType::InGame:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_Tutorial);
 			break;
 		case ELevelType::Customize:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_Customize_Main);
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_Customize);
 			break;
 		case ELevelType::ResultScene:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByTag(TromboneGamePlayTags::Trombone_Maps_ResultScene_Main);
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_ResultScene);
 			break;
+		
 		default:
-			UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::OpenLevel] Unknown level state"));
+			UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::OpenLevel] Unknown level state. Traveling Main Menu"));
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
 			return;
 	}
 	
@@ -99,6 +115,42 @@ bool UTromboneStatics::ShowToast(const UObject* WorldContextObject, const FToast
 		}
 	}
 	
+	return false;
+}
+
+UCommonActivatableWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerController* PlayerController)
+{
+	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	{
+		if (UCommonActivatableWidget* LoadingOverlayWidget = RootLayout->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
+		{
+			return LoadingOverlayWidget;
+		}
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to show loading overlay"));
+	return nullptr;
+}
+
+UFadeWidget* UTromboneStatics::ShowFadeOverlay(const APlayerController* PlayerController)
+{
+	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	{
+		return Cast<UFadeWidget>(RootLayout->AddWidgetToStack(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay));
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to show fade overlay"));
+	return nullptr;
+}
+
+bool UTromboneStatics::PopOverlay(const APlayerController* PlayerController)
+{
+	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	{
+		return RootLayout->PopStack(EUIStackType::Overlay);
+	}
+	
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to pop overlay"));
 	return false;
 }
 

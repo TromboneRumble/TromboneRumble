@@ -61,19 +61,25 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 
 			switch (NewState)
 			{
-			case ELevelType::InGame:
-				; // intentional fall through
+				case ELevelType::OrchestraStage:
+				case ELevelType::SnowField:
+					; // intentional fall through
+					
+				case ELevelType::Tutorial:
+					if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
+					break;
+					
+				case ELevelType::OrchestraStageLobby:
+					; // intentional fall through
 				
-			case ELevelType::Tutorial:
-				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
-				break;
-			case ELevelType::Lobby:
-				if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
-				break;
-			default:
-				UE_LOG(LogTemp, Warning, TEXT("[ADefaultPlayerController::HandleLevelStateChanged] Unknown Level! InGame Input applied by default."));
-				if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
-				break;
+				case ELevelType::SnowFieldLobby:
+					if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
+					break;
+					
+				default:
+					UE_LOG(LogTemp, Log, TEXT("[ADefaultPlayerController::HandleLevelStateChanged] Unknown Level Fallback: InGame Input Setting applied."));
+					if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
+					break;
 			}
 		}
 	}
@@ -211,5 +217,5 @@ void ADefaultPlayerController::Handle_PushToTalkEnd()
 
 bool ADefaultPlayerController::CanProcessInput()
 {
-	return CachedOwnerCharacter.IsValid() && !CachedOwnerCharacter->IsStun() && !CachedOwnerCharacter->IsRagdoll() && CachedOwnerCharacter->IsCanProcessInput();
+	return CachedOwnerCharacter.IsValid() && !CachedOwnerCharacter->IsStun() && !CachedOwnerCharacter->IsRagdoll() && !CachedOwnerCharacter->IsInputBlocked();
 }

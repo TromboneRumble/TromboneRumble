@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -7,21 +7,43 @@
 #include "GameplayTagContainer.h"
 #include "TromboneFunctionLibrary.generated.h"
 
-
-/**
- * 
- */
 UCLASS()
 class TROMBONERUMBLE_API UTromboneFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 public:
+	
+	/** 
+	 * @return 예시: (Trombone.Maps.OutGame.MainMenu) -> "/Game/Maps/OutGame/MainMenu.MainMenu"
+	 */
 	UFUNCTION(BlueprintPure, Category = "GameMaps")
-	static FString GetMapPathByTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag InMapTag);
+	static FString GetMapPathByMapTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag InMapTag);
 
+	/** 주어진 카테고리 태그의 자식 맵 태그들을 GamePlayMap에서 수집. 반환값은 문자열 정렬
+	 * @return 예시: (Trombone.Maps.Lobby) -> { Trombone_Maps_Lobby_OrchestraStage, Trombone_Maps_Lobby_SnowField }
+	 */
 	UFUNCTION(BlueprintPure, Category = "GameMaps")
-	static FName GetMapPackageNameByTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag InMapTag);
+	static TArray<FGameplayTag> GetMapTagsUnderCategory(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag CategoryTag);
+
+	/**
+	 * SourceTag와 같은 테마(leaf)를 가진 TargetCategory의 맵 태그를 반환
+	 * @return 예시: (Trombone.Maps.Lobby.OrchestraStage, Trombone.Maps.InGame) → Trombone.Maps.InGame.OrchestraStage
+	 */
+	UFUNCTION(BlueprintPure, Category = "GameMaps")
+	static FGameplayTag GetSiblingMapTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag SourceTag, UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag TargetCategoryTag);
+
+	/** 로비 맵 태그를 같은 테마의 인게임 맵 태그로 변환
+	 * @return 예시: (Trombone.Maps.Lobby.OrchestraStage) -> Trombone.Maps.InGame.OrchestraStage
+	 */
+	UFUNCTION(BlueprintPure, Category = "GameMaps")
+	static FGameplayTag LobbyToInGameTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag LobbyTag);
+
+	/** Randomly select a rhythm song tag that matches the given in-game map */
+	UFUNCTION(BlueprintPure, Category = "Rhythm")
+	static FGameplayTag PickRandomSongForMap(UPARAM(meta = (Categories = "Trombone.Maps.InGame")) FGameplayTag InGameMapTag);
+
+public:
 
 	UFUNCTION(BlueprintCallable, Category = "Debug",
 		meta = (

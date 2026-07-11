@@ -60,16 +60,16 @@ protected:
 
 	UFUNCTION()
 	void OnRep_CurrentLeader(APlayerState* OldLeader);
+	
+	UFUNCTION()
+	void OnRep_CurrentGameState();
 
 	// 현재 1등 플레이어
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentLeader)
 	APlayerState* CurrentLeader = nullptr;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentGameState)
 	EInGameState CurrentGameState = EInGameState::Initializing;
-	
-	UPROPERTY(Replicated)
-	int32 RhythmGameEndedPlayerCount = 0;
 
 private:
 	

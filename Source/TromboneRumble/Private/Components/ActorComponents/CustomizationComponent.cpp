@@ -1,16 +1,17 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Components/ActorComponents/CustomizationComponent.h"
+#include "Actors/ResultScene/PodiumActor.h"
 #include "Characters/TromboneCharacterBase.h"
-#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Engine/DataTable.h"
-#include "Engine/StaticMesh.h"
+#include "Engine/SkeletalMesh.h"
+#include "Framework/DefaultPlayerState.h"
+#include "GameFramework/Character.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Pawns/CustomizePawn.h"
 #include "Pawns/MatchPawn.h"
-
-const FName UCustomizationComponent::AntennaSocketName = TEXT("socket_antenna");
-const FName UCustomizationComponent::CostumeSocketName = TEXT("socket_costume");
 
 UCustomizationComponent::UCustomizationComponent()
 {
@@ -28,7 +29,19 @@ void UCustomizationComponent::BeginPlay()
 {
 	if (!CachedDataTable)
 		CachedDataTable = CustomizationDataTable.LoadSynchronous();
+
 	Super::BeginPlay();
+
+	// owner가 LoadFromSaveData를 한 번도 호출하지 않은 경우(예: 빙의되지 않는 TutorialDummy)
+	// 최소한 Order 0 기본 파츠를 부착해 머리만 보이는 현상을 방지한다.
+	const bool bNothingApplied =
+		CurrentAntennaKey == NAME_None &&
+		CurrentFaceKey    == NAME_None &&
+		CurrentCostumeKey == NAME_None;
+	if (bNothingApplied)
+	{
+		LoadFromSaveData(FCustomizationSaveData());
+	}
 }
 
 // ── 공개 인터페이스 ──────────────────────────────────────────────────────────────
@@ -169,36 +182,7 @@ void UCustomizationComponent::ApplySlot(ECustomizationSlotType Slot, FName Key)
 
 void UCustomizationComponent::ApplyAntenna(const FCustomizationPartRow* Row)
 {
-	if (AntennaComp)
-	{
-		AntennaComp->DestroyComponent();
-		AntennaComp = nullptr;
-	}
-
-	if (!Row || Row->AssetPath.IsNull()) return;
-
-	UStaticMesh* Mesh = Cast<UStaticMesh>(Row->AssetPath.TryLoad());
-	if (!Mesh) return;
-
-	AActor* Owner = GetOwner();
-	// ACharacter::GetMesh()와 AMatchPawn::SkeletalMeshComponent 모두 처리
-	USkeletalMeshComponent* SkelMesh = Owner ? Owner->FindComponentByClass<USkeletalMeshComponent>() : nullptr;
-	if (!SkelMesh) return;
-
-	AntennaComp = NewObject<UStaticMeshComponent>(Owner, TEXT("AntennaComp"));
-	AntennaComp->SetStaticMesh(Mesh);
-	AntennaComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	AntennaComp->SetupAttachment(SkelMesh, AntennaSocketName);
-	AntennaComp->RegisterComponent();
-
-	// X-Ray 스텐실은 TromboneCharacterBase 로컬 캐릭터에만 적용
-	if (ATromboneCharacterBase* TromboneChar = Cast<ATromboneCharacterBase>(Owner))
-	{
-		if (TromboneChar->IsLocallyControlled())
-		{
-			ATromboneCharacterBase::ApplyOccludedStencil(AntennaComp);
-		}
-	}
+	ApplyFollowerPart(Row, AntennaComp, AntennaSkinMID, TEXT("AntennaComp"));
 }
 
 void UCustomizationComponent::ApplyFace(const FCustomizationPartRow* Row)
@@ -219,38 +203,142 @@ void UCustomizationComponent::ApplyFace(const FCustomizationPartRow* Row)
 	{
 		CustomPawn->ApplyFaceMaterial(Mat);
 	}
+	else if (APodiumActor* Podium = Cast<APodiumActor>(GetOwner()))
+	{
+		Podium->ApplyFaceMaterial(Mat);
+	}
 }
 
 void UCustomizationComponent::ApplyCostume(const FCustomizationPartRow* Row)
 {
-	if (CostumeComp)
+	ApplyFollowerPart(Row, CostumeComp, CostumeSkinMID, TEXT("CostumeComp"));
+}
+
+void UCustomizationComponent::ApplyFollowerPart(const FCustomizationPartRow* Row,
+	TObjectPtr<USkeletalMeshComponent>& Comp,
+	TObjectPtr<UMaterialInstanceDynamic>& SkinMID,
+	const TCHAR* CompName)
+{
+	// 기존 follower 컴포넌트와 캐시된 MID 정리
+	if (Comp)
 	{
-		CostumeComp->DestroyComponent();
-		CostumeComp = nullptr;
+		if (AActor* OldOwner = GetOwner())
+		{
+			OldOwner->RemoveInstanceComponent(Comp);
+		}
+		Comp->DestroyComponent();
+		Comp = nullptr;
 	}
+	SkinMID = nullptr;
 
 	if (!Row || Row->AssetPath.IsNull()) return;
 
-	UStaticMesh* Mesh = Cast<UStaticMesh>(Row->AssetPath.TryLoad());
+	USkeletalMesh* Mesh = Cast<USkeletalMesh>(Row->AssetPath.TryLoad());
 	if (!Mesh) return;
 
+	USkeletalMeshComponent* Leader = ResolveLeaderMesh();
+	if (!Leader) return;
+
 	AActor* Owner = GetOwner();
-	USkeletalMeshComponent* SkelMesh = Owner ? Owner->FindComponentByClass<USkeletalMeshComponent>() : nullptr;
-	if (!SkelMesh) return;
+	Comp = NewObject<USkeletalMeshComponent>(Owner, CompName);
+	Comp->SetSkeletalMeshAsset(Mesh);
+	Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Comp->SetReceivesDecals(false);
+	Comp->SetupAttachment(Leader);
+	Comp->RegisterComponent();
+	Owner->AddInstanceComponent(Comp);
+	// leader(머리)의 본 포즈(애니메이션·레그돌 결과)를 그대로 복사 → 자체 PhysicsAsset/AnimBP 불필요
+	Comp->SetLeaderPoseComponent(Leader);
 
-	CostumeComp = NewObject<UStaticMeshComponent>(Owner, TEXT("CostumeComp"));
-	CostumeComp->SetStaticMesh(Mesh);
-	CostumeComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CostumeComp->SetupAttachment(SkelMesh, CostumeSocketName);
-	CostumeComp->RegisterComponent();
+	// skin 슬롯이 있으면 MID 확보 후 현재 피부색 적용 (머리/몸통/안테나 색 동기)
+	// bApplyPartsSkinColor=false면 틴트 없이 기본 머티리얼 그대로 (CustomizeMap)
+	if (bApplyPartsSkinColor)
+	{
+		SkinMID = EnsureSlotMID(Comp, TromboneMaterial::SkinSlotName);
+		if (SkinMID)
+		{
+			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, GetOwnerSkinColor());
+		}
+	}
 
+	// X-Ray 스텐실은 TromboneCharacterBase 로컬 캐릭터에만 적용
 	if (ATromboneCharacterBase* TromboneChar = Cast<ATromboneCharacterBase>(Owner))
 	{
 		if (TromboneChar->IsLocallyControlled())
 		{
-			ATromboneCharacterBase::ApplyOccludedStencil(CostumeComp);
+			ATromboneCharacterBase::ApplyOccludedStencil(Comp);
 		}
 	}
+}
+
+void UCustomizationComponent::ApplyPartsSkinColor(const FLinearColor& InColor) const
+{
+	if (!bApplyPartsSkinColor) return;
+
+	if (CostumeSkinMID)
+	{
+		CostumeSkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InColor);
+	}
+	if (AntennaSkinMID)
+	{
+		AntennaSkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InColor);
+	}
+}
+
+USkeletalMeshComponent* UCustomizationComponent::ResolveLeaderMesh() const
+{
+	AActor* Owner = GetOwner();
+	if (!Owner) return nullptr;
+
+	// follower도 USkeletalMeshComponent이므로 FindComponentByClass는 follower를 오인할 수 있음 → 타입별로 명시
+	if (const ACharacter* Char = Cast<ACharacter>(Owner))
+	{
+		return Char->GetMesh();
+	}
+	if (const AMatchPawn* MatchPawn = Cast<AMatchPawn>(Owner))
+	{
+		return MatchPawn->GetMeshComponent();
+	}
+	if (const ACustomizePawn* CustomPawn = Cast<ACustomizePawn>(Owner))
+	{
+		return CustomPawn->GetMeshComponent();
+	}
+	if (const APodiumActor* Podium = Cast<APodiumActor>(Owner))
+	{
+		return Podium->GetMeshComponent();
+	}
+	return Owner->FindComponentByClass<USkeletalMeshComponent>();
+}
+
+FLinearColor UCustomizationComponent::GetOwnerSkinColor() const
+{
+	if (const APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+	{
+		if (const ADefaultPlayerState* DPS = OwnerPawn->GetPlayerState<ADefaultPlayerState>())
+		{
+			return DPS->GetSkinColor();
+		}
+	}
+	// PodiumActor는 PlayerState가 없으므로 외부에서 주입된 피부색을 사용
+	if (const APodiumActor* Podium = Cast<APodiumActor>(GetOwner()))
+	{
+		return Podium->GetSkinColor();
+	}
+	return FLinearColor::Black;
+}
+
+UMaterialInstanceDynamic* UCustomizationComponent::EnsureSlotMID(USkeletalMeshComponent* Mesh, FName SlotName)
+{
+	if (!Mesh) return nullptr;
+
+	const int32 Index = Mesh->GetMaterialIndex(SlotName);
+	if (Index == INDEX_NONE) return nullptr;
+
+	if (UMaterialInstanceDynamic* Existing = Cast<UMaterialInstanceDynamic>(Mesh->GetMaterial(Index)))
+	{
+		return Existing;
+	}
+	return Mesh->CreateAndSetMaterialInstanceDynamic(Index);
 }
 
 // ── DataTable 조회 헬퍼 ───────────────────────────────────────────────────────

@@ -23,9 +23,12 @@ struct FPlayerResultSceneData
     float Score = 0.0f;
     
     FRumbleScoreData SpecificScoreData = FRumbleScoreData();
-    
+
     FLinearColor PlayerSkinColor = FLinearColor::Black;
-    
+
+    /** 포디움에 적용할 커스터마이징(Antenna/Face/Costume) */
+    FCustomizationSaveData Customization = FCustomizationSaveData();
+
     /** is this my data? */
     bool bIsLocalPlayer = false;
     
@@ -81,6 +84,9 @@ private:
     
     void InitWWiseEngine();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "OnlineSession"))
+    bool bConnectionWasLost = false;
+    
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UAkComponent> GlobalBGMComponent;
     

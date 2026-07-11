@@ -12,6 +12,7 @@
 
 
 class URageComponent;
+class UMaterialInstanceDynamic;
 class AWeaponBase;
 struct FInputActionValue;
 class ADefaultPlayerController;
@@ -53,6 +54,8 @@ public:
 	void StopSprint();
 	void Rhythm(bool bIsPressed);	
 	void Equip(AItemBase* WeaponToEquip);
+	
+	UFUNCTION()
 	void Unequip();
 
 	/** 마우스 휠 줌 단계 변경. WheelDelta: +1 = 줌인(레벨 감소), -1 = 줌아웃(레벨 증가) */
@@ -72,6 +75,9 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
+	// 피부색 적용 시 X-Ray 실루엣 MID 색상도 함께 갱신 (로컬 플레이어 한정)
+	virtual void ApplySkinColor(const FLinearColor InSkinColor) const override;
 
 protected:
 	// Components
@@ -155,6 +161,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Camera|Occlusion")
 	TObjectPtr<UMaterialInterface> OcclusionOverlayMaterial;
 
+	// OcclusionOverlayMaterial의 동적 인스턴스. SilhouetteColor를 로컬 플레이어 피부색으로 주입.
+	// 로컬 플레이어 카메라에만 존재(원격 캐릭터에서는 null)
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> OcclusionOverlayMID;
+
+	// X-Ray 실루엣 색상으로 사용할 PostProcess 머티리얼의 VectorParameter 이름
+	static const FName SilhouetteColorParamName;
+
 private:
 	void UpdateMaxWalkSpeed();
 	
@@ -176,8 +190,6 @@ private:
 	UFUNCTION()
 	void HandleInteractSuccess(AActor* InteractedActor);
 	UFUNCTION()
-	void HandleOnRagdoll();
-	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 	// ~Delegate Callback Handlers
 
@@ -190,6 +202,8 @@ private:
 	
 	// Voice Interaction
 	void TryRegisterVOIPTalker();
+
+	FTimerHandle RetryVOIPRegistrationHandle;
 	// ~Voice Interaction
 
 public:
@@ -200,6 +214,10 @@ public:
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
 	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
 	FORCEINLINE UEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
+	FORCEINLINE bool IsSprinting() const { return bIsSprinting; }
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
+
+	// 얼음 위 걷기 애니메이션 배속 (AnimInstance 가 로코모션 Play Rate 로 사용). 속성 없으면 1.0
+	float GetLocomotionPlayRate() const;
 	// ~ End Getters / Setters
 };

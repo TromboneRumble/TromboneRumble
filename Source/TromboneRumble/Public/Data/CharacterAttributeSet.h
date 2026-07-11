@@ -30,11 +30,35 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_MoveSpeed)
     FGameplayAttributeData MoveSpeed;
+    
+    // 얼음 미끄러짐용 지면 마찰
+    UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_GroundFriction)
+    FGameplayAttributeData GroundFriction;
+    
+    // 얼음 미끄러짐용 제동 감속
+    UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_BrakingDeceleration)
+    FGameplayAttributeData BrakingDeceleration;
+    
+    // 얼음 위 걷기 애니메이션 배속
+    UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_LocomotionPlayRate)
+    FGameplayAttributeData LocomotionPlayRate;
 
 protected:
     UFUNCTION()
     void OnRep_MoveSpeed(const FGameplayAttributeData& OldValue);
 
+    UFUNCTION()
+    void OnRep_GroundFriction(const FGameplayAttributeData& OldValue);
+
+    UFUNCTION()
+    void OnRep_BrakingDeceleration(const FGameplayAttributeData& OldValue);
+
+    UFUNCTION()
+    void OnRep_LocomotionPlayRate(const FGameplayAttributeData& OldValue);
+
 public:
     ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MoveSpeed)
+    ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, GroundFriction)
+    ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, BrakingDeceleration)
+    ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, LocomotionPlayRate)
 };

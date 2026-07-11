@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "NativeGameplayTags.h"
@@ -6,19 +8,26 @@ namespace TromboneGamePlayTags
 {
 	// UE_DECLARE_GAMEPLAY_TAG_EXTERN : 전역 GameplayTag 변수 선언 (extern과 동일, 정의는 .cpp에서 UE_DEFINE_GAMEPLAY_TAG로)
 
-	//TromboneMaps
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_ProtoTypeInGameMap);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_MainMenu_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_MatchMenu_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Lobby_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Tutorial_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Customize_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_ResultScene_Main);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_MK);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_HW);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_MJ);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_Snow);
+	// 게임 흐름에 사용되는 맵들 (인게임 제외 OutGame들)
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_MainMenu);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_MatchMenu);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_Tutorial);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_Customize);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_ResultScene);
+	
+	// 로비 맵. 매치 메뉴에서 플레이어가 선택
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Lobby_OrchestraStage);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Lobby_SnowField);
+
+	// 플레이 가능한 인게임
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_OrchestraStage);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_SnowField);
+
+	// 테스트 맵 (never-cook). 플레이어 노출 X. 게임 흐름과 무관.
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Test_Proto);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Test_MK);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Test_HW);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Test_MJ);
 
 	//RhythmGame Broadcast Messages
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Rhythm_OnLayoutChanged);
@@ -40,6 +49,16 @@ namespace TromboneGamePlayTags
 	/** Strings */
 	const FString ProjectName = TEXT("Trombone");
 	const FString MapsCategory = TEXT("Maps");
-	const FString ActuallyUsedMap = TEXT("Main");
+	
+	const FString OutGameCategory = TEXT("OutGame");
+	const FString InGameCategory = TEXT("InGame");
+	const FString LobbyCategory = TEXT("Lobby");
+	const FString TestCategory = TEXT("Test");
+	
 	const FString MapsRootPath = ProjectName + TEXT(".") + MapsCategory;
+	
+	const FString OutGamePath = MapsRootPath + TEXT(".") + OutGameCategory;
+	const FString InGamePath = MapsRootPath + TEXT(".") + InGameCategory;
+	const FString LobbyPath = MapsRootPath + TEXT(".") + LobbyCategory;
+	const FString TestPath = MapsRootPath + TEXT(".") + TestCategory;
 }

@@ -14,6 +14,7 @@
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "Components/ActorComponents/RageComponent.h"
+#include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/LocalPlayer.h"
@@ -24,16 +25,16 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Items/WeaponBase.h"
 #include "Actors/Rhythm/RhythmActor.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/ActorComponents/InterpolateSpringArmComponent.h"
 #include "Items/InstrumentBase.h"
 #include "UI/UserWidgets/InGame/InGameSpeakerWidget.h"
-
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Net/UnrealNetwork.h"
-#include "Prototype/InGameWidget.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
+
+const FName ADefaultTromboneCharacter::SilhouetteColorParamName(TEXT("SilhouetteColor"));
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -42,13 +43,9 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(GetMesh(), FName("pelvis"));
-	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->bDoCollisionTest = false;
-	CameraBoom->bUsePawnControlRotation = false;
-
+	CameraBoom = CreateDefaultSubobject<UInterpolateSpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetMesh(), TromboneBones::Pelvis);
+	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
@@ -316,7 +313,10 @@ void ADefaultTromboneCharacter::BeginPlay()
 		}
 	}
 
-	OnRagdollDelegate.AddDynamic(this, &ThisClass::HandleOnRagdoll);
+	if (RagdollComponent)
+	{
+		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::Unequip);
+	}
 
 	EquipmentComponent->OnEquipmentChangedDelegate.AddDynamic(this, &ThisClass::HandleOnEquipmentChanged);
 	constexpr EEquipmentSlotType TargetSlot = EEquipmentSlotType::Weapon;
@@ -335,9 +335,12 @@ void ADefaultTromboneCharacter::BeginPlay()
 	{
 		const float InitialSpeed = GetCharacterMovement()->MaxWalkSpeed;
 		CharacterAttributes->InitMoveSpeed(InitialSpeed);
-
-		// 혹시 OnRep 전에 바로 반영되도록 한 번 더 보정
+		
 		GetCharacterMovement()->MaxWalkSpeed = CharacterAttributes->GetMoveSpeed();
+		
+		CharacterAttributes->InitGroundFriction(GetCharacterMovement()->GroundFriction);
+		CharacterAttributes->InitBrakingDeceleration(GetCharacterMovement()->BrakingDecelerationWalking);
+		CharacterAttributes->InitLocomotionPlayRate(1.f);
 	}
 	// ~GAS 초기화
 
@@ -365,18 +368,26 @@ void ADefaultTromboneCharacter::BeginPlay()
 
 		// 가려진 캐릭터 실루엣을 위한 PostProcess 머티리얼을 로컬 카메라에만 블렌드
 		// 초기 weight=0.0 (OFF); CheckXRayOcclusion() 타이머가 XRayBlocker 감지 시 1.0으로 올림
+		// 실루엣 색상을 로컬 플레이어 피부색으로 주입하기 위해 동적 인스턴스(MID)를 블렌드한다.
 		if (OcclusionOverlayMaterial && FollowCamera)
 		{
-			FWeightedBlendable Blend(0.0f, OcclusionOverlayMaterial);
-			FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
-			
-			// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
-			GetWorldTimerManager().SetTimer(
-				XRayTraceTimerHandle,
-				this,
-				&ThisClass::CheckXRayOcclusion,
-				0.05f,
-				true);
+			OcclusionOverlayMID = UMaterialInstanceDynamic::Create(OcclusionOverlayMaterial, this);
+			if (OcclusionOverlayMID)
+			{
+				// 현재 피부색으로 초기화 (색이 이미 도착한 경우 대비. 이후 ApplySkinColor에서 갱신)
+				OcclusionOverlayMID->SetVectorParameterValue(SilhouetteColorParamName, GetSkinColor());
+
+				FWeightedBlendable Blend(0.0f, OcclusionOverlayMID);
+				FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
+
+				// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
+				GetWorldTimerManager().SetTimer(
+					XRayTraceTimerHandle,
+					this,
+					&ThisClass::CheckXRayOcclusion,
+					0.05f,
+					true);
+			}
 		}
 	}
 }
@@ -384,12 +395,13 @@ void ADefaultTromboneCharacter::BeginPlay()
 void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	GetWorldTimerManager().ClearTimer(XRayTraceTimerHandle);
+	GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
 
 	if (HasAuthority())
 	{
 		if (const UGameStateSubsystem* Sub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 		{
-			if (Sub->GetLevelState() == ELevelType::InGame)
+			if (Sub->GetLevelState() == ELevelType::OrchestraStage || Sub->GetLevelState() == ELevelType::SnowField)
 			{
 				EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
 			}
@@ -470,9 +482,13 @@ void ADefaultTromboneCharacter::CheckXRayOcclusion()
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
+	
+	FCollisionObjectQueryParams ObjParams;
+	ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
 	TArray<FHitResult> Hits;
-	GetWorld()->LineTraceMultiByChannel(Hits, Start, End, ECC_Visibility, Params);
+	GetWorld()->LineTraceMultiByObjectType(Hits, Start, End, ObjParams, Params);
 
 	// 트레이스 결과 중 XRayBlocker 태그가 있는 액터가 하나라도 있으면 X-Ray ON
 	bool bXRayActive = false;
@@ -485,15 +501,26 @@ void ADefaultTromboneCharacter::CheckXRayOcclusion()
 		}
 	}
 
-	// blendable 배열에서 OcclusionOverlayMaterial을 찾아 weight 업데이트
+	// blendable 배열에서 OcclusionOverlayMID를 찾아 weight 업데이트
 	const float NewWeight = bXRayActive ? 1.0f : 0.0f;
 	for (FWeightedBlendable& Blendable : FollowCamera->PostProcessSettings.WeightedBlendables.Array)
 	{
-		if (Blendable.Object == OcclusionOverlayMaterial)
+		if (Blendable.Object == OcclusionOverlayMID)
 		{
 			Blendable.Weight = NewWeight;
 			break;
 		}
+	}
+}
+
+void ADefaultTromboneCharacter::ApplySkinColor(const FLinearColor InSkinColor) const
+{
+	Super::ApplySkinColor(InSkinColor);
+
+	// 로컬 플레이어 카메라에만 존재하는 X-Ray 실루엣 MID 색상을 피부색으로 갱신
+	if (OcclusionOverlayMID)
+	{
+		OcclusionOverlayMID->SetVectorParameterValue(SilhouetteColorParamName, InSkinColor);
 	}
 }
 
@@ -517,11 +544,6 @@ void ADefaultTromboneCharacter::HandleInteractSuccess(AActor* InteractedActor)
 			PS->AddScore(InstrumentBase->GetInstrumentPickUpScore(), EScoreType::InstrumentPickedUp);
 		}
 	}
-}
-
-void ADefaultTromboneCharacter::HandleOnRagdoll()
-{
-	Unequip();
 }
 
 void ADefaultTromboneCharacter::HandleOnEquipmentChanged(const EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
@@ -614,6 +636,16 @@ void ADefaultTromboneCharacter::TryRegisterVOIPTalker()
 	}
 
 	VOIPTalker->RegisterTalker(PS);
+
+	if (!IsLocallyControlled() && !VOIPTalker->IsRemoteTalkerRegistered())
+	{
+		GetWorldTimerManager().SetTimer(RetryVOIPRegistrationHandle,
+			this, &ADefaultTromboneCharacter::TryRegisterVOIPTalker, 1.0f, false);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
+	}
 }
 
 
@@ -628,4 +660,9 @@ EInstrumentType ADefaultTromboneCharacter::GetCurrentEquippedInstrumentType() co
 		}
 	}
 	return EInstrumentType::None;
+}
+
+float ADefaultTromboneCharacter::GetLocomotionPlayRate() const
+{
+	return CharacterAttributes ? CharacterAttributes->GetLocomotionPlayRate() : 1.f;
 }

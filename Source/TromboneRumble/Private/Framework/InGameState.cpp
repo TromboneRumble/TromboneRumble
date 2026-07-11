@@ -33,8 +33,18 @@ void AInGameState::RemovePlayerState(APlayerState* PlayerState)
 
 void AInGameState::Multicast_BroadCastInGameStateChanged_Implementation(EInGameState InGameState)
 {
+    if (CurrentGameState == InGameState)
+    {
+        return;
+    }
+
     CurrentGameState = InGameState;
     OnInGameStateChanged.Broadcast(InGameState);
+}
+
+void AInGameState::OnRep_CurrentGameState()
+{
+    OnInGameStateChanged.Broadcast(CurrentGameState);
 }
 
 void AInGameState::HandleLocalScoreChanged(APlayerState* UpdatedPlayerState, int32 AddedAmount, EScoreType ScoreType)
@@ -66,7 +76,6 @@ void AInGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ThisClass, CurrentLeader);
     DOREPLIFETIME(ThisClass, CurrentGameState);
-    DOREPLIFETIME(ThisClass, RhythmGameEndedPlayerCount);
 }
 
 void AInGameState::RecalculateLeader()

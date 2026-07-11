@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Animation/CharacterAnimInstance.h"
+#include "AlphaBlend.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -44,8 +45,10 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     bShouldMove = (GroundSpeed > 3.0f) || bIsAccelerating;
 
     CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
-    
+
     bIsStunned = OwnerCharacter->IsStun();
+
+    LocomotionPlayRate = OwnerCharacter->GetLocomotionPlayRate();
 }
 
 void UCharacterAnimInstance::AnimNotify_FootStep()
@@ -98,6 +101,15 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
     case SurfaceType1:
         SwitchValue = WaterFootstepSwitch ? WaterFootstepSwitch : NormalFootstepSwitch;
         break;
+    case SurfaceType2:
+        SwitchValue = RockFootStepSwitch ? RockFootStepSwitch : NormalFootstepSwitch;
+        break;
+    case SurfaceType3:
+        SwitchValue = SnowFootStepSwitch ? SnowFootStepSwitch : NormalFootstepSwitch;
+        break;
+    case SurfaceType4:
+        SwitchValue = IceFootStepSwitch ? IceFootStepSwitch : NormalFootstepSwitch;
+        break;
     default:
         SwitchValue = NormalFootstepSwitch;
         break;
@@ -119,14 +131,14 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
 
 void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 {
-    bIsRagdollBlending = false;
-    bIsRagdolling = false;
     FOnMontageEnded EndedDelegate;
     EndedDelegate.BindUObject(this, &UCharacterAnimInstance::OnGetUpMontageEnded);
 
     if (UAnimMontage* TargetMontage = bIsFacingUp ? GetUpBackMontage : GetUpFrontMontage)
     {
-        Montage_Play(TargetMontage);
+        FAlphaBlendArgs BlendIn;
+        BlendIn.BlendTime = 0.0f;
+        Montage_PlayWithBlendIn(TargetMontage, BlendIn);
         Montage_SetEndDelegate(EndedDelegate, TargetMontage);
     }
 }
@@ -135,13 +147,6 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
 {
     if (Montage == GetUpFrontMontage || Montage == GetUpBackMontage)
     {
-        OwnerCharacter->SetPlayerInput(true);
+        OwnerCharacter->RemoveInputBlock(EInputBlockReason::Ragdoll);
     }
-}
-
-void UCharacterAnimInstance::SaveRagdollPoseSnapshot()
-{
-    RagdollSnapshotName = TEXT("RagdollSnapshot");
-    SavePoseSnapshot(RagdollSnapshotName);
-    bIsRagdollBlending = true;
 }

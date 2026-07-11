@@ -34,21 +34,39 @@ void ULobbyWidget::NativeConstruct()
 
 void ULobbyWidget::NativeDestruct()
 {
-	GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	}
 	
 	Super::NativeDestruct();
 }
 
 void ULobbyWidget::OnLobbyStateUpdated(const ELobbyState NewState)
 {
-	if (!CT_Countdown) return;
-	
-	if (NewState == ELobbyState::CountdownToTravel)
+	if (!CT_Countdown)
 	{
-		InternalCountdownSeconds = UTromboneConfig::Get()->LobbyCountdownTimeSeconds;
+		return;
+	}
+
+	int32 CountdownSeconds = 0;
+	if (NewState == ELobbyState::CountdownToStandup)
+	{
+		CountdownSeconds = UTromboneConfig::Get()->LobbyRagdollGetUpDelaySeconds;
+	}
+	else if (NewState == ELobbyState::CountdownToTravel)
+	{
+		CountdownSeconds = UTromboneConfig::Get()->LobbyGameStartDelaySeconds;
+	}
+
+	if (CountdownSeconds > 0)
+	{
+		InternalCountdownSeconds = CountdownSeconds;
+		
 		CT_Countdown->SetText(FText::AsNumber(InternalCountdownSeconds));
 		CT_Countdown->SetVisibility(ESlateVisibility::Visible);
-		GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ULobbyWidget::UpdateCountdown, 1.0f, true);
+		
+		GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ThisClass::UpdateCountdown, 1.0f, true);
 	}
 	else
 	{
@@ -59,14 +77,17 @@ void ULobbyWidget::OnLobbyStateUpdated(const ELobbyState NewState)
 
 void ULobbyWidget::UpdateCountdown()
 {
-	if (!CT_Countdown) return;
+	if (!CT_Countdown)
+	{
+		return;
+	}
 
 	InternalCountdownSeconds--;
 	CT_Countdown->SetText(FText::AsNumber(InternalCountdownSeconds));
 
 	if (InternalCountdownSeconds <= 0)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
 		CT_Countdown->SetVisibility(ESlateVisibility::Hidden);
+		GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
 	}
 }

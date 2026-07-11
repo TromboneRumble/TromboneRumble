@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Subsystems/GameStateSubsystem.h"
 #include "TromboneGamePlayTags.h"
@@ -13,29 +13,39 @@ static bool TryGetGameStateFromMapTag(const FGameplayTag& MapTag, ELevelType& Ou
 		return false;
 	}
 
-	// e.g. Trombone.Maps.InGame.Main
 	const FString TagStr = MapTag.ToString();
 	TArray<FString> Parts;
 	TagStr.ParseIntoArray(Parts, TEXT("."), true);
 
-	// Trombone.Maps.<Level>.<Leaf> 형태만 통과
-	// Leaf 세그먼트(Main/Snow/MK 등)는 제한하지 않음 → 한 LevelType에 여러 맵 등록 가능
+	// Trombone.Maps.<Category>.<Leaf> 형태만 통과
 	if (Parts.Num() < 4 ||
 		Parts[0] != *TromboneGamePlayTags::ProjectName ||
 		Parts[1] != *TromboneGamePlayTags::MapsCategory)
 	{
-		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (Not Trombone.Maps): %s"), *TagStr));
 		return false;
 	}
 
-	const FString& LevelNameString = Parts[2]; // "InGame", "Lobby", "MainMenu"
+	const FString& Category = Parts[2]; // "InGame", "Lobby", "OutGame", "Test", ...
+	const FString& Leaf     = Parts[3]; // "OrchestraStage", "SnowField", "MainMenu", ...
 
-	// enum 이름과 동일하면 자동 변환 가능
+	// InGame.<Leaf>  → <Leaf>		(예: InGame.OrchestraStage → OrchestraStage)
+	// OutGame.<Leaf> → <Leaf>		(예: OutGame.MainMenu → MainMenu)
+	// Lobby.<Leaf>	 → <Leaf>Lobby	(예: Lobby.OrchestraStage → OrchestraStageLobby)
+	// 위에 해당하지 않는 카테고리(Test 등)는 ELevelType에 없어 제외됨
+	FString EnumName;
+	if (Category == TromboneGamePlayTags::LobbyCategory)
+	{
+		EnumName = Leaf + TromboneGamePlayTags::LobbyCategory;
+	}
+	else
+	{
+		EnumName = Leaf;
+	}
+
 	const UEnum* Enum = StaticEnum<ELevelType>();
-	const int64 Value = Enum ? Enum->GetValueByNameString(LevelNameString) : INDEX_NONE;
+	const int64 Value = Enum ? Enum->GetValueByNameString(EnumName) : INDEX_NONE;
 	if (Value == INDEX_NONE)
 	{
-		// Debug::Print(FString::Printf(TEXT("[MapTag] Skip (No EGameState match): %s"), *StateStr));
 		return false;
 	}
 
@@ -124,7 +134,7 @@ void UGameStateSubsystem::AddMapPathFromGameTag(const FGameplayTag& InTag, const
 		return;
 	}
 
-	const FString MapPath = UTromboneFunctionLibrary::GetMapPathByTag(InTag);
+	const FString MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(InTag);
 	const FString MapString = FPackageName::GetShortName(MapPath);
 
 	if (!MapString.IsEmpty())

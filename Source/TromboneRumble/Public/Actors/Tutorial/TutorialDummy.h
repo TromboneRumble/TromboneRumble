@@ -11,7 +11,9 @@ class TROMBONERUMBLE_API ATutorialDummy : public ADefaultTromboneCharacter
 	GENERATED_BODY()
 	
 public:
-	
+
+	ATutorialDummy();
+
 	// ~ Begin ICombatReceiver Interfaces
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces

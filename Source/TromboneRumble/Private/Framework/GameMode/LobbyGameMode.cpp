@@ -1,296 +1,107 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "Framework/GameMode/LobbyGameMode.h"
-#include "AkGameplayStatics.h"
+#include "EasySessionStatics.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Framework/LobbyGameState.h"
-#include "Kismet/GameplayStatics.h"
-#include "Subsystems/GameStateSubsystem.h"
-#include "Subsystems/GameDataSubsystem.h"
-#include "Data/RhythmSongDataRow.h"
+#include "DeveloperSettings/TromboneConfig.h"
+#include "Components/ActorComponents/LobbyDirectorComponent.h"
+#include "Components/ActorComponents/PlayerReadyCheckComponent.h"
 #include "Framework/DefaultPlayerState.h"
-#include "Framework/TromboneGameInstance.h"
-#include "Items/WeaponBase.h"
+#include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
-#include "Utilities/Defines.h"
-#include "Utilities/EnumHelper.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
-	RegisteredPlayerCount = 0;
-	SpawnedInstrumentCount = 0;
-	EquippedInstrumentCount = 0;
-	DelayTime = 5.0f;
-	
-	LobbyReadyPlayers.Empty();
+	LobbyDirector = CreateDefaultSubobject<ULobbyDirectorComponent>(TEXT("LobbyDirector"));
+	PlayerReadyCheck = CreateDefaultSubobject<UPlayerReadyCheckComponent>(TEXT("PlayerReadyCheck"));
+}
+
+void ALobbyGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PlayerReadyCheck->OnPlayerReady.AddUObject(LobbyDirector, &ULobbyDirectorComponent::HandlePlayerReady);
+	PlayerReadyCheck->OnAllPlayersReady.AddUObject(LobbyDirector, &ULobbyDirectorComponent::HandleAllPlayersReady);
+	LobbyDirector->OnTravelCountdownFinished.AddUObject(this, &ThisClass::TravelToInGame);
+
+	LobbyDirector->StartLobbyFlow();
+	PlayerReadyCheck->StartTracking();
 }
 
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
-	if (!IsValid(EquippedPlayer) || !EquippedItem) return;
-	
-	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(EquippedItem))
-	{
-		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
-		{
-			return;
-		}
-	}
-	
-	if (++EquippedInstrumentCount >= SpawnedInstrumentCount)
-	{
-		SetLobbyState(ELobbyState::CountdownToTravel);
-	}
+	LobbyDirector->NotifyItemEquipped(EquippedPlayer, EquippedItem);
 }
 
 void ALobbyGameMode::HandleItemUnequipped(APawn* UnequippedPlayer, AItemBase* UnequippedItem)
 {
 }
 
-void ALobbyGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	LobbyGameState = GetGameState<ALobbyGameState>();
-	if (!LobbyGameState)
-	{
-		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("LobbyGameState not found!"));
-		return;
-	}
-	
-	RegisteredPlayerCount = GetNumPlayers();
-	
-	
-	if (UGameStateSubsystem* GS = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
-	{
-		GS->OnPlayerLoadingScreenFinished.AddUObject(this, &ThisClass::HandlePlayerLoadingScreenFinished);
-		
-		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-		{
-			APlayerController* PC = It->Get();
-			if (PC && PC->IsLocalController())
-			{
-				HandlePlayerLoadingScreenFinished(PC);
-			}
-		}
-	}
-}
-
-void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
-{
-	Super::PostLogin(NewPlayer);
-	RegisteredPlayerCount = GetNumPlayers();
-}
-
-void ALobbyGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	if (UGameInstance* GameInstance = GetGameInstance())
-	{
-		if (UGameStateSubsystem* GS = GameInstance->GetSubsystem<UGameStateSubsystem>())
-		{
-			GS->OnPlayerLoadingScreenFinished.RemoveAll(this);
-		}
-	}
-	if (GetWorld())
-	{
-		GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-	}
-	
-	Super::EndPlay(EndPlayReason);
-}
-
 void ALobbyGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer);
-	
-	if (const UWorld* World = GetWorld())
+
+	const UWorld* World = GetWorld();
+	const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
+	const UGameStateSubsystem* GameStateSubsystem = GameInstance ? GameInstance->GetSubsystem<UGameStateSubsystem>() : nullptr;
+	if (!GameStateSubsystem)
 	{
-		if (const UGameInstance* GameInstance = World->GetGameInstance())
+		return;
+	}
+
+	// 로비가 리셋(트래블)되기 전까지 진행 중이던 연출 타이머가 발화하지 않도록 중단
+	LobbyDirector->AbortLobbyFlow();
+
+	for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+	{
+		if (const APlayerController* PC = It->Get())
 		{
-			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
+			if (ADefaultPlayerState* PS = PC->GetPlayerState<ADefaultPlayerState>())
 			{
-				GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-				
-				for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
-				{
-					if (const APlayerController* PC = It->Get())
-					{
-						if (ADefaultPlayerState* PS = PC->GetPlayerState<ADefaultPlayerState>())
-						{
-							PS->EquippedWeaponClass = nullptr;
-						}
-					}
-				}
-				
-				// AGameModeBase::GetNumPlayers()는 PlayerControllerList를 순회하는데,
-				// RemoveController()는 Logout() 완료 후에 호출되므로 이탈 플레이어가 아직 포함됨 → -1 보정
-				const int32 RemainingPlayers = GetNumPlayers() - 1;
-				if (RemainingPlayers > 0)
-				{
-					if (RemainingPlayers < 2)
-					{
-						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
-						const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_MainMenu_Main);
-						RequestServerTravel(MainMenuMapName);
-					}
-					else
-					{
-						LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
-						const FString LobbyMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_Lobby_Main);
-						RequestServerTravel(LobbyMapName);
-					}
-				}
+				PS->EquippedWeaponClass = nullptr;
 			}
 		}
 	}
-}
 
-void ALobbyGameMode::HandlePlayerLoadingScreenFinished(APlayerController* PC)
-{
-	if (!PC)
+	// AGameModeBase::GetNumPlayers()는 PlayerControllerList를 순회하는데,
+	// RemoveController()는 Logout() 완료 후에 호출되므로 이탈 플레이어가 아직 포함됨 → -1 보정
+	const int32 RemainingPlayers = GetNumPlayers() - 1;
+	if (RemainingPlayers <= 0)
 	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Invalid PlayerController"));
 		return;
 	}
-	
-	if (LobbyReadyPlayers.Contains(PC))
-	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("Player %s has already been marked as ready"), *PC->GetName()));
-		return;
-	}
-	
-	LobbyReadyPlayers.AddUnique(PC);
-	if (LobbyReadyPlayers.Num() >= RegisteredPlayerCount)
-	{
-		if (LobbyGameState)
-		{
-			//TODO : SelectedSong 하드코딩 수정
-			
-			// InGameMap 노래들
-			//const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA : 
-			//													TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
-			
-			// 눈맵 노래
-			const FGameplayTag SelectedSong = FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapC : 
-																TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
-			
-			LobbyGameState->SetSelectedSongTag(SelectedSong);
-			SpawnInstruments();
-		}
-	}
-}
 
-void ALobbyGameMode::SpawnInstruments()
-{
-	if (const UTromboneGameInstance* GameInstance = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (RemainingPlayers < 2)
 	{
-		const auto* DataSubsystem = GameInstance->GetSubsystem<UGameDataSubsystem>();
-		const FGameplayTag SongTag = GameInstance->GetSelectedSongTag();
-		const FRhythmSongDataRow* SongRow = DataSubsystem->GetSongRow(SongTag);
-		if (!SongRow)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("SongRow not found"));
-			return;
-		}
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
 		
-		const auto& InstrumentSounds = SongRow->InstrumentSounds;
-		if (InstrumentSounds.Num() == 0)
-		{
-			LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No instrument sounds found for the selected song"));
-			return;
-		}
-		
-		TArray<AActor*> SpawnPointActors;
-		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("InstrumentSpawnPoint"), SpawnPointActors);
+		const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
+		UEasyStatics::ServerTravelToLevel(this, MainMenuMapName);
+	}
+	else
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
 
-		if (SpawnPointActors.Num() == 0)
-		{
-			LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No spawn points found for instruments"));
-			return;
-		}
-		
-		SpawnedInstrumentCount = FMath::Clamp(RegisteredPlayerCount - 1, 1, 3);
-		
-		for (int32 i = 0; i < SpawnedInstrumentCount; i++)
-		{
-			const int32 SpawnPointIndex = i % SpawnPointActors.Num();
-			const AActor* SpawnPoint = SpawnPointActors[SpawnPointIndex];
-			const FVector SpawnLocation = SpawnPoint->GetActorLocation();
-			const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
-
-			const int32 InstrumentClassIndex = i % InstrumentSounds.Num();
-			TSubclassOf<AWeaponBase> ClassToSpawn = InstrumentSounds[InstrumentClassIndex].SpawnInstrument;
-
-			GetWorld()->SpawnActor<AWeaponBase>(ClassToSpawn, SpawnLocation, SpawnRotation);
-		}
+		const FGameplayTag InGameTag = UEasyStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
+		const FGameplayTag LobbyCategory = FGameplayTag::RequestGameplayTag(FName(*TromboneGamePlayTags::LobbyPath), false);
+		const FGameplayTag LobbyTag = UTromboneFunctionLibrary::GetSiblingMapTag(InGameTag, LobbyCategory);
+		const FString LobbyMapName = GameStateSubsystem->GetLevelStringFromTag(LobbyTag);
+		UEasyStatics::ServerTravelToLevel(this, LobbyMapName);
 	}
 }
 
-void ALobbyGameMode::SetLobbyState(const ELobbyState& InNewState)
+void ALobbyGameMode::TravelToInGame()
 {
-	if (!LobbyGameState)
+	const UWorld* World = GetWorld();
+	const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
+	const UGameStateSubsystem* GameStateSubsystem = GameInstance ? GameInstance->GetSubsystem<UGameStateSubsystem>() : nullptr;
+	if (!GameStateSubsystem)
 	{
-		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("LobbyGameState is null!"));
 		return;
 	}
-	
-	const ELobbyState CurrentState = LobbyGameState->GetCurrentLobbyState();
-	if (CurrentState == InNewState)
-	{
-		const FString DebugMsg = FString::Printf(TEXT("Lobby is already in state: %s"), *EnumHelper::EnumToString(InNewState));
-		LOG_WITH_CURRENT_CONTEXT(Warning, *DebugMsg);
-		return;
-	}
-	
-	LobbyGameState->SetLobbyState(InNewState);
 
-	switch (InNewState)
-	{
-	case ELobbyState::WaitingForPlayers:
-		break;
-
-	case ELobbyState::CountdownToTravel:
-		{
-			GetWorldTimerManager().ClearTimer(LobbyTimerHandle);
-			GetWorldTimerManager().SetTimer(LobbyTimerHandle, this, &ThisClass::OnCountdownToTravel, DelayTime, false);
-		}
-		break;
-
-	default:
-		break;
-	}
-}
-
-void ALobbyGameMode::RequestServerTravel(const FString& MapPath) const
-{
-	UWorld* World = GetWorld();
-	if (!World || World->GetAuthGameMode() == nullptr) return;
-	
-	if (MapPath.IsEmpty()) 
-	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("MapPath is empty"));
-		return;
-	}
-	
-	if (!World->ServerTravel(MapPath))
-	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("ServerTravel failed"));
-		return;
-	}
-}
-
-void ALobbyGameMode::OnCountdownToTravel()
-{
-	if (const UWorld* World = GetWorld())
-	{
-		if (const UGameInstance* GameInstance = World->GetGameInstance())
-		{
-			if (const UGameStateSubsystem* GameStateSubsystem = GameInstance->GetSubsystem<UGameStateSubsystem>())
-			{
-				//TODO : InGame맵 이동 로직 UI로 수정
-				//const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Main);
-				const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_InGame_Snow);
-				RequestServerTravel(InGameMapName);
-			}
-		}
-	}
+	const FGameplayTag InGameTag = UEasyStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
+	const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(InGameTag);
+	UEasyStatics::ServerTravelToLevel(this, InGameMapName);
 }
