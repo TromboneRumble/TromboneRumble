@@ -29,7 +29,8 @@ void UTweenSubsystem::DoTween(UUserWidget* InWidget, const FVector2D InTargetSca
 float UTweenSubsystem::EaseOutBack(float T)
 {
 	const float S = 1.70158f;
-	return (T -= 1.f) * T * ((S + 1.f) * T + S) + 1.f;
+	T -= 1.f;
+	return T * T * ((S + 1.f) * T + S) + 1.f;
 }
 
 float UTweenSubsystem::GetEasedAlpha(const float Alpha, const ETweenCurveType CurveType) const
