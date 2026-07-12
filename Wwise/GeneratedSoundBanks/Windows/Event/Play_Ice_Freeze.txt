@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1784315359	Play_Ice_Freeze			\Default Work Unit\Object_SFX\Play_Ice_Freeze	
+

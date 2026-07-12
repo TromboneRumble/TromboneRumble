@@ -26,8 +26,16 @@
 							<Position X="2" Y="0"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<Position X="2" Y="1"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 							<Position X="3" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Map_C_Main" ID="{0CC37F78-CB2E-4890-9CAA-26477900D4C6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<Position X="3" Y="1"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="Play_Light_On" ID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
@@ -50,8 +58,10 @@
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true"/>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Water" ID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
-						<CurrentSwitchRef Name="SW_V" ID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<CurrentSwitchRef Name="Level1" ID="{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"/>
+						<CurrentSwitchRef Name="Off" ID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
+						<CurrentSwitchRef Name="Fabric" ID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
+						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
 						<CurrentSwitchRef Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>

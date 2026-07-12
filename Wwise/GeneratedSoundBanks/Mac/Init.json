@@ -137,6 +137,32 @@
     ],
     "SwitchGroups": [
      {
+      "Id": "85412153",
+      "Name": "Ambience",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Ambience",
+      "GUID": "{0804D6EC-E0A4-46F5-97C0-E997E9103FB8}",
+      "Switches": [
+       {
+        "Id": "2678230380",
+        "Name": "Level3",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Ambience\\Level3",
+        "GUID": "{E628AB7E-16AB-41D4-882F-1F903FE2A789}"
+       },
+       {
+        "Id": "2678230381",
+        "Name": "Level2",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Ambience\\Level2",
+        "GUID": "{225656A7-11A1-4FC8-9723-355E2CEA1A95}"
+       },
+       {
+        "Id": "2678230382",
+        "Name": "Level1",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Ambience\\Level1",
+        "GUID": "{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"
+       }
+      ]
+     },
+     {
       "Id": "1522944609",
       "Name": "Inst",
       "ObjectPath": "\\Switches\\Default Work Unit\\Inst",
@@ -195,10 +221,34 @@
       "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
       "Switches": [
        {
+        "Id": "344481046",
+        "Name": "Ice",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Ice",
+        "GUID": "{25D079A8-2D7C-4171-8953-3A70CFE23C76}"
+       },
+       {
+        "Id": "787898836",
+        "Name": "Snow",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Snow",
+        "GUID": "{1CFD41B2-7C25-4128-A266-79045502A715}"
+       },
+       {
+        "Id": "1970351858",
+        "Name": "Fabric",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Fabric",
+        "GUID": "{8E0A828E-734C-48E7-AE60-394AF357E24B}"
+       },
+       {
         "Id": "2058049674",
         "Name": "Wood",
         "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
         "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
+       },
+       {
+        "Id": "2144363834",
+        "Name": "Rock",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Rock",
+        "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
        },
        {
         "Id": "2654748154",
@@ -695,6 +745,6 @@
     ]
    }
   ],
-  "FileHash": "{8022ACE2-31AE-561F-FD55-028D5DEC18B7}"
+  "FileHash": "{F3105248-9FBA-B2CC-682C-DD861C107A55}"
  }
 }

@@ -15,6 +15,10 @@
 					<ChildrenList>
 						<Switch Name="Wood" ID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
 						<Switch Name="Water" ID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
+						<Switch Name="Rock" ID="{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"/>
+						<Switch Name="Ice" ID="{25D079A8-2D7C-4171-8953-3A70CFE23C76}"/>
+						<Switch Name="Snow" ID="{1CFD41B2-7C25-4128-A266-79045502A715}"/>
+						<Switch Name="Fabric" ID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
 					</ChildrenList>
 				</SwitchGroup>
 				<SwitchGroup Name="Audience" ID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">
@@ -27,6 +31,13 @@
 					<ChildrenList>
 						<Switch Name="On" ID="{AA466120-C963-4F3B-812D-743D589BD365}"/>
 						<Switch Name="Off" ID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
+					</ChildrenList>
+				</SwitchGroup>
+				<SwitchGroup Name="Ambience" ID="{0804D6EC-E0A4-46F5-97C0-E997E9103FB8}">
+					<ChildrenList>
+						<Switch Name="Level1" ID="{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"/>
+						<Switch Name="Level2" ID="{225656A7-11A1-4FC8-9723-355E2CEA1A95}"/>
+						<Switch Name="Level3" ID="{E628AB7E-16AB-41D4-882F-1F903FE2A789}"/>
 					</ChildrenList>
 				</SwitchGroup>
 			</ChildrenList>

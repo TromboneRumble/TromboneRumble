@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
     "Language": "SFX",
-    "Hash": "{170047A5-9FB5-19CA-E1FA-019BB79A255E}",
+    "Hash": "{B0842ABA-8FEA-E695-F626-B393E5920C44}",
     "ObjectPath": "Play_Cymbal_Hit",
     "ShortName": "Play_Cymbal_Hit",
     "Path": "Event/Play_Cymbal_Hit.bnk",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{0A85FD74-80F9-E4EF-10D4-DA029DB01E0A}"
+  "FileHash": "{46BF6F64-5B04-C7C1-D9CB-675ABEF0D91B}"
  }
 }

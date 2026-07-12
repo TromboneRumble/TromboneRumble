@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1078935374" Type="Event" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" Language="SFX" Hash="{170047A5-9FB5-19CA-E1FA-019BB79A255E}">
+		<SoundBank Id="1078935374" Type="Event" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" Language="SFX" Hash="{B0842ABA-8FEA-E695-F626-B393E5920C44}">
 			<ObjectPath>Play_Cymbal_Hit</ObjectPath>
 			<ShortName>Play_Cymbal_Hit</ShortName>
 			<Path>Event/Play_Cymbal_Hit.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{DEDDA212-02D7-8842-255A-357C58C6D91E}</FileHash>
+	<FileHash>{B63B72F6-1B81-9AA1-D6EE-92361618D109}</FileHash>
 </SoundBanksInfo>

@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	521013026	Play_Snow_Ambience			\Default Work Unit\Ambience\Play_Snow_Ambience	
+

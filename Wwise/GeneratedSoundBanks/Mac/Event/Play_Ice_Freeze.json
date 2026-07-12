@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1784315359",
+    "Type": "Event",
+    "GUID": "{6F90073B-06FD-4C85-AA82-7D074D93B08A}",
+    "Language": "SFX",
+    "Hash": "{3F257D33-EEF5-3462-E5A6-3AA52EA163B9}",
+    "ObjectPath": "Play_Ice_Freeze",
+    "ShortName": "Play_Ice_Freeze",
+    "Path": "Event/Play_Ice_Freeze.bnk",
+    "Media": [
+     {
+      "Id": "335216744",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Freeze .wav",
+      "Path": "Media/335216744.wem",
+      "CachePath": "SFX/Freeze _818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1784315359",
+      "Name": "Play_Ice_Freeze",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Ice_Freeze",
+      "GUID": "{6F90073B-06FD-4C85-AA82-7D074D93B08A}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.4633155",
+      "DurationMax": "1.6683333",
+      "MediaRefs": [
+       {
+        "Id": "335216744"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{823032E9-AE28-D515-B981-9D2A0AB37FE5}"
+ }
+}

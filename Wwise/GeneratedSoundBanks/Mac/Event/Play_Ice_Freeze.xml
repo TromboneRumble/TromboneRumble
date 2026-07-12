@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1784315359" Type="Event" GUID="{6F90073B-06FD-4C85-AA82-7D074D93B08A}" Language="SFX" Hash="{3F257D33-EEF5-3462-E5A6-3AA52EA163B9}">
+			<ObjectPath>Play_Ice_Freeze</ObjectPath>
+			<ShortName>Play_Ice_Freeze</ShortName>
+			<Path>Event/Play_Ice_Freeze.bnk</Path>
+			<Media>
+				<File Id="335216744" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Freeze .wav</ShortName>
+					<Path>Media/335216744.wem</Path>
+					<CachePath>SFX/Freeze _818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1784315359" Name="Play_Ice_Freeze" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Ice_Freeze" GUID="{6F90073B-06FD-4C85-AA82-7D074D93B08A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.4633155" DurationMax="1.6683333">
+					<MediaRefs>
+						<MediaRef Id="335216744"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C3794294-04F1-99ED-A8B5-3A761003B114}</FileHash>
+</SoundBanksInfo>

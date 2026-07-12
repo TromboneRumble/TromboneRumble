@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}",
     "Language": "SFX",
-    "Hash": "{2273542A-1AA6-3BA3-DB95-B23843709F4B}",
+    "Hash": "{A5BE196F-13CF-B228-27F4-936B715EBFDC}",
     "ObjectPath": "Play_Cymbal_Attack",
     "ShortName": "Play_Cymbal_Attack",
     "Path": "Event/Play_Cymbal_Attack.bnk",
@@ -75,6 +75,6 @@
     ]
    }
   ],
-  "FileHash": "{EE6332C3-EE30-B3E3-E7D0-471CEC68C593}"
+  "FileHash": "{CDB6493F-F5B2-D478-38CF-CBB4168556CC}"
  }
 }

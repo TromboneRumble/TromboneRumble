@@ -1,0 +1,100 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "521013026",
+    "Type": "Event",
+    "GUID": "{172B9145-BD63-4904-825D-B9064756A02F}",
+    "Language": "SFX",
+    "Hash": "{2812ACB8-EF36-3272-EEE3-B407A7F83A21}",
+    "ObjectPath": "Play_Snow_Ambience",
+    "ShortName": "Play_Snow_Ambience",
+    "Path": "Event/Play_Snow_Ambience.bnk",
+    "Media": [
+     {
+      "Id": "81087786",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Level3.  .wav",
+      "Path": "Media/81087786.wem",
+      "CachePath": "SFX/Level3.  _FBC78EF0.wem"
+     },
+     {
+      "Id": "318197726",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Level2-01.wav",
+      "Path": "Media/318197726.wem",
+      "CachePath": "SFX/Level2-01_FBC78EF0.wem"
+     },
+     {
+      "Id": "991998902",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Level_1.wav",
+      "Path": "Media/991998902.wem",
+      "CachePath": "SFX/Level_1_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "521013026",
+      "Name": "Play_Snow_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_Snow_Ambience",
+      "GUID": "{172B9145-BD63-4904-825D-B9064756A02F}",
+      "DurationType": "OneShot",
+      "DurationMin": "336",
+      "DurationMax": "336",
+      "MediaRefs": [
+       {
+        "Id": "81087786"
+       },
+       {
+        "Id": "318197726"
+       },
+       {
+        "Id": "991998902"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "85412153",
+      "Name": "Ambience",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Ambience",
+      "GUID": "{0804D6EC-E0A4-46F5-97C0-E997E9103FB8}",
+      "Switches": [
+       {
+        "Id": "2678230380",
+        "Name": "Level3",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Ambience\\Level3",
+        "GUID": "{E628AB7E-16AB-41D4-882F-1F903FE2A789}"
+       },
+       {
+        "Id": "2678230381",
+        "Name": "Level2",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Ambience\\Level2",
+        "GUID": "{225656A7-11A1-4FC8-9723-355E2CEA1A95}"
+       },
+       {
+        "Id": "2678230382",
+        "Name": "Level1",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Ambience\\Level1",
+        "GUID": "{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{E2D792E5-3AB2-23F9-C8B0-A5864275572B}"
+ }
+}

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{0E7B8166-43F9-002B-6786-6831A2C1A3C6}",
+    "Hash": "{FBFB8D10-4EB2-9BA7-822F-D955438AD7A5}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -34,6 +34,33 @@
       "CachePath": "SFX/Water_Foot_2_818F3B66.wem"
      },
      {
+      "Id": "87387565",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Fabric_Foot_3 -01.wav",
+      "Path": "Media/87387565.wem",
+      "CachePath": "SFX/Fabric_Foot_3 -01_818F3B66.wem"
+     },
+     {
+      "Id": "97637721",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Fabric_Foot_4 -01.wav",
+      "Path": "Media/97637721.wem",
+      "CachePath": "SFX/Fabric_Foot_4 -01_818F3B66.wem"
+     },
+     {
+      "Id": "139302663",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_Foot_5.wav",
+      "Path": "Media/139302663.wem",
+      "CachePath": "SFX/Snow_Foot_5_818F3B66.wem"
+     },
+     {
       "Id": "167561171",
       "Language": "SFX",
       "Streaming": "false",
@@ -43,6 +70,69 @@
       "CachePath": "SFX/Wood2_Foot_2_818F3B66.wem"
      },
      {
+      "Id": "198780667",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Rock_Foot_2.wav",
+      "Path": "Media/198780667.wem",
+      "CachePath": "SFX/Rock_Foot_2_818F3B66.wem"
+     },
+     {
+      "Id": "204720920",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ice_Foot_1.wav",
+      "Path": "Media/204720920.wem",
+      "CachePath": "SFX/Ice_Foot_1_818F3B66.wem"
+     },
+     {
+      "Id": "230101606",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ice_Foot_4.wav",
+      "Path": "Media/230101606.wem",
+      "CachePath": "SFX/Ice_Foot_4_818F3B66.wem"
+     },
+     {
+      "Id": "232263144",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Fabric_Foot_2 -01.wav",
+      "Path": "Media/232263144.wem",
+      "CachePath": "SFX/Fabric_Foot_2 -01_818F3B66.wem"
+     },
+     {
+      "Id": "233361702",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_Foot_1.wav",
+      "Path": "Media/233361702.wem",
+      "CachePath": "SFX/Snow_Foot_1_818F3B66.wem"
+     },
+     {
+      "Id": "244412664",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ice_Foot_2.wav",
+      "Path": "Media/244412664.wem",
+      "CachePath": "SFX/Ice_Foot_2_818F3B66.wem"
+     },
+     {
+      "Id": "270347374",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Fabric_Foot_5 -01.wav",
+      "Path": "Media/270347374.wem",
+      "CachePath": "SFX/Fabric_Foot_5 -01_818F3B66.wem"
+     },
+     {
       "Id": "279374184",
       "Language": "SFX",
       "Streaming": "false",
@@ -50,6 +140,33 @@
       "ShortName": "Wood2_Foot_4.wav",
       "Path": "Media/279374184.wem",
       "CachePath": "SFX/Wood2_Foot_4_818F3B66.wem"
+     },
+     {
+      "Id": "369342720",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ice_Foot_5.wav",
+      "Path": "Media/369342720.wem",
+      "CachePath": "SFX/Ice_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "448296093",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Rock_Foot_5.wav",
+      "Path": "Media/448296093.wem",
+      "CachePath": "SFX/Rock_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "453422970",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_Foot_2.wav",
+      "Path": "Media/453422970.wem",
+      "CachePath": "SFX/Snow_Foot_2_818F3B66.wem"
      },
      {
       "Id": "494162867",
@@ -79,6 +196,15 @@
       "CachePath": "SFX/Water_Foot_4_818F3B66.wem"
      },
      {
+      "Id": "589725168",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Ice_Foot_3.wav",
+      "Path": "Media/589725168.wem",
+      "CachePath": "SFX/Ice_Foot_3_818F3B66.wem"
+     },
+     {
       "Id": "589790040",
       "Language": "SFX",
       "Streaming": "false",
@@ -86,6 +212,51 @@
       "ShortName": "Water_Foot_1.wav",
       "Path": "Media/589790040.wem",
       "CachePath": "SFX/Water_Foot_1_818F3B66.wem"
+     },
+     {
+      "Id": "606995729",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Rock_Foot_4.wav",
+      "Path": "Media/606995729.wem",
+      "CachePath": "SFX/Rock_Foot_4_818F3B66.wem"
+     },
+     {
+      "Id": "716764491",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Rock_Foot_3.wav",
+      "Path": "Media/716764491.wem",
+      "CachePath": "SFX/Rock_Foot_3_818F3B66.wem"
+     },
+     {
+      "Id": "784463215",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_Foot_4.wav",
+      "Path": "Media/784463215.wem",
+      "CachePath": "SFX/Snow_Foot_4_818F3B66.wem"
+     },
+     {
+      "Id": "830772528",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Fabric_Foot_1 -01.wav",
+      "Path": "Media/830772528.wem",
+      "CachePath": "SFX/Fabric_Foot_1 -01_818F3B66.wem"
+     },
+     {
+      "Id": "877497068",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Rock_Foot_1.wav",
+      "Path": "Media/877497068.wem",
+      "CachePath": "SFX/Rock_Foot_1_818F3B66.wem"
      },
      {
       "Id": "941571148",
@@ -104,8 +275,29 @@
       "ShortName": "Water_Foot_3.wav",
       "Path": "Media/953859740.wem",
       "CachePath": "SFX/Water_Foot_3_818F3B66.wem"
+     },
+     {
+      "Id": "1063219786",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_Foot_3.wav",
+      "Path": "Media/1063219786.wem",
+      "CachePath": "SFX/Snow_Foot_3_818F3B66.wem"
      }
     ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "1324798284",
@@ -114,8 +306,8 @@
       "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "0.28835043",
-      "DurationMax": "0.45528895",
+      "DurationMin": "0.16467108",
+      "DurationMax": "0.52699363",
       "SwitchContainers": [
        {
         "SwitchValue": {
@@ -147,6 +339,31 @@
         "SwitchValue": {
          "GroupType": "Switch",
          "GroupId": "3031504797",
+         "Id": "2144363834",
+         "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "198780667"
+         },
+         {
+          "Id": "448296093"
+         },
+         {
+          "Id": "606995729"
+         },
+         {
+          "Id": "716764491"
+         },
+         {
+          "Id": "877497068"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
          "Id": "2654748154",
          "GUID": "{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"
         },
@@ -167,6 +384,88 @@
           "Id": "953859740"
          }
         ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "1970351858",
+         "GUID": "{8E0A828E-734C-48E7-AE60-394AF357E24B}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "87387565"
+         },
+         {
+          "Id": "97637721"
+         },
+         {
+          "Id": "232263144"
+         },
+         {
+          "Id": "270347374"
+         },
+         {
+          "Id": "830772528"
+         }
+        ],
+        "PluginRefs": {
+         "ShareSets": [
+          {
+           "Id": "3604890626"
+          }
+         ]
+        }
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "344481046",
+         "GUID": "{25D079A8-2D7C-4171-8953-3A70CFE23C76}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "204720920"
+         },
+         {
+          "Id": "230101606"
+         },
+         {
+          "Id": "244412664"
+         },
+         {
+          "Id": "369342720"
+         },
+         {
+          "Id": "589725168"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "787898836",
+         "GUID": "{1CFD41B2-7C25-4128-A266-79045502A715}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "139302663"
+         },
+         {
+          "Id": "233361702"
+         },
+         {
+          "Id": "453422970"
+         },
+         {
+          "Id": "784463215"
+         },
+         {
+          "Id": "1063219786"
+         }
+        ]
        }
       ]
      }
@@ -179,10 +478,34 @@
       "GUID": "{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}",
       "Switches": [
        {
+        "Id": "344481046",
+        "Name": "Ice",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Ice",
+        "GUID": "{25D079A8-2D7C-4171-8953-3A70CFE23C76}"
+       },
+       {
+        "Id": "787898836",
+        "Name": "Snow",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Snow",
+        "GUID": "{1CFD41B2-7C25-4128-A266-79045502A715}"
+       },
+       {
+        "Id": "1970351858",
+        "Name": "Fabric",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Fabric",
+        "GUID": "{8E0A828E-734C-48E7-AE60-394AF357E24B}"
+       },
+       {
         "Id": "2058049674",
         "Name": "Wood",
         "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Wood",
         "GUID": "{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"
+       },
+       {
+        "Id": "2144363834",
+        "Name": "Rock",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Rock",
+        "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
        },
        {
         "Id": "2654748154",
@@ -195,6 +518,6 @@
     ]
    }
   ],
-  "FileHash": "{021BFE7A-07DA-B799-2E97-0004E1262522}"
+  "FileHash": "{CBCFB0FA-464D-4C72-E9D4-73109FC52D94}"
  }
 }

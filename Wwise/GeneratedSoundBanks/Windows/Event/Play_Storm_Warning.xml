@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2320190772" Type="Event" GUID="{75D1EC36-29B7-424E-99DA-A6351846C415}" Language="SFX" Hash="{1FC8F7EF-0C6C-9E5A-7DC2-8C093886A0A6}">
+			<ObjectPath>Play_Storm_Warning</ObjectPath>
+			<ShortName>Play_Storm_Warning</ShortName>
+			<Path>Event/Play_Storm_Warning.bnk</Path>
+			<Media>
+				<File Id="248342265" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Warning.wav</ShortName>
+					<Path>Media/248342265.wem</Path>
+					<CachePath>SFX/Warning_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2320190772" Name="Play_Storm_Warning" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Storm_Warning" GUID="{75D1EC36-29B7-424E-99DA-A6351846C415}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="4.224" DurationMax="4.224">
+					<MediaRefs>
+						<MediaRef Id="248342265"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{63EAA4FE-6D74-B296-7971-B88AAA84E70E}</FileHash>
+</SoundBanksInfo>

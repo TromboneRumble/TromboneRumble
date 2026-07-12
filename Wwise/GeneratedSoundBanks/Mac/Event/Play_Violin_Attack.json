@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0381A057-351A-4EF9-865E-5FEBD569955A}",
     "Language": "SFX",
-    "Hash": "{77BB690A-043A-012A-99DA-584F490D9291}",
+    "Hash": "{2D16F922-DCD8-BF51-3BF7-D53E77D12633}",
     "ObjectPath": "Play_Violin_Attack",
     "ShortName": "Play_Violin_Attack",
     "Path": "Event/Play_Violin_Attack.bnk",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{00ECE14E-C7B8-D632-3177-6FB01A84781A}"
+  "FileHash": "{0B0181E6-E570-5FE9-28F6-E2BD3EAB1F8C}"
  }
 }

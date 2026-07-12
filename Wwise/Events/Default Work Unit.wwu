@@ -195,6 +195,28 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Event Name="Play_Ice_Freeze" ID="{6F90073B-06FD-4C85-AA82-7D074D93B08A}">
+							<ChildrenList>
+								<Action Name="" ID="{5FE0BF0A-ECD6-4478-B70C-EF8D4BE7AAB0}" ShortID="824270032">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Freeze" ID="{B1BB5B07-29C0-45E1-ABDA-D932BB9D51A3}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Storm_Warning" ID="{75D1EC36-29B7-424E-99DA-A6351846C415}">
+							<ChildrenList>
+								<Action Name="" ID="{F2AFE623-9AF9-43C8-9E67-CACB591B139C}" ShortID="714142248">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Warning" ID="{50D1AC3E-CEE2-4243-8788-5BA00637A2BA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
@@ -1014,6 +1036,21 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="UI_Pop_Down" ID="{BD87C72A-BCFA-43C7-BE47-B4F050D00808}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Ambience" ID="{9D631DAB-C676-4FA7-A200-9E70522A2365}" ShortID="524313328">
+					<ChildrenList>
+						<Event Name="Play_Snow_Ambience" ID="{172B9145-BD63-4904-825D-B9064756A02F}">
+							<ChildrenList>
+								<Action Name="" ID="{9AC60EF9-995B-4CE3-BD82-0217DACB780E}" ShortID="844195070">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

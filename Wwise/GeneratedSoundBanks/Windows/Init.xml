@@ -40,6 +40,13 @@
 				<GameParameter Id="3141145287" Name="RTPC_UIVolume" ObjectPath="\Game Parameters\Default Work Unit\RTPC_UIVolume" GUID="{0362BCD1-CECE-48A9-95A2-C677C79AD6EB}"/>
 			</GameParameters>
 			<SwitchGroups>
+				<SwitchGroup Id="85412153" Name="Ambience" ObjectPath="\Switches\Default Work Unit\Ambience" GUID="{0804D6EC-E0A4-46F5-97C0-E997E9103FB8}">
+					<Switches>
+						<Switch Id="2678230380" Name="Level3" ObjectPath="\Switches\Default Work Unit\Ambience\Level3" GUID="{E628AB7E-16AB-41D4-882F-1F903FE2A789}"/>
+						<Switch Id="2678230381" Name="Level2" ObjectPath="\Switches\Default Work Unit\Ambience\Level2" GUID="{225656A7-11A1-4FC8-9723-355E2CEA1A95}"/>
+						<Switch Id="2678230382" Name="Level1" ObjectPath="\Switches\Default Work Unit\Ambience\Level1" GUID="{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"/>
+					</Switches>
+				</SwitchGroup>
 				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
 					<Switches>
 						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
@@ -56,7 +63,11 @@
 				</SwitchGroup>
 				<SwitchGroup Id="3031504797" Name="Foot" ObjectPath="\Switches\Default Work Unit\Foot" GUID="{BDFFD516-CF23-48BD-B7C8-B7E480673AB6}">
 					<Switches>
+						<Switch Id="344481046" Name="Ice" ObjectPath="\Switches\Default Work Unit\Foot\Ice" GUID="{25D079A8-2D7C-4171-8953-3A70CFE23C76}"/>
+						<Switch Id="787898836" Name="Snow" ObjectPath="\Switches\Default Work Unit\Foot\Snow" GUID="{1CFD41B2-7C25-4128-A266-79045502A715}"/>
+						<Switch Id="1970351858" Name="Fabric" ObjectPath="\Switches\Default Work Unit\Foot\Fabric" GUID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
 						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
+						<Switch Id="2144363834" Name="Rock" ObjectPath="\Switches\Default Work Unit\Foot\Rock" GUID="{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"/>
 						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
 					</Switches>
 				</SwitchGroup>
@@ -197,5 +208,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5E54FA9A-7E85-40EF-00F7-9B63FF3DFA5C}</FileHash>
+	<FileHash>{10B837CA-D266-FB75-A5FE-9F91A99E3FC1}</FileHash>
 </SoundBanksInfo>

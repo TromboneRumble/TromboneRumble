@@ -5,6 +5,13 @@ Switch Group	ID	Name			Wwise Object Path	Notes
 	3031504797	Foot			\Default Work Unit\Foot	
 
 Switch	ID	Name	Switch Group			Notes
+	344481046	Ice	Foot			
+	787898836	Snow	Foot			
+	1970351858	Fabric	Foot			
 	2058049674	Wood	Foot			
+	2144363834	Rock	Foot			
 	2654748154	Water	Foot			
+
+Effect plug-ins	ID	Name	Type				Notes
+	3604890626	High_Pass_60Hz	Wwise Parametric EQ			
 

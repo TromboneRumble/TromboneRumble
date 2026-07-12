@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	2320190772	Play_Storm_Warning			\Default Work Unit\Object_SFX\Play_Storm_Warning	
+
