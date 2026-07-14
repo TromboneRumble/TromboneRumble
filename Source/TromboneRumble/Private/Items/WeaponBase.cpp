@@ -289,10 +289,7 @@ void AWeaponBase::OnRep_CurrentOwner(AActor* OldActor)
 	{
 		EndAttack();
 		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		if (HasAuthority())
-		{
-			SetPhysicsEnabled(true);
-		}
+		SetPhysicsEnabled(true);
 		SkeletalMeshComponent->IgnoreActorWhenMoving(CurrentOwner, false);
 		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}

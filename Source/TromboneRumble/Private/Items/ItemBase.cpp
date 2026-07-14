@@ -38,11 +38,6 @@ AItemBase::AItemBase()
 void AItemBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!HasAuthority())
-	{
-		SkeletalMeshComponent->SetSimulatePhysics(false);
-		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(false);
-	}
 }
 
 void AItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
