@@ -76,7 +76,7 @@ private:
 
 	FTimerHandle LifetimeTimerHandle;
 
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "Puddle|Config", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkAudioEvent> PuddleSpawnSFX;
 
 	/** 이 웅덩이가 각 캐릭터에게 건 Slow GE 핸들 */
