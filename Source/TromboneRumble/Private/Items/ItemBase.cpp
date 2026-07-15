@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Items/ItemBase.h"
-
 #include "AkComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
@@ -35,9 +34,8 @@ AItemBase::AItemBase()
 	}
 }
 
-void AItemBase::BeginPlay()
+void AItemBase::OnRep_CurrentOwner(AActor* OldActor)
 {
-	Super::BeginPlay();
 }
 
 void AItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
