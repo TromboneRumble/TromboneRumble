@@ -2,9 +2,8 @@
 
 #include "Characters/DefaultPlayerController.h"
 #include "EasyOnlineSession.h"
-#include "Framework/TromboneGameInstance.h"
 #include "Framework/GameMode/InGameMode.h"
-#include "Utilities/TromboneStatics.h"
+#include "Subsystems/ResultSceneSubsystem.h"
 
 void ADefaultPlayerController::Server_RhythmGameFinished_Implementation()
 {
@@ -24,18 +23,21 @@ void ADefaultPlayerController::Server_ReportClientTravelToResultLevelAndLeaveSes
 
 void ADefaultPlayerController::Client_RequestTravelToResultLevelAndLeaveSession_Implementation()
 {
-	if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	if (UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
 	{
-		GI->SaveResultSceneData();
+		ResultSubsystem->SaveResultSceneData();
 	}
-	
+
 	Server_ReportClientTravelToResultLevelAndLeaveSession();
 
 	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 	{
 		OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateLambda([this](FName /*SessionName*/, bool /*bSuccess*/)
 		{
-			UTromboneStatics::OpenLevel(this, ELevelType::ResultScene);
+			if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
+			{
+				ResultSubsystem->OpenResultLevel(this);
+			}
 		}));
 	}
 }

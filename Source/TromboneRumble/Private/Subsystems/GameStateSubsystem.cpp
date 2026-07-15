@@ -31,11 +31,16 @@ static bool TryGetGameStateFromMapTag(const FGameplayTag& MapTag, ELevelType& Ou
 	// InGame.<Leaf>  → <Leaf>		(예: InGame.OrchestraStage → OrchestraStage)
 	// OutGame.<Leaf> → <Leaf>		(예: OutGame.MainMenu → MainMenu)
 	// Lobby.<Leaf>	 → <Leaf>Lobby	(예: Lobby.OrchestraStage → OrchestraStageLobby)
+	// Result.<Leaf>  → <Leaf>Result	(예: Result.OrchestraStage → OrchestraStageResult)
 	// 위에 해당하지 않는 카테고리(Test 등)는 ELevelType에 없어 제외됨
 	FString EnumName;
 	if (Category == TromboneGamePlayTags::LobbyCategory)
 	{
 		EnumName = Leaf + TromboneGamePlayTags::LobbyCategory;
+	}
+	else if (Category == TromboneGamePlayTags::ResultCategory)
+	{
+		EnumName = Leaf + TromboneGamePlayTags::ResultCategory;
 	}
 	else
 	{

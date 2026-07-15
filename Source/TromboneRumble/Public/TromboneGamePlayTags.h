@@ -13,8 +13,11 @@ namespace TromboneGamePlayTags
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_MatchMenu);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_Tutorial);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_Customize);
-	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_OutGame_ResultScene);
 	
+	// 결과 맵.
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Result_OrchestraStage);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Result_SnowField);
+
 	// 로비 맵. 매치 메뉴에서 플레이어가 선택
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Lobby_OrchestraStage);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Lobby_SnowField);
@@ -53,12 +56,14 @@ namespace TromboneGamePlayTags
 	const FString OutGameCategory = TEXT("OutGame");
 	const FString InGameCategory = TEXT("InGame");
 	const FString LobbyCategory = TEXT("Lobby");
+	const FString ResultCategory = TEXT("Result");
 	const FString TestCategory = TEXT("Test");
-	
+
 	const FString MapsRootPath = ProjectName + TEXT(".") + MapsCategory;
-	
+
 	const FString OutGamePath = MapsRootPath + TEXT(".") + OutGameCategory;
 	const FString InGamePath = MapsRootPath + TEXT(".") + InGameCategory;
 	const FString LobbyPath = MapsRootPath + TEXT(".") + LobbyCategory;
+	const FString ResultPath = MapsRootPath + TEXT(".") + ResultCategory;
 	const FString TestPath = MapsRootPath + TEXT(".") + TestCategory;
 }

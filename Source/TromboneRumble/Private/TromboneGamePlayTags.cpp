@@ -8,7 +8,10 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_MatchMenu,			"Trombone.Maps.OutGame.MatchMenu");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_Tutorial,			"Trombone.Maps.OutGame.Tutorial");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_Customize, 		"Trombone.Maps.OutGame.Customize");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_OutGame_ResultScene,		"Trombone.Maps.OutGame.ResultScene");
+	
+	// 결과 맵
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_OrchestraStage,		"Trombone.Maps.Result.OrchestraStage");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_SnowField,			"Trombone.Maps.Result.SnowField");
 
 	// 로비 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_OrchestraStage,		"Trombone.Maps.Lobby.OrchestraStage");
