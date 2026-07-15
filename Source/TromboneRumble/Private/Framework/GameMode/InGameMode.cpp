@@ -8,8 +8,7 @@
 #include "EasySessionTypes.h"
 #include "EasySessionStatics.h"
 #include "Characters/DefaultPlayerController.h"
-#include "Framework/TromboneGameInstance.h"
-#include "Utilities/TromboneStatics.h"
+#include "Subsystems/ResultSceneSubsystem.h"
 
 void AInGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -51,9 +50,9 @@ void AInGameMode::OnRhythmGameEndedReport(APlayerController* PC)
 	RhythmEndedPlayers.AddUnique(PC);
 	if (RhythmEndedPlayers.Num() >= CurrentSessionPlayerCount)
 	{
-		if (UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+		if (UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
 		{
-			GI->SaveResultSceneData();
+			ResultSubsystem->SaveResultSceneData();
 		}
 		
 		if (AInGameState* GS = GetGameState<AInGameState>())
@@ -90,9 +89,12 @@ void AInGameMode::OnClientTravelToResultLevelAndLeaveSession()
 		{
 			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 			{
-				OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateLambda([this](FName Name, bool bSuccess)
+				OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateLambda([this](FName /*SessionName*/, bool /*bSuccess*/)
 				{
-					UTromboneStatics::OpenLevel(this, ELevelType::ResultScene);
+					if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
+					{
+						ResultSubsystem->OpenResultLevel(this);
+					}
 				}));
 			}
 		}), 0.5f, false);

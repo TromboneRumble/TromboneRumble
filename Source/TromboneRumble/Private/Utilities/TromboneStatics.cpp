@@ -84,8 +84,13 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelType::Customize:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_Customize);
 			break;
-		case ELevelType::ResultScene:
-			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_ResultScene);
+
+		// Result
+		case ELevelType::OrchestraStageResult:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Result_OrchestraStage);
+			break;
+		case ELevelType::SnowFieldResult:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Result_SnowField);
 			break;
 		
 		default:

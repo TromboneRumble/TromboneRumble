@@ -8,8 +8,8 @@
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
 #include "Blueprint/UserWidget.h"
-#include "Framework/TromboneGameInstance.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "Subsystems/ResultSceneSubsystem.h"
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
 #include "Wwise/API/WwiseSoundEngineAPI.h"
 
@@ -79,7 +79,7 @@ void AResultCutsceneDirector::BeginPlay()
 	
 	if (const UGameStateSubsystem* GameStateSubsystem = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
-		if (GameStateSubsystem->GetLevelState() == ELevelType::ResultScene)
+		if (IsResultLevelType(GameStateSubsystem->GetLevelState()))
 		{
 			PlayResultCutscene();
 		}
@@ -150,10 +150,12 @@ void AResultCutsceneDirector::PlayResultCutscene()
 	}
 
 	// result data : podium actor enabled & skin color
-	UTromboneGameInstance* GI = GetGameInstance<UTromboneGameInstance>();
-	CachedLocalPlayerRankIndex = GI->GetLocalPlayerRank();
-	
-	TArray<FPlayerResultSceneData> ResultData = GI->CachedResultSceneData;
+	UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>();
+	if (!ResultSubsystem) return;
+
+	CachedLocalPlayerRankIndex = ResultSubsystem->GetLocalPlayerRank();
+
+	TArray<FPlayerResultSceneData> ResultData = ResultSubsystem->GetResultSceneData();
 	ResultData.Sort();
 	
 	for (int32 i = 0; i < PrePlacedPodiums.Num(); ++i)
@@ -200,7 +202,7 @@ void AResultCutsceneDirector::PlayResultCutscene()
 			{
 				CachedResultWidget = ResultWidget;
 				ResultWidget->SetDirector(this);
-				ResultWidget->SetResultData(GI->GetLocalPlayerResultSceneData(), GI->GetLocalPlayerRank());
+				ResultWidget->SetResultData(ResultSubsystem->GetLocalPlayerResultSceneData(), ResultSubsystem->GetLocalPlayerRank());
 				ResultWidget->AddToViewport();
 
 				PC->bShowMouseCursor = false;

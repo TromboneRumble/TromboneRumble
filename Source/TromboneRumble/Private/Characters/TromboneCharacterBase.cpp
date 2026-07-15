@@ -625,7 +625,7 @@ void ATromboneCharacterBase::ApplyFlagPhysics()
 
 	if (const UGameStateSubsystem* GameStateSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 	{
-		if (GameStateSubsystem->GetLevelState() == ELevelType::OrchestraStage || GameStateSubsystem->GetLevelState() == ELevelType::SnowField)
+		if (IsInGameLevelType(GameStateSubsystem->GetLevelState()))
 		{
 			GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			

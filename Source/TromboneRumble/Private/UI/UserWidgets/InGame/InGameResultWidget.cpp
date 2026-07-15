@@ -7,7 +7,7 @@
 #include "Components/Button.h"
 #include "Components/Overlay.h"
 #include "Components/Image.h"
-#include "Framework/TromboneGameInstance.h"
+#include "Subsystems/ResultSceneSubsystem.h"
 #include "Utilities/TromboneStatics.h"
 
 void UInGameResultWidget::SetResultData(const FPlayerResultSceneData& InResultData, int32 PlayerRank)

@@ -89,17 +89,37 @@ enum class ELevelType : uint8
 	MainMenu,
 	MatchMenu,
 	Tutorial,
-	ResultScene,
 	Customize,
-	
+
 	OrchestraStageLobby,
 	SnowFieldLobby,
-	
+
 	OrchestraStage,
 	SnowField,
-	
+
+	OrchestraStageResult,
+	SnowFieldResult,
+
 	Invalid = 255 UMETA(Hidden)
 };
+
+/** @return true if the given level type is result level */
+FORCEINLINE bool IsResultLevelType(const ELevelType Type)
+{
+	return Type == ELevelType::OrchestraStageResult || Type == ELevelType::SnowFieldResult;
+}
+
+/** @return true if the given level type is in-game level */
+FORCEINLINE bool IsInGameLevelType(const ELevelType Type)
+{
+	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField;
+}
+
+/** @return true if the given level type is lobby level */
+FORCEINLINE bool IsLobbyLevelType(const ELevelType Type)
+{
+	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby;
+}
 
 UENUM(BlueprintType)
 enum class ECustomizationSlotType : uint8
