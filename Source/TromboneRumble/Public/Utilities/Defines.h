@@ -274,6 +274,8 @@ namespace TromboneRender
 {
 	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
 	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
+	
+	constexpr float MAX_FRAME_RATE = 144.f;
 }
 
 namespace TromboneMaterial
