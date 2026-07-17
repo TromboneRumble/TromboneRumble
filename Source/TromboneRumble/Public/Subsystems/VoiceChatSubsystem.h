@@ -114,6 +114,9 @@ private:
 	// voice.SilenceDetectionThreshold — 이 값 이하 구간은 아예 패킷으로 안 실림
 	static constexpr float SilenceDetectionThreshold = 0.005f;
 
-	void OnEngineNetworkFailure(UWorld* World, UNetDriver* NetDriver,
-		ENetworkFailure::Type FailureType, const FString& ErrorString);
+	/** 월드 파괴 시작 시 OSS의 원격 talker 버퍼를 비워 VoipListenerSynthComponent를
+	 *  FScene::Release() 전에 해제시킨다. (상세: .cpp 구현부 주석) */
+	void HandleWorldBeginTearDown(UWorld* World);
+
+	FDelegateHandle WorldTearDownHandle;
 };
