@@ -8,6 +8,29 @@
 UPopupBase::UPopupBase()
 {
 	bIsBackHandler = true;
+	bAutoRestoreFocus = true;
+}
+
+UWidget* UPopupBase::NativeGetDesiredFocusTarget() const
+{
+	return GetDefaultFocusWidget();
+}
+
+UWidget* UPopupBase::GetDefaultFocusWidget() const
+{
+	return FirstFocusCandidate({ Button_Close });
+}
+
+UWidget* UPopupBase::FirstFocusCandidate(std::initializer_list<UWidget*> Candidates)
+{
+	for (UWidget* Candidate : Candidates)
+	{
+		if (Candidate && Candidate->GetIsEnabled() && Candidate->IsVisible())
+		{
+			return Candidate;
+		}
+	}
+	return nullptr;
 }
 
 void UPopupBase::NativeOnActivated()

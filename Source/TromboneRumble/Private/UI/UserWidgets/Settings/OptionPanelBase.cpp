@@ -2,6 +2,11 @@
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "CommonButtonBase.h"
 
+UWidget* UOptionPanelBase::NativeGetDesiredFocusTarget() const
+{
+	return GetFirstFocusRow();
+}
+
 void UOptionPanelBase::NativeConstruct()
 {
 	Super::NativeConstruct();

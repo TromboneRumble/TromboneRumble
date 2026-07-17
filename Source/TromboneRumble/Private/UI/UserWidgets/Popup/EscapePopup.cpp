@@ -4,6 +4,15 @@
 #include "Utilities/DebugHelper.h"
 #include "Utilities/TromboneStatics.h"
 
+UWidget* UEscapePopup::GetDefaultFocusWidget() const
+{
+	if (UWidget* Candidate = FirstFocusCandidate({ Button_Option, Button_Disconnect }))
+	{
+		return Candidate;
+	}
+	return Super::GetDefaultFocusWidget();
+}
+
 void UEscapePopup::Register()
 {
 	Super::Register();

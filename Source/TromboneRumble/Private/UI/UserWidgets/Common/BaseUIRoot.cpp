@@ -2,6 +2,8 @@
 
 #include "UI/UserWidgets/Common/BaseUIRoot.h"
 #include "CommonActivatableWidget.h"
+#include "CommonInputSubsystem.h"
+#include "CommonInputTypeEnum.h"
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
@@ -17,8 +19,26 @@ void UBaseUIRoot::NativePreConstruct()
 	}
 }
 
+void UBaseUIRoot::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer()))
+	{
+		InputSubsystem->OnInputMethodChangedNative.AddUObject(this, &ThisClass::HandleInputMethodChanged);
+
+		// Seed focus when the UI is created while a gamepad is already the active input method
+		HandleInputMethodChanged(InputSubsystem->GetCurrentInputType());
+	}
+}
+
 void UBaseUIRoot::NativeDestruct()
 {
+	if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer()))
+	{
+		InputSubsystem->OnInputMethodChangedNative.RemoveAll(this);
+	}
+
 	if (BaseStack)
 	{
 		BaseStack->ClearWidgets();
@@ -31,8 +51,53 @@ void UBaseUIRoot::NativeDestruct()
 	{
 		OverlayStack->ClearWidgets();
 	}
-	
+
 	Super::NativeDestruct();
+}
+
+void UBaseUIRoot::HandleInputMethodChanged(const ECommonInputType NewInputType)
+{
+	APlayerController* PC = GetOwningPlayer();
+
+	if (NewInputType == ECommonInputType::Gamepad)
+	{
+		// Only hide a cursor that is currently shown, so we never fight screens that hide it themselves
+		if (PC && PC->ShouldShowMouseCursor())
+		{
+			PC->SetShowMouseCursor(false);
+			bCursorHiddenForGamepad = true;
+		}
+
+		FocusActiveWidgetDesiredTarget();
+	}
+	else if (bCursorHiddenForGamepad)
+	{
+		bCursorHiddenForGamepad = false;
+		if (PC)
+		{
+			PC->SetShowMouseCursor(true);
+		}
+	}
+}
+
+UCommonActivatableWidget* UBaseUIRoot::GetTopActiveWidget() const
+{
+	if (PopupStack && PopupStack->GetActiveWidget())
+	{
+		return PopupStack->GetActiveWidget();
+	}
+	return BaseStack ? BaseStack->GetActiveWidget() : nullptr;
+}
+
+void UBaseUIRoot::FocusActiveWidgetDesiredTarget() const
+{
+	if (const UCommonActivatableWidget* ActiveWidget = GetTopActiveWidget())
+	{
+		if (UWidget* FocusTarget = ActiveWidget->GetDesiredFocusTarget())
+		{
+			FocusTarget->SetFocus();
+		}
+	}
 }
 
 UCommonActivatableWidget* UBaseUIRoot::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType) const
@@ -68,6 +133,16 @@ bool UBaseUIRoot::PopStack(const EUIStackType StackType) const
 		if (UCommonActivatableWidget* ActiveWidget = TargetStack->GetActiveWidget())
 		{
 			ActiveWidget->DeactivateWidget();
+
+			// Closing a popup doesn't deactivate the base screen, so hand focus back to it for gamepad users
+			if (StackType == EUIStackType::Popup)
+			{
+				const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+				if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+				{
+					FocusActiveWidgetDesiredTarget();
+				}
+			}
 			return true;
 		}
 	}

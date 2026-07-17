@@ -65,12 +65,18 @@ public:
 	const FOnPopupAction& OnPopupClosed() { return OnPopupClosedEvent; }
 	
 protected:
-	
+
 	/** Registers the widget events. e.g. button click events. */
 	virtual void Register();
-	
+
 	/** Unregisters the widget events. e.g. button click events. */
 	virtual void Unregister();
+
+	/** @return The widget that should receive focus when this popup is activated. Defaults to the close button. */
+	virtual UWidget* GetDefaultFocusWidget() const;
+
+	/** @return The first candidate that is non-null, visible and enabled. Handles optional BindWidget members. */
+	static UWidget* FirstFocusCandidate(std::initializer_list<UWidget*> Candidates);
 	
 private:
 	
@@ -92,6 +98,7 @@ protected:
 	virtual void NativeOnDeactivated() override;
 	virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;
 	virtual bool NativeOnHandleBackAction() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	// ~ End UCommonActivatableWidget Interface
 	
 	// ~ Begin Widgets

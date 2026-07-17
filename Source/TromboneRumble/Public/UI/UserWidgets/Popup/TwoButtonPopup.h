@@ -40,8 +40,9 @@ protected:
 	// ~ Begin UPopupWidgetBase Interface
 	virtual void Register() override;
 	virtual void Unregister() override;
+	virtual UWidget* GetDefaultFocusWidget() const override;
 	// ~ End UPopupWidgetBase Interface
-	
+
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
 	TObjectPtr<UCommonTextBlock> Text_Title;

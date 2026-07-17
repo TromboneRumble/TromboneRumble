@@ -1,20 +1,57 @@
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "CommonAnimatedSwitcher.h"
 #include "CommonButtonBase.h"
+#include "CommonInputSubsystem.h"
+#include "CommonInputTypeEnum.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Groups/CommonButtonGroupBase.h"
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
+#include "UI/UserWidgets/Settings/OptionPanelBase.h"
 #include "UI/UserWidgets/Settings/GameplayOptionPanel.h"
 #include "UI/UserWidgets/Settings/VideoOptionPanel.h"
 #include "UI/UserWidgets/Settings/LanguageOptionPanel.h"
 #include "Utilities/TromboneStatics.h"
+
+UWidget* USettingPopup::GetDefaultFocusWidget() const
+{
+	// Panels are swapped via SetActiveWidget and never activated, so route focus through the active panel ourselves
+	if (CAS_Settings)
+	{
+		if (const UOptionPanelBase* ActivePanel = Cast<UOptionPanelBase>(CAS_Settings->GetActiveWidget()))
+		{
+			if (UWidget* PanelFocus = ActivePanel->GetDesiredFocusTarget())
+			{
+				return PanelFocus;
+			}
+		}
+	}
+
+	if (Button_Apply)
+	{
+		return Button_Apply;
+	}
+	return Super::GetDefaultFocusWidget();
+}
 
 void USettingPopup::ChangePanel(UWidget* TargetWidget) const
 {
 	if (CAS_Settings)
 	{
 		CAS_Settings->SetActiveWidget(TargetWidget);
-	}	
+
+		// Panels aren't activated, so move focus to the new panel's first row for gamepad users
+		const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+		if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+		{
+			if (const UOptionPanelBase* Panel = Cast<UOptionPanelBase>(TargetWidget))
+			{
+				if (UWidget* FocusWidget = Panel->GetDesiredFocusTarget())
+				{
+					FocusWidget->SetFocus();
+				}
+			}
+		}
+	}
 }
 
 void USettingPopup::OnClickApply()

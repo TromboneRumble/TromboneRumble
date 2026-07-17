@@ -28,6 +28,16 @@ void UTwoButtonPopup::Init(const FTwoButtonPopupParams& InParams)
 	bShouldCloseOnRightButtonClick = InParams.bCloseOnRightButtonClick;
 }
 
+UWidget* UTwoButtonPopup::GetDefaultFocusWidget() const
+{
+	// Prefer the right (confirm) button by convention
+	if (UWidget* Candidate = FirstFocusCandidate({ Button_Right, Button_Left }))
+	{
+		return Candidate;
+	}
+	return Super::GetDefaultFocusWidget();
+}
+
 void UTwoButtonPopup::Register()
 {
 	Super::Register();

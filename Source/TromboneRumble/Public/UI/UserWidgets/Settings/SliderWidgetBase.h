@@ -25,7 +25,10 @@ public:
 	
 	/** @return Current slider value. */
 	float GetValue() const;
-	
+
+	/** @return The inner widget that should receive gamepad/keyboard focus. The analog slider adjusts by StepSize on nav left/right while focused. */
+	UWidget* GetFocusWidget() const;
+
 protected:
 	
 	UFUNCTION()

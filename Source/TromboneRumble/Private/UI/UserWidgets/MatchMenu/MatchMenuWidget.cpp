@@ -15,6 +15,11 @@
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 #include "Utilities/TromboneStatics.h"
 
+UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
+{
+	return CB_Start;
+}
+
 void UMatchMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

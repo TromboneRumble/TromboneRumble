@@ -41,12 +41,15 @@ public:
 	
 	/** @return Whether there are any changes in this options panel */
 	virtual bool IsDirty() const { return false; }
-	
+
+	/** @return The row widget that should receive focus first when this panel is shown. */
+	virtual UWidget* GetFirstFocusRow() const { return nullptr; }
+
 protected:
-	
+
 	/** Registers the widget events. e.g. button click events. */
 	virtual void Register();
-	
+
 	/** Unregisters the widget events. e.g. button click events. */
 	virtual void Unregister();
 	
@@ -60,6 +63,9 @@ public:
 	// ~ Begin UCommonActivatableWidget Interface
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+
+protected:
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	// ~ End UCommonActivatableWidget Interface
 	
 };

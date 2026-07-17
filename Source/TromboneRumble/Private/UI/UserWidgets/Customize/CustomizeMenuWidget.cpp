@@ -35,6 +35,11 @@ void UCustomizeMenuWidget::NativeOnActivated()
 		CaptureBaseline();
 }
 
+UWidget* UCustomizeMenuWidget::NativeGetDesiredFocusTarget() const
+{
+	return CB_AntennaNext;
+}
+
 void UCustomizeMenuWidget::CaptureBaseline()
 {
 	APlayerController* PC = GetOwningPlayer();

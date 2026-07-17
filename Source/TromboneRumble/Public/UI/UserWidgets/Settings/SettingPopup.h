@@ -29,6 +29,7 @@ protected:
 	// ~ Begin UPopupWidget Interface
 	virtual void Register() override;
 	virtual void Unregister() override;
+	virtual UWidget* GetDefaultFocusWidget() const override;
 	// ~ End UPopupWidget Interface
 	
 	// ~ Begin UCommonActivatableWidget Interface

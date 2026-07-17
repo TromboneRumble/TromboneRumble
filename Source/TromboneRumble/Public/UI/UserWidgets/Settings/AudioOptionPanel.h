@@ -23,6 +23,7 @@ public:
 	virtual void ApplySettingsFromUI(bool bSaveToDisk) override;
 	virtual void ApplySettingsFromSavedData() override;
 	virtual bool IsDirty() const override;
+	virtual UWidget* GetFirstFocusRow() const override;
 	// ~ End UOptionPanelBase Interface
 
 protected:

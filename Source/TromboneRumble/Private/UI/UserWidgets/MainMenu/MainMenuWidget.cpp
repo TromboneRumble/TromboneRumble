@@ -18,6 +18,11 @@
 #include "Utilities/Defines.h"
 #include "Utilities/TromboneStatics.h"
 
+UWidget* UMainMenuWidget::NativeGetDesiredFocusTarget() const
+{
+	return CB_CreateSession;
+}
+
 void UMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();

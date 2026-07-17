@@ -2,8 +2,22 @@
 
 #include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 #include "AkGameplayStatics.h"
+#include "CommonInputSubsystem.h"
+#include "CommonInputTypeEnum.h"
 #include "CommonTextBlock.h"
 #include "UI/Styles/CommonButtonStyleExtension.h"
+
+void UCommonButtonBaseExtensionWithText::NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent)
+{
+	Super::NativeOnAddedToFocusPath(InFocusEvent);
+
+	// Mouse clicks also move focus; only mirror hover feedback for gamepad-driven focus to avoid double audio
+	const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+	if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+	{
+		PlayHoverFeedback();
+	}
+}
 
 void UCommonButtonBaseExtensionWithText::SetText(const FText& InText) const
 {
@@ -23,7 +37,12 @@ void UCommonButtonBaseExtensionWithText::NativeConstruct()
 void UCommonButtonBaseExtensionWithText::NativeOnHovered()
 {
 	Super::NativeOnHovered();
-	
+
+	PlayHoverFeedback();
+}
+
+void UCommonButtonBaseExtensionWithText::PlayHoverFeedback() const
+{
 	if (CachedButtonStyleExtension && CachedButtonStyleExtension->NormalHoveredAudioEvent)
 	{
 		UAkGameplayStatics::PostEvent(CachedButtonStyleExtension->NormalHoveredAudioEvent, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());

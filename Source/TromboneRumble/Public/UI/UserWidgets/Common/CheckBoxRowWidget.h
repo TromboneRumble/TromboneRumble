@@ -28,4 +28,7 @@ public:
 	/** Exposes the underlying button click event for external binding. */
 	UCommonButtonBase::FCommonButtonEvent& OnClicked() const { return CB_CheckBox->OnClicked(); }
 
+	/** @return The inner widget that should receive gamepad/keyboard focus. */
+	UWidget* GetFocusWidget() const { return CB_CheckBox; }
+
 };

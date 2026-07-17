@@ -5,6 +5,11 @@
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/Common/CheckBoxRowWidget.h"
 
+UWidget* UGameplayOptionPanel::GetFirstFocusRow() const
+{
+	return CBR_ShouldShowUsernameInGame ? CBR_ShouldShowUsernameInGame->GetFocusWidget() : nullptr;
+}
+
 void UGameplayOptionPanel::RefreshUI()
 {
 	Super::RefreshUI();

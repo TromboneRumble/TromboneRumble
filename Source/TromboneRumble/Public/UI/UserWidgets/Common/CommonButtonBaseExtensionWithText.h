@@ -38,13 +38,21 @@ public:
 	// ~ End UCommonButtonBase Interface
 	
 protected:
-	
+
 	// ~ Begin UCommonButtonBase Interface
 	virtual void NativeOnHovered() override;
 	virtual void NativeOnPressed() override;
 	virtual void NativeOnReleased() override;
 	// ~ End UCommonButtonBase Interface
-	
+
+	// ~ Begin UUserWidget Interface
+	// Fires when this button enters the focus path (gamepad/keyboard navigation), mirroring hover feedback
+	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
+	// ~ End UUserWidget Interface
+
+	/** Plays the hovered audio event. Shared between mouse hover and gamepad focus. */
+	void PlayHoverFeedback() const;
+
 private:
 	
 	UPROPERTY()

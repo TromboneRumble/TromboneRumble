@@ -31,8 +31,12 @@ public:
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
 	// ~ End UBaseMenuWidget Interface
-	
+
 protected:
+
+	// ~ Begin UCommonActivatableWidget Interface
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	// ~ End UCommonActivatableWidget Interface
 	
 	// ~ Begin UIs
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = "true"), BlueprintReadOnly, Category = "UI")

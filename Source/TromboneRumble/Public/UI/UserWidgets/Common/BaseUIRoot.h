@@ -9,6 +9,7 @@
 #include "BaseUIRoot.generated.h"
 
 enum class EUIStackType;
+enum class ECommonInputType : uint8;
 
 UCLASS()
 class TROMBONERUMBLE_API UBaseUIRoot : public UCommonUserWidget
@@ -42,10 +43,24 @@ public:
 	/** Enabling/Disabling the base UI */
 	void SetBaseUIEnabled(const bool bEnabled) const;
 
+	/** @return The widget that currently owns UI focus priority (topmost popup, else active base screen). */
+	UCommonActivatableWidget* GetTopActiveWidget() const;
+
+	/** Focuses the desired focus target of the top active widget. Used to (re)seed gamepad focus. */
+	void FocusActiveWidgetDesiredTarget() const;
+
 protected:
-	
+
 	UCommonActivatableWidgetStack* GetStackByType(const EUIStackType StackType) const;
-	
+
+private:
+
+	/** Handles mouse <-> gamepad switching: seeds focus and toggles the cursor for gamepad play. */
+	void HandleInputMethodChanged(ECommonInputType NewInputType);
+
+	/** True while the cursor is hidden because of gamepad input, so we only restore what we hid. */
+	bool bCursorHiddenForGamepad = false;
+
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
@@ -64,6 +79,7 @@ protected:
 	
 	// ~ Begin UCommonUserWidget Interface
 	virtual void NativePreConstruct() override;
+	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	// ~ End UCommonUserWidget Interface
 };

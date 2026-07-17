@@ -10,6 +10,16 @@
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/ToastSubsystem.h"
 
+UWidget* UJoinCodePopup::GetDefaultFocusWidget() const
+{
+	// ET_Code is intentionally skipped: focusing an EditableText traps gamepad navigation
+	if (UWidget* Candidate = FirstFocusCandidate({ Button_JoinCode }))
+	{
+		return Candidate;
+	}
+	return Super::GetDefaultFocusWidget();
+}
+
 void UJoinCodePopup::Register()
 {
 	Super::Register();

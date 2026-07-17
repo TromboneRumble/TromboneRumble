@@ -16,6 +16,7 @@ class TROMBONERUMBLE_API UCustomizeMenuWidget : public UBaseMenuWidget
 protected:
 	virtual void Init() override;
 	virtual void NativeOnActivated() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 

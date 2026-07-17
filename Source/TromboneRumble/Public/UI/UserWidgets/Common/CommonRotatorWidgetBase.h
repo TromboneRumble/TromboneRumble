@@ -15,6 +15,9 @@ public:
 	
 	/** Delegate for when the rotator is rotated with a direction. Provides the new index and the direction of rotation. */
 	FOnRotatedWithDirection& OnRotatedWithDirection() const { return CR_Rotator->OnRotatedWithDirection; }
+
+	/** @return The inner widget that should receive gamepad/keyboard focus. The rotator handles nav left/right natively while focused. */
+	UWidget* GetFocusWidget() const { return CR_Rotator; }
 	
 protected:
 	

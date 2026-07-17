@@ -2,6 +2,11 @@
 #include "Kismet/KismetInternationalizationLibrary.h"
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
+UWidget* ULanguageOptionPanel::GetFirstFocusRow() const
+{
+	return OC_Language ? OC_Language->GetFocusWidget() : nullptr;
+}
+
 void ULanguageOptionPanel::Register()
 {
 	Super::Register();

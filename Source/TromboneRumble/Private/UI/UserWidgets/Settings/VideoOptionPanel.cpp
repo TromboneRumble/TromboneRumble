@@ -7,6 +7,19 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
+UWidget* UVideoOptionPanel::GetFirstFocusRow() const
+{
+	// Rows are built dynamically from the data table; use container order for a stable first focus
+	if (VB_OptionContainer && VB_OptionContainer->GetChildrenCount() > 0)
+	{
+		if (const UOptionCycleRowWidget* FirstRow = Cast<UOptionCycleRowWidget>(VB_OptionContainer->GetChildAt(0)))
+		{
+			return FirstRow->GetFocusWidget();
+		}
+	}
+	return nullptr;
+}
+
 void UVideoOptionPanel::NativePreConstruct()
 {
 	Super::NativePreConstruct();

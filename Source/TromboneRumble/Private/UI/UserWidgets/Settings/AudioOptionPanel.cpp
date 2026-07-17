@@ -10,6 +10,11 @@
 #include "UI/UserWidgets/Common/CheckBoxRowWidget.h"
 #include "Engine/LocalPlayer.h"
 
+UWidget* UAudioOptionPanel::GetFirstFocusRow() const
+{
+	return WBP_MasterSlider ? WBP_MasterSlider->GetFocusWidget() : nullptr;
+}
+
 void UAudioOptionPanel::RefreshUI()
 {
 	Super::RefreshUI();

@@ -3,6 +3,11 @@
 #include "CommonTextBlock.h"
 #include "Components/ProgressBar.h"
 
+UWidget* USliderWidgetBase::GetFocusWidget() const
+{
+	return Slider;
+}
+
 void USliderWidgetBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();
