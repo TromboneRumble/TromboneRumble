@@ -19,6 +19,7 @@ class UActorPoolSubsystem;
 class ARhythmNote;
 class ARhythmNoteSpawner;
 class UBoxComponent;
+class UMaterialInterface;
 
 
 UCLASS()
@@ -192,6 +193,16 @@ private:
 	bool bIsSyncTesting = false;
 	// ~Rhythm Game
 
+	// Map Materials
+	// 맵별 리듬게임 캐릭터 링 히트박스 머티리얼. 미설정 시 캐릭터 BP에 지정된 기본 머티리얼 사용
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rhythm|Materials", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> HitBoxRingMaterial = nullptr;
+
+	// 맵별 리듬게임 노트 머티리얼. 미설정 시 NoteVisualizer BP에 지정된 기본 머티리얼 사용
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rhythm|Materials", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> NoteVisualizerRingMaterial = nullptr;
+	// ~Map Materials
+
 	// Cached References
 	UActorPoolSubsystem* GetCachedActorPoolSubsystem();
 	URhythmSubsystem* GetCachedRhythmSubsystem();
@@ -214,4 +225,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE int32 GetBGMPlayingID() const { return BGMPlayingID; }
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm|Materials")
+	FORCEINLINE UMaterialInterface* GetHitBoxRingMaterial() const { return HitBoxRingMaterial; }
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm|Materials")
+	FORCEINLINE UMaterialInterface* GetNoteVisualizerRingMaterial() const { return NoteVisualizerRingMaterial; }
 };

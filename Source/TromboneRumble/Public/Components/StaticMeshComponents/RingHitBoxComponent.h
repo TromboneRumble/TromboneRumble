@@ -96,6 +96,12 @@ private:
 	void EnsureMID();
 	void ApplyMaterialParams();
 
+	// 현재 맵의 RhythmActor가 지정한 링 머티리얼. 없으면 nullptr
+	UMaterialInterface* ResolvePerMapOverrideMaterial() const;
+
+	// 캐릭터가 RhythmActor보다 먼저 BeginPlay된 경우를 대비해 MID를 다시 만든다
+	void RefreshMaterialFromRhythmActor();
+
 	void CacheBaseColorIfNeeded();
 	void FlashToColor(const FLinearColor& InColor);
 	void RestoreBaseColor();
