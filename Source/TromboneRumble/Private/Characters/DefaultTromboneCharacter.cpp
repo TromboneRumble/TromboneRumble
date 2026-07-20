@@ -401,7 +401,7 @@ void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason
 	{
 		if (const UGameStateSubsystem* Sub = GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
 		{
-			if (Sub->GetLevelState() == ELevelType::OrchestraStage || Sub->GetLevelState() == ELevelType::SnowField)
+			if (IsInGameLevelType(Sub->GetLevelState()))
 			{
 				EquipmentComponent->TryUnequipItem(EEquipmentSlotType::Weapon);
 			}

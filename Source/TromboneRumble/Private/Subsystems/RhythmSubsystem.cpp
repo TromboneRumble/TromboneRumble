@@ -130,3 +130,19 @@ void URhythmSubsystem::RegisterRhythmActor(ARhythmActor* InActor)
 {
 	RhythmActor = InActor;
 }
+
+ARhythmActor* URhythmSubsystem::GetRegisteredRhythmActor(const UWorld* QuerierWorld) const
+{
+	ARhythmActor* Actor = RhythmActor.Get();
+	if (!Actor)
+	{
+		return nullptr;
+	}
+
+	if (QuerierWorld && Actor->GetWorld() != QuerierWorld)
+	{
+		return nullptr;
+	}
+
+	return Actor;
+}

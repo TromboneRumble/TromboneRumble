@@ -2,6 +2,7 @@
 
 
 #include "Actors/Rhythm/NoteVisualizer.h"
+#include "Actors/Rhythm/RhythmActor.h"
 #include "Subsystems/RhythmNoteChannelSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Subsystems/ActorPoolSubsystem.h"
@@ -225,6 +226,27 @@ void ANoteVisualizer::EnsureMID()
 	// 이미 만들어져 있으면 재사용
 	if (MID) return;
 
+	// 맵별 머티리얼이 지정되어 있으면 Element 0을 먼저 교체
+	if (UMaterialInterface* OverrideMat = ResolvePerMapOverrideMaterial())
+	{
+		if (RingMesh->GetMaterial(0) != OverrideMat)
+		{
+			RingMesh->SetMaterial(0, OverrideMat);
+		}
+	}
+
 	// Element 0에 이미 Material/MI가 들어있으면 Source Material 안 넣어도 됨
 	MID = RingMesh->CreateDynamicMaterialInstance(0);
+}
+
+UMaterialInterface* ANoteVisualizer::ResolvePerMapOverrideMaterial() const
+{
+	const UWorld* World = GetWorld();
+	if (!World || !World->GetGameInstance()) return nullptr;
+
+	const URhythmSubsystem* RhythmSubsystem = World->GetGameInstance()->GetSubsystem<URhythmSubsystem>();
+	if (!RhythmSubsystem) return nullptr;
+
+	const ARhythmActor* CurrentRhythmActor = RhythmSubsystem->GetRegisteredRhythmActor(World);
+	return CurrentRhythmActor ? CurrentRhythmActor->GetNoteVisualizerRingMaterial() : nullptr;
 }

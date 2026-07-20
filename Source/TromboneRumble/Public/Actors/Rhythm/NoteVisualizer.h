@@ -11,6 +11,7 @@
 class URingHitBoxComponent;
 class UStaticMeshComponent;
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API ANoteVisualizer : public AActor, public IPoolable
@@ -39,6 +40,9 @@ public:
 private:
 	void EnsureMID();
 	void ApplyMaterialParams();
+
+	// 현재 맵의 RhythmActor가 지정한 링 머티리얼. 없으면 nullptr
+	UMaterialInterface* ResolvePerMapOverrideMaterial() const;
 	void BindChannel();
 	void UnBindChannel();
 	void ShowRing(bool bShow);

@@ -67,4 +67,10 @@ private:
 public:
 	FORCEINLINE ERhythmGameState GetCurrentRhythmState() const { return CurrentState; }
 	void RegisterRhythmActor(ARhythmActor* InActor);
+
+	/// <summary>
+	/// 등록된 RhythmActor를 반환. GameInstance 서브시스템이라 레벨 전환 후 이전 맵의 액터가 남을 수 있으므로,
+	/// QuerierWorld를 넘기면 같은 월드의 액터일 때만 반환.
+	/// </summary>
+	ARhythmActor* GetRegisteredRhythmActor(const UWorld* QuerierWorld = nullptr) const;
 };

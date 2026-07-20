@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DefaultPlayerState.h"
 #include "GameplayTagContainer.h"
 #include "Engine/GameInstance.h"
 #include "Utilities/Defines.h"
@@ -12,46 +11,12 @@
 class UAkComponent;
 class UAkAudioEvent;
 
-// TODO : Define으로 빼야되는데, Define도 세분화가 필요
-USTRUCT(Blueprintable)
-struct FPlayerResultSceneData
-{
-    GENERATED_BODY()
-    
-    FString Nickname = FString();
-    
-    float Score = 0.0f;
-    
-    FRumbleScoreData SpecificScoreData = FRumbleScoreData();
-
-    FLinearColor PlayerSkinColor = FLinearColor::Black;
-
-    /** 포디움에 적용할 커스터마이징(Antenna/Face/Costume) */
-    FCustomizationSaveData Customization = FCustomizationSaveData();
-
-    /** is this my data? */
-    bool bIsLocalPlayer = false;
-    
-    // Descending
-    bool operator<(const FPlayerResultSceneData& Other) const
-    {
-        if (FMath::IsNearlyEqual(Score, Other.Score))
-        {
-            return Nickname < Other.Nickname;
-        }
-        return Score > Other.Score;
-    }
-};
-
 UCLASS(Abstract)
 class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
     
 public:
-    
-    /** Save in-game data when travel to the result  */
-    void SaveResultSceneData();
     
     UFUNCTION(BlueprintCallable)
     void PlayMenuBGM();
@@ -61,16 +26,6 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
-    
-    /** 인게임 -> 결과창으로 전환 시 사용할 데이터. 외부에서 Read/Write 가능해야 함 */
-    UPROPERTY()
-    TArray<FPlayerResultSceneData> CachedResultSceneData;
-    
-    /** @return My(Local) result scene data (in-game score data)*/
-    const FPlayerResultSceneData& GetLocalPlayerResultSceneData();
-
-    /** @return My(Local) rhythm rank */
-    int32 GetLocalPlayerRank(); 
 
 protected:
     
