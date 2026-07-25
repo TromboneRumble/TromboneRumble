@@ -17,6 +17,11 @@ class ABlizzardShelter;
 class UAkAudioEvent;
 class UAkSwitchValue;
 class UAkComponent;
+class USceneComponent;
+class UDirectionalLightComponent;
+class UExponentialHeightFogComponent;
+class USkyAtmosphereComponent;
+class USkyLightComponent;
 
 UENUM(BlueprintType)
 enum class EBlizzardState : uint8
@@ -26,22 +31,37 @@ enum class EBlizzardState : uint8
 	Active,
 };
 
-/** 환경 라이팅 한 세트. 상태 전이 시 시작/목표 세트를 잡아두고 BP 타임라인 알파로 보간한다. */
-struct FBlizzardEnvValues
+/** 하나의 구동 대상 환경 컴포넌트에 대한 런타임 보간 상태.
+ * 라이브 월드 컴포넌트 + 값 스냅샷들(평상시/블렌드 시작/상태별 목표)을 묶는다.
+ * 상태별 목표(ResolvedWarning/Active)는 평상시 값 위에 템플릿의 "오버라이드된(=클래스 기본값과 다른)"
+ * 프로퍼티만 얹어 만든다 → 아티스트가 템플릿에서 바꾼 값만 구동되고 나머지는 평상시 그대로 유지된다. */
+USTRUCT()
+struct FBlizzardDrivenEnv
 {
-	float SunIntensity = 0.f;
-	FLinearColor SunColor = FLinearColor::White;
+	GENERATED_BODY()
 
-	float FogDensity = 0.f;
-	FLinearColor FogColor = FLinearColor::White;
-	float FogStart = 0.f;
+	/** 구동 대상 라이브 월드 컴포넌트 (월드 소유라 약참조). */
+	TWeakObjectPtr<USceneComponent> Live;
 
-	FLinearColor SkyLuminance = FLinearColor::White;
+	/** 블렌드 시작 시점의 라이브 값 스냅샷 (전이마다 재캡처). */
+	UPROPERTY(Transient)
+	TObjectPtr<USceneComponent> StartSnapshot = nullptr;
 
-	FLinearColor SkyLightColor = FLinearColor::White;
-	float SkyLightIntensity = 0.f;
+	/** 레벨 저작 평상시 값 = Idle 복귀 목표. */
+	UPROPERTY(Transient)
+	TObjectPtr<USceneComponent> NormalSnapshot = nullptr;
 
-	float CloudCoverage = 0.f;
+	/** 평상시 + 전조 템플릿 오버라이드 = Warning 목표. */
+	UPROPERTY(Transient)
+	TObjectPtr<USceneComponent> ResolvedWarning = nullptr;
+
+	/** 평상시 + 눈보라 템플릿 오버라이드 = Active 목표. */
+	UPROPERTY(Transient)
+	TObjectPtr<USceneComponent> ResolvedActive = nullptr;
+
+	/** 이 라이브 컴포넌트에 값을 저작하는 전조/눈보라 템플릿 (액터 소유). */
+	TWeakObjectPtr<USceneComponent> WarningTemplate;
+	TWeakObjectPtr<USceneComponent> ActiveTemplate;
 };
 
 /** ABlizzardGimmick
@@ -171,81 +191,36 @@ private:
 	TObjectPtr<class UMaterialInstanceDynamic> CloudMID;
 	//~
 
-	//~ 상태별 라이팅 값.
-	//  Normal 은 BeginPlay 에 레벨 저작값을 캡처한 것 (Idle 복귀 목표), Warning/Frozen 은 에디터에서 직접 지정한다.
-	// 태양광 밝기 (Directional Light 는 lux). Normal 저작값 스케일에 맞춰 조정할 것 — 기존 BP 가 0.02 스케일이었음.
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Sun", meta = (AllowPrivateAccess = "true"))
-	float NormalSunIntensity = 0.f;
-	// 저녁 노을: 해가 낮아 살짝 어둑하지만 색이 강하게 남음
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sun", meta = (AllowPrivateAccess = "true"))
-	float WarningSunIntensity = 2.5f;
-	// 눈보라: 두꺼운 구름에 가려 거의 꺼짐
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sun", meta = (AllowPrivateAccess = "true"))
-	float FrozenSunIntensity = 0.3f;
+	//~ 상태별 라이팅 템플릿 컴포넌트 (읽기 전용 데이터 컨테이너).
+	//  각 템플릿에서 "클래스 기본값과 다른" 프로퍼티(밝기/색/안개짙기/하늘색조 등 무엇이든)만
+	//  해당 상태에서 라이브 월드 컴포넌트로 구동된다 (BuildDrivenEnvEntries → CopyOverriddenProperties).
+	//  아트가 새 값을 조정해도 C++ 수정이 필요 없다.
+	//  값을 넣는 경로는 저장 버튼 하나뿐: 레벨의 실제 라이팅 액터를 조정 → "전조/눈보라 상태 저장" 클릭.
+	//  invisible + bAffectsWorld=false 로 렌더/캡처에 관여하지 않고,
+	//  bEditableWhenInherited=false 로 Details 직접 편집이 잠겨 있다 (BlizzardGimmick.cpp 생성자 참조).
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "전조 태양"))
+	TObjectPtr<UDirectionalLightComponent> WarningSunTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 태양"))
+	TObjectPtr<UDirectionalLightComponent> ActiveSunTemplate;
 
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Sun", meta = (AllowPrivateAccess = "true"))
-	FLinearColor NormalSunColor = FLinearColor::White;
-	// 따뜻한 주황 노을빛
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sun", meta = (AllowPrivateAccess = "true"))
-	FLinearColor WarningSunColor = FLinearColor(1.0f, 0.55f, 0.28f, 1.f);
-	// 차가운 청회색
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sun", meta = (AllowPrivateAccess = "true"))
-	FLinearColor FrozenSunColor = FLinearColor(0.55f, 0.68f, 0.9f, 1.f);
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "전조 안개"))
+	TObjectPtr<UExponentialHeightFogComponent> WarningFogTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 안개"))
+	TObjectPtr<UExponentialHeightFogComponent> ActiveFogTemplate;
 
-	// 안개 짙기. ExponentialHeightFog 의 유일한 짙기 knob 인 FogDensity 에 그대로 적용된다 (기본 저작값 ~0.02).
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	float NormalFogDensity = 0.f;
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	float WarningFogDensity = 0.05f;
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	float FrozenFogDensity = 0.3f;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "전조 대기"))
+	TObjectPtr<USkyAtmosphereComponent> WarningAtmosphereTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 대기"))
+	TObjectPtr<USkyAtmosphereComponent> ActiveAtmosphereTemplate;
 
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	FLinearColor NormalFogColor = FLinearColor::White;
-	// 노을빛 따뜻한 안개
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	FLinearColor WarningFogColor = FLinearColor(0.95f, 0.5f, 0.35f, 1.f);
-	// 차갑고 어두운 눈보라 안개
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	FLinearColor FrozenFogColor = FLinearColor(0.07f, 0.09f, 0.14f, 1.f);
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "전조 스카이라이트"))
+	TObjectPtr<USkyLightComponent> WarningSkyLightTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 스카이라이트"))
+	TObjectPtr<USkyLightComponent> ActiveSkyLightTemplate;
+	//~
 
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	float NormalFogStart = 0.f;
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	float WarningFogStart = 0.f;
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Fog", meta = (AllowPrivateAccess = "true"))
-	float FrozenFogStart = 0.f;
-
-	// SkyAtmosphere SkyLuminanceFactor: 하늘 자체의 색조. 노을은 주황빛, 눈보라는 어두운 청색.
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	FLinearColor NormalSkyLum = FLinearColor::White;
-	// 노을빛으로 물든 하늘
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	FLinearColor WarningSkyLum = FLinearColor(1.0f, 0.65f, 0.45f, 1.f);
-	// 어둡고 차가운 하늘
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	FLinearColor FrozenSkyLum = FLinearColor(0.12f, 0.16f, 0.26f, 1.f);
-
-	// SkyLight 색: 그림자/음영에 들어가는 환경광 색조
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	FLinearColor NormalSkyLightColor = FLinearColor::White;
-	// 따뜻한 노을 환경광
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	FLinearColor WarningSkyLightColor = FLinearColor(1.0f, 0.72f, 0.55f, 1.f);
-	// 차가운 눈보라 환경광
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	FLinearColor FrozenSkyLightColor = FLinearColor(0.6f, 0.72f, 0.92f, 1.f);
-
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	float NormalSkyLightIntensity = 0.f;
-	// 노을: 아직 밝아서 음영이 완전히 죽지 않게
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	float WarningSkyLightIntensity = 0.8f;
-	// 눈보라: 전반적으로 어둡게
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Sky", meta = (AllowPrivateAccess = "true"))
-	float FrozenSkyLightIntensity = 0.15f;
-
-	// 볼류메트릭 클라우드 커버리지 (머티리얼 "Coverage" 스칼라). 노을엔 살짝, 눈보라엔 잔뜩 덮는다.
+	// 볼류메트릭 클라우드 커버리지 (머티리얼 "Coverage" 스칼라). 컴포넌트 프로퍼티가 아니라 raw 값 유지.
+	// 노을엔 살짝, 눈보라엔 잔뜩 덮는다.
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Blizzard|Env|Cloud", meta = (AllowPrivateAccess = "true"))
 	float NormalCoverage = 0.f;
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Env|Cloud", meta = (AllowPrivateAccess = "true"))
@@ -296,19 +271,61 @@ private:
 
 	//~ Env 연출 (데디케이티드 서버 제외)
 	void InitializeBlizzardComponents();
-	void InitializeBlizzardProperties();
+	/** BeginPlay: 라이브 컴포넌트별로 평상시/상태별 목표 스냅샷을 구성한다. */
+	void BuildDrivenEnvEntries();
+	/** 라이브 컴포넌트 + 전조/눈보라 템플릿 한 쌍으로 구동 엔트리 하나를 만든다. */
+	void AddDrivenEntry(USceneComponent* Live, USceneComponent* WarnTemplate, USceneComponent* ActiveTemplate);
 	void HandleBlizzardStateChanged(EBlizzardState NewState, const FVector& InWindDir);
-	FBlizzardEnvValues CaptureCurrentEnvValues() const;
-	FBlizzardEnvValues GetStateTargetValues(EBlizzardState State) const;
-	void ApplyEnvValues(const FBlizzardEnvValues& Values);
+	/** 전이 시 각 엔트리의 시작 스냅샷을 재캡처하고 비보간(bool/enum) 값을 목표로 스냅한다. */
+	void BeginEnvBlend(EBlizzardState NewState);
+	/** 엔트리의 상태별 목표 스냅샷을 돌려준다 (Idle=Normal, Warning/Active=Resolved). */
+	USceneComponent* GetEnvTargetFor(const FBlizzardDrivenEnv& Entry, EBlizzardState State) const;
+	/** 상태별 구름 커버리지 목표값 (raw). */
+	float GetStateCoverage(EBlizzardState State) const;
 	void ApplySnowStorm(EBlizzardState State, const FVector& InWindDir);
 	void StartBlizzardAmbience();               // BeginPlay: level1 세팅 후 이벤트 1회 post
 	void ApplyAmbienceSwitch(EBlizzardState State);  // 상태별 앰비언스 스위치 전환
 
-	/** 현재 진행 중인 라이팅 페이드 구간. UpdateEnvironmentBlend 가 이 사이를 보간한다. */
-	FBlizzardEnvValues BlendStart;
-	FBlizzardEnvValues BlendTarget;
+	/** 구동 대상 환경 컴포넌트별 보간 상태 (태양/안개/대기/스카이라이트). BeginPlay 에 구성. */
+	UPROPERTY(Transient)
+	TArray<FBlizzardDrivenEnv> DrivenEnvComponents;
+
+	/** 현재 블렌드가 향하는 상태. UpdateEnvironmentBlend 가 시작 스냅샷 → 이 상태 목표로 보간한다. */
+	EBlizzardState BlendTargetState = EBlizzardState::Idle;
+	/** 블렌드 시작 시점의 구름 커버리지 (raw 보간용). */
+	float BlendStartCoverage = 0.f;
 	//~
+
+#if WITH_EDITOR
+public:
+	//~ 에디터 저작 버튼. 아트가 월드에서 라이팅을 직접 만지며 상태를 저장/미리보기 한다.
+	//  워크플로우: 미리보기 → 월드에서 튜닝 → 저장 → 평상시 복원. (미리보기 중 레벨 저장 금지, 복원 먼저)
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "전조 상태 저장"))
+	void SaveWarningFromWorld();
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 저장"))
+	void SaveActiveFromWorld();
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "전조 상태 미리보기"))
+	void LoadWarningToWorld();
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 미리보기"))
+	void LoadActiveToWorld();
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "평상시 복원 (미리보기 취소)"))
+	void RestoreNormalToWorld();
+
+private:
+	/** 소프트 참조를 LoadSynchronous 하고 (라이브, 전조 템플릿, 눈보라 템플릿) 쌍마다 Fn 을 호출. */
+	void EditorForEachEnvPair(TFunctionRef<void(USceneComponent* /*Live*/, USceneComponent* /*Warn*/, USceneComponent* /*Active*/)> Fn);
+	void EditorSaveFromWorld(EBlizzardState State);
+	void EditorLoadToWorld(EBlizzardState State);
+	void EditorEnsureNormalBackup();
+#endif
+
+#if WITH_EDITORONLY_DATA
+	/** 미리보기 전 자동 캡처한 평상시 백업 (세션 1회). 라이브 컴포넌트와 인덱스 대응. */
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<USceneComponent>> EditorNormalBackups;
+	UPROPERTY(Transient)
+	TArray<TWeakObjectPtr<USceneComponent>> EditorBackupLiveComps;
+#endif
 
 	//~ Replicated
 	UPROPERTY(ReplicatedUsing = OnRep_BlizzardState)
