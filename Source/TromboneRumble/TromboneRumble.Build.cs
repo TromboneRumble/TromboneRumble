@@ -49,11 +49,15 @@ public class TromboneRumble : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
-			"EngineSettings", 
-			"Slate", 
+			"EngineSettings",
+			"Slate",
 			"SlateCore"
 		});
 		
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.Add("UnrealEd");
+		}
     }
 
 }
