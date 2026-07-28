@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{172B9145-BD63-4904-825D-B9064756A02F}",
     "Language": "SFX",
-    "Hash": "{2812ACB8-EF36-3272-EEE3-B407A7F83A21}",
+    "Hash": "{D673C1EC-936C-F440-DF1E-795FD4CECE89}",
     "ObjectPath": "Play_Snow_Ambience",
     "ShortName": "Play_Snow_Ambience",
     "Path": "Event/Play_Snow_Ambience.bnk",
@@ -95,6 +95,6 @@
     ]
    }
   ],
-  "FileHash": "{20639CBF-D716-4F91-BF6E-EA29E04B47F9}"
+  "FileHash": "{48227B59-5DD6-331A-0C44-B50DFE4878BD}"
  }
 }

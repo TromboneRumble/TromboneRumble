@@ -38,7 +38,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Present|Config", meta = (DisplayName = "선물 획득 점수"))
 	int32 PresentBonusScore = 300;
 
+	/**
+	 * SpawnPoints와 인덱스가 1:1로 대응하는 점유 현황.
+	 * 선물은 획득 시 Destroy()되므로 약참조가 자동으로 무효화되어 지점이 해제된다.
+	 */
+	UPROPERTY()
+	TArray<TWeakObjectPtr<APresent>> ActivePresents;
+
 	FTimerHandle SpawnTimerHandle;
 
 	void SpawnOneDrop();
+
+	/** ActivePresents 길이를 SpawnPoints에 맞춘다 (기존 점유 정보는 보존) */
+	void SyncActivePresentsSize();
 };

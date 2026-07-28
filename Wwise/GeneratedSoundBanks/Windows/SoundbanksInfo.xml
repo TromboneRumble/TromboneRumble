@@ -266,7 +266,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="521013026" Type="Event" GUID="{172B9145-BD63-4904-825D-B9064756A02F}" Language="SFX" Hash="{2812ACB8-EF36-3272-EEE3-B407A7F83A21}">
+		<SoundBank Id="521013026" Type="Event" GUID="{172B9145-BD63-4904-825D-B9064756A02F}" Language="SFX" Hash="{D673C1EC-936C-F440-DF1E-795FD4CECE89}">
 			<ObjectPath>Play_Snow_Ambience</ObjectPath>
 			<ShortName>Play_Snow_Ambience</ShortName>
 			<Path>Event/Play_Snow_Ambience.bnk</Path>
@@ -3402,5 +3402,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{082F3050-429D-E5FD-82BC-93A17A4301DC}</FileHash>
+	<FileHash>{B1CE87F4-9616-5A0D-47F3-26D0264ECEA0}</FileHash>
 </SoundBanksInfo>
