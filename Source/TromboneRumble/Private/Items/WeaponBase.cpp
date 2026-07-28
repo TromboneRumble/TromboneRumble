@@ -194,11 +194,13 @@ void AWeaponBase::DetectHit()
 				Multicast_PlayHitSound();
 				if (HitActor->Implements<UCombatReceiver>())
 				{
+					FVector Direction = HitActor->GetActorLocation() - CurrentOwner->GetActorLocation();
+					Direction.Z = 0.f;
+					
 					FHitData HitData;
-					FVector Direction = (Hit.ImpactPoint - CurrentOwner->GetActorLocation()).GetSafeNormal();
-					Direction.Z = 0.5f;
 					HitData.HitDirection = Direction.GetSafeNormal();
 					HitData.KnockbackForce = WeaponData->KnockbackForce;
+					HitData.KnockbackUpForce = WeaponData->KnockbackUpForce;
 					HitData.HitReaction = WeaponData->HitReactionType;
 					HitData.HitInstigator = HitInstigatorType;
 					

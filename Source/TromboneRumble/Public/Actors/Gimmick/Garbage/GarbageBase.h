@@ -82,6 +82,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "피해 유형"))
 	EHitReactionType HitReactionType = EHitReactionType::None;
 
+	/** 수평 넉백 힘
+	 * 충돌한 캐릭터를 수평으로 밀어내는 힘입니다. 피해 유형(스턴/래그돌)에 맞게 튜닝하세요. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "넉백 힘 (수평)", EditCondition = "HitReactionType != EHitReactionType::None"))
+	float KnockbackForce = 500.f;
+
+	/** 수직 넉백 힘
+	 * 충돌한 캐릭터를 위로 띄우는 힘입니다. 피해 유형(스턴/래그돌)에 맞게 튜닝하세요. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "넉백 힘 (수직)", EditCondition = "HitReactionType != EHitReactionType::None"))
+	float KnockbackUpForce = 300.f;
+
 protected:
 	// Replication
 	UPROPERTY(Replicated)

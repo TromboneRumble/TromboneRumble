@@ -122,6 +122,12 @@ private:
 	UFUNCTION()
 	void HandleRagdollPhysicsEnabled();
 
+	/** FHitData 를 최종 넉백 속도로 계산한다. 폭발이면 방사형, 아니면 수평 힘 + 수직 힘 조합 */
+	FVector CalculateKnockbackVelocity(const FHitData& HitData) const;
+
+	UFUNCTION(Client, Reliable)
+	void Client_ApplyKnockback(FVector KnockbackVelocity);
+
 	void UpdateSkinFromPlayerState();
 	
 	void ApplyFlagPhysics();

@@ -12,11 +12,17 @@ struct FHitData
 {
 	GENERATED_BODY()
 
+	/** 넉백 방향. 수신 측에서 수평 성분만 사용한다 (수직은 KnockbackUpForce 로 별도 지정) */
 	UPROPERTY()
 	FVector HitDirection = FVector::ZeroVector;
-	
+
+	/** 수평 넉백 힘 */
 	UPROPERTY()
 	float KnockbackForce = 0.0f;
+
+	/** 수직(상향) 넉백 힘 */
+	UPROPERTY()
+	float KnockbackUpForce = 0.0f;
 
 	UPROPERTY()
 	EHitInstigatorType HitInstigator = EHitInstigatorType::None;

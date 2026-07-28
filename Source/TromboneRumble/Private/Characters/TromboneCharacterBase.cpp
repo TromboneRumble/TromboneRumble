@@ -344,20 +344,50 @@ void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 
 	if (bIsInvincible || bIsStun || IsRagdoll()) return;
 
+	const FVector KnockbackVel = CalculateKnockbackVelocity(HitData);
+
 	switch (HitData.HitReaction)
 	{
-	case EHitReactionType::Ragdoll:
-		if (RagdollComponent) RagdollComponent->StartRagdoll();
-		break;
-	case EHitReactionType::Stun:
-		OnStun();
-		break;
-	case EHitReactionType::None:
-	default:
-		break;
+		case EHitReactionType::Ragdoll:
+			if (RagdollComponent) RagdollComponent->StartRagdoll(KnockbackVel);
+			break;
+		
+		case EHitReactionType::Stun:
+			OnStun();
+			LaunchCharacter(KnockbackVel, true, true);
+			Client_ApplyKnockback(KnockbackVel);
+			break;
+		
+		case EHitReactionType::None:
+			; // intentional fall through
+		
+		default:
+			break;
+	}
+}
+
+FVector ATromboneCharacterBase::CalculateKnockbackVelocity(const FHitData& HitData) const
+{
+	// 폭발형 히트: 폭심에서 바깥으로 방사형
+	if (HitData.ExplosionStrength > 0.f)
+	{
+		return (GetActorLocation() - HitData.ImpactPoint).GetSafeNormal() * HitData.ExplosionStrength;
 	}
 
-	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
+	// 일반 히트: 수평 방향 × 수평 힘 + 상향 × 수직 힘 (호출자가 준 방향의 수직 성분은 무시)
+	FVector HorizontalDir = HitData.HitDirection;
+	HorizontalDir.Z = 0.f;
+	return HorizontalDir.GetSafeNormal() * HitData.KnockbackForce + FVector::UpVector * HitData.KnockbackUpForce;
+}
+
+void ATromboneCharacterBase::Client_ApplyKnockback_Implementation(const FVector KnockbackVelocity)
+{
+	if (HasAuthority())
+	{
+		return;
+	}
+
+	LaunchCharacter(KnockbackVelocity, true, true);
 }
 
 void ATromboneCharacterBase::OnRep_SkinColor()
