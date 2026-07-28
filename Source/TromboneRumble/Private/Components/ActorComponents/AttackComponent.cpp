@@ -1,11 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Components/ActorComponents/AttackComponent.h"
+#include "Animation/AnimMontage.h"
 #include "Animation/CharacterAnimInstance.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/WeaponDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Items/WeaponBase.h"
+#include "TimerManager.h"
 #include "Utilities/DebugHelper.h"
 
 UAttackComponent::UAttackComponent()
@@ -19,9 +21,12 @@ void UAttackComponent::BeginPlay()
 	Super::BeginPlay();
 	
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	if (!OwnerCharacter) return;
+	if (!OwnerCharacter)
+	{
+		return;
+	}
 
-	if (USkeletalMeshComponent* Mesh = OwnerCharacter->GetMesh())
+	if (const USkeletalMeshComponent* Mesh = OwnerCharacter->GetMesh())
 	{
 		CharacterAnimInstance = Cast<UCharacterAnimInstance>(Mesh->GetAnimInstance());
 	}
@@ -39,19 +44,12 @@ void UAttackComponent::Attack()
 {
 	if (!CurrentWeapon)
 	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No weapon equipped. Cannot perform attack."));
-		return;
-	}
-	
-	if (CurrentWeapon->IsDetectHit())
-	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("bIsDetectHit is true. Attack is already in progress. Cannot perform another attack."));
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("No weapon equipped. Cannot perform attack."));
 		return;
 	}
 	
 	if (!CurrentWeapon->CanAttack())
 	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Current weapon cannot attack. Check if the weapon is on cooldown or if there are other restrictions."));
 		return;
 	}
 	
@@ -65,37 +63,77 @@ void UAttackComponent::Attack()
 
 void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
-	if (!CurrentWeapon) return;
+	if (!CurrentWeapon)
+	{
+		return;
+	}
 
-	if (CurrentWeapon->IsDetectHit())
+	if (bAttackInProgress)
 	{
 		Client_OnAttackRejected();
 		return;
 	}
-	
+
+	bAttackInProgress = true;
 	CurrentWeapon->SetCanAttack(false);
 	UpdateAttackDelegateBinding(true);
 	Multicast_PlayAttackEffects();
+
+	float FailsafeSeconds = 3.f;
+	if (const UAnimMontage* Montage = AttackMontageMap.FindRef(CurrentWeapon->GetWeaponType()))
+	{
+		FailsafeSeconds = Montage->GetPlayLength() / FMath::Max(Montage->RateScale, UE_KINDA_SMALL_NUMBER);
+	}
+	constexpr float FailsafeMargin = 0.5f;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ServerAttackFailsafe, this,
+		&ThisClass::HandleServerAttackFailsafe, FailsafeSeconds + FailsafeMargin, false);
+}
+
+void UAttackComponent::HandleServerAttackFailsafe()
+{
+	if (!bAttackInProgress)
+	{
+		return;
+	}
+
+	LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Attack failsafe triggered: montage end event was never received. Forcing attack end."));
+	Server_ExecuteAttackEnd_Implementation();
 }
 
 void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 {
-	if (!CurrentWeapon) return;
+	bAttackInProgress = false;
+	if (const UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(TimerHandle_ServerAttackFailsafe);
+	}
+
+	if (!CurrentWeapon)
+	{
+		return;
+	}
 	
+	CurrentWeapon->EndAttack();
 	CurrentWeapon->SetCanAttack(true);
 	UpdateAttackDelegateBinding(false);
 }
 
 void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 {
-	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled()) return;
+	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled())
+	{
+		return;
+	}
 
 	PlayAttackEffects();
 }
 
 void UAttackComponent::Client_OnAttackRejected_Implementation()
 {
-	if (!CurrentWeapon) return;
+	if (!CurrentWeapon)
+	{
+		return;
+	}
 
 	if (OwnerCharacter && CharacterAnimInstance)
 	{
@@ -111,7 +149,6 @@ void UAttackComponent::PlayAttackEffects() const
 {
 	if (!CurrentWeapon)
 	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("No weapon equipped. Cannot play attack effects."));
 		return;
 	}
 	
@@ -125,15 +162,33 @@ void UAttackComponent::PlayAttackEffects() const
 		{
 			OwnerCharacter->PlayAnimMontage(MontageToPlay);
 		}
-		else
+	}
+}
+
+bool UAttackComponent::IsAttackMontage(const UAnimMontage* Montage) const
+{
+	if (!Montage)
+	{
+		return false;
+	}
+
+	for (const TPair<EWeaponType, TObjectPtr<UAnimMontage>>& Pair : AttackMontageMap)
+	{
+		if (Pair.Value == Montage)
 		{
-			LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Attack montage is already playing. Cannot play again."));
+			return true;
 		}
 	}
+	return false;
 }
 
 void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+	if (!IsAttackMontage(Montage))
+	{
+		return;
+	}
+
 	if (OwnerCharacter)
 	{
 		Server_ExecuteAttackEnd();
@@ -142,7 +197,10 @@ void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 
 void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem)
 {
-	if (Slot != EEquipmentSlotType::Weapon) return;
+	if (Slot != EEquipmentSlotType::Weapon)
+	{
+		return;
+	}
 	
 	OwnerCharacter->StopAnimMontage();
 	CharacterAnimInstance->SetIsAttacking(false);
@@ -172,7 +230,10 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 
 void UAttackComponent::UpdateAttackDelegateBinding(const bool bIsAttack)
 {
-	if (!CharacterAnimInstance) return;
+	if (!CharacterAnimInstance)
+	{
+		return;
+	}
 
 	if (bIsAttack)
 	{

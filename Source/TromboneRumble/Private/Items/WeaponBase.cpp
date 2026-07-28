@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Items/WeaponBase.h"
 #include "Components/CapsuleComponent.h"
@@ -15,7 +15,6 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/DebugHelper.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -46,6 +45,11 @@ void AWeaponBase::Tick(float DeltaSeconds)
 	if (bIsDetectHit && HasAuthority())
 	{
 		DetectHit();
+
+		if (HitDetectEndTimeSeconds > 0.f && GetWorld()->GetTimeSeconds() >= HitDetectEndTimeSeconds)
+		{
+			EndAttack();
+		}
 	}
 }
 
@@ -250,12 +254,17 @@ bool AWeaponBase::IsCanSweep() const
 }
 
 
-void AWeaponBase::BeginAttack()
+void AWeaponBase::BeginAttack(float Duration)
 {
 	bIsDetectHit = true;
 	AlreadyHitActors.Empty();
 	SetActorTickEnabled(true); 
 	
+	constexpr float FailsafeMargin = 0.5f;
+	HitDetectEndTimeSeconds = (Duration > 0.f) 
+		? GetWorld()->GetTimeSeconds() + Duration + FailsafeMargin
+		: 0.f;
+
 	if (const UPrimitiveComponent* CollisionComp = GetCollisionComponent())
 	{
 		PreviousFrameTransform = CollisionComp->GetComponentTransform();
@@ -265,6 +274,7 @@ void AWeaponBase::BeginAttack()
 void AWeaponBase::EndAttack()
 {
 	bIsDetectHit = false;
+	HitDetectEndTimeSeconds = 0.f;
 	AlreadyHitActors.Empty();
 	SetActorTickEnabled(false); 
 }

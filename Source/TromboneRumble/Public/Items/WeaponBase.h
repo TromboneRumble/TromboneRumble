@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -41,7 +41,7 @@ public:
 	
 	// ~ Begin IWeapon Interface
 	virtual bool CanAttack() const override { return bCanAttack; };
-	virtual void BeginAttack() override;
+	virtual void BeginAttack(float Duration) override;
 	virtual void EndAttack() override;
 	// ~ End IWeapon Interface
 	
@@ -90,9 +90,13 @@ protected:
 
 private:
 	bool bIsDetectHit = false;
+
+	/** 공격 판정의 강제 종료 시간 */
+	float HitDetectEndTimeSeconds = 0.f;
+
 	UPROPERTY(Replicated)
 	bool bCanAttack = true;
-	
+
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	FTransform PreviousFrameTransform;

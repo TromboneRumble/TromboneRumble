@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/TimerHandle.h"
 #include "AttackComponent.generated.h"
 
 enum class EWeaponType : uint8;
@@ -20,11 +21,13 @@ class TROMBONERUMBLE_API UAttackComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
+	
 	UAttackComponent();
-	virtual void BeginPlay() override;
-	virtual void Attack();
+	
+	void Attack();
 
-protected:
+private:
+	
 	UFUNCTION(Server, Reliable)
 	void Server_ExecuteAttack();
 
@@ -38,14 +41,21 @@ protected:
 	void Client_OnAttackRejected();
 	
 	void PlayAttackEffects() const;
+	
 	void UpdateAttackDelegateBinding(const bool bIsAttack);
+
+	bool IsAttackMontage(const UAnimMontage* Montage) const;
+
+	void HandleServerAttackFailsafe();
 	
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	
 	UFUNCTION()
 	void HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBase* NewItem, AItemBase* OldItem);
 
 private:
+	
 	UPROPERTY(EditDefaultsOnly, Category = "AttackComponent")
 	FName HeadSocketName = FName("head");
 	
@@ -66,10 +76,22 @@ private:
 	
 	UPROPERTY(Transient)
 	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
-	
+
+	/** 서버 권위의 공격 진행 중 상태 */
+	bool bAttackInProgress = false;
+
+	/** 공격 상태 강제 종료 타이머 */
+	FTimerHandle TimerHandle_ServerAttackFailsafe;
+
 public:
+	
+	// ~ Begin UActorComponent Interface
+	virtual void BeginPlay() override;
+	// ~ End UActorComponent Interface
+	
 	// ~ Begin Getters / Setters
 	FORCEINLINE void SetDefaultWeaponInstance(AWeaponBase* DefaultWeaponInst) { DefaultWeaponInstance = DefaultWeaponInst; }
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return CurrentWeapon; }
 	// ~ End Getters / Setters
+	
 };
