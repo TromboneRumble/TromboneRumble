@@ -5,7 +5,6 @@
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "GameFramework/Character.h"
-#include "Net/UnrealNetwork.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "AkComponent.h"
@@ -51,13 +50,6 @@ void AWeaponBase::Tick(float DeltaSeconds)
 			EndAttack();
 		}
 	}
-}
-
-void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, bCanAttack);
 }
 
 bool AWeaponBase::CanInteract_Implementation(AActor* InstigatorActor) const

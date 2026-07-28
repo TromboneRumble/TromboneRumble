@@ -7,6 +7,7 @@
 #include "Data/WeaponDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Items/WeaponBase.h"
+#include "Net/UnrealNetwork.h"
 #include "TimerManager.h"
 #include "Utilities/DebugHelper.h"
 
@@ -14,6 +15,13 @@ UAttackComponent::UAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	SetIsReplicatedByDefault(true);
+}
+
+void UAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ThisClass, bAttackInProgress, COND_OwnerOnly);
 }
 
 void UAttackComponent::BeginPlay()
@@ -48,7 +56,7 @@ void UAttackComponent::Attack()
 		return;
 	}
 	
-	if (!CurrentWeapon->CanAttack())
+	if (bAttackInProgress || IsLocalAttackPredicted())
 	{
 		return;
 	}
@@ -56,6 +64,7 @@ void UAttackComponent::Attack()
 	if (OwnerCharacter->IsLocallyControlled())
 	{
 		PlayAttackEffects();
+		LocalAttackPredictedUntilSeconds = GetWorld()->GetTimeSeconds() + GetAttackMontagePlayTime(CurrentWeapon->GetWeaponType());
 	}
 	
 	Server_ExecuteAttack();
@@ -75,15 +84,11 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 	}
 
 	bAttackInProgress = true;
-	CurrentWeapon->SetCanAttack(false);
 	UpdateAttackDelegateBinding(true);
 	Multicast_PlayAttackEffects();
 
-	float FailsafeSeconds = 3.f;
-	if (const UAnimMontage* Montage = AttackMontageMap.FindRef(CurrentWeapon->GetWeaponType()))
-	{
-		FailsafeSeconds = Montage->GetPlayLength() / FMath::Max(Montage->RateScale, UE_KINDA_SMALL_NUMBER);
-	}
+	const float MontagePlayTime = GetAttackMontagePlayTime(CurrentWeapon->GetWeaponType());
+	const float FailsafeSeconds = (MontagePlayTime > 0.f) ? MontagePlayTime : 3.f;
 	constexpr float FailsafeMargin = 0.5f;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ServerAttackFailsafe, this,
 		&ThisClass::HandleServerAttackFailsafe, FailsafeSeconds + FailsafeMargin, false);
@@ -114,7 +119,6 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 	}
 	
 	CurrentWeapon->EndAttack();
-	CurrentWeapon->SetCanAttack(true);
 	UpdateAttackDelegateBinding(false);
 }
 
@@ -130,6 +134,8 @@ void UAttackComponent::Multicast_PlayAttackEffects_Implementation()
 
 void UAttackComponent::Client_OnAttackRejected_Implementation()
 {
+	LocalAttackPredictedUntilSeconds = 0.f;
+
 	if (!CurrentWeapon)
 	{
 		return;
@@ -142,7 +148,6 @@ void UAttackComponent::Client_OnAttackRejected_Implementation()
 	}
 
 	CurrentWeapon->EndAttack();
-	CurrentWeapon->SetCanAttack(true);
 }
 
 void UAttackComponent::PlayAttackEffects() const
@@ -155,7 +160,6 @@ void UAttackComponent::PlayAttackEffects() const
 	const EWeaponType Type = CurrentWeapon->GetWeaponType();
 	if (UAnimMontage* MontageToPlay = AttackMontageMap.FindRef(Type))
 	{
-		CurrentWeapon->SetCanAttack(false);
 		CharacterAnimInstance->SetIsAttacking(true);
 		
 		if (!OwnerCharacter->GetMesh()->GetAnimInstance()->Montage_IsPlaying(MontageToPlay))
@@ -163,6 +167,20 @@ void UAttackComponent::PlayAttackEffects() const
 			OwnerCharacter->PlayAnimMontage(MontageToPlay);
 		}
 	}
+}
+
+bool UAttackComponent::IsLocalAttackPredicted() const
+{
+	return GetWorld()->GetTimeSeconds() < LocalAttackPredictedUntilSeconds;
+}
+
+float UAttackComponent::GetAttackMontagePlayTime(const EWeaponType WeaponType) const
+{
+	if (const UAnimMontage* Montage = AttackMontageMap.FindRef(WeaponType))
+	{
+		return Montage->GetPlayLength() / FMath::Max(Montage->RateScale, UE_KINDA_SMALL_NUMBER);
+	}
+	return 0.f;
 }
 
 bool UAttackComponent::IsAttackMontage(const UAnimMontage* Montage) const
@@ -204,10 +222,10 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 	
 	OwnerCharacter->StopAnimMontage();
 	CharacterAnimInstance->SetIsAttacking(false);
-	
+	LocalAttackPredictedUntilSeconds = 0.f;
+
 	if (AWeaponBase* OldWeapon = Cast<AWeaponBase>(OldItem))
 	{
-		OldWeapon->SetCanAttack(true);
 		OldWeapon->EndAttack();
 	}
 	
@@ -218,7 +236,6 @@ void UAttackComponent::HandleOnEquipmentChanged(EEquipmentSlotType Slot, AItemBa
 		if (AWeaponBase* NewInstrument = Cast<AWeaponBase>(NewItem))
 		{
 			CurrentWeapon = NewInstrument;
-			CurrentWeapon->SetCanAttack(true);
 			CurrentWeapon->EndAttack();
 		}
 	}
