@@ -57,17 +57,17 @@ void UTromboneRagdollComponent::TickComponent(const float DeltaTime, const ELeve
 	{
 		if (bIsRagdoll)
 		{
-			if (IsRagdollGrounded())
+			if (IsRagdollResting())
 			{
-				RagdollGroundedTime += DeltaTime;
-				if (bAutoGetUpEnabled && RagdollGroundedTime >= RagdollDuration)
+				RagdollRestingTime += DeltaTime;
+				if (bAutoGetUpEnabled && RagdollRestingTime >= RagdollDuration)
 				{
 					StopRagdoll();
 				}
 			}
 			else
 			{
-				RagdollGroundedTime = 0.0f;
+				RagdollRestingTime = 0.0f;
 			}
 		}
 
@@ -111,8 +111,8 @@ void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity)
 		return;
 	}
 
-	RagdollGroundedTime = 0.0f;
-	
+	RagdollRestingTime = 0.0f;
+
 	bIsRagdoll = true;
 	OnRep_IsRagdoll();
 
@@ -142,6 +142,8 @@ void UTromboneRagdollComponent::StopRagdoll()
 	}
 
 	Server_ComputeGetUpTransform();
+	
+	RagdollRestingTime = 0.0f;
 
 	bIsRagdoll = false;
 	OnRep_IsRagdoll();
@@ -342,19 +344,12 @@ bool UTromboneRagdollComponent::IsFacingUp() const
 	return (FVector::DotProduct(PelvisUp, FVector::UpVector) > 0.0f);
 }
 
-bool UTromboneRagdollComponent::IsRagdollGrounded() const
+bool UTromboneRagdollComponent::IsRagdollResting() const
 {
-	if (!OwnerMesh || !GetWorld()) return false;
-
-	const FVector PelvisLocation = OwnerMesh->GetSocketLocation(TromboneBones::Pelvis);
-	const FVector Start = PelvisLocation;
-	const FVector End = PelvisLocation - FVector(0.0f, 0.0f, RagdollGroundTraceDistance);
-
-	FHitResult HitResult;
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(OwnerCharacter);
-
-	return GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams);
+	if (!OwnerMesh) return false;
+	
+	const FVector PelvisVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
+	return PelvisVelocity.SizeSquared() < FMath::Square(RestSpeedThreshold);
 }
 
 void UTromboneRagdollComponent::Server_UpdateRagdollTransform()

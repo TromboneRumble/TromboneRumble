@@ -316,7 +316,7 @@ void ULobbyDirectorComponent::PollAllGrounded()
 		}
 
 		bAnyRagdolling = true;
-		if (!Ragdoll->IsRagdollGrounded())
+		if (!Ragdoll->IsRagdollResting())
 		{
 			bAllGrounded = false;
 		}

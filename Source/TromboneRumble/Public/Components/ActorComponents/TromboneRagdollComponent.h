@@ -56,8 +56,8 @@ public:
 	/** Server only. */
 	void SetAutoGetUpEnabled(const bool bEnabled) { bAutoGetUpEnabled = bEnabled; }
 
-	/** @return true if the pelvis is close enough to the ground, otherwise false. */
-	bool IsRagdollGrounded() const;
+	/** @return true if the ragdoll is at rest (pelvis speed below RestSpeedThreshold), otherwise false. */
+	bool IsRagdollResting() const;
 
 public:
 
@@ -96,9 +96,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "추적 강도"))
 	float TrackingIntensity = 10.0f;
 
-	/** The distance traced downward from the pelvis to determine grounding (cm) */
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 접지 트레이스 거리"))
-	float RagdollGroundTraceDistance = 60.0f;
+	/** Ragdoll rest speed threshold (cm/s) */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "정지 판정 속도 임계값", ClampMin = "0.0"))
+	float RestSpeedThreshold = 20.0f;
 
 	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
@@ -167,10 +167,11 @@ private:
 
 	float TimeSinceLastNetUpdate = 0.0f;
 
-	/** Time spent on the ground during ragdoll */
-	float RagdollGroundedTime = 0.0f;
+	/** Time spent at rest during ragdoll */
+	UPROPERTY(VisibleInstanceOnly, Transient, Category = "RagdollComponent")
+	float RagdollRestingTime = 0.0f;
 
-	/** If false, does not automatically get up after being grounded. Server Only. */
+	/** If false, does not automatically get up after resting. Server Only. */
 	bool bAutoGetUpEnabled = true;
 
 	/** Maximum difference for pelvis location synchronization (DebugMode) */
