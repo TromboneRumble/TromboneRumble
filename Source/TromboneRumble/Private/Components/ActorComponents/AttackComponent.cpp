@@ -31,6 +31,7 @@ void UAttackComponent::BeginPlay()
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
 	if (!OwnerCharacter)
 	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("OwnerCharacter is nullptr."));
 		return;
 	}
 
@@ -58,6 +59,14 @@ void UAttackComponent::Attack()
 	
 	if (bAttackInProgress || IsLocalAttackPredicted())
 	{
+		if (bAttackInProgress)
+		{
+			LOG_WITH_CURRENT_CONTEXT(Log, TEXT("Attack in progress is server. Cannot process attack"));
+		}
+		else if (IsLocalAttackPredicted())
+		{
+			LOG_WITH_CURRENT_CONTEXT(Log, TEXT("Attack is predicted now in local. Cannot process attack"));
+		}
 		return;
 	}
 	
@@ -74,6 +83,7 @@ void UAttackComponent::Server_ExecuteAttack_Implementation()
 {
 	if (!CurrentWeapon)
 	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("No weapon equipped. Cannot perform attack."));
 		return;
 	}
 
@@ -115,6 +125,7 @@ void UAttackComponent::Server_ExecuteAttackEnd_Implementation()
 
 	if (!CurrentWeapon)
 	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("No weapon equipped. Cannot end attack."));
 		return;
 	}
 	
@@ -138,6 +149,7 @@ void UAttackComponent::Client_OnAttackRejected_Implementation()
 
 	if (!CurrentWeapon)
 	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("No weapon equipped. Cannot reject attack."));
 		return;
 	}
 
@@ -154,6 +166,7 @@ void UAttackComponent::PlayAttackEffects() const
 {
 	if (!CurrentWeapon)
 	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("No weapon equipped. Cannot play attack effects."));
 		return;
 	}
 	
@@ -204,6 +217,7 @@ void UAttackComponent::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 {
 	if (!IsAttackMontage(Montage))
 	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Attempted to end non-attack montage."));
 		return;
 	}
 
@@ -249,6 +263,7 @@ void UAttackComponent::UpdateAttackDelegateBinding(const bool bIsAttack)
 {
 	if (!CharacterAnimInstance)
 	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("CharacterAnimInstance is null."));
 		return;
 	}
 
