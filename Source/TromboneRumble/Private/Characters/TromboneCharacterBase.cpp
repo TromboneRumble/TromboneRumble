@@ -56,41 +56,7 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	}
 }
 
-void ATromboneCharacterBase::ApplyOccludedStencil(UPrimitiveComponent* Prim)
-{
-	if (!Prim) return;
-	Prim->SetRenderCustomDepth(true);
-	Prim->SetCustomDepthStencilValue(TromboneRender::CHARACTER_OCCLUDED_STENCIL);
-}
-
-void ATromboneCharacterBase::ClearOccludedStencil(UPrimitiveComponent* Prim)
-{
-	if (!Prim) return;
-	Prim->SetRenderCustomDepth(false);
-}
-
-void ATromboneCharacterBase::ApplyOccludedStencilToActor(AActor* Actor)
-{
-	if (!Actor) return;
-	TArray<UPrimitiveComponent*> Prims;
-	Actor->GetComponents<UPrimitiveComponent>(Prims);
-	for (UPrimitiveComponent* Prim : Prims)
-	{
-		ApplyOccludedStencil(Prim);
-	}
-}
-
-void ATromboneCharacterBase::ClearOccludedStencilFromActor(AActor* Actor)
-{
-	if (!Actor) return;
-	TArray<UPrimitiveComponent*> Prims;
-	Actor->GetComponents<UPrimitiveComponent>(Prims);
-	for (UPrimitiveComponent* Prim : Prims)
-	{
-		ClearOccludedStencil(Prim);
-	}
-}
-void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
+void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor)
 {
 	// 머리(leader). bApplySkinColorTint=false면 머티리얼 기본색 유지 (PlayerState 없는 더미)
 	if (bApplySkinColorTint)
@@ -109,6 +75,8 @@ void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) cons
 	{
 		CustomizationComp->ApplyPartsSkinColor(InSkinColor);
 	}
+
+	OnSkinColorChanged.Broadcast(InSkinColor);
 }
 
 void ATromboneCharacterBase::AddInputBlock(const EInputBlockReason Reason)
@@ -234,12 +202,6 @@ void ATromboneCharacterBase::BeginPlay()
 			Listeners.Add(AkSoundComponent);
 			AkSoundComponent->SetListeners(Listeners);
 		}
-	}
-
-	// 로컬 플레이어 캐릭터만 X-Ray stencil=252 적용 (원격 캐릭터는 X-Ray 미표시)
-	if (IsLocallyControlled())
-	{
-		ApplyOccludedStencil(GetMesh());
 	}
 
 	SetupCharacterData();

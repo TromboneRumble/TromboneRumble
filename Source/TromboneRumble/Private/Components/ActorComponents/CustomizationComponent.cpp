@@ -260,15 +260,7 @@ void UCustomizationComponent::ApplyFollowerPart(const FCustomizationPartRow* Row
 			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, GetOwnerSkinColor());
 		}
 	}
-
-	// X-Ray 스텐실은 TromboneCharacterBase 로컬 캐릭터에만 적용
-	if (ATromboneCharacterBase* TromboneChar = Cast<ATromboneCharacterBase>(Owner))
-	{
-		if (TromboneChar->IsLocallyControlled())
-		{
-			ATromboneCharacterBase::ApplyOccludedStencil(Comp);
-		}
-	}
+	
 }
 
 void UCustomizationComponent::ApplyPartsSkinColor(const FLinearColor& InColor) const

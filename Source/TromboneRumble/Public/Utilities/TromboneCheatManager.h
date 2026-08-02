@@ -5,6 +5,7 @@
 #include "TromboneCheatManager.generated.h"
 
 enum class EWeaponType : uint8;
+class UXRayBenchmark;
 
 /* Press '~' in-game to open the console and type commands below
  */
@@ -40,8 +41,31 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey);
 
+	// X-Ray 방식 전환 (silhouette | dither | window | off). 인자 없으면 현재 붙어있는 컴포넌트 출력
+	UFUNCTION(Exec)
+	void Trombone_XRayMode(const FString& ModeString);
+
+	// X-Ray 3종의 프레임 비용을 순서대로 측정해 비교표 출력
+	UFUNCTION(Exec)
+	void Trombone_XRayBench(const FString& SecondsString);
+
+	// 원형 윈도우 크기/가장자리/가리는물체 투명도 런타임 조절. 인자 없으면 현재 값 출력
+	// (저장되지 않음 — 마음에 드는 값은 BP에 옮겨 적을 것)
+	UFUNCTION(Exec)
+	void Trombone_XRayWindow(const FString& RadiusString, const FString& SoftnessString, const FString& OccluderOpacityString);
+
+	// 원형 윈도우의 캡처 시야 크롭 on/off. 크롭 전후 비용을 Trombone_XRayBench로 비교할 때 쓴다
+	UFUNCTION(Exec)
+	void Trombone_XRayCropCapture(const FString& EnabledString);
+
 public:
-	
+
 	UFUNCTION(Exec)
 	void Trombone_Dump_LevelStateSubsystem();
+
+private:
+
+	// Trombone_XRayBench가 쓰는 측정 오케스트레이터 (첫 실행 때 생성)
+	UPROPERTY(Transient)
+	TObjectPtr<UXRayBenchmark> XRayBenchmark;
 };

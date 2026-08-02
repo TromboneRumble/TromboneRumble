@@ -277,7 +277,7 @@ void ADefaultPlayerState::OnRep_SkinColor()
 {
 	if (APawn* Pawn = GetPawn())
 	{
-		if (const ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
+		if (ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
 		{
 			TromboneCharacter->ApplySkinColor(SkinColor);
 		}
