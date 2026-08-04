@@ -941,7 +941,7 @@
 										<Action Name="" ID="{896AF7EB-A4CC-40E6-A9EF-8DE4FE99CE71}" ShortID="154423945">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapD_Violin_MIDI" ID="{BACE6A5B-B8DC-4A84-9895-87697686BF80}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapD_Violin_MIDI" ID="{2E24D91E-C09C-43AD-8D2A-B8F90E53EF24}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
@@ -952,7 +952,7 @@
 										<Action Name="" ID="{4B0906B7-F22B-42E6-8103-43790F4A1E2E}" ShortID="262459357">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapD_Trombone_MIDI" ID="{63C1CAE8-94BC-4BDF-A358-7E11E7B57118}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapD_Trombone_MIDI" ID="{88BB57D1-496C-4020-9F4E-7A10821C5B77}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
@@ -963,7 +963,7 @@
 										<Action Name="" ID="{DD426112-9DC4-4C26-B1C3-9404774C24B6}" ShortID="5827091">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapD_Cymbal_MIDI" ID="{88BB57D1-496C-4020-9F4E-7A10821C5B77}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapD_Cymbal_MIDI" ID="{63C1CAE8-94BC-4BDF-A358-7E11E7B57118}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
