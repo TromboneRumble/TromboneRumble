@@ -53,6 +53,9 @@ class TROMBONERUMBLE_API ICombatReceiver
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	/** 피격 처리를 시도한다.
+	 *  @return true = 리액션이 적용됨(None 포함), false = 상태 게이트(무적/스턴/래그돌)나 권한 부재로 거부됨.
+	 *          호출자(방해 NPC의 포획 등)가 "이미 무력화된 대상"을 구분해 후속 행동(타겟 변경 등)을 결정할 수 있다. */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
-	void OnHitReceived(const FHitData& HitData);
+	bool OnHitReceived(const FHitData& HitData);
 };

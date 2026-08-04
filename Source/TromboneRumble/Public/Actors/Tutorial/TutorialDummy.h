@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,7 +17,7 @@ public:
 	ATutorialDummy();
 
 	// ~ Begin ICombatReceiver Interfaces
-	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
+	virtual bool OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces
 
 };

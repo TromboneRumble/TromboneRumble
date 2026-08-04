@@ -4,6 +4,7 @@
 #include "Actors/ResultScene/PodiumActor.h"
 #include "Animation/AnimInstance.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine/SkeletalMesh.h"
@@ -192,7 +193,7 @@ void UCustomizationComponent::ApplyFace(const FCustomizationPartRow* Row)
 		? nullptr
 		: Cast<UMaterialInterface>(Row->AssetPath.TryLoad());
 
-	if (ATromboneCharacterBase* Char = Cast<ATromboneCharacterBase>(GetOwner()))
+	if (ADefaultTromboneCharacter* Char = Cast<ADefaultTromboneCharacter>(GetOwner()))
 	{
 		Char->ApplyFaceMaterial(Mat);
 	}
