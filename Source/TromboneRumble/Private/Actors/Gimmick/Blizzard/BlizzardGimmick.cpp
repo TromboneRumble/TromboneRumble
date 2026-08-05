@@ -27,8 +27,10 @@
 #include "MaterialTypes.h"
 #include "NiagaraActor.h"
 #include "NiagaraComponent.h"
-#include "AkComponent.h"
+#include "AkAudioDevice.h"
 #include "AkAudioEvent.h"
+#include "AkGameplayStatics.h"
+#include "AkGameplayTypes.h"
 #include "AkSwitchValue.h"
 #include "Net/UnrealNetwork.h"
 
@@ -57,16 +59,9 @@ ABlizzardGimmick::ABlizzardGimmick()
 
 	GimmickType = EGimmickType::Blizzard;
 
-	// 눈보라 앰비언스를 담을 네이티브 루트 + Ak 컴포넌트 (SpotlightZone 패턴).
+	// 라이팅 템플릿을 붙일 네이티브 루트. (앰비언스는 Ak 컴포넌트 없이 글로벌 오브젝트로 나간다)
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	SetRootComponent(SceneRoot);
-
-	AmbienceAkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AmbienceAkComponent"));
-	if (AmbienceAkComponent)
-	{
-		AmbienceAkComponent->OcclusionRefreshInterval = 0.f;
-		AmbienceAkComponent->SetupAttachment(SceneRoot);
-	}
 
 	// 상태별 라이팅 템플릿. 상태값을 담아두는 "데이터 컨테이너" 컴포넌트다.
 	//  - invisible + (라이트는) bAffectsWorld=false → 렌더 프록시/맵체크 경고/씬 등록에 전혀 관여하지 않는다.
@@ -183,6 +178,13 @@ void ABlizzardGimmick::BeginPlay()
 	InitializeBlizzardComponents();
 	BuildDrivenEnvEntries();
 	StartBlizzardAmbience();
+}
+
+void ABlizzardGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	StopBlizzardAmbience();
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void ABlizzardGimmick::Tick(float DeltaSeconds)
@@ -549,17 +551,27 @@ void ABlizzardGimmick::ApplySnowStorm(EBlizzardState State, const FVector& InWin
 
 void ABlizzardGimmick::StartBlizzardAmbience()
 {
-	if (!SnowAmbienceEvent || !AmbienceAkComponent) return;
+	if (!SnowAmbienceEvent) return;
 
 	// 스위치 컨테이너는 post 시점의 스위치 값으로 초기 레이어가 정해지므로 level1 을 먼저 세팅.
 	ApplyAmbienceSwitch(EBlizzardState::Idle);   // BeginPlay 시점 state(Idle) = level1
-	AmbienceAkComponent->PostAkEvent(SnowAmbienceEvent, 0, FOnAkPostEventCallback());
+
+	// Actor=nullptr 이면 Wwise 글로벌 오브젝트로 나간다 = 위치 감쇠 없이 BGM 처럼 깔린다.
+	// (메뉴 BGM 과 같은 경로. TromboneGameInstance.cpp:30)
+	AmbiencePlayingID = UAkGameplayStatics::PostEvent(SnowAmbienceEvent, nullptr, 0, FOnAkPostEventCallback());
+}
+
+void ABlizzardGimmick::StopBlizzardAmbience()
+{
+	if (!SnowAmbienceEvent || AmbiencePlayingID == 0) return;
+
+	// 글로벌 오브젝트에 건 소리는 액터가 죽어도 안 꺼진다. 재생 ID 로 직접 정지.
+	SnowAmbienceEvent->ExecuteAction(AkActionOnEventType::Stop, nullptr, AmbiencePlayingID);
+	AmbiencePlayingID = 0;
 }
 
 void ABlizzardGimmick::ApplyAmbienceSwitch(EBlizzardState State)
 {
-	if (!AmbienceAkComponent) return;
-
 	UAkSwitchValue* Switch = nullptr;
 	switch (State)
 	{
@@ -570,8 +582,12 @@ void ABlizzardGimmick::ApplyAmbienceSwitch(EBlizzardState State)
 	}
 	if (!Switch) return;
 
-	// group/state 는 UAkSwitchValue 애셋이 내장하므로 빈 값으로 넘긴다. (CharacterAnimInstance.cpp:129 패턴)
-	AmbienceAkComponent->SetSwitch(Switch, FString(TEXT("")), FString(TEXT("")));
+	// 이벤트와 같은 글로벌 오브젝트에 걸어야 한다. 다른 오브젝트에 걸면 레이어 전환이 조용히 무시된다.
+	// (Actor=nullptr 이면 글로벌 오브젝트로 간다. UAkGameplayStatics::SetSwitch 는 null 을 거부해서 못 쓴다)
+	if (FAkAudioDevice* AudioDevice = FAkAudioDevice::Get())
+	{
+		AudioDevice->SetSwitch(Switch, nullptr);
+	}
 }
 
 void ABlizzardGimmick::SetState(EBlizzardState NewState)
