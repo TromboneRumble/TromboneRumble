@@ -161,8 +161,10 @@ public:
 
 	// ~ Begin Getters
 	bool IsStun() const { return bIsStun; }
+	bool IsInvincible() const { return bIsInvincible; }
 	bool IsRagdoll() const;
 	bool IsInputBlocked() const { return InputBlockMask != 0; }
+	UAkComponent* GetAkComponent() const { return AkSoundComponent; }
 	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }
 	UTromboneRagdollComponent* GetRagdollComponent() const { return RagdollComponent; }
 	// ~ End Getters

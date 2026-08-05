@@ -203,6 +203,7 @@ void AWeaponBase::DetectHit()
 					HitData.KnockbackUpForce = WeaponData->KnockbackUpForce;
 					HitData.HitReaction = WeaponData->HitReactionType;
 					HitData.HitInstigator = HitInstigatorType;
+					HitData.HitInstigatorActor = CurrentOwner;
 					
 					Multicast_OnHitSuccess(HitActor);
 					Client_OnHitSuccess(HitActor);
@@ -237,8 +238,7 @@ bool AWeaponBase::IsCanSweep() const
 		return false;
 	}
 	
-	if (GameStateSubsystem->GetLevelState() != ELevelType::OrchestraStage && 
-		GameStateSubsystem->GetLevelState() != ELevelType::SnowField && 
+	if (!IsInGameLevelType(GameStateSubsystem->GetLevelState()) &&
 		GameStateSubsystem->GetLevelState() != ELevelType::Tutorial)
 	{
 		return false;

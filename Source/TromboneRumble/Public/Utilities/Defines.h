@@ -93,12 +93,15 @@ enum class ELevelType : uint8
 
 	OrchestraStageLobby,
 	SnowFieldLobby,
+	JazzBarLobby,
 
 	OrchestraStage,
 	SnowField,
+	JazzBar,
 
 	OrchestraStageResult,
 	SnowFieldResult,
+	JazzBarResult,
 
 	Invalid = 255 UMETA(Hidden)
 };
@@ -106,19 +109,19 @@ enum class ELevelType : uint8
 /** @return true if the given level type is result level */
 FORCEINLINE bool IsResultLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageResult || Type == ELevelType::SnowFieldResult;
+	return Type == ELevelType::OrchestraStageResult || Type == ELevelType::SnowFieldResult || Type == ELevelType::JazzBarResult;
 }
 
 /** @return true if the given level type is in-game level */
 FORCEINLINE bool IsInGameLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField;
+	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField || Type == ELevelType::JazzBar;
 }
 
 /** @return true if the given level type is lobby level */
 FORCEINLINE bool IsLobbyLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby;
+	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby || Type == ELevelType::JazzBarLobby;
 }
 
 UENUM(BlueprintType)
@@ -164,6 +167,7 @@ enum class EHitInstigatorType : uint8
 	Garbage_Chair,
 	PressurePlate,
 	Blizzard,
+	Drunkard,
 };
 
 UENUM()
@@ -172,6 +176,7 @@ enum class EHitReactionType : uint8
 	None,
 	Stun,
 	Ragdoll,
+	KnockbackOnly,
 };
 
 UENUM()

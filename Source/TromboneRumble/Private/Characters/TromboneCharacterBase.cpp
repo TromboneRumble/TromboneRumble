@@ -187,7 +187,19 @@ bool ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 		case EHitReactionType::Stun:
 			OnStun();
 			LaunchCharacter(KnockbackVel, true, true);
-			Client_ApplyKnockback(KnockbackVel);
+			// AI 폰은 소유 클라가 없어 Client RPC를 보낼 수 없다 (No owning connection 경고 방지)
+			if (IsPlayerControlled())
+			{
+				Client_ApplyKnockback(KnockbackVel);
+			}
+			break;
+
+		case EHitReactionType::KnockbackOnly:
+			LaunchCharacter(KnockbackVel, true, true);
+			if (IsPlayerControlled())
+			{
+				Client_ApplyKnockback(KnockbackVel);
+			}
 			break;
 
 		case EHitReactionType::None:

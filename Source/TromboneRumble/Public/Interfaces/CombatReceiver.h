@@ -27,6 +27,10 @@ struct FHitData
 	UPROPERTY()
 	EHitInstigatorType HitInstigator = EHitInstigatorType::None;
 
+	/** 공격을 가한 액터 (무기 소유 캐릭터, 취객 NPC 등). 수신 측의 "누가 때렸는지" 판정용. 기믹류는 null일 수 있다 */
+	UPROPERTY()
+	TObjectPtr<AActor> HitInstigatorActor = nullptr;
+
 	UPROPERTY()
 	EHitReactionType HitReaction = EHitReactionType::None;
 
