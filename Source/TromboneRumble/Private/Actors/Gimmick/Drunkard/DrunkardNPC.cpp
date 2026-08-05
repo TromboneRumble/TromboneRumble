@@ -14,7 +14,7 @@
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogDrunkard, Log, All);
+DEFINE_LOG_CATEGORY(LogDrunkard);
 
 #if !UE_BUILD_SHIPPING
 // 취객 기믹 전 상태 관찰용. 스포너(DrunkardSpawner.cpp)에서도 extern으로 참조한다

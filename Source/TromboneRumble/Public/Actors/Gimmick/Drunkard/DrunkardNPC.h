@@ -11,6 +11,10 @@ class UDrunkardDataAsset;
 class UDrunkardStateComponent;
 class UXRaySilhouetteComponent;
 
+/** 취객 기믹 공용 로그 카테고리. 정의는 DrunkardNPC.cpp
+ *  (파일별 DEFINE_LOG_CATEGORY_STATIC은 유니티 빌드에서 같은 청크에 묶이면 중복 정의로 충돌한다) */
+DECLARE_LOG_CATEGORY_EXTERN(LogDrunkard, Log, All);
+
 /** ADrunkardNPC
  *
  * 재즈바 취객 NPC 폰 본체. 피격(넉백/스턴/래그돌)은 베이스가 처리한다.

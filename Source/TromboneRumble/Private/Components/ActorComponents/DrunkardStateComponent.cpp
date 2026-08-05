@@ -10,7 +10,6 @@
 #include "Interfaces/CombatReceiver.h"
 #include "Items/WeaponBase.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogDrunkard, Log, All);
 
 namespace
 {

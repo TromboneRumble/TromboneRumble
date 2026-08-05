@@ -6,7 +6,6 @@
 #include "Data/DrunkardDataAsset.h"
 #include "Engine/Engine.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogDrunkard, Log, All);
 
 #if !UE_BUILD_SHIPPING
 extern TAutoConsoleVariable<int32> CVarDrunkardDebug; // 정의: DrunkardNPC.cpp
