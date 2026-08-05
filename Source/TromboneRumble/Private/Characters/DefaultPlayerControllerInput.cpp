@@ -63,16 +63,18 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 			{
 				case ELevelType::OrchestraStage:
 				case ELevelType::SnowField:
+				case ELevelType::JazzBar:
 					; // intentional fall through
-					
+
 				case ELevelType::Tutorial:
 					if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
 					break;
-					
+
 				case ELevelType::OrchestraStageLobby:
-					; // intentional fall through
-				
 				case ELevelType::SnowFieldLobby:
+					; // intentional fall through
+
+				case ELevelType::JazzBarLobby:
 					if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
 					break;
 					

@@ -12,14 +12,17 @@ namespace TromboneGamePlayTags
 	// 결과 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_OrchestraStage,		"Trombone.Maps.Result.OrchestraStage");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_SnowField,			"Trombone.Maps.Result.SnowField");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_JazzBar,			"Trombone.Maps.Result.JazzBar");
 
 	// 로비 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_OrchestraStage,		"Trombone.Maps.Lobby.OrchestraStage");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_SnowField,			"Trombone.Maps.Lobby.SnowField");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_JazzBar,				"Trombone.Maps.Lobby.JazzBar");
 	
 	// 인게임 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_OrchestraStage,		"Trombone.Maps.InGame.OrchestraStage");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_SnowField,			"Trombone.Maps.InGame.SnowField");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_JazzBar,			"Trombone.Maps.InGame.JazzBar");
 
 	// 테스트 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Test_Proto,				"Trombone.Maps.Test.Proto");
