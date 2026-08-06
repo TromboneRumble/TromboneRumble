@@ -3,6 +3,7 @@
 #include "Components/ActorComponents/XRayComponentBase.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 
@@ -23,7 +24,8 @@ void UXRayComponentBase::BeginPlay()
 		OwnerPawn->ReceiveControllerChangedDelegate.AddDynamic(this, &UXRayComponentBase::HandleControllerChanged);
 	}
 
-	if (ATromboneCharacterBase* OwnerCharacter = Cast<ATromboneCharacterBase>(GetOwner()))
+	// 스킨색은 플레이어 캐릭터(ADefaultTromboneCharacter) 전용 — 전용 모델 NPC 등에서는 구독 없이 기본색 사용
+	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(GetOwner()))
 	{
 		OwnerCharacter->OnSkinColorChanged.AddDynamic(this, &UXRayComponentBase::HandleSkinColorChanged);
 		// 피부색은 PlayerState 복제 경로로도 오므로 순서를 가정하지 않고 현재 값을 한 번 당겨온다
@@ -152,7 +154,7 @@ void UXRayComponentBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		OwnerPawn->ReceiveControllerChangedDelegate.RemoveDynamic(this, &UXRayComponentBase::HandleControllerChanged);
 	}
 
-	if (ATromboneCharacterBase* OwnerCharacter = Cast<ATromboneCharacterBase>(GetOwner()))
+	if (ADefaultTromboneCharacter* OwnerCharacter = Cast<ADefaultTromboneCharacter>(GetOwner()))
 	{
 		OwnerCharacter->OnSkinColorChanged.RemoveDynamic(this, &UXRayComponentBase::HandleSkinColorChanged);
 	}

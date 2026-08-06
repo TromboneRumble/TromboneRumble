@@ -1,3 +1,5 @@
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
+
 #include "Actors/Tutorial/TutorialDummy.h"
 #include "Components/ActorComponents/CustomizationComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
@@ -13,10 +15,11 @@ ATutorialDummy::ATutorialDummy()
 	bApplySkinColorTint = false;
 }
 
-void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
+bool ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 {
-	Super::OnHitReceived_Implementation(HitData);
-	
+	// 게이트에 막혀도 튜토리얼 액션 리포트는 수행한다 (기존 동작 유지)
+	const bool bApplied = Super::OnHitReceived_Implementation(HitData);
+
 	FString SpecificBasicAction = FString();
 	
 	switch (HitData.HitInstigator)
@@ -50,4 +53,6 @@ void ATutorialDummy::OnHitReceived_Implementation(const FHitData& HitData)
 	{
 		Sub->ReportAction(EQuestConditionType::BasicAction, EQuestConditionParamType::Specific, SpecificBasicAction);
 	}
+
+	return bApplied;
 }

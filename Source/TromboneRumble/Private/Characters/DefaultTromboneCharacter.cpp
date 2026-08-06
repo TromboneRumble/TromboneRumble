@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/DefaultPlayerController.h"
@@ -8,7 +8,9 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/AttackComponent.h"
+#include "Components/ActorComponents/CustomizationComponent.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
@@ -27,12 +29,15 @@
 #include "Actors/Rhythm/RhythmActor.h"
 #include "Components/ActorComponents/InterpolateSpringArmComponent.h"
 #include "Items/InstrumentBase.h"
+#include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "UI/UserWidgets/InGame/InGameSpeakerWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "Utilities/Defines.h"
 
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
@@ -40,10 +45,12 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+	
+	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
 
 	CameraBoom = CreateDefaultSubobject<UInterpolateSpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh(), TromboneBones::Pelvis);
-	
+
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
@@ -57,7 +64,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	RageComponent = CreateDefaultSubobject<URageComponent>(TEXT("RageComponent"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
 	RhythmScoreAttributes = CreateDefaultSubobject<URhythmScoreAttributeSet>(TEXT("ScoreAttributeSet"));
-	
+
 	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
 	if (RingHitBoxComponent)
 	{
@@ -274,7 +281,62 @@ void ADefaultTromboneCharacter::Multicast_SetSpeaking_Implementation(bool bSpeak
 
 void ADefaultTromboneCharacter::BeginPlay()
 {
+	// 실행 순서:
+	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
+	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
+	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
+	// 머티리얼 슬롯은 인덱스 하드코딩 대신 슬롯 이름("skin"/"face")으로 조회
+	SkinMID = UCustomizationComponent::EnsureSlotMID(GetMesh(), TromboneMaterial::SkinSlotName);
+
+	const int32 FaceIndex = GetMesh()->GetMaterialIndex(TromboneMaterial::FaceSlotName);
+	if (FaceIndex != INDEX_NONE)
+	{
+		// MID 생성 전 원본 face 머티리얼 캐싱 (커스터마이징 복원용)
+		OriginalFaceMaterial = GetMesh()->GetMaterial(FaceIndex);
+		FaceMID = UCustomizationComponent::EnsureSlotMID(GetMesh(), TromboneMaterial::FaceSlotName);
+	}
+
+	if (CustomizationComp)
+	{
+		FCustomizationSaveData SaveData;
+		if (IsLocallyControlled())
+		{
+			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+				SaveData = SMS->LoadCustomization();
+			CustomizationComp->LoadFromSaveData(SaveData);
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+				DPS->Server_SetCustomization(SaveData);
+		}
+		else
+		{
+			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+			{
+				SaveData = DPS->GetCustomizationData();
+				CustomizationComp->LoadFromSaveData(SaveData);
+			}
+		}
+	}
+
 	Super::BeginPlay();
+
+	// ~ Begin 구 TromboneCharacterBase::BeginPlay 후행부
+	PlayFaceSequence(ECharacterFaceState::Blink);
+
+	// 상태 전이는 베이스가 처리(Super::BeginPlay에서 바인딩됨). 여기서는 연출 핸들러만 구독한다
+	OnStunStateChanged.AddDynamic(this, &ThisClass::HandleStunStateChanged);
+	if (RagdollComponent)
+	{
+		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::HandleRagdollStartedVisuals);
+		RagdollComponent->OnRagdollEnded.AddDynamic(this, &ThisClass::HandleRagdollEndedVisuals);
+		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::HandleRagdollPhysicsEnabled);
+	}
+
+	SetupCharacterData();
+	BoundBounceTimeline();
+
+	UpdateSkinFromPlayerState();
+	ApplyFlagPhysics();
+	// ~ End 구 TromboneCharacterBase::BeginPlay 후행부
 
 	TryRegisterVOIPTalker();
 
@@ -333,9 +395,9 @@ void ADefaultTromboneCharacter::BeginPlay()
 	{
 		const float InitialSpeed = GetCharacterMovement()->MaxWalkSpeed;
 		CharacterAttributes->InitMoveSpeed(InitialSpeed);
-		
+
 		GetCharacterMovement()->MaxWalkSpeed = CharacterAttributes->GetMoveSpeed();
-		
+
 		CharacterAttributes->InitGroundFriction(GetCharacterMovement()->GroundFriction);
 		CharacterAttributes->InitBrakingDeceleration(GetCharacterMovement()->BrakingDecelerationWalking);
 		CharacterAttributes->InitLocomotionPlayRate(1.f);
@@ -380,8 +442,18 @@ void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason
 			}
 		}
 	}
-	
+
 	Super::EndPlay(EndPlayReason);
+}
+
+void ADefaultTromboneCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (BounceTimeline.IsPlaying())
+	{
+		BounceTimeline.TickTimeline(DeltaSeconds);
+	}
 }
 
 void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -389,11 +461,24 @@ void ADefaultTromboneCharacter::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, bIsSprinting);
+	DOREPLIFETIME(ThisClass, SkinColor);
 }
 
 void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	// ~ Begin 구 TromboneCharacterBase::PossessedBy
+	UpdateSkinFromPlayerState();
+
+	if (CustomizationComp)
+	{
+		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		{
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
+		}
+	}
+	// ~ End 구 TromboneCharacterBase::PossessedBy
 
 	if (!HasAuthority()) return;
 
@@ -407,7 +492,49 @@ void ADefaultTromboneCharacter::PossessedBy(AController* NewController)
 void ADefaultTromboneCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
+
+	// ~ Begin 구 TromboneCharacterBase::OnRep_PlayerState
+	UpdateSkinFromPlayerState();
+
+	if (IsLocallyControlled())
+	{
+		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		{
+			if (const USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+			{
+				DPS->Server_SetCustomization(SMS->LoadCustomization());
+			}
+		}
+	}
+	else if (CustomizationComp)
+	{
+		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+		{
+			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
+		}
+	}
+	// ~ End 구 TromboneCharacterBase::OnRep_PlayerState
+
 	TryRegisterVOIPTalker();
+}
+
+void ADefaultTromboneCharacter::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	if (!IsLocallyControlled()) return;
+	const USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (!SMS) return;
+
+	const FCustomizationSaveData SaveData = SMS->LoadCustomization();
+	if (CustomizationComp)
+	{
+		CustomizationComp->LoadFromSaveData(SaveData);
+	}
+	if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+	{
+		DPS->Server_SetCustomization(SaveData);
+	}
 }
 
 void ADefaultTromboneCharacter::Server_SetIsSprinting_Implementation(const bool bNewIsSprinting)
@@ -442,6 +569,215 @@ void ADefaultTromboneCharacter::UpdateMaxWalkSpeed()
 		const float FinalSpeed = CharacterAttributes ? CharacterAttributes->GetMoveSpeed() : BaseSpeed;
 
 		Move->MaxWalkSpeed = FinalSpeed;
+	}
+}
+
+void ADefaultTromboneCharacter::ApplySkinColor(const FLinearColor InSkinColor)
+{
+	// 머리(leader). bApplySkinColorTint=false면 머티리얼 기본색 유지 (PlayerState 없는 더미)
+	if (bApplySkinColorTint)
+	{
+		if (SkinMID)
+		{
+			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
+		}
+		if (FaceMID)
+		{
+			FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
+		}
+	}
+	// 몸통(costume)·안테나 follower 메시
+	if (CustomizationComp)
+	{
+		CustomizationComp->ApplyPartsSkinColor(InSkinColor);
+	}
+
+	OnSkinColorChanged.Broadcast(InSkinColor);
+}
+
+void ADefaultTromboneCharacter::OnRep_SkinColor()
+{
+	ApplySkinColor(SkinColor);
+}
+
+void ADefaultTromboneCharacter::ApplyFaceMaterial(UMaterialInterface* Material)
+{
+	// nullptr 전달 시 BeginPlay에서 캐싱된 원본 머티리얼로 복원
+	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
+	if (!Target) return;
+
+	const int32 FaceIndex = GetMesh()->GetMaterialIndex(TromboneMaterial::FaceSlotName);
+	if (FaceIndex == INDEX_NONE) return;
+
+	GetMesh()->SetMaterial(FaceIndex, Target);
+	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceIndex);
+	if (FaceMID && bApplySkinColorTint)
+	{
+		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
+		// bApplySkinColorTint=false면 머티리얼 기본 BaseColor 유지 (PlayerState 없는 더미)
+		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
+	}
+}
+
+void ADefaultTromboneCharacter::SetupCharacterData() const
+{
+	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
+	GetCharacterMovement()->NetworkMaxSmoothUpdateDistance = 128.f;
+	GetCharacterMovement()->NetworkNoSmoothUpdateDistance = 384.f;
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+
+	if (CharacterData)
+	{
+		// Ground
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, CharacterData->RotationRate, 0.0f);
+
+		// Air
+		GetCharacterMovement()->JumpZVelocity = CharacterData->JumpZVelocity;
+		GetCharacterMovement()->AirControl = CharacterData->AirControl;
+
+		// Inertia
+		GetCharacterMovement()->GravityScale = CharacterData->GravityScale;
+		GetCharacterMovement()->MaxAcceleration = CharacterData->MaxAcceleration;
+		GetCharacterMovement()->BrakingDecelerationWalking = CharacterData->BrakingDecelerationWalking;
+		GetCharacterMovement()->GroundFriction = CharacterData->GroundFriction;
+	}
+}
+
+void ADefaultTromboneCharacter::HandleRagdollStartedVisuals()
+{
+	PlayFaceSequence(ECharacterFaceState::Ragdoll);
+}
+
+void ADefaultTromboneCharacter::HandleRagdollEndedVisuals()
+{
+	PlayFaceSequence(ECharacterFaceState::Blink);
+}
+
+void ADefaultTromboneCharacter::HandleRagdollPhysicsEnabled()
+{
+	ApplyFlagPhysics();
+}
+
+void ADefaultTromboneCharacter::UpdateSkinFromPlayerState()
+{
+	if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
+	{
+		SkinColor = DPS->GetSkinColor();
+		ApplySkinColor(SkinColor);
+	}
+}
+
+void ADefaultTromboneCharacter::UpdateFaceExpression(ECharacterFaceType NewType)
+{
+	if (FaceMID)
+	{
+		FaceMID->SetScalarParameterValue(FaceExpressionParameterName, static_cast<float>(NewType));
+	}
+}
+
+void ADefaultTromboneCharacter::BoundBounceTimeline()
+{
+	if (BounceCurve)
+	{
+		FOnTimelineVector ProgressFunction;
+		ProgressFunction.BindUFunction(this, FName("HandleBounceProgress"));
+		BounceTimeline.AddInterpVector(BounceCurve, ProgressFunction);
+	}
+}
+
+void ADefaultTromboneCharacter::HandleBounceProgress(FVector Value)
+{
+	if (GetMesh())
+	{
+		GetMesh()->SetRelativeScale3D(Value);
+	}
+}
+
+void ADefaultTromboneCharacter::PlayFaceSequence(const ECharacterFaceState TargetState)
+{
+	if (!CharacterData) return;
+
+	if (const FCharacterFaceAnimationSequence* FaceAnimData = CharacterData->FaceSequences.Find(TargetState))
+	{
+		InternalPlayFaceSequence(FaceAnimData);
+	}
+}
+
+void ADefaultTromboneCharacter::InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence)
+{
+	GetWorld()->GetTimerManager().ClearTimer(FaceSequenceTimerHandle);
+	CurrentActiveSequence = *InSequence;
+	CurrentSequenceStep = 0;
+	ExecuteFaceStep();
+}
+
+void ADefaultTromboneCharacter::ExecuteFaceStep()
+{
+	if (CurrentActiveSequence.Sequence.Num() == 0) return;
+
+	UpdateFaceExpression(CurrentActiveSequence.Sequence[CurrentSequenceStep]);
+	CurrentSequenceStep++;
+
+	if (CurrentSequenceStep < CurrentActiveSequence.Sequence.Num())
+	{
+		GetWorld()->GetTimerManager().SetTimer(FaceSequenceTimerHandle, this, &ThisClass::ExecuteFaceStep, CurrentActiveSequence.Interval, false);
+	}
+	else if (CurrentActiveSequence.bLoop)
+	{
+		CurrentSequenceStep = 0;
+
+		float NextDelay = FMath::FRandRange(CurrentActiveSequence.MinLoopDelay, CurrentActiveSequence.MaxLoopDelay);
+		if (NextDelay <= 0.0f) NextDelay = CurrentActiveSequence.Interval;
+
+		GetWorld()->GetTimerManager().SetTimer(FaceSequenceTimerHandle, this, &ThisClass::ExecuteFaceStep, NextDelay, false);
+	}
+}
+
+void ADefaultTromboneCharacter::ApplyFlagPhysics()
+{
+	if (!GetWorld() || !GetWorld()->GetGameInstance())
+	{
+		return;
+	}
+
+	if (const UGameStateSubsystem* GameStateSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
+	{
+		if (IsInGameLevelType(GameStateSubsystem->GetLevelState()))
+		{
+			GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+			FPhysicalAnimationData FlagAnimData;
+			FlagAnimData.bIsLocalSimulation = false;
+			FlagAnimData.OrientationStrength = 10.0f;
+			FlagAnimData.AngularVelocityStrength = 5.0f;
+			FlagAnimData.PositionStrength = 10.0f;
+			FlagAnimData.VelocityStrength = 0.0f;
+			FlagAnimData.MaxAngularForce = 0.0f;
+			FlagAnimData.MaxLinearForce = 0.0f;
+
+			GetMesh()->SetAllBodiesBelowSimulatePhysics(TromboneBones::Flage, true, true);
+			PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(TromboneBones::Flage, FlagAnimData, true);
+		}
+	}
+}
+
+void ADefaultTromboneCharacter::HandleStunStateChanged(const bool bIsStunned)
+{
+	if (bIsStunned)
+	{
+		PlayFaceSequence(ECharacterFaceState::Stun);
+		if (BounceCurve)
+		{
+			BounceTimeline.PlayFromStart();
+		}
+	}
+	else
+	{
+		PlayFaceSequence(ECharacterFaceState::Blink);
 	}
 }
 
