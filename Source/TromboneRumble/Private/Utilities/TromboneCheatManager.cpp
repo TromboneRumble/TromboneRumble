@@ -1,8 +1,14 @@
-#include "Utilities/TromboneCheatManager.h"
+﻿#include "Utilities/TromboneCheatManager.h"
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ActorComponents/CustomizationComponent.h"
+#include "Components/ActorComponents/XRayComponentBase.h"
+#include "Components/ActorComponents/XRayTranslucentFadeComponent.h"
+#include "Components/ActorComponents/XRaySilhouetteComponent.h"
+#include "Components/ActorComponents/XRayWindowComponent.h"
+#include "Utilities/XRayBenchmark.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,6 +29,10 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_Stun - 스턴을 실행합니다.\n");
 	DebugMsg += TEXT("Trombone_ResetSettingData - 설정 데이터 초기화\n");
 	DebugMsg += TEXT("Trombone_SetCustomization [AntennaKey] [FaceKey] [CostumeKey] - 커스터마이징 즉시 변경 및 복제 (None=기본값, 예: Trombone_SetCustomization None Face_02 None)\n");
+	DebugMsg += TEXT("Trombone_XRayMode [silhouette|dither|window|off] - X-Ray 방식 전환. 인자 없으면 현재 붙어있는 컴포넌트 출력\n");
+	DebugMsg += TEXT("Trombone_XRayBench [초] - X-Ray 3종의 프레임 비용을 순서대로 측정해 비교 (기본 10초씩. 가려진 자리에 서서 실행)\n");
+	DebugMsg += TEXT("Trombone_XRayWindow [반경cm] [부드러움0~1] [가리는물체투명도0~1] - 원형 윈도우 런타임 조절. 인자 없으면 현재 값 출력\n");
+	DebugMsg += TEXT("Trombone_XRayCropCapture [0|1] - 원형 윈도우의 캡처 시야를 원 주변으로 좁힐지. 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("--------------------------------\n");
 	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
 	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");
@@ -178,6 +188,204 @@ void UTromboneCheatManager::Trombone_SetCustomization(const FString& AntennaKey,
 		DPS->Server_SetCustomization(Data);
 
 	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("Customization set — Antenna:%s Face:%s Costume:%s"), *AntennaKey, *FaceKey, *CostumeKey));
+}
+
+void UTromboneCheatManager::Trombone_XRayMode(const FString& ModeString)
+{
+	const APlayerController* PC = GetOuterAPlayerController();
+	if (!PC) return;
+
+	// 벤치가 들고 있는 컴포넌트를 파괴하면 측정이 꼬인다
+	if (XRayBenchmark && XRayBenchmark->IsRunning())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("측정 중에는 X-Ray를 전환할 수 없습니다. 측정이 끝난 뒤 다시 시도하세요."));
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	if (!Pawn)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("조종 중인 폰이 없습니다 — 인게임에서 실행하세요"));
+		return;
+	}
+
+	auto DescribeAttached = [Pawn]() -> FString
+	{
+		TArray<UXRayComponentBase*> Components;
+		Pawn->GetComponents<UXRayComponentBase>(Components);
+		if (Components.Num() == 0)
+		{
+			return TEXT("(없음)");
+		}
+		FString Result;
+		for (const UXRayComponentBase* Component : Components)
+		{
+			if (!Result.IsEmpty()) Result += TEXT(", ");
+			Result += Component->GetClass()->GetName();
+			if (Component->IsEffectActive())
+			{
+				Result += TEXT("(활성)");
+			}
+			else
+			{
+				// 정지 상태와 "머티리얼이 없어 못 켜진 상태"를 구분해줘야 원인을 찾을 수 있다
+				Result += Component->IsTrackingPaused() ? TEXT("(정지)") : TEXT("(머티리얼 없음)");
+			}
+		}
+		return Result;
+	};
+
+	if (ModeString.IsEmpty())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
+			TEXT("현재 X-Ray: %s  (전환: Trombone_XRayMode silhouette|dither|window|off)"), *DescribeAttached()));
+		return;
+	}
+
+	TSubclassOf<UXRayComponentBase> NewClass = nullptr;
+	if (ModeString.Equals(TEXT("silhouette"), ESearchCase::IgnoreCase))
+	{
+		NewClass = UXRaySilhouetteComponent::StaticClass();
+	}
+	else if (ModeString.Equals(TEXT("dither"), ESearchCase::IgnoreCase))
+	{
+		NewClass = UXRayTranslucentFadeComponent::StaticClass();
+	}
+	else if (ModeString.Equals(TEXT("window"), ESearchCase::IgnoreCase))
+	{
+		NewClass = UXRayWindowComponent::StaticClass();
+	}
+	else if (!ModeString.Equals(TEXT("off"), ESearchCase::IgnoreCase))
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("알 수 없는 모드입니다. silhouette | dither | window | off"));
+		return;
+	}
+
+	// BP 컴포넌트는 파괴하지 않고 재우기만 한다 — 파괴하면 BP에 지정된 머티리얼/튜닝값을 잃는다
+	static const FName CheatTempTag(TEXT("XRayCheatTemp"));
+	UXRayComponentBase* Target = nullptr;
+
+	TArray<UXRayComponentBase*> Existing;
+	Pawn->GetComponents<UXRayComponentBase>(Existing);
+	for (UXRayComponentBase* Component : Existing)
+	{
+		if (Component->ComponentHasTag(CheatTempTag))
+		{
+			Component->DestroyComponent();	// 이전 치트가 만든 임시 컴포넌트는 정리
+			continue;
+		}
+
+		if (NewClass && Component->GetClass() == NewClass)
+		{
+			Target = Component;
+			Target->SetTrackingPaused(false);	// 이미 켜져 있으면 아무 일도 하지 않는다
+			continue;
+		}
+
+		Component->SetTrackingPaused(true);
+	}
+
+	if (NewClass && !Target)
+	{
+		// BP에 없는 방식은 임시로 만든다. 등록하면 BeginPlay가 돌아 스스로 켜진다
+		// (머티리얼이 필요한 방식은 초기화에 실패해 잠든 채로 남는다)
+		Target = NewObject<UXRayComponentBase>(Pawn, NewClass);
+		Target->ComponentTags.Add(CheatTempTag);
+		Target->RegisterComponent();
+	}
+
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("X-Ray → %s"), *DescribeAttached()));
+}
+
+void UTromboneCheatManager::Trombone_XRayBench(const FString& SecondsString)
+{
+	const APlayerController* PC = GetOuterAPlayerController();
+	if (!PC) return;
+
+	if (!XRayBenchmark)
+	{
+		XRayBenchmark = NewObject<UXRayBenchmark>(this);
+	}
+
+	const float Seconds = SecondsString.IsEmpty() ? 10.f : FCString::Atof(*SecondsString);
+	XRayBenchmark->Start(PC->GetPawn(), Seconds);
+}
+
+void UTromboneCheatManager::Trombone_XRayWindow(const FString& RadiusString, const FString& SoftnessString, const FString& OccluderOpacityString)
+{
+	const APlayerController* PC = GetOuterAPlayerController();
+	if (!PC) return;
+
+	// 측정 중에 모양을 바꾸면 방식 간 비교가 깨진다
+	if (XRayBenchmark && XRayBenchmark->IsRunning())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("측정 중에는 윈도우를 조절할 수 없습니다. 측정이 끝난 뒤 다시 시도하세요."));
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	UXRayWindowComponent* Window = Pawn ? Pawn->FindComponentByClass<UXRayWindowComponent>() : nullptr;
+	if (!Window)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("원형 윈도우 컴포넌트가 없습니다. Trombone_XRayMode window 로 먼저 켜세요."));
+		return;
+	}
+
+	// 인자를 생략한 항목은 현재 값을 유지한다 (반경만 훑고 싶을 때가 많다)
+	const float Radius = RadiusString.IsEmpty()
+		? Window->GetWorldHoleRadius()
+		: FCString::Atof(*RadiusString);
+	const float Softness = SoftnessString.IsEmpty()
+		? Window->GetEdgeSoftness()
+		: FCString::Atof(*SoftnessString);
+	const float OccluderOpacity = OccluderOpacityString.IsEmpty()
+		? Window->GetOccluderOpacity()
+		: FCString::Atof(*OccluderOpacityString);
+
+	Window->SetWindowShape(Radius, Softness, OccluderOpacity);
+
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
+		TEXT("X-Ray 윈도우 — WorldHoleRadius %.1f / EdgeSoftness %.2f / OccluderOpacity %.2f  (저장 안 됨. 마음에 들면 BP의 XRay|Window에 옮겨 적으세요)"),
+		Window->GetWorldHoleRadius(), Window->GetEdgeSoftness(), Window->GetOccluderOpacity()));
+}
+
+void UTromboneCheatManager::Trombone_XRayCropCapture(const FString& EnabledString)
+{
+	const APlayerController* PC = GetOuterAPlayerController();
+	if (!PC) return;
+
+	// 측정 중에 캡처 방식을 바꾸면 구간별 비교가 깨진다
+	if (XRayBenchmark && XRayBenchmark->IsRunning())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("측정 중에는 바꿀 수 없습니다. 측정이 끝난 뒤 다시 시도하세요."));
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	UXRayWindowComponent* Window = Pawn ? Pawn->FindComponentByClass<UXRayWindowComponent>() : nullptr;
+	if (!Window)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("원형 윈도우 컴포넌트가 없습니다. Trombone_XRayMode window 로 먼저 켜세요."));
+		return;
+	}
+
+	if (EnabledString.IsEmpty())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
+			TEXT("X-Ray 윈도우 캡처 크롭 — 현재 %s"), Window->IsCropCaptureEnabled() ? TEXT("on") : TEXT("off")));
+		return;
+	}
+
+	const bool bEnabled = EnabledString.ToBool() || EnabledString.Equals(TEXT("on"), ESearchCase::IgnoreCase);
+	Window->SetCropCaptureEnabled(bEnabled);
+
+	// 렌더타겟 크기가 방식마다 달라서 재초기화가 필요하다
+	Window->SetTrackingPaused(true);
+	Window->SetTrackingPaused(false);
+
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
+		TEXT("X-Ray 윈도우 캡처 크롭 %s (저장 안 됨. BP의 XRay|Window > bCropCaptureToWindow가 기본값)"),
+		bEnabled ? TEXT("on — 원 주변만 캡처") : TEXT("off — 화면 전체 캡처")));
 }
 
 void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()

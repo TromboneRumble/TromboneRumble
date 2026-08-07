@@ -34,7 +34,7 @@ void AMatchMenuGameState::HandleMatchPawnCreated(APawn* PlayerPawn)
 	if (APlayerStart* PlayerStart = FindPlayerStart(PlayerPawn))
 	{
 		PlayerStartMappings[PlayerStart] = PlayerPawn;
-		PlayerPawn->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
+		PlayerPawn->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation(), false, true);
 		
 		OnPlayerStartOccupancyChangedEvent.Broadcast(PlayerStart, PlayerPawn);
 	}

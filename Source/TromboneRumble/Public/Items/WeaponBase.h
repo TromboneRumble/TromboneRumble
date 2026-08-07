@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -27,7 +27,6 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	// ~ Begin IInteractable Interface
 	virtual bool CanInteract_Implementation(AActor* InstigatorActor) const override; 
@@ -40,8 +39,7 @@ public:
 	// ~ End IEquipable Interfaces
 	
 	// ~ Begin IWeapon Interface
-	virtual bool CanAttack() const override { return bCanAttack; };
-	virtual void BeginAttack() override;
+	virtual void BeginAttack(float Duration) override;
 	virtual void EndAttack() override;
 	// ~ End IWeapon Interface
 	
@@ -90,9 +88,10 @@ protected:
 
 private:
 	bool bIsDetectHit = false;
-	UPROPERTY(Replicated)
-	bool bCanAttack = true;
-	
+
+	/** 공격 판정의 강제 종료 시간 */
+	float HitDetectEndTimeSeconds = 0.f;
+
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> AlreadyHitActors;
 	FTransform PreviousFrameTransform;
@@ -103,7 +102,6 @@ public:
 	FORCEINLINE EInstrumentType GetInstrumentType() const { return InstrumentType; }
 	FORCEINLINE TObjectPtr<UWeaponDataAsset> GetAttackData() const { return WeaponData; }
 	FORCEINLINE bool IsDetectHit() const { return bIsDetectHit; }
-	FORCEINLINE void SetCanAttack(const bool bNewCanAttack) { bCanAttack = bNewCanAttack; }
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponData ? WeaponData->WeaponType : EWeaponType::Invalid; }
 	FORCEINLINE float GetAttackCooldown() const { return WeaponData->AttackCooldown; }
 	FORCEINLINE void SetCanBeSwitched(bool InSwitched) { CanBeSwitched = InSwitched; }

@@ -20,6 +20,7 @@ class UMaterialInterface;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStunStateChanged, bool, bIsStunned);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInvincibleSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSkinColorChanged, const FLinearColor&, NewSkinColor);
 
 /** EInputBlockReason 
  * 여러 시스템(래그돌, 튜토리얼, 서버 등등)에서 입력을 차단할 수 있는데, 
@@ -47,8 +48,12 @@ public:
 	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces
 	
-	virtual void ApplySkinColor(const FLinearColor InSkinColor) const;
+	
+	virtual void ApplySkinColor(const FLinearColor InSkinColor);
 	FLinearColor GetSkinColor() const { return SkinColor; }
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnSkinColorChanged OnSkinColorChanged;
 	
 	/** Add a reason for the input lock */
 	void AddInputBlock(EInputBlockReason Reason);
@@ -61,15 +66,7 @@ public:
 
 	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
 	void ApplyFaceMaterial(UMaterialInterface* Material);
-
-	// X-Ray 실루엣용 CustomDepth stencil 값 설정 (단일 Primitive 컴포넌트)
-	static void ApplyOccludedStencil(UPrimitiveComponent* Prim);
-	// X-Ray 실루엣용 CustomDepth 렌더 해제 (무기 드롭/원격 소유 시 등)
-	static void ClearOccludedStencil(UPrimitiveComponent* Prim);
-	// 지정 액터 내부의 모든 Primitive에만 stencil 적용 (자식 액터는 순회하지 않음)
-	static void ApplyOccludedStencilToActor(AActor* Actor);
-	// 지정 액터 내부의 모든 Primitive의 CustomDepth 렌더 해제
-	static void ClearOccludedStencilFromActor(AActor* Actor);
+	
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCustomizationComponent> CustomizationComp;
@@ -121,6 +118,12 @@ private:
 	void HandleRagdollEnded();
 	UFUNCTION()
 	void HandleRagdollPhysicsEnabled();
+
+	/** FHitData 를 최종 넉백 속도로 계산한다. 폭발이면 방사형, 아니면 수평 힘 + 수직 힘 조합 */
+	FVector CalculateKnockbackVelocity(const FHitData& HitData) const;
+
+	UFUNCTION(Client, Reliable)
+	void Client_ApplyKnockback(FVector KnockbackVelocity);
 
 	void UpdateSkinFromPlayerState();
 	

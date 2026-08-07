@@ -7,6 +7,8 @@
 #include "Utilities/Defines.h"
 #include "CustomizationPartRow.generated.h"
 
+class UAnimInstance;
+
 /**
  * DataTable row for customization parts.
  * RowName(Key) = asset name used in the Unreal Editor (e.g. SM_Antenna_Star, M_Character_Face2).
@@ -28,4 +30,7 @@ struct FCustomizationPartRow : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ToolTip = "동일 SlotType 내 노출 순서. 0 = 기본(파츠 없음)"))
 	int32 AssetOrder = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ToolTip = "자체 본을 가진 파츠용 AnimBP. 비어 있으면 LeaderPose로 부착(기본)"))
+	TSoftClassPtr<UAnimInstance> PartAnimClass;
 };

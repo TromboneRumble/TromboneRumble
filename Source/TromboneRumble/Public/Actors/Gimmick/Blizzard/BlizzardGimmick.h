@@ -16,7 +16,6 @@ class ATromboneCharacterBase;
 class ABlizzardShelter;
 class UAkAudioEvent;
 class UAkSwitchValue;
-class UAkComponent;
 class USceneComponent;
 class UDirectionalLightComponent;
 class UExponentialHeightFogComponent;
@@ -82,6 +81,7 @@ public:
 	virtual void Activate() override;
 	virtual void Deactivate() override;
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -246,13 +246,11 @@ private:
 	//~
 
 	//~ Audio (Wwise 눈보라 앰비언스).
-	//  이벤트를 BeginPlay 에 AmbienceAkComponent 로 1회 post 하고, 상태 전이마다 스위치만 바꿔 레이어를 전환한다 (크로스페이드는 Wwise 저작).
-	//  BlizzardGimmick 은 C++ 루트가 없어 여기서 네이티브 루트를 만들고 Ak 컴포넌트를 붙인다.
+	//  이벤트를 BeginPlay 에 Wwise 글로벌 오브젝트로 1회 post 하고, 상태 전이마다 스위치만 바꿔 레이어를 전환한다 (크로스페이드는 Wwise 저작).
+	//  BGM 과 같은 경로라 액터 위치 기준 감쇠가 없다. 스위치도 같은 글로벌 오브젝트에 걸어야 한다.
+	//  BlizzardGimmick 은 C++ 루트가 없어 여기서 네이티브 루트를 만든다.
 	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Audio", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> SceneRoot;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blizzard|Audio", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAkComponent> AmbienceAkComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Audio", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 앰비언스 이벤트"))
 	TObjectPtr<UAkAudioEvent> SnowAmbienceEvent;
@@ -264,6 +262,9 @@ private:
 	TObjectPtr<UAkSwitchValue> AmbienceSwitchLevel2;
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Audio", meta = (AllowPrivateAccess = "true", DisplayName = "앰비언스 스위치 Lv3 (폭풍)"))
 	TObjectPtr<UAkSwitchValue> AmbienceSwitchLevel3;
+
+	/** post 로 받은 재생 ID. 글로벌 오브젝트에 건 소리라 액터가 죽어도 자동으로 안 꺼져서, 이 ID 로 직접 정지한다. */
+	int32 AmbiencePlayingID = 0;
 	//~
 
 	/** 연출용 쉘터 목록 (BeginPlay 1회 수집). 게임플레이 판정용 Shelters 와 별개 — 이쪽은 클라에서도 필요하다. */
@@ -284,6 +285,7 @@ private:
 	float GetStateCoverage(EBlizzardState State) const;
 	void ApplySnowStorm(EBlizzardState State, const FVector& InWindDir);
 	void StartBlizzardAmbience();               // BeginPlay: level1 세팅 후 이벤트 1회 post
+	void StopBlizzardAmbience();                // EndPlay: 재생 ID 로 정지 (안 하면 결과씬/메뉴까지 따라간다)
 	void ApplyAmbienceSwitch(EBlizzardState State);  // 상태별 앰비언스 스위치 전환
 
 	/** 구동 대상 환경 컴포넌트별 보간 상태 (태양/안개/대기/스카이라이트). BeginPlay 에 구성. */

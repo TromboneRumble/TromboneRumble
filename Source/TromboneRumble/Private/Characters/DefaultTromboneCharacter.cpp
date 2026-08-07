@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/DefaultPlayerController.h"
@@ -34,8 +34,6 @@
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/GameStateSubsystem.h"
 
-const FName ADefaultTromboneCharacter::SilhouetteColorParamName(TEXT("SilhouetteColor"));
-
 ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 {
 	// Don't rotate when the controller rotates. Let that just affect the camera.
@@ -59,7 +57,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	RageComponent = CreateDefaultSubobject<URageComponent>(TEXT("RageComponent"));
 	CharacterAttributes = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributes"));
 	RhythmScoreAttributes = CreateDefaultSubobject<URhythmScoreAttributeSet>(TEXT("ScoreAttributeSet"));
-
+	
 	RingHitBoxComponent = CreateDefaultSubobject<URingHitBoxComponent>(TEXT("RingHitboxComponent"));
 	if (RingHitBoxComponent)
 	{
@@ -365,36 +363,11 @@ void ADefaultTromboneCharacter::BeginPlay()
 		InteractorComponent->OnInteractSuccessDelegate.AddDynamic(this, &ThisClass::HandleInteractSuccess);
 
 		ComboWidgetComponent->SetVisibility(true);
-
-		// 가려진 캐릭터 실루엣을 위한 PostProcess 머티리얼을 로컬 카메라에만 블렌드
-		// 초기 weight=0.0 (OFF); CheckXRayOcclusion() 타이머가 XRayBlocker 감지 시 1.0으로 올림
-		// 실루엣 색상을 로컬 플레이어 피부색으로 주입하기 위해 동적 인스턴스(MID)를 블렌드한다.
-		if (OcclusionOverlayMaterial && FollowCamera)
-		{
-			OcclusionOverlayMID = UMaterialInstanceDynamic::Create(OcclusionOverlayMaterial, this);
-			if (OcclusionOverlayMID)
-			{
-				// 현재 피부색으로 초기화 (색이 이미 도착한 경우 대비. 이후 ApplySkinColor에서 갱신)
-				OcclusionOverlayMID->SetVectorParameterValue(SilhouetteColorParamName, GetSkinColor());
-
-				FWeightedBlendable Blend(0.0f, OcclusionOverlayMID);
-				FollowCamera->PostProcessSettings.WeightedBlendables.Array.Add(Blend);
-
-				// 카메라→캐릭터 트레이스: XRayBlocker 감지 시 X-Ray ON
-				GetWorldTimerManager().SetTimer(
-					XRayTraceTimerHandle,
-					this,
-					&ThisClass::CheckXRayOcclusion,
-					0.05f,
-					true);
-			}
-		}
 	}
 }
 
 void ADefaultTromboneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	GetWorldTimerManager().ClearTimer(XRayTraceTimerHandle);
 	GetWorldTimerManager().ClearTimer(RetryVOIPRegistrationHandle);
 
 	if (HasAuthority())
@@ -469,58 +442,6 @@ void ADefaultTromboneCharacter::UpdateMaxWalkSpeed()
 		const float FinalSpeed = CharacterAttributes ? CharacterAttributes->GetMoveSpeed() : BaseSpeed;
 
 		Move->MaxWalkSpeed = FinalSpeed;
-	}
-}
-
-void ADefaultTromboneCharacter::CheckXRayOcclusion()
-{
-	if (!OcclusionOverlayMaterial || !FollowCamera) return;
-
-	// 카메라 위치 → 캐릭터 중심까지 멀티 트레이스
-	const FVector Start = FollowCamera->GetComponentLocation();
-	const FVector End   = GetActorLocation();
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	
-	FCollisionObjectQueryParams ObjParams;
-	ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-
-	TArray<FHitResult> Hits;
-	GetWorld()->LineTraceMultiByObjectType(Hits, Start, End, ObjParams, Params);
-
-	// 트레이스 결과 중 XRayBlocker 태그가 있는 액터가 하나라도 있으면 X-Ray ON
-	bool bXRayActive = false;
-	for (const FHitResult& Hit : Hits)
-	{
-		if (Hit.GetActor() && Hit.GetActor()->ActorHasTag(FName("XRayBlocker")))
-		{
-			bXRayActive = true;
-			break;
-		}
-	}
-
-	// blendable 배열에서 OcclusionOverlayMID를 찾아 weight 업데이트
-	const float NewWeight = bXRayActive ? 1.0f : 0.0f;
-	for (FWeightedBlendable& Blendable : FollowCamera->PostProcessSettings.WeightedBlendables.Array)
-	{
-		if (Blendable.Object == OcclusionOverlayMID)
-		{
-			Blendable.Weight = NewWeight;
-			break;
-		}
-	}
-}
-
-void ADefaultTromboneCharacter::ApplySkinColor(const FLinearColor InSkinColor) const
-{
-	Super::ApplySkinColor(InSkinColor);
-
-	// 로컬 플레이어 카메라에만 존재하는 X-Ray 실루엣 MID 색상을 피부색으로 갱신
-	if (OcclusionOverlayMID)
-	{
-		OcclusionOverlayMID->SetVectorParameterValue(SilhouetteColorParamName, InSkinColor);
 	}
 }
 

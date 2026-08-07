@@ -17,9 +17,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "공격 재사용 대기시간"))
 	float AttackCooldown = 0.0f;
     
-	/** 공격 적중 시 상대방을 밀어내는 힘의 크기 */
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "넉백 힘"))
+	/** 공격 적중 시 상대방을 수평으로 밀어내는 힘의 크기 */
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "넉백 힘 (수평)"))
 	float KnockbackForce = 500.0f;
+
+	/** 공격 적중 시 상대방을 위로 띄우는 힘의 크기 */
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "넉백 힘 (수직)"))
+	float KnockbackUpForce = 300.0f;
     
 	/** 무기를 떨어뜨릴 때 전방으로 가해지는 충격량 */
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "무기 드롭 전방 충격량"))

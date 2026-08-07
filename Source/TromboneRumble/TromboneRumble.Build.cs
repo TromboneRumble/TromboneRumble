@@ -51,7 +51,9 @@ public class TromboneRumble : ModuleRules
 		{
 			"EngineSettings",
 			"Slate",
-			"SlateCore"
+			"SlateCore",
+			"RHI",        
+			"RenderCore"  
 		});
 		
 		if (Target.bBuildEditor)
