@@ -4,6 +4,7 @@
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Framework/InGameState.h"
 #include "Framework/LobbyGameState.h"
 #include "Subsystems/RhythmSubsystem.h"
@@ -277,7 +278,7 @@ void ADefaultPlayerState::OnRep_SkinColor()
 {
 	if (APawn* Pawn = GetPawn())
 	{
-		if (ATromboneCharacterBase* TromboneCharacter = Cast<ATromboneCharacterBase>(Pawn))
+		if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(Pawn))
 		{
 			TromboneCharacter->ApplySkinColor(SkinColor);
 		}
@@ -322,7 +323,7 @@ void ADefaultPlayerState::OnRep_CustomizationData()
 	UCustomizationComponent* Comp = nullptr;
 	if (AMatchPawn* MP = Cast<AMatchPawn>(Pawn))
 		Comp = MP->CustomizationComp;
-	else if (ATromboneCharacterBase* TC = Cast<ATromboneCharacterBase>(Pawn))
+	else if (ADefaultTromboneCharacter* TC = Cast<ADefaultTromboneCharacter>(Pawn))
 		Comp = TC->CustomizationComp;
 
 	if (Comp)

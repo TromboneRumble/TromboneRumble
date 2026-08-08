@@ -25,6 +25,9 @@ namespace TromboneGamePlayTags
 	// 플레이 가능한 인게임
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_OrchestraStage);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_SnowField);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_InGame_JazzBar);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Lobby_JazzBar);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Result_JazzBar);
 
 	// 테스트 맵 (never-cook). 플레이어 노출 X. 게임 흐름과 무관.
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Maps_Test_Proto);

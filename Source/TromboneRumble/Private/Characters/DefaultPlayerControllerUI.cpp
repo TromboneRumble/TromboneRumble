@@ -50,8 +50,9 @@ void ADefaultPlayerController::BeginPlay()
 	//LoadingScreen
 	FAsyncLoadingScreenModule::OnLoadingScreenFinished().AddUObject(this, &ADefaultPlayerController::HandleLoadingScreenFinished);
 
-	//	이미 Lobby 맵 안에 있는데 AsyncLoadingScreen 쪽 이벤트가 안 올 수도 있는 상황(클라가 중간 합류) 대비.
-	if (GameStateSubsystem->GetLevelState() == ELevelType::OrchestraStageLobby || GameStateSubsystem->GetLevelState() == ELevelType::SnowFieldLobby)
+	//	이미 Lobby 맵 안에 있는데 AsyncLoadingScreen 쪽 이벤트가 안 올 수도 있는 상황(클라가 중간 합류, 리슨서버 호스트) 대비.
+	//	로비 맵 에셋을 여러 타입이 공유하므로 개별 나열 대신 IsLobbyLevelType으로 판정해야 한다
+	if (IsLobbyLevelType(GameStateSubsystem->GetLevelState()))
 	{
 		// 여기서 한 번 직접 호출해 줌.
 		// 만약 나중에 실제 OnLoadingScreenFinished가 또 불리면

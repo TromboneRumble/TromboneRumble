@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -6,6 +6,8 @@
 #include "AbilitySystemInterface.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/AttackComponent.h"
+#include "Components/TimelineComponent.h"
+#include "Data/CharacterDataAsset.h"
 #include "Items/InstrumentBase.h"
 #include "BlueprintFunctionLibraries/CameraFunctionLibrary.h"
 #include "DefaultTromboneCharacter.generated.h"
@@ -20,6 +22,7 @@ class UTromboneVOIPTalker;
 
 class UEquipmentComponent;
 class UAkComponent;
+class UAkAudioEvent;
 class UClientToServerRelayComponent;
 class UAttackComponent;
 class USpringArmComponent;
@@ -27,8 +30,12 @@ class UCameraComponent;
 class UInteractorComponent;
 class UAbilitySystemComponent;
 class URingHitBoxComponent;
+class UNiagaraComponent;
 class UNiagaraSystem;
 class UWidgetComponent;
+class UCustomizationComponent;
+class UTromboneRagdollComponent;
+class UMaterialInterface;
 
 class ARhythmActor;
 class UCharacterDataAsset;
@@ -37,6 +44,8 @@ class UCharacterAttributeSet;
 class URhythmScoreAttributeSet;
 
 class AItemBase;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSkinColorChanged, const FLinearColor&, NewSkinColor);
 
 UCLASS()
 class TROMBONERUMBLE_API ADefaultTromboneCharacter : public ATromboneCharacterBase, public IAbilitySystemInterface
@@ -52,15 +61,15 @@ public:
 	void Attack();
 	void StartSprint();
 	void StopSprint();
-	void Rhythm(bool bIsPressed);	
+	void Rhythm(bool bIsPressed);
 	void Equip(AItemBase* WeaponToEquip);
-	
+
 	UFUNCTION()
 	void Unequip();
 
 	/** 마우스 휠 줌 단계 변경. WheelDelta: +1 = 줌인(레벨 감소), -1 = 줌아웃(레벨 증가) */
 	void OnCameraZoom(float WheelDelta);
-	
+
 	// UVOIPTalker::OnTalkingBegin은 Listener에게만 적용되기 때문에, RPC를 통해 SpeakerIcon을 제어
 	// True인 경우에는 해당 플레이어가 PushToTalk 모드를 사용해서 말을 하고 있음.
 	UFUNCTION(Server, Reliable)
@@ -69,12 +78,37 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_SetSpeaking(bool bSpeaking);
 
+	/** 피부색 적용 (leader 메시 + follower 파츠). 변경을 OnSkinColorChanged 로 통지한다 (X-Ray 컴포넌트 등이 구독) */
+	void ApplySkinColor(const FLinearColor InSkinColor);
+	FLinearColor GetSkinColor() const { return SkinColor; }
+
+	UPROPERTY(BlueprintAssignable)
+	FOnSkinColorChanged OnSkinColorChanged;
+
+	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
+	void ApplyFaceMaterial(UMaterialInterface* Material);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UCustomizationComponent> CustomizationComp;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	virtual void OnRep_Controller() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
+	FName FaceExpressionParameterName = FName("ExpressionIndex");
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Animation")
+	TObjectPtr<UCurveVector> BounceCurve;
+
+	// false면 SkinColor를 skin/face MID에 틴트하지 않고 머티리얼 기본색 사용 (PlayerState 없는 더미용)
+	bool bApplySkinColorTint = true;
 
 protected:
 	// Components
@@ -129,7 +163,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<USceneComponent> ComboWidgetAnchorComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Voice")
 	TObjectPtr<UTromboneVOIPTalker> VOIPTalker;
 
@@ -138,9 +172,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<UWidgetComponent> ComboWidgetComponent;
-
 	// ~Components
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "DefaultWeapon")
 	TSubclassOf<AWeaponBase> DefaultWeaponClass = nullptr;
 
@@ -148,7 +181,7 @@ protected:
 	// @see ATutorialDummy
 	UPROPERTY(Transient)
 	TObjectPtr<AWeaponBase> DefaultWeaponInstance = nullptr;
-	
+
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ADefaultPlayerController> CachedCharacterController;
 
@@ -157,14 +190,14 @@ protected:
 
 private:
 	void UpdateMaxWalkSpeed();
-	
+
 	// Server RPCs
 	UFUNCTION(Server, Reliable)
 	void Server_SetIsSprinting(const bool bNewIsSprinting);
 	UFUNCTION(Server, Reliable)
 	void Server_InteractItem(AItemBase* InteractedItem);
 	// ~Server RPCs
-	
+
 	// Delegate Callback Handlers
 	UFUNCTION()
 	void HandleInteractableAvailableChanged(bool bAvailable);
@@ -177,15 +210,64 @@ private:
 	ARhythmActor* GetCachedRhythmActor();
 	void SpawnAndEquipDefaultWeapon();
 	void SpawnAndEquipPreviouslyEquippedWeapon();
-	
+
 	UPROPERTY(Replicated)
 	uint8 bIsSprinting : 1 = 0;
-	
+
 	// Voice Interaction
 	void TryRegisterVOIPTalker();
 
 	FTimerHandle RetryVOIPRegistrationHandle;
 	// ~Voice Interaction
+
+	// ~ Begin 상태 연출 (상태 전이는 베이스가 소유, 여기서는 델리게이트 구독으로 연출만 처리)
+	UFUNCTION()
+	void HandleStunStateChanged(bool bIsStunned);
+	UFUNCTION()
+	void HandleRagdollStartedVisuals();
+	UFUNCTION()
+	void HandleRagdollEndedVisuals();
+	UFUNCTION()
+	void HandleRagdollPhysicsEnabled();
+
+	void ApplyFlagPhysics();
+	// ~ End 상태 연출
+
+	// ~ Begin 외형 / 표정
+	// TODO : 컴포지션으로 빼기
+	void SetupCharacterData() const;
+	void UpdateSkinFromPlayerState();
+
+	UFUNCTION()
+	void OnRep_SkinColor();
+
+	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
+	FLinearColor SkinColor = FLinearColor::Black;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+	// BeginPlay에서 FaceMID 생성 직전 원본 머티리얼 캐싱 (커스터마이징 복원용)
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
+
+	void PlayFaceSequence(ECharacterFaceState TargetState);
+	void InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence);
+	void ExecuteFaceStep();
+	void UpdateFaceExpression(ECharacterFaceType NewType);
+
+	int32 CurrentSequenceStep = 0;
+	FCharacterFaceAnimationSequence CurrentActiveSequence;
+	FTimerHandle FaceSequenceTimerHandle;
+	// ~ End 외형 / 표정
+
+	// ~ Bounce Character
+	FTimeline BounceTimeline;
+	void BoundBounceTimeline();
+	UFUNCTION()
+	void HandleBounceProgress(FVector Value);
+	// ~ End Bounce Character
 
 public:
 	// ~ Begin Getters / Setters

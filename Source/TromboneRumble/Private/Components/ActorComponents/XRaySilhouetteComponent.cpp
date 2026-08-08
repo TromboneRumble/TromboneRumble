@@ -3,6 +3,7 @@
 #include "Components/ActorComponents/XRaySilhouetteComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Components/MeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Utilities/Defines.h"
@@ -80,7 +81,7 @@ bool UXRaySilhouetteComponent::InitializeEffect()
 
 	// MID는 여기서 처음 생기므로, 그전에 온 피부색 통지는 흘렸다. 현재 값을 당겨와 메운다
 	// (이후 변경은 OnSkinColorChanged 구독으로 들어온다)
-	if (const ATromboneCharacterBase* Character = Cast<ATromboneCharacterBase>(GetOwner()))
+	if (const ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(GetOwner()))
 	{
 		SilhouetteMID->SetVectorParameterValue(TromboneMaterial::SilhouetteColorParam, Character->GetSkinColor());
 	}

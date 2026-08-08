@@ -62,13 +62,19 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelType::SnowField:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_SnowField);
 			break;
-		
+		case ELevelType::JazzBar:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_JazzBar);
+			break;
+
 		// Lobby
 		case ELevelType::OrchestraStageLobby:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_OrchestraStage);
 			break;
 		case ELevelType::SnowFieldLobby:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_SnowField);
+			break;
+		case ELevelType::JazzBarLobby:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_JazzBar);
 			break;
 		
 		// OutGame
@@ -92,7 +98,10 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelType::SnowFieldResult:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Result_SnowField);
 			break;
-		
+		case ELevelType::JazzBarResult:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Result_JazzBar);
+			break;
+
 		default:
 			UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::OpenLevel] Unknown level state. Traveling Main Menu"));
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
