@@ -8,6 +8,7 @@
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Wwise/API/WwiseMusicEngineAPI.h"
 
 
 void URhythmTimeWidget::ResetProgressBar()
@@ -88,7 +89,23 @@ void URhythmTimeWidget::UpdateTimeUI(float DeltaSeconds)
 	if (CurrentSongTotalLength <= 0.f) return;
 	if (!GetWorld() || GetWorld()->IsPaused()) return;
 
-	CurrentTime += DeltaSeconds;
+	// BGM의 실제 재생 위치를 직접 읽는다. 실패하면 기존 누산 방식으로 폴백
+	bool bClockRead = false;
+	if (IWwiseMusicEngineAPI* MusicEngine = IWwiseMusicEngineAPI::Get())
+	{
+		AkSegmentInfo SegmentInfo;
+		if (MusicEngine->GetPlayingSegmentInfo(static_cast<AkPlayingID>(CurrentSongPlayingID), SegmentInfo, true) == AK_Success
+			&& SegmentInfo.iCurrentPosition > 0)
+		{
+			// 세그먼트가 바뀔 때 위치가 되감기므로 뒤로 가지 않게 막는다
+			CurrentTime = FMath::Max(CurrentTime, SegmentInfo.iCurrentPosition / 1000.f);
+			bClockRead = true;
+		}
+	}
+	if (!bClockRead)
+	{
+		CurrentTime += DeltaSeconds;
+	}
 	CurrentTime = FMath::Clamp(CurrentTime, 0.f, CurrentSongTotalLength);
 
 	// 퍼센트 계산
@@ -108,30 +125,6 @@ void URhythmTimeWidget::UpdateTimeUI(float DeltaSeconds)
 	{
 		TimeText->SetText(FText::FromString(FormattedTime));
 	}
-
-	//PostAKEvent로 실행한 PlayingID가 Invalid로 뜨는 오류가 있어서
-	//하단의 코드는 적용 불가능
-	//AkInt32 CurrentPositionMS = 0;
-	//AKRESULT eResult = AK::SoundEngine::GetSourcePlayPosition(CurrentSongPlayingID, &CurrentPositionMS);
-
-	//if (eResult == AK_Success)
-	//{
-
-	//	float CurrentTimeSeconds = CurrentPositionMS / 1000.f;
-	//	float Percent = FMath::Clamp(CurrentTimeSeconds / CurrentSongTotalLength, 0.f, 1.f);
-	//	if (MusicProgressBar)
-	//	{
-	//		MusicProgressBar->SetPercent(Percent);
-	//	}
-
-	//	int32 Minutes = FMath::FloorToInt(CurrentTimeSeconds / 60.f);
-	//	int32 Seconds = FMath::FloorToInt(CurrentTimeSeconds) % 60;
-	//	UE_LOG(LogTemp, Log, TEXT("재생 시간: %02d:%02d"), Minutes, Seconds);
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("GetSourcePlayPosition Failed! Result Code: %d"), (int32)eResult);
-	//}
 }
 
 void URhythmTimeWidget::UpdateProgressVisuals(float Percent)

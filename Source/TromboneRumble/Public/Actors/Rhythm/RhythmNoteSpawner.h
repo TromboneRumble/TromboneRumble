@@ -42,6 +42,13 @@ public:
 	void StopRhythmGame();
 
 	void RemoveActiveNote(ARhythmNote* Note);
+
+	// 노트 트랙(무음)의 재생 위치를 단조 증가 클럭으로 감싼 값(초).
+	// 호출하는 것만으로 클럭이 갱신되며, Wwise 조회는 프레임당 1회만 한다.
+	double GetMusicTimeSeconds();
+
+	FORCEINLINE bool HasValidMusicClock() const { return bMusicClockValid; }
+
 public:
 
 	UPROPERTY()
@@ -98,8 +105,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Rhythm")
 	bool IsSyncTesting = false;
 
+	// 노트/비주얼라이저 풀 사전 확보 개수. 3초 이동이라 동시에 존재하는 노트가 쉽게 10개를 넘는다
+	UPROPERTY(EditDefaultsOnly, Category = "Rhythm")
+	int32 PoolPrewarmCount = 24;
+
 private:
-	void SpawnAndMoveNote(const FString& InUserCueName);
+	void SpawnAndMoveNote(const FString& InUserCueName, double InSpawnMusicTimeSec);
+
+	void ResetMusicClock();
+
+	// 음악 클럭 상태
+	double MusicClockSec = 0.0;		// 단조 증가 클럭 (초)
+	int32 LastRawPositionMs = 0;	// 직전 조회값. 역행/0-채움을 걸러낸다
+	bool bMusicClockValid = false;
+	bool bClockPaused = false;
+	uint64 LastClockQueryFrame = 0;
+	double ClockStallSeconds = 0.0;
 
 public:
 	//getter setter

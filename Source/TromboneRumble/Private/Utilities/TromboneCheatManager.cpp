@@ -33,6 +33,8 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_XRayBench [초] - X-Ray 3종의 프레임 비용을 순서대로 측정해 비교 (기본 10초씩. 가려진 자리에 서서 실행)\n");
 	DebugMsg += TEXT("Trombone_XRayWindow [반경cm] [부드러움0~1] [가리는물체투명도0~1] - 원형 윈도우 런타임 조절. 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("Trombone_XRayCropCapture [0|1] - 원형 윈도우의 캡처 시야를 원 주변으로 좁힐지. 인자 없으면 현재 값 출력\n");
+	DebugMsg += TEXT("Trombone_AudioOffset [ms] - 리듬 BGM 오프셋(양수=일찍 시작). 인자 없으면 현재 값 출력\n");
+	DebugMsg += TEXT("Trombone_RhythmSyncLog [0|1] - 리듬 싱크 실측 로그 + 음악 클럭 화면 표시. 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("--------------------------------\n");
 	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
 	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");
@@ -140,6 +142,41 @@ void UTromboneCheatManager::Trombone_Stun()
 		TromboneCharacter->Server_DebugStun();
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Stun executed"));
 	}
+}
+
+void UTromboneCheatManager::Trombone_AudioOffset(const FString& MsString)
+{
+	const UWorld* World = GetWorld();
+	const UGameInstance* GI = World ? World->GetGameInstance() : nullptr;
+	USaveManagerSubsystem* Subsystem = GI ? GI->GetSubsystem<USaveManagerSubsystem>() : nullptr;
+	if (!Subsystem) return;
+
+	FAudioSettingData Data = Subsystem->GetAudioSettings();
+	if (MsString.IsEmpty())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("리듬 오디오 오프셋: %d ms (양수 = BGM을 그만큼 일찍 시작)"), Data.RhythmAudioOffsetMs));
+		return;
+	}
+
+	Data.RhythmAudioOffsetMs = FMath::Clamp(FCString::Atoi(*MsString), -500, 1000);
+	Subsystem->ApplyAudio(Data, true);
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("리듬 오디오 오프셋 %d ms 저장 - 다음 곡부터 적용"), Data.RhythmAudioOffsetMs));
+}
+
+void UTromboneCheatManager::Trombone_RhythmSyncLog(const FString& EnabledString)
+{
+	IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("Trombone.Rhythm.SyncLog"));
+	if (!CVar) return;
+
+	if (EnabledString.IsEmpty())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("리듬 싱크 로그 - 현재 %s"), CVar->GetInt() != 0 ? TEXT("on") : TEXT("off")));
+		return;
+	}
+
+	const bool bEnabled = EnabledString.ToBool() || EnabledString.Equals(TEXT("on"), ESearchCase::IgnoreCase);
+	CVar->Set(bEnabled ? 1 : 0);
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("리듬 싱크 로그 %s"), bEnabled ? TEXT("on") : TEXT("off")));
 }
 
 void UTromboneCheatManager::Trombone_ResetSettingData()

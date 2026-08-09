@@ -16,6 +16,10 @@
 #include "Subsystems/RhythmSubsystem.h"
 #include "Utilities/DebugHelper.h"
 
+#if !UE_BUILD_SHIPPING
+extern TAutoConsoleVariable<int32> CVarRhythmSyncLog; // 정의: RhythmActor.cpp
+#endif
+
 ARhythmNote::ARhythmNote()
 {
  	
@@ -35,11 +39,53 @@ void ARhythmNote::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!bIsMoving) return;
+
+	// 클럭이 죽었을 때의 폴백 겸 기존 소비자를 위해 계속 누적한다
 	NoteLifeTime += DeltaTime;
-	float Alpha = FMath::Clamp(NoteLifeTime / TimeToComplete, 0.f, 1.f);
-	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
-	SetActorLocation(NewLocation);
-	CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, Alpha);
+
+	float MoveAlpha = NoteLifeTime / TimeToComplete;
+	if (ARhythmNoteSpawner* Spawner = ParentSpawner.Get())
+	{
+		const double MusicTime = Spawner->GetMusicTimeSeconds();
+		if (Spawner->HasValidMusicClock())
+		{
+			MoveAlpha = static_cast<float>((MusicTime - SpawnMusicTimeSec) / TimeToComplete);
+		}
+	}
+
+	// 판정선(Alpha 1.0)에서 멈추지 않고 같은 속도로 지나간다. 소멸은 Destroyer가 맡는다
+	SetActorLocation(FMath::Lerp(StartLocation, EndLocation, FMath::Max(MoveAlpha, 0.f)));
+
+	// 판정선 도달 순간의 오차. 클럭이 정상이면 0에 가까워야 한다
+	if (!bSyncArrivalLogged && MoveAlpha >= 1.f)
+	{
+		bSyncArrivalLogged = true;
+#if !UE_BUILD_SHIPPING
+		if (CVarRhythmSyncLog.GetValueOnGameThread() != 0 && ParentSpawner.IsValid() && ParentSpawner->HasValidMusicClock())
+		{
+			const double DriftMs = (ParentSpawner->GetMusicTimeSeconds() - SpawnMusicTimeSec - TimeToComplete) * 1000.0;
+			UE_LOG(LogTemp, Log, TEXT("[RhythmSync] 노트 도달 드리프트 %.1f ms"), DriftMs);
+		}
+#endif
+	}
+
+	// Destroyer가 못 잡았을 때 풀이 새지 않도록 회수한다
+	if (MoveAlpha > NoteBackstopAlpha)
+	{
+		UE_LOG(LogTemp, Warning,
+			TEXT("RhythmNote가 Destroyer에 잡히지 않아 백스톱 회수됨 - BP_RhythmActor의 Note Destroyer 배치를 확인할 것"));
+		if (CachedActorPoolSubsystem.IsValid())
+		{
+			CachedActorPoolSubsystem->Release(this);
+		}
+		return;
+	}
+
+	const float ProgressAlpha = FMath::Clamp(MoveAlpha, 0.f, 1.f);
+	if (CachedRhythmNoteChannelSubsystem.IsValid())
+	{
+		CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, ProgressAlpha);
+	}
 }
 
 void ARhythmNote::SetPause(bool InPause)
@@ -55,12 +101,17 @@ void ARhythmNote::SetPause(bool InPause)
 void ARhythmNote::OnTakenFromPool_Implementation()
 {
 	NoteLifeTime = 0.f;
+	SpawnMusicTimeSec = 0.0;
+	bSyncArrivalLogged = false;
 	bIsMoving = true;
 
 	NoteHandle = FNoteHandle();
 	NoteHandle.NoteActor = this;
 
-	CachedRhythmNoteChannelSubsystem->OpenChannel(NoteHandle.Id);
+	if (CachedRhythmNoteChannelSubsystem.IsValid())
+	{
+		CachedRhythmNoteChannelSubsystem->OpenChannel(NoteHandle.Id);
+	}
 	CancelSyncDebugTimer();
 }
 
@@ -68,6 +119,7 @@ void ARhythmNote::OnTakenFromPool_Implementation()
 void ARhythmNote::OnReturnToPool_Implementation()
 {
 	NoteLifeTime = 0.f;
+	SpawnMusicTimeSec = 0.0;
 	bIsMoving = false;
 
 	if (ParentSpawner.IsValid())
@@ -76,12 +128,15 @@ void ARhythmNote::OnReturnToPool_Implementation()
 		ParentSpawner = nullptr;
 	}
 
-	CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
-	CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
+	if (CachedRhythmNoteChannelSubsystem.IsValid())
+	{
+		CachedRhythmNoteChannelSubsystem->EmitDespawn(NoteHandle.Id);
+		CachedRhythmNoteChannelSubsystem->CloseChannel(NoteHandle.Id);
+	}
 	CancelSyncDebugTimer();
 }
 
-void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InNoteVisualizerClass, float InTimeToComplete, const FString& InUserCueName)
+void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InNoteVisualizerClass, float InTimeToComplete, const FString& InUserCueName, double InSpawnMusicTimeSec)
 {
 	checkf(InRhythmActor, TEXT("RhythmActor not Valid in %s"), *GetName());
 	checkf(InSpawner, TEXT("Spawner not Valid in %s"), *GetName());
@@ -90,6 +145,7 @@ void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteS
 	NoteType = InSpawner->GetSpawnerType();
 	ParentSpawner = const_cast<ARhythmNoteSpawner*>(InSpawner);
 	TimeToComplete = InTimeToComplete;
+	SpawnMusicTimeSec = InSpawnMusicTimeSec;
 
 	CachedNoteVisualizerClass = InNoteVisualizerClass;
 
@@ -106,8 +162,9 @@ void ARhythmNote::InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteS
 		}
 	}
 
+	// 판정선은 스포너 전방 1000uu. 월드 +X 고정이 아니라서 회전 배치해도 따라간다
 	StartLocation = InSpawner->GetActorLocation();
-	EndLocation = StartLocation + FVector(1000.f, 0.f, 0.f);
+	EndLocation = StartLocation + InSpawner->GetActorForwardVector() * NoteTravelDistance;
 
 	//이전에 캐릭터 발밑이 아니라 WBP_Rhythm에서 UI를 통해 리듬게임 하던 시절 쓰던 코드
 	//URhythmSpawnWidgetBase* RhythmSpawnWidget = InRhythmActor->GetRhythmUIRootWidget()->RhythmSpawnWidget;

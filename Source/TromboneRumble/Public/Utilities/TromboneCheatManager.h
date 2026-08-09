@@ -41,6 +41,14 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey);
 
+	// 리듬 BGM 오프셋(ms). 양수면 BGM을 그만큼 일찍 시작. 인자 없으면 현재 값 출력
+	UFUNCTION(Exec)
+	void Trombone_AudioOffset(const FString& MsString);
+
+	// 리듬 싱크 실측 로그 + 음악 클럭 화면 표시 on/off. 인자 없으면 현재 값 출력
+	UFUNCTION(Exec)
+	void Trombone_RhythmSyncLog(const FString& EnabledString);
+
 	// X-Ray 방식 전환 (silhouette | dither | window | off). 인자 없으면 현재 붙어있는 컴포넌트 출력
 	UFUNCTION(Exec)
 	void Trombone_XRayMode(const FString& ModeString);
