@@ -146,6 +146,8 @@ void ULobbyDirectorComponent::SetLobbyState(const ELobbyState& InNewState)
 
 		case ELobbyState::CountdownToStandup:
 			{
+				SpawnInstruments();
+
 				const int32 StandupSeconds = UTromboneConfig::Get() ? UTromboneConfig::Get()->LobbyRagdollGetUpDelaySeconds : 5;
 				TimerManager.ClearTimer(StandupTimerHandle);
 				TimerManager.SetTimer(StandupTimerHandle, this, &ThisClass::OnStandupCountdownFinished, static_cast<float>(StandupSeconds), false);
@@ -153,7 +155,6 @@ void ULobbyDirectorComponent::SetLobbyState(const ELobbyState& InNewState)
 			break;
 
 		case ELobbyState::InstrumentScramble:
-			SpawnInstruments();
 			break;
 
 		case ELobbyState::CountdownToTravel:

@@ -24,7 +24,7 @@ class TROMBONERUMBLE_API ULobbyDirectorComponent : public UActorComponent
 public:
 
 	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "전원 로딩 완료 후 낙하까지 대기 시간"))
-	float FallStartDelay = 3.0f;
+	float FallStartDelay = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "낙하 시작 높이 (낙하 지점 미배치 시 fallback)"))
 	float FallHeight = 1000.0f;
