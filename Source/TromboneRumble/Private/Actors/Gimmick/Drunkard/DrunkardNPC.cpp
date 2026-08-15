@@ -300,9 +300,8 @@ ADrunkardSpawner* ADrunkardNPC::GetOwningSpawner() const
 
 bool ADrunkardNPC::CanReceiveHit() const
 {
-	if (StateComponent 
-		&& StateComponent->GetState() == EDrunkardState::Exiting
-		&& StateComponent->GetState() == EDrunkardState::Entering)
+	if (StateComponent && (StateComponent->GetState() == EDrunkardState::Exiting
+						|| StateComponent->GetState() == EDrunkardState::Entering))
 	{
 		return false;
 	}
