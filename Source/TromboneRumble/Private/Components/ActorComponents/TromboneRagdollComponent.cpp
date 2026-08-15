@@ -9,6 +9,39 @@
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
+#if !UE_BUILD_SHIPPING
+static TAutoConsoleVariable<int32> CVarRagdollDebug(
+	TEXT("Trombone.Ragdoll.Debug"),
+	0,
+	TEXT("If 1, display the ragdoll synchronization status on the screen"));
+
+static TAutoConsoleVariable<int32> CVarRagdollEnableImpulseOnStart(
+	TEXT("Trombone.Ragdoll.EnableImpulseOnStart"),
+	0,
+	TEXT("If 1, character is launched when ragdoll start"));
+#endif
+
+namespace
+{
+	bool IsRagdollDebugEnabled()
+	{
+#if !UE_BUILD_SHIPPING
+		return CVarRagdollDebug.GetValueOnGameThread() != 0;
+#else
+		return false;
+#endif
+	}
+
+	bool IsRagdollImpulseOnStartEnabled()
+	{
+#if !UE_BUILD_SHIPPING
+		return CVarRagdollEnableImpulseOnStart.GetValueOnGameThread() != 0;
+#else
+		return false;
+#endif
+	}
+}
+
 UTromboneRagdollComponent::UTromboneRagdollComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -126,7 +159,7 @@ void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity, con
 		OwnerMesh->SetAllPhysicsAngularVelocityInRadians(InitialAngularVelocity);
 	}
 
-	if (bEnableDebug && bEnableImpulseOnRagdollStart)
+	if (IsRagdollImpulseOnStartEnabled())
 	{
 		const float RandomX = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
 		const float RandomY = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
@@ -186,10 +219,10 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		return;
 	}
 	
-	if (bEnableDebug)
+	if (IsRagdollDebugEnabled())
 	{
 		const FString DebugMsg = FString::Printf(TEXT("Max Distance in Server & Client : %.2f"), PelvisLocationMaxError);
-		if (GEngine) GEngine->AddOnScreenDebugMessage(12345, 5.0f, FColor::Red, DebugMsg);
+		if (GEngine) GEngine->AddOnScreenDebugMessage(12346, 5.0f, FColor::Red, DebugMsg);
 		PelvisLocationMaxError = 0.0f;
 	}
 	
@@ -228,6 +261,8 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		OwnerMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
+		OwnerMesh->SetUseCCD(true);
+		GroundPenetrationTime = 0.0f;
 		OnRagdollStarted.Broadcast();
 	}
 	else
@@ -317,6 +352,7 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerCharacter->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 
 	OwnerMesh->SetSimulatePhysics(false);
+	OwnerMesh->SetUseCCD(false);
 	OwnerMesh->SetCollisionObjectType(ECC_Pawn);
 	OwnerMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -361,15 +397,48 @@ void UTromboneRagdollComponent::Server_UpdateRagdollTransform()
 		return;
 	}
 	
+	const FTransform PelvisTransform = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis)->GetUnrealWorldTransform();
+
 	FRagdollNetState NewState;
-	NewState.PelvisLocation = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis)->GetUnrealWorldTransform().GetLocation();
+	NewState.PelvisLocation = PelvisTransform.GetLocation();
 	NewState.PelvisVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
+	NewState.PelvisRotation = PelvisTransform.GetRotation();
+	NewState.PelvisAngularVelocity = OwnerMesh->GetPhysicsAngularVelocityInRadians(TromboneBones::Pelvis);
 	if (const AGameStateBase* GameState = GetWorld()->GetGameState())
 	{
 		NewState.Timestamp = GameState->GetServerWorldTimeSeconds();
 	}
-	
+
 	ServerRagdollState = NewState;
+}
+
+bool UTromboneRagdollComponent::IsPelvisAirborne() const
+{
+	const UWorld* World = GetWorld();
+	const FBodyInstance* PelvisBody = OwnerMesh ? OwnerMesh->GetBodyInstance(TromboneBones::Pelvis) : nullptr;
+	if (!World || !PelvisBody)
+	{
+		return false;
+	}
+
+	// Physics only puts a body to sleep once it has stopped moving, so a sleeping body is resting on something.
+	if (!PelvisBody->IsInstanceAwake())
+	{
+		return false;
+	}
+
+	const FVector PelvisLocation = PelvisBody->GetUnrealWorldTransform().GetLocation();
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(OwnerCharacter);
+
+	return !World->SweepTestByChannel(
+		PelvisLocation,
+		PelvisLocation - FVector(0.0f, 0.0f, GroundProbeDistance),
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeSphere(GroundProbeRadius),
+		QueryParams);
 }
 
 void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float DeltaTime)
@@ -387,7 +456,9 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     	return;
     }
 
-    const FVector CurrentPelvisLoc = PelvisBody->GetUnrealWorldTransform().GetLocation();
+    const FTransform CurrentPelvisTrans = PelvisBody->GetUnrealWorldTransform();
+    const FVector CurrentPelvisLoc = CurrentPelvisTrans.GetLocation();
+    const FQuat CurrentPelvisRot = CurrentPelvisTrans.GetRotation();
 
 	const UWorld* World = GetWorld();
 	float PacketAge = 0.0f;
@@ -415,38 +486,129 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
 
 	const FVector ServerVelocity = ServerRagdollState.PelvisVelocity;
 	FVector TargetPelvisLoc = FVector(ServerRagdollState.PelvisLocation) + ServerVelocity * PacketAge;
-	if (World && !ServerVelocity.IsNearlyZero(1.0f))
+
+	const bool bAirborne = IsPelvisAirborne();
+
+	// 중력가속도(등가속 운동) 반영
+	if (World && bAirborne)
 	{
-		/** 중력가속도(등가속 운동) 반영 */
 		TargetPelvisLoc.Z += 0.5f * World->GetGravityZ() * PacketAge * PacketAge;
 	}
+
+	// 각속도 * 시간 = 그동안 돌아간 양
+	const FVector ServerAngularVelocity = ServerRagdollState.PelvisAngularVelocity;
+	FQuat TargetPelvisRot = ServerRagdollState.PelvisRotation;
+	if (const float SpinAngle = ServerAngularVelocity.Size() * PacketAge; SpinAngle > UE_KINDA_SMALL_NUMBER)
+	{
+		TargetPelvisRot = FQuat(ServerAngularVelocity.GetSafeNormal(), SpinAngle) * TargetPelvisRot;
+	}
+	TargetPelvisRot.Normalize();
 	
-	if (bEnableDebug && World)
+	if (IsRagdollDebugEnabled() && World)
 	{
 		DrawDebugSphere(World, CurrentPelvisLoc, 10.0f, 8, FColor::Green, false, -1.0f, 0, 1.0f);
 		DrawDebugSphere(World, TargetPelvisLoc, 10.0f, 8, FColor::Red, false, -1.0f, 0, 1.0f);
 		DrawDebugLine(World, CurrentPelvisLoc, TargetPelvisLoc, FColor::Yellow, false, -1.0f, 0, 1.5f);
 		
+		// Green = Client / Red = Server
+		constexpr float AxisLength = 40.0f;
+		DrawDebugLine(World, CurrentPelvisLoc, CurrentPelvisLoc + CurrentPelvisRot.GetForwardVector() * AxisLength, FColor::Green, false, -1.0f, 0, 1.5f);
+		DrawDebugLine(World, CurrentPelvisLoc, CurrentPelvisLoc + CurrentPelvisRot.GetUpVector() * AxisLength, FColor::Emerald, false, -1.0f, 0, 1.5f);
+		DrawDebugLine(World, TargetPelvisLoc, TargetPelvisLoc + TargetPelvisRot.GetForwardVector() * AxisLength, FColor::Red, false, -1.0f, 0, 1.5f);
+		DrawDebugLine(World, TargetPelvisLoc, TargetPelvisLoc + TargetPelvisRot.GetUpVector() * AxisLength, FColor::Orange, false, -1.0f, 0, 1.5f);
+
 		const float Distance = FVector::Dist(CurrentPelvisLoc, TargetPelvisLoc);
 		PelvisLocationMaxError = std::max(Distance, PelvisLocationMaxError);
-		const FString DebugText = FString::Printf(TEXT("Ragdoll difference server and client: %.2f cm"), Distance);
+		const float AngleError = FMath::RadiansToDegrees(CurrentPelvisRot.AngularDistance(TargetPelvisRot));
+
+		const float HeightDelta = CurrentPelvisLoc.Z - TargetPelvisLoc.Z;
+
+		const FString DebugText = FString::Printf(TEXT("Ragdoll sync: %.1f cm / %.1f deg | Height %+.1f cm | Airborne %s"), Distance, AngleError, HeightDelta, bAirborne ? TEXT("O") : TEXT("X"));
 		if (GEngine) GEngine->AddOnScreenDebugMessage(12345, DeltaTime, FColor::Cyan, DebugText);
 	}
 
     if (FVector::DistSquared(CurrentPelvisLoc, TargetPelvisLoc) > ForceLocationUpdateDistance)
     {
-        const FVector CurrentRootBodyLoc = OwnerMesh->GetBodyInstance()->GetUnrealWorldTransform().GetLocation();
-        const FVector PelvisOffset = CurrentPelvisLoc - CurrentRootBodyLoc;
-        OwnerMesh->SetAllPhysicsPosition(TargetPelvisLoc - PelvisOffset);
+        SnapRagdollToTarget(TargetPelvisLoc, TargetPelvisRot, CurrentPelvisLoc, CurrentPelvisRot);
+        GroundPenetrationTime = 0.0f;
         return;
     }
 
-    const FVector ToTarget = TargetPelvisLoc - CurrentPelvisLoc;
-    const FVector TargetVelocity = ServerVelocity + ToTarget * TrackingIntensity;
+    Client_RecoverFromGroundPenetration(DeltaTime, CurrentPelvisLoc, TargetPelvisLoc, CurrentPelvisRot, TargetPelvisRot);
+
+    FVector PositionCorrection = (TargetPelvisLoc - CurrentPelvisLoc) * TrackingIntensity;
+    PositionCorrection = PositionCorrection.GetClampedToMaxSize(MaxCorrectionSpeed);
+
+	// Drop the downward part of the correction while the body is on the ground.
+	if (!bAirborne && PositionCorrection.Z < 0.0f)
+    {
+        PositionCorrection.Z = 0.0f;
+    }
+
+    const FVector TargetVelocity = ServerVelocity + PositionCorrection;
     const FVector CurrentVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
     const FVector NewVelocity = FMath::VInterpTo(CurrentVelocity, TargetVelocity, DeltaTime, VelocityInterpSpeed);
 
     OwnerMesh->SetPhysicsLinearVelocity(NewVelocity, false, TromboneBones::Pelvis);
+
+    FQuat RotationError = TargetPelvisRot * CurrentPelvisRot.Inverse();
+    RotationError.Normalize();
+    if (RotationError.W < 0.0f)
+    {
+        // 같은 회전을 가리키는 두 부호 중 짧게 도는 쪽을 고른다
+        RotationError = -RotationError;
+    }
+
+    FVector ErrorAxis;
+    float ErrorAngle;
+    RotationError.ToAxisAndAngle(ErrorAxis, ErrorAngle);
+
+    FVector RotationCorrection = ErrorAxis * ErrorAngle * AngularTrackingIntensity;
+    RotationCorrection = RotationCorrection.GetClampedToMaxSize(MaxCorrectionAngularSpeed);
+
+    const FVector TargetAngularVelocity = ServerAngularVelocity + RotationCorrection;
+    const FVector CurrentAngularVelocity = OwnerMesh->GetPhysicsAngularVelocityInRadians(TromboneBones::Pelvis);
+    const FVector NewAngularVelocity = FMath::VInterpTo(CurrentAngularVelocity, TargetAngularVelocity, DeltaTime, AngularVelocityInterpSpeed);
+
+    OwnerMesh->SetPhysicsAngularVelocityInRadians(NewAngularVelocity, false, TromboneBones::Pelvis);
+}
+
+void UTromboneRagdollComponent::Client_RecoverFromGroundPenetration(const float DeltaTime, const FVector& CurrentPelvisLoc, const FVector& TargetPelvisLoc,
+	const FQuat& CurrentPelvisRot, const FQuat& TargetPelvisRot)
+{
+	const float PenetrationDepth = TargetPelvisLoc.Z - CurrentPelvisLoc.Z;
+	if (PenetrationDepth < PenetrationDepthThreshold)
+	{
+		GroundPenetrationTime = 0.0f;
+		return;
+	}
+
+	GroundPenetrationTime += DeltaTime;
+	if (GroundPenetrationTime < PenetrationRecoverySeconds)
+	{
+		return;
+	}
+
+	SnapRagdollToTarget(TargetPelvisLoc, TargetPelvisRot, CurrentPelvisLoc, CurrentPelvisRot);
+	GroundPenetrationTime = 0.0f;
+}
+
+void UTromboneRagdollComponent::SnapRagdollToTarget(const FVector& TargetPelvisLoc, const FQuat& TargetPelvisRot,
+	const FVector& CurrentPelvisLoc, const FQuat& CurrentPelvisRot)
+{
+	const FBodyInstance* RootBody = OwnerMesh ? OwnerMesh->GetBodyInstance() : nullptr;
+	const FBodyInstance* PelvisBody = OwnerMesh ? OwnerMesh->GetBodyInstance(TromboneBones::Pelvis) : nullptr;
+	if (!RootBody || !PelvisBody)
+	{
+		return;
+	}
+
+	// Rotation first.
+	OwnerMesh->SetAllPhysicsRotation(TargetPelvisRot * (CurrentPelvisRot.Inverse() * RootBody->GetUnrealWorldTransform().GetRotation()));
+
+	// Since the rotation occurred around the root body and the pelvis moved, recalculate the offset
+	const FVector PelvisOffset = PelvisBody->GetUnrealWorldTransform().GetLocation() - RootBody->GetUnrealWorldTransform().GetLocation();
+	OwnerMesh->SetAllPhysicsPosition(TargetPelvisLoc - PelvisOffset);
 }
 
 

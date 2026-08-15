@@ -20,15 +20,21 @@ struct FRagdollNetState
 	UPROPERTY()
 	FVector_NetQuantize PelvisVelocity = FVector::ZeroVector;
 
+	UPROPERTY()
+	FQuat PelvisRotation = FQuat::Identity;
+
+	UPROPERTY()
+	FVector_NetQuantize PelvisAngularVelocity = FVector::ZeroVector;
+
 	/** Server world time when this state was captured. */
 	UPROPERTY()
 	float Timestamp = 0.0f;
 };
 
 /** UTromboneRagdollComponent
- * 래그돌(물리 시뮬레이션) 중 위치 동기화를 수행하는 컴포넌트.
- * 서버의 골반 위치와 속도만 동기화하고, 회전은 동기화하지 않는다. 
- * 속도 보간을 적용함으로써 나머지 물리 바디가 자연스럽게 따라오도록 한다.
+ * Keeps a ragdoll (physics simulation) in the same place on every machine.
+ * Only the server's pelvis location/rotation and their speeds are sent over.
+ * The rest of the bodies are left to each machine's own simulation to follow along.
  */
 UCLASS()
 class TROMBONERUMBLE_API UTromboneRagdollComponent : public UActorComponent
@@ -79,15 +85,19 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 지속 시간"))
 	float RagdollDuration = 2.5f;
 	
-	/** The interpolation speed while ragdolling, to synchronize with the server's pelvis position */
+	/** The interpolation speed during ragdoll, to synchronize with the server's pelvis position */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 중 메쉬의 속도 보간 속도"))
 	float VelocityInterpSpeed = 15.0f;
+
+	/** The interpolation speed during ragdoll, to synchronize with the server's pelvis rotation */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 중 메쉬의 각속도 보간 속도"))
+	float AngularVelocityInterpSpeed = 15.0f;
 	
 	/** Network update rate per second */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "네트워크 업데이트 주기"))
 	float PacketsPerSecond = 30.0f;
 
-	/** 외삽 시 상한 시간으로, 패킷 손실 시 목표 위치가 너무 멀리 예측되는 것을 방지 */
+	/** Maximum extrapolation time */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "최대 외삽 시간"))
 	float MaxExtrapolationTime = 0.25f;
 	
@@ -99,26 +109,46 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "추적 강도"))
 	float TrackingIntensity = 10.0f;
 
+	/** Tracking intensity factor used to pull pelvis toward target rotation (P-Control) */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "회전 추적 강도"))
+	float AngularTrackingIntensity = 10.0f;
+
+	/** Limit for velocity correction (cm/s). */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "최대 보정 속도", ClampMin = "0.0"))
+	float MaxCorrectionSpeed = 600.0f;
+
+	/** Limit for angular velocity correction (rad/s). */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "최대 보정 각속도", ClampMin = "0.0"))
+	float MaxCorrectionAngularSpeed = 12.0f;
+
+	/** How far below the target the pelvis has to sink to count as stuck under the floor (cm). */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "관통 판정 깊이", ClampMin = "0.0"))
+	float PenetrationDepthThreshold = 15.0f;
+
+	/** How long it has to stay stuck before the body is lifted back up (seconds). */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "관통 복구 대기 시간", ClampMin = "0.0"))
+	float PenetrationRecoverySeconds = 0.5f;
+
 	/** Ragdoll rest speed threshold (cm/s) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "정지 판정 속도 임계값", ClampMin = "0.0"))
 	float RestSpeedThreshold = 20.0f;
+
+	/** Radius of the sphere the server sweeps below the pelvis to decide whether the body is airborne (cm). */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "지면 감지 반경", ClampMin = "1.0"))
+	float GroundProbeRadius = 20.0f;
+
+	/** How far below the pelvis that sphere is swept (cm). */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "지면 감지 거리", ClampMin = "1.0"))
+	float GroundProbeDistance = 30.0f;
 
 	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
 	float RagdollBlendOutDuration = 0.2f;
 	
-	/** if true, enables visual debug and screen error logging
-	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state. */
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "디버그 모드"))
-	bool bEnableDebug = false;
-	
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 시 하늘로 날리기", EditCondition = "bEnableDebug"))
-	bool bEnableImpulseOnRagdollStart = false;
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "하늘로 날리는 힘 (EnableImpulseOnStart)"))
+	float UpForce = 4000.f;
 
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "하늘로 날리는 힘", EditCondition = "bEnableImpulseOnRagdollStart"))
-	float UpForce = 5000.f;
-	
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "랜덤 XY 방향 범위", EditCondition = "bEnableImpulseOnRagdollStart"))
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "랜덤 XY 방향 범위 (EnableImpulseOnStart)"))
 	float RandomRangeXY = 1500.f;
 	
 private:
@@ -143,6 +173,16 @@ private:
 	void Server_ComputeGetUpTransform();
 
 	void Server_UpdateRagdollTransform();
+
+	/** @return Whether the pelvis is up in the air. */
+	bool IsPelvisAirborne() const;
+
+	/** Snaps the body back to the target once the pelvis has stayed too far below it for too long. */
+	void Client_RecoverFromGroundPenetration(float DeltaTime, const FVector& CurrentPelvisLoc, const FVector& TargetPelvisLoc, const FQuat& CurrentPelvisRot, const FQuat& TargetPelvisRot);
+
+	/** Moves the whole body at once so that the pelvis lands on the target location and rotation.
+	 *  How the arms and legs sit against each other is left as it was. */
+	void SnapRagdollToTarget(const FVector& TargetPelvisLoc, const FQuat& TargetPelvisRot, const FVector& CurrentPelvisLoc, const FQuat& CurrentPelvisRot);
 	
 	void Client_InterpolateRagdollVelocity(float DeltaTime);
 
@@ -175,6 +215,9 @@ private:
 
 	/** Maximum difference for pelvis location synchronization (DebugMode) */
 	float PelvisLocationMaxError = 0.0f;
+
+	/** How long the body has been stuck under the floor (seconds). */
+	float GroundPenetrationTime = 0.0f;
 
 	/** True while ramping SetAllBodiesPhysicsBlendWeight from 1 to 0 after the get-up montage has started. */
 	bool bIsBlendingOut = false;
