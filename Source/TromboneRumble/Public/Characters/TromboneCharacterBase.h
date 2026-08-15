@@ -74,10 +74,10 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_DebugRagdoll();
 
-protected:
-
 	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
 	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
@@ -163,6 +163,10 @@ public:
 	bool IsStun() const { return bIsStun; }
 	bool IsInvincible() const { return bIsInvincible; }
 	bool IsRagdoll() const;
+
+	/** @return World location of the pelvis bone. */
+	FVector GetPelvisLocation() const;
+	
 	bool IsInputBlocked() const { return InputBlockMask != 0; }
 	UAkComponent* GetAkComponent() const { return AkSoundComponent; }
 	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }

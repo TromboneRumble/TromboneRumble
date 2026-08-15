@@ -17,11 +17,11 @@
 DEFINE_LOG_CATEGORY(LogDrunkard);
 
 #if !UE_BUILD_SHIPPING
-// 취객 기믹 전 상태 관찰용. 스포너(DrunkardSpawner.cpp)에서도 extern으로 참조한다
+// 취객 기믹 전 상태 관찰용. 스포너(DrunkardSpawner.cpp)에서도 extern으로 참조
 TAutoConsoleVariable<int32> CVarDrunkardDebug(
 	TEXT("Trombone.Drunkard.Debug"),
 	0,
-	TEXT("1이면 취객 NPC 기믹의 전 상태(상태/타겟/타이머/이동 목표/스포너 주기)를 화면과 월드에 표시한다."));
+	TEXT("1이면 취객 NPC 기믹의 상태를 화면과 월드에 표시"));
 #endif
 
 ADrunkardNPC::ADrunkardNPC()
@@ -64,7 +64,7 @@ void ADrunkardNPC::BeginPlay()
 		XRaySilhouetteComponent = nullptr;
 	}
 
-	// 래그돌(전신 물리)이 끝나 메시 물리가 리셋되면 상체 물리를 다시 얹는다 (Default의 깃발 물리와 같은 패턴)
+	// 래그돌이 끝나 메시 물리가 리셋되면 상체 물리를 다시 얹는다
 	if (RagdollComponent)
 	{
 		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::ApplyUpperBodyPhysics);
@@ -85,7 +85,6 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 	USkeletalMeshComponent* MeshComp = GetMesh();
 	if (!MeshComp || !PhysicalAnimationComp) return;
 
-	// 래그돌 중에는 전신 물리가 우선. 종료 시 OnRagdollPhysicsEnabled가 다시 불러준다
 	if (IsRagdoll()) return;
 
 	// PhysicalAnimationComponent는 제약 생성 시 메시의 트랜스폼 버퍼에 본 인덱스로 무검증 접근한다
@@ -166,55 +165,60 @@ void ADrunkardNPC::DebugDrawGimmickState() const
 	const EDrunkardState State = StateComponent->GetState();
 	const ADefaultTromboneCharacter* Target = StateComponent->GetTarget();
 
-	// 상태/타겟은 서버 전용이라 리슨서버 호스트 화면 기준으로 관찰한다 (클라 화면에서는 None으로 보임)
-	TStringBuilder<512> Text;
-	Text.Appendf(TEXT("[취객] %s (%s)\n"), *GetName(), HasAuthority() ? TEXT("서버") : TEXT("클라"));
+	const AAIController* AIController = Cast<AAIController>(GetController());
+	const UBlackboardComponent* Blackboard = AIController ? AIController->GetBlackboardComponent() : nullptr;
+	const FVector MoveGoal = Blackboard ? Blackboard->GetValueAsVector(ADrunkardAIController::BBKeyMoveGoal) : FVector::ZeroVector;
 
-	Text.Appendf(TEXT("상태: %s"), *UEnum::GetValueAsString(State));
+	// 상태/타겟은 서버 전용이라 리슨서버 호스트 화면 기준으로 관찰한다 (클라 화면에서는 None으로 보임)
+	const UCharacterMovementComponent* Move = GetCharacterMovement();
+
+	TStringBuilder<512> Text;
+	Text.Appendf(TEXT("── 취객 %s [%s] ──\n"), *GetName(), HasAuthority() ? TEXT("서버") : TEXT("클라"));
+
+	// 상태
+	FString Remaining;
 	switch (State)
 	{
 		case EDrunkardState::Entering:
-			Text.Appendf(TEXT(" (추격 시작까지 %.1fs)"), FMath::Max(0.f, StateComponent->GetRemainingEnterTime()));
+			Remaining = FString::Printf(TEXT("  추격까지 %.1fs"), FMath::Max(0.f, StateComponent->GetRemainingEnterTime()));
 			break;
 		case EDrunkardState::Chasing:
-			Text.Appendf(TEXT(" (퇴장까지 %.1fs)"), FMath::Max(0.f, StateComponent->GetRemainingChaseTime()));
+			Remaining = FString::Printf(TEXT("  퇴장까지 %.1fs"), FMath::Max(0.f, StateComponent->GetRemainingChaseTime()));
 			break;
 		default:
 			break;
 	}
-	Text.Append(TEXT("\n"));
+	Text.Appendf(TEXT("상태   %s%s\n"), *UEnum::GetDisplayValueAsText(State).ToString(), *Remaining);
 
-	if (Target)
+	// 자신
+	Text.Appendf(TEXT("자신   속도 %.0f/%.0f   피격 %s%s\n"),
+		Move ? Move->Velocity.Size2D() : 0.f,
+		Move ? Move->MaxWalkSpeed : 0.f,
+		CanReceiveHit() ? TEXT("가능") : TEXT("불가"),
+		CanReceiveHit() ? TEXT("") : (IsStun() ? TEXT("(스턴)") : IsRagdoll() ? TEXT("(래그돌)") : TEXT("(무적)")));
+
+	// 타겟
+	if (!Target)
 	{
-		Text.Appendf(TEXT("타겟: %s (거리 %.0fcm)\n"), *Target->GetName(), FVector::Dist2D(GetActorLocation(), Target->GetActorLocation()));
+		Text.Append(TEXT("타겟   없음\n"));
 	}
 	else
 	{
-		Text.Append(TEXT("타겟: 없음\n"));
+		Text.Appendf(TEXT("타겟   %s   %s\n"), *Target->GetName(), Target->CanReceiveHit() ? TEXT("포획가능") : TEXT("포획불가"));
+		Text.Appendf(TEXT("거리   %.0fcm\n"), FVector::Dist2D(GetActorLocation(), Target->GetPelvisLocation()));
 	}
-
-	if (const UCharacterMovementComponent* Move = GetCharacterMovement())
-	{
-		Text.Appendf(TEXT("속도: %.0f / %.0f cm/s\n"), Move->Velocity.Size2D(), Move->MaxWalkSpeed);
-	}
-
-	Text.Appendf(TEXT("피격 가능: %s (스턴:%d 래그돌:%d 무적:%d)"),
-		CanReceiveHit() ? TEXT("O") : TEXT("X"), IsStun() ? 1 : 0, IsRagdoll() ? 1 : 0, IsInvincible() ? 1 : 0);
 
 	GEngine->AddOnScreenDebugMessage(static_cast<uint64>(GetUniqueID()), 1.f, FColor::Yellow, Text.ToString());
 
 	// 월드 시각화 — 노랑: 위빙 반영 이동 목표, 초록: 타겟, 하늘색: 퇴장 문
-	const AAIController* AIController = Cast<AAIController>(GetController());
-	const UBlackboardComponent* Blackboard = AIController ? AIController->GetBlackboardComponent() : nullptr;
 	if (Blackboard && State == EDrunkardState::Chasing)
 	{
-		const FVector MoveGoal = Blackboard->GetValueAsVector(ADrunkardAIController::BBKeyMoveGoal);
 		DrawDebugSphere(GetWorld(), MoveGoal, 20.f, 8, FColor::Yellow, false, -1.f, 0, 2.f);
 		DrawDebugLine(GetWorld(), GetActorLocation(), MoveGoal, FColor::Yellow, false, -1.f, 0, 1.f);
 	}
 	if (Target)
 	{
-		DrawDebugLine(GetWorld(), GetActorLocation(), Target->GetActorLocation(), FColor::Green, false, -1.f, 0, 1.f);
+		DrawDebugLine(GetWorld(), GetActorLocation(), Target->GetPelvisLocation(), FColor::Green, false, -1.f, 0, 1.f);
 	}
 	if (Blackboard && State == EDrunkardState::Exiting)
 	{
@@ -236,9 +240,6 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 	{
 		return false;
 	}
-
-	UE_LOG(LogDrunkard, Log, TEXT("%s 피격: %s (리액션=%s) — 타겟 변경"),
-		*GetName(), *GetNameSafe(HitData.HitInstigatorActor), *UEnum::GetValueAsString(HitData.HitReaction));
 
 	// DrunkardNPC only gets knockback
 	FHitData DrunkardHitData = HitData;

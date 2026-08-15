@@ -10,7 +10,10 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "Data/DrunkardDataAsset.h"
+#include "Characters/TromboneCharacterBase.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "NavigationSystem.h"
 
 UBTService_UpdateWeaveGoal::UBTService_UpdateWeaveGoal()
 {
@@ -105,7 +108,20 @@ void UBTService_UpdateWeaveGoal::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 		Memory->AmplitudeMul = FMath::FRandRange(1.f - Data->WeaveAmplitudeNoise, 1.f + Data->WeaveAmplitudeNoise);
 	}
 
-	const FVector TargetLocation = Target->GetActorLocation();
+	const ATromboneCharacterBase* TargetCharacter = Cast<ATromboneCharacterBase>(Target);
+	FVector TargetLocation = TargetCharacter ? TargetCharacter->GetPelvisLocation() : Target->GetActorLocation();
+
+	// 골반은 뼈 위치라 그대로 넘기면 안 된다. 도달 판정(HasReachedInternal)은 목표와 폰 "중심"의 Z 차이를
+	// 캡슐 절반 높이 기준으로 검사하는데, 쓰러진 몸의 골반은 지면에 붙어 있어 그 한계를 넘겨 영영 도달로 인정되지 않는다.
+	// 골반이 선 지면을 내비메시에서 찾아 폰 중심 높이로 올려주면, 층 정보는 타겟 기준으로 유지하면서 Z 차이가 사라진다
+	if (const UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(NPC->GetWorld()))
+	{
+		FNavLocation ProjectedLocation;
+		if (NavSystem->ProjectPointToNavigation(TargetLocation, ProjectedLocation))
+		{
+			TargetLocation.Z = ProjectedLocation.Location.Z + NPC->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		}
+	}
 	FVector ToTarget = TargetLocation - NPC->GetActorLocation();
 	ToTarget.Z = 0.f;
 	const float Distance = ToTarget.Size();

@@ -241,6 +241,12 @@ bool ATromboneCharacterBase::IsRagdoll() const
 	return RagdollComponent ? RagdollComponent->IsRagdoll() : false;
 }
 
+FVector ATromboneCharacterBase::GetPelvisLocation() const
+{
+	const USkeletalMeshComponent* MeshComp = GetMesh();
+	return MeshComp ? MeshComp->GetSocketLocation(TromboneBones::Pelvis) : GetActorLocation();
+}
+
 void ATromboneCharacterBase::OnStun()
 {
 	if (!HasAuthority()) return;
