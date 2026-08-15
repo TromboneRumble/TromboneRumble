@@ -122,7 +122,7 @@ void UDrunkardStateComponent::RequestTargetChange()
 {
 	if (!HasAuthority() || State != EDrunkardState::Chasing) return;
 
-	if (ADefaultTromboneCharacter* NewTarget = PickTargetByRankWeight(Target.Get()))
+	if (ADefaultTromboneCharacter* NewTarget = PickRandomTarget(Target.Get()))
 	{
 		SetTarget(NewTarget);
 	}
@@ -266,6 +266,26 @@ ADefaultTromboneCharacter* UDrunkardStateComponent::PickTargetByRankWeight(const
 		}
 	}
 	return Candidates.Last().Character;
+}
+
+ADefaultTromboneCharacter* UDrunkardStateComponent::PickRandomTarget(const ADefaultTromboneCharacter* Exclude) const
+{
+	const AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr;
+	if (!GameState) return nullptr;
+
+	TArray<ADefaultTromboneCharacter*> Candidates;
+	for (const APlayerState* PlayerState : GameState->PlayerArray)
+	{
+		if (!PlayerState) continue;
+
+		ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(PlayerState->GetPawn());
+		if (!Character || Character == Exclude) continue;
+
+		Candidates.Add(Character);
+	}
+	if (Candidates.IsEmpty()) return nullptr;
+
+	return Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
 }
 
 const UDrunkardDataAsset* UDrunkardStateComponent::GetData() const

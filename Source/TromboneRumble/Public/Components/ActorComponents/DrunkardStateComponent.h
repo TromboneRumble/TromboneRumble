@@ -80,6 +80,9 @@ private:
 	/** 순위(점수 내림차순) 가중치 랜덤으로 타겟 선정. 순위가 높을수록 확률이 높다 */
 	ADefaultTromboneCharacter* PickTargetByRankWeight(const ADefaultTromboneCharacter* Exclude) const;
 
+	/** 순위와 무관하게 균등 확률로 타겟 선정 */
+	ADefaultTromboneCharacter* PickRandomTarget(const ADefaultTromboneCharacter* Exclude) const;
+
 	const UDrunkardDataAsset* GetData() const;
 	bool HasAuthority() const;
 
