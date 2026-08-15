@@ -240,7 +240,11 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 	UE_LOG(LogDrunkard, Log, TEXT("%s 피격: %s (리액션=%s) — 타겟 변경"),
 		*GetName(), *GetNameSafe(HitData.HitInstigatorActor), *UEnum::GetValueAsString(HitData.HitReaction));
 
-	const bool bApplied = Super::OnHitReceived_Implementation(HitData);
+	// DrunkardNPC only gets knockback
+	FHitData DrunkardHitData = HitData;
+	DrunkardHitData.HitReaction = EHitReactionType::KnockbackOnly;
+
+	const bool bApplied = Super::OnHitReceived_Implementation(DrunkardHitData);
 
 	// 타겟 공격 적중 → 타겟 변경
 	if (bApplied && StateComponent)
