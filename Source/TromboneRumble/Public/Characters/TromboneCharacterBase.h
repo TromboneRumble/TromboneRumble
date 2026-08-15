@@ -120,6 +120,9 @@ private:
 	/** FHitData 를 최종 넉백 속도로 계산한다. 폭발이면 방사형, 아니면 수평 힘 + 수직 힘 조합 */
 	FVector CalculateKnockbackVelocity(const FHitData& HitData) const;
 
+	/** @return 넉백으로 쓰러질 때 몸에 걸어줄 각속도. 밀려나는 방향으로 굴러가도록 진행 방향을 축으로 잡는다 */
+	FVector CalculateKnockbackSpin(const FVector& KnockbackVelocity) const;
+
 	UFUNCTION(Client, Reliable)
 	void Client_ApplyKnockback(FVector KnockbackVelocity);
 

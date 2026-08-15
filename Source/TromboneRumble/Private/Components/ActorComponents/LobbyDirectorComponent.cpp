@@ -285,10 +285,18 @@ void ULobbyDirectorComponent::LaunchPlayerFalling(APlayerController* PC, const i
 		DropLocation = Character->GetActorLocation() + FVector(0.0f, 0.0f, FallHeight);
 	}
 
-	Character->SetActorLocation(DropLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	const FRotator DropRotation(
+		FMath::FRandRange(-FallAngle, FallAngle),
+		FMath::FRandRange(0.0f, 360.0f),
+		FMath::FRandRange(-FallAngle, FallAngle));
+
+	Character->SetActorLocationAndRotation(DropLocation, DropRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	const FVector TumbleAxis = FMath::VRand().GetSafeNormal2D();
+	const FVector InitialAngularVelocity = TumbleAxis * FMath::FRandRange(0.0f, FallRotationRate);
 
 	Ragdoll->SetAutoGetUpEnabled(bAutoGetUp);
-	Ragdoll->StartRagdoll();
+	Ragdoll->StartRagdoll(FVector::ZeroVector, InitialAngularVelocity);
 }
 
 void ULobbyDirectorComponent::StartGroundedPolling()

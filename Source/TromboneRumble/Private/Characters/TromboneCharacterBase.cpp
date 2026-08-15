@@ -180,7 +180,7 @@ bool ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitDat
 		case EHitReactionType::Ragdoll:
 			if (RagdollComponent)
 			{
-				RagdollComponent->StartRagdoll(KnockbackVel);
+				RagdollComponent->StartRagdoll(KnockbackVel, CalculateKnockbackSpin(KnockbackVel));
 			}
 			break;
 
@@ -224,6 +224,19 @@ FVector ATromboneCharacterBase::CalculateKnockbackVelocity(const FHitData& HitDa
 	FVector HorizontalDir = HitData.HitDirection;
 	HorizontalDir.Z = 0.f;
 	return HorizontalDir.GetSafeNormal() * HitData.KnockbackForce + FVector::UpVector * HitData.KnockbackUpForce;
+}
+
+FVector ATromboneCharacterBase::CalculateKnockbackSpin(const FVector& KnockbackVelocity) const
+{
+	const float SpinRate = CharacterData ? CharacterData->KnockbackSpinRate : 0.f;
+	if (SpinRate <= 0.f)
+	{
+		return FVector::ZeroVector;
+	}
+
+	// 진행 방향과 위쪽의 외적 = 옆으로 누운 축. 그 축으로 돌면 밀려나는 쪽으로 굴러간다
+	const FVector SpinAxis = FVector::CrossProduct(KnockbackVelocity.GetSafeNormal2D(), FVector::UpVector);
+	return SpinAxis * SpinRate;
 }
 
 void ATromboneCharacterBase::Client_ApplyKnockback_Implementation(const FVector KnockbackVelocity)

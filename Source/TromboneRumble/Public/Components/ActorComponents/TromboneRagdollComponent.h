@@ -43,10 +43,13 @@ public:
 public:
 
 	/** Start ragdoll. Server only.
-	 *  @param InitialVelocity Initial speed. 
+	 *  @param InitialVelocity Initial speed.
 	 *						   If non-zero, the existing speed is ignored and overwritten with this value.
-	 *                         If set to "Zero" (default), maintains existing speed. */
-	void StartRagdoll(const FVector& InitialVelocity = FVector::ZeroVector);
+	 *                         If set to "Zero" (default), maintains existing speed.
+	 *  @param InitialAngularVelocity Initial spin (rad/s).
+	 *                         If non-zero, the existing spin is ignored and overwritten with this value.
+	 *                         If set to "Zero" (default), maintains existing spin. */
+	void StartRagdoll(const FVector& InitialVelocity = FVector::ZeroVector, const FVector& InitialAngularVelocity = FVector::ZeroVector);
 	
 	/** Stop ragdoll and start get-up animation. Server only. */
 	void StopRagdoll();
@@ -103,10 +106,6 @@ protected:
 	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
 	float RagdollBlendOutDuration = 0.2f;
-	
-	/** Angular velocity of rotation applied to the entire body at the start of a knockback ragdoll (rad/s). */
-	UPROPERTY(EditAnywhere, Category = "Ragdoll|Knockback", meta = (DisplayName = "넉백 회전 속도", ClampMin = "0.0"))
-	float KnockbackSpinRateRadPerSec = 15.f;
 	
 	/** if true, enables visual debug and screen error logging
 	 * When the ragdoll state begins or ends, print maximum difference in pelvis between the server and the client during the ragdoll state. */

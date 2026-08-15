@@ -98,7 +98,7 @@ void UTromboneRagdollComponent::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	DOREPLIFETIME(ThisClass, GetUpLocation);
 }
 
-void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity)
+void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity, const FVector& InitialAngularVelocity)
 {
 	if (!OwnerCharacter)
 	{
@@ -119,9 +119,11 @@ void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity)
 	if (!InitialVelocity.IsNearlyZero())
 	{
 		OwnerMesh->SetAllPhysicsLinearVelocity(InitialVelocity);
+	}
 
-		const FVector TumbleAxis = FVector::CrossProduct(InitialVelocity.GetSafeNormal2D(), FVector::UpVector);
-		OwnerMesh->SetAllPhysicsAngularVelocityInRadians(TumbleAxis * KnockbackSpinRateRadPerSec);
+	if (!InitialAngularVelocity.IsNearlyZero())
+	{
+		OwnerMesh->SetAllPhysicsAngularVelocityInRadians(InitialAngularVelocity);
 	}
 
 	if (bEnableDebug && bEnableImpulseOnRagdollStart)
