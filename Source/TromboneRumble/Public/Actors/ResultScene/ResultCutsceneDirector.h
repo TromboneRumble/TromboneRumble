@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "Framework/InGameState.h"
 #include "ResultCutsceneDirector.generated.h"
 
@@ -35,11 +36,18 @@ protected:
 	
 	UFUNCTION()
 	void OnSequenceFinished();
-	
+
 private:
-	
+
+	/** Loads the background for the current result stage, then starts the cutscene. */
+	void LoadBackgroundThenPlayCutscene();
+
+	/** Called once the background sublevel has finished loading. */
+	UFUNCTION()
+	void HandleBackgroundLoaded();
+
 	void PlayResultCutscene();
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
 	TSubclassOf<UUserWidget> ResultWidgetClass;
 
@@ -57,6 +65,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Config|Sound")
 	TObjectPtr<UAkAudioEvent> RankingBGM;
+
+	/** Background sublevel to load for each result stage. Stages left out here start the cutscene right away. */
+	UPROPERTY(EditAnywhere, Category = "Config|Background", meta = (ForceInlineRow, Categories = "Trombone.Maps.Result"))
+	TMap<FGameplayTag, TSoftObjectPtr<UWorld>> BackgroundLevels;
+
 private:
 	UPROPERTY()
 	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
@@ -70,5 +83,8 @@ private:
 	int32 RankingPlayingID = 0;
 
 	int32 CachedLocalPlayerRankIndex = -1;
+
+	/** Ticket number for the level streaming call. Must differ per call. */
+	int32 LatentUUID = 0;
 
 };

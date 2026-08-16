@@ -63,10 +63,10 @@ public:
 	/** Open result level that matching to in-game level. Must be called after DestroySession */
 	void OpenResultLevel(const UObject* WorldContextObject, bool bAbsolute = true) const;
 
-private:
-	
 	/** @return Result level tag that matching to in-game level. fallback: Result.OrchestraStage */
 	FGameplayTag ResolveResultMapTag() const;
+
+private:
 
 	/** Result data snapshot */
 	UPROPERTY(Transient)
