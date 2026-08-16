@@ -37,6 +37,26 @@ protected:
 public:
 	void SetAlpha(float InAlpha);
 
+#if WITH_EDITOR
+	//~ Begin 링 반경 규칙 (에디터 전용)
+	// End 반경 2개는 Start 반경에서 따라 나온다. 외곽은 소멸 진행도에 히트박스 구멍에 딱 닿게,
+	// 안쪽은 시작 두께를 그대로 유지하게. 계산과 기입은 에디터에서만 하고 MI에 저장된다.
+	// 인게임은 저장된 값을 그대로 쓴다 — 아래는 계산식과 PIE 검증용이다
+
+	// StartOuter가 히트박스 구멍 이하면 계산이 불가능해 false
+	static bool ComputeEndRadii(float StartOuter, float StartInner, float AnchorInner,
+		float InMissEndAlpha, float& OutEndOuter, float& OutEndInner);
+
+	// 머티리얼 그래프에 있는 이름과 맞아야 한다
+	static const FName ParamName_StartOuterRadius;
+	static const FName ParamName_StartInnerRadius;
+	static const FName ParamName_EndOuterRadius;
+	static const FName ParamName_EndInnerRadius;
+
+	FORCEINLINE float GetMissEndAlpha() const { return MissEndAlpha; }
+	//~ End 링 반경 규칙
+#endif
+
 private:
 	void EnsureMID();
 	void ApplyMaterialParams();
@@ -44,9 +64,12 @@ private:
 	// 현재 맵의 RhythmActor가 지정한 링 머티리얼. 없으면 nullptr
 	UMaterialInterface* ResolvePerMapOverrideMaterial() const;
 
-	// 반경 4종은 전부 머티리얼/MI 소유. 히트박스는 소멸 앵커로만 쓴다
-	// 링이 히트박스를 벗어나는 진행도를 재서 소멸 지점과 맞는지 검증한다
-	void UpdateNestSizeAlpha();
+#if WITH_EDITOR
+	//~ Begin 링 반경 규칙 (에디터 전용)
+	// MI에 저장된 End 반경이 규칙과 맞는지 보고 어긋나면 경고만 한다. 값은 고치지 않는다
+	void ValidateEndRadii();
+	//~ End 링 반경 규칙
+#endif
 
 	void BindChannel();
 	void UnBindChannel();
@@ -82,11 +105,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "NoteVisualizer|Params", meta = (ClampMin = "1.0", AllowPrivateAccess = "true"))
 	float MissEndAlpha = 1.12f;
 
-	// 링 외곽이 히트박스 안쪽에 맞물리는 SizeAlpha. 소멸 지점과 같아야 해서 검증에만 쓴다
-	float NestSizeAlpha = 1.0f;
-
+#if WITH_EDITOR
+	//~ Begin 링 반경 규칙 (에디터 전용)
 	// 같은 경고를 노트마다 다시 찍지 않기 위한 값
-	float LastWarnedNestAlpha = -1.0f;
+	float LastWarnedStartOuter = -1.0f;
+	//~ End 링 반경 규칙
+#endif
 
 	// 머티리얼 파라미터 이름
 	UPROPERTY(EditDefaultsOnly, Category = "NoteVisualizer|Params", meta = (AllowPrivateAccess = "true"))

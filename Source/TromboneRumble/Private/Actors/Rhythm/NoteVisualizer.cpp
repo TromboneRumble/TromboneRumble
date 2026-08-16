@@ -9,6 +9,13 @@
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+#if WITH_EDITOR
+const FName ANoteVisualizer::ParamName_StartOuterRadius(TEXT("StartOuterRadius"));
+const FName ANoteVisualizer::ParamName_StartInnerRadius(TEXT("StartInnerRadius"));
+const FName ANoteVisualizer::ParamName_EndOuterRadius(TEXT("EndOuterRadius"));
+const FName ANoteVisualizer::ParamName_EndInnerRadius(TEXT("EndInnerRadius"));
+#endif
+
 ANoteVisualizer::ANoteVisualizer()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -49,8 +56,9 @@ void ANoteVisualizer::Init(const FNoteHandle& InNoteHandle, const EInstrumentTyp
 	{
 		FindPlayerCharacterAndAttach();
 	}
-	// 이미 붙어있던 재사용 경로에서도 소멸 지점을 다시 계산해준다
-	UpdateNestSizeAlpha();
+#if WITH_EDITOR
+	ValidateEndRadii();
+#endif
 
 	UnBindChannel();
 	BindChannel();
@@ -207,8 +215,6 @@ void ANoteVisualizer::FindPlayerCharacterAndAttach()
 	// 바닥의 히트박스 링과 같은 평면에서 깜빡이지 않게 띄우는 값
 	SetActorRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	CachedRingHitBoxComponent = RingHitBox;
-
-	UpdateNestSizeAlpha();
 }
 
 void ANoteVisualizer::HandleOnInstrumentPicked(EInstrumentType OldType, EInstrumentType NewType)
@@ -256,52 +262,79 @@ UMaterialInterface* ANoteVisualizer::ResolvePerMapOverrideMaterial() const
 	return CurrentRhythmActor ? CurrentRhythmActor->GetNoteVisualizerRingMaterial() : nullptr;
 }
 
-void ANoteVisualizer::UpdateNestSizeAlpha()
+#if WITH_EDITOR
+bool ANoteVisualizer::ComputeEndRadii(float StartOuter, float StartInner, float AnchorInner,
+	float InMissEndAlpha, float& OutEndOuter, float& OutEndInner)
 {
-	// 반경 4종은 전부 머티리얼/MI 소유다. 여기선 강제로 밀어넣지 않고 읽기만 한다
-	// 히트박스는 "노트 외곽이 히트박스 안쪽에 맞물리면 소멸"의 앵커로만 쓰인다
+	if (InMissEndAlpha <= KINDA_SMALL_NUMBER || StartOuter <= AnchorInner + KINDA_SMALL_NUMBER)
+	{
+		return false;
+	}
+
+	// 머티리얼이 Lerp(Start, End, SizeAlpha)라 알파 1.0을 넘으면 반경이 계속 줄어든다.
+	// 소멸 진행도에 링 외곽이 정확히 히트박스 구멍(AnchorInner)에 닿게 맞춘다
+	OutEndOuter = StartOuter - (StartOuter - AnchorInner) / InMissEndAlpha;
+
+	// 두께가 알파에 선형이라, 시작 두께를 그대로 빼야 접근 내내 두께가 일정하다
+	OutEndInner = FMath::Max(OutEndOuter - (StartOuter - StartInner), 0.0f);
+	return true;
+}
+
+void ANoteVisualizer::ValidateEndRadii()
+{
+	// 반경 4종은 전부 MI 소유다. 여기선 저장값이 규칙과 맞는지 보기만 하고 고치지 않는다
 	const URingHitBoxComponent* RingHitBox = CachedRingHitBoxComponent.Get();
 	if (!RingHitBox) return;
 
 	EnsureMID();
 	if (!MID) return;
 
-	auto ReadRadius = [this](const TCHAR* ParamName, float Fallback)
+	auto ReadRadius = [this](const FName& ParamName, float Fallback)
 		{
 			float Value = Fallback;
 			return MID->GetScalarParameterValue(ParamName, Value) ? Value : Fallback;
 		};
-	const float StartOuter = ReadRadius(TEXT("StartOuterRadius"), RingHitBox->GetStartOuterRadius());
-	const float StartInner = ReadRadius(TEXT("StartInnerRadius"), RingHitBox->GetStartInnerRadius());
-	const float EndOuter = ReadRadius(TEXT("EndOuterRadius"), RingHitBox->GetEndOuterRadius());
-	const float EndInner = ReadRadius(TEXT("EndInnerRadius"), RingHitBox->GetEndInnerRadius());
+	const float StartOuter = ReadRadius(ParamName_StartOuterRadius, RingHitBox->GetStartOuterRadius());
+
+	// 같은 설정에서 노트마다 다시 찍지 않는다
+	if (FMath::IsNearlyEqual(StartOuter, LastWarnedStartOuter, KINDA_SMALL_NUMBER)) return;
+
+	const float StartInner = ReadRadius(ParamName_StartInnerRadius, RingHitBox->GetStartInnerRadius());
+	const float EndOuter = ReadRadius(ParamName_EndOuterRadius, RingHitBox->GetEndOuterRadius());
+	const float EndInner = ReadRadius(ParamName_EndInnerRadius, RingHitBox->GetEndInnerRadius());
 	const float AnchorInner = RingHitBox->GetEndInnerRadius();
 
-	// 머티리얼이 Lerp(Start, End, SizeAlpha)라 1.0을 넘으면 반경이 계속 줄어든다.
-	// 외곽이 히트박스 안쪽(AnchorInner)에 닿는 지점이 링이 히트박스를 벗어나는 크기다
-	NestSizeAlpha = (StartOuter > EndOuter + KINDA_SMALL_NUMBER)
-		? (StartOuter - AnchorInner) / (StartOuter - EndOuter)
-		: 1.0f;
-
-	// 안쪽 반경이 0을 뚫으면 링이 뒤집혀 보인다. 그 지점이 더 이르면 그쪽이 한계다
-	if (StartInner > EndInner + KINDA_SMALL_NUMBER)
+	float WantEndOuter = 0.0f, WantEndInner = 0.0f;
+	if (!ComputeEndRadii(StartOuter, StartInner, AnchorInner, MissEndAlpha, WantEndOuter, WantEndInner))
 	{
-		constexpr float MinRadius = 0.001f;
-		NestSizeAlpha = FMath::Min(NestSizeAlpha, (StartInner - MinRadius) / (StartInner - EndInner));
-	}
-
-#if !UE_BUILD_SHIPPING
-	// 벗어나는 지점과 소멸 지점이 어긋나면 링이 먼저 사라지거나 남은 채로 튄다
-	constexpr float NestAlphaTolerance = 0.01f;
-	if (!FMath::IsNearlyEqual(NestSizeAlpha, MissEndAlpha, NestAlphaTolerance)
-		&& !FMath::IsNearlyEqual(NestSizeAlpha, LastWarnedNestAlpha, KINDA_SMALL_NUMBER))
-	{
-		LastWarnedNestAlpha = NestSizeAlpha;
-		const float RecommendedEndOuter = StartOuter - (StartOuter - AnchorInner) / MissEndAlpha;
+		LastWarnedStartOuter = StartOuter;
 		UE_LOG(LogTemp, Warning,
-			TEXT("[NoteVisualizer] 링이 히트박스를 벗어나는 지점(%.4f)이 소멸 지점(%.4f)과 다르다. ")
-			TEXT("노트 머티리얼의 EndOuterRadius를 %.4f -> %.5f로 맞출 것"),
-			NestSizeAlpha, MissEndAlpha, EndOuter, RecommendedEndOuter);
+			TEXT("[NoteVisualizer] StartOuterRadius(%.5f)가 히트박스 구멍(%.5f) 이하라 End 반경 규칙을 세울 수 없다. ")
+			TEXT("노트 MI의 StartOuterRadius를 더 크게 잡을 것"),
+			StartOuter, AnchorInner);
+		return;
 	}
-#endif
+
+	if (WantEndInner <= 0.0f)
+	{
+		LastWarnedStartOuter = StartOuter;
+		UE_LOG(LogTemp, Warning,
+			TEXT("[NoteVisualizer] 링 두께(%.5f)가 판정선 크기(%.5f)보다 두꺼워 안쪽 반경이 0으로 잘린다. ")
+			TEXT("판정선 근처에서 링이 꽉 찬 원이 된다"),
+			StartOuter - StartInner, WantEndOuter);
+		return;
+	}
+
+	constexpr float RadiusTolerance = 1e-4f;
+	if (!FMath::IsNearlyEqual(EndOuter, WantEndOuter, RadiusTolerance)
+		|| !FMath::IsNearlyEqual(EndInner, WantEndInner, RadiusTolerance))
+	{
+		LastWarnedStartOuter = StartOuter;
+		UE_LOG(LogTemp, Warning,
+			TEXT("[NoteVisualizer] 노트 MI에 저장된 End 반경이 규칙과 다르다. ")
+			TEXT("EndOuterRadius %.5f -> %.5f, EndInnerRadius %.5f -> %.5f. ")
+			TEXT("MI를 열고 StartOuterRadius를 한 번 건드리면 자동으로 맞춰진다"),
+			EndOuter, WantEndOuter, EndInner, WantEndInner);
+	}
 }
+#endif
