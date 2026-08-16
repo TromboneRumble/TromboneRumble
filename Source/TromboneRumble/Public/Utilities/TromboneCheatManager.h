@@ -66,6 +66,10 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_XRayCropCapture(const FString& EnabledString);
 
+	// 더미 플레이어를 채워 결과 씬으로 이동. 인원수 기본 4, 스테이지 기본 OrchestraStage
+	UFUNCTION(Exec)
+	void Trombone_ResultTest(const FString& PlayerCountString, const FString& StageString);
+
 public:
 
 	UFUNCTION(Exec)

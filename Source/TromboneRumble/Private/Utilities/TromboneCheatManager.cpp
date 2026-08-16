@@ -13,7 +13,9 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameStateSubsystem.h"
+#include "Subsystems/ResultSceneSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "TromboneGamePlayTags.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
@@ -35,6 +37,7 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_XRayCropCapture [0|1] - 원형 윈도우의 캡처 시야를 원 주변으로 좁힐지. 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("Trombone_AudioOffset [ms] - 리듬 BGM 오프셋(양수=일찍 시작). 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("Trombone_RhythmSyncLog [0|1] - 리듬 싱크 실측 로그 + 음악 클럭 화면 표시. 인자 없으면 현재 값 출력\n");
+	DebugMsg += TEXT("Trombone_ResultTest [인원수] [스테이지] - 더미 플레이어로 결과 씬 확인 (기본 4명 / OrchestraStage, 예: Trombone_ResultTest 3 SnowField)\n");
 	DebugMsg += TEXT("--------------------------------\n");
 	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
 	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");
@@ -423,6 +426,41 @@ void UTromboneCheatManager::Trombone_XRayCropCapture(const FString& EnabledStrin
 	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(
 		TEXT("X-Ray 윈도우 캡처 크롭 %s (저장 안 됨. BP의 XRay|Window > bCropCaptureToWindow가 기본값)"),
 		bEnabled ? TEXT("on — 원 주변만 캡처") : TEXT("off — 화면 전체 캡처")));
+}
+
+void UTromboneCheatManager::Trombone_ResultTest(const FString& PlayerCountString, const FString& StageString)
+{
+	UWorld* World = GetWorld();
+	if (!World || !World->GetGameInstance())
+	{
+		return;
+	}
+
+	UResultSceneSubsystem* ResultSubsystem = World->GetGameInstance()->GetSubsystem<UResultSceneSubsystem>();
+	if (!ResultSubsystem)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("ResultSceneSubsystem을 찾을 수 없습니다"));
+		return;
+	}
+
+	const int32 PlayerCount = PlayerCountString.IsEmpty()
+		? 4
+		: FMath::Clamp(FCString::Atoi(*PlayerCountString), 1, 8);
+
+	const FString Stage = StageString.IsEmpty() ? TEXT("OrchestraStage") : StageString;
+
+	// 스테이지 이름이 틀리면 ResolveResultMapTag가 조용히 오케스트라로 넘어가므로 여기서 먼저 걸러낸다
+	const FString CandidateStr = TromboneGamePlayTags::ResultPath + TEXT(".") + Stage;
+	if (!FGameplayTag::RequestGameplayTag(FName(*CandidateStr), false).IsValid())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("알 수 없는 스테이지: %s (OrchestraStage | SnowField | JazzBar)"), *Stage));
+		return;
+	}
+
+	ResultSubsystem->SetDebugResultSceneData(PlayerCount, Stage);
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("더미 결과 %d명 / %s — 결과 레벨로 이동합니다"), PlayerCount, *Stage));
+
+	ResultSubsystem->OpenResultLevel(World);
 }
 
 void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()
