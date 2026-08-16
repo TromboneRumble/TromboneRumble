@@ -2607,7 +2607,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2984157360" Type="Event" GUID="{4BBBF6F8-9F59-4DD7-8033-CDD733496F4E}" Language="SFX" Hash="{2DA1AB26-FA42-35C3-AB89-3A25CC3C3430}">
+		<SoundBank Id="2984157360" Type="Event" GUID="{4BBBF6F8-9F59-4DD7-8033-CDD733496F4E}" Language="SFX" Hash="{FCAA2CC3-EB81-2D92-3279-D93F48096C92}">
 			<ObjectPath>MIDI_MapD_V</ObjectPath>
 			<ShortName>MIDI_MapD_V</ShortName>
 			<Path>Event/MIDI_MapD_V.bnk</Path>
@@ -3402,5 +3402,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{7C0107C6-2C48-112C-DE17-305A269A680F}</FileHash>
+	<FileHash>{52094068-2806-2796-E475-6E29D1414F52}</FileHash>
 </SoundBanksInfo>

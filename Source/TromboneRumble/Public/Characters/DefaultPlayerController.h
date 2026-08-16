@@ -14,6 +14,7 @@ class UInGameWidget;
 class UInputMappingContext;
 class UInputAction;
 class ADefaultTromboneCharacter;
+class ULobbyCameraComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged, APlayerState*, NewPlayerState);
 
@@ -23,6 +24,9 @@ class TROMBONERUMBLE_API ADefaultPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	
+	/** Default constructor. */
+	ADefaultPlayerController();
+
 	// InputActions
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> LobbyMappingContext;
@@ -50,6 +54,19 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "PlayerState")
 	FOnPlayerStateChanged OnPlayerStateChanged;
+
+	/** Lobby director camera (local only; run only on the lobby level) */
+	UPROPERTY(VisibleAnywhere, Category = "Lobby")
+	TObjectPtr<ULobbyCameraComponent> LobbyCameraComponent;
+
+	//~ Begin APlayerController Interface
+	/** Suggests the lobby intro camera over the pawn while the intro is running */
+	virtual void AutoManageActiveCameraTarget(AActor* SuggestedTarget) override;
+
+	/** Redirects server-driven view target changes to the lobby intro camera while the intro is running */
+	virtual void ClientSetViewTarget_Implementation(AActor* A, FViewTargetTransitionParams TransitionParams) override;
+	//~ End APlayerController Interface
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

@@ -2,8 +2,41 @@
 
 #include "Characters/DefaultPlayerController.h"
 #include "EasyOnlineSession.h"
+#include "Components/ActorComponents/LobbyCameraComponent.h"
 #include "Framework/GameMode/InGameMode.h"
 #include "Subsystems/ResultSceneSubsystem.h"
+
+ADefaultPlayerController::ADefaultPlayerController()
+{
+	LobbyCameraComponent = CreateDefaultSubobject<ULobbyCameraComponent>(TEXT("LobbyCamera"));
+}
+
+void ADefaultPlayerController::AutoManageActiveCameraTarget(AActor* SuggestedTarget)
+{
+	if (LobbyCameraComponent)
+	{
+		if (AActor* ViewTargetOverride = LobbyCameraComponent->GetViewTargetOverride())
+		{
+			SuggestedTarget = ViewTargetOverride;
+		}
+	}
+
+	Super::AutoManageActiveCameraTarget(SuggestedTarget);
+}
+
+void ADefaultPlayerController::ClientSetViewTarget_Implementation(AActor* A, FViewTargetTransitionParams TransitionParams)
+{
+	if (LobbyCameraComponent)
+	{
+		if (AActor* ViewTargetOverride = LobbyCameraComponent->GetViewTargetOverride())
+		{
+			Super::ClientSetViewTarget_Implementation(ViewTargetOverride, FViewTargetTransitionParams());
+			return;
+		}
+	}
+
+	Super::ClientSetViewTarget_Implementation(A, TransitionParams);
+}
 
 void ADefaultPlayerController::Server_RhythmGameFinished_Implementation()
 {

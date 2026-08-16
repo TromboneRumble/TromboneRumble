@@ -15,6 +15,16 @@
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 
+namespace
+{
+	constexpr int32 DefaultMinPlayersToStart = 2;
+}
+
+static TAutoConsoleVariable<int32> CVarMinPlayersToStart(
+	TEXT("Trombone.MatchMenu.MinPlayersToStart"),
+	DefaultMinPlayersToStart,
+	TEXT("The minimum number of players required for a host to start a game from the Match menu. If set to 1, the host can start the game alone."));
+
 FString UTromboneStatics::GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy)
 {
 	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
@@ -48,6 +58,16 @@ bool UTromboneStatics::CopyRoomCodeToClipboard(const UObject* WorldContextObject
 	}
 	
 	return false;
+}
+
+int32 UTromboneStatics::GetMinPlayersToStart()
+{
+	return FMath::Max(1, CVarMinPlayersToStart.GetValueOnGameThread());
+}
+
+bool UTromboneStatics::HasEnoughPlayersToStart(const int32 PlayerCount)
+{
+	return PlayerCount >= GetMinPlayersToStart();
 }
 
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelType Level, const bool bAbsolute)

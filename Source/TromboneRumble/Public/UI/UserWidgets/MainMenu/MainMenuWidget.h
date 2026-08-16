@@ -6,7 +6,6 @@
 #include "UI/UserWidgets/Common/BaseMenuWidget.h"
 #include "MainMenuWidget.generated.h"
 
-enum class EEasyMatchmakingCompleteResult : uint8;
 class UCommonButtonBase;
 
 UCLASS()
@@ -31,11 +30,7 @@ protected:
 	
 	// ~ Begin UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_CreateSession;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_QuickJoin;
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonButtonBase> CB_Join;
+	TObjectPtr<UCommonButtonBase> CB_Play;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Customize;
 	UPROPERTY(meta = (BindWidget))
@@ -49,21 +44,16 @@ protected:
 private:
 	
 	// ~ Begin Button Callbacks
-	UFUNCTION()
-	void HandleCreateSessionClicked();
-	UFUNCTION()
-	void HandleQuickJoinButtonClicked();
-	UFUNCTION()
-	void HandleJoinButtonClicked();
-	UFUNCTION()
+	void HandlePlayButtonClicked();
 	void HandleCustomizeButtonClicked();
-	UFUNCTION()
 	void HandleTutorialButtonClicked();
 	// ~ End Button Callbacks
 	
+	bool TryShowFirstTutorialPopup() const;
+
 	/** Displays the tutorial popup */
-	void ShowTutorialPopup();
-	
+	void ShowTutorialPopup() const;
+
 	/** Displays the quit confirmation popup */
 	void ShowQuitPopup() const;
 	

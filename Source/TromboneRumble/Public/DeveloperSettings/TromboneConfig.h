@@ -6,8 +6,8 @@
 #include "Engine/DeveloperSettings.h"
 #include "GameplayTagContainer.h"
 #include "UI/UserWidgets/Popup/EscapePopup.h"
-#include "UI/UserWidgets/Popup/JoinCodePopup.h"
 #include "UI/UserWidgets/Popup/NoticePopup.h"
+#include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "TromboneConfig.generated.h"
@@ -64,9 +64,9 @@ public:
 			return Cast<UClass>(SettingPopupWidgetClass);
 		}
 		
-		if (T::StaticClass()->IsChildOf(UJoinCodePopup::StaticClass()))
+		if (T::StaticClass()->IsChildOf(UPlayModePopup::StaticClass()))
 		{
-			return Cast<UClass>(JoinCodePopupWidgetClass);
+			return Cast<UClass>(PlayModePopupWidgetClass);
 		}
 
 		UE_LOG(LogTemp, Error, TEXT("No matching popup class found for type %s. Please check if it's added in UTromboneConfig."), *T::StaticClass()->GetName());
@@ -91,9 +91,9 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<USettingPopup> SettingPopupWidgetClass;
 	
-	/** Join Code popup widget class */
+	/** Play mode select popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UJoinCodePopup> JoinCodePopupWidgetClass;
+	TSubclassOf<UPlayModePopup> PlayModePopupWidgetClass;
 	
 	/** Project version widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
