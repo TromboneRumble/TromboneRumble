@@ -21,6 +21,7 @@ public:
 	static FString GetMapPathByMapTag(UPARAM(meta = (Categories = "Trombone.Maps")) FGameplayTag InMapTag);
 
 	/** 주어진 카테고리 태그의 자식 맵 태그들을 GamePlayMap에서 수집. 반환값은 문자열 정렬
+	 * Shipping 빌드에서는 ShippingHiddenMaps에 등록된 맵을 제외한다.
 	 * @return 예시: (Trombone.Maps.Lobby) -> { Trombone_Maps_Lobby_OrchestraStage, Trombone_Maps_Lobby_SnowField }
 	 */
 	UFUNCTION(BlueprintPure, Category = "GameMaps")
