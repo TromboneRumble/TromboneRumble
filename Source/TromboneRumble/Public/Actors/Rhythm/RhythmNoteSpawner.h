@@ -104,8 +104,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Rhythm")
 	bool IsSyncTesting = false;
-
-	// 노트/비주얼라이저 풀 사전 확보 개수. 3초 이동이라 동시에 존재하는 노트가 쉽게 10개를 넘는다
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Rhythm")
 	int32 PoolPrewarmCount = 24;
 

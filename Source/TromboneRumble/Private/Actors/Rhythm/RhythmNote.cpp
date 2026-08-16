@@ -81,7 +81,8 @@ void ARhythmNote::Tick(float DeltaTime)
 		return;
 	}
 
-	const float ProgressAlpha = FMath::Clamp(MoveAlpha, 0.f, 1.f);
+	// 판정선(1.0)을 넘겨서도 그대로 보낸다. 미스 구간에 링이 계속 줄어들어야 하기 때문
+	const float ProgressAlpha = FMath::Max(MoveAlpha, 0.f);
 	if (CachedRhythmNoteChannelSubsystem.IsValid())
 	{
 		CachedRhythmNoteChannelSubsystem->UpdateProgress(NoteHandle.Id, ProgressAlpha);
