@@ -17,8 +17,8 @@
 namespace
 {
 	/** 계산 근거가 되는 UPROPERTY 이름. 리플렉션으로 찾으므로 Initialize에서 존재를 확인한다 */
-	const FName PropName_AnchorRadius(TEXT("EndInnerRadius"));
-	const FName PropName_MissEndAlpha(TEXT("MissEndAlpha"));
+	const FName PropName_AnchorInnerRadius(TEXT("EndInnerRadius"));
+	const FName PropName_AnchorOuterRadius(TEXT("EndOuterRadius"));
 
 	/** 이보다 차이가 작으면 이미 맞은 것으로 보고 쓰지 않는다. 매 편집마다 dirty가 되는 것을 막는다 */
 	constexpr float WriteEpsilon = 1.e-6f;
@@ -84,15 +84,13 @@ void UNoteRingRadiusSyncSubsystem::Initialize(FSubsystemCollectionBase& Collecti
 		this, &UNoteRingRadiusSyncSubsystem::HandleObjectPropertyChanged);
 
 	// 이름이 바뀌면 조용히 멈추므로 시작할 때 한 번 확인한다
-	if (!FindFProperty<FProperty>(URingHitBoxComponent::StaticClass(), PropName_AnchorRadius))
+	for (const FName& PropName : { PropName_AnchorInnerRadius, PropName_AnchorOuterRadius })
 	{
-		UE_LOG(LogTemp, Error, TEXT("[NoteRingSync] URingHitBoxComponent에 %s가 없다. 이름이 바뀌었으면 여기도 고칠 것"),
-			*PropName_AnchorRadius.ToString());
-	}
-	if (!FindFProperty<FProperty>(ANoteVisualizer::StaticClass(), PropName_MissEndAlpha))
-	{
-		UE_LOG(LogTemp, Error, TEXT("[NoteRingSync] ANoteVisualizer에 %s가 없다. 이름이 바뀌었으면 여기도 고칠 것"),
-			*PropName_MissEndAlpha.ToString());
+		if (!FindFProperty<FProperty>(URingHitBoxComponent::StaticClass(), PropName))
+		{
+			UE_LOG(LogTemp, Error, TEXT("[NoteRingSync] URingHitBoxComponent에 %s가 없다. 이름이 바뀌었으면 여기도 고칠 것"),
+				*PropName.ToString());
+		}
 	}
 #endif
 }
@@ -135,10 +133,10 @@ void UNoteRingRadiusSyncSubsystem::HandleObjectPropertyChanged(UObject* Object, 
 	}
 
 	const FName ChangedName = Event.GetPropertyName();
-	const bool bAnchorChanged = Object->IsA<URingHitBoxComponent>() && ChangedName == PropName_AnchorRadius;
-	const bool bMissAlphaChanged = Object->IsA<ANoteVisualizer>() && ChangedName == PropName_MissEndAlpha;
+	const bool bAnchorChanged = Object->IsA<URingHitBoxComponent>()
+		&& (ChangedName == PropName_AnchorInnerRadius || ChangedName == PropName_AnchorOuterRadius);
 
-	if (bAnchorChanged || bMissAlphaChanged)
+	if (bAnchorChanged)
 	{
 		bSyncing = true;
 		SyncAll();
@@ -173,7 +171,7 @@ bool UNoteRingRadiusSyncSubsystem::IsNoteRingInstance(const UMaterialInstanceCon
 	return false;
 }
 
-bool UNoteRingRadiusSyncSubsystem::ResolveRule(float& OutAnchorInner, float& OutMissEndAlpha) const
+bool UNoteRingRadiusSyncSubsystem::ResolveRule(float& OutAnchorInner, float& OutAnchorOuter) const
 {
 	const UTromboneConfig* Config = UTromboneConfig::Get();
 	if (!Config)
@@ -182,8 +180,7 @@ bool UNoteRingRadiusSyncSubsystem::ResolveRule(float& OutAnchorInner, float& Out
 	}
 
 	const UClass* CharacterClass = Config->NoteRingAnchorCharacterClass.LoadSynchronous();
-	const UClass* VisualizerClass = Config->NoteRingVisualizerClass.LoadSynchronous();
-	if (!CharacterClass || !VisualizerClass)
+	if (!CharacterClass)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[NoteRingSync] Trombone Config의 Editor|NoteRing 항목이 비어 있어 End 반경을 계산할 수 없다"));
 		return false;
@@ -191,8 +188,7 @@ bool UNoteRingRadiusSyncSubsystem::ResolveRule(float& OutAnchorInner, float& Out
 
 	// 설정에 엉뚱한 클래스가 들어와도 터지지 않게 캐스팅으로 확인한다
 	const ADefaultTromboneCharacter* CharacterCDO = Cast<ADefaultTromboneCharacter>(CharacterClass->GetDefaultObject());
-	const ANoteVisualizer* VisualizerCDO = Cast<ANoteVisualizer>(VisualizerClass->GetDefaultObject());
-	if (!CharacterCDO || !VisualizerCDO)
+	if (!CharacterCDO)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[NoteRingSync] Editor|NoteRing에 지정된 클래스가 기대한 타입이 아니다"));
 		return false;
@@ -207,15 +203,15 @@ bool UNoteRingRadiusSyncSubsystem::ResolveRule(float& OutAnchorInner, float& Out
 	}
 
 	OutAnchorInner = HitBox->GetEndInnerRadius();
-	OutMissEndAlpha = VisualizerCDO->GetMissEndAlpha();
+	OutAnchorOuter = HitBox->GetEndOuterRadius();
 	return true;
 }
 
 bool UNoteRingRadiusSyncSubsystem::SyncOne(UMaterialInstanceConstant* NoteMI) const
 {
 	float AnchorInner = 0.f;
-	float MissEndAlpha = 0.f;
-	if (!NoteMI || !ResolveRule(AnchorInner, MissEndAlpha))
+	float AnchorOuter = 0.f;
+	if (!NoteMI || !ResolveRule(AnchorInner, AnchorOuter))
 	{
 		return false;
 	}
@@ -230,11 +226,11 @@ bool UNoteRingRadiusSyncSubsystem::SyncOne(UMaterialInstanceConstant* NoteMI) co
 
 	float WantOuter = 0.f;
 	float WantInner = 0.f;
-	if (!ANoteVisualizer::ComputeEndRadii(StartOuter, StartInner, AnchorInner, MissEndAlpha, WantOuter, WantInner))
+	if (!ANoteVisualizer::ComputeEndRadii(StartOuter, StartInner, AnchorInner, AnchorOuter, WantOuter, WantInner))
 	{
 		UE_LOG(LogTemp, Warning,
-			TEXT("[NoteRingSync] %s: StartOuterRadius(%.5f)가 히트박스 구멍(%.5f) 이하라 End 반경을 정할 수 없다"),
-			*NoteMI->GetName(), StartOuter, AnchorInner);
+			TEXT("[NoteRingSync] %s: StartOuterRadius(%.5f)가 히트박스 밴드(%.5f~%.5f) 중앙까지 줄어들 수 없다"),
+			*NoteMI->GetName(), StartOuter, AnchorInner, AnchorOuter);
 		return false;
 	}
 

@@ -19,7 +19,6 @@ class AInstrumentBase;
 enum class EWeaponType : uint8;
 class UMaterialInterface;
 class ADefaultTromboneCharacter;
-class ANoteVisualizer;
 
 /**
  * Config for Trombone Rumble Project.
@@ -191,13 +190,9 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Editor|NoteRing")
 	TSoftObjectPtr<UMaterialInterface> NoteRingBaseMaterial;
 
-	/** 노트 링이 파고들 히트박스 구멍(RingHitBoxComponent의 EndInnerRadius)을 제공하는 캐릭터 */
+	/** 노트 링이 정중앙을 맞출 히트박스 밴드(RingHitBoxComponent의 End 반경 2개)를 제공하는 캐릭터 */
 	UPROPERTY(Config, EditAnywhere, Category = "Editor|NoteRing")
 	TSoftClassPtr<ADefaultTromboneCharacter> NoteRingAnchorCharacterClass;
-
-	/** 노트가 소멸하는 진행도(MissEndAlpha)를 제공하는 노트 비주얼라이저 */
-	UPROPERTY(Config, EditAnywhere, Category = "Editor|NoteRing")
-	TSoftClassPtr<ANoteVisualizer> NoteRingVisualizerClass;
 #endif
 
 };

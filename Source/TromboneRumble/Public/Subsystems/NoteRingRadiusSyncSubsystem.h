@@ -35,8 +35,8 @@ private:
 	/** 부모를 거슬러 올라가 설정에 적힌 노트 베이스 머티리얼이 나오는지 본다 */
 	bool IsNoteRingInstance(const UMaterialInstanceConstant* MI) const;
 
-	/** 계산에 필요한 두 값을 설정에 적힌 BP CDO에서 읽는다 */
-	bool ResolveRule(float& OutAnchorInner, float& OutMissEndAlpha) const;
+	/** 히트박스 밴드 반경 2개를 설정에 적힌 캐릭터 BP CDO에서 읽는다 */
+	bool ResolveRule(float& OutAnchorInner, float& OutAnchorOuter) const;
 
 	/** MI 하나에 End 반경을 써넣는다. 이미 맞으면 아무것도 안 하고 false */
 	bool SyncOne(UMaterialInstanceConstant* NoteMI) const;

@@ -264,16 +264,21 @@ UMaterialInterface* ANoteVisualizer::ResolvePerMapOverrideMaterial() const
 
 #if WITH_EDITOR
 bool ANoteVisualizer::ComputeEndRadii(float StartOuter, float StartInner, float AnchorInner,
-	float InMissEndAlpha, float& OutEndOuter, float& OutEndInner)
+	float AnchorOuter, float& OutEndOuter, float& OutEndInner)
 {
-	if (InMissEndAlpha <= KINDA_SMALL_NUMBER || StartOuter <= AnchorInner + KINDA_SMALL_NUMBER)
+	if (AnchorOuter <= AnchorInner + KINDA_SMALL_NUMBER)
 	{
 		return false;
 	}
 
-	// 머티리얼이 Lerp(Start, End, SizeAlpha)라 알파 1.0을 넘으면 반경이 계속 줄어든다.
-	// 소멸 진행도에 링 외곽이 정확히 히트박스 구멍(AnchorInner)에 닿게 맞춘다
-	OutEndOuter = StartOuter - (StartOuter - AnchorInner) / InMissEndAlpha;
+	// 정타(알파 1.0)에 링 중심선이 히트박스 밴드 정중앙과 일치하게 맞춘다
+	OutEndOuter = (AnchorInner + AnchorOuter) * 0.5f + (StartOuter - StartInner) * 0.5f;
+
+	// 시작 링이 End보다 커야 줄어드는 그림이 된다
+	if (OutEndOuter >= StartOuter - KINDA_SMALL_NUMBER)
+	{
+		return false;
+	}
 
 	// 두께가 알파에 선형이라, 시작 두께를 그대로 빼야 접근 내내 두께가 일정하다
 	OutEndInner = FMath::Max(OutEndOuter - (StartOuter - StartInner), 0.0f);
@@ -303,15 +308,16 @@ void ANoteVisualizer::ValidateEndRadii()
 	const float EndOuter = ReadRadius(ParamName_EndOuterRadius, RingHitBox->GetEndOuterRadius());
 	const float EndInner = ReadRadius(ParamName_EndInnerRadius, RingHitBox->GetEndInnerRadius());
 	const float AnchorInner = RingHitBox->GetEndInnerRadius();
+	const float AnchorOuter = RingHitBox->GetEndOuterRadius();
 
 	float WantEndOuter = 0.0f, WantEndInner = 0.0f;
-	if (!ComputeEndRadii(StartOuter, StartInner, AnchorInner, MissEndAlpha, WantEndOuter, WantEndInner))
+	if (!ComputeEndRadii(StartOuter, StartInner, AnchorInner, AnchorOuter, WantEndOuter, WantEndInner))
 	{
 		LastWarnedStartOuter = StartOuter;
 		UE_LOG(LogTemp, Warning,
-			TEXT("[NoteVisualizer] StartOuterRadius(%.5f)가 히트박스 구멍(%.5f) 이하라 End 반경 규칙을 세울 수 없다. ")
+			TEXT("[NoteVisualizer] StartOuterRadius(%.5f)가 히트박스 밴드 중앙(%.5f)까지 줄어들 수 없어 End 반경 규칙을 세울 수 없다. ")
 			TEXT("노트 MI의 StartOuterRadius를 더 크게 잡을 것"),
-			StartOuter, AnchorInner);
+			StartOuter, (AnchorInner + AnchorOuter) * 0.5f);
 		return;
 	}
 
