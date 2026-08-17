@@ -122,7 +122,7 @@ void UDrunkardStateComponent::RequestTargetChange()
 {
 	if (!HasAuthority() || State != EDrunkardState::Chasing) return;
 
-	if (ADefaultTromboneCharacter* NewTarget = PickTargetByRankWeight(Target.Get()))
+	if (ADefaultTromboneCharacter* NewTarget = PickRandomTarget(Target.Get()))
 	{
 		SetTarget(NewTarget);
 	}
@@ -161,19 +161,16 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 	const bool bApplied = ICombatReceiver::Execute_OnHitReceived(TargetCharacter, HitData);
 	if (!bApplied)
 	{
-		UE_LOG(LogDrunkard, Log, TEXT("%s 포획 무효 (%s 이미 무력화) — 타겟 변경"), *GetNameSafe(GetOwner()), *TargetCharacter->GetName());
 		RequestTargetChange();
 		return;
 	}
 
 	if (bHasInstrument)
 	{
-		UE_LOG(LogDrunkard, Log, TEXT("%s 포획 성공: %s (악기 드랍) — 퇴장"), *GetNameSafe(GetOwner()), *TargetCharacter->GetName());
 		BeginExiting();
 	}
 	else
 	{
-		UE_LOG(LogDrunkard, Log, TEXT("%s 접촉: %s 악기 미보유 — 넉백만, 타겟 변경"), *GetNameSafe(GetOwner()), *TargetCharacter->GetName());
 		RequestTargetChange();
 	}
 }
@@ -182,9 +179,6 @@ void UDrunkardStateComponent::SetState(const EDrunkardState NewState)
 {
 	if (State == NewState) return;
 
-	UE_LOG(LogDrunkard, Log, TEXT("%s 상태 전이: %s -> %s"),
-		*GetNameSafe(GetOwner()), *UEnum::GetValueAsString(State), *UEnum::GetValueAsString(NewState));
-
 	State = NewState;
 	OnStateChanged.Broadcast(State);
 }
@@ -192,9 +186,6 @@ void UDrunkardStateComponent::SetState(const EDrunkardState NewState)
 void UDrunkardStateComponent::SetTarget(ADefaultTromboneCharacter* NewTarget)
 {
 	if (Target.Get() == NewTarget) return;
-
-	UE_LOG(LogDrunkard, Log, TEXT("%s 타겟 변경: %s -> %s"),
-		*GetNameSafe(GetOwner()), *GetNameSafe(Target.Get()), *GetNameSafe(NewTarget));
 
 	Target = NewTarget;
 	OnTargetChanged.Broadcast(NewTarget);
@@ -266,6 +257,26 @@ ADefaultTromboneCharacter* UDrunkardStateComponent::PickTargetByRankWeight(const
 		}
 	}
 	return Candidates.Last().Character;
+}
+
+ADefaultTromboneCharacter* UDrunkardStateComponent::PickRandomTarget(const ADefaultTromboneCharacter* Exclude) const
+{
+	const AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr;
+	if (!GameState) return nullptr;
+
+	TArray<ADefaultTromboneCharacter*> Candidates;
+	for (const APlayerState* PlayerState : GameState->PlayerArray)
+	{
+		if (!PlayerState) continue;
+
+		ADefaultTromboneCharacter* Character = Cast<ADefaultTromboneCharacter>(PlayerState->GetPawn());
+		if (!Character || Character == Exclude) continue;
+
+		Candidates.Add(Character);
+	}
+	if (Candidates.IsEmpty()) return nullptr;
+
+	return Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
 }
 
 const UDrunkardDataAsset* UDrunkardStateComponent::GetData() const

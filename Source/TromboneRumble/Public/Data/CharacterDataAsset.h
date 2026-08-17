@@ -102,6 +102,10 @@ public:
     /** 스턴 상태가 지속되는 시간입니다. (초) */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Reactions", meta = (DisplayName = "스턴 지속 시간"))
     float StunDuration = 1.5f;
+
+    /** 래그돌이 될 때 밀려나는 방향으로 굴러가는 속도입니다. 0이면 구르지 않습니다. (rad/s) */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Reactions", meta = (DisplayName = "넉백 회전 속도", ClampMin = "0.0"))
+    float KnockbackSpinRate = 15.0f;
 	
     /** 래그돌 후 무적 시간입니다. 래그돌에서 일어나는 애니메이션 재생 시간 2초를 포함합니다. (초) */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Reactions", meta = (DisplayName = "래그돌 후 무적 시간"))

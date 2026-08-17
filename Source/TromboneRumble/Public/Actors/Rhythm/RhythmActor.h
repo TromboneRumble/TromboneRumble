@@ -122,6 +122,13 @@ private:
 	UFUNCTION()
 	void PlayMusic();
 	FTimerHandle PlayBackgroundMusicTimerHandle;
+
+	// 음악 클럭이 살아있는 스포너를 찾는다. 조회 자체가 모든 스포너의 클럭을 갱신한다
+	ARhythmNoteSpawner* GetMasterClockSpawner();
+
+	// BGM 시작 대기 상태. 노트 트랙 클럭이 BGMTriggerTimeSec를 넘으면 재생한다
+	bool bWaitingToStartBGM = false;
+	double BGMTriggerTimeSec = 3.0;
 	UFUNCTION()
 	void HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	bool bHasReceivedMusicStartCallback = false;

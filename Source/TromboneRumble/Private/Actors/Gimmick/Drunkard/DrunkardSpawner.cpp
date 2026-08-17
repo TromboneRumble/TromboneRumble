@@ -98,8 +98,6 @@ void ADrunkardSpawner::TrySpawnNPC()
 	NPC->OnDestroyed.AddDynamic(this, &ThisClass::HandleNPCDestroyed);
 	ActiveNPC = NPC;
 
-	UE_LOG(LogDrunkard, Log, TEXT("%s 취객 스폰: %s (위치 %s)"), *GetName(), *NPC->GetName(), *SpawnLocation.ToCompactString());
-
 	if (UDrunkardStateComponent* State = NPC->GetStateComponent())
 	{
 		State->BeginEntering();
@@ -111,7 +109,6 @@ void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 	ActiveNPC = nullptr;
 
 	const float Interval = DrunkardData ? DrunkardData->RespawnInterval : FallbackSpawnDelay;
-	UE_LOG(LogDrunkard, Log, TEXT("%s 취객 소멸 — %.1fs 후 재스폰"), *GetName(), Interval);
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Interval, false);
 }
 

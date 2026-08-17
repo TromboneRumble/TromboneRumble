@@ -212,7 +212,6 @@ void URingHitBoxComponent::ApplyMaterialParams()
 	RingMID->SetScalarParameterValue(TEXT("EndOuterRadius"), EndOuterRadius);
 	RingMID->SetScalarParameterValue(TEXT("EndInnerRadius"), EndInnerRadius);
 	RingMID->SetScalarParameterValue(TEXT("SizeAlpha"), SizeAlpha);
-	RingMID->SetScalarParameterValue(TEXT("FadePercent"), FadePercent);
 }
 
 void URingHitBoxComponent::CacheBaseColorIfNeeded()
