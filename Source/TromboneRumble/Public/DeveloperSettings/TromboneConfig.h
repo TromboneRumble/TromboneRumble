@@ -17,6 +17,9 @@ class UToastItemWidget;
 class UToastContainerWidget;
 class AInstrumentBase;
 enum class EWeaponType : uint8;
+class UMaterialInterface;
+class ADefaultTromboneCharacter;
+class ANoteVisualizer;
 
 /**
  * Config for Trombone Rumble Project.
@@ -177,5 +180,24 @@ public:
 	/** Interval for updating the performance widget (seconds) */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Common", meta = (ClampMin = "0.1", ClampMax = "5.0"))
 	float PerformanceWidgetUpdateInterval;
-	
+
+#if WITH_EDITORONLY_DATA
+public:
+
+	/**
+	 * 축소하는 노트 링의 베이스 머티리얼. 이 머티리얼을 쓰는 MI만 End 반경이 자동으로 채워진다.
+	 * 히트박스 링(M_NoteHitBox)은 파라미터 이름이 같아도 대상이 아니므로 여기에 넣지 말 것
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Editor|NoteRing")
+	TSoftObjectPtr<UMaterialInterface> NoteRingBaseMaterial;
+
+	/** 노트 링이 파고들 히트박스 구멍(RingHitBoxComponent의 EndInnerRadius)을 제공하는 캐릭터 */
+	UPROPERTY(Config, EditAnywhere, Category = "Editor|NoteRing")
+	TSoftClassPtr<ADefaultTromboneCharacter> NoteRingAnchorCharacterClass;
+
+	/** 노트가 소멸하는 진행도(MissEndAlpha)를 제공하는 노트 비주얼라이저 */
+	UPROPERTY(Config, EditAnywhere, Category = "Editor|NoteRing")
+	TSoftClassPtr<ANoteVisualizer> NoteRingVisualizerClass;
+#endif
+
 };
