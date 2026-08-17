@@ -1,0 +1,79 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2984010329",
+    "Type": "Event",
+    "GUID": "{56624AAC-F4DF-4181-A791-0DEF10BA82C8}",
+    "Language": "SFX",
+    "Hash": "{2A9B9BDF-ED50-8A77-CC9A-54029D76DA14}",
+    "ObjectPath": "MIDI_MapE_V",
+    "ShortName": "MIDI_MapE_V",
+    "Path": "Event/MIDI_MapE_V.bnk",
+    "Media": [
+     {
+      "Id": "402626751",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map E_Main.wav",
+      "Path": "Media/402626751.wem",
+      "CachePath": "SFX/Map E_Main_FBC78EF0.wem"
+     },
+     {
+      "Id": "844378233",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map E_Violin.wav",
+      "Path": "Media/844378233.wem",
+      "CachePath": "SFX/Map E_Violin_FBC78EF0.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2984010329",
+      "Name": "MIDI_MapE_V",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_E_Rhythm\\MIDI_MapE_V",
+      "GUID": "{56624AAC-F4DF-4181-A791-0DEF10BA82C8}",
+      "DurationType": "OneShot",
+      "DurationMin": "236.72504",
+      "DurationMax": "236.72504",
+      "MediaRefs": [
+       {
+        "Id": "402626751"
+       },
+       {
+        "Id": "844378233"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{0F85519C-FBC4-7F46-01CE-2B3A6795C987}"
+ }
+}

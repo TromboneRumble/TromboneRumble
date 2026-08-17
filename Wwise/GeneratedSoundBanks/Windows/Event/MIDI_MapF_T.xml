@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1910095532" Type="Event" GUID="{9280C571-2E0B-4FF0-812D-711179E41244}" Language="SFX" Hash="{FF02A43B-99DA-31F1-2B3A-637108F86198}">
+			<ObjectPath>MIDI_MapF_T</ObjectPath>
+			<ShortName>MIDI_MapF_T</ShortName>
+			<Path>Event/MIDI_MapF_T.bnk</Path>
+			<Media>
+				<File Id="70601174" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map F_Cymbal.wav</ShortName>
+					<Path>Media/70601174.wem</Path>
+					<CachePath>SFX/Map F_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="74835286" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map F_Main.wav</ShortName>
+					<Path>Media/74835286.wem</Path>
+					<CachePath>SFX/Map F_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="506418981" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map F_Trombone.wav</ShortName>
+					<Path>Media/506418981.wem</Path>
+					<CachePath>SFX/Map F_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1910095532" Name="MIDI_MapF_T" ObjectPath="\Events\Default Work Unit\Music\Map_F_Rhythm\MIDI_MapF_T" GUID="{9280C571-2E0B-4FF0-812D-711179E41244}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="70601174"/>
+						<MediaRef Id="74835286"/>
+						<MediaRef Id="506418981"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{D4492A29-22DE-A0E0-DB7E-24D23CB99080}</FileHash>
+</SoundBanksInfo>
