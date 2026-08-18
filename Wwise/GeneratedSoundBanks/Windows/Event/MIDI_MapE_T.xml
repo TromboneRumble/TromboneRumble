@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2984010331" Type="Event" GUID="{D064998F-DFE1-493D-892B-6837180AE409}" Language="SFX" Hash="{FC6197B0-1868-F072-DB34-F57A0DD6F1E6}">
+			<ObjectPath>MIDI_MapE_T</ObjectPath>
+			<ShortName>MIDI_MapE_T</ShortName>
+			<Path>Event/MIDI_MapE_T.bnk</Path>
+			<Media>
+				<File Id="402626751" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map E_Main.wav</ShortName>
+					<Path>Media/402626751.wem</Path>
+					<CachePath>SFX/Map E_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="945504063" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map E_Trombone.wav</ShortName>
+					<Path>Media/945504063.wem</Path>
+					<CachePath>SFX/Map E_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="2984010331" Name="MIDI_MapE_T" ObjectPath="\Events\Default Work Unit\Music\Map_E_Rhythm\MIDI_MapE_T" GUID="{D064998F-DFE1-493D-892B-6837180AE409}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="402626751"/>
+						<MediaRef Id="945504063"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{6672E71A-F4D4-080D-B6EB-97E2660EFCFE}</FileHash>
+</SoundBanksInfo>
