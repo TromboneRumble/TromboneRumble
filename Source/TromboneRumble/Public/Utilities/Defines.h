@@ -99,9 +99,7 @@ enum class ELevelType : uint8
 	SnowField,
 	JazzBar,
 
-	OrchestraStageResult,
-	SnowFieldResult,
-	JazzBarResult,
+	Result,
 
 	Invalid = 255 UMETA(Hidden)
 };
@@ -109,7 +107,7 @@ enum class ELevelType : uint8
 /** @return true if the given level type is result level */
 FORCEINLINE bool IsResultLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageResult || Type == ELevelType::SnowFieldResult || Type == ELevelType::JazzBarResult;
+	return Type == ELevelType::Result;
 }
 
 /** @return true if the given level type is in-game level */

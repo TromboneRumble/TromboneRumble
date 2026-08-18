@@ -30,6 +30,9 @@ struct FAudioSettingData
 	UPROPERTY() int32 MicrophoneDeviceIndex = 0;     // 선택된 마이크 장치 인덱스
 	UPROPERTY() FString MicrophoneDeviceName = TEXT(""); // 장치 연결 변경 시 이름 기준 재매칭용
 	UPROPERTY() bool bNoiseSuppression = true;       // 보이스챗 잡음 제거
+
+	// 양수 = 이 PC에서 소리가 그만큼 늦게 들림 → BGM을 그만큼 일찍 시작
+	UPROPERTY() int32 RhythmAudioOffsetMs = 0;
 };
 
 USTRUCT()

@@ -36,8 +36,6 @@ protected:
     TSoftObjectPtr<UStringTable> TutorialStringTable;
     
 private:
-    
-    void InitWWiseEngine();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "OnlineSession"))
     bool bConnectionWasLost = false;
@@ -75,10 +73,4 @@ public:
     //~ Begin UGameInstance Interface
     virtual TSubclassOf<UOnlineSession> GetOnlineSessionClass() override;
     //~ End UGameInstance Interface
-    
-protected:
-    
-    // ~ Begin UGameInstance Interface
-    virtual void OnStart() override;
-    // ~ End UGameInstance Interface
 };

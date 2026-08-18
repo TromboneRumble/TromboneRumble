@@ -31,7 +31,6 @@ public:
 	ADrunkardNPC();
 
 	//~ Begin ICombatReceiver Interface
-	/** 타겟의 공격만 유효 */
 	virtual bool OnHitReceived_Implementation(const FHitData& HitData) override;
 	//~ End ICombatReceiver Interface
 
@@ -41,11 +40,11 @@ public:
 	const UDrunkardDataAsset* GetDrunkardData() const { return DrunkardData; }
 	UDrunkardStateComponent* GetStateComponent() const { return StateComponent; }
 
-protected:
 	//~ Begin ATromboneCharacterBase Interface
-	/** 퇴장 중에는 피격 판정 비활성 */
 	virtual bool CanReceiveHit() const override;
 	//~ End ATromboneCharacterBase Interface
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data", meta = (DisplayName = "취객 데이터"))
 	TObjectPtr<UDrunkardDataAsset> DrunkardData;

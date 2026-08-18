@@ -17,10 +17,18 @@
 #include "Framework/InGameState.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
+#include "Engine/Engine.h"
 
+#if !UE_BUILD_SHIPPING
+// 리듬 싱크 디버그. 음악 클럭 화면 표시 + 이후 싱크 로그가 이 값을 본다
+TAutoConsoleVariable<int32> CVarRhythmSyncLog(
+	TEXT("Trombone.Rhythm.SyncLog"), 0,
+	TEXT("1이면 음악 클럭을 화면에 표시하고 BGM 트리거/노트 도달 드리프트를 로그로 찍는다."));
+#endif
 
 
 ARhythmActor::ARhythmActor()
@@ -56,6 +64,51 @@ void ARhythmActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 노트 트랙이 실제로 BGMTriggerTimeSec만큼 재생됐을 때 BGM을 시작한다.
+	// 트랙 시작이 늦어져도 클럭이 함께 늦으므로 두 트랙 간격은 항상 일정하다
+	if (bWaitingToStartBGM)
+	{
+		if (ARhythmNoteSpawner* Master = GetMasterClockSpawner())
+		{
+			const double ClockSec = Master->GetMusicTimeSeconds();
+			if (ClockSec >= BGMTriggerTimeSec)
+			{
+#if !UE_BUILD_SHIPPING
+				if (CVarRhythmSyncLog.GetValueOnGameThread() != 0)
+				{
+					UE_LOG(LogTemp, Log, TEXT("[RhythmSync] 클럭 트리거 발화: 클럭 %.1fms / 목표 %.1fms (오버슛 %.1fms)"),
+						ClockSec * 1000.0, BGMTriggerTimeSec * 1000.0, (ClockSec - BGMTriggerTimeSec) * 1000.0);
+				}
+#endif
+				PlayMusic();
+			}
+		}
+	}
+
+#if !UE_BUILD_SHIPPING
+	if (CVarRhythmSyncLog.GetValueOnGameThread() != 0 && GEngine)
+	{
+		for (const TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+		{
+			ARhythmNoteSpawner* Spawner = Elem.Value;
+			if (!IsValid(Spawner))
+			{
+				continue;
+			}
+			// 조회가 곧 갱신이다. 노트가 없는 구간에서도 이 호출이 클럭을 굴린다
+			const double ClockSec = Spawner->GetMusicTimeSeconds();
+			GEngine->AddOnScreenDebugMessage(
+				static_cast<uint64>(reinterpret_cast<uintptr_t>(Spawner)),
+				0.f,
+				Spawner->HasValidMusicClock() ? FColor::Cyan : FColor::Orange,
+				FString::Printf(TEXT("[RhythmClock] %s : %.3f s  valid=%d  playingID=%d"),
+					*UEnum::GetValueAsString(Elem.Key),
+					ClockSec,
+					Spawner->HasValidMusicClock() ? 1 : 0,
+					Spawner->GetNoteSpawnPlayingID()));
+		}
+	}
+#endif
 }
 
 void ARhythmActor::DetectNotes()
@@ -147,6 +200,9 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 
 void ARhythmActor::PauseRhythmGame()
 {
+	// 노트 트랙은 Wwise가 멈추는데 이 타이머는 계속 흘러 BGM이 먼저 시작되던 문제
+	GetWorldTimerManager().PauseTimer(PlayBackgroundMusicTimerHandle);
+
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
@@ -173,6 +229,8 @@ void ARhythmActor::PauseRhythmGame()
 
 void ARhythmActor::ResumeRhythmGame()
 {
+	GetWorldTimerManager().UnPauseTimer(PlayBackgroundMusicTimerHandle);
+
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
@@ -272,6 +330,7 @@ void ARhythmActor::CleanupRhythmGame()
 	bHasReceivedMusicStartCallback = false;
 	bHasReceivedDurationCallback = false;
 	bHasShotBGMDelegate = false;
+	bWaitingToStartBGM = false;
 
 	if (CachedRhythmUIRootWidget)
 	{
@@ -385,7 +444,8 @@ void ARhythmActor::StartRhythmGame()
 		SpawnEvents.Add({ SpawnNoteEvent, Spawner });
 	}
 
-	const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue; // | AkCallbackType::AK_MIDIEvent;
+	// EnableGetMusicPlayPosition이 있어야 스포너가 GetPlayingSegmentInfo로 재생 위치를 읽을 수 있다
+	const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_EnableGetMusicPlayPosition;
 
 	for (const FSpawnEventInfo& Info : SpawnEvents)
 	{
@@ -403,13 +463,54 @@ void ARhythmActor::StartRhythmGame()
 		}
 	}
 
+	// 기기별 출력 지연 보정값. 양수면 그만큼 BGM을 일찍 시작한다
+	int32 OffsetMs = 0;
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		if (const USaveManagerSubsystem* SaveManager = GI->GetSubsystem<USaveManagerSubsystem>())
+		{
+			OffsetMs = SaveManager->GetAudioSettings().RhythmAudioOffsetMs;
+		}
+	}
+
+	// 노트 이동 시간과 같은 값을 써야 노트 도달과 BGM의 같은 음이 겹친다
+	float NoteTravelTime = 3.f;
+	for (const FSpawnEventInfo& Info : SpawnEvents)
+	{
+		NoteTravelTime = Info.Spawner->TimeToComplete;
+		break;
+	}
+
+	BGMTriggerTimeSec = NoteTravelTime - OffsetMs / 1000.0;
+	bWaitingToStartBGM = true;
+
+	// 안전망: 클럭이 끝내 안 살아나면 기존 방식으로라도 재생한다
 	GetWorldTimerManager().SetTimer(
 		PlayBackgroundMusicTimerHandle,
 		this,
 		&ThisClass::PlayMusic,
-		2.8f,
+		5.0f,
 		false
 	);
+}
+
+ARhythmNoteSpawner* ARhythmActor::GetMasterClockSpawner()
+{
+	for (const TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+	{
+		ARhythmNoteSpawner* Spawner = Elem.Value;
+		if (!IsValid(Spawner))
+		{
+			continue;
+		}
+		// 조회가 곧 갱신이다. 아직 무효한 스포너도 이 호출로 클럭이 살아난다
+		Spawner->GetMusicTimeSeconds();
+		if (Spawner->HasValidMusicClock())
+		{
+			return Spawner;
+		}
+	}
+	return nullptr;
 }
 
 void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
@@ -634,6 +735,10 @@ void ARhythmActor::WaitForOtherPlayers()
 
 void ARhythmActor::PlayMusic()
 {
+	// 클럭 트리거와 안전망 타이머 중 어느 쪽이 먼저 와도 한 번만 재생한다
+	bWaitingToStartBGM = false;
+	GetWorldTimerManager().ClearTimer(PlayBackgroundMusicTimerHandle);
+
 	if (PlayBGMEvent && NoteHearingComponent)
 	{
 		FOnAkPostEventCallback Callback;
@@ -656,6 +761,19 @@ void ARhythmActor::PlayMusic()
 			GameDataSubsystem->SetCurrentSongPlayingID(BGMPlayingID);
 		}
 
+#if !UE_BUILD_SHIPPING
+		// 목표(BGMTriggerTimeSec)와 크게 다르면 클럭 트리거가 아니라 5초 안전망으로 들어온 것이다
+		if (CVarRhythmSyncLog.GetValueOnGameThread() != 0)
+		{
+			double ClockSec = -1.0;
+			if (ARhythmNoteSpawner* Master = GetMasterClockSpawner())
+			{
+				ClockSec = Master->GetMusicTimeSeconds();
+			}
+			UE_LOG(LogTemp, Log, TEXT("[RhythmSync] BGM Post 시점 클럭 %.1fms (목표 %.1fms)"),
+				ClockSec * 1000.0, BGMTriggerTimeSec * 1000.0);
+		}
+#endif
 	}
 }
 
@@ -676,6 +794,17 @@ void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackI
 	case EAkCallbackType::MusicPlayStarted:
 	{
 		bHasReceivedMusicStartCallback = true;
+#if !UE_BUILD_SHIPPING
+		// BGM이 실제로 소리를 내기 시작한 순간의 노트 트랙 위치 = 두 트랙의 실제 간격
+		if (CVarRhythmSyncLog.GetValueOnGameThread() != 0)
+		{
+			if (ARhythmNoteSpawner* Master = GetMasterClockSpawner())
+			{
+				UE_LOG(LogTemp, Log, TEXT("[RhythmSync] 두 트랙 실제 간격 %.1fms (목표 %.1fms)"),
+					Master->GetMusicTimeSeconds() * 1000.0, BGMTriggerTimeSec * 1000.0);
+			}
+		}
+#endif
 	}
 	break;
 	case EAkCallbackType::MusicSyncUserCue:

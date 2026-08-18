@@ -25,7 +25,6 @@ EBTNodeResult::Type UBTTask_DrunkardDespawn::ExecuteTask(UBehaviorTreeComponent&
 		return EBTNodeResult::Failed;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("[Drunkard] %s 문 도달 — 디스폰"), *NPC->GetName());
 	StateComponent->DespawnOwner();
 
 	return EBTNodeResult::Succeeded;

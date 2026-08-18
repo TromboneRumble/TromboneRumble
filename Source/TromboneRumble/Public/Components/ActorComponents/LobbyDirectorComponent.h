@@ -24,10 +24,18 @@ class TROMBONERUMBLE_API ULobbyDirectorComponent : public UActorComponent
 public:
 
 	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "전원 로딩 완료 후 낙하까지 대기 시간"))
-	float FallStartDelay = 3.0f;
+	float FallStartDelay = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "낙하 시작 높이 (낙하 지점 미배치 시 fallback)"))
+	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "낙하 지점 미배치 시 시작 높이 fallback"))
 	float FallHeight = 1000.0f;
+
+	/** Maximum angle the character is laid down by when the fall starts (degrees). If 0, the character falls standing up. */
+	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "낙하 기울기 각도", ClampMin = "0.0", ClampMax = "90.0"))
+	float FallAngle = 45.0f;
+
+	/** Maximum rotational speed during free fall (rad/s). If 0, falls without rotating. */
+	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "낙하 회전 속도", ClampMin = "0.0"))
+	float FallRotationRate = 1.5f;
 
 	UPROPERTY(EditAnywhere, Category = "LobbyDirector", meta = (DisplayName = "최대 접지 대기 시간"))
 	float MaxGetUpWaitTime = 10.0f;

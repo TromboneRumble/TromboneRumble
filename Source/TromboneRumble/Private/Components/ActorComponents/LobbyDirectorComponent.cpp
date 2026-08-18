@@ -146,6 +146,8 @@ void ULobbyDirectorComponent::SetLobbyState(const ELobbyState& InNewState)
 
 		case ELobbyState::CountdownToStandup:
 			{
+				SpawnInstruments();
+
 				const int32 StandupSeconds = UTromboneConfig::Get() ? UTromboneConfig::Get()->LobbyRagdollGetUpDelaySeconds : 5;
 				TimerManager.ClearTimer(StandupTimerHandle);
 				TimerManager.SetTimer(StandupTimerHandle, this, &ThisClass::OnStandupCountdownFinished, static_cast<float>(StandupSeconds), false);
@@ -153,7 +155,6 @@ void ULobbyDirectorComponent::SetLobbyState(const ELobbyState& InNewState)
 			break;
 
 		case ELobbyState::InstrumentScramble:
-			SpawnInstruments();
 			break;
 
 		case ELobbyState::CountdownToTravel:
@@ -284,10 +285,18 @@ void ULobbyDirectorComponent::LaunchPlayerFalling(APlayerController* PC, const i
 		DropLocation = Character->GetActorLocation() + FVector(0.0f, 0.0f, FallHeight);
 	}
 
-	Character->SetActorLocation(DropLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	const FRotator DropRotation(
+		FMath::FRandRange(-FallAngle, FallAngle),
+		FMath::FRandRange(0.0f, 360.0f),
+		FMath::FRandRange(-FallAngle, FallAngle));
+
+	Character->SetActorLocationAndRotation(DropLocation, DropRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	const FVector TumbleAxis = FMath::VRand().GetSafeNormal2D();
+	const FVector InitialAngularVelocity = TumbleAxis * FMath::FRandRange(0.0f, FallRotationRate);
 
 	Ragdoll->SetAutoGetUpEnabled(bAutoGetUp);
-	Ragdoll->StartRagdoll();
+	Ragdoll->StartRagdoll(FVector::ZeroVector, InitialAngularVelocity);
 }
 
 void ULobbyDirectorComponent::StartGroundedPolling()

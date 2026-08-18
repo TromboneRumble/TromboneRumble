@@ -74,10 +74,10 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_DebugRagdoll();
 
-protected:
-
 	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
 	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
@@ -119,6 +119,9 @@ private:
 
 	/** FHitData 를 최종 넉백 속도로 계산한다. 폭발이면 방사형, 아니면 수평 힘 + 수직 힘 조합 */
 	FVector CalculateKnockbackVelocity(const FHitData& HitData) const;
+
+	/** @return 넉백으로 쓰러질 때 몸에 걸어줄 각속도. 밀려나는 방향으로 굴러가도록 진행 방향을 축으로 잡는다 */
+	FVector CalculateKnockbackSpin(const FVector& KnockbackVelocity) const;
 
 	UFUNCTION(Client, Reliable)
 	void Client_ApplyKnockback(FVector KnockbackVelocity);
@@ -163,6 +166,10 @@ public:
 	bool IsStun() const { return bIsStun; }
 	bool IsInvincible() const { return bIsInvincible; }
 	bool IsRagdoll() const;
+
+	/** @return World location of the pelvis bone. */
+	FVector GetPelvisLocation() const;
+	
 	bool IsInputBlocked() const { return InputBlockMask != 0; }
 	UAkComponent* GetAkComponent() const { return AkSoundComponent; }
 	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }
