@@ -26,6 +26,15 @@ void AResultCutsceneDirector::SkipResultSequence()
 		FMovieSceneSequencePlaybackParams Params(SequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump);
 		SequencePlayer->SetPlaybackPosition(Params);
 		SequencePlayer->Stop();
+
+		// The lights have to land on their last frame too, or whoever skips keeps the mid-cutscene look.
+		if (LightingSequencePlayer && LightingSequencePlayer->IsPlaying())
+		{
+			FMovieSceneSequencePlaybackParams LightParams(LightingSequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump);
+			LightingSequencePlayer->SetPlaybackPosition(LightParams);
+			LightingSequencePlayer->Stop();
+		}
+
 		OnSequenceFinished();
 	}
 }
@@ -136,7 +145,10 @@ void AResultCutsceneDirector::OnSequenceFinished()
 void AResultCutsceneDirector::LoadBackgroundThenPlayCutscene()
 {
 	const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>();
-	const TSoftObjectPtr<UWorld>* Background = ResultSubsystem ? BackgroundLevels.Find(ResultSubsystem->ResolveResultMapTag()) : nullptr;
+	ActiveStageTag = ResultSubsystem ? ResultSubsystem->ResolveResultMapTag() : FGameplayTag();
+
+	const FResultStageSetup* Setup = StageSetups.Find(ActiveStageTag);
+	const TSoftObjectPtr<UWorld>* Background = Setup ? &Setup->BackgroundLevel : nullptr;
 
 	// This stage keeps its background in the level itself, so there is nothing to wait for.
 	if (!Background || Background->IsNull())
@@ -165,6 +177,22 @@ void AResultCutsceneDirector::LoadBackgroundThenPlayCutscene()
 void AResultCutsceneDirector::HandleBackgroundLoaded()
 {
 	PlayResultCutscene();
+}
+
+void AResultCutsceneDirector::StartLightingSequence()
+{
+	const FResultStageSetup* Setup = StageSetups.Find(ActiveStageTag);
+	if (!Setup || !Setup->LightingSequence)
+	{
+		return;
+	}
+
+	ALevelSequenceActor* OutActor;
+	LightingSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), Setup->LightingSequence, FMovieSceneSequencePlaybackSettings(), OutActor);
+	if (LightingSequencePlayer)
+	{
+		LightingSequencePlayer->Play();
+	}
 }
 
 void AResultCutsceneDirector::PlayResultCutscene()
@@ -224,6 +252,9 @@ void AResultCutsceneDirector::PlayResultCutscene()
 		{
 			SequencePlayer->OnFinished.AddDynamic(this, &AResultCutsceneDirector::OnSequenceFinished);
 			SequencePlayer->Play();
+
+			// Right after Play so both sequences sit on the same frame.
+			StartLightingSequence();
 		}
 		if (RankingBGM)
 		{

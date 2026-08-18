@@ -16,6 +16,20 @@ class ALevelSequenceActor;
 class ACameraActor;
 class APodiumActor;
 
+/** What changes from one result stage to the next. */
+USTRUCT()
+struct FResultStageSetup
+{
+	GENERATED_BODY()
+
+	/** Background sublevel loaded before the cutscene starts. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UWorld> BackgroundLevel;
+
+	/** Runs next to the shared result sequence. Put lights that differ per stage in here. */
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<ULevelSequence> LightingSequence;
+};
 
 UCLASS()
 class TROMBONERUMBLE_API AResultCutsceneDirector : public AActor
@@ -48,6 +62,9 @@ private:
 
 	void PlayResultCutscene();
 
+	/** Starts the stage's lighting sequence next to the main one, if it has one. */
+	void StartLightingSequence();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
 	TSubclassOf<UUserWidget> ResultWidgetClass;
 
@@ -66,15 +83,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Config|Sound")
 	TObjectPtr<UAkAudioEvent> RankingBGM;
 
-	/** Background sublevel to load for each result stage. Stages left out here start the cutscene right away. */
-	UPROPERTY(EditAnywhere, Category = "Config|Background", meta = (ForceInlineRow, Categories = "Trombone.Maps.Result"))
-	TMap<FGameplayTag, TSoftObjectPtr<UWorld>> BackgroundLevels;
+	/** What changes per stage. Stages left out here start the cutscene right away. */
+	UPROPERTY(EditAnywhere, Category = "Config|Stage", meta = (Categories = "Trombone.Maps.Result"))
+	TMap<FGameplayTag, FResultStageSetup> StageSetups;
 
 private:
 	UPROPERTY()
 	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
 	UPROPERTY()
 	TObjectPtr<ULevelSequencePlayer> ZoomSequencePlayer;
+	UPROPERTY()
+	TObjectPtr<ULevelSequencePlayer> LightingSequencePlayer;
 
 	UPROPERTY()
 	TSoftObjectPtr<UInGameResultWidget> CachedResultWidget;
@@ -86,5 +105,8 @@ private:
 
 	/** Ticket number for the level streaming call. Must differ per call. */
 	int32 LatentUUID = 0;
+
+	/** Stage picked when the cutscene starts. Used to look up StageSetups later on. */
+	FGameplayTag ActiveStageTag;
 
 };
