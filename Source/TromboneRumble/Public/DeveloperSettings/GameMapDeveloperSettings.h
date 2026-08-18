@@ -17,4 +17,8 @@ public:
 	// ForceInlineRow : 한줄로 표현
 	UPROPERTY(Config, EditAnywhere, meta = (ForceInlineRow, Categories = "Trombone.Maps"))
 	TMap<FGameplayTag, FSoftObjectPath> GamePlayMap;
+
+	/** Maps left out of the selection list in shipping builds. Other builds still show them. */
+	UPROPERTY(Config, EditAnywhere, meta = (Categories = "Trombone.Maps"))
+	TArray<FGameplayTag> ShippingHiddenMaps;
 };

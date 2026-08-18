@@ -41,6 +41,14 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_SetCustomization(const FString& AntennaKey, const FString& FaceKey, const FString& CostumeKey);
 
+	// 리듬 BGM 오프셋(ms). 양수면 BGM을 그만큼 일찍 시작. 인자 없으면 현재 값 출력
+	UFUNCTION(Exec)
+	void Trombone_AudioOffset(const FString& MsString);
+
+	// 리듬 싱크 실측 로그 + 음악 클럭 화면 표시 on/off. 인자 없으면 현재 값 출력
+	UFUNCTION(Exec)
+	void Trombone_RhythmSyncLog(const FString& EnabledString);
+
 	// X-Ray 방식 전환 (silhouette | dither | window | off). 인자 없으면 현재 붙어있는 컴포넌트 출력
 	UFUNCTION(Exec)
 	void Trombone_XRayMode(const FString& ModeString);
@@ -57,6 +65,10 @@ public:
 	// 원형 윈도우의 캡처 시야 크롭 on/off. 크롭 전후 비용을 Trombone_XRayBench로 비교할 때 쓴다
 	UFUNCTION(Exec)
 	void Trombone_XRayCropCapture(const FString& EnabledString);
+
+	// 더미 플레이어를 채워 결과 씬으로 이동. 인원수 기본 4, 스테이지 기본 OrchestraStage
+	UFUNCTION(Exec)
+	void Trombone_ResultTest(const FString& PlayerCountString, const FString& StageString);
 
 public:
 

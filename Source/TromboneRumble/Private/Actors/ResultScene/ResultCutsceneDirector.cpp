@@ -5,6 +5,7 @@
 #include "Framework/InGameState.h"
 #include "Actors/ResultScene/PodiumActor.h"
 #include "Camera/CameraActor.h"
+#include "Kismet/GameplayStatics.h"
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
 #include "Blueprint/UserWidget.h"
@@ -81,7 +82,7 @@ void AResultCutsceneDirector::BeginPlay()
 	{
 		if (IsResultLevelType(GameStateSubsystem->GetLevelState()))
 		{
-			PlayResultCutscene();
+			LoadBackgroundThenPlayCutscene();
 		}
 	}
 }
@@ -130,6 +131,40 @@ void AResultCutsceneDirector::OnSequenceFinished()
 			Podium->SetNameWidgetVisibility(true);
 		}
 	}
+}
+
+void AResultCutsceneDirector::LoadBackgroundThenPlayCutscene()
+{
+	const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>();
+	const TSoftObjectPtr<UWorld>* Background = ResultSubsystem ? BackgroundLevels.Find(ResultSubsystem->ResolveResultMapTag()) : nullptr;
+
+	// This stage keeps its background in the level itself, so there is nothing to wait for.
+	if (!Background || Background->IsNull())
+	{
+		PlayResultCutscene();
+		return;
+	}
+
+	// A level missing from the Levels window never finishes loading, which would leave the player on an empty screen.
+	const FName PackageName(*Background->ToSoftObjectPath().GetLongPackageName());
+	if (!UGameplayStatics::GetStreamingLevel(this, PackageName))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[AResultCutsceneDirector] Background level '%s' is not registered in this map. Add it in the Levels window."), *PackageName.ToString());
+		PlayResultCutscene();
+		return;
+	}
+
+	FLatentActionInfo LoadInfo;
+	LoadInfo.CallbackTarget = this;
+	LoadInfo.ExecutionFunction = FName("HandleBackgroundLoaded");
+	LoadInfo.Linkage = 0;
+	LoadInfo.UUID = ++LatentUUID;
+	UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, *Background, true, false, LoadInfo);
+}
+
+void AResultCutsceneDirector::HandleBackgroundLoaded()
+{
+	PlayResultCutscene();
 }
 
 void AResultCutsceneDirector::PlayResultCutscene()

@@ -50,9 +50,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Material", meta = (AllowPrivateAccess = "true"))
 	float SizeAlpha = 1.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Material", meta = (AllowPrivateAccess = "true"))
-	float FadePercent = 0.3f;
-
 	// 노트 결과에 따라 Flash
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RingHitBox|Flash", meta = (AllowPrivateAccess = "true"))
 	FName ColorParamName = TEXT("CircleColor"); 
@@ -106,4 +103,10 @@ private:
 	void FlashToColor(const FLinearColor& InColor);
 	void RestoreBaseColor();
 		
+	
+public:
+	FORCEINLINE float GetStartOuterRadius() const { return StartOuterRadius; }
+	FORCEINLINE float GetStartInnerRadius() const { return StartInnerRadius; }
+	FORCEINLINE float GetEndOuterRadius() const { return EndOuterRadius; }
+	FORCEINLINE float GetEndInnerRadius() const { return EndInnerRadius; }
 };

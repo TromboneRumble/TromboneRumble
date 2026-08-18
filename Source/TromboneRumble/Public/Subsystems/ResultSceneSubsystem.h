@@ -63,10 +63,16 @@ public:
 	/** Open result level that matching to in-game level. Must be called after DestroySession */
 	void OpenResultLevel(const UObject* WorldContextObject, bool bAbsolute = true) const;
 
-private:
-	
 	/** @return Result level tag that matching to in-game level. fallback: Result.OrchestraStage */
 	FGameplayTag ResolveResultMapTag() const;
+
+#if !UE_BUILD_SHIPPING
+	/** Fills the snapshot with fake players so the result scene can be checked without playing a match.
+	 *  @param StageName Leaf of the stage to show, such as "OrchestraStage" or "SnowField". */
+	void SetDebugResultSceneData(int32 PlayerCount, const FString& StageName);
+#endif
+
+private:
 
 	/** Result data snapshot */
 	UPROPERTY(Transient)
