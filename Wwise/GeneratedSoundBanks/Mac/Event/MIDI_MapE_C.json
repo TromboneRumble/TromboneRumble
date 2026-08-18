@@ -1,0 +1,79 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2984010316",
+    "Type": "Event",
+    "GUID": "{C8F96251-7CA9-48FD-A194-2EA9CBCFA9D2}",
+    "Language": "SFX",
+    "Hash": "{06FBB8AA-BC34-1A0C-E6CD-251D73594E32}",
+    "ObjectPath": "MIDI_MapE_C",
+    "ShortName": "MIDI_MapE_C",
+    "Path": "Event/MIDI_MapE_C.bnk",
+    "Media": [
+     {
+      "Id": "402626751",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map E_Main.wav",
+      "Path": "Media/402626751.wem",
+      "CachePath": "SFX/Map E_Main_FBC78EF0.wem"
+     },
+     {
+      "Id": "495148092",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map E_Cymbal.wav",
+      "Path": "Media/495148092.wem",
+      "CachePath": "SFX/Map E_Cymbal_FBC78EF0.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "559532962",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
+       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2984010316",
+      "Name": "MIDI_MapE_C",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_E_Rhythm\\MIDI_MapE_C",
+      "GUID": "{C8F96251-7CA9-48FD-A194-2EA9CBCFA9D2}",
+      "DurationType": "OneShot",
+      "DurationMin": "236.72504",
+      "DurationMax": "236.72504",
+      "MediaRefs": [
+       {
+        "Id": "402626751"
+       },
+       {
+        "Id": "495148092"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "559532962"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{B1B539B3-4568-4631-F51F-BA638998AE44}"
+ }
+}
