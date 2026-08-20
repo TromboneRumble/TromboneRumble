@@ -152,6 +152,11 @@ void ADefaultPlayerState::AddScore(int32 Amount, EScoreType ScoreType)
 	{
 		Server_AddScore(Amount, ScoreType);
 	}
+	else
+	{
+		// PlayerState 기본 복제 주기는 1초에 한 번이다. 곡 끝 직전 점수가 결과 화면에서 빠질 수 있다
+		ForceNetUpdate();
+	}
 }
 
 void ADefaultPlayerState::Server_AddScore_Implementation(int32 Amount, EScoreType ScoreType)

@@ -140,6 +140,9 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_NotifyLoadingFinishedToInGameMode();
 
+	// 세션을 부수고 결과 레벨로 이동한다. 서버 보고가 나간 다음 틱에 부른다
+	void LeaveSessionAndTravelToResultLevel();
+
 	FTimerHandle RetryCreateRankWidgetsHandle;
 	bool bRetryTimerRunning = false;
 

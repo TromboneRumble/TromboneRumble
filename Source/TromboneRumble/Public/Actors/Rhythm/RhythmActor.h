@@ -119,9 +119,21 @@ private:
 	void WaitForOtherPlayers();
 	FTimerHandle CheckPlayersTimerHandle;
 
+	// 곡 데이터 로드에 실패하면 재시도한다. 재시도가 없으면 그 머신만 영영 시작하지 못한다
+	UFUNCTION()
+	void RetryPrepareRhythmGame();
+	FTimerHandle PrepareRetryTimerHandle;
+	int32 PrepareRetryCount = 0;
+
+	// 곡 태그의 원본은 GameInstance다. 로드에 실패하면 LoadedGameplayTag는 비어 있다
+	FGameplayTag GetSelectedSongTagFromGameInstance() const;
+
 	UFUNCTION()
 	void PlayMusic();
 	FTimerHandle PlayBackgroundMusicTimerHandle;
+
+	// BGM 포스트가 실패하면 EndOfEvent가 안 와서 곡이 끝난 걸 아무도 모른다
+	int32 BGMPostRetryCount = 0;
 
 	// 음악 클럭이 살아있는 스포너를 찾는다. 조회 자체가 모든 스포너의 클럭을 갱신한다
 	ARhythmNoteSpawner* GetMasterClockSpawner();

@@ -60,6 +60,9 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 			if (ADefaultPlayerState* PS = PC->GetPlayerState<ADefaultPlayerState>())
 			{
 				PS->EquippedWeaponClass = nullptr;
+
+				// 아래에서 바로 트래블한다. 지금 보내지 않으면 이 변경은 전송되지 못한다
+				PS->ForceNetUpdate();
 			}
 		}
 	}

@@ -63,9 +63,16 @@ void ADefaultPlayerController::Client_RequestTravelToResultLevelAndLeaveSession_
 
 	Server_ReportClientTravelToResultLevelAndLeaveSession();
 
+	// 세션 파괴는 완료가 즉시 올 수도 있다. 같은 프레임에 이어지면 위 보고가 나가기 전에 연결이 끊긴다
+	GetWorldTimerManager().SetTimerForNextTick(this, &ThisClass::LeaveSessionAndTravelToResultLevel);
+}
+
+void ADefaultPlayerController::LeaveSessionAndTravelToResultLevel()
+{
 	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 	{
-		OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateLambda([this](FName /*SessionName*/, bool /*bSuccess*/)
+		// 완료가 늦게 올 수 있다. 그 사이 컨트롤러가 사라졌다면 실행되지 않아야 한다
+		OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateWeakLambda(this, [this](FName /*SessionName*/, bool /*bSuccess*/)
 		{
 			if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
 			{

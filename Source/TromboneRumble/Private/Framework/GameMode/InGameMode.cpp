@@ -24,17 +24,31 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer); // 내부에서 UnregisterPlayer 호출 → NumOpenPublicConnections 즉시 갱신됨
 
+	// 나간 사람의 보고는 더 이상 유효하지 않다. 남겨두면 남은 인원과 수가 어긋난다
+	if (APlayerController* ExitedPC = Cast<APlayerController>(ExitedPlayer))
+	{
+		RhythmEndedPlayers.Remove(ExitedPC);
+	}
+
+	// 이미 종료 시퀀스 중이라면, 나간 사람을 기다리다 멈춘 이동 조건을 다시 본다
+	if (bEndSequenceStarted)
+	{
+		TryTravelToResultLevel();
+		return;
+	}
+
 	AInGameState* GS = GetGameState<AInGameState>();
 	if (!GS || GS->GetCurrentGameState() == EInGameState::End)
 	{
 		return;
 	}
-	
+
 	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 
+	// End만 알리면 입력만 막힌 채 아무도 결과 레벨로 못 간다. 정식 종료 시퀀스를 돌린다
 	if (RhythmEndedPlayers.Num() >= CurrentSessionPlayerCount)
 	{
-		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
+		StartEndSequence(CurrentSessionPlayerCount);
 	}
 }
 
@@ -48,31 +62,43 @@ void AInGameMode::OnRhythmGameEndedReport(APlayerController* PC)
 	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 	
 	RhythmEndedPlayers.AddUnique(PC);
-	if (RhythmEndedPlayers.Num() >= CurrentSessionPlayerCount)
+
+	// 이미 시작했다면 중복 보고다. 다시 돌면 Client RPC가 두 번 나가 카운터가 부풀고 호스트가 먼저 떠난다
+	if (bEndSequenceStarted || RhythmEndedPlayers.Num() < CurrentSessionPlayerCount)
 	{
-		if (UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
+		return;
+	}
+
+	StartEndSequence(CurrentSessionPlayerCount);
+}
+
+void AInGameMode::StartEndSequence(int32 InSessionPlayerCount)
+{
+	bEndSequenceStarted = true;
+
+	if (UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
+	{
+		ResultSubsystem->SaveResultSceneData();
+	}
+
+	if (AInGameState* GS = GetGameState<AInGameState>())
+	{
+		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
+
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
-			ResultSubsystem->SaveResultSceneData();
-		}
-		
-		if (AInGameState* GS = GetGameState<AInGameState>())
-		{
-			GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
-			
-			for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+			if (ADefaultPlayerController* EachPC = Cast<ADefaultPlayerController>(It->Get()))
 			{
-				if (ADefaultPlayerController* EachPC = Cast<ADefaultPlayerController>(It->Get()))
+				if (!EachPC->IsLocalController())
 				{
-					if (!EachPC->IsLocalController())
-					{
-						EachPC->Client_RequestTravelToResultLevelAndLeaveSession();
-					}
+					EachPC->Client_RequestTravelToResultLevelAndLeaveSession();
 				}
 			}
 		}
 	}
-	
-	if (CurrentSessionPlayerCount == 1)
+
+	// 혼자면 보고해줄 클라가 없으므로 호스트가 스스로 이동을 건다
+	if (InSessionPlayerCount == 1)
 	{
 		OnClientTravelToResultLevelAndLeaveSession();
 	}
@@ -80,25 +106,41 @@ void AInGameMode::OnRhythmGameEndedReport(APlayerController* PC)
 
 void AInGameMode::OnClientTravelToResultLevelAndLeaveSession()
 {
+	ClientsTravelToResultSceneCount++;
+	TryTravelToResultLevel();
+}
+
+void AInGameMode::TryTravelToResultLevel()
+{
+	// 예약은 한 번뿐이다. 두 번 돌면 세션 파괴와 레벨 이동이 겹친다
+	if (!bEndSequenceStarted || bResultTravelStarted)
+	{
+		return;
+	}
+
 	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
 
-	ClientsTravelToResultSceneCount++;
-	if (ClientsTravelToResultSceneCount >= CurrentSessionPlayerCount - 1)
+	if (ClientsTravelToResultSceneCount < CurrentSessionPlayerCount - 1)
 	{
-		GetWorldTimerManager().SetTimer(TimerHandle_TravelToResultLevel, FTimerDelegate::CreateLambda([this]()
-		{
-			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-			{
-				OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateLambda([this](FName /*SessionName*/, bool /*bSuccess*/)
-				{
-					if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
-					{
-						ResultSubsystem->OpenResultLevel(this);
-					}
-				}));
-			}
-		}), 0.5f, false);
+		return;
 	}
+
+	bResultTravelStarted = true;
+
+	// WeakLambda라야 월드가 먼저 사라졌을 때 실행되지 않고, EndPlay의 ClearAllTimersForObject에도 잡힌다
+	GetWorldTimerManager().SetTimer(TimerHandle_TravelToResultLevel, FTimerDelegate::CreateWeakLambda(this, [this]()
+	{
+		if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+		{
+			OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateWeakLambda(this, [this](FName /*SessionName*/, bool /*bSuccess*/)
+			{
+				if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
+				{
+					ResultSubsystem->OpenResultLevel(this);
+				}
+			}));
+		}
+	}), 0.5f, false);
 }
 
 void AInGameMode::HandlePlayerLoadingFinished(APlayerController* PC)
