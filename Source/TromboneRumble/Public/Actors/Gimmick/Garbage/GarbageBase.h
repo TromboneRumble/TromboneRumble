@@ -11,6 +11,7 @@ class UAkAudioEvent;
 class UAkComponent;
 class UStaticMeshComponent;
 class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API AGarbageBase : public AActor
@@ -43,6 +44,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Sound")
 	TObjectPtr<UAkAudioEvent> SpawnSoundEvent = nullptr;
+
+	/** Burst played where this lands. Left empty means no effect. */
+	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Effect")
+	TObjectPtr<UNiagaraSystem> ImpactEffect = nullptr;
+
+	/** Hides the mesh the moment it lands. For things that break apart instead of rolling to a stop. */
+	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Effect")
+	bool bHideOnImpact = false;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Type")
 	EHitInstigatorType HitInstigatorType = EHitInstigatorType::None;

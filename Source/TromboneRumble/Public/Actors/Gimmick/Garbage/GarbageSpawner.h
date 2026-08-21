@@ -54,7 +54,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Gimmick|Garbage")
 	TArray<TSubclassOf<AGarbageBase>> GarbageClasses;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Spawn")
+	UPROPERTY(EditAnywhere, Category = "Gimmick|Spawn")
 	TArray<TObjectPtr<AActor>> SpawnPointActors;
 	
 	/** 쓰레기가 목표 지점(플레이어 위치)에 정확히 떨어지지 않고 흩어지는 무작위 반경 (cm) */
@@ -70,7 +70,7 @@ protected:
 	float SpawnIntervalMax = 10.0f;
 
 	/** 게임 시작 시 스포너가 자동으로 동작을 시작할지 여부 */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Config|Auto", meta = (DisplayName = "시작 시 자동 실행"))
+	UPROPERTY(EditAnywhere, Category = "Gimmick|Config|Auto", meta = (DisplayName = "시작 시 자동 실행"))
 	bool bAutoStart = true;
 
 	/** 쓰레기를 누구에게 던질 것인지 결정하는 방식입니다. 
