@@ -12,7 +12,7 @@ class UMaterialInterface;
  * X-Ray 디더 페이드용 원본 → 페이드 사본 머티리얼 매핑.
  *
  * 원본 머티리얼은 손대지 않고, MF_OcclusionFade를 심은 사본을 따로 만들어 두었다가
- * UXRayDitherFadeComponent가 가려지는 동안만 메시 슬롯을 사본으로 갈아끼운다.
+ * UXRayTranslucentFadeComponent가 가려지는 동안만 메시 슬롯을 사본으로 갈아끼운다.
  *
  * 레벨마다 하나씩 있다 (DA_XRayFadeMaterialMap_<레벨명>). 그래야 한 레벨을 다시 만들어도
  * 다른 레벨 매핑이 남고, 그 레벨에 필요한 사본만 로드된다.

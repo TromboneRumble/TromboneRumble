@@ -172,9 +172,14 @@ void UXRayComponentBase::UpdateTrace()
 		return;
 	}
 
+	// SkeletalMeshActor는 PhysicsActor 프리셋(ObjectType=PhysicsBody)이 기본이다.
+	// 오브젝트 쿼리는 응답이 아니라 오브젝트 타입으로 거르므로, PhysicsBody를 빼면
+	// XRayBlocker 태그를 달아도 스켈레탈 가림물은 히트 자체가 안 돌아온다.
+	// Pawn은 일부러 뺀다 - bRequireOccluderTag를 꺼도 다른 플레이어가 가림물이 되면 안 된다.
 	FCollisionObjectQueryParams ObjectParams;
 	ObjectParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectParams.AddObjectTypesToQuery(ECC_PhysicsBody);
 	FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(XRayOcclusion), false, Owner);
 
 	TArray<FHitResult> Hits;
