@@ -1,7 +1,7 @@
 # X-Ray 페이드 - 사본 머티리얼 + 매핑 DataAsset 생성 스크립트
 #
 # 원본 머티리얼은 건드리지 않는다. MF_OcclusionFade를 심은 "사본"을 따로 만들고,
-# 원본->사본 매핑을 DataAsset에 기록한다. 런타임에는 UXRayDitherFadeComponent가
+# 원본->사본 매핑을 DataAsset에 기록한다. 런타임에는 UXRayTranslucentFadeComponent가
 # 가려지는 동안에만 메시 슬롯을 사본으로 갈아끼운다.
 #
 # 이 스크립트는 레벨을 읽기만 한다. 배치된 액터도 .umap도 수정하지 않는다.
@@ -150,8 +150,10 @@ def resolve_levels(bindings, requested):
 def collect_occluder_materials():
     """열린 레벨의 XRayBlocker 액터들이 쓰는 유니크 머티리얼을 수집한다 (읽기 전용).
 
-    동시에 Nanite가 켜진 채 Disallow Nanite도 안 된 메시 이름을 모은다 - Translucent
-    사본은 Nanite 경로에서 회색 기본 머티리얼로 렌더되므로 나중에 경고용으로 쓴다.
+    동시에 두 가지를 더 모은다.
+    - Nanite가 켜진 채 Disallow Nanite도 안 된 메시 이름 (Translucent 사본이 Nanite
+      경로에서 회색 기본 머티리얼로 렌더되므로 경고용)
+    - 스켈레탈 메시가 쓰는 머티리얼 경로 (사본에 usage 플래그를 켜야 하므로)
     """
     actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     all_actors = actor_subsystem.get_all_level_actors()
@@ -159,6 +161,7 @@ def collect_occluder_materials():
     materials = {}   # path -> UMaterialInterface (메시가 실제로 물고 있는 것)
     tagged_count = 0
     nanite_meshes = set()
+    skinned_paths = set()
 
     for actor in all_actors:
         if not actor.actor_has_tag(OCCLUDER_TAG):
@@ -166,17 +169,23 @@ def collect_occluder_materials():
         tagged_count += 1
 
         for comp in actor.get_components_by_class(unreal.MeshComponent):
+            # SkeletalMeshComponent 말고 SkinnedMeshComponent로 본다.
+            # GPU 스키닝 렌더 경로를 소유하는 베이스라 PoseableMesh까지 덮는다.
+            is_skinned = isinstance(comp, unreal.SkinnedMeshComponent)
+
             for slot_index in range(comp.get_num_materials()):
                 mat = comp.get_material(slot_index)
                 if mat:
                     materials[mat.get_path_name()] = mat
+                    if is_skinned:
+                        skinned_paths.add(mat.get_path_name())
 
             if isinstance(comp, unreal.StaticMeshComponent) and not comp.get_editor_property('disallow_nanite'):
                 mesh = comp.get_editor_property('static_mesh')
                 if mesh and mesh.get_editor_property('nanite_settings').get_editor_property('enabled'):
                     nanite_meshes.add(mesh.get_name())
 
-    return materials, tagged_count, nanite_meshes
+    return materials, tagged_count, nanite_meshes, skinned_paths
 
 
 def variant_path(original, out_dir, used_paths):
@@ -334,15 +343,72 @@ def base_material_of(material):
     return current if isinstance(current, unreal.Material) else None
 
 
-def verify_variants(pairs):
-    """사본이 진짜 Translucent 로 저장됐는지 프로퍼티를 직접 확인한다.
+# 원본에 켜져 있으면 사본에도 켜져 있어야 하는 usage 플래그들.
+# duplicate_asset이 그대로 복사해 주므로, 여기서 격차가 잡히면 사본이 낡았다는 뜻이다.
+# 엔진이 이름을 바꾸면 그 항목만 조용히 건너뛴다 (아래 try/except).
+USAGE_PROPS = (
+    'used_with_skeletal_mesh',
+    'used_with_morph_targets',
+    'used_with_spline_meshes',
+    'used_with_instanced_static_meshes',
+    'used_with_particle_sprites',
+    'used_with_beam_trails',
+    'used_with_mesh_particles',
+    'used_with_niagara_sprites',
+    'used_with_niagara_ribbons',
+    'used_with_niagara_mesh_particles',
+    'used_with_static_lighting',
+    'used_with_geometry_collections',
+    'used_with_clothing',
+    'used_with_geometry_cache',
+    'used_with_water',
+    'used_with_hair_strands',
+    'used_with_lidar_point_cloud',
+    'used_with_virtual_heightfield_mesh',
+    'used_with_nanite',
+)
+
+SKELETAL_USAGE_PROP = 'used_with_skeletal_mesh'
+
+
+def get_usage(material, prop):
+    """usage 플래그 하나를 읽는다. 엔진에 없는 이름이면 None."""
+    try:
+        return bool(material.get_editor_property(prop))
+    except Exception:
+        return None
+
+
+def ensure_skinned_usage(variant):
+    """스켈레탈이 쓰는 머티리얼의 사본은 usage 플래그를 반드시 켠다.
+
+    안 켜면 FSkeletalMeshSceneProxy가 CheckMaterialUsage_Concurrent 실패로 회색 기본
+    머티리얼을 대신 물린다. 에디터는 게임 스레드에서 자동 수리하지만 쿡된 빌드는 못 고친다.
+    플래그는 MaterialInstance에 없다 - 반드시 베이스 Material에 켜야 한다.
+    """
+    base = base_material_of(variant)
+    if not base:
+        log('  [경고] 베이스 Material 을 못 찾아 usage 플래그를 못 켭니다: %s' % variant.get_name())
+        return
+
+    if get_usage(base, SKELETAL_USAGE_PROP) is not False:
+        return   # 이미 켜져 있거나(True) 프로퍼티가 없는 엔진(None)
+
+    base.set_editor_property(SKELETAL_USAGE_PROP, True)
+    MEL.recompile_material(base)
+    EAL.save_loaded_asset(base)
+    log('  usage 플래그 설정: %s <- Used with Skeletal Mesh' % base.get_name())
+
+
+def verify_variants(pairs, skinned_paths):
+    """사본이 진짜 Translucent 로 저장됐는지, 원본만큼의 usage 를 갖는지 확인한다.
 
     컴파일 검증(get_statistics)은 커맨드릿에서 0만 나와 못 쓴다. 프로퍼티 확인은
     어디서 돌려도 동작한다.
     """
     problems = []
 
-    for _, variant in sorted(pairs.items(), key=lambda kv: kv[1].get_name()):
+    for original, variant in sorted(pairs.items(), key=lambda kv: kv[1].get_name()):
         name = variant.get_name()
 
         if isinstance(variant, unreal.MaterialInstance):
@@ -361,6 +427,19 @@ def verify_variants(pairs):
         if base.get_editor_property('blend_mode') != unreal.BlendMode.BLEND_TRANSLUCENT:
             problems.append('%s: 베이스 %s 의 blend mode 가 %s'
                             % (name, base.get_name(), base.get_editor_property('blend_mode')))
+
+        # 스켈레탈이 쓰는 머티리얼인데 플래그가 없으면 쿡 빌드에서 회색으로 렌더된다
+        if original.get_path_name() in skinned_paths and get_usage(base, SKELETAL_USAGE_PROP) is False:
+            problems.append('%s: 스켈레탈 메시가 쓰는데 베이스 %s 에 %s 가 꺼져 있음'
+                            % (name, base.get_name(), SKELETAL_USAGE_PROP))
+
+        # 사본이 원본보다 능력이 모자라면 사본이 낡은 것이다
+        original_base = base_material_of(original)
+        if original_base:
+            for prop in USAGE_PROPS:
+                if get_usage(original_base, prop) is True and get_usage(base, prop) is False:
+                    problems.append('%s: 원본 %s 에는 있는 %s 가 사본에 없음 (사본이 낡음)'
+                                    % (name, original_base.get_name(), prop))
 
     if problems:
         log('  [검증 실패] %d건:' % len(problems))
@@ -501,8 +580,9 @@ def process_level(level_package, mf):
         log('  [실패] 레벨을 열 수 없습니다: %s' % level_package)
         return 'failed'
 
-    originals, tagged_count, nanite_meshes = collect_occluder_materials()
-    log('  %s 태그 액터 %d개에서 유니크 머티리얼 %d개 수집' % (OCCLUDER_TAG, tagged_count, len(originals)))
+    originals, tagged_count, nanite_meshes, skinned_paths = collect_occluder_materials()
+    log('  %s 태그 액터 %d개에서 유니크 머티리얼 %d개 수집 (스켈레탈이 쓰는 것 %d개)'
+        % (OCCLUDER_TAG, tagged_count, len(originals), len(skinned_paths)))
 
     if tagged_count == 0:
         # 아직 태그를 안 붙인 레벨일 수 있으니 기존 데이터를 지우지 않고 넘어간다
@@ -543,13 +623,19 @@ def process_level(level_package, mf):
         if variant:
             pairs[original] = variant
 
+    # 사본(variant)을 넘겨 헬퍼가 base_material_of로 거슬러 올라가게 한다.
+    # 메시가 인스턴스(M_fabric_W)를 물고 있어도 플래그가 베이스 사본에 정확히 떨어진다.
+    for original, variant in sorted(pairs.items(), key=lambda kv: kv[1].get_name()):
+        if original.get_path_name() in skinned_paths:
+            ensure_skinned_usage(variant)
+
     write_map_asset(map_asset, pairs)
 
     log('  매핑 등록 (%d): %s' % (len(pairs), ', '.join(sorted(m.get_name() for m in pairs.keys()))))
     log('  생성된 사본 (%d, 부모 포함) -> %s' % (len(cache), out_dir))
     log('  매핑 기록: %s' % map_path)
 
-    verified = verify_variants(pairs)
+    verified = verify_variants(pairs, skinned_paths)
 
     if failed:
         log('  실패 (%d): %s' % (len(failed), ', '.join(failed)))

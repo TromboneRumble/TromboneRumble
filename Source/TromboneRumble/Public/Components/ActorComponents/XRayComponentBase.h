@@ -78,7 +78,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "XRay")
 	float TraceSphereRadius = 40.f;
 
-	// true면 OccluderTag가 붙은 액터만 대상, false면 스윕에 걸린 모든 WorldStatic/WorldDynamic 액터 대상
+	// true면 OccluderTag가 붙은 액터만 대상, false면 스윕에 걸린 모든
+	// WorldStatic/WorldDynamic/PhysicsBody 액터 대상. Pawn은 쿼리에 없다
 	UPROPERTY(EditAnywhere, Category = "XRay")
 	bool bRequireOccluderTag = true;
 

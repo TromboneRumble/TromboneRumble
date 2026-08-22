@@ -5,6 +5,7 @@
 #include "AkComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
@@ -120,6 +121,18 @@ void AGarbageBase::OnRep_ImpactStarted()
 		if (TrailComp)
 		{
 			TrailComp->Deactivate();
+		}
+
+		if (ImpactEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		}
+
+		if (bHideOnImpact && MeshComp)
+		{
+			MeshComp->SetSimulatePhysics(false);
+			MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			MeshComp->SetVisibility(false);
 		}
 
 		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();

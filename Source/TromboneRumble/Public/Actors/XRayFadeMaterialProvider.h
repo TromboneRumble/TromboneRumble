@@ -17,7 +17,7 @@ class UXRayFadeMaterialMap;
  *
  * 맵은 레벨마다 따로 있다. 가림 처리를 쓰는 레벨마다 하나씩 배치하고
  * 그 레벨의 FadeMaterialMap을 지정해야 한다.
- * 없으면 UXRayDitherFadeComponent가 경고를 남기고 잠든 채로 남는다.
+ * 없으면 UXRayTranslucentFadeComponent가 경고를 남기고 잠든 채로 남는다.
  */
 UCLASS()
 class TROMBONERUMBLE_API AXRayFadeMaterialProvider : public AActor

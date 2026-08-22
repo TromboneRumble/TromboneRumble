@@ -30,6 +30,17 @@ TAutoConsoleVariable<int32> CVarRhythmSyncLog(
 	TEXT("1이면 음악 클럭을 화면에 표시하고 BGM 트리거/노트 도달 드리프트를 로그로 찍는다."));
 #endif
 
+namespace
+{
+	// 곡 데이터 로드 재시도 간격과 최대 횟수 (0.5초 × 20 = 10초)
+	constexpr float PrepareRetryInterval = 0.5f;
+	constexpr int32 MaxPrepareRetryCount = 20;
+
+	// BGM 포스트 재시도. 늦게 시작할수록 노트와 어긋나므로 간격을 짧게 잡는다
+	constexpr float BGMPostRetryInterval = 0.2f;
+	constexpr int32 MaxBGMPostRetryCount = 5;
+}
+
 
 ARhythmActor::ARhythmActor()
 {
@@ -301,6 +312,9 @@ void ARhythmActor::CleanupRhythmGame()
 	GetWorldTimerManager().ClearTimer(PlayBackgroundMusicTimerHandle);
 	PlayBackgroundMusicTimerHandle.Invalidate();
 
+	GetWorldTimerManager().ClearTimer(PrepareRetryTimerHandle);
+	PrepareRetryTimerHandle.Invalidate();
+
 	// 사운드 엔진 정지
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
@@ -326,6 +340,8 @@ void ARhythmActor::CleanupRhythmGame()
 	LoadedGameplayTag = FGameplayTag::EmptyTag;
 	bIsLoadingData = false;
 	bStartRequested = false;
+	PrepareRetryCount = 0;
+	BGMPostRetryCount = 0;
 	bIsSensingLongNote = false;
 	bHasReceivedMusicStartCallback = false;
 	bHasReceivedDurationCallback = false;
@@ -392,6 +408,9 @@ void ARhythmActor::PrepareRhythmGame(const FGameplayTag& InGamePlayTag)
 	if (bDataLoadedSuccessfully)
 	{
 		bIsDataLoaded = true;
+		PrepareRetryCount = 0;
+		GetWorldTimerManager().ClearTimer(PrepareRetryTimerHandle);
+
 		// 로딩 완료 시점에 예약된 시작 요청이 있었다면 실행
 		if (bStartRequested)
 		{
@@ -406,7 +425,48 @@ void ARhythmActor::PrepareRhythmGame(const FGameplayTag& InGamePlayTag)
 	else
 	{
 		Debug::Print(TEXT("[RhythmActor] PrepareRhythmGame Failed to load data. Music will not play."), -1, FColor::Red);
+
+		// 여기서 멈추면 이 머신은 종료 보고도 못 해서 전원이 결과 레벨로 못 간다
+		if (PrepareRetryCount < MaxPrepareRetryCount)
+		{
+			++PrepareRetryCount;
+			GetWorldTimerManager().SetTimer(PrepareRetryTimerHandle, this, &ThisClass::RetryPrepareRhythmGame, PrepareRetryInterval, false);
+		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("[RhythmActor] Prepare retry limit reached (%d). Tag: %s"),
+				MaxPrepareRetryCount, *InGamePlayTag.ToString()), -1, FColor::Red);
+		}
 	}
+}
+
+FGameplayTag ARhythmActor::GetSelectedSongTagFromGameInstance() const
+{
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		return GI->GetSelectedSongTag();
+	}
+	return FGameplayTag::EmptyTag;
+}
+
+void ARhythmActor::RetryPrepareRhythmGame()
+{
+	if (bIsDataLoaded)
+	{
+		return;
+	}
+
+	// 태그 자체가 문제였을 수 있으니 매번 원본을 다시 읽는다
+	FGameplayTag RetryTag = GetSelectedSongTagFromGameInstance();
+	if (!RetryTag.IsValid())
+	{
+		RetryTag = LoadedGameplayTag;
+	}
+
+	Debug::Print(FString::Printf(TEXT("[RhythmActor] Retrying Prepare %d/%d. Tag: %s"),
+		PrepareRetryCount, MaxPrepareRetryCount, *RetryTag.ToString()), -1, FColor::Yellow);
+
+	PrepareRhythmGame(RetryTag);
 }
 
 void ARhythmActor::StartRhythmGame()
@@ -535,6 +595,12 @@ void ARhythmActor::InitBGMEvent(UAkAudioEvent* InSoundEvent, UAkSwitchValue* InN
 
 void ARhythmActor::SpawnRhythmRootUI()
 {
+	// 로드를 재시도할 때마다 새로 만들면 위젯이 화면에 겹쳐 쌓인다
+	if (IsValid(CachedRhythmUIRootWidget))
+	{
+		return;
+	}
+
 	if (RhythmUIRootWidgetClass)
 	{
 		CachedRhythmUIRootWidget = CreateWidget<URhythmUIRootWidget>(GetWorld(), RhythmUIRootWidgetClass);
@@ -689,7 +755,22 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 		case EInGameState::Play:
 		{
 			bAreOtherPlayersReady = true;
-			GetCachedRhythmSubsystem()->StartRhythmGame(LoadedGameplayTag);
+
+			// 로드에 실패했으면 LoadedGameplayTag가 비어 있다. 그걸 그대로 쓰면 재시도도 같이 실패한다
+			FGameplayTag StartTag = GetSelectedSongTagFromGameInstance();
+			if (!StartTag.IsValid())
+			{
+				StartTag = LoadedGameplayTag;
+			}
+
+			if (StartTag.IsValid())
+			{
+				GetCachedRhythmSubsystem()->StartRhythmGame(StartTag);
+			}
+			else
+			{
+				Debug::Print(TEXT("[RhythmActor] Play received but SelectedTag is Empty! Cannot start."), -1, FColor::Red);
+			}
 		}
 			break;
 		
@@ -774,6 +855,26 @@ void ARhythmActor::PlayMusic()
 				ClockSec * 1000.0, BGMTriggerTimeSec * 1000.0);
 		}
 #endif
+	}
+
+	// 포스트에 실패하면 EndOfEvent가 안 와서 이 머신만 종료 보고를 못 하고, 전원이 결과 레벨로 못 간다
+	const bool bPostSucceeded = (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID);
+	if (bPostSucceeded)
+	{
+		BGMPostRetryCount = 0;
+	}
+	else if (BGMPostRetryCount < MaxBGMPostRetryCount)
+	{
+		++BGMPostRetryCount;
+		Debug::Print(FString::Printf(TEXT("[RhythmActor] BGM PostAkEvent failed. Retrying %d/%d"),
+			BGMPostRetryCount, MaxBGMPostRetryCount), -1, FColor::Red);
+
+		GetWorldTimerManager().SetTimer(PlayBackgroundMusicTimerHandle, this, &ThisClass::PlayMusic, BGMPostRetryInterval, false);
+	}
+	else
+	{
+		Debug::Print(FString::Printf(TEXT("[RhythmActor] BGM PostAkEvent failed %d times. Song will never end."),
+			MaxBGMPostRetryCount), -1, FColor::Red);
 	}
 }
 

@@ -6,6 +6,10 @@
 #include "Actors/Gimmick/Blizzard/BlizzardEnvCopyUtil.h"
 #include "Components/SphereComponent.h"
 #include "Components/PointLightComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/SkeletalMeshActor.h"
+#include "Net/UnrealNetwork.h"
 
 #if WITH_EDITOR
 #include "ScopedTransaction.h"
@@ -14,6 +18,11 @@
 ABlizzardShelter::ABlizzardShelter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	// 문 상태(bDoorOpen)만 복제한다. 쉘터는 맵 전역에 흩어져 있어 거리 relevancy 로 컬링되면
+	// 먼 클라가 문 여닫힘을 놓치므로 항상 relevant (기믹과 같은 이유 — BlizzardGimmick.cpp:56-58).
+	bReplicates = true;
+	bAlwaysRelevant = true;
 
 	SafeZone = CreateDefaultSubobject<USphereComponent>(TEXT("SafeZone"));
 	SetRootComponent(SafeZone);
@@ -27,8 +36,8 @@ ABlizzardShelter::ABlizzardShelter()
 
 	// 상태별 라이트 템플릿 (invisible + bAffectsWorld=false → 렌더/씬 등록 무관). 시드값은 기존 저작값.
 	//  bEditableWhenInherited=false: Details 직접 편집을 잠근다. 값을 넣는 경로는 저장 버튼 하나뿐
-	//  (ShelterLight 를 조정 → "전조/눈보라 상태 저장"). 코드에서의 쓰기는 이 게이트와 무관하다.
-	auto SetupTemplate = [this](UPointLightComponent* Comp, float Intensity)
+	//  (ShelterLight 를 조정 → "전조/눈보라/평상시 상태 저장"). 코드에서의 쓰기는 이 게이트와 무관하다.
+	auto SetupTemplate = [this](UPointLightComponent* Comp)
 	{
 		if (!Comp) return;
 		Comp->SetupAttachment(SafeZone);
@@ -36,13 +45,27 @@ ABlizzardShelter::ABlizzardShelter()
 		Comp->SetMobility(EComponentMobility::Movable);
 		Comp->bAffectsWorld = false;
 		Comp->bEditableWhenInherited = false;
-		Comp->Intensity = Intensity;
 	};
 
 	WarningLightTemplate = CreateDefaultSubobject<UPointLightComponent>(TEXT("WarningLightTemplate"));
 	ActiveLightTemplate  = CreateDefaultSubobject<UPointLightComponent>(TEXT("ActiveLightTemplate"));
-	SetupTemplate(WarningLightTemplate, 18000.f);  // 노을 배경이 밝아 높은 값이라야 빛이 보임
-	SetupTemplate(ActiveLightTemplate, 3500.f);    // 어두운 눈보라 배경
+	NormalLightTemplate  = CreateDefaultSubobject<UPointLightComponent>(TEXT("NormalLightTemplate"));
+	SetupTemplate(WarningLightTemplate);
+	SetupTemplate(ActiveLightTemplate);
+	SetupTemplate(NormalLightTemplate);
+
+	if (WarningLightTemplate) WarningLightTemplate->Intensity = 18000.f;  // 노을 배경이 밝아 높은 값이라야 빛이 보임
+	if (ActiveLightTemplate)  ActiveLightTemplate->Intensity  = 3500.f;   // 어두운 눈보라 배경
+
+	// 평상시는 미리보기가 전체 복사라 ShelterLight 상태를 빠짐없이 담아야 한다.
+	// BP_BlizzardShelter 의 ShelterLight 저작값과 같은 값이다 — 거기가 바뀌면 여기도 갱신할 것.
+	if (NormalLightTemplate)
+	{
+		NormalLightTemplate->Intensity         = 0.f;      // 평상시엔 꺼져 있다
+		NormalLightTemplate->AttenuationRadius = 300.f;
+		NormalLightTemplate->Temperature       = 2500.f;
+		NormalLightTemplate->bUseTemperature   = true;
+	}
 
 	LightTargetState = EBlizzardState::Idle;
 }
@@ -50,6 +73,11 @@ ABlizzardShelter::ABlizzardShelter()
 void ABlizzardShelter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 문 콜리전은 게임플레이라 데디 서버에서도 세팅돼야 한다 → 아래 데디 리턴보다 위.
+	// OnRep 이 BeginPlay 보다 먼저 도착했더라도 여기서 다시 반영된다.
+	ResolveDoorMesh();
+	ApplyDoorState(false);
 
 	// 라이트 연출은 데디케이티드 서버엔 불필요.
 	if (GetNetMode() == NM_DedicatedServer) return;
@@ -63,6 +91,80 @@ void ABlizzardShelter::BeginPlay()
 
 	if (WarningLightTemplate) FBlizzardEnvCopyUtil::CopyOverriddenProperties(WarningLightTemplate, ResolvedWarning);
 	if (ActiveLightTemplate)  FBlizzardEnvCopyUtil::CopyOverriddenProperties(ActiveLightTemplate, ResolvedActive);
+}
+
+void ABlizzardShelter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, bDoorOpen);
+}
+
+void ABlizzardShelter::SetDoorOpen(bool bOpen)
+{
+	if (!HasAuthority()) return;
+	if (bDoorOpen == bOpen) return;
+
+	bDoorOpen = bOpen;
+	OnRep_DoorOpen();   // 리슨 서버 호스트에서도 문이 움직이도록 수동 호출
+	ForceNetUpdate();
+}
+
+void ABlizzardShelter::OnRep_DoorOpen()
+{
+	ApplyDoorState(true);
+}
+
+void ABlizzardShelter::ResolveDoorMesh()
+{
+	if (DoorMesh.IsValid() || DoorActor.IsNull()) return;
+
+	if (const ASkeletalMeshActor* Door = DoorActor.LoadSynchronous())
+	{
+		DoorMesh = Door->GetSkeletalMeshComponent();
+	}
+}
+
+void ABlizzardShelter::ApplyDoorState(bool bAnimate)
+{
+	ResolveDoorMesh();   // OnRep 이 BeginPlay 보다 먼저 올 수 있다
+
+	USkeletalMeshComponent* Mesh = DoorMesh.Get();
+	if (!Mesh) return;
+
+	// 캐릭터 캡슐만 통과시킨다. NoCollision 으로 끄면 X-Ray 가림 판정(SweepMultiByObjectType)이
+	// 이 문을 못 잡아 천막 반투명 페이드가 죽는다 — 안에 들어간 플레이어가 안 보이게 된다.
+	// 스켈레탈 메시는 컴포넌트 응답이 피직스 애셋 바디 설정과 min 으로 합쳐져 전부에 강제된다
+	// (BodyInstance.cpp:4478-4479). Ignore 가 무조건 이기고, Block 으로 되돌리면 바디 설정이 복원된다.
+	Mesh->SetCollisionResponseToChannel(ECC_Pawn, bDoorOpen ? ECR_Ignore : ECR_Block);
+
+	// 애니메이션은 순수 연출이라 데디케이티드 서버엔 불필요.
+	if (GetNetMode() == NM_DedicatedServer) return;
+
+	// 초기 동기화 + 닫힌 상태 = 레벨에 저작된 포즈가 곧 닫힌 모습이다. 건드리지 않는다.
+	if (!bAnimate && !bDoorOpen) return;
+
+	UAnimSequence* Anim = DoorOpenAnim.LoadSynchronous();
+	if (!Anim) return;
+
+	const float OpenPosition = Anim->GetPlayLength();
+
+	// PlayAnimation 이 애셋을 다시 물리며 위치/재생속도를 리셋하므로(AnimSingleNodeInstanceProxy.cpp:212-215)
+	// SetPosition/SetPlayRate 는 반드시 그 뒤에 온다.
+	Mesh->PlayAnimation(Anim, false);
+
+	// 이미 열린 문에 늦게 합류한 클라: 재생 없이 열린 포즈로 맞추기만 한다.
+	if (!bAnimate)
+	{
+		Mesh->SetPosition(OpenPosition, false);
+		Mesh->Stop();
+		return;
+	}
+
+	// 닫기는 끝에서 음수 재생 = 역재생. CurrentTime <= 0 에서 엔진이 알아서 멈춘다
+	// (AnimSingleNodeInstanceProxy.cpp:607-609).
+	Mesh->SetPosition(bDoorOpen ? 0.f : OpenPosition, false);
+	Mesh->SetPlayRate(bDoorOpen ? 1.f : -1.f);
 }
 
 bool ABlizzardShelter::IsLocationInsideShelter(const FVector& WorldLoc) const
@@ -122,9 +224,19 @@ void ABlizzardShelter::UpdateLightFade(float Alpha)
 }
 
 #if WITH_EDITOR
+UPointLightComponent* ABlizzardShelter::EditorPickStateTemplate(EBlizzardState State) const
+{
+	switch (State)
+	{
+	case EBlizzardState::Warning: return WarningLightTemplate;
+	case EBlizzardState::Active:  return ActiveLightTemplate;
+	default:                      return NormalLightTemplate;
+	}
+}
+
 void ABlizzardShelter::EditorSaveState(EBlizzardState State)
 {
-	UPointLightComponent* Template = (State == EBlizzardState::Warning) ? WarningLightTemplate : ActiveLightTemplate;
+	UPointLightComponent* Template = EditorPickStateTemplate(State);
 	if (!ShelterLight || !Template) return;
 	Template->Modify();
 	FBlizzardEnvCopyUtil::CopyProperties(ShelterLight, Template);
@@ -132,11 +244,17 @@ void ABlizzardShelter::EditorSaveState(EBlizzardState State)
 
 void ABlizzardShelter::EditorLoadState(EBlizzardState State)
 {
-	UPointLightComponent* Template = (State == EBlizzardState::Warning) ? WarningLightTemplate : ActiveLightTemplate;
+	UPointLightComponent* Template = EditorPickStateTemplate(State);
 	if (!ShelterLight || !Template) return;
 	EditorEnsureNormalBackup();
 	ShelterLight->Modify();
-	if (FBlizzardEnvCopyUtil::CopyOverriddenProperties(Template, ShelterLight))
+
+	// 평상시만 전체 복사. 평상시 값의 상당수가 클래스 기본값과 같아서
+	// 바뀐 값만 덮는 방식으로는 전조/눈보라 룩을 되돌릴 수 없다.
+	const bool bChanged = (State == EBlizzardState::Idle)
+		? FBlizzardEnvCopyUtil::CopyProperties(Template, ShelterLight)
+		: FBlizzardEnvCopyUtil::CopyOverriddenProperties(Template, ShelterLight);
+	if (bChanged)
 	{
 		ShelterLight->MarkRenderStateDirty();
 	}
@@ -170,6 +288,13 @@ void ABlizzardShelter::SaveActiveFromWorld()
 	EditorSaveState(EBlizzardState::Active);
 }
 
+void ABlizzardShelter::SaveNormalFromWorld()
+{
+	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
+	FScopedTransaction Tx(NSLOCTEXT("BlizzardShelter", "SaveNormal", "쉘터 평상시 상태 저장"));
+	EditorSaveState(EBlizzardState::Idle);
+}
+
 void ABlizzardShelter::LoadWarningToWorld()
 {
 	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
@@ -182,6 +307,13 @@ void ABlizzardShelter::LoadActiveToWorld()
 	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
 	FScopedTransaction Tx(NSLOCTEXT("BlizzardShelter", "LoadActive", "쉘터 눈보라 상태 미리보기"));
 	EditorLoadState(EBlizzardState::Active);
+}
+
+void ABlizzardShelter::LoadNormalToWorld()
+{
+	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
+	FScopedTransaction Tx(NSLOCTEXT("BlizzardShelter", "LoadNormal", "쉘터 평상시 상태 미리보기"));
+	EditorLoadState(EBlizzardState::Idle);
 }
 
 void ABlizzardShelter::RestoreNormalToWorld()

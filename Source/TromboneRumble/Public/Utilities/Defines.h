@@ -294,7 +294,7 @@ namespace TromboneMaterial
 	// X-Ray 실루엣 (M_XRaySilhouette의 파라미터, UXRaySilhouetteComponent가 구동)
 	inline const FName SilhouetteColorParam(TEXT("SilhouetteColor"));
 
-	// Wall Occlusion 디더 페이드 (MF_OcclusionFade의 ScalarParameter, UXRayDitherFadeComponent가 구동)
+	// Wall Occlusion 디더 페이드 (MF_OcclusionFade의 ScalarParameter, UXRayTranslucentFadeComponent가 구동)
 	inline const FName OcclusionFadeParam(TEXT("OcclusionFade"));
 	inline const FName FadedOpacityParam(TEXT("FadedOpacity"));
 

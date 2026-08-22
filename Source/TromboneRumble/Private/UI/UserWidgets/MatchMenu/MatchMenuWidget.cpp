@@ -89,18 +89,23 @@ void UMatchMenuWidget::InitSelectableMaps()
 		return;
 	}
 
+	const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
+
 	TArray<FText> Options;
 	Options.Reserve(CachedSelectableMaps.Num());
 	for (const FGameplayTag& MapTag : CachedSelectableMaps)
 	{
-		// "Trombone.Maps.Lobby.OrchestraStage" -> OrchestraStage를 UI에 표시되는 텍스트로 사용
+		// "Trombone.Maps.Lobby.OrchestraStage" -> 끝의 OrchestraStage로 스트링 테이블 키 Map_OrchestraStage를 만든다
 		const FString TagStr = MapTag.ToString();
 		FString Leaf;
 		if (!TagStr.Split(TEXT("."), nullptr, &Leaf, ESearchCase::IgnoreCase, ESearchDir::FromEnd))
 		{
 			Leaf = TagStr;
 		}
-		Options.Add(FText::FromString(Leaf));
+
+		Options.Add(GI
+			? GI->GetCommonUIText(FString::Printf(TEXT("Map_%s"), *Leaf))
+			: FText::FromString(Leaf));
 	}
 	CR_Map->SetOptions(Options);
 }
