@@ -6,9 +6,12 @@
 #include "Actors/Gimmick/Blizzard/BlizzardEnvCopyUtil.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Utilities/Defines.h"
+#include "Utilities/DebugHelper.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerStart.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
@@ -198,6 +201,7 @@ void ABlizzardGimmick::Deactivate()
 		PushTargets.Reset();
 		RemoveAllSlows();
 		ExposureTimeMap.Empty();
+		CloseAllShelterDoors();   // 기믹이 도중에 꺼져도 문이 열린 채 남지 않게
 		SetState(EBlizzardState::Idle);
 	}
 
@@ -208,6 +212,9 @@ void ABlizzardGimmick::Deactivate()
 void ABlizzardGimmick::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 팅겨낼 목적지는 게임플레이라 데디 서버에도 필요하다 → 아래 데디 리턴보다 위.
+	GatherPlayerStarts();
 
 	// 라이팅/VFX 는 순수 연출이라 데디케이티드 서버에는 불필요.
 	if (GetNetMode() == NM_DedicatedServer) return;
@@ -299,6 +306,11 @@ void ABlizzardGimmick::StartWarning()
 
 	SetState(EBlizzardState::Warning);
 
+	// 대피처를 알려주는 것이 전조의 역할이므로 문은 여기서 열린다.
+	// 쉘터는 레벨 배치 액터라 Warning~Active 사이에 목록이 변하지 않는다 → 여기서 한 번만 수집.
+	GatherShelters();
+	OpenRandomShelterDoors();
+
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
 	GetWorldTimerManager().SetTimer(
 		PhaseTimerHandle,
@@ -315,7 +327,6 @@ void ABlizzardGimmick::StartBlizzard()
 
 	ExposureTimeMap.Empty();
 	PushTargets.Reset();
-	GatherShelters();
 
 	SetState(EBlizzardState::Active);
 	SetActorTickEnabled(true);
@@ -349,6 +360,10 @@ void ABlizzardGimmick::EndBlizzard()
 	PushTargets.Reset();
 	RemoveAllSlows();
 	ExposureTimeMap.Empty();
+
+	// 순서 주의: 내보내기가 먼저다. 문을 닫고 나면 IsSheltering() 이 false 라 아무도 안 잡힌다.
+	EjectCharactersFromShelters();
+	CloseAllShelterDoors();
 
 	SetState(EBlizzardState::Idle);
 
@@ -762,6 +777,118 @@ void ABlizzardGimmick::GatherShelters()
 	}
 }
 
+void ABlizzardGimmick::OpenRandomShelterDoors()
+{
+	if (!HasAuthority()) return;
+
+	// 문이 지정된 쉘터만 후보. 문 없는 쉘터를 뽑으면 그 자리가 그냥 날아간다.
+	TArray<ABlizzardShelter*> Candidates;
+	for (const TWeakObjectPtr<ABlizzardShelter>& ShelterPtr : Shelters)
+	{
+		ABlizzardShelter* Shelter = ShelterPtr.Get();
+		if (Shelter && Shelter->HasDoor())
+		{
+			Candidates.Add(Shelter);
+		}
+	}
+
+	// 앞에서 OpenShelterCount 개만 필요하므로 그만큼만 셔플한다 (Fisher-Yates 부분 셔플).
+	const int32 OpenCount = FMath::Clamp(OpenShelterCount, 0, Candidates.Num());
+	for (int32 i = 0; i < OpenCount; ++i)
+	{
+		Candidates.Swap(i, FMath::RandRange(i, Candidates.Num() - 1));
+	}
+
+	for (int32 i = 0; i < Candidates.Num(); ++i)
+	{
+		Candidates[i]->SetDoorOpen(i < OpenCount);   // 나머지는 닫아 이전 라운드 잔여 상태를 정리
+	}
+}
+
+void ABlizzardGimmick::CloseAllShelterDoors()
+{
+	if (!HasAuthority()) return;
+
+	for (const TWeakObjectPtr<ABlizzardShelter>& ShelterPtr : Shelters)
+	{
+		if (ABlizzardShelter* Shelter = ShelterPtr.Get())
+		{
+			Shelter->SetDoorOpen(false);
+		}
+	}
+}
+
+void ABlizzardGimmick::GatherPlayerStarts()
+{
+	if (!HasAuthority()) return;
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	CachedPlayerStarts.Reset();
+	for (TActorIterator<APlayerStart> It(World); It; ++It)
+	{
+		if (APlayerStart* Start = *It)
+		{
+			CachedPlayerStarts.Add(Start);
+		}
+	}
+}
+
+void ABlizzardGimmick::EjectCharactersFromShelters()
+{
+	if (!HasAuthority()) return;
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	CachedPlayerStarts.RemoveAll([](const TWeakObjectPtr<APlayerStart>& Start) { return !Start.IsValid(); });
+	if (CachedPlayerStarts.Num() == 0)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("레벨에 PlayerStart 가 없어 쉘터 점거자를 내보내지 못했다"));
+		return;
+	}
+
+	for (TActorIterator<ADefaultTromboneCharacter> It(World); It; ++It)
+	{
+		ADefaultTromboneCharacter* Character = *It;
+		if (!IsValid(Character)) continue;
+		if (!IsCharacterInShelter(Character)) continue;
+
+		TeleportToRandomPlayerStart(Character);
+	}
+}
+
+void ABlizzardGimmick::TeleportToRandomPlayerStart(ADefaultTromboneCharacter* Character)
+{
+	if (!Character) return;
+
+	APlayerStart* Start = CachedPlayerStarts[FMath::RandRange(0, CachedPlayerStarts.Num() - 1)].Get();
+	if (!Start) return;
+
+	// 래그돌 중엔 액터만 옮겨도 물리 바디가 안 따라온다. 먼저 기상시켜 캡슐/이동모드를 되돌린다.
+	// StopRagdoll 이 캡슐을 기상 위치로 스냅시키므로 텔레포트가 반드시 뒤에 와야 한다.
+	// (0.2초 블렌드아웃 동안은 이동 복제가 꺼져 있어 원격 클라에선 위치가 조금 늦게 따라온다)
+	if (Character->IsRagdoll())
+	{
+		if (UTromboneRagdollComponent* Ragdoll = Character->GetRagdollComponent())
+		{
+			Ragdoll->StopRagdoll();
+		}
+	}
+
+	const FRotator TargetRotation = Start->GetActorRotation();
+
+	// TeleportPhysics: 블렌드아웃 중이라 아직 시뮬레이션 중인 래그돌 바디까지 같이 끌고 간다.
+	Character->SetActorLocationAndRotation(Start->GetActorLocation(), TargetRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	// 컨트롤 회전은 클라가 소유하므로 서버에서 대입해봤자 다음 이동 패킷에 덮인다. 클라 RPC 로 밀어줘야 한다.
+	if (APlayerController* PC = Cast<APlayerController>(Character->GetController()))
+	{
+		PC->ClientSetRotation(TargetRotation);
+	}
+}
+
 bool ABlizzardGimmick::IsCharacterInShelter(const ACharacter* Character) const
 {
 	if (!Character) return false;
@@ -770,7 +897,8 @@ bool ABlizzardGimmick::IsCharacterInShelter(const ACharacter* Character) const
 	for (const TWeakObjectPtr<ABlizzardShelter>& ShelterPtr : Shelters)
 	{
 		const ABlizzardShelter* Shelter = ShelterPtr.Get();
-		if (Shelter && Shelter->IsLocationInsideShelter(Loc))
+		// 문이 닫힌 천막은 안전지대가 아니다. 문이 없는 쉘터는 기존대로 항상 안전.
+		if (Shelter && Shelter->IsSheltering() && Shelter->IsLocationInsideShelter(Loc))
 		{
 			return true;
 		}

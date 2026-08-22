@@ -6,6 +6,10 @@
 #include "Actors/Gimmick/Blizzard/BlizzardEnvCopyUtil.h"
 #include "Components/SphereComponent.h"
 #include "Components/PointLightComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/SkeletalMeshActor.h"
+#include "Net/UnrealNetwork.h"
 
 #if WITH_EDITOR
 #include "ScopedTransaction.h"
@@ -14,6 +18,11 @@
 ABlizzardShelter::ABlizzardShelter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	// 문 상태(bDoorOpen)만 복제한다. 쉘터는 맵 전역에 흩어져 있어 거리 relevancy 로 컬링되면
+	// 먼 클라가 문 여닫힘을 놓치므로 항상 relevant (기믹과 같은 이유 — BlizzardGimmick.cpp:56-58).
+	bReplicates = true;
+	bAlwaysRelevant = true;
 
 	SafeZone = CreateDefaultSubobject<USphereComponent>(TEXT("SafeZone"));
 	SetRootComponent(SafeZone);
@@ -65,6 +74,11 @@ void ABlizzardShelter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 문 콜리전은 게임플레이라 데디 서버에서도 세팅돼야 한다 → 아래 데디 리턴보다 위.
+	// OnRep 이 BeginPlay 보다 먼저 도착했더라도 여기서 다시 반영된다.
+	ResolveDoorMesh();
+	ApplyDoorState(false);
+
 	// 라이트 연출은 데디케이티드 서버엔 불필요.
 	if (GetNetMode() == NM_DedicatedServer) return;
 	if (!ShelterLight) return;
@@ -77,6 +91,80 @@ void ABlizzardShelter::BeginPlay()
 
 	if (WarningLightTemplate) FBlizzardEnvCopyUtil::CopyOverriddenProperties(WarningLightTemplate, ResolvedWarning);
 	if (ActiveLightTemplate)  FBlizzardEnvCopyUtil::CopyOverriddenProperties(ActiveLightTemplate, ResolvedActive);
+}
+
+void ABlizzardShelter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, bDoorOpen);
+}
+
+void ABlizzardShelter::SetDoorOpen(bool bOpen)
+{
+	if (!HasAuthority()) return;
+	if (bDoorOpen == bOpen) return;
+
+	bDoorOpen = bOpen;
+	OnRep_DoorOpen();   // 리슨 서버 호스트에서도 문이 움직이도록 수동 호출
+	ForceNetUpdate();
+}
+
+void ABlizzardShelter::OnRep_DoorOpen()
+{
+	ApplyDoorState(true);
+}
+
+void ABlizzardShelter::ResolveDoorMesh()
+{
+	if (DoorMesh.IsValid() || DoorActor.IsNull()) return;
+
+	if (const ASkeletalMeshActor* Door = DoorActor.LoadSynchronous())
+	{
+		DoorMesh = Door->GetSkeletalMeshComponent();
+	}
+}
+
+void ABlizzardShelter::ApplyDoorState(bool bAnimate)
+{
+	ResolveDoorMesh();   // OnRep 이 BeginPlay 보다 먼저 올 수 있다
+
+	USkeletalMeshComponent* Mesh = DoorMesh.Get();
+	if (!Mesh) return;
+
+	// 캐릭터 캡슐만 통과시킨다. NoCollision 으로 끄면 X-Ray 가림 판정(SweepMultiByObjectType)이
+	// 이 문을 못 잡아 천막 반투명 페이드가 죽는다 — 안에 들어간 플레이어가 안 보이게 된다.
+	// 스켈레탈 메시는 컴포넌트 응답이 피직스 애셋 바디 설정과 min 으로 합쳐져 전부에 강제된다
+	// (BodyInstance.cpp:4478-4479). Ignore 가 무조건 이기고, Block 으로 되돌리면 바디 설정이 복원된다.
+	Mesh->SetCollisionResponseToChannel(ECC_Pawn, bDoorOpen ? ECR_Ignore : ECR_Block);
+
+	// 애니메이션은 순수 연출이라 데디케이티드 서버엔 불필요.
+	if (GetNetMode() == NM_DedicatedServer) return;
+
+	// 초기 동기화 + 닫힌 상태 = 레벨에 저작된 포즈가 곧 닫힌 모습이다. 건드리지 않는다.
+	if (!bAnimate && !bDoorOpen) return;
+
+	UAnimSequence* Anim = DoorOpenAnim.LoadSynchronous();
+	if (!Anim) return;
+
+	const float OpenPosition = Anim->GetPlayLength();
+
+	// PlayAnimation 이 애셋을 다시 물리며 위치/재생속도를 리셋하므로(AnimSingleNodeInstanceProxy.cpp:212-215)
+	// SetPosition/SetPlayRate 는 반드시 그 뒤에 온다.
+	Mesh->PlayAnimation(Anim, false);
+
+	// 이미 열린 문에 늦게 합류한 클라: 재생 없이 열린 포즈로 맞추기만 한다.
+	if (!bAnimate)
+	{
+		Mesh->SetPosition(OpenPosition, false);
+		Mesh->Stop();
+		return;
+	}
+
+	// 닫기는 끝에서 음수 재생 = 역재생. CurrentTime <= 0 에서 엔진이 알아서 멈춘다
+	// (AnimSingleNodeInstanceProxy.cpp:607-609).
+	Mesh->SetPosition(bDoorOpen ? 0.f : OpenPosition, false);
+	Mesh->SetPlayRate(bDoorOpen ? 1.f : -1.f);
 }
 
 bool ABlizzardShelter::IsLocationInsideShelter(const FVector& WorldLoc) const

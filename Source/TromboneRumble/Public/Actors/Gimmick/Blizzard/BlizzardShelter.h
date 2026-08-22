@@ -10,6 +10,9 @@ enum class EBlizzardState : uint8;
 class USphereComponent;
 class UPointLightComponent;
 class USceneComponent;
+class USkeletalMeshComponent;
+class UAnimSequence;
+class ASkeletalMeshActor;
 
 /** ABlizzardShelter
  * 눈보라 안전지대. 천막마다 하나씩 배치한다.
@@ -20,6 +23,10 @@ class USceneComponent;
  * 페이드 커브만 BP FadeTimeline 이 담당한다:
  *   HandleBlizzardState() 가 시작/목표 밝기를 잡고 OnLightFadeRequested() 로 타임라인 재생을 요청
  *   -> 타임라인 Update 가 UpdateLightFade(Alpha) 를 호출
+ *
+ * 천막 문(DoorActor)이 지정된 쉘터는 문이 열려 있을 때만 안전지대로 친다 (IsSheltering()).
+ * 문 여닫기는 서버가 정하고 bDoorOpen 만 복제된다 — 레벨의 문 액터(ASkeletalMeshActor)는
+ * 복제 액터가 아니라서 스스로 상태를 실어 나르지 못한다.
  */
 UCLASS()
 class TROMBONERUMBLE_API ABlizzardShelter : public AActor
@@ -30,12 +37,26 @@ public:
 	ABlizzardShelter();
 
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** WorldLoc(주로 캐릭터 중심)이 안전지대 sphere 내부에 있으면 true */
+	/** WorldLoc(주로 캐릭터 중심)이 안전지대 sphere 내부에 있으면 true. 문 상태는 보지 않는다. */
 	bool IsLocationInsideShelter(const FVector& WorldLoc) const;
 
 	/** ABlizzardGimmick 이 상태 전이마다 호출한다. 목표를 잡고 BP 페이드를 요청한다. */
 	void HandleBlizzardState(EBlizzardState NewState);
+
+	//~ 천막 문
+	/** 서버 전용. 문을 열고/닫는다. 값이 같으면 아무것도 하지 않는다. */
+	void SetDoorOpen(bool bOpen);
+
+	bool IsDoorOpen() const { return bDoorOpen; }
+
+	/** 이 쉘터에 여닫을 문이 지정돼 있는지 */
+	bool HasDoor() const { return !DoorActor.IsNull(); }
+
+	/** 지금 이 쉘터가 눈보라를 막아주는지. 문이 없는 쉘터는 항상 안전(기존 맵 호환). */
+	bool IsSheltering() const { return !HasDoor() || bDoorOpen; }
+	//~
 
 	/** BP FadeTimeline 의 Update 에서 호출 (Alpha 0~1) */
 	UFUNCTION(BlueprintCallable, Category = "Shelter")
@@ -55,6 +76,32 @@ protected:
 	TObjectPtr<UPointLightComponent> ShelterLight;
 
 private:
+	//~ 천막 문. 둘 다 비어 있어도 동작해야 한다 (문 없는 쉘터 = 항상 안전).
+	/** 레벨에 배치된 천막 문 액터 (SKM_Market_open). Transient 를 붙이면 레벨 저장 시 참조가 날아간다. */
+	UPROPERTY(EditInstanceOnly, Category = "Config|Shelter|Door", meta = (AllowPrivateAccess = "true", DisplayName = "천막 문 액터"))
+	TSoftObjectPtr<ASkeletalMeshActor> DoorActor;
+
+	/** 문 열림 애니메이션 (SKM_Market_open_Anim). 닫을 때는 이걸 역재생한다. */
+	UPROPERTY(EditAnywhere, Category = "Config|Shelter|Door", meta = (AllowPrivateAccess = "true", DisplayName = "문 열림 애니메이션"))
+	TSoftObjectPtr<UAnimSequence> DoorOpenAnim;
+
+	/** 문 액터에서 뽑아둔 메시. 월드 소유라 약참조. */
+	TWeakObjectPtr<USkeletalMeshComponent> DoorMesh;
+
+	UPROPERTY(ReplicatedUsing = OnRep_DoorOpen)
+	bool bDoorOpen = false;
+
+	UFUNCTION()
+	void OnRep_DoorOpen();
+
+	/** DoorActor 를 로드해 DoorMesh 를 채운다. 이미 채워져 있으면 그대로 둔다. */
+	void ResolveDoorMesh();
+
+	/** bDoorOpen 을 실제 문에 반영 (콜리전은 전 넷모드, 애니메이션은 데디 제외).
+	 *  bAnimate=false 는 초기 동기화용 — 재생 없이 포즈만 맞춘다. */
+	void ApplyDoorState(bool bAnimate);
+	//~
+
 	//~ 상태별 라이트 템플릿 (invisible; 읽기 전용). 클래스 기본값과 다른 값만 해당 상태에서 구동된다.
 	//  값을 넣는 경로는 저장 버튼 하나뿐: ShelterLight 를 원하는 룩으로 조정 → "전조/눈보라/평상시 상태 저장" 클릭.
 	//  (Details 직접 편집은 bEditableWhenInherited=false 로 잠겨 있다 — BlizzardShelter.cpp 생성자 참조)

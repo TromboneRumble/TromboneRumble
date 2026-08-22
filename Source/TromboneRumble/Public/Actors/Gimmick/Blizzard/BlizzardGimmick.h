@@ -14,6 +14,7 @@ class ACharacter;
 class ADefaultTromboneCharacter;
 class ATromboneCharacterBase;
 class ABlizzardShelter;
+class APlayerStart;
 class UAkAudioEvent;
 class UAkSwitchValue;
 class USceneComponent;
@@ -113,6 +114,10 @@ protected:
 	/** 눈보라(Active) 지속 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (DisplayName = "지속 시간"))
 	float ActiveDuration = 15.f;
+
+	/** 전조 때 문이 열릴 천막 수. 문이 지정된 쉘터가 이보다 적으면 전부 열린다. */
+	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (ClampMin = "0", DisplayName = "문 열릴 천막 수"))
+	int32 OpenShelterCount = 2;
 
 	/** 노출 판정 주기 (초) */
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (DisplayName = "노출 판정 주기"))
@@ -370,7 +375,17 @@ private:
 
 	//~ Server-only effect helpers
 	void GatherShelters();
+	/** 전조 진입 시 문 달린 쉘터 중 OpenShelterCount 개를 랜덤으로 열고 나머지는 닫는다. */
+	void OpenRandomShelterDoors();
+	/** 모든 쉘터의 문을 닫는다 (눈보라 종료 / 기믹 비활성화). */
+	void CloseAllShelterDoors();
 	bool IsCharacterInShelter(const ACharacter* Character) const;
+
+	/** BeginPlay 1회. 팅겨낼 목적지 후보를 모은다. */
+	void GatherPlayerStarts();
+	/** 눈보라 종료 시 쉘터 안에 있던 플레이어를 전부 밖(PlayerStart)으로 내보낸다. */
+	void EjectCharactersFromShelters();
+	void TeleportToRandomPlayerStart(ADefaultTromboneCharacter* Character);
 	void ApplySlow(ADefaultTromboneCharacter* Character);
 	void RemoveSlow(ACharacter* Character);
 	void RemoveAllSlows();
@@ -391,6 +406,9 @@ private:
 	UPROPERTY()
 	TMap<TWeakObjectPtr<ACharacter>, FActiveGameplayEffectHandle> ActiveSlowEffects;
 
-	/** 서버 전용: 수집한 안전지대 목록 (StartBlizzard 마다 갱신) */
+	/** 서버 전용: 수집한 안전지대 목록 (StartWarning 마다 갱신) */
 	TArray<TWeakObjectPtr<ABlizzardShelter>> Shelters;
+
+	/** 서버 전용: 눈보라 종료 시 쉘터 점거자를 내보낼 목적지 (BeginPlay 1회 수집) */
+	TArray<TWeakObjectPtr<APlayerStart>> CachedPlayerStarts;
 };
