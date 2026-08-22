@@ -195,7 +195,7 @@ private:
 	//  각 템플릿에서 "클래스 기본값과 다른" 프로퍼티(밝기/색/안개짙기/하늘색조 등 무엇이든)만
 	//  해당 상태에서 라이브 월드 컴포넌트로 구동된다 (BuildDrivenEnvEntries → CopyOverriddenProperties).
 	//  아트가 새 값을 조정해도 C++ 수정이 필요 없다.
-	//  값을 넣는 경로는 저장 버튼 하나뿐: 레벨의 실제 라이팅 액터를 조정 → "전조/눈보라 상태 저장" 클릭.
+	//  값을 넣는 경로는 저장 버튼 하나뿐: 레벨의 실제 라이팅 액터를 조정 → "전조/눈보라/평상시 상태 저장" 클릭.
 	//  invisible + bAffectsWorld=false 로 렌더/캡처에 관여하지 않고,
 	//  bEditableWhenInherited=false 로 Details 직접 편집이 잠겨 있다 (BlizzardGimmick.cpp 생성자 참조).
 	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "전조 태양"))
@@ -217,6 +217,18 @@ private:
 	TObjectPtr<USkyLightComponent> WarningSkyLightTemplate;
 	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 스카이라이트"))
 	TObjectPtr<USkyLightComponent> ActiveSkyLightTemplate;
+
+	//~ 평상시 템플릿. 위 둘과 달리 "바뀐 값만" 이 아니라 라이브 상태를 통째로 담는다.
+	//  평상시 룩의 상당수가 엔진 기본값과 같아서(태양색 흰색, 안개 인스캐터링 검정 등) 덮어쓰기
+	//  방식으로는 전조/눈보라를 되돌릴 수 없기 때문. 그래서 미리보기가 전체 복사다 (EditorLoadToWorld).
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "평상시 태양"))
+	TObjectPtr<UDirectionalLightComponent> NormalSunTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "평상시 안개"))
+	TObjectPtr<UExponentialHeightFogComponent> NormalFogTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "평상시 대기"))
+	TObjectPtr<USkyAtmosphereComponent> NormalAtmosphereTemplate;
+	UPROPERTY(VisibleAnywhere, Category = "Blizzard|Env|Templates", meta = (AllowPrivateAccess = "true", DisplayName = "평상시 스카이라이트"))
+	TObjectPtr<USkyLightComponent> NormalSkyLightTemplate;
 	//~
 
 	// 볼류메트릭 클라우드 커버리지 (머티리얼 "Coverage" 스칼라). 컴포넌트 프로퍼티가 아니라 raw 값 유지.
@@ -302,27 +314,34 @@ private:
 public:
 	//~ 에디터 저작 버튼. 아트가 월드에서 라이팅을 직접 만지며 상태를 저장/미리보기 한다.
 	//  워크플로우: 미리보기 → 월드에서 튜닝 → 저장 → 평상시 복원. (미리보기 중 레벨 저장 금지, 복원 먼저)
-	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "전조 상태 저장"))
+	//  평상시 저장은 미리보기가 걸린 채로 누르지 말 것 — 전조 룩이 평상시로 저장된다. 복원 먼저.
+	//  패널 순서는 선언 순서가 아니라 DisplayPriority 로 정해진다 (없으면 함수명 알파벳순).
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "전조 상태 저장", DisplayPriority = "1"))
 	void SaveWarningFromWorld();
-	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 저장"))
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 저장", DisplayPriority = "2"))
 	void SaveActiveFromWorld();
-	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "전조 상태 미리보기"))
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "평상시 상태 저장", DisplayPriority = "3"))
+	void SaveNormalFromWorld();
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "전조 상태 미리보기", DisplayPriority = "4"))
 	void LoadWarningToWorld();
-	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 미리보기"))
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 미리보기", DisplayPriority = "5"))
 	void LoadActiveToWorld();
-	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "평상시 복원 (미리보기 취소)"))
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "평상시 상태 미리보기", DisplayPriority = "6"))
+	void LoadNormalToWorld();
+	UFUNCTION(CallInEditor, Category = "Blizzard|Editor|Save|Load", meta = (DisplayName = "평상시 복원 (미리보기 취소)", DisplayPriority = "7"))
 	void RestoreNormalToWorld();
 
 private:
-	/** 소프트 참조를 LoadSynchronous 하고 (라이브, 전조 템플릿, 눈보라 템플릿) 쌍마다 Fn 을 호출. */
-	void EditorForEachEnvPair(TFunctionRef<void(USceneComponent* /*Live*/, USceneComponent* /*Warn*/, USceneComponent* /*Active*/)> Fn);
+	/** 소프트 참조를 LoadSynchronous 하고 (라이브, 전조, 눈보라, 평상시 템플릿) 조합마다 Fn 을 호출. */
+	void EditorForEachEnvPair(TFunctionRef<void(USceneComponent* /*Live*/, USceneComponent* /*Warn*/, USceneComponent* /*Active*/, USceneComponent* /*Normal*/)> Fn);
 	void EditorSaveFromWorld(EBlizzardState State);
 	void EditorLoadToWorld(EBlizzardState State);
 	void EditorEnsureNormalBackup();
 #endif
 
 #if WITH_EDITORONLY_DATA
-	/** 미리보기 전 자동 캡처한 평상시 백업 (세션 1회). 라이브 컴포넌트와 인덱스 대응. */
+	/** 미리보기 전 자동 캡처한 평상시 백업 (세션 1회). 라이브 컴포넌트와 인덱스 대응.
+	 *  Normal*Template 과 다른 것이다 — 이쪽은 "이번 세션 시작 시점으로 되돌리기"용이고 저장되지 않는다. */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<USceneComponent>> EditorNormalBackups;
 	UPROPERTY(Transient)

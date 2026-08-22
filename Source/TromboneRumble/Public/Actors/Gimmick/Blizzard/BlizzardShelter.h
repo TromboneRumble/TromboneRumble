@@ -56,7 +56,7 @@ protected:
 
 private:
 	//~ 상태별 라이트 템플릿 (invisible; 읽기 전용). 클래스 기본값과 다른 값만 해당 상태에서 구동된다.
-	//  값을 넣는 경로는 저장 버튼 하나뿐: ShelterLight 를 원하는 룩으로 조정 → "전조/눈보라 상태 저장" 클릭.
+	//  값을 넣는 경로는 저장 버튼 하나뿐: ShelterLight 를 원하는 룩으로 조정 → "전조/눈보라/평상시 상태 저장" 클릭.
 	//  (Details 직접 편집은 bEditableWhenInherited=false 로 잠겨 있다 — BlizzardShelter.cpp 생성자 참조)
 	//  주의: 포인트라이트 체감 밝기는 배경 밝기에 상대적이다. Warning(노을=아직 밝음)은
 	//  배경이 밝아 Active(어두운 눈보라)보다 훨씬 높은 값이라야 빛이 배경을 이기고 보인다.
@@ -65,6 +65,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Config|Shelter", meta = (AllowPrivateAccess = "true", DisplayName = "눈보라 라이트"))
 	TObjectPtr<UPointLightComponent> ActiveLightTemplate;
+
+	/** 평상시 템플릿. 위 둘과 달리 ShelterLight 상태를 통째로 담는다 (미리보기가 전체 복사라서). */
+	UPROPERTY(VisibleAnywhere, Category = "Config|Shelter", meta = (AllowPrivateAccess = "true", DisplayName = "평상시 라이트"))
+	TObjectPtr<UPointLightComponent> NormalLightTemplate;
 	//~
 
 	//~ 런타임 보간 스냅샷 (Outer=TransientPackage). Idle=Normal, Warning/Active=평상시+템플릿 오버라이드.
@@ -83,15 +87,20 @@ private:
 #if WITH_EDITOR
 public:
 	//~ 에디터 저작 버튼. 기믹의 저장/미리보기 버튼에서도 팬아웃된다.
-	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "전조 상태 저장"))
+	//  패널 순서는 선언 순서가 아니라 DisplayPriority 로 정해진다 (없으면 함수명 알파벳순).
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "전조 상태 저장", DisplayPriority = "1"))
 	void SaveWarningFromWorld();
-	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 저장"))
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 저장", DisplayPriority = "2"))
 	void SaveActiveFromWorld();
-	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "전조 상태 미리보기"))
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "평상시 상태 저장", DisplayPriority = "3"))
+	void SaveNormalFromWorld();
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "전조 상태 미리보기", DisplayPriority = "4"))
 	void LoadWarningToWorld();
-	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 미리보기"))
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "눈보라 상태 미리보기", DisplayPriority = "5"))
 	void LoadActiveToWorld();
-	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "평상시 복원"))
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "평상시 상태 미리보기", DisplayPriority = "6"))
+	void LoadNormalToWorld();
+	UFUNCTION(CallInEditor, Category = "Shelter|Editor|Save|Load", meta = (DisplayName = "평상시 복원", DisplayPriority = "7"))
 	void RestoreNormalToWorld();
 
 	// 기믹 팬아웃 진입점 (버튼 아님 — 호출측이 트랜잭션을 소유).
@@ -101,6 +110,8 @@ public:
 
 private:
 	void EditorEnsureNormalBackup();
+	/** 상태에 대응하는 템플릿 고르기. 저장/미리보기가 같은 규칙을 쓰도록 한 곳에 모은다. */
+	UPointLightComponent* EditorPickStateTemplate(EBlizzardState State) const;
 #endif
 
 #if WITH_EDITORONLY_DATA

@@ -27,8 +27,8 @@ ABlizzardShelter::ABlizzardShelter()
 
 	// 상태별 라이트 템플릿 (invisible + bAffectsWorld=false → 렌더/씬 등록 무관). 시드값은 기존 저작값.
 	//  bEditableWhenInherited=false: Details 직접 편집을 잠근다. 값을 넣는 경로는 저장 버튼 하나뿐
-	//  (ShelterLight 를 조정 → "전조/눈보라 상태 저장"). 코드에서의 쓰기는 이 게이트와 무관하다.
-	auto SetupTemplate = [this](UPointLightComponent* Comp, float Intensity)
+	//  (ShelterLight 를 조정 → "전조/눈보라/평상시 상태 저장"). 코드에서의 쓰기는 이 게이트와 무관하다.
+	auto SetupTemplate = [this](UPointLightComponent* Comp)
 	{
 		if (!Comp) return;
 		Comp->SetupAttachment(SafeZone);
@@ -36,13 +36,27 @@ ABlizzardShelter::ABlizzardShelter()
 		Comp->SetMobility(EComponentMobility::Movable);
 		Comp->bAffectsWorld = false;
 		Comp->bEditableWhenInherited = false;
-		Comp->Intensity = Intensity;
 	};
 
 	WarningLightTemplate = CreateDefaultSubobject<UPointLightComponent>(TEXT("WarningLightTemplate"));
 	ActiveLightTemplate  = CreateDefaultSubobject<UPointLightComponent>(TEXT("ActiveLightTemplate"));
-	SetupTemplate(WarningLightTemplate, 18000.f);  // 노을 배경이 밝아 높은 값이라야 빛이 보임
-	SetupTemplate(ActiveLightTemplate, 3500.f);    // 어두운 눈보라 배경
+	NormalLightTemplate  = CreateDefaultSubobject<UPointLightComponent>(TEXT("NormalLightTemplate"));
+	SetupTemplate(WarningLightTemplate);
+	SetupTemplate(ActiveLightTemplate);
+	SetupTemplate(NormalLightTemplate);
+
+	if (WarningLightTemplate) WarningLightTemplate->Intensity = 18000.f;  // 노을 배경이 밝아 높은 값이라야 빛이 보임
+	if (ActiveLightTemplate)  ActiveLightTemplate->Intensity  = 3500.f;   // 어두운 눈보라 배경
+
+	// 평상시는 미리보기가 전체 복사라 ShelterLight 상태를 빠짐없이 담아야 한다.
+	// BP_BlizzardShelter 의 ShelterLight 저작값과 같은 값이다 — 거기가 바뀌면 여기도 갱신할 것.
+	if (NormalLightTemplate)
+	{
+		NormalLightTemplate->Intensity         = 0.f;      // 평상시엔 꺼져 있다
+		NormalLightTemplate->AttenuationRadius = 300.f;
+		NormalLightTemplate->Temperature       = 2500.f;
+		NormalLightTemplate->bUseTemperature   = true;
+	}
 
 	LightTargetState = EBlizzardState::Idle;
 }
@@ -122,9 +136,19 @@ void ABlizzardShelter::UpdateLightFade(float Alpha)
 }
 
 #if WITH_EDITOR
+UPointLightComponent* ABlizzardShelter::EditorPickStateTemplate(EBlizzardState State) const
+{
+	switch (State)
+	{
+	case EBlizzardState::Warning: return WarningLightTemplate;
+	case EBlizzardState::Active:  return ActiveLightTemplate;
+	default:                      return NormalLightTemplate;
+	}
+}
+
 void ABlizzardShelter::EditorSaveState(EBlizzardState State)
 {
-	UPointLightComponent* Template = (State == EBlizzardState::Warning) ? WarningLightTemplate : ActiveLightTemplate;
+	UPointLightComponent* Template = EditorPickStateTemplate(State);
 	if (!ShelterLight || !Template) return;
 	Template->Modify();
 	FBlizzardEnvCopyUtil::CopyProperties(ShelterLight, Template);
@@ -132,11 +156,17 @@ void ABlizzardShelter::EditorSaveState(EBlizzardState State)
 
 void ABlizzardShelter::EditorLoadState(EBlizzardState State)
 {
-	UPointLightComponent* Template = (State == EBlizzardState::Warning) ? WarningLightTemplate : ActiveLightTemplate;
+	UPointLightComponent* Template = EditorPickStateTemplate(State);
 	if (!ShelterLight || !Template) return;
 	EditorEnsureNormalBackup();
 	ShelterLight->Modify();
-	if (FBlizzardEnvCopyUtil::CopyOverriddenProperties(Template, ShelterLight))
+
+	// 평상시만 전체 복사. 평상시 값의 상당수가 클래스 기본값과 같아서
+	// 바뀐 값만 덮는 방식으로는 전조/눈보라 룩을 되돌릴 수 없다.
+	const bool bChanged = (State == EBlizzardState::Idle)
+		? FBlizzardEnvCopyUtil::CopyProperties(Template, ShelterLight)
+		: FBlizzardEnvCopyUtil::CopyOverriddenProperties(Template, ShelterLight);
+	if (bChanged)
 	{
 		ShelterLight->MarkRenderStateDirty();
 	}
@@ -170,6 +200,13 @@ void ABlizzardShelter::SaveActiveFromWorld()
 	EditorSaveState(EBlizzardState::Active);
 }
 
+void ABlizzardShelter::SaveNormalFromWorld()
+{
+	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
+	FScopedTransaction Tx(NSLOCTEXT("BlizzardShelter", "SaveNormal", "쉘터 평상시 상태 저장"));
+	EditorSaveState(EBlizzardState::Idle);
+}
+
 void ABlizzardShelter::LoadWarningToWorld()
 {
 	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
@@ -182,6 +219,13 @@ void ABlizzardShelter::LoadActiveToWorld()
 	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
 	FScopedTransaction Tx(NSLOCTEXT("BlizzardShelter", "LoadActive", "쉘터 눈보라 상태 미리보기"));
 	EditorLoadState(EBlizzardState::Active);
+}
+
+void ABlizzardShelter::LoadNormalToWorld()
+{
+	if (const UWorld* W = GetWorld(); W && W->IsGameWorld()) return;
+	FScopedTransaction Tx(NSLOCTEXT("BlizzardShelter", "LoadNormal", "쉘터 평상시 상태 미리보기"));
+	EditorLoadState(EBlizzardState::Idle);
 }
 
 void ABlizzardShelter::RestoreNormalToWorld()

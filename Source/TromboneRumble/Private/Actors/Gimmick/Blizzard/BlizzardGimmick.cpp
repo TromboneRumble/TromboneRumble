@@ -140,6 +140,43 @@ ABlizzardGimmick::ABlizzardGimmick()
 		ActiveSkyLightTemplate->Intensity  = 0.15f;                                                  // 눈보라: 전반적으로 어둡게
 		ActiveSkyLightTemplate->LightColor = FLinearColor(0.6f, 0.72f, 0.92f, 1.f).ToFColor(true);   // 차가운 눈보라 환경광
 	}
+
+	// 평상시 템플릿. 미리보기가 전체 복사라 여기 없는 값은 클래스 기본값으로 리셋된다 →
+	// InGame_SnowField 라이팅 액터의 기본값과 다른 프로퍼티를 빠짐없이 시드해야 한다.
+	// 대기/스카이라이트는 실제로 전부 기본값이라 시드가 없는 것이 맞다.
+	NormalSunTemplate        = CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("NormalSunTemplate"));
+	NormalFogTemplate        = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("NormalFogTemplate"));
+	NormalAtmosphereTemplate = CreateDefaultSubobject<USkyAtmosphereComponent>(TEXT("NormalAtmosphereTemplate"));
+	NormalSkyLightTemplate   = CreateDefaultSubobject<USkyLightComponent>(TEXT("NormalSkyLightTemplate"));
+	if (NormalSunTemplate)
+	{
+		SetupLightTemplate(NormalSunTemplate);
+		NormalSunTemplate->bAffectsWorld = false;
+		NormalSunTemplate->Intensity                         = 6.f;         // 평상시 태양 (색은 흰색 = 기본값)
+		NormalSunTemplate->bUseTemperature                    = true;
+		NormalSunTemplate->LightSourceAngle                   = 0.7357f;
+		NormalSunTemplate->DynamicShadowDistanceMovableLight  = 20000.f;
+		NormalSunTemplate->DistanceFieldShadowDistance        = 30000.f;
+		NormalSunTemplate->bEnableLightShaftOcclusion         = true;
+		NormalSunTemplate->bUseRayTracedDistanceFieldShadows  = false;
+		NormalSunTemplate->LightFunctionScale                 = FVector(4235.453613f);
+		NormalSunTemplate->LightFunctionFadeDistance          = 77466.1875f;
+		NormalSunTemplate->DisabledBrightness                 = 0.696f;
+	}
+	if (NormalFogTemplate)
+	{
+		SetupLightTemplate(NormalFogTemplate);
+		NormalFogTemplate->FogDensity = 0.0436f;   // 인스캐터링 색은 검정 = 기본값
+	}
+	if (NormalAtmosphereTemplate)
+	{
+		SetupLightTemplate(NormalAtmosphereTemplate);
+	}
+	if (NormalSkyLightTemplate)
+	{
+		SetupLightTemplate(NormalSkyLightTemplate);
+		NormalSkyLightTemplate->bAffectsWorld = false;
+	}
 }
 void ABlizzardGimmick::Activate()
 {
@@ -840,42 +877,65 @@ void ABlizzardGimmick::TriggerRagdoll(ATromboneCharacterBase* Character)
 
 
 #if WITH_EDITOR
-void ABlizzardGimmick::EditorForEachEnvPair(TFunctionRef<void(USceneComponent*, USceneComponent*, USceneComponent*)> Fn)
+void ABlizzardGimmick::EditorForEachEnvPair(TFunctionRef<void(USceneComponent*, USceneComponent*, USceneComponent*, USceneComponent*)> Fn)
 {
-	// 소프트 참조를 로드해 라이브 컴포넌트를 추출하고, 대응 템플릿 쌍과 함께 Fn 을 호출한다.
+	// 소프트 참조를 로드해 라이브 컴포넌트를 추출하고, 대응 템플릿들과 함께 Fn 을 호출한다.
 	if (ADirectionalLight* Sun = SunLight.LoadSynchronous())
 	{
 		if (USceneComponent* Live = Sun->GetLightComponent())
 		{
-			Fn(Live, WarningSunTemplate, ActiveSunTemplate);
+			Fn(Live, WarningSunTemplate, ActiveSunTemplate, NormalSunTemplate);
 		}
 	}
 	if (AExponentialHeightFog* Fog = HeightFog.LoadSynchronous())
 	{
 		if (USceneComponent* Live = Fog->GetComponent())
 		{
-			Fn(Live, WarningFogTemplate, ActiveFogTemplate);
+			Fn(Live, WarningFogTemplate, ActiveFogTemplate, NormalFogTemplate);
 		}
 	}
 	if (ASkyAtmosphere* Atmo = SkyAtmosphere.LoadSynchronous())
 	{
 		if (USceneComponent* Live = Atmo->GetComponent())
 		{
-			Fn(Live, WarningAtmosphereTemplate, ActiveAtmosphereTemplate);
+			Fn(Live, WarningAtmosphereTemplate, ActiveAtmosphereTemplate, NormalAtmosphereTemplate);
 		}
 	}
 	if (ASkyLight* Sky = SkyLightActor.LoadSynchronous())
 	{
 		if (USceneComponent* Live = Sky->GetLightComponent())
 		{
-			Fn(Live, WarningSkyLightTemplate, ActiveSkyLightTemplate);
+			Fn(Live, WarningSkyLightTemplate, ActiveSkyLightTemplate, NormalSkyLightTemplate);
+		}
+	}
+}
+
+namespace
+{
+	/** 상태에 대응하는 템플릿 고르기. 저장/미리보기가 같은 규칙을 쓰도록 한 곳에 모은다. */
+	USceneComponent* PickStateTemplate(EBlizzardState State, USceneComponent* Warn, USceneComponent* Active, USceneComponent* Normal)
+	{
+		switch (State)
+		{
+		case EBlizzardState::Warning: return Warn;
+		case EBlizzardState::Active:  return Active;
+		default:                      return Normal;
+		}
+	}
+
+	const TCHAR* StateDisplayName(EBlizzardState State)
+	{
+		switch (State)
+		{
+		case EBlizzardState::Warning: return TEXT("예고");
+		case EBlizzardState::Active:  return TEXT("눈보라");
+		default:                      return TEXT("평상시");
 		}
 	}
 }
 
 void ABlizzardGimmick::EditorSaveFromWorld(EBlizzardState State)
 {
-	if (State != EBlizzardState::Warning && State != EBlizzardState::Active) return;
 	if (const UWorld* W = GetWorld(); W && W->IsGameWorld())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[Blizzard] 저장 버튼은 에디터 월드에서만 동작합니다."));
@@ -885,25 +945,29 @@ void ABlizzardGimmick::EditorSaveFromWorld(EBlizzardState State)
 	FScopedTransaction Tx(NSLOCTEXT("Blizzard", "SaveStateFromWorld", "눈보라 상태 저장 (월드→템플릿)"));
 	Modify();
 
-	EditorForEachEnvPair([State](USceneComponent* Live, USceneComponent* Warn, USceneComponent* Active)
+	EditorForEachEnvPair([State](USceneComponent* Live, USceneComponent* Warn, USceneComponent* Active, USceneComponent* Normal)
 	{
-		USceneComponent* Template = (State == EBlizzardState::Warning) ? Warn : Active;
+		USceneComponent* Template = PickStateTemplate(State, Warn, Active, Normal);
 		if (!Template) return;
 		Template->Modify();
 		FBlizzardEnvCopyUtil::CopyProperties(Live, Template);
 	});
 
-	// 구름 커버리지(raw) 도 월드 머티리얼에서 캡처.
-	if (AVolumetricCloud* Cloud = CloudActor.LoadSynchronous())
+	// 구름 커버리지(raw) 도 월드 머티리얼에서 캡처. 평상시(NormalCoverage)는 Transient 라
+	// 런타임 BeginPlay 에서 다시 잡는다 → 저장 대상이 아니다.
+	if (State != EBlizzardState::Idle)
 	{
-		if (const UVolumetricCloudComponent* CloudComp = Cloud->FindComponentByClass<UVolumetricCloudComponent>())
+		if (AVolumetricCloud* Cloud = CloudActor.LoadSynchronous())
 		{
-			if (UMaterialInterface* Mat = CloudComp->GetMaterial())
+			if (const UVolumetricCloudComponent* CloudComp = Cloud->FindComponentByClass<UVolumetricCloudComponent>())
 			{
-				float Cov = 0.f;
-				if (Mat->GetScalarParameterValue(FMaterialParameterInfo(BlizzardEnvParams::Coverage), Cov))
+				if (UMaterialInterface* Mat = CloudComp->GetMaterial())
 				{
-					(State == EBlizzardState::Warning ? WarningCoverage : FrozenCoverage) = Cov;
+					float Cov = 0.f;
+					if (Mat->GetScalarParameterValue(FMaterialParameterInfo(BlizzardEnvParams::Coverage), Cov))
+					{
+						(State == EBlizzardState::Warning ? WarningCoverage : FrozenCoverage) = Cov;
+					}
 				}
 			}
 		}
@@ -917,13 +981,13 @@ void ABlizzardGimmick::EditorSaveFromWorld(EBlizzardState State)
 		}
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("[Blizzard] %s 상태를 월드에서 템플릿으로 저장했습니다."),
-		State == EBlizzardState::Warning ? TEXT("예고") : TEXT("눈보라"));
+	UE_LOG(LogTemp, Log, TEXT("[Blizzard] %s 상태를 월드에서 템플릿으로 저장했습니다.%s"),
+		StateDisplayName(State),
+		State == EBlizzardState::Idle ? TEXT(" (구름 커버리지는 평상시 저장 제외 — 재생 시 자동 캡처)") : TEXT(""));
 }
 
 void ABlizzardGimmick::EditorLoadToWorld(EBlizzardState State)
 {
-	if (State != EBlizzardState::Warning && State != EBlizzardState::Active) return;
 	if (const UWorld* W = GetWorld(); W && W->IsGameWorld())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[Blizzard] 미리보기 버튼은 에디터 월드에서만 동작합니다."));
@@ -934,12 +998,19 @@ void ABlizzardGimmick::EditorLoadToWorld(EBlizzardState State)
 
 	FScopedTransaction Tx(NSLOCTEXT("Blizzard", "LoadStateToWorld", "눈보라 상태 미리보기 (템플릿→월드)"));
 
-	EditorForEachEnvPair([State](USceneComponent* Live, USceneComponent* Warn, USceneComponent* Active)
+	// 평상시만 전체 복사다. 평상시 값의 상당수가 클래스 기본값과 같아서(태양색 흰색 등)
+	// 바뀐 값만 덮는 방식으로는 전조/눈보라 룩을 되돌릴 수 없다.
+	const bool bFullCopy = (State == EBlizzardState::Idle);
+
+	EditorForEachEnvPair([State, bFullCopy](USceneComponent* Live, USceneComponent* Warn, USceneComponent* Active, USceneComponent* Normal)
 	{
-		USceneComponent* Template = (State == EBlizzardState::Warning) ? Warn : Active;
+		USceneComponent* Template = PickStateTemplate(State, Warn, Active, Normal);
 		if (!Template) return;
 		Live->Modify();
-		if (FBlizzardEnvCopyUtil::CopyOverriddenProperties(Template, Live))
+		const bool bChanged = bFullCopy
+			? FBlizzardEnvCopyUtil::CopyProperties(Template, Live)
+			: FBlizzardEnvCopyUtil::CopyOverriddenProperties(Template, Live);
+		if (bChanged)
 		{
 			Live->MarkRenderStateDirty();
 		}
@@ -953,15 +1024,15 @@ void ABlizzardGimmick::EditorLoadToWorld(EBlizzardState State)
 		}
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("[Blizzard] %s 상태를 월드에 미리보기했습니다. (구름 커버리지는 미리보기 제외 — 재생 시 반영) 되돌리려면 '평상시 복원'."),
-		State == EBlizzardState::Warning ? TEXT("예고") : TEXT("눈보라"));
+	UE_LOG(LogTemp, Log, TEXT("[Blizzard] %s 상태를 월드에 미리보기했습니다.%s (구름 커버리지는 미리보기 제외 — 재생 시 반영) 되돌리려면 '평상시 복원'."),
+		StateDisplayName(State), bFullCopy ? TEXT(" (전체 복사)") : TEXT(""));
 }
 
 void ABlizzardGimmick::EditorEnsureNormalBackup()
 {
 	if (EditorNormalBackups.Num() > 0) return;  // 세션 1회만 캡처
 
-	EditorForEachEnvPair([this](USceneComponent* Live, USceneComponent* /*Warn*/, USceneComponent* /*Active*/)
+	EditorForEachEnvPair([this](USceneComponent* Live, USceneComponent* /*Warn*/, USceneComponent* /*Active*/, USceneComponent* /*Normal*/)
 	{
 		EditorNormalBackups.Add(FBlizzardEnvCopyUtil::CreateSnapshot(Live));
 		EditorBackupLiveComps.Add(Live);
@@ -1006,6 +1077,8 @@ void ABlizzardGimmick::RestoreNormalToWorld()
 
 void ABlizzardGimmick::SaveWarningFromWorld() { EditorSaveFromWorld(EBlizzardState::Warning); }
 void ABlizzardGimmick::SaveActiveFromWorld()  { EditorSaveFromWorld(EBlizzardState::Active); }
+void ABlizzardGimmick::SaveNormalFromWorld()  { EditorSaveFromWorld(EBlizzardState::Idle); }
 void ABlizzardGimmick::LoadWarningToWorld()   { EditorLoadToWorld(EBlizzardState::Warning); }
 void ABlizzardGimmick::LoadActiveToWorld()    { EditorLoadToWorld(EBlizzardState::Active); }
+void ABlizzardGimmick::LoadNormalToWorld()    { EditorLoadToWorld(EBlizzardState::Idle); }
 #endif // WITH_EDITOR
