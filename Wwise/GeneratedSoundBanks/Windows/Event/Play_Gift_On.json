@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1909714228",
+    "Type": "Event",
+    "GUID": "{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}",
+    "Language": "SFX",
+    "Hash": "{DBF28CEB-C3AA-5313-2FEE-F6A3460CB51F}",
+    "ObjectPath": "Play_Gift_On",
+    "ShortName": "Play_Gift_On",
+    "Path": "Event/Play_Gift_On.bnk",
+    "Media": [
+     {
+      "Id": "566130284",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Gift.wav",
+      "Path": "Media/566130284.wem",
+      "CachePath": "SFX/Gift_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1909714228",
+      "Name": "Play_Gift_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Gift_On",
+      "GUID": "{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.97423416",
+      "DurationMax": "1.1268852",
+      "MediaRefs": [
+       {
+        "Id": "566130284"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{13D14ADE-9997-5BAF-F4A2-E9F326B56DBF}"
+ }
+}

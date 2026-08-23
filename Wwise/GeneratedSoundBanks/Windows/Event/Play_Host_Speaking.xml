@@ -13,7 +13,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3304145397" Name="Play_Host_Speaking" ObjectPath="\Events\Default Work Unit\Audience_SFX\Play_Host_Speaking" GUID="{A5981776-F3D0-4919-93FB-1E5275B10847}" DurationType="OneShot" DurationMin="56.5565" DurationMax="56.5565">
+				<Event Id="3304145397" Name="Play_Host_Speaking" ObjectPath="\Events\Default Work Unit\Ambience\Play_Host_Speaking" GUID="{A5981776-F3D0-4919-93FB-1E5275B10847}" DurationType="OneShot" DurationMin="56.5565" DurationMax="56.5565">
 					<MediaRefs>
 						<MediaRef Id="184366762"/>
 					</MediaRefs>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{07D39F51-9D4D-9885-86FA-0A259CDCA352}</FileHash>
+	<FileHash>{3A10A25E-1F16-F030-9043-87AA2AED1905}</FileHash>
 </SoundBanksInfo>

@@ -10,11 +10,11 @@
 							<Position X="0" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="SnowField_Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="0" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="SnowField_Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="1" Y="0"/>
 						</Module>
 						<Module>

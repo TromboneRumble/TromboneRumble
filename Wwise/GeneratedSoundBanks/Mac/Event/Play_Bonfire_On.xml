@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="926619529" Type="Event" GUID="{B795F417-7989-498A-AC55-E3C9C3DEBAAF}" Language="SFX" Hash="{361ED350-C088-F598-4F1E-C92602032C0E}">
+			<ObjectPath>Play_Bonfire_On</ObjectPath>
+			<ShortName>Play_Bonfire_On</ShortName>
+			<Path>Event/Play_Bonfire_On.bnk</Path>
+			<Media>
+				<File Id="916979178" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>bonfire.wav</ShortName>
+					<Path>Media/916979178.wem</Path>
+					<CachePath>SFX/bonfire_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="926619529" Name="Play_Bonfire_On" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Bonfire_On" GUID="{B795F417-7989-498A-AC55-E3C9C3DEBAAF}" MaxAttenuation="1000" DurationType="Infinite">
+					<MediaRefs>
+						<MediaRef Id="916979178"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{06E7BFB8-1BCB-0731-A667-C040E268EDAE}</FileHash>
+</SoundBanksInfo>

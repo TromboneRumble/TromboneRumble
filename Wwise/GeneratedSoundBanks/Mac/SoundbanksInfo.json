@@ -456,7 +456,7 @@
      {
       "Id": "418248778",
       "Name": "Play_Trash_Hit",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Trash_Hit",
       "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
       "DurationType": "OneShot",
       "DurationMin": "0.9142917",
@@ -543,7 +543,7 @@
     "Type": "Event",
     "GUID": "{172B9145-BD63-4904-825D-B9064756A02F}",
     "Language": "SFX",
-    "Hash": "{D673C1EC-936C-F440-DF1E-795FD4CECE89}",
+    "Hash": "{73812BF1-CAD3-B8FC-C995-A9D651BE109C}",
     "ObjectPath": "Play_Snow_Ambience",
     "ShortName": "Play_Snow_Ambience",
     "Path": "Event/Play_Snow_Ambience.bnk",
@@ -1099,6 +1099,79 @@
     ]
    },
    {
+    "Id": "832608992",
+    "Type": "Event",
+    "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
+    "Language": "SFX",
+    "Hash": "{BB9E965A-24A0-4109-ABD1-2490686027B9}",
+    "ObjectPath": "Play_SnowLobby_Ambience",
+    "ShortName": "Play_SnowLobby_Ambience",
+    "Path": "Event/Play_SnowLobby_Ambience.bnk",
+    "Media": [
+     {
+      "Id": "645788486",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Children_Laugh_2.wav",
+      "Path": "Media/645788486.wem",
+      "CachePath": "SFX/Children_Laugh_2_FBC78EF0.wem"
+     },
+     {
+      "Id": "689150488",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Jingle Bell.wav",
+      "Path": "Media/689150488.wem",
+      "CachePath": "SFX/Jingle Bell_FBC78EF0.wem"
+     },
+     {
+      "Id": "754918447",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Children_Laugh_!.wav",
+      "Path": "Media/754918447.wem",
+      "CachePath": "SFX/Children_Laugh_!_FBC78EF0.wem"
+     },
+     {
+      "Id": "1057190544",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Spot Walla_1-01.wav",
+      "Path": "Media/1057190544.wem",
+      "CachePath": "SFX/Spot Walla_1-01_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "832608992",
+      "Name": "Play_SnowLobby_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_SnowLobby_Ambience",
+      "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
+      "DurationType": "OneShot",
+      "DurationMin": "827.5",
+      "DurationMax": "827.5",
+      "MediaRefs": [
+       {
+        "Id": "645788486"
+       },
+       {
+        "Id": "689150488"
+       },
+       {
+        "Id": "754918447"
+       },
+       {
+        "Id": "1057190544"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "836697457",
     "Type": "Event",
     "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
@@ -1122,7 +1195,7 @@
      {
       "Id": "836697457",
       "Name": "Play_Trash_Throw",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Throw",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Trash_Throw",
       "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
       "MaxAttenuation": "2000",
       "DurationType": "OneShot",
@@ -1306,6 +1379,42 @@
         "Name": "SW_T",
         "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
         "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "926619529",
+    "Type": "Event",
+    "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
+    "Language": "SFX",
+    "Hash": "{361ED350-C088-F598-4F1E-C92602032C0E}",
+    "ObjectPath": "Play_Bonfire_On",
+    "ShortName": "Play_Bonfire_On",
+    "Path": "Event/Play_Bonfire_On.bnk",
+    "Media": [
+     {
+      "Id": "916979178",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "bonfire.wav",
+      "Path": "Media/916979178.wem",
+      "CachePath": "SFX/bonfire_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "926619529",
+      "Name": "Play_Bonfire_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Bonfire_On",
+      "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
+      "MaxAttenuation": "1000",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "916979178"
        }
       ]
      }
@@ -2264,7 +2373,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{FBFB8D10-4EB2-9BA7-822F-D955438AD7A5}",
+    "Hash": "{0662CD31-10D3-1864-2180-53759AF53956}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -3978,6 +4087,67 @@
     ]
    },
    {
+    "Id": "1683545633",
+    "Type": "Event",
+    "GUID": "{3EA05F32-8881-4247-9EB3-C02DE9D775F8}",
+    "Language": "SFX",
+    "Hash": "{0941F5CE-85A2-0D9D-E35A-497F43AF2C21}",
+    "ObjectPath": "Play_Snow_Hit",
+    "ShortName": "Play_Snow_Hit",
+    "Path": "Event/Play_Snow_Hit.bnk",
+    "Media": [
+     {
+      "Id": "89407379",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_1.wav",
+      "Path": "Media/89407379.wem",
+      "CachePath": "SFX/Snow_1_818F3B66.wem"
+     },
+     {
+      "Id": "258933016",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_3.wav",
+      "Path": "Media/258933016.wem",
+      "CachePath": "SFX/Snow_3_818F3B66.wem"
+     },
+     {
+      "Id": "1009372356",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_2.wav",
+      "Path": "Media/1009372356.wem",
+      "CachePath": "SFX/Snow_2_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1683545633",
+      "Name": "Play_Snow_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Snow_Hit",
+      "GUID": "{3EA05F32-8881-4247-9EB3-C02DE9D775F8}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.39404166",
+      "DurationMax": "0.57991666",
+      "MediaRefs": [
+       {
+        "Id": "89407379"
+       },
+       {
+        "Id": "258933016"
+       },
+       {
+        "Id": "1009372356"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "1784315359",
     "Type": "Event",
     "GUID": "{6F90073B-06FD-4C85-AA82-7D074D93B08A}",
@@ -4532,6 +4702,44 @@
         }
        ]
       }
+     }
+    ]
+   },
+   {
+    "Id": "1909714228",
+    "Type": "Event",
+    "GUID": "{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}",
+    "Language": "SFX",
+    "Hash": "{DBF28CEB-C3AA-5313-2FEE-F6A3460CB51F}",
+    "ObjectPath": "Play_Gift_On",
+    "ShortName": "Play_Gift_On",
+    "Path": "Event/Play_Gift_On.bnk",
+    "Media": [
+     {
+      "Id": "566130284",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Gift.wav",
+      "Path": "Media/566130284.wem",
+      "CachePath": "SFX/Gift_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1909714228",
+      "Name": "Play_Gift_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Gift_On",
+      "GUID": "{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.97423416",
+      "DurationMax": "1.1268852",
+      "MediaRefs": [
+       {
+        "Id": "566130284"
+       }
+      ]
      }
     ]
    },
@@ -6805,7 +7013,7 @@
      {
       "Id": "3304145397",
       "Name": "Play_Host_Speaking",
-      "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Host_Speaking",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_Host_Speaking",
       "GUID": "{A5981776-F3D0-4919-93FB-1E5275B10847}",
       "DurationType": "OneShot",
       "DurationMin": "56.5565",
@@ -6813,6 +7021,44 @@
       "MediaRefs": [
        {
         "Id": "184366762"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "3375176006",
+    "Type": "Event",
+    "GUID": "{D231A180-52CB-4213-AA71-1DC58068E8C3}",
+    "Language": "SFX",
+    "Hash": "{FA69AD07-6F50-222C-5FC7-6DBDAAD61CFF}",
+    "ObjectPath": "Play_Snow_Throw",
+    "ShortName": "Play_Snow_Throw",
+    "Path": "Event/Play_Snow_Throw.bnk",
+    "Media": [
+     {
+      "Id": "497327386",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trash_Throw.wav",
+      "Path": "Media/497327386.wem",
+      "CachePath": "SFX/Trash_Throw_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3375176006",
+      "Name": "Play_Snow_Throw",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Snow_Throw",
+      "GUID": "{D231A180-52CB-4213-AA71-1DC58068E8C3}",
+      "MaxAttenuation": "2000",
+      "DurationType": "OneShot",
+      "DurationMin": "9.744",
+      "DurationMax": "9.744",
+      "MediaRefs": [
+       {
+        "Id": "497327386"
        }
       ]
      }
@@ -7847,6 +8093,6 @@
     ]
    }
   ],
-  "FileHash": "{57BBB4AB-280B-0B41-E878-F9193BCA6660}"
+  "FileHash": "{0404ABC4-81F2-6DB4-9C45-A5D6A4F06208}"
  }
 }

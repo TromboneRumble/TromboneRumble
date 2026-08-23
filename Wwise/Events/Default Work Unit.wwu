@@ -159,7 +159,7 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Folder Name="Play_Trash" ID="{656C996D-AEF3-48B7-B58F-6227931C6529}" ShortID="397306515">
+						<Folder Name="Play_Trash,Snow" ID="{656C996D-AEF3-48B7-B58F-6227931C6529}" ShortID="397306515">
 							<ChildrenList>
 								<Event Name="Play_Trash_Throw" ID="{59761350-8076-4CC8-AC2A-13D68D711760}">
 									<ChildrenList>
@@ -193,6 +193,28 @@
 										</Action>
 									</ChildrenList>
 								</Event>
+								<Event Name="Play_Snow_Throw" ID="{D231A180-52CB-4213-AA71-1DC58068E8C3}">
+									<ChildrenList>
+										<Action Name="" ID="{208062EB-89B6-4ABC-885D-619DB9CB515D}" ShortID="130917899">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Object_Snow_Throw" ID="{1EB10732-74DB-4C27-948F-EEB0B5DEA5CD}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Snow_Hit" ID="{3EA05F32-8881-4247-9EB3-C02DE9D775F8}">
+									<ChildrenList>
+										<Action Name="" ID="{1607A643-5050-4A18-A872-A293F385CB9D}" ShortID="186817670">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="Object_Snow_Hit" ID="{1418E684-814A-4CC1-BDD9-1464048D3BAA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
 							</ChildrenList>
 						</Folder>
 						<Event Name="Play_Ice_Freeze" ID="{6F90073B-06FD-4C85-AA82-7D074D93B08A}">
@@ -212,6 +234,28 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Object_Warning" ID="{50D1AC3E-CEE2-4243-8788-5BA00637A2BA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Gift_On" ID="{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}">
+							<ChildrenList>
+								<Action Name="" ID="{7A8550A6-0633-41B8-9214-EEC9765360F9}" ShortID="335451730">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Gift" ID="{9F49848E-5E2C-4EEC-9343-4E3E9B185A3F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Bonfire_On" ID="{B795F417-7989-498A-AC55-E3C9C3DEBAAF}">
+							<ChildrenList>
+								<Action Name="" ID="{3FB9ACBD-C40F-4AFC-936B-BA67391A5CB5}" ShortID="506063921">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Bonfire" ID="{33638413-BFFB-4730-8D77-60BF59600687}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -423,17 +467,6 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Audience_Combo" ID="{17B282A8-A1D0-4E3A-A891-23A7A3DCD26F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
-						<Event Name="Play_Host_Speaking" ID="{A5981776-F3D0-4919-93FB-1E5275B10847}">
-							<ChildrenList>
-								<Action Name="" ID="{B13F9B6B-45CA-4C1E-8423-1BAEF933130B}" ShortID="682907783">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Audience_ShowHost" ID="{69039D01-9671-435F-8F12-FA5350103EA8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -1146,7 +1179,29 @@
 								<Action Name="" ID="{9AC60EF9-995B-4CE3-BD82-0217DACB780E}" ShortID="844195070">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+											<ObjectRef Name="SnowField_Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_SnowLobby_Ambience" ID="{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}">
+							<ChildrenList>
+								<Action Name="" ID="{D802A33A-7274-4D08-BC6D-34B410915C81}" ShortID="876338797">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="SnowField_Lobby_Ambience" ID="{9E753246-ABB1-4B4F-9FF0-1A3DB09F5B73}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Host_Speaking" ID="{A5981776-F3D0-4919-93FB-1E5275B10847}">
+							<ChildrenList>
+								<Action Name="" ID="{B13F9B6B-45CA-4C1E-8423-1BAEF933130B}" ShortID="682907783">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_ShowHost" ID="{69039D01-9671-435F-8F12-FA5350103EA8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

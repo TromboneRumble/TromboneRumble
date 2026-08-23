@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	926619529	Play_Bonfire_On			\Default Work Unit\Object_SFX\Play_Bonfire_On	
+
