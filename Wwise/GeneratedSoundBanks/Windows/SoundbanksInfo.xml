@@ -3223,7 +3223,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3013282479" Type="Event" GUID="{15B274E4-CA5A-4B51-B7E2-219CDA599772}" Language="SFX" Hash="{02999061-BD29-0C28-7C83-4B13C3E875A2}">
+		<SoundBank Id="3013282479" Type="Event" GUID="{15B274E4-CA5A-4B51-B7E2-219CDA599772}" Language="SFX" Hash="{59169C52-B9ED-BA8E-10EF-13A9F14F2F41}">
 			<ObjectPath>Play_Player_Standup</ObjectPath>
 			<ShortName>Play_Player_Standup</ShortName>
 			<Path>Event/Play_Player_Standup.bnk</Path>
@@ -3843,5 +3843,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{37C6EB6D-7656-5CA1-6021-3C7BF577A77F}</FileHash>
+	<FileHash>{4AE00CDE-D502-82D0-C847-821BAD9267BC}</FileHash>
 </SoundBanksInfo>
