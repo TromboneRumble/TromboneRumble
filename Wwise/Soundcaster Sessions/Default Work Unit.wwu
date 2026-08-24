@@ -29,6 +29,14 @@
 							<ObjectRef Name="Play_Light_On" ID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 							<Position X="2" Y="1"/>
 						</Module>
+						<Module>
+							<ObjectRef Name="Map_D_Main" ID="{4164615D-C0C0-4880-9EB1-230F406015BC}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<Position X="3" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Player_Pain" ID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<Position X="3" Y="1"/>
+						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>

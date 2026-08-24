@@ -446,6 +446,38 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Player_Scream" ID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}">
+							<ChildrenList>
+								<Action Name="" ID="{A7BA852B-D169-4471-BA3A-7CAD6D6AB16A}" ShortID="1028714839">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Falling_Scream" ID="{E2887CDF-C2FC-410E-B592-AF23C002CBD2}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Player_Pain" ID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}">
+							<ChildrenList>
+								<Action Name="" ID="{6A63D161-FF72-4D84-9683-01800C64D769}" ShortID="298690483">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Wood_Fall" ID="{787647F0-1B0A-4C80-BCD6-1B6A697E843C}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+								<Action Name="" ID="{ABAF2EC0-1F22-4B43-B8C2-D5F122A840F1}" ShortID="680508757">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.02"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Falling_Pain" ID="{5B448B6C-7F0A-4CF0-A20D-967750C22D76}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Audience_SFX" ID="{26952185-7075-4B42-B0F9-7C1C6F797820}" ShortID="396442691">
@@ -1216,6 +1248,20 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="SnowField_Lobby_Ambience" ID="{9E753246-ABB1-4B4F-9FF0-1A3DB09F5B73}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_Host_Speaking" ID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}">
+							<ChildrenList>
+								<Action Name="" ID="{5B8997BF-6E17-450A-ABE2-9A5A5FD461BD}" ShortID="148485968">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Audience_ShowHost" ID="{69039D01-9671-435F-8F12-FA5350103EA8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

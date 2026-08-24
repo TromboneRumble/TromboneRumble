@@ -44,7 +44,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{05863A29-3C4D-1E6E-7E30-B8880B51BCC6}">
+		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{AB46AE09-BA5A-0A85-96CF-C7D28E83D1FE}">
 			<ObjectPath>Play_MapD_Main</ObjectPath>
 			<ShortName>Play_MapD_Main</ShortName>
 			<Path>Event/Play_MapD_Main.bnk</Path>
@@ -373,6 +373,14 @@
 						<MediaRef Id="598708220"/>
 					</MediaRefs>
 				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="674166051" Type="Event" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" Language="SFX" Hash="{8A616607-33C3-3EF4-F297-4AFA0777A86B}">
+			<ObjectPath>Stop_Host_Speaking</ObjectPath>
+			<ShortName>Stop_Host_Speaking</ShortName>
+			<Path>Event/Stop_Host_Speaking.bnk</Path>
+			<Events>
+				<Event Id="674166051" Name="Stop_Host_Speaking" ObjectPath="\Events\Default Work Unit\Ambience\Stop_Host_Speaking" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
 		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{2FB91F45-367C-1246-1D82-37BA30D24671}">
@@ -2506,6 +2514,65 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="2401049040" Type="Event" GUID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" Language="SFX" Hash="{0B79F4A4-4867-B3A2-B257-EF360FC18A8F}">
+			<ObjectPath>Play_Player_Pain</ObjectPath>
+			<ShortName>Play_Player_Pain</ShortName>
+			<Path>Event/Play_Player_Pain.bnk</Path>
+			<Media>
+				<File Id="50370413" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Pain_Scream_2.wav</ShortName>
+					<Path>Media/50370413.wem</Path>
+					<CachePath>SFX/Player_Pain_Scream_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="154129631" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood_Fall_2.wav</ShortName>
+					<Path>Media/154129631.wem</Path>
+					<CachePath>SFX/Wood_Fall_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="392784520" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Pain_Scream_3.wav</ShortName>
+					<Path>Media/392784520.wem</Path>
+					<CachePath>SFX/Player_Pain_Scream_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="646975968" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Pain_Scream_1.wav</ShortName>
+					<Path>Media/646975968.wem</Path>
+					<CachePath>SFX/Player_Pain_Scream_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="849345445" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood_Fall_1.wav</ShortName>
+					<Path>Media/849345445.wem</Path>
+					<CachePath>SFX/Wood_Fall_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="956042614" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Wood_Fall_3.wav</ShortName>
+					<Path>Media/956042614.wem</Path>
+					<CachePath>SFX/Wood_Fall_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
+			<Events>
+				<Event Id="2401049040" Name="Play_Player_Pain" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Pain" GUID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.47865412" DurationMax="0.69192624">
+					<MediaRefs>
+						<MediaRef Id="50370413"/>
+						<MediaRef Id="154129631"/>
+						<MediaRef Id="392784520"/>
+						<MediaRef Id="646975968"/>
+						<MediaRef Id="849345445"/>
+						<MediaRef Id="956042614"/>
+					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
+						</ShareSets>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}">
 			<ObjectPath>Play_Rhythm_Perfect</ObjectPath>
 			<ShortName>Play_Rhythm_Perfect</ShortName>
@@ -2759,6 +2826,25 @@
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
+		</SoundBank>
+		<SoundBank Id="2901149947" Type="Event" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" Language="SFX" Hash="{99EE1B90-CE44-E24C-8A81-84DD0073F06A}">
+			<ObjectPath>Play_Player_Scream</ObjectPath>
+			<ShortName>Play_Player_Scream</ShortName>
+			<Path>Event/Play_Player_Scream.bnk</Path>
+			<Media>
+				<File Id="923323399" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Player_Falling_Scream.wav</ShortName>
+					<Path>Media/923323399.wem</Path>
+					<CachePath>SFX/Player_Falling_Scream_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2901149947" Name="Play_Player_Scream" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Scream" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" DurationType="OneShot" DurationMin="2.4190834" DurationMax="2.4190834">
+					<MediaRefs>
+						<MediaRef Id="923323399"/>
+					</MediaRefs>
+				</Event>
+			</Events>
 		</SoundBank>
 		<SoundBank Id="2983024582" Type="Event" GUID="{BC1D7B76-D48E-4A6F-AC80-24A36425213E}" Language="SFX" Hash="{3CD2038C-FBBB-BC3D-F2B6-6EEF5A4EA7A3}">
 			<ObjectPath>MIDI_MapC_C</ObjectPath>
@@ -3851,5 +3937,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{FB5C15C3-0071-E9B7-F59D-5AAFCF8AB0E8}</FileHash>
+	<FileHash>{BCA12FAC-F8F3-F087-B0DB-529017DB112A}</FileHash>
 </SoundBanksInfo>

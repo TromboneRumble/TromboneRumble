@@ -87,7 +87,7 @@
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
     "Language": "SFX",
-    "Hash": "{05863A29-3C4D-1E6E-7E30-B8880B51BCC6}",
+    "Hash": "{AB46AE09-BA5A-0A85-96CF-C7D28E83D1FE}",
     "ObjectPath": "Play_MapD_Main",
     "ShortName": "Play_MapD_Main",
     "Path": "Event/Play_MapD_Main.bnk",
@@ -768,6 +768,28 @@
         "Id": "598708220"
        }
       ]
+     }
+    ]
+   },
+   {
+    "Id": "674166051",
+    "Type": "Event",
+    "GUID": "{9B0C6089-856C-4594-BE83-AD833C97ACEF}",
+    "Language": "SFX",
+    "Hash": "{8A616607-33C3-3EF4-F297-4AFA0777A86B}",
+    "ObjectPath": "Stop_Host_Speaking",
+    "ShortName": "Stop_Host_Speaking",
+    "Path": "Event/Stop_Host_Speaking.bnk",
+    "Events": [
+     {
+      "Id": "674166051",
+      "Name": "Stop_Host_Speaking",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Stop_Host_Speaking",
+      "GUID": "{9B0C6089-856C-4594-BE83-AD833C97ACEF}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
      }
     ]
    },
@@ -5433,6 +5455,123 @@
     ]
    },
    {
+    "Id": "2401049040",
+    "Type": "Event",
+    "GUID": "{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}",
+    "Language": "SFX",
+    "Hash": "{0B79F4A4-4867-B3A2-B257-EF360FC18A8F}",
+    "ObjectPath": "Play_Player_Pain",
+    "ShortName": "Play_Player_Pain",
+    "Path": "Event/Play_Player_Pain.bnk",
+    "Media": [
+     {
+      "Id": "50370413",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Pain_Scream_2.wav",
+      "Path": "Media/50370413.wem",
+      "CachePath": "SFX/Player_Pain_Scream_2_818F3B66.wem"
+     },
+     {
+      "Id": "154129631",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood_Fall_2.wav",
+      "Path": "Media/154129631.wem",
+      "CachePath": "SFX/Wood_Fall_2_818F3B66.wem"
+     },
+     {
+      "Id": "392784520",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Pain_Scream_3.wav",
+      "Path": "Media/392784520.wem",
+      "CachePath": "SFX/Player_Pain_Scream_3_818F3B66.wem"
+     },
+     {
+      "Id": "646975968",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Pain_Scream_1.wav",
+      "Path": "Media/646975968.wem",
+      "CachePath": "SFX/Player_Pain_Scream_1_818F3B66.wem"
+     },
+     {
+      "Id": "849345445",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood_Fall_1.wav",
+      "Path": "Media/849345445.wem",
+      "CachePath": "SFX/Wood_Fall_1_818F3B66.wem"
+     },
+     {
+      "Id": "956042614",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood_Fall_3.wav",
+      "Path": "Media/956042614.wem",
+      "CachePath": "SFX/Wood_Fall_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2401049040",
+      "Name": "Play_Player_Pain",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Pain",
+      "GUID": "{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.47865412",
+      "DurationMax": "0.69192624",
+      "MediaRefs": [
+       {
+        "Id": "50370413"
+       },
+       {
+        "Id": "154129631"
+       },
+       {
+        "Id": "392784520"
+       },
+       {
+        "Id": "646975968"
+       },
+       {
+        "Id": "849345445"
+       },
+       {
+        "Id": "956042614"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2550201584",
     "Type": "Event",
     "GUID": "{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}",
@@ -5970,6 +6109,43 @@
         "Name": "SW_T",
         "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
         "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "2901149947",
+    "Type": "Event",
+    "GUID": "{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}",
+    "Language": "SFX",
+    "Hash": "{99EE1B90-CE44-E24C-8A81-84DD0073F06A}",
+    "ObjectPath": "Play_Player_Scream",
+    "ShortName": "Play_Player_Scream",
+    "Path": "Event/Play_Player_Scream.bnk",
+    "Media": [
+     {
+      "Id": "923323399",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Falling_Scream.wav",
+      "Path": "Media/923323399.wem",
+      "CachePath": "SFX/Player_Falling_Scream_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2901149947",
+      "Name": "Play_Player_Scream",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Scream",
+      "GUID": "{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.4190834",
+      "DurationMax": "2.4190834",
+      "MediaRefs": [
+       {
+        "Id": "923323399"
        }
       ]
      }
@@ -8115,6 +8291,6 @@
     ]
    }
   ],
-  "FileHash": "{D706ACAE-A05B-7E8F-E9B0-F8DB53ED17C0}"
+  "FileHash": "{7CEF29FB-0F54-E37F-0D98-4202D02E7970}"
  }
 }

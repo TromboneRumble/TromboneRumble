@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	674166051	Stop_Host_Speaking			\Default Work Unit\Ambience\Stop_Host_Speaking	
+
