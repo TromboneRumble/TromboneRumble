@@ -43,7 +43,7 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 		return;
 	}
 
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
+	const int CurrentSessionPlayerCount = GetExpectedPlayerCount();
 
 	// End만 알리면 입력만 막힌 채 아무도 결과 레벨로 못 간다. 정식 종료 시퀀스를 돌린다
 	if (RhythmEndedPlayers.Num() >= CurrentSessionPlayerCount)
@@ -59,7 +59,7 @@ void AInGameMode::OnRhythmGameEndedReport(APlayerController* PC)
 		return;
 	}
 
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
+	const int CurrentSessionPlayerCount = GetExpectedPlayerCount();
 	
 	RhythmEndedPlayers.AddUnique(PC);
 
@@ -70,6 +70,18 @@ void AInGameMode::OnRhythmGameEndedReport(APlayerController* PC)
 	}
 
 	StartEndSequence(CurrentSessionPlayerCount);
+}
+
+int32 AInGameMode::GetExpectedPlayerCount() const
+{
+	if (GetWorld()->GetNetMode() == NM_Standalone)
+	{
+		return 1;
+	}
+
+	// 세션이 없으면 0이 온다. 그대로 쓰면 종료 조건이 항상 참이 되고 호스트 자가 트리거는 반대로 안 걸린다.
+	const int32 SessionCount = UEasyStatics::GetCurrentGameSessionPlayerCount(this);
+	return SessionCount > 0 ? SessionCount : GetWorld()->GetNumPlayerControllers();
 }
 
 void AInGameMode::StartEndSequence(int32 InSessionPlayerCount)
@@ -98,7 +110,7 @@ void AInGameMode::StartEndSequence(int32 InSessionPlayerCount)
 	}
 
 	// 혼자면 보고해줄 클라가 없으므로 호스트가 스스로 이동을 건다
-	if (InSessionPlayerCount == 1)
+	if (InSessionPlayerCount <= 1)
 	{
 		OnClientTravelToResultLevelAndLeaveSession();
 	}
@@ -117,10 +129,8 @@ void AInGameMode::TryTravelToResultLevel()
 	{
 		return;
 	}
-
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
-
-	if (ClientsTravelToResultSceneCount < CurrentSessionPlayerCount - 1)
+	
+	if (ClientsTravelToResultSceneCount < GetExpectedPlayerCount() - 1)
 	{
 		return;
 	}
@@ -169,11 +179,9 @@ void AInGameMode::TryStartInGamePlay()
 		return;
 	}
 
-	const int CurrentSessionPlayerCount = GetWorld()->GetNetMode() == NM_Standalone ? 1 : UEasyStatics::GetCurrentGameSessionPlayerCount(this);
-
 	//현재 접속한 플레이어
 	const int32 CurrentPlayerCount = GameState ? GameState->PlayerArray.Num() : 0;
-	if (CurrentPlayerCount < CurrentSessionPlayerCount)
+	if (CurrentPlayerCount < GetExpectedPlayerCount())
 	{
 		return;
 	}

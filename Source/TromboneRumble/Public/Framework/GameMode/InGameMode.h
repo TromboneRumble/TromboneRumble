@@ -24,6 +24,9 @@ private:
 
 	void TryStartInGamePlay();
 
+	/** @return How many players the end sequence should wait for. Never returns zero. */
+	int32 GetExpectedPlayerCount() const;
+
 	// 결과 데이터 저장 + End 브로드캐스트 + 클라 이동 요청까지 한 묶음
 	void StartEndSequence(int32 InSessionPlayerCount);
 
