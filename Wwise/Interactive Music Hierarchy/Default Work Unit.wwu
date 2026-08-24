@@ -72867,7 +72867,7 @@
 													<MusicCue Name="Exit Cue" ID="{AFBE7278-AD7C-4572-95B1-B2FBB31F3C6E}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="201266.666666667"/>
+															<Property Name="TimeMs" Type="Real64" Value="166941.176470588"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -72917,7 +72917,7 @@
 													<MusicCue Name="Event_Disable_Click" ID="{7598B540-E79B-4A5C-9B07-6C011FDA8CBB}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="166322.848029891"/>
+															<Property Name="TimeMs" Type="Real64" Value="165529.411764706"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -73306,11 +73306,6 @@
 						<MusicSegment Name="SnowField_Lobby_Ambience" ID="{9E753246-ABB1-4B4F-9FF0-1A3DB09F5B73}" ShortID="41112413">
 							<PropertyList>
 								<Property Name="EndPosition" Type="Real64" Value="840500"/>
-								<Property Name="Volume" Type="Real64">
-									<ValueList>
-										<Value>1</Value>
-									</ValueList>
-								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -73440,6 +73435,13 @@
 									</ObjectLists>
 								</MusicTrack>
 								<MusicTrack Name="Children_Laugh_2" ID="{9A85124E-EE95-4544-85ED-7AD9136B1E2F}" ShortID="526171655">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
@@ -73551,6 +73553,13 @@
 									</ObjectLists>
 								</MusicTrack>
 								<MusicTrack Name="Jingle Bell" ID="{B672AD90-A85D-4127-93E9-96EAFD2D335F}" ShortID="901460570">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
@@ -73665,7 +73674,7 @@
 									<PropertyList>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>12</Value>
+												<Value>8</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>

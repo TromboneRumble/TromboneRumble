@@ -1,0 +1,33 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3118157186",
+    "Type": "Event",
+    "GUID": "{56C67807-BCAE-4981-BF94-AD07097741CB}",
+    "Language": "SFX",
+    "Hash": "{3FA89883-C2F7-99EC-FCE6-9612E425C6D5}",
+    "ObjectPath": "Stop_SnowLobby_Ambience",
+    "ShortName": "Stop_SnowLobby_Ambience",
+    "Path": "Event/Stop_SnowLobby_Ambience.bnk",
+    "Events": [
+     {
+      "Id": "3118157186",
+      "Name": "Stop_SnowLobby_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Stop_SnowLobby_Ambience",
+      "GUID": "{56C67807-BCAE-4981-BF94-AD07097741CB}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{AD15B8C5-1670-2781-122C-2E8B42148BB7}"
+ }
+}

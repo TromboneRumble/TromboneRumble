@@ -87,7 +87,7 @@
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
     "Language": "SFX",
-    "Hash": "{F18BD239-3333-73A0-4D7B-29D6EE31AF3A}",
+    "Hash": "{05863A29-3C4D-1E6E-7E30-B8880B51BCC6}",
     "ObjectPath": "Play_MapD_Main",
     "ShortName": "Play_MapD_Main",
     "Path": "Event/Play_MapD_Main.bnk",
@@ -136,8 +136,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_D_Rhythm\\Play_MapD_Main",
       "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
       "DurationType": "OneShot",
-      "DurationMin": "201.26668",
-      "DurationMax": "201.26668",
+      "DurationMin": "166.94118",
+      "DurationMax": "166.94118",
       "MediaRefs": [
        {
         "Id": "408233001"
@@ -1103,7 +1103,7 @@
     "Type": "Event",
     "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
     "Language": "SFX",
-    "Hash": "{BB9E965A-24A0-4109-ABD1-2490686027B9}",
+    "Hash": "{77BFEB9D-CEB7-07C2-951B-B053DBA663F2}",
     "ObjectPath": "Play_SnowLobby_Ambience",
     "ShortName": "Play_SnowLobby_Ambience",
     "Path": "Event/Play_SnowLobby_Ambience.bnk",
@@ -1389,7 +1389,7 @@
     "Type": "Event",
     "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
     "Language": "SFX",
-    "Hash": "{361ED350-C088-F598-4F1E-C92602032C0E}",
+    "Hash": "{D19C3ABC-4F3E-B26B-EEEC-DFECD357369B}",
     "ObjectPath": "Play_Bonfire_On",
     "ShortName": "Play_Bonfire_On",
     "Path": "Event/Play_Bonfire_On.bnk",
@@ -6950,6 +6950,28 @@
     ]
    },
    {
+    "Id": "3118157186",
+    "Type": "Event",
+    "GUID": "{56C67807-BCAE-4981-BF94-AD07097741CB}",
+    "Language": "SFX",
+    "Hash": "{3FA89883-C2F7-99EC-FCE6-9612E425C6D5}",
+    "ObjectPath": "Stop_SnowLobby_Ambience",
+    "ShortName": "Stop_SnowLobby_Ambience",
+    "Path": "Event/Stop_SnowLobby_Ambience.bnk",
+    "Events": [
+     {
+      "Id": "3118157186",
+      "Name": "Stop_SnowLobby_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Stop_SnowLobby_Ambience",
+      "GUID": "{56C67807-BCAE-4981-BF94-AD07097741CB}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ]
+   },
+   {
     "Id": "3199326751",
     "Type": "Event",
     "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
@@ -8093,6 +8115,6 @@
     ]
    }
   ],
-  "FileHash": "{37AC2A47-2B9D-96A7-8F98-4F83CF38660A}"
+  "FileHash": "{D706ACAE-A05B-7E8F-E9B0-F8DB53ED17C0}"
  }
 }

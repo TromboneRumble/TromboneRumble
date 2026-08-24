@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
     "Language": "SFX",
-    "Hash": "{361ED350-C088-F598-4F1E-C92602032C0E}",
+    "Hash": "{D19C3ABC-4F3E-B26B-EEEC-DFECD357369B}",
     "ObjectPath": "Play_Bonfire_On",
     "ShortName": "Play_Bonfire_On",
     "Path": "Event/Play_Bonfire_On.bnk",
@@ -42,6 +42,6 @@
     ]
    }
   ],
-  "FileHash": "{890C0A24-F0EB-9862-61D1-40024625424F}"
+  "FileHash": "{8C161198-89D1-E40A-C409-8F7AEC1F5E2A}"
  }
 }

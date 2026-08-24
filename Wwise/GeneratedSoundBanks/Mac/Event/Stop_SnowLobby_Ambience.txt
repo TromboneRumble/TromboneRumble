@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3118157186	Stop_SnowLobby_Ambience			\Default Work Unit\Ambience\Stop_SnowLobby_Ambience	
+

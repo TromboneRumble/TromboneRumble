@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="832608992" Type="Event" GUID="{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}" Language="SFX" Hash="{BB9E965A-24A0-4109-ABD1-2490686027B9}">
+		<SoundBank Id="832608992" Type="Event" GUID="{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}" Language="SFX" Hash="{77BFEB9D-CEB7-07C2-951B-B053DBA663F2}">
 			<ObjectPath>Play_SnowLobby_Ambience</ObjectPath>
 			<ShortName>Play_SnowLobby_Ambience</ShortName>
 			<Path>Event/Play_SnowLobby_Ambience.bnk</Path>
@@ -39,5 +39,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5DBC1EEA-AD30-1947-85C7-F75F133334C8}</FileHash>
+	<FileHash>{0388D343-54FF-F5EC-F36A-8233CAFDFCAB}</FileHash>
 </SoundBanksInfo>

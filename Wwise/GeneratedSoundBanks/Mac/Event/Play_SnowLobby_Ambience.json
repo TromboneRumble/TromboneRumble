@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
     "Language": "SFX",
-    "Hash": "{BB9E965A-24A0-4109-ABD1-2490686027B9}",
+    "Hash": "{77BFEB9D-CEB7-07C2-951B-B053DBA663F2}",
     "ObjectPath": "Play_SnowLobby_Ambience",
     "ShortName": "Play_SnowLobby_Ambience",
     "Path": "Event/Play_SnowLobby_Ambience.bnk",
@@ -79,6 +79,6 @@
     ]
    }
   ],
-  "FileHash": "{D306B41F-1683-598E-9569-207C20C7BA4A}"
+  "FileHash": "{8004CB99-DAB7-A08C-D78D-E98101E36E3B}"
  }
 }

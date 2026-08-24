@@ -1207,6 +1207,20 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Stop_SnowLobby_Ambience" ID="{56C67807-BCAE-4981-BF94-AD07097741CB}">
+							<ChildrenList>
+								<Action Name="" ID="{B5A342D9-DC32-409A-BE64-A1CF6F964161}" ShortID="277910029">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="SnowField_Lobby_Ambience" ID="{9E753246-ABB1-4B4F-9FF0-1A3DB09F5B73}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
