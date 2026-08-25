@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3375176006	Play_Snow_Throw			\Default Work Unit\Object_SFX\Play_Trash,Snow\Play_Snow_Throw	
+

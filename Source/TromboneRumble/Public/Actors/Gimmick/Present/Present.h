@@ -7,7 +7,6 @@
 #include "Present.generated.h"
 
 class UAkAudioEvent;
-class UAkComponent;
 class USphereComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
@@ -42,9 +41,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USphereComponent> OverlapSphere;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	TObjectPtr<UAkComponent> AkComponent;
 
 	/** 착지 후 선물 주변에서 계속 재생되는 반짝임 (에셋 미지정이면 아무 일도 하지 않음) */
 	UPROPERTY(EditAnywhere, Category = "Components")

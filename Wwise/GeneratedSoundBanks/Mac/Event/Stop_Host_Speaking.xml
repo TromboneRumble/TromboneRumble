@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="674166051" Type="Event" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" Language="SFX" Hash="{8A616607-33C3-3EF4-F297-4AFA0777A86B}">
+			<ObjectPath>Stop_Host_Speaking</ObjectPath>
+			<ShortName>Stop_Host_Speaking</ShortName>
+			<Path>Event/Stop_Host_Speaking.bnk</Path>
+			<Events>
+				<Event Id="674166051" Name="Stop_Host_Speaking" ObjectPath="\Events\Default Work Unit\Ambience\Stop_Host_Speaking" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{93972A0D-4DC7-64F8-B9A9-D5E5DE4D83FC}</FileHash>
+</SoundBanksInfo>

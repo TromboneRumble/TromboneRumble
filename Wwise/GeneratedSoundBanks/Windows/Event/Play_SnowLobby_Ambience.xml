@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="832608992" Type="Event" GUID="{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}" Language="SFX" Hash="{77BFEB9D-CEB7-07C2-951B-B053DBA663F2}">
+			<ObjectPath>Play_SnowLobby_Ambience</ObjectPath>
+			<ShortName>Play_SnowLobby_Ambience</ShortName>
+			<Path>Event/Play_SnowLobby_Ambience.bnk</Path>
+			<Media>
+				<File Id="645788486" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Children_Laugh_2.wav</ShortName>
+					<Path>Media/645788486.wem</Path>
+					<CachePath>SFX/Children_Laugh_2_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="689150488" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Jingle Bell.wav</ShortName>
+					<Path>Media/689150488.wem</Path>
+					<CachePath>SFX/Jingle Bell_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="754918447" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Children_Laugh_!.wav</ShortName>
+					<Path>Media/754918447.wem</Path>
+					<CachePath>SFX/Children_Laugh_!_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1057190544" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Spot Walla_1-01.wav</ShortName>
+					<Path>Media/1057190544.wem</Path>
+					<CachePath>SFX/Spot Walla_1-01_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="832608992" Name="Play_SnowLobby_Ambience" ObjectPath="\Events\Default Work Unit\Ambience\Play_SnowLobby_Ambience" GUID="{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}" DurationType="OneShot" DurationMin="827.5" DurationMax="827.5">
+					<MediaRefs>
+						<MediaRef Id="645788486"/>
+						<MediaRef Id="689150488"/>
+						<MediaRef Id="754918447"/>
+						<MediaRef Id="1057190544"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{0B3D6AA0-0059-4337-D357-04E764A67D45}</FileHash>
+</SoundBanksInfo>

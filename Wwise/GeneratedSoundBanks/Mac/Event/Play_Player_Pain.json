@@ -1,0 +1,128 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2401049040",
+    "Type": "Event",
+    "GUID": "{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}",
+    "Language": "SFX",
+    "Hash": "{0B79F4A4-4867-B3A2-B257-EF360FC18A8F}",
+    "ObjectPath": "Play_Player_Pain",
+    "ShortName": "Play_Player_Pain",
+    "Path": "Event/Play_Player_Pain.bnk",
+    "Media": [
+     {
+      "Id": "50370413",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Pain_Scream_2.wav",
+      "Path": "Media/50370413.wem",
+      "CachePath": "SFX/Player_Pain_Scream_2_818F3B66.wem"
+     },
+     {
+      "Id": "154129631",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood_Fall_2.wav",
+      "Path": "Media/154129631.wem",
+      "CachePath": "SFX/Wood_Fall_2_818F3B66.wem"
+     },
+     {
+      "Id": "392784520",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Pain_Scream_3.wav",
+      "Path": "Media/392784520.wem",
+      "CachePath": "SFX/Player_Pain_Scream_3_818F3B66.wem"
+     },
+     {
+      "Id": "646975968",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Pain_Scream_1.wav",
+      "Path": "Media/646975968.wem",
+      "CachePath": "SFX/Player_Pain_Scream_1_818F3B66.wem"
+     },
+     {
+      "Id": "849345445",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood_Fall_1.wav",
+      "Path": "Media/849345445.wem",
+      "CachePath": "SFX/Wood_Fall_1_818F3B66.wem"
+     },
+     {
+      "Id": "956042614",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Wood_Fall_3.wav",
+      "Path": "Media/956042614.wem",
+      "CachePath": "SFX/Wood_Fall_3_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2401049040",
+      "Name": "Play_Player_Pain",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Pain",
+      "GUID": "{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.47865412",
+      "DurationMax": "0.69192624",
+      "MediaRefs": [
+       {
+        "Id": "50370413"
+       },
+       {
+        "Id": "154129631"
+       },
+       {
+        "Id": "392784520"
+       },
+       {
+        "Id": "646975968"
+       },
+       {
+        "Id": "849345445"
+       },
+       {
+        "Id": "956042614"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{41AD0651-F9C5-5DF8-7415-BF82F09F7CFA}"
+ }
+}

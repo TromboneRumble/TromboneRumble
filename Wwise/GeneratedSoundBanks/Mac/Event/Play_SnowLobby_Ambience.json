@@ -1,0 +1,84 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "832608992",
+    "Type": "Event",
+    "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
+    "Language": "SFX",
+    "Hash": "{77BFEB9D-CEB7-07C2-951B-B053DBA663F2}",
+    "ObjectPath": "Play_SnowLobby_Ambience",
+    "ShortName": "Play_SnowLobby_Ambience",
+    "Path": "Event/Play_SnowLobby_Ambience.bnk",
+    "Media": [
+     {
+      "Id": "645788486",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Children_Laugh_2.wav",
+      "Path": "Media/645788486.wem",
+      "CachePath": "SFX/Children_Laugh_2_FBC78EF0.wem"
+     },
+     {
+      "Id": "689150488",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Jingle Bell.wav",
+      "Path": "Media/689150488.wem",
+      "CachePath": "SFX/Jingle Bell_FBC78EF0.wem"
+     },
+     {
+      "Id": "754918447",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Children_Laugh_!.wav",
+      "Path": "Media/754918447.wem",
+      "CachePath": "SFX/Children_Laugh_!_FBC78EF0.wem"
+     },
+     {
+      "Id": "1057190544",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Spot Walla_1-01.wav",
+      "Path": "Media/1057190544.wem",
+      "CachePath": "SFX/Spot Walla_1-01_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "832608992",
+      "Name": "Play_SnowLobby_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_SnowLobby_Ambience",
+      "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
+      "DurationType": "OneShot",
+      "DurationMin": "827.5",
+      "DurationMax": "827.5",
+      "MediaRefs": [
+       {
+        "Id": "645788486"
+       },
+       {
+        "Id": "689150488"
+       },
+       {
+        "Id": "754918447"
+       },
+       {
+        "Id": "1057190544"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{8004CB99-DAB7-A08C-D78D-E98101E36E3B}"
+ }
+}

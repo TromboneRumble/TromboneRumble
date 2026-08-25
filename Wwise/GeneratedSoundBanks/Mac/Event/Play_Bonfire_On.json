@@ -1,0 +1,47 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "926619529",
+    "Type": "Event",
+    "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
+    "Language": "SFX",
+    "Hash": "{D19C3ABC-4F3E-B26B-EEEC-DFECD357369B}",
+    "ObjectPath": "Play_Bonfire_On",
+    "ShortName": "Play_Bonfire_On",
+    "Path": "Event/Play_Bonfire_On.bnk",
+    "Media": [
+     {
+      "Id": "916979178",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "bonfire.wav",
+      "Path": "Media/916979178.wem",
+      "CachePath": "SFX/bonfire_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "926619529",
+      "Name": "Play_Bonfire_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Bonfire_On",
+      "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
+      "MaxAttenuation": "1000",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "916979178"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{33409E96-DE5D-5CD6-46BA-87687820E40A}"
+ }
+}

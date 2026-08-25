@@ -33,7 +33,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="418248778" Name="Play_Trash_Hit" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash\Play_Trash_Hit" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" DurationType="OneShot" DurationMin="0.9142917" DurationMax="1.33225">
+				<Event Id="418248778" Name="Play_Trash_Hit" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash,Snow\Play_Trash_Hit" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" DurationType="OneShot" DurationMin="0.9142917" DurationMax="1.33225">
 					<MediaRefs>
 						<MediaRef Id="584871384"/>
 						<MediaRef Id="587109666"/>
@@ -45,5 +45,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{EFFF3D0A-14E3-A6B3-CD0A-138246560D89}</FileHash>
+	<FileHash>{2D2F30F0-3AE2-7352-AF24-39FE0F04453A}</FileHash>
 </SoundBanksInfo>

@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3375176006",
+    "Type": "Event",
+    "GUID": "{D231A180-52CB-4213-AA71-1DC58068E8C3}",
+    "Language": "SFX",
+    "Hash": "{FA69AD07-6F50-222C-5FC7-6DBDAAD61CFF}",
+    "ObjectPath": "Play_Snow_Throw",
+    "ShortName": "Play_Snow_Throw",
+    "Path": "Event/Play_Snow_Throw.bnk",
+    "Media": [
+     {
+      "Id": "497327386",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Trash_Throw.wav",
+      "Path": "Media/497327386.wem",
+      "CachePath": "SFX/Trash_Throw_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3375176006",
+      "Name": "Play_Snow_Throw",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Snow_Throw",
+      "GUID": "{D231A180-52CB-4213-AA71-1DC58068E8C3}",
+      "MaxAttenuation": "2000",
+      "DurationType": "OneShot",
+      "DurationMin": "9.744",
+      "DurationMax": "9.744",
+      "MediaRefs": [
+       {
+        "Id": "497327386"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{7CDAD1D9-3290-E8CB-1EDD-74B7DBC599F3}"
+ }
+}

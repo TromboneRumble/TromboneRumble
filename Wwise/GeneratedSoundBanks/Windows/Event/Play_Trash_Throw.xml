@@ -13,7 +13,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="836697457" Name="Play_Trash_Throw" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash\Play_Trash_Throw" GUID="{59761350-8076-4CC8-AC2A-13D68D711760}" MaxAttenuation="2000" DurationType="OneShot" DurationMin="9.744" DurationMax="9.744">
+				<Event Id="836697457" Name="Play_Trash_Throw" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash,Snow\Play_Trash_Throw" GUID="{59761350-8076-4CC8-AC2A-13D68D711760}" MaxAttenuation="2000" DurationType="OneShot" DurationMin="9.744" DurationMax="9.744">
 					<MediaRefs>
 						<MediaRef Id="497327386"/>
 					</MediaRefs>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E630AB37-19F0-8CFF-415C-C0654A8A1FB2}</FileHash>
+	<FileHash>{5FAC365C-D36A-6538-7E17-6B06E86E1C27}</FileHash>
 </SoundBanksInfo>

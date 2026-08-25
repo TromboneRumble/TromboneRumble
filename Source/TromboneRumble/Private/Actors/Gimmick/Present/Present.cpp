@@ -2,8 +2,8 @@
 
 #include "Actors/Gimmick/Present/Present.h"
 #include "Components/SphereComponent.h"
-#include "AkComponent.h"
 #include "AkGameplayTypes.h"
+#include "AkGameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/RotatingMovementComponent.h"
@@ -72,13 +72,6 @@ APresent::APresent()
 	RotatingMovement->bRotationInLocalSpace = false;
 	// 낙하 중 Tick의 진자 운동과 싸우지 않도록 착지 전까지 꺼둔다
 	RotatingMovement->SetAutoActivate(false);
-
-	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
-	if (AkComponent)
-	{
-		AkComponent->OcclusionRefreshInterval = 0.f;
-		AkComponent->SetupAttachment(RootComponent);
-	}
 
 	bReplicates = true;
 	SetReplicateMovement(false);
@@ -281,9 +274,9 @@ void APresent::HandleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (PC && PC->IsLocalController())
 	{
-		if (AkComponent && PresentHitSoundEvent)
+		if (PresentHitSoundEvent)
 		{
-			AkComponent->PostAkEvent(PresentHitSoundEvent, 0, FOnAkPostEventCallback());
+			UAkGameplayStatics::PostEvent(PresentHitSoundEvent, nullptr, 0, FOnAkPostEventCallback());
 		}
 
 		// 로컬 스코어 UI 즉시 반영 (Trombone Rumble 프로젝트 구조 반영)
