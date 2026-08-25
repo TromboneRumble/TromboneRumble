@@ -1202,6 +1202,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Light_Hover" ID="{50BD4430-546A-4153-B84B-464466778173}">
+							<ChildrenList>
+								<Action Name="" ID="{3CB93D58-9629-4A14-A253-3113224373CF}" ShortID="981707099">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="UI_Light" ID="{0B106386-B99E-4FD3-8C02-8766892EE760}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Ambience" ID="{9D631DAB-C676-4FA7-A200-9E70522A2365}" ShortID="524313328">

@@ -375,6 +375,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="598895845" Type="Event" GUID="{50BD4430-546A-4153-B84B-464466778173}" Language="SFX" Hash="{7070993A-5433-AE04-9C8D-E47250D1DD29}">
+			<ObjectPath>Play_Light_Hover</ObjectPath>
+			<ShortName>Play_Light_Hover</ShortName>
+			<Path>Event/Play_Light_Hover.bnk</Path>
+			<Media>
+				<File Id="275803907" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Light.wav</ShortName>
+					<Path>Media/275803907.wem</Path>
+					<CachePath>SFX/UI_Light_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="598895845" Name="Play_Light_Hover" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Light_Hover" GUID="{50BD4430-546A-4153-B84B-464466778173}" DurationType="OneShot" DurationMin="1.4047947" DurationMax="1.4891882">
+					<MediaRefs>
+						<MediaRef Id="275803907"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="674166051" Type="Event" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" Language="SFX" Hash="{8A616607-33C3-3EF4-F297-4AFA0777A86B}">
 			<ObjectPath>Stop_Host_Speaking</ObjectPath>
 			<ShortName>Stop_Host_Speaking</ShortName>
@@ -1599,7 +1618,7 @@
 				</AcousticTexture>
 			</AcousticTextures>
 		</SoundBank>
-		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{DD977E42-4E57-16B2-655B-27E32D9AC9BA}">
+		<SoundBank Id="1402154955" Type="Event" GUID="{383CC094-19B9-4794-8497-472E2CAFCAEC}" Language="SFX" Hash="{E2706516-504B-E555-880C-A46C5D831D80}">
 			<ObjectPath>Play_Ranking_BGM</ObjectPath>
 			<ShortName>Play_Ranking_BGM</ShortName>
 			<Path>Event/Play_Ranking_BGM.bnk</Path>
@@ -3937,5 +3956,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{BCA12FAC-F8F3-F087-B0DB-529017DB112A}</FileHash>
+	<FileHash>{6A1E3696-AD68-544D-C729-C78AF8CEACA5}</FileHash>
 </SoundBanksInfo>
