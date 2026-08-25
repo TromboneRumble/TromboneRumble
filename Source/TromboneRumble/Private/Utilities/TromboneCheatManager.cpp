@@ -438,6 +438,7 @@ void UTromboneCheatManager::Trombone_XRayCropCapture(const FString& EnabledStrin
 
 void UTromboneCheatManager::Trombone_ResultTest(const FString& PlayerCountString, const FString& StageString)
 {
+#if !UE_BUILD_SHIPPING
 	UWorld* World = GetWorld();
 	if (!World || !World->GetGameInstance())
 	{
@@ -469,6 +470,7 @@ void UTromboneCheatManager::Trombone_ResultTest(const FString& PlayerCountString
 	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("더미 결과 %d명 / %s — 결과 레벨로 이동합니다"), PlayerCount, *Stage));
 
 	ResultSubsystem->OpenResultLevel(World);
+#endif
 }
 
 void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()
