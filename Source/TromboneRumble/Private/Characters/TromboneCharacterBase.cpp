@@ -8,6 +8,8 @@
 #include "Net/UnrealNetwork.h"
 #include "NiagaraComponent.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
+#include "Subsystems/GameStateSubsystem.h"
+#include "Utilities/DebugHelper.h"
 
 namespace
 {
@@ -332,10 +334,63 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 	/** TODO : UCharacterAnimInstance::OnGetUpMontageEnded에서 래그돌 입력 차단을 해제하는데, 여기서 콜백을 넘겨주는 식으로 개선 못하나? */
 	AddInputBlock(EInputBlockReason::Ragdoll);
 
-	if (AkSoundComponent && RagdollBooSound)
+	bool bIsLobby = false;
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		if (const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>())
+		{
+			bIsLobby = IsLobbyLevelType(GameStateSubsystem->GetLevelState());
+		}
+	}
+	
+	if (!bIsLobby && AkSoundComponent && RagdollBooSound)
 	{
 		AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
 	}
+}
+
+void ATromboneCharacterBase::Multicast_PlayFallScream_Implementation()
+{
+	if (AkSoundComponent && FallScreamSound)
+	{
+		AkSoundComponent->PostAkEvent(FallScreamSound, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ATromboneCharacterBase::Multicast_PlayLandPain_Implementation()
+{
+	if (AkSoundComponent && LandPainSound)
+	{
+		AkSoundComponent->PostAkEvent(LandPainSound, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ATromboneCharacterBase::SetLandingSoundEnabled(const bool bEnable)
+{
+	if (!HasAuthority() || !GetMesh())
+	{
+		return;
+	}
+
+	GetMesh()->SetAllBodiesNotifyRigidBodyCollision(bEnable);
+
+	GetMesh()->OnComponentHit.RemoveDynamic(this, &ThisClass::HandleRagdollLandingHit);
+	if (bEnable)
+	{
+		GetMesh()->OnComponentHit.AddDynamic(this, &ThisClass::HandleRagdollLandingHit);
+	}
+}
+
+void ATromboneCharacterBase::HandleRagdollLandingHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (NormalImpulse.SizeSquared() < FMath::Square(LandingImpulseThreshold))
+	{
+		return;
+	}
+
+	SetLandingSoundEnabled(false);
+	Multicast_PlayLandPain();
 }
 
 void ATromboneCharacterBase::HandleRagdollEnded()
