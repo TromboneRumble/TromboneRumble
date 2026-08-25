@@ -460,24 +460,3 @@ void ATromboneCharacterBase::OnRep_IsInvincible()
 		EndInvincibleDelegate.Broadcast();
 	}
 }
-
-void ATromboneCharacterBase::Server_DebugStun_Implementation()
-{
-	if (bIsStun)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
-		EndStun();
-	}
-	else
-	{
-		OnStun();
-	}
-}
-
-void ATromboneCharacterBase::Server_DebugRagdoll_Implementation()
-{
-	if (RagdollComponent)
-	{
-		RagdollComponent->StartRagdoll();
-	}
-}

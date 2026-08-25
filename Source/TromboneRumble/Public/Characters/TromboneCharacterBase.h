@@ -68,12 +68,6 @@ public:
 	FInvincibleSignature OnInvincibleDelegate;
 	FInvincibleSignature EndInvincibleDelegate;
 
-	UFUNCTION(Server, Reliable)
-	void Server_DebugStun();
-
-	UFUNCTION(Server, Reliable)
-	void Server_DebugRagdoll();
-
 	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
 	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
 

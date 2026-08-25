@@ -16,6 +16,7 @@
 #include "Subsystems/ResultSceneSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "TromboneGamePlayTags.h"
+#include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
@@ -132,7 +133,10 @@ void UTromboneCheatManager::Trombone_Ragdoll()
 	APawn* MyPawn = GetOuterAPlayerController()->GetPawn();
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(MyPawn))
 	{
-		TromboneCharacter->Server_DebugRagdoll();
+		if (UTromboneRagdollComponent* RagdollComponent = TromboneCharacter->GetRagdollComponent())
+		{
+			RagdollComponent->StartRagdoll();
+		}
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Ragdoll executed"));
 	}
 }
@@ -142,7 +146,11 @@ void UTromboneCheatManager::Trombone_Stun()
 	APawn* MyPawn = GetOuterAPlayerController()->GetPawn();
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(MyPawn))
 	{
-		TromboneCharacter->Server_DebugStun();
+		FHitData HitData;
+		HitData.HitReaction = EHitReactionType::Stun;
+		
+		ICombatReceiver::Execute_OnHitReceived(TromboneCharacter, HitData);
+
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Stun executed"));
 	}
 }
