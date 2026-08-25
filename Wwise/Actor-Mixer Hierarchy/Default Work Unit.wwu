@@ -5034,6 +5034,48 @@
 								<ActiveSource Name="UI_Pop_Up" ID="{A920E62F-4CB1-446F-B137-9EA858D4CB37}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
+						<Sound Name="UI_Light" ID="{0B106386-B99E-4FD3-8C02-8766892EE760}" ShortID="727251514">
+							<PropertyList>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{4B11C853-E677-4487-B30E-7963866DAB84}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Max" Type="Real64" Value="50"/>
+													<Property Name="Min" Type="Real64" Value="-51"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-5</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_UI" ID="{45D09297-DBD9-49A8-8411-067F90583508}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Light" ID="{E60FCAB5-2791-4F70-8227-C221C76D6BFF}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Light.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="275803907"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Light" ID="{E60FCAB5-2791-4F70-8227-C221C76D6BFF}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
