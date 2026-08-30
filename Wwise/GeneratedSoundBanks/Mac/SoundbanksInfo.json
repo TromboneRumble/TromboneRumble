@@ -772,6 +772,43 @@
     ]
    },
    {
+    "Id": "598895845",
+    "Type": "Event",
+    "GUID": "{50BD4430-546A-4153-B84B-464466778173}",
+    "Language": "SFX",
+    "Hash": "{7070993A-5433-AE04-9C8D-E47250D1DD29}",
+    "ObjectPath": "Play_Light_Hover",
+    "ShortName": "Play_Light_Hover",
+    "Path": "Event/Play_Light_Hover.bnk",
+    "Media": [
+     {
+      "Id": "275803907",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Light.wav",
+      "Path": "Media/275803907.wem",
+      "CachePath": "SFX/UI_Light_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "598895845",
+      "Name": "Play_Light_Hover",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Light_Hover",
+      "GUID": "{50BD4430-546A-4153-B84B-464466778173}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.4047947",
+      "DurationMax": "1.4891882",
+      "MediaRefs": [
+       {
+        "Id": "275803907"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "674166051",
     "Type": "Event",
     "GUID": "{9B0C6089-856C-4594-BE83-AD833C97ACEF}",
@@ -3646,7 +3683,7 @@
     "Type": "Event",
     "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
     "Language": "SFX",
-    "Hash": "{DD977E42-4E57-16B2-655B-27E32D9AC9BA}",
+    "Hash": "{E2706516-504B-E555-880C-A46C5D831D80}",
     "ObjectPath": "Play_Ranking_BGM",
     "ShortName": "Play_Ranking_BGM",
     "Path": "Event/Play_Ranking_BGM.bnk",
@@ -8291,6 +8328,6 @@
     ]
    }
   ],
-  "FileHash": "{7CEF29FB-0F54-E37F-0D98-4202D02E7970}"
+  "FileHash": "{9E0EB88A-C7A6-5905-6D9A-897E58498CB8}"
  }
 }

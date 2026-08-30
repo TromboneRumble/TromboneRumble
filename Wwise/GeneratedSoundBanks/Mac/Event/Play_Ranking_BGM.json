@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
     "Language": "SFX",
-    "Hash": "{DD977E42-4E57-16B2-655B-27E32D9AC9BA}",
+    "Hash": "{E2706516-504B-E555-880C-A46C5D831D80}",
     "ObjectPath": "Play_Ranking_BGM",
     "ShortName": "Play_Ranking_BGM",
     "Path": "Event/Play_Ranking_BGM.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{7E9F8BE8-10CC-13CA-5910-2FA164EBA911}"
+  "FileHash": "{2736760E-593B-7547-06B8-B0256D7A5B2A}"
  }
 }

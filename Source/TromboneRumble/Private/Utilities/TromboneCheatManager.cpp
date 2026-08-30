@@ -16,6 +16,7 @@
 #include "Subsystems/ResultSceneSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "TromboneGamePlayTags.h"
+#include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
@@ -132,7 +133,10 @@ void UTromboneCheatManager::Trombone_Ragdoll()
 	APawn* MyPawn = GetOuterAPlayerController()->GetPawn();
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(MyPawn))
 	{
-		TromboneCharacter->Server_DebugRagdoll();
+		if (UTromboneRagdollComponent* RagdollComponent = TromboneCharacter->GetRagdollComponent())
+		{
+			RagdollComponent->StartRagdoll();
+		}
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Ragdoll executed"));
 	}
 }
@@ -142,7 +146,11 @@ void UTromboneCheatManager::Trombone_Stun()
 	APawn* MyPawn = GetOuterAPlayerController()->GetPawn();
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(MyPawn))
 	{
-		TromboneCharacter->Server_DebugStun();
+		FHitData HitData;
+		HitData.HitReaction = EHitReactionType::Stun;
+		
+		ICombatReceiver::Execute_OnHitReceived(TromboneCharacter, HitData);
+
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Stun executed"));
 	}
 }
@@ -430,6 +438,7 @@ void UTromboneCheatManager::Trombone_XRayCropCapture(const FString& EnabledStrin
 
 void UTromboneCheatManager::Trombone_ResultTest(const FString& PlayerCountString, const FString& StageString)
 {
+#if !UE_BUILD_SHIPPING
 	UWorld* World = GetWorld();
 	if (!World || !World->GetGameInstance())
 	{
@@ -461,6 +470,7 @@ void UTromboneCheatManager::Trombone_ResultTest(const FString& PlayerCountString
 	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("더미 결과 %d명 / %s — 결과 레벨로 이동합니다"), PlayerCount, *Stage));
 
 	ResultSubsystem->OpenResultLevel(World);
+#endif
 }
 
 void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()

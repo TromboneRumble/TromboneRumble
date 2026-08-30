@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	598895845	Play_Light_Hover			\Default Work Unit\UI_SFX\Play_Light_Hover	
+

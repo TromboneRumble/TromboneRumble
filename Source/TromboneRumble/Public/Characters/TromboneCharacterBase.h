@@ -68,14 +68,15 @@ public:
 	FInvincibleSignature OnInvincibleDelegate;
 	FInvincibleSignature EndInvincibleDelegate;
 
-	UFUNCTION(Server, Reliable)
-	void Server_DebugStun();
-
-	UFUNCTION(Server, Reliable)
-	void Server_DebugRagdoll();
-
 	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
 	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
+
+	/** Plays the falling scream on every machine. Server only. */
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayFallScream();
+
+	/** Watches for the first hard landing and plays the landing sound. Only the lobby turns this on. Server only. */
+	void SetLandingSoundEnabled(bool bEnable);
 
 protected:
 
@@ -97,6 +98,21 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
 	TObjectPtr<UAkAudioEvent> RagdollBooSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "로비 낙하 연출 - 낙하 비명 사운드"))
+	TObjectPtr<UAkAudioEvent> FallScreamSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "로비 낙하 연출 - 착지 비명 사운드"))
+	TObjectPtr<UAkAudioEvent> LandPainSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "착지 판정 충격량", ClampMin = "0.0"))
+	float LandingImpulseThreshold = 20000.f;
+
+	UFUNCTION()
+	void HandleRagdollLandingHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayLandPain();
 
 	/** 물리 애니메이션 (플레이어: 깃발, NPC: 상체 흐느적거림 등 파생 공용) */
 	UPROPERTY()

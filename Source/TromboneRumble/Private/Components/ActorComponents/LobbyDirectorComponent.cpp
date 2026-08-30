@@ -297,6 +297,9 @@ void ULobbyDirectorComponent::LaunchPlayerFalling(APlayerController* PC, const i
 
 	Ragdoll->SetAutoGetUpEnabled(bAutoGetUp);
 	Ragdoll->StartRagdoll(FVector::ZeroVector, InitialAngularVelocity);
+
+	Character->Multicast_PlayFallScream();
+	Character->SetLandingSoundEnabled(true);
 }
 
 void ULobbyDirectorComponent::StartGroundedPolling()

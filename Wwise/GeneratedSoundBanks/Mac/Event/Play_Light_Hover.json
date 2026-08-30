@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "598895845",
+    "Type": "Event",
+    "GUID": "{50BD4430-546A-4153-B84B-464466778173}",
+    "Language": "SFX",
+    "Hash": "{7070993A-5433-AE04-9C8D-E47250D1DD29}",
+    "ObjectPath": "Play_Light_Hover",
+    "ShortName": "Play_Light_Hover",
+    "Path": "Event/Play_Light_Hover.bnk",
+    "Media": [
+     {
+      "Id": "275803907",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UI_Light.wav",
+      "Path": "Media/275803907.wem",
+      "CachePath": "SFX/UI_Light_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "598895845",
+      "Name": "Play_Light_Hover",
+      "ObjectPath": "\\Events\\Default Work Unit\\UI_SFX\\Play_Light_Hover",
+      "GUID": "{50BD4430-546A-4153-B84B-464466778173}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.4047947",
+      "DurationMax": "1.4891882",
+      "MediaRefs": [
+       {
+        "Id": "275803907"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{073F82C7-66DF-57A4-C8D3-9B4410CA4F14}"
+ }
+}
