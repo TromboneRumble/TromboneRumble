@@ -8,18 +8,16 @@
 
 
 #if !UE_BUILD_SHIPPING
-extern TAutoConsoleVariable<int32> CVarDrunkardDebug; // 정의: DrunkardNPC.cpp
+extern TAutoConsoleVariable<int32> CVarDrunkardDebug;
 #endif
 
 namespace
 {
-	// DrunkardData 미지정 시 폴백 (수치 튜닝은 데이터 에셋에서)
 	constexpr float FallbackSpawnDelay = 20.f;
 }
 
 ADrunkardSpawner::ADrunkardSpawner()
 {
-	// 디버그 표시(Trombone.Drunkard.Debug) 전용 틱. 평상시엔 첫 분기에서 리턴한다
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -71,6 +69,7 @@ void ADrunkardSpawner::TrySpawnNPC()
 	FVector SpawnLocation = GetActorLocation();
 	FRotator SpawnRotation = GetActorRotation();
 
+	AActor* SpawnDoor = nullptr;
 	TArray<AActor*> ValidDoors;
 	for (AActor* Door : Doors)
 	{
@@ -78,9 +77,9 @@ void ADrunkardSpawner::TrySpawnNPC()
 	}
 	if (!ValidDoors.IsEmpty())
 	{
-		const AActor* Door = ValidDoors[FMath::RandRange(0, ValidDoors.Num() - 1)];
-		SpawnLocation = Door->GetActorLocation();
-		SpawnRotation = Door->GetActorRotation();
+		SpawnDoor = ValidDoors[FMath::RandRange(0, ValidDoors.Num() - 1)];
+		SpawnLocation = SpawnDoor->GetActorLocation();
+		SpawnRotation = SpawnDoor->GetActorRotation();
 	}
 
 	FActorSpawnParameters SpawnParams;
@@ -100,16 +99,26 @@ void ADrunkardSpawner::TrySpawnNPC()
 
 	if (UDrunkardStateComponent* State = NPC->GetStateComponent())
 	{
+		State->OnCaptureSucceeded.AddDynamic(this, &ThisClass::HandleNPCCaptureSucceeded);
 		State->BeginEntering();
 	}
+
+	OnDrunkardSpawned.Broadcast(NPC, SpawnDoor);
 }
 
 void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 {
+	OnDrunkardDespawned.Broadcast(Cast<ADrunkardNPC>(DestroyedActor));
+
 	ActiveNPC = nullptr;
 
 	const float Interval = DrunkardData ? DrunkardData->RespawnInterval : FallbackSpawnDelay;
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Interval, false);
+}
+
+void ADrunkardSpawner::HandleNPCCaptureSucceeded(ADefaultTromboneCharacter* Target)
+{
+	OnDrunkardCaptureSucceeded.Broadcast(ActiveNPC.Get(), Target);
 }
 
 AActor* ADrunkardSpawner::FindClosestDoor(const FVector& Location) const

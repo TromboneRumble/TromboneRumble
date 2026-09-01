@@ -21,6 +21,7 @@ enum class EDrunkardState : uint8
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDrunkardStateChanged, EDrunkardState, NewState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDrunkardTargetChanged, ADefaultTromboneCharacter*, NewTarget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDrunkardCaptureSucceeded, ADefaultTromboneCharacter*, Target);
 
 /** UDrunkardStateComponent
  *
@@ -78,6 +79,9 @@ public:
 
 	FOnDrunkardStateChanged OnStateChanged;
 	FOnDrunkardTargetChanged OnTargetChanged;
+
+	/** Called when an instrument-holding target has been captured. Push-only contacts do not count. */
+	FOnDrunkardCaptureSucceeded OnCaptureSucceeded;
 
 private:
 	

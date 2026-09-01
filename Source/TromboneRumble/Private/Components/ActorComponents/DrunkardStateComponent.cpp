@@ -179,6 +179,7 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 
 	if (bHasInstrument)
 	{
+		OnCaptureSucceeded.Broadcast(TargetCharacter);
 		BeginDiving();
 	}
 	else
