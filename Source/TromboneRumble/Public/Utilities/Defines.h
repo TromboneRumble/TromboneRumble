@@ -42,6 +42,7 @@ enum class EGimmickType : uint8
 	PressurePlate,
 	Ice,
 	Blizzard,
+	Drunkard,
 	MAX,
 	None = 255,
 };

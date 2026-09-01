@@ -17,7 +17,6 @@
 DEFINE_LOG_CATEGORY(LogDrunkard);
 
 #if !UE_BUILD_SHIPPING
-// 취객 기믹 전 상태 관찰용. 스포너(DrunkardSpawner.cpp)에서도 extern으로 참조
 TAutoConsoleVariable<int32> CVarDrunkardDebug(
 	TEXT("Trombone.Drunkard.Debug"),
 	0,
@@ -64,9 +63,10 @@ void ADrunkardNPC::BeginPlay()
 		XRaySilhouetteComponent = nullptr;
 	}
 
-	// 래그돌이 끝나 메시 물리가 리셋되면 상체 물리를 다시 얹는다
+	// 래그돌 시작 시 상체 물리 모터를 끄고, 끝나 메시 물리가 리셋되면 다시 얹는다
 	if (RagdollComponent)
 	{
+		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::ClearUpperBodyPhysics);
 		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::ApplyUpperBodyPhysics);
 	}
 
@@ -76,6 +76,71 @@ void ADrunkardNPC::BeginPlay()
 	// 스폰 프레임에는 첫 포즈 평가 전이라 본 트랜스폼 버퍼가 완성되지 않았을 수 있다.
 	// 그 상태로 PhysicalAnimation 제약이 생성되면 엔진이 빈 버퍼에 무검증 접근해 크래시하므로 한 틱 미룬다
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::ApplyUpperBodyPhysics);
+}
+
+void ADrunkardNPC::BeginDoorEntrance()
+{
+	if (!HasAuthority()) return;
+
+	// 스폰 회전이 실내를 향하므로 전방으로 스폰 거리의 두 배 = 문을 지나 같은 거리만큼 실내 지점
+	const float Offset = FMath::Abs(DrunkardData ? DrunkardData->BehindDoorOffset : 150.f);
+	DoorEntranceStart = GetActorLocation();
+	DoorEntranceEnd = DoorEntranceStart + GetActorForwardVector() * Offset * 2.f;
+	DoorEntranceElapsed = 0.f;
+	bDoorEntranceActive = true;
+}
+
+void ADrunkardNPC::BeginDive()
+{
+	if (!HasAuthority()) return;
+
+	// 다이브 중에 BT 이동이 끼어들지 않게 멈춘다
+	if (AController* MyController = GetController())
+	{
+		MyController->StopMovement();
+	}
+
+	Multicast_PlayDiveMontage();
+}
+
+void ADrunkardNPC::Multicast_PlayDiveMontage_Implementation()
+{
+	if (!DrunkardData || !DrunkardData->DiveMontage) return;
+
+	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(DrunkardData->DiveMontage);
+	}
+}
+
+void ADrunkardNPC::HandleDiveRagdollStart()
+{
+	// 노티파이는 몽타주를 재생한 모든 머신에서 떨어진다. 래그돌은 서버가 시작하고 복제로 퍼진다
+	if (!HasAuthority() || !RagdollComponent || IsRagdoll()) return;
+	if (!StateComponent || StateComponent->GetState() != EDrunkardState::Diving) return;
+
+	// 진행 방향으로 엎어지는 회전. 부호는 데이터에서 뒤집을 수 있다
+	const float SpinSpeed = DrunkardData ? DrunkardData->DiveSpinSpeed : 0.f;
+	RagdollComponent->StartRagdoll(GetVelocity(), GetActorRightVector() * SpinSpeed);
+}
+
+void ADrunkardNPC::HandleGetUpFinished()
+{
+	// 래그돌 종료(기상 시작)가 아니라 기상 몽타주 종료 시점. 여기부터 움직여야 미끄러지지 않는다
+	if (!HasAuthority() || !StateComponent) return;
+	if (StateComponent->GetState() != EDrunkardState::Diving) return;
+
+	StateComponent->HandleDiveFinished();
+}
+
+void ADrunkardNPC::ClearUpperBodyPhysics()
+{
+	if (!PhysicalAnimationComp || !DrunkardData) return;
+
+	// 세기 0짜리 빈 프로파일을 같은 본 이하에 적용하면 제약 드라이브가 전부 0이 되어 모터가 꺼진다
+	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(
+		DrunkardData->UpperBodyPhysicsRootBone, FPhysicalAnimationData(), true);
 }
 
 void ADrunkardNPC::ApplyUpperBodyPhysics()
@@ -148,6 +213,25 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 void ADrunkardNPC::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (bDoorEntranceActive && HasAuthority())
+	{
+		const float Duration = FMath::Max(0.05f, DrunkardData ? DrunkardData->EnterBurstDuration : 0.5f);
+		DoorEntranceElapsed += DeltaSeconds;
+		const float Alpha = FMath::Clamp(DoorEntranceElapsed / Duration, 0.f, 1.f);
+
+		// 스윕 없이 이동해 문 콜리전을 그대로 통과
+		SetActorLocation(FMath::Lerp(DoorEntranceStart, DoorEntranceEnd, Alpha), false);
+
+		if (Alpha >= 1.f)
+		{
+			bDoorEntranceActive = false;
+			if (StateComponent)
+			{
+				StateComponent->HandleDoorEntranceFinished();
+			}
+		}
+	}
 
 #if !UE_BUILD_SHIPPING
 	if (CVarDrunkardDebug.GetValueOnGameThread() != 0)
@@ -301,8 +385,10 @@ ADrunkardSpawner* ADrunkardNPC::GetOwningSpawner() const
 
 bool ADrunkardNPC::CanReceiveHit() const
 {
+	// Diving 포함: 포획 성공부터 기상까지는 하나의 연출이라 중간에 끊기지 않게 한다
 	if (StateComponent && (StateComponent->GetState() == EDrunkardState::Exiting
-						|| StateComponent->GetState() == EDrunkardState::Entering))
+						|| StateComponent->GetState() == EDrunkardState::Entering
+						|| StateComponent->GetState() == EDrunkardState::Diving))
 	{
 		return false;
 	}
