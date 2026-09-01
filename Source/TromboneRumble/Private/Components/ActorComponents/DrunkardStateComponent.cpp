@@ -13,8 +13,8 @@
 
 namespace
 {
-	// DrunkardData 미지정 시 폴백 (수치 튜닝은 데이터 에셋에서, 값은 에셋 기본값과 동일하게 유지)
-	constexpr float FallbackEnterDuration = 2.f;
+	constexpr float FallbackEnterDuration = 1.f;
+	constexpr float FallbackEnterBurstDuration = 0.5f;
 	constexpr float FallbackChaseDuration = 10.f;
 	constexpr float FallbackExitTimeout = 10.f;
 	constexpr float FallbackCaptureKnockbackForce = 300.f;
@@ -45,13 +45,35 @@ void UDrunkardStateComponent::BeginEntering()
 
 	SetState(EDrunkardState::Entering);
 
+	if (ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner()))
+	{
+		OwnerNPC->BeginDoorEntrance();
+	}
+
+	// 통과 완료 통지가 안 오는 사고 대비 안전망. 정상 흐름에선 HandleDoorEntranceFinished가 타이머를 다시 감는다
 	const UDrunkardDataAsset* Data = GetData();
-	const float EnterDuration = Data ? Data->EnterDuration : FallbackEnterDuration;
+	const float SafetyTime = (Data ? Data->EnterBurstDuration : FallbackEnterBurstDuration)
+		+ (Data ? Data->EnterDuration : FallbackEnterDuration) + 2.f;
 	GetWorld()->GetTimerManager().SetTimer(
 		EnterTimerHandle,
 		this,
 		&ThisClass::BeginChasing,
-		EnterDuration,
+		SafetyTime,
+		false
+	);
+}
+
+void UDrunkardStateComponent::HandleDoorEntranceFinished()
+{
+	if (!HasAuthority() || State != EDrunkardState::Entering) return;
+
+	// 등장 후 정지: 잠깐 멈췄다가 추격 시작
+	const UDrunkardDataAsset* Data = GetData();
+	GetWorld()->GetTimerManager().SetTimer(
+		EnterTimerHandle,
+		this,
+		&ThisClass::BeginChasing,
+		Data ? Data->EnterDuration : FallbackEnterDuration,
 		false
 	);
 }

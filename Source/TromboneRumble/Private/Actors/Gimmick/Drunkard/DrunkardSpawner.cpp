@@ -78,8 +78,12 @@ void ADrunkardSpawner::TrySpawnNPC()
 	if (!ValidDoors.IsEmpty())
 	{
 		SpawnDoor = ValidDoors[FMath::RandRange(0, ValidDoors.Num() - 1)];
-		SpawnLocation = SpawnDoor->GetActorLocation();
-		SpawnRotation = SpawnDoor->GetActorRotation();
+
+		const float Offset = DrunkardData ? DrunkardData->BehindDoorOffset : 150.f;
+		SpawnLocation = SpawnDoor->GetActorLocation() - SpawnDoor->GetActorForwardVector() * Offset;
+
+		const FVector ToDoor = SpawnDoor->GetActorLocation() - SpawnLocation;
+		SpawnRotation = ToDoor.IsNearlyZero() ? SpawnDoor->GetActorRotation() : ToDoor.GetSafeNormal().Rotation();
 	}
 
 	FActorSpawnParameters SpawnParams;

@@ -17,7 +17,6 @@
 DEFINE_LOG_CATEGORY(LogDrunkard);
 
 #if !UE_BUILD_SHIPPING
-// 취객 기믹 전 상태 관찰용. 스포너(DrunkardSpawner.cpp)에서도 extern으로 참조
 TAutoConsoleVariable<int32> CVarDrunkardDebug(
 	TEXT("Trombone.Drunkard.Debug"),
 	0,
@@ -77,6 +76,18 @@ void ADrunkardNPC::BeginPlay()
 	// 스폰 프레임에는 첫 포즈 평가 전이라 본 트랜스폼 버퍼가 완성되지 않았을 수 있다.
 	// 그 상태로 PhysicalAnimation 제약이 생성되면 엔진이 빈 버퍼에 무검증 접근해 크래시하므로 한 틱 미룬다
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::ApplyUpperBodyPhysics);
+}
+
+void ADrunkardNPC::BeginDoorEntrance()
+{
+	if (!HasAuthority()) return;
+
+	// 스폰 회전이 실내를 향하므로 전방으로 스폰 거리의 두 배 = 문을 지나 같은 거리만큼 실내 지점
+	const float Offset = FMath::Abs(DrunkardData ? DrunkardData->BehindDoorOffset : 150.f);
+	DoorEntranceStart = GetActorLocation();
+	DoorEntranceEnd = DoorEntranceStart + GetActorForwardVector() * Offset * 2.f;
+	DoorEntranceElapsed = 0.f;
+	bDoorEntranceActive = true;
 }
 
 void ADrunkardNPC::BeginDive()
@@ -202,6 +213,25 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 void ADrunkardNPC::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (bDoorEntranceActive && HasAuthority())
+	{
+		const float Duration = FMath::Max(0.05f, DrunkardData ? DrunkardData->EnterBurstDuration : 0.5f);
+		DoorEntranceElapsed += DeltaSeconds;
+		const float Alpha = FMath::Clamp(DoorEntranceElapsed / Duration, 0.f, 1.f);
+
+		// 스윕 없이 이동해 문 콜리전을 그대로 통과
+		SetActorLocation(FMath::Lerp(DoorEntranceStart, DoorEntranceEnd, Alpha), false);
+
+		if (Alpha >= 1.f)
+		{
+			bDoorEntranceActive = false;
+			if (StateComponent)
+			{
+				StateComponent->HandleDoorEntranceFinished();
+			}
+		}
+	}
 
 #if !UE_BUILD_SHIPPING
 	if (CVarDrunkardDebug.GetValueOnGameThread() != 0)

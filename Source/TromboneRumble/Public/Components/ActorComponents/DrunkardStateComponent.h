@@ -38,8 +38,11 @@ public:
 	
 	UDrunkardStateComponent();
 
-	/** 스폰 직후 스포너가 호출. 등장 연출 시간이 끝나면 자동으로 추격으로 전환된다 */
+	/** 스폰 직후 스포너가 호출. NPC가 문을 통과하고 잠시 멈춘 뒤 추격으로 전환된다 */
 	void BeginEntering();
+
+	/** NPC가 문 통과 이동을 마쳤을 때 호출. 정지 시간 후 추격을 시작한다 */
+	void HandleDoorEntranceFinished();
 
 	/** 문을 완전히 나온 시점. 타겟을 선정하고 지속시간 계산을 시작한다 */
 	void BeginChasing();
