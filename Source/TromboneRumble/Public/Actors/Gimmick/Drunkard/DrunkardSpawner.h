@@ -67,16 +67,15 @@ private:
 
 	FTimerHandle SpawnTimerHandle;
 
-protected:
-	
-	//~ Begin AActor Interface
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	//~ End AActor Interface
-	
 public:
+	
+	//~ Begin AGimmickBase Interface
+	virtual void Activate() override;
+	virtual void Deactivate() override;
+	//~ End AGimmickBase Interface
 	
 	//~ Begin AActor Interface
 	virtual void Tick(float DeltaSeconds) override;
 	//~ End AActor Interface
+	
 };
