@@ -158,7 +158,7 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
     // NPC 포함 공통 처리 + 널 가드 (기존에는 무검증 역참조라 NPC 기상 시 크래시)
     if ((Montage == GetUpFrontMontage || Montage == GetUpBackMontage) && OwnerBaseCharacter.Get())
     {
-        OwnerBaseCharacter->RemoveInputBlock(EInputBlockReason::Ragdoll);
+        OwnerBaseCharacter->RemoveBlock(ECharacterBlockReason::Ragdoll);
         OwnerBaseCharacter->HandleGetUpFinished();
     }
 }

@@ -65,6 +65,14 @@ public:
 	/** Server only. */
 	void SetAutoGetUpEnabled(const bool bEnabled) { bAutoGetUpEnabled = bEnabled; }
 
+	/** Floats the ragdoll at the given world Z instead of letting it sink. Runs on every machine. */
+	void SetFloatingEnabled(bool bEnabled, float InWaterLevelZ = 0.f);
+
+	bool IsFloating() const { return bIsFloating; }
+
+	/** Moves the surface the ragdoll floats at. Cheap - call it while the water rises or drains. */
+	void SetWaterLevelZ(const float InWaterLevelZ) { WaterLevelZ = InWaterLevelZ; }
+
 	/** @return true if the ragdoll is at rest (pelvis speed below RestSpeedThreshold), otherwise false. */
 	bool IsRagdollResting() const;
 
@@ -144,11 +152,25 @@ protected:
 	/** Duration of the physics-to-animation blend-out after the get-up montage starts playing. */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "기상 애니메이션 블렌드 시간"))
 	float RagdollBlendOutDuration = 0.2f;
+
+	/** Upward pull on a fully submerged body. Must be larger than gravity (980) to lift it. */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent|Float", meta = (DisplayName = "부력 가속도", ClampMin = "0.0"))
+	float BuoyancyAccel = 2200.f;
+
+	/** Depth in cm where the pull reaches its full strength. Larger values let the body sink deeper before it comes back up. */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent|Float", meta = (DisplayName = "완전 침수 깊이", ClampMin = "1.0"))
+	float FullSubmersionDepth = 30.f;
+
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent|Float", meta = (DisplayName = "물속 선형 저항", ClampMin = "0.0"))
+	float WaterLinearDamping = 2.f;
+
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent|Float", meta = (DisplayName = "물속 회전 저항", ClampMin = "0.0"))
+	float WaterAngularDamping = 2.f;
 	
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "하늘로 날리는 힘 (EnableImpulseOnStart)"))
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "DEBUG: 하늘로 날리는 힘 (EnableImpulseOnStart)"))
 	float UpForce = 4000.f;
 
-	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "랜덤 XY 방향 범위 (EnableImpulseOnStart)"))
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "DEBUG: 랜덤 XY 방향 범위 (EnableImpulseOnStart)"))
 	float RandomRangeXY = 1500.f;
 	
 private:
@@ -212,6 +234,15 @@ private:
 
 	/** If false, does not automatically get up after resting. Server Only. */
 	bool bAutoGetUpEnabled = true;
+
+	/** Pushes every submerged body up. Called each tick while floating. */
+	void ApplyBuoyancy() const;
+
+	/** True while buoyancy is applied each tick. */
+	bool bIsFloating = false;
+
+	/** World Z the body floats toward. Only read while floating. */
+	float WaterLevelZ = 0.f;
 
 	/** Maximum difference for pelvis location synchronization (DebugMode) */
 	float PelvisLocationMaxError = 0.0f;

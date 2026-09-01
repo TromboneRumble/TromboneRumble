@@ -59,43 +59,27 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	}
 }
 
-void ATromboneCharacterBase::AddInputBlock(const EInputBlockReason Reason)
+void ATromboneCharacterBase::AddBlock(const ECharacterBlockReason Reason)
 {
-	const uint8 OldMask = InputBlockMask;
-	InputBlockMask |= static_cast<uint8>(Reason);
+	const uint8 OldMask = BlockMask;
+	BlockMask |= static_cast<uint8>(Reason);
 
-	if (OldMask == 0 && InputBlockMask != 0)
+	// Only the first reason notifies. Later ones just stack onto the mask
+	if (OldMask == 0 && BlockMask != 0)
 	{
-		ApplyEngineInputEnabled(false);
+		OnBlockedStateChanged(true);
 	}
 }
 
-void ATromboneCharacterBase::RemoveInputBlock(const EInputBlockReason Reason)
+void ATromboneCharacterBase::RemoveBlock(const ECharacterBlockReason Reason)
 {
-	const uint8 OldMask = InputBlockMask;
-	InputBlockMask &= ~static_cast<uint8>(Reason);
+	const uint8 OldMask = BlockMask;
+	BlockMask &= ~static_cast<uint8>(Reason);
 
-	if (OldMask != 0 && InputBlockMask == 0)
+	// Only the last reason leaving notifies
+	if (OldMask != 0 && BlockMask == 0)
 	{
-		ApplyEngineInputEnabled(true);
-	}
-}
-
-void ATromboneCharacterBase::ApplyEngineInputEnabled(const bool bEnable)
-{
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			if (bEnable)
-			{
-				EnableInput(PlayerController);
-			}
-			else
-			{
-				DisableInput(PlayerController);
-			}
-		}
+		OnBlockedStateChanged(false);
 	}
 }
 
@@ -114,11 +98,11 @@ void ATromboneCharacterBase::OnRep_InputEnabled()
 {
 	if (bInputEnabled)
 	{
-		RemoveInputBlock(EInputBlockReason::ServerLock);
+		RemoveBlock(ECharacterBlockReason::ServerLock);
 	}
 	else
 	{
-		AddInputBlock(EInputBlockReason::ServerLock);
+		AddBlock(ECharacterBlockReason::ServerLock);
 	}
 }
 
@@ -307,12 +291,12 @@ void ATromboneCharacterBase::EndStun()
 void ATromboneCharacterBase::ApplyStun()
 {
 	StopAnimMontage();
-	AddInputBlock(EInputBlockReason::Stun);
+	AddBlock(ECharacterBlockReason::Stun);
 }
 
 void ATromboneCharacterBase::UnapplyStun()
 {
-	RemoveInputBlock(EInputBlockReason::Stun);
+	RemoveBlock(ECharacterBlockReason::Stun);
 
 	if (IsRagdoll())
 	{
@@ -332,7 +316,7 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 	}
 
 	/** TODO : UCharacterAnimInstance::OnGetUpMontageEnded에서 래그돌 입력 차단을 해제하는데, 여기서 콜백을 넘겨주는 식으로 개선 못하나? */
-	AddInputBlock(EInputBlockReason::Ragdoll);
+	AddBlock(ECharacterBlockReason::Ragdoll);
 
 	bool bIsLobby = false;
 	if (const UGameInstance* GI = GetGameInstance())

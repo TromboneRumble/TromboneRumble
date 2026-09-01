@@ -11,10 +11,6 @@ class UDrunkardDataAsset;
 class UDrunkardStateComponent;
 class UXRaySilhouetteComponent;
 
-/** 취객 기믹 공용 로그 카테고리. 정의는 DrunkardNPC.cpp
- *  (파일별 DEFINE_LOG_CATEGORY_STATIC은 유니티 빌드에서 같은 청크에 묶이면 중복 정의로 충돌한다) */
-DECLARE_LOG_CATEGORY_EXTERN(LogDrunkard, Log, All);
-
 /** ADrunkardNPC
  *
  * 재즈바 취객 NPC 폰 본체. 피격(넉백/스턴/래그돌)은 베이스가 처리한다.
@@ -53,9 +49,18 @@ public:
 	virtual bool CanReceiveHit() const override;
 	/** 다이브 래그돌에서 완전히 일어난 뒤 퇴장으로 잇는다 */
 	virtual void HandleGetUpFinished() override;
+	/** Stops moving while afloat. */
+	virtual void HandleDrowningStarted() override;
+	/** Does nothing - HandleGetUpFinished restores the speed once the get-up montage ends. */
+	virtual void HandleDrowningEnded() override {}
 	//~ End ATromboneCharacterBase Interface
 
 protected:
+
+	//~ Begin ATromboneCharacterBase Interface
+	/** AI walks by speed, not by input, so the walk speed is what gets locked. */
+	virtual void OnBlockedStateChanged(bool bBlocked) override;
+	//~ End ATromboneCharacterBase Interface
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data", meta = (DisplayName = "취객 데이터"))
 	TObjectPtr<UDrunkardDataAsset> DrunkardData;
@@ -68,10 +73,6 @@ protected:
 	TObjectPtr<UXRaySilhouetteComponent> XRaySilhouetteComponent;
 
 private:
-	/** 피격 경직(스턴) 시작/종료 시 이동을 정지/복원한다. AI는 입력 잠금의 영향을 받지 않으므로 속도로 제어 */
-	UFUNCTION()
-	void HandleStunStateChanged(bool bIsStunned);
-
 	/** 상체(지정 본 이하) 한정 Physical Animation 적용 — "취함" 연출 레이어.
 	 *  로컬 전용 연출(복제 없음, 캡슐/판정 무관). 래그돌 종료 시 OnRagdollPhysicsEnabled로 재적용된다.
 	 *  본 트랜스폼 버퍼가 준비되지 않았으면(첫 포즈 평가 전) 다음 틱으로 연기한다 */

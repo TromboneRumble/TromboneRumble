@@ -86,6 +86,12 @@ void UTromboneRagdollComponent::TickComponent(const float DeltaTime, const ELeve
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Runs on every machine, not just the server, so clients move in the water on their own
+	if (bIsFloating && bIsRagdoll)
+	{
+		ApplyBuoyancy();
+	}
+
 	if (OwnerCharacter && OwnerCharacter->HasAuthority())
 	{
 		if (bIsRagdoll)
@@ -129,6 +135,43 @@ void UTromboneRagdollComponent::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	DOREPLIFETIME(ThisClass, bIsRagdoll);
 	DOREPLIFETIME(ThisClass, ServerRagdollState);
 	DOREPLIFETIME(ThisClass, GetUpLocation);
+}
+
+void UTromboneRagdollComponent::SetFloatingEnabled(const bool bEnabled, const float InWaterLevelZ)
+{
+	bIsFloating = bEnabled;
+	WaterLevelZ = InWaterLevelZ;
+
+	if (!OwnerMesh) return;
+
+	const float NewLinear = bEnabled ? WaterLinearDamping : 0.f;
+	const float NewAngular = bEnabled ? WaterAngularDamping : 0.f;
+	OwnerMesh->ForEachBodyBelow(NAME_None, true, false,
+		[NewLinear, NewAngular](FBodyInstance* Body)
+		{
+			Body->LinearDamping = NewLinear;
+			Body->AngularDamping = NewAngular;
+			Body->UpdateDampingProperties();
+		});
+}
+
+void UTromboneRagdollComponent::ApplyBuoyancy() const
+{
+	if (!OwnerMesh) return;
+
+	const float WaterZ = WaterLevelZ;
+	const float Accel = BuoyancyAccel;
+	const float FullDepth = FMath::Max(1.f, FullSubmersionDepth);
+
+	OwnerMesh->ForEachBodyBelow(NAME_None, true, false,
+		[WaterZ, Accel, FullDepth](FBodyInstance* Body)
+		{
+			const float Depth = WaterZ - Body->GetUnrealWorldTransform().GetLocation().Z;
+			if (Depth <= 0.f) return;
+
+			const float Submersion = FMath::Clamp(Depth / FullDepth, 0.f, 1.f);
+			Body->AddForce(FVector::UpVector * Accel * Submersion, true, true);
+		});
 }
 
 void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity, const FVector& InitialAngularVelocity)

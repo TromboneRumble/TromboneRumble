@@ -55,13 +55,12 @@ void UBTService_UpdateWeaveGoal::OnBecomeRelevant(UBehaviorTreeComponent& OwnerC
 void UBTService_UpdateWeaveGoal::OnCeaseRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	// 변주된 이동 속도를 기본값으로 복원.
-	// 단, 피격 경직 중이면 복원하지 않는다 — 경직이 속도를 0으로 잠근 상태를 브랜치 이탈이
-	// 덮어쓰면 스턴 중에 퇴장 이동을 시작해 버린다 (경직 해제 시 HandleStunStateChanged가 복원)
+	// 단, 이동이 잠겨 있으면 건드리지 않는다 — 잠금을 덮어쓰면 스턴/래그돌 중에 걸어다닌다
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	if (const ADrunkardNPC* NPC = AIController ? Cast<ADrunkardNPC>(AIController->GetPawn()) : nullptr)
 	{
 		const UDrunkardDataAsset* Data = NPC->GetDrunkardData();
-		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement(); Move && Data && !NPC->IsStun())
+		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement(); Move && Data && !NPC->IsBlocked())
 		{
 			Move->MaxWalkSpeed = Data->WalkSpeed;
 		}
@@ -82,8 +81,8 @@ void UBTService_UpdateWeaveGoal::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 	const UDrunkardDataAsset* Data = NPC->GetDrunkardData();
 	if (!Data) return;
 
-	// 피격 경직 중에는 위빙/속도 변주를 멈춘다 (HandleStunStateChanged가 속도를 0으로 잠근 상태를 덮어쓰지 않도록)
-	if (NPC->IsStun()) return;
+	// 이동이 잠긴 동안에는 위빙/속도 변주를 멈춘다. 잠금을 덮어쓰면 스턴/래그돌 중에 걸어다닌다
+	if (NPC->IsBlocked()) return;
 
 	const AActor* Target = Cast<AActor>(Blackboard->GetValue<UBlackboardKeyType_Object>(TargetPlayerKey.GetSelectedKeyID()));
 	if (!Target)

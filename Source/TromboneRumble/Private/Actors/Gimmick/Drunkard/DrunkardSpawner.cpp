@@ -5,6 +5,7 @@
 #include "Components/ActorComponents/DrunkardStateComponent.h"
 #include "Data/DrunkardDataAsset.h"
 #include "Engine/Engine.h"
+#include "Utilities/TromboneLogs.h"
 
 
 #if !UE_BUILD_SHIPPING
@@ -19,6 +20,40 @@ namespace
 ADrunkardSpawner::ADrunkardSpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	GimmickType = EGimmickType::Drunkard;
+}
+
+void ADrunkardSpawner::Activate()
+{
+	const bool bWasActive = IsActive();
+
+	Super::Activate();
+
+	if (!bWasActive && HasAuthority())
+	{
+		const float Delay = DrunkardData ? DrunkardData->InitialSpawnDelay : FallbackSpawnDelay;
+		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Delay, false);
+
+		UE_LOG(LogGimmick, Log, TEXT("Drunkard spawner started. First spawn in %.1fs"), Delay);
+	}
+}
+
+void ADrunkardSpawner::Deactivate()
+{
+	if (HasAuthority())
+	{
+		if (ADrunkardNPC* NPC = ActiveNPC.Get())
+		{
+			if (UDrunkardStateComponent* State = NPC->GetStateComponent())
+			{
+				State->DespawnOwner();
+			}
+		}
+		ActiveNPC = nullptr;
+	}
+
+	// Super clears the timers
+	Super::Deactivate();
 }
 
 void ADrunkardSpawner::Tick(const float DeltaSeconds)
@@ -42,23 +77,6 @@ void ADrunkardSpawner::Tick(const float DeltaSeconds)
 	}
 	GEngine->AddOnScreenDebugMessage(static_cast<uint64>(GetUniqueID()), 1.f, FColor::Orange, Text);
 #endif
-}
-
-void ADrunkardSpawner::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (!HasAuthority()) return;
-
-	const float Delay = DrunkardData ? DrunkardData->InitialSpawnDelay : FallbackSpawnDelay;
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Delay, false);
-}
-
-void ADrunkardSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	GetWorldTimerManager().ClearAllTimersForObject(this);
-
-	Super::EndPlay(EndPlayReason);
 }
 
 void ADrunkardSpawner::TrySpawnNPC()
@@ -115,6 +133,8 @@ void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 	OnDrunkardDespawned.Broadcast(Cast<ADrunkardNPC>(DestroyedActor));
 
 	ActiveNPC = nullptr;
+
+	if (!IsActive()) return;
 
 	const float Interval = DrunkardData ? DrunkardData->RespawnInterval : FallbackSpawnDelay;
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Interval, false);

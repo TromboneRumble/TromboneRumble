@@ -13,8 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-DEFINE_LOG_CATEGORY(LogDrunkard);
+#include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
 TAutoConsoleVariable<int32> CVarDrunkardDebug(
@@ -70,9 +69,6 @@ void ADrunkardNPC::BeginPlay()
 		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::ApplyUpperBodyPhysics);
 	}
 
-	// 피격 경직(스턴) 동안 이동 정지 (스턴 애니메이션은 ABP의 bIsStunned가 자동 처리)
-	OnStunStateChanged.AddDynamic(this, &ThisClass::HandleStunStateChanged);
-
 	// 스폰 프레임에는 첫 포즈 평가 전이라 본 트랜스폼 버퍼가 완성되지 않았을 수 있다.
 	// 그 상태로 PhysicalAnimation 제약이 생성되면 엔진이 빈 버퍼에 무검증 접근해 크래시하므로 한 틱 미룬다
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::ApplyUpperBodyPhysics);
@@ -127,11 +123,29 @@ void ADrunkardNPC::HandleDiveRagdollStart()
 
 void ADrunkardNPC::HandleGetUpFinished()
 {
-	// 래그돌 종료(기상 시작)가 아니라 기상 몽타주 종료 시점. 여기부터 움직여야 미끄러지지 않는다
-	if (!HasAuthority() || !StateComponent) return;
-	if (StateComponent->GetState() != EDrunkardState::Diving) return;
+	if (!HasAuthority()) return;
 
-	StateComponent->HandleDiveFinished();
+	if (StateComponent && StateComponent->GetState() == EDrunkardState::Diving)
+	{
+		StateComponent->HandleDiveFinished();
+	}
+}
+
+void ADrunkardNPC::OnBlockedStateChanged(const bool bBlocked)
+{
+	if (UCharacterMovementComponent* Move = GetCharacterMovement())
+	{
+		Move->MaxWalkSpeed = bBlocked ? 0.f : (DrunkardData ? DrunkardData->WalkSpeed : 250.f);
+	}
+
+	// 이미 내려간 이동 명령은 속도를 0으로 만들어도 살아 있다
+	if (bBlocked)
+	{
+		if (AAIController* AIController = Cast<AAIController>(GetController()))
+		{
+			AIController->StopMovement();
+		}
+	}
 }
 
 void ADrunkardNPC::ClearUpperBodyPhysics()
@@ -340,25 +354,12 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 	return bApplied;
 }
 
-void ADrunkardNPC::HandleStunStateChanged(const bool bIsStunned)
+void ADrunkardNPC::HandleDrowningStarted()
 {
-	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (!HasAuthority()) return;
 
-	if (bIsStunned)
-	{
-		if (AAIController* AIController = Cast<AAIController>(GetController()))
-		{
-			AIController->StopMovement();
-		}
-		if (Move)
-		{
-			Move->MaxWalkSpeed = 0.f;
-		}
-	}
-	else if (Move)
-	{
-		Move->MaxWalkSpeed = DrunkardData ? DrunkardData->WalkSpeed : 250.f;
-	}
+	// The door entrance moves the capsule every tick and would drag the ragdoll along
+	bDoorEntranceActive = false;
 }
 
 void ADrunkardNPC::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, const bool bSelfMoved,
