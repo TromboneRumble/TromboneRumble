@@ -159,9 +159,11 @@ void ADefaultPlayerController::Handle_Escape()
 
 void ADefaultPlayerController::Handle_CameraZoom(const FInputActionValue& Value)
 {
-	if (!CanProcessInput()) return;
+	if (!CachedOwnerCharacter.IsValid()) return;
+
 	const float Delta = Value.Get<float>();
 	if (FMath::IsNearlyZero(Delta)) return;
+
 	CachedOwnerCharacter->OnCameraZoom(Delta);
 }
 
