@@ -765,6 +765,24 @@ void ADefaultTromboneCharacter::ApplyFlagPhysics()
 	}
 }
 
+void ADefaultTromboneCharacter::OnBlockedStateChanged(const bool bBlocked)
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController || !IsLocallyControlled())
+	{
+		return;
+	}
+
+	if (bBlocked)
+	{
+		DisableInput(PlayerController);
+	}
+	else
+	{
+		EnableInput(PlayerController);
+	}
+}
+
 void ADefaultTromboneCharacter::HandleStunStateChanged(const bool bIsStunned)
 {
 	if (bIsStunned)

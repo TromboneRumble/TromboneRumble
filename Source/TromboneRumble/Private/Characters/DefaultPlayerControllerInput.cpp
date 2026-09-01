@@ -219,5 +219,5 @@ void ADefaultPlayerController::Handle_PushToTalkEnd()
 
 bool ADefaultPlayerController::CanProcessInput()
 {
-	return CachedOwnerCharacter.IsValid() && !CachedOwnerCharacter->IsStun() && !CachedOwnerCharacter->IsRagdoll() && !CachedOwnerCharacter->IsInputBlocked();
+	return CachedOwnerCharacter.IsValid() && !CachedOwnerCharacter->IsStun() && !CachedOwnerCharacter->IsRagdoll() && !CachedOwnerCharacter->IsBlocked();
 }

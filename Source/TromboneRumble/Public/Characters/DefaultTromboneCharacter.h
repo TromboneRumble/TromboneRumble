@@ -188,6 +188,12 @@ protected:
 	UPROPERTY(Transient)
 	TWeakObjectPtr<ARhythmActor> CachedRhythmActor;
 
+protected:
+	//~ Begin ATromboneCharacterBase Interface
+	/** Players move by input, so a block turns the input off. */
+	virtual void OnBlockedStateChanged(bool bBlocked) override;
+	//~ End ATromboneCharacterBase Interface
+
 private:
 	void UpdateMaxWalkSpeed();
 
