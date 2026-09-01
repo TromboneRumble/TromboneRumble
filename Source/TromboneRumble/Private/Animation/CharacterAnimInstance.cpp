@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Animation/CharacterAnimInstance.h"
 #include "AlphaBlend.h"
@@ -155,9 +155,11 @@ void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 
 void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-    // NPC 포함 공통 처리 + 널 가드 (기존에는 무검증 역참조라 NPC 기상 시 크래시)
     if ((Montage == GetUpFrontMontage || Montage == GetUpBackMontage) && OwnerBaseCharacter.Get())
     {
+        // A new ragdoll began before this montage ended, so the block belongs to that one.
+        if (OwnerBaseCharacter->IsRagdoll()) return;
+
         OwnerBaseCharacter->RemoveBlock(ECharacterBlockReason::Ragdoll);
         OwnerBaseCharacter->HandleGetUpFinished();
     }

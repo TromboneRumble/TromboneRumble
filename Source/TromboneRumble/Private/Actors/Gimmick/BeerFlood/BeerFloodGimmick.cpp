@@ -209,14 +209,23 @@ void ABeerFloodGimmick::UpdateDrowning()
 
 		if (DrowningCharacters.Contains(Character)) continue;
 
-		const UCapsuleComponent* Capsule = Character->GetCapsuleComponent();
-		if (!Capsule) continue;
-
-		const float FeetZ = Character->GetActorLocation().Z - Capsule->GetScaledCapsuleHalfHeight();
-		if (FeetZ > CurrentBeerZ) continue;
-
 		UTromboneRagdollComponent* Ragdoll = Character->GetRagdollComponent();
 		if (!Ragdoll) continue;
+
+		// The capsule stays where the ragdoll began, so read the pelvis instead.
+		float BodyZ;
+		if (Ragdoll->IsRagdoll())
+		{
+			BodyZ = Character->GetPelvisLocation().Z;
+		}
+		else
+		{
+			const UCapsuleComponent* Capsule = Character->GetCapsuleComponent();
+			if (!Capsule) continue;
+
+			BodyZ = Character->GetActorLocation().Z - Capsule->GetScaledCapsuleHalfHeight();
+		}
+		if (BodyZ > CurrentBeerZ) continue;
 
 		Ragdoll->SetAutoGetUpEnabled(false);
 		if (!Ragdoll->IsRagdoll())
@@ -225,10 +234,12 @@ void ABeerFloodGimmick::UpdateDrowning()
 		}
 		Ragdoll->SetFloatingEnabled(true, CurrentBeerZ);
 
+		Character->AddBlock(ECharacterBlockReason::Ragdoll);
+
 		DrowningCharacters.Add(Character);
 		Character->HandleDrowningStarted();
 
-		UE_LOG(LogBeerFlood, Log, TEXT("%s started drowning (feet %.0f < beer %.0f)"), *Character->GetName(), FeetZ, CurrentBeerZ);
+		UE_LOG(LogBeerFlood, Log, TEXT("%s started drowning (body %.0f < beer %.0f)"), *Character->GetName(), BodyZ, CurrentBeerZ);
 	}
 }
 
