@@ -17,11 +17,11 @@ public:
 	AGimmickBase();
 	
 	/** Turns the gimmick on. */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Gimmick")
 	virtual void Activate();
 	
 	/** Turns the gimmick off. */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Gimmick")
 	virtual void Deactivate();
 	
 	bool IsActive() const { return bIsActive; }

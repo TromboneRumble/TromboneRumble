@@ -13,8 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-DEFINE_LOG_CATEGORY(LogDrunkard);
+#include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
 TAutoConsoleVariable<int32> CVarDrunkardDebug(
@@ -338,6 +337,34 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 	}
 
 	return bApplied;
+}
+
+void ADrunkardNPC::HandleDrowningStarted()
+{
+	if (!HasAuthority()) return;
+
+	// The door entrance moves the capsule every tick and would drag the ragdoll along
+	bDoorEntranceActive = false;
+
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->StopMovement();
+	}
+	if (UCharacterMovementComponent* Move = GetCharacterMovement())
+	{
+		Move->MaxWalkSpeed = 0.f;
+	}
+}
+
+void ADrunkardNPC::HandleDrowningEnded()
+{
+	if (!HasAuthority()) return;
+
+	// A stunned drunkard stays put until the stun itself ends
+	if (UCharacterMovementComponent* Move = GetCharacterMovement())
+	{
+		Move->MaxWalkSpeed = IsStun() ? 0.f : (DrunkardData ? DrunkardData->WalkSpeed : 250.f);
+	}
 }
 
 void ADrunkardNPC::HandleStunStateChanged(const bool bIsStunned)

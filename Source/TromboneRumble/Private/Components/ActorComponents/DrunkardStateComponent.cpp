@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Items/WeaponBase.h"
+#include "Utilities/TromboneLogs.h"
 
 
 namespace

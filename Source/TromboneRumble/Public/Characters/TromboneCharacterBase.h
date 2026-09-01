@@ -74,6 +74,12 @@ public:
 	/** Called when the get-up montage finishes. The character can move again from here. */
 	virtual void HandleGetUpFinished() {}
 
+	/** Called when the character falls into the beer. Server only. */
+	virtual void HandleDrowningStarted() {}
+
+	/** Called when the beer drains and the character is free. Server only. */
+	virtual void HandleDrowningEnded() {}
+
 	/** Plays the falling scream on every machine. Server only. */
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayFallScream();
