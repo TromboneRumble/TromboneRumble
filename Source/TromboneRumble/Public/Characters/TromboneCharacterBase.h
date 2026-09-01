@@ -71,6 +71,9 @@ public:
 	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
 	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
 
+	/** Called when the get-up montage finishes. The character can move again from here. */
+	virtual void HandleGetUpFinished() {}
+
 	/** Plays the falling scream on every machine. Server only. */
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayFallScream();

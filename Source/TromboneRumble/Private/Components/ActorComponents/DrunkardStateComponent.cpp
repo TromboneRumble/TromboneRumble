@@ -19,6 +19,9 @@ namespace
 	constexpr float FallbackExitTimeout = 10.f;
 	constexpr float FallbackCaptureKnockbackForce = 300.f;
 	constexpr float FallbackCaptureKnockbackUpForce = 200.f;
+	constexpr float FallbackCaptureKnockbackForceNoInstrument = 300.f;
+	constexpr float FallbackCaptureKnockbackUpForceNoInstrument = 200.f;
+	constexpr float FallbackDiveTimeout = 10.f;
 }
 
 UDrunkardStateComponent::UDrunkardStateComponent()
@@ -152,11 +155,20 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 
 	FHitData HitData;
 	HitData.HitDirection = (TargetCharacter->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal2D();
-	HitData.KnockbackForce = Data ? Data->CaptureKnockbackForce : FallbackCaptureKnockbackForce;
-	HitData.KnockbackUpForce = Data ? Data->CaptureKnockbackUpForce : FallbackCaptureKnockbackUpForce;
 	HitData.HitInstigator = EHitInstigatorType::Drunkard;
 	HitData.HitInstigatorActor = GetOwner();
 	HitData.HitReaction = bHasInstrument ? EHitReactionType::Ragdoll : EHitReactionType::KnockbackOnly;
+
+	if (bHasInstrument)
+	{
+		HitData.KnockbackForce = Data ? Data->CaptureKnockbackForce : FallbackCaptureKnockbackForce;
+		HitData.KnockbackUpForce = Data ? Data->CaptureKnockbackUpForce : FallbackCaptureKnockbackUpForce;
+	}
+	else
+	{
+		HitData.KnockbackForce = Data ? Data->CaptureKnockbackForceNoInstrument : FallbackCaptureKnockbackForceNoInstrument;
+		HitData.KnockbackUpForce = Data ? Data->CaptureKnockbackUpForceNoInstrument : FallbackCaptureKnockbackUpForceNoInstrument;
+	}
 
 	const bool bApplied = ICombatReceiver::Execute_OnHitReceived(TargetCharacter, HitData);
 	if (!bApplied)
@@ -167,12 +179,44 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 
 	if (bHasInstrument)
 	{
-		BeginExiting();
+		BeginDiving();
 	}
 	else
 	{
 		RequestTargetChange();
 	}
+}
+
+void UDrunkardStateComponent::BeginDiving()
+{
+	if (!HasAuthority()) return;
+
+	GetWorld()->GetTimerManager().ClearTimer(ChaseTimerHandle);
+	SetTarget(nullptr);
+	SetState(EDrunkardState::Diving);
+
+	if (ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner()))
+	{
+		OwnerNPC->BeginDive();
+	}
+
+	// 제한 시간 후 강제 퇴장
+	const UDrunkardDataAsset* Data = GetData();
+	GetWorld()->GetTimerManager().SetTimer(
+		DiveTimerHandle,
+		this,
+		&ThisClass::HandleDiveFinished,
+		Data ? Data->DiveTimeout : FallbackDiveTimeout,
+		false
+	);
+}
+
+void UDrunkardStateComponent::HandleDiveFinished()
+{
+	if (!HasAuthority() || State != EDrunkardState::Diving) return;
+
+	GetWorld()->GetTimerManager().ClearTimer(DiveTimerHandle);
+	BeginExiting();
 }
 
 void UDrunkardStateComponent::SetState(const EDrunkardState NewState)

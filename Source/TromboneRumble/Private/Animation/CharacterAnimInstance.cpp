@@ -159,5 +159,6 @@ void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bIn
     if ((Montage == GetUpFrontMontage || Montage == GetUpBackMontage) && OwnerBaseCharacter.Get())
     {
         OwnerBaseCharacter->RemoveInputBlock(EInputBlockReason::Ragdoll);
+        OwnerBaseCharacter->HandleGetUpFinished();
     }
 }

@@ -37,11 +37,19 @@ public:
 	void SetOwningSpawner(ADrunkardSpawner* InSpawner);
 	ADrunkardSpawner* GetOwningSpawner() const;
 
+	/** 포획 성공 연출 시작 — 이동을 멈추고 다이브 몽타주를 재생한다. StateComponent가 호출. Server Only. */
+	void BeginDive();
+
+	/** 다이브 몽타주의 래그돌 시작 노티파이가 호출. 서버에서만 래그돌로 전환하고 복제로 퍼진다 */
+	void HandleDiveRagdollStart();
+
 	const UDrunkardDataAsset* GetDrunkardData() const { return DrunkardData; }
 	UDrunkardStateComponent* GetStateComponent() const { return StateComponent; }
 
 	//~ Begin ATromboneCharacterBase Interface
 	virtual bool CanReceiveHit() const override;
+	/** 다이브 래그돌에서 완전히 일어난 뒤 퇴장으로 잇는다 */
+	virtual void HandleGetUpFinished() override;
 	//~ End ATromboneCharacterBase Interface
 
 protected:
@@ -68,6 +76,15 @@ private:
 	void ApplyUpperBodyPhysics();
 
 	int32 UpperBodyPhysicsRetryCount = 0;
+
+	/** 다이브 몽타주는 NPC라 자동 복제가 안 되므로 모든 머신에서 직접 재생한다 */
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayDiveMontage();
+
+	/** 래그돌 시작 시 상체 물리 모터를 끈다. 켜둔 채 두면 월드 공간 모터가
+	 *  얼어붙은 캡슐 위치의 애니메이션 포즈로 몸을 끌어당겨 래그돌이 공중에 매달린다 */
+	UFUNCTION()
+	void ClearUpperBodyPhysics();
 
 	/** Trombone.Drunkard.Debug 1 활성 시 기믹 전 상태(상태/타겟/타이머/이동 목표)를 화면과 월드에 그린다 */
 	void DebugDrawGimmickState() const;

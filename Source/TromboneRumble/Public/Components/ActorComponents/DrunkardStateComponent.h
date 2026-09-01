@@ -16,6 +16,7 @@ enum class EDrunkardState : uint8
 	Entering,	// 문에서 등장 연출 중
 	Chasing,	// 타겟 추격 중
 	Exiting,	// 문으로 퇴장 중 (피격/포획 판정 비활성)
+	Diving,		// 포획 성공 후 대상 자리로 몸을 날리는 연출 중 (BT 데코레이터가 열거값을 숫자로 저장하므로 끝에만 추가할 것)
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDrunkardStateChanged, EDrunkardState, NewState);
@@ -42,8 +43,14 @@ public:
 	/** 문을 완전히 나온 시점. 타겟을 선정하고 지속시간 계산을 시작한다 */
 	void BeginChasing();
 
-	/** 지속시간 소진 또는 포획 성공 시. 이동/디스폰은 BT가 처리한다 */
+	/** 지속시간 소진 시. 이동/디스폰은 BT가 처리한다 */
 	void BeginExiting();
+
+	/** 포획 성공 시. 다이브 연출을 시작하고, 완전히 일어나면 퇴장으로 이어진다 */
+	void BeginDiving();
+
+	/** 다이브 래그돌 종료 시 NPC가 호출. 퇴장으로 전환한다 */
+	void HandleDiveFinished();
 
 	/** 타겟 재선정 (현재 타겟 제외). 타겟이 공격을 적중시켰거나 세션에서 이탈했을 때 호출.
 	 *  다른 후보가 없으면 기존 타겟을 유지한다 */
@@ -55,7 +62,7 @@ public:
 
 	/** NPC 캡슐이 블로킹 접촉했을 때 호출 (폰의 NotifyHit). 포획 판정의 진입점:
 	 *  - 현재 타겟과의 접촉만 유효 (비타겟은 Block만 되고 무시), 피격 경직 중에는 발동 안 함
-	 *  - 악기 보유 타겟: 래그돌 + 악기 드랍(래그돌 시 자동) + 콤보 초기화(드랍 시 자동) → 퇴장
+	 *  - 악기 보유 타겟: 래그돌 + 악기 드랍(래그돌 시 자동) + 콤보 초기화(드랍 시 자동) → 다이브 연출 후 퇴장
 	 *  - 악기 미보유 타겟: 넉백만 → 타겟 변경, 계속 활동
 	 *  - 이미 무력화(래그돌/스턴/무적)된 타겟: 포획 대신 타겟 변경 */
 	void HandleCaptureContact(AActor* OtherActor);
@@ -96,6 +103,7 @@ private:
 	FTimerHandle EnterTimerHandle;
 	FTimerHandle ChaseTimerHandle;
 	FTimerHandle ExitTimerHandle;
+	FTimerHandle DiveTimerHandle;
 	
 public:
 	

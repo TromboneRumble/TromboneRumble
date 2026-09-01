@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actors/Gimmick/GimmickBase.h"
 #include "GameFramework/Actor.h"
 #include "DrunkardSpawner.generated.h"
 
@@ -17,7 +18,7 @@ class UDrunkardDataAsset;
  * - 문 목록 보유: 스폰은 랜덤 문, 퇴장은 종료 시점 최근접 문
  */
 UCLASS()
-class TROMBONERUMBLE_API ADrunkardSpawner : public AActor
+class TROMBONERUMBLE_API ADrunkardSpawner : public AGimmickBase
 {
 	GENERATED_BODY()
 
