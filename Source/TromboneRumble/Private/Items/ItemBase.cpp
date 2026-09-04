@@ -11,8 +11,8 @@ AItemBase::AItemBase()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	AActor::SetReplicateMovement(true);
-	NetUpdateFrequency = 60.0f;
-	MinNetUpdateFrequency = 15.0f;
+	SetNetUpdateFrequency(60.0f);
+	SetMinNetUpdateFrequency(15.0f);
 	
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMeshComponent"));
 	SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
