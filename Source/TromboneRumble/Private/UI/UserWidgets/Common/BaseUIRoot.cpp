@@ -13,9 +13,9 @@ void UBaseUIRoot::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	if (DefaultWidgetClass && BaseStack)
+	if (DefaultWidgetClass)
 	{
-		BaseStack->AddWidget(DefaultWidgetClass);
+		AddWidgetToStack(DefaultWidgetClass, EUIStackType::Base);
 	}
 }
 
@@ -82,6 +82,11 @@ void UBaseUIRoot::HandleInputMethodChanged(const ECommonInputType NewInputType)
 
 UCommonActivatableWidget* UBaseUIRoot::GetTopActiveWidget() const
 {
+	// Overlay sits above Popup, and Popup above Base. Ask them in that order
+	if (OverlayStack && OverlayStack->GetActiveWidget())
+	{
+		return OverlayStack->GetActiveWidget();
+	}
 	if (PopupStack && PopupStack->GetActiveWidget())
 	{
 		return PopupStack->GetActiveWidget();
@@ -134,8 +139,8 @@ bool UBaseUIRoot::PopStack(const EUIStackType StackType) const
 		{
 			ActiveWidget->DeactivateWidget();
 
-			// Closing a popup doesn't deactivate the base screen, so hand focus back to it for gamepad users
-			if (StackType == EUIStackType::Popup)
+			// Closing a layer never reactivates the screen below, so hand focus back to it for gamepad users
+			if (StackType != EUIStackType::Base)
 			{
 				const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
 				if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)

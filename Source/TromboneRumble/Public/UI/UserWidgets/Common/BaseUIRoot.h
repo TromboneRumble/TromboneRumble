@@ -43,7 +43,7 @@ public:
 	/** Enabling/Disabling the base UI */
 	void SetBaseUIEnabled(const bool bEnabled) const;
 
-	/** @return The widget that currently owns UI focus priority (topmost popup, else active base screen). */
+	/** @return The widget that currently owns UI focus priority. Overlay, then Popup, then Base. */
 	UCommonActivatableWidget* GetTopActiveWidget() const;
 
 	/** Focuses the desired focus target of the top active widget. Used to (re)seed gamepad focus. */
