@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2901149947",
+    "Type": "Event",
+    "GUID": "{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}",
+    "Language": "SFX",
+    "Hash": "{99EE1B90-CE44-E24C-8A81-84DD0073F06A}",
+    "ObjectPath": "Play_Player_Scream",
+    "ShortName": "Play_Player_Scream",
+    "Path": "Event/Play_Player_Scream.bnk",
+    "Media": [
+     {
+      "Id": "923323399",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Player_Falling_Scream.wav",
+      "Path": "Media/923323399.wem",
+      "CachePath": "SFX/Player_Falling_Scream_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2901149947",
+      "Name": "Play_Player_Scream",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Scream",
+      "GUID": "{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.4190834",
+      "DurationMax": "2.4190834",
+      "MediaRefs": [
+       {
+        "Id": "923323399"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{21CEAED5-5715-1BE4-B287-7DCEC72FEB20}"
+ }
+}

@@ -403,6 +403,6 @@ void UVideoOptionPanel::OnWindowModeChanged(const int32 Value, ERotatorDirection
 		const bool bIsWindowed = (Value == 2);
         
 		UOptionCycleRowWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
-		ResWidget->SetIsEnabled(bIsWindowed);
+		ResWidget->SetInteractionEnabled(bIsWindowed);
 	}
 }

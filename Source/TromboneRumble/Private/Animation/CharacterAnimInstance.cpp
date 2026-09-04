@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Animation/CharacterAnimInstance.h"
 #include "AlphaBlend.h"
@@ -13,13 +13,14 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 {
     Super::NativeInitializeAnimation();
 
+    OwnerBaseCharacter = Cast<ATromboneCharacterBase>(TryGetPawnOwner());
     OwnerCharacter = Cast<ADefaultTromboneCharacter>(TryGetPawnOwner());
-    if (OwnerCharacter.Get())
+    if (OwnerBaseCharacter.Get())
     {
-        MovementComponent = OwnerCharacter->GetCharacterMovement();
-        if (OwnerCharacter->GetAkComponent())
+        MovementComponent = OwnerBaseCharacter->GetCharacterMovement();
+        if (OwnerBaseCharacter->GetAkComponent())
         {
-			OwnerAkSoundComponent = OwnerCharacter->GetAkComponent();
+			OwnerAkSoundComponent = OwnerBaseCharacter->GetAkComponent();
         }
     }
 }
@@ -32,47 +33,50 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     
     UpperBodyBlendAlpha = FMath::FInterpTo(UpperBodyBlendAlpha, TargetAlpha, DeltaSeconds, BlendInterpSpeed);
 
-    if (!OwnerCharacter.Get() || !MovementComponent.Get()) return;
+    if (!OwnerBaseCharacter.Get() || !MovementComponent.Get()) return;
 
     Velocity = MovementComponent->Velocity;
-    
+
     GroundSpeed = FVector(Velocity.X, Velocity.Y, 0.0f).Size();
     bIsFalling = MovementComponent->IsFalling();
-    
+
     const FVector CurrentAcceleration = MovementComponent->GetCurrentAcceleration();
     const bool bIsAccelerating = !CurrentAcceleration.IsNearlyZero();
-    
+
     bShouldMove = (GroundSpeed > 3.0f) || bIsAccelerating;
 
-    CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
+    bIsStunned = OwnerBaseCharacter->IsStun();
 
-    bIsStunned = OwnerCharacter->IsStun();
-
-    LocomotionPlayRate = OwnerCharacter->GetLocomotionPlayRate();
+    // 악기 타입/이동 배속은 플레이어 전용 (NPC는 기본값 유지)
+    if (OwnerCharacter.Get())
+    {
+        CurrentInstrumentType = OwnerCharacter->GetCurrentEquippedInstrumentType();
+        LocomotionPlayRate = OwnerCharacter->GetLocomotionPlayRate();
+    }
 }
 
 void UCharacterAnimInstance::AnimNotify_FootStep()
 {
-    if (!IsValid(OwnerCharacter) || !OwnerAkSoundComponent.IsValid())
+    if (!IsValid(OwnerBaseCharacter) || !OwnerAkSoundComponent.IsValid())
     {
         return;
     }
 
-    UWorld* World = OwnerCharacter->GetWorld();
+    UWorld* World = OwnerBaseCharacter->GetWorld();
     if (!World)
     {
         return;
     }
 
 
-    const FVector UpVector = OwnerCharacter->GetActorUpVector();
-    const FVector Start = OwnerCharacter->GetActorLocation() + UpVector * 10.f;
+    const FVector UpVector = OwnerBaseCharacter->GetActorUpVector();
+    const FVector Start = OwnerBaseCharacter->GetActorLocation() + UpVector * 10.f;
     const FVector End = Start + UpVector * -200.0f;
 
     FHitResult HitResult;
 
     // 자기 자신은 무시
-    FCollisionQueryParams Params(SCENE_QUERY_STAT(FootstepTrace), false, OwnerCharacter.Get());
+    FCollisionQueryParams Params(SCENE_QUERY_STAT(FootstepTrace), false, OwnerBaseCharacter.Get());
     Params.bReturnPhysicalMaterial = true;
 
     const bool bHit = World->LineTraceSingleByChannel(
@@ -151,8 +155,12 @@ void UCharacterAnimInstance::PlayGetUpMontage(const bool bIsFacingUp)
 
 void UCharacterAnimInstance::OnGetUpMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-    if (Montage == GetUpFrontMontage || Montage == GetUpBackMontage)
+    if ((Montage == GetUpFrontMontage || Montage == GetUpBackMontage) && OwnerBaseCharacter.Get())
     {
-        OwnerCharacter->RemoveInputBlock(EInputBlockReason::Ragdoll);
+        // A new ragdoll began before this montage ended, so the block belongs to that one.
+        if (OwnerBaseCharacter->IsRagdoll()) return;
+
+        OwnerBaseCharacter->RemoveBlock(ECharacterBlockReason::Ragdoll);
+        OwnerBaseCharacter->HandleGetUpFinished();
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="521013026" Type="Event" GUID="{172B9145-BD63-4904-825D-B9064756A02F}" Language="SFX" Hash="{2812ACB8-EF36-3272-EEE3-B407A7F83A21}">
+		<SoundBank Id="521013026" Type="Event" GUID="{172B9145-BD63-4904-825D-B9064756A02F}" Language="SFX" Hash="{73812BF1-CAD3-B8FC-C995-A9D651BE109C}">
 			<ObjectPath>Play_Snow_Ambience</ObjectPath>
 			<ShortName>Play_Snow_Ambience</ShortName>
 			<Path>Event/Play_Snow_Ambience.bnk</Path>
@@ -42,5 +42,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8445868C-7AF4-1104-C350-8482323E20E8}</FileHash>
+	<FileHash>{F9ECB970-C9FE-04B6-7D39-C9CFE1F95EE1}</FileHash>
 </SoundBanksInfo>

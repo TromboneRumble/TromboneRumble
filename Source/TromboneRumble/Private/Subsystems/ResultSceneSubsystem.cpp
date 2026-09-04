@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "DeveloperSettings/TromboneConfig.h"
 #include "Subsystems/GameStateSubsystem.h"
 
 void UResultSceneSubsystem::SaveResultSceneData()
@@ -99,6 +100,34 @@ FGameplayTag UResultSceneSubsystem::ResolveResultMapTag() const
 
 	return CandidateTag;
 }
+
+#if !UE_BUILD_SHIPPING
+void UResultSceneSubsystem::SetDebugResultSceneData(const int32 PlayerCount, const FString& StageName)
+{
+	CachedResultSceneData.Empty();
+
+	// ResolveResultMapTag builds Trombone.Maps.Result.<this> to pick the stage background.
+	LastPlayedLevelString = StageName;
+
+	const UTromboneConfig* Config = UTromboneConfig::Get();
+	const int32 LocalIndex = FMath::RandRange(0, PlayerCount - 1);
+
+	for (int32 i = 0; i < PlayerCount; ++i)
+	{
+		FPlayerResultSceneData Data;
+		Data.Nickname = FString::Printf(TEXT("Player %d"), i + 1);
+		Data.Score = FMath::FRandRange(1000.0f, 9000.0f);
+		Data.bIsLocalPlayerData = (i == LocalIndex);
+
+		if (Config && Config->CharacterSkinColors.Num() > 0)
+		{
+			Data.PlayerSkinColor = Config->CharacterSkinColors[i % Config->CharacterSkinColors.Num()];
+		}
+
+		CachedResultSceneData.Add(Data);
+	}
+}
+#endif
 
 void UResultSceneSubsystem::OpenResultLevel(const UObject* WorldContextObject, const bool bAbsolute) const
 {

@@ -17,10 +17,29 @@
 #include "Framework/InGameState.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Subsystems/SaveManagerSubsystem.h"
 #include "UI/UserWidgets/Rhythm/RhythmUIRootWidget.h"
 #include "Utilities/Defines.h"
 #include "Utilities/DebugHelper.h"
+#include "Engine/Engine.h"
 
+#if !UE_BUILD_SHIPPING
+// 리듬 싱크 디버그. 음악 클럭 화면 표시 + 이후 싱크 로그가 이 값을 본다
+TAutoConsoleVariable<int32> CVarRhythmSyncLog(
+	TEXT("Trombone.Rhythm.SyncLog"), 0,
+	TEXT("1이면 음악 클럭을 화면에 표시하고 BGM 트리거/노트 도달 드리프트를 로그로 찍는다."));
+#endif
+
+namespace
+{
+	// 곡 데이터 로드 재시도 간격과 최대 횟수 (0.5초 × 20 = 10초)
+	constexpr float PrepareRetryInterval = 0.5f;
+	constexpr int32 MaxPrepareRetryCount = 20;
+
+	// BGM 포스트 재시도. 늦게 시작할수록 노트와 어긋나므로 간격을 짧게 잡는다
+	constexpr float BGMPostRetryInterval = 0.2f;
+	constexpr int32 MaxBGMPostRetryCount = 5;
+}
 
 
 ARhythmActor::ARhythmActor()
@@ -56,6 +75,51 @@ void ARhythmActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 노트 트랙이 실제로 BGMTriggerTimeSec만큼 재생됐을 때 BGM을 시작한다.
+	// 트랙 시작이 늦어져도 클럭이 함께 늦으므로 두 트랙 간격은 항상 일정하다
+	if (bWaitingToStartBGM)
+	{
+		if (ARhythmNoteSpawner* Master = GetMasterClockSpawner())
+		{
+			const double ClockSec = Master->GetMusicTimeSeconds();
+			if (ClockSec >= BGMTriggerTimeSec)
+			{
+#if !UE_BUILD_SHIPPING
+				if (CVarRhythmSyncLog.GetValueOnGameThread() != 0)
+				{
+					UE_LOG(LogTemp, Log, TEXT("[RhythmSync] 클럭 트리거 발화: 클럭 %.1fms / 목표 %.1fms (오버슛 %.1fms)"),
+						ClockSec * 1000.0, BGMTriggerTimeSec * 1000.0, (ClockSec - BGMTriggerTimeSec) * 1000.0);
+				}
+#endif
+				PlayMusic();
+			}
+		}
+	}
+
+#if !UE_BUILD_SHIPPING
+	if (CVarRhythmSyncLog.GetValueOnGameThread() != 0 && GEngine)
+	{
+		for (const TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+		{
+			ARhythmNoteSpawner* Spawner = Elem.Value;
+			if (!IsValid(Spawner))
+			{
+				continue;
+			}
+			// 조회가 곧 갱신이다. 노트가 없는 구간에서도 이 호출이 클럭을 굴린다
+			const double ClockSec = Spawner->GetMusicTimeSeconds();
+			GEngine->AddOnScreenDebugMessage(
+				static_cast<uint64>(reinterpret_cast<uintptr_t>(Spawner)),
+				0.f,
+				Spawner->HasValidMusicClock() ? FColor::Cyan : FColor::Orange,
+				FString::Printf(TEXT("[RhythmClock] %s : %.3f s  valid=%d  playingID=%d"),
+					*UEnum::GetValueAsString(Elem.Key),
+					ClockSec,
+					Spawner->HasValidMusicClock() ? 1 : 0,
+					Spawner->GetNoteSpawnPlayingID()));
+		}
+	}
+#endif
 }
 
 void ARhythmActor::DetectNotes()
@@ -147,6 +211,9 @@ void ARhythmActor::PrepareAndStartRhythmGame(const FGameplayTag& InSelectedTag)
 
 void ARhythmActor::PauseRhythmGame()
 {
+	// 노트 트랙은 Wwise가 멈추는데 이 타이머는 계속 흘러 BGM이 먼저 시작되던 문제
+	GetWorldTimerManager().PauseTimer(PlayBackgroundMusicTimerHandle);
+
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
@@ -173,6 +240,8 @@ void ARhythmActor::PauseRhythmGame()
 
 void ARhythmActor::ResumeRhythmGame()
 {
+	GetWorldTimerManager().UnPauseTimer(PlayBackgroundMusicTimerHandle);
+
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
@@ -243,6 +312,9 @@ void ARhythmActor::CleanupRhythmGame()
 	GetWorldTimerManager().ClearTimer(PlayBackgroundMusicTimerHandle);
 	PlayBackgroundMusicTimerHandle.Invalidate();
 
+	GetWorldTimerManager().ClearTimer(PrepareRetryTimerHandle);
+	PrepareRetryTimerHandle.Invalidate();
+
 	// 사운드 엔진 정지
 	if (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID)
 	{
@@ -268,10 +340,13 @@ void ARhythmActor::CleanupRhythmGame()
 	LoadedGameplayTag = FGameplayTag::EmptyTag;
 	bIsLoadingData = false;
 	bStartRequested = false;
+	PrepareRetryCount = 0;
+	BGMPostRetryCount = 0;
 	bIsSensingLongNote = false;
 	bHasReceivedMusicStartCallback = false;
 	bHasReceivedDurationCallback = false;
 	bHasShotBGMDelegate = false;
+	bWaitingToStartBGM = false;
 
 	if (CachedRhythmUIRootWidget)
 	{
@@ -333,6 +408,9 @@ void ARhythmActor::PrepareRhythmGame(const FGameplayTag& InGamePlayTag)
 	if (bDataLoadedSuccessfully)
 	{
 		bIsDataLoaded = true;
+		PrepareRetryCount = 0;
+		GetWorldTimerManager().ClearTimer(PrepareRetryTimerHandle);
+
 		// 로딩 완료 시점에 예약된 시작 요청이 있었다면 실행
 		if (bStartRequested)
 		{
@@ -347,7 +425,48 @@ void ARhythmActor::PrepareRhythmGame(const FGameplayTag& InGamePlayTag)
 	else
 	{
 		Debug::Print(TEXT("[RhythmActor] PrepareRhythmGame Failed to load data. Music will not play."), -1, FColor::Red);
+
+		// 여기서 멈추면 이 머신은 종료 보고도 못 해서 전원이 결과 레벨로 못 간다
+		if (PrepareRetryCount < MaxPrepareRetryCount)
+		{
+			++PrepareRetryCount;
+			GetWorldTimerManager().SetTimer(PrepareRetryTimerHandle, this, &ThisClass::RetryPrepareRhythmGame, PrepareRetryInterval, false);
+		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("[RhythmActor] Prepare retry limit reached (%d). Tag: %s"),
+				MaxPrepareRetryCount, *InGamePlayTag.ToString()), -1, FColor::Red);
+		}
 	}
+}
+
+FGameplayTag ARhythmActor::GetSelectedSongTagFromGameInstance() const
+{
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
+	{
+		return GI->GetSelectedSongTag();
+	}
+	return FGameplayTag::EmptyTag;
+}
+
+void ARhythmActor::RetryPrepareRhythmGame()
+{
+	if (bIsDataLoaded)
+	{
+		return;
+	}
+
+	// 태그 자체가 문제였을 수 있으니 매번 원본을 다시 읽는다
+	FGameplayTag RetryTag = GetSelectedSongTagFromGameInstance();
+	if (!RetryTag.IsValid())
+	{
+		RetryTag = LoadedGameplayTag;
+	}
+
+	Debug::Print(FString::Printf(TEXT("[RhythmActor] Retrying Prepare %d/%d. Tag: %s"),
+		PrepareRetryCount, MaxPrepareRetryCount, *RetryTag.ToString()), -1, FColor::Yellow);
+
+	PrepareRhythmGame(RetryTag);
 }
 
 void ARhythmActor::StartRhythmGame()
@@ -385,7 +504,8 @@ void ARhythmActor::StartRhythmGame()
 		SpawnEvents.Add({ SpawnNoteEvent, Spawner });
 	}
 
-	const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue; // | AkCallbackType::AK_MIDIEvent;
+	// EnableGetMusicPlayPosition이 있어야 스포너가 GetPlayingSegmentInfo로 재생 위치를 읽을 수 있다
+	const int32 CallbackMask = AkCallbackType::AK_MusicSyncUserCue | AkCallbackType::AK_EnableGetMusicPlayPosition;
 
 	for (const FSpawnEventInfo& Info : SpawnEvents)
 	{
@@ -403,13 +523,54 @@ void ARhythmActor::StartRhythmGame()
 		}
 	}
 
+	// 기기별 출력 지연 보정값. 양수면 그만큼 BGM을 일찍 시작한다
+	int32 OffsetMs = 0;
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		if (const USaveManagerSubsystem* SaveManager = GI->GetSubsystem<USaveManagerSubsystem>())
+		{
+			OffsetMs = SaveManager->GetAudioSettings().RhythmAudioOffsetMs;
+		}
+	}
+
+	// 노트 이동 시간과 같은 값을 써야 노트 도달과 BGM의 같은 음이 겹친다
+	float NoteTravelTime = 3.f;
+	for (const FSpawnEventInfo& Info : SpawnEvents)
+	{
+		NoteTravelTime = Info.Spawner->TimeToComplete;
+		break;
+	}
+
+	BGMTriggerTimeSec = NoteTravelTime - OffsetMs / 1000.0;
+	bWaitingToStartBGM = true;
+
+	// 안전망: 클럭이 끝내 안 살아나면 기존 방식으로라도 재생한다
 	GetWorldTimerManager().SetTimer(
 		PlayBackgroundMusicTimerHandle,
 		this,
 		&ThisClass::PlayMusic,
-		2.8f,
+		5.0f,
 		false
 	);
+}
+
+ARhythmNoteSpawner* ARhythmActor::GetMasterClockSpawner()
+{
+	for (const TPair<EInstrumentType, TObjectPtr<ARhythmNoteSpawner>>& Elem : RhythmNoteSpawners)
+	{
+		ARhythmNoteSpawner* Spawner = Elem.Value;
+		if (!IsValid(Spawner))
+		{
+			continue;
+		}
+		// 조회가 곧 갱신이다. 아직 무효한 스포너도 이 호출로 클럭이 살아난다
+		Spawner->GetMusicTimeSeconds();
+		if (Spawner->HasValidMusicClock())
+		{
+			return Spawner;
+		}
+	}
+	return nullptr;
 }
 
 void ARhythmActor::CreateAndInitRhythmSpawner(EInstrumentType InType, UAkAudioEvent* InNoteEvent,
@@ -434,6 +595,12 @@ void ARhythmActor::InitBGMEvent(UAkAudioEvent* InSoundEvent, UAkSwitchValue* InN
 
 void ARhythmActor::SpawnRhythmRootUI()
 {
+	// 로드를 재시도할 때마다 새로 만들면 위젯이 화면에 겹쳐 쌓인다
+	if (IsValid(CachedRhythmUIRootWidget))
+	{
+		return;
+	}
+
 	if (RhythmUIRootWidgetClass)
 	{
 		CachedRhythmUIRootWidget = CreateWidget<URhythmUIRootWidget>(GetWorld(), RhythmUIRootWidgetClass);
@@ -588,7 +755,22 @@ void ARhythmActor::HandleInGameStateChanged(EInGameState InGameState)
 		case EInGameState::Play:
 		{
 			bAreOtherPlayersReady = true;
-			GetCachedRhythmSubsystem()->StartRhythmGame(LoadedGameplayTag);
+
+			// 로드에 실패했으면 LoadedGameplayTag가 비어 있다. 그걸 그대로 쓰면 재시도도 같이 실패한다
+			FGameplayTag StartTag = GetSelectedSongTagFromGameInstance();
+			if (!StartTag.IsValid())
+			{
+				StartTag = LoadedGameplayTag;
+			}
+
+			if (StartTag.IsValid())
+			{
+				GetCachedRhythmSubsystem()->StartRhythmGame(StartTag);
+			}
+			else
+			{
+				Debug::Print(TEXT("[RhythmActor] Play received but SelectedTag is Empty! Cannot start."), -1, FColor::Red);
+			}
 		}
 			break;
 		
@@ -634,6 +816,10 @@ void ARhythmActor::WaitForOtherPlayers()
 
 void ARhythmActor::PlayMusic()
 {
+	// 클럭 트리거와 안전망 타이머 중 어느 쪽이 먼저 와도 한 번만 재생한다
+	bWaitingToStartBGM = false;
+	GetWorldTimerManager().ClearTimer(PlayBackgroundMusicTimerHandle);
+
 	if (PlayBGMEvent && NoteHearingComponent)
 	{
 		FOnAkPostEventCallback Callback;
@@ -656,6 +842,39 @@ void ARhythmActor::PlayMusic()
 			GameDataSubsystem->SetCurrentSongPlayingID(BGMPlayingID);
 		}
 
+#if !UE_BUILD_SHIPPING
+		// 목표(BGMTriggerTimeSec)와 크게 다르면 클럭 트리거가 아니라 5초 안전망으로 들어온 것이다
+		if (CVarRhythmSyncLog.GetValueOnGameThread() != 0)
+		{
+			double ClockSec = -1.0;
+			if (ARhythmNoteSpawner* Master = GetMasterClockSpawner())
+			{
+				ClockSec = Master->GetMusicTimeSeconds();
+			}
+			UE_LOG(LogTemp, Log, TEXT("[RhythmSync] BGM Post 시점 클럭 %.1fms (목표 %.1fms)"),
+				ClockSec * 1000.0, BGMTriggerTimeSec * 1000.0);
+		}
+#endif
+	}
+
+	// 포스트에 실패하면 EndOfEvent가 안 와서 이 머신만 종료 보고를 못 하고, 전원이 결과 레벨로 못 간다
+	const bool bPostSucceeded = (BGMPlayingID != 0 && BGMPlayingID != AK_INVALID_PLAYING_ID);
+	if (bPostSucceeded)
+	{
+		BGMPostRetryCount = 0;
+	}
+	else if (BGMPostRetryCount < MaxBGMPostRetryCount)
+	{
+		++BGMPostRetryCount;
+		Debug::Print(FString::Printf(TEXT("[RhythmActor] BGM PostAkEvent failed. Retrying %d/%d"),
+			BGMPostRetryCount, MaxBGMPostRetryCount), -1, FColor::Red);
+
+		GetWorldTimerManager().SetTimer(PlayBackgroundMusicTimerHandle, this, &ThisClass::PlayMusic, BGMPostRetryInterval, false);
+	}
+	else
+	{
+		Debug::Print(FString::Printf(TEXT("[RhythmActor] BGM PostAkEvent failed %d times. Song will never end."),
+			MaxBGMPostRetryCount), -1, FColor::Red);
 	}
 }
 
@@ -676,6 +895,17 @@ void ARhythmActor::HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackI
 	case EAkCallbackType::MusicPlayStarted:
 	{
 		bHasReceivedMusicStartCallback = true;
+#if !UE_BUILD_SHIPPING
+		// BGM이 실제로 소리를 내기 시작한 순간의 노트 트랙 위치 = 두 트랙의 실제 간격
+		if (CVarRhythmSyncLog.GetValueOnGameThread() != 0)
+		{
+			if (ARhythmNoteSpawner* Master = GetMasterClockSpawner())
+			{
+				UE_LOG(LogTemp, Log, TEXT("[RhythmSync] 두 트랙 실제 간격 %.1fms (목표 %.1fms)"),
+					Master->GetMusicTimeSeconds() * 1000.0, BGMTriggerTimeSec * 1000.0);
+			}
+		}
+#endif
 	}
 	break;
 	case EAkCallbackType::MusicSyncUserCue:

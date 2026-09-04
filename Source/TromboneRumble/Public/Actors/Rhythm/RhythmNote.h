@@ -35,7 +35,7 @@ public:
 	void OnReturnToPool();
 	// End of IPoolable interface
 
-	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InJudgementRingClass, float InTimeToComplete, const FString& InUserCueName);
+	void InitNote(const ARhythmActor* InRhythmActor, const ARhythmNoteSpawner* InSpawner, const TSubclassOf<ANoteVisualizer>& InJudgementRingClass, float InTimeToComplete, const FString& InUserCueName, double InSpawnMusicTimeSec);
 	void SetToShortNote();
 	void SetToLongNoteStart();
 	void SetToLongNoteEnd();
@@ -97,6 +97,18 @@ private:
 	float TimeToComplete = 3.f;
 
 	bool bIsMoving = false;
+
+	// 이 노트가 스폰된 순간의 음악 시각(초). 이동 진행도를 여기서부터 잰다
+	double SpawnMusicTimeSec = 0.0;
+
+	// 스폰 지점에서 판정선까지의 거리(uu)
+	static constexpr float NoteTravelDistance = 1000.f;
+
+	// 이 진행도를 넘으면 Destroyer가 놓친 것으로 보고 강제 회수한다 (판정선 1.5배 지점)
+	static constexpr float NoteBackstopAlpha = 1.5f;
+
+	// 판정선 도달 로그를 노트당 한 번만 찍기 위한 플래그
+	bool bSyncArrivalLogged = false;
 
 	FVector StartLocation = FVector::Zero();
 

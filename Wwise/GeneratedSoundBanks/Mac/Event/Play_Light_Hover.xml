@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="598895845" Type="Event" GUID="{50BD4430-546A-4153-B84B-464466778173}" Language="SFX" Hash="{7070993A-5433-AE04-9C8D-E47250D1DD29}">
+			<ObjectPath>Play_Light_Hover</ObjectPath>
+			<ShortName>Play_Light_Hover</ShortName>
+			<Path>Event/Play_Light_Hover.bnk</Path>
+			<Media>
+				<File Id="275803907" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UI_Light.wav</ShortName>
+					<Path>Media/275803907.wem</Path>
+					<CachePath>SFX/UI_Light_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="598895845" Name="Play_Light_Hover" ObjectPath="\Events\Default Work Unit\UI_SFX\Play_Light_Hover" GUID="{50BD4430-546A-4153-B84B-464466778173}" DurationType="OneShot" DurationMin="1.4047947" DurationMax="1.4891882">
+					<MediaRefs>
+						<MediaRef Id="275803907"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{9D73A948-83EE-92A8-AFC1-672346B44296}</FileHash>
+</SoundBanksInfo>

@@ -8,35 +8,13 @@
 #include "EasySessionStatics.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Framework/TromboneGameInstance.h"
 #include "Framework/GameState/MatchMenuGameState.h"
 #include "Online/OnlineSessionNames.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 #include "Utilities/TromboneStatics.h"
-
-UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
-{
-	return CB_Start;
-}
-
-void UMatchMenuWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	CachedMatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>();
-	
-	if (CachedMatchMenuGS.IsValid())
-	{
-		CachedMatchMenuGS->OnMatchTypeChanged.RemoveAll(this);
-		CachedMatchMenuGS->OnMatchTypeChanged.AddDynamic(this, &ThisClass::OnMatchTypeChanged);
-		OnMatchTypeChanged(CachedMatchMenuGS->GetCurrentMatchType());
-
-		CachedMatchMenuGS->OnSelectedMapChanged.RemoveAll(this);		
-		CachedMatchMenuGS->OnSelectedMapChanged.AddDynamic(this, &ThisClass::OnSelectedMapChanged);
-		OnSelectedMapChanged(CachedMatchMenuGS->GetSelectedLobbyMap());;
-	}
-}
+#include "Utilities/DebugHelper.h"
+#include "Data/MatchMenuRows.h"
 
 void UMatchMenuWidget::NativeDestruct()
 {
@@ -68,16 +46,30 @@ void UMatchMenuWidget::Init()
 	}
 	if (CR_MatchType)
 	{
+		InitMatchTypes();
 		CR_MatchType->OnRotatedWithDirection().RemoveAll(this);
 		CR_MatchType->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMatchType);
-		CR_MatchType->SetIsEnabled(bIsHost);
+		CR_MatchType->SetInteractionEnabled(bIsHost);
 	}
 	if (CR_Map)
 	{
 		InitSelectableMaps();
 		CR_Map->OnRotatedWithDirection().RemoveAll(this);
 		CR_Map->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMap);
-		CR_Map->SetIsEnabled(bIsHost);
+		CR_Map->SetInteractionEnabled(bIsHost);
+	}
+	
+	// 게임 스테이트 구독은 로테이터 초기화 뒤여야 한다. 초기 동기화가 위에서 채운 캐시로 인덱스를 찾기 때문
+	CachedMatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>();
+	if (CachedMatchMenuGS.IsValid())
+	{
+		CachedMatchMenuGS->OnMatchTypeChanged.RemoveAll(this);
+		CachedMatchMenuGS->OnMatchTypeChanged.AddDynamic(this, &ThisClass::OnMatchTypeChanged);
+		OnMatchTypeChanged(CachedMatchMenuGS->GetCurrentMatchType());
+
+		CachedMatchMenuGS->OnSelectedMapChanged.RemoveAll(this);
+		CachedMatchMenuGS->OnSelectedMapChanged.AddDynamic(this, &ThisClass::OnSelectedMapChanged);
+		OnSelectedMapChanged(CachedMatchMenuGS->GetSelectedLobbyMap());
 	}
 }
 
@@ -85,37 +77,49 @@ void UMatchMenuWidget::InitSelectableMaps()
 {
 	CachedSelectableMaps.Reset();
 
-	// 매치메뉴에서는 로비 맵들(Trombone.Maps.Lobby.*) 선택 가능
-	const FGameplayTag LobbyCategory = FGameplayTag::RequestGameplayTag(FName(*TromboneGamePlayTags::LobbyPath), false);
-	CachedSelectableMaps = UTromboneFunctionLibrary::GetMapTagsUnderCategory(LobbyCategory);
-
-	if (!CR_Map)
+	TArray<FText> Options;
+	TArray<FSlateBrush> Backgrounds;
+	for (const MatchMenuOptions::FMapEntry& Entry : MatchMenuOptions::BuildSelectableMaps(SelectableMapTable))
 	{
-		return;
+		CachedSelectableMaps.Add(Entry.Tag);
+		Options.Add(Entry.Label);
+		Backgrounds.Add(Entry.Background);
 	}
+
+	if (CR_Map)
+	{
+		CR_Map->SetOptions(Options, Backgrounds);
+	}
+}
+
+void UMatchMenuWidget::InitMatchTypes()
+{
+	CachedMatchTypes.Reset();
 
 	TArray<FText> Options;
-	Options.Reserve(CachedSelectableMaps.Num());
-	for (const FGameplayTag& MapTag : CachedSelectableMaps)
+	TArray<FSlateBrush> Backgrounds;
+	for (const MatchMenuOptions::FMatchTypeEntry& Entry : MatchMenuOptions::BuildMatchTypes(MatchTypeTable))
 	{
-		// "Trombone.Maps.Lobby.OrchestraStage" -> OrchestraStage를 UI에 표시되는 텍스트로 사용
-		const FString TagStr = MapTag.ToString();
-		FString Leaf;
-		if (!TagStr.Split(TEXT("."), nullptr, &Leaf, ESearchCase::IgnoreCase, ESearchDir::FromEnd))
-		{
-			Leaf = TagStr;
-		}
-		Options.Add(FText::FromString(Leaf));
+		CachedMatchTypes.Add(Entry.Type);
+		Options.Add(Entry.Label);
+		Backgrounds.Add(Entry.Background);
 	}
-	CR_Map->SetOptions(Options);
+
+	if (CR_MatchType)
+	{
+		CR_MatchType->SetOptions(Options, Backgrounds);
+	}
 }
 
 void UMatchMenuWidget::OnMatchTypeChanged(EMatchType NewType)
 {
 	if (CR_MatchType)
 	{
-		const int32 Index = static_cast<int32>(NewType);
-		CR_MatchType->SetSelectedIndex(Index);
+		const int32 Index = CachedMatchTypes.IndexOfByKey(NewType);
+		if (Index != INDEX_NONE)
+		{
+			CR_MatchType->SetSelectedIndex(Index);
+		}
 	}
 }
 
@@ -138,33 +142,35 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 		return;
 	}
 	
-	SetUIEnabled(false);
-	
-	bIsStarted = true;
 	UEasyReservationManager* ReservationManager = UEasyReservationManager::Get(this);
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	if (!ReservationManager || !OnlineSession)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Session systems missing. Cannot start the match"));
+		return;
+	}
+	
+	SetUIEnabled(false);
+	bIsStarted = true;
+	
+	// Confirm the current member list so the lobby starts with exactly these players
 	if (ReservationManager->IsReservationHost())
 	{
 		const TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
 		ReservationManager->SetHostReservations(Reservations);
 	}
 	
+	// Start online session
 	FEasySessionSettings UpdatedSettings;
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-			
 	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
 	UpdatedSettings.bAllowJoinInProgress = false;
-
 	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
 	OnlineSession->StartOnlineSession(NAME_GameSession);
 	
-	FGameplayTag TargetMapTag = TromboneGamePlayTags::Trombone_Maps_Lobby_OrchestraStage;
-	if (CachedMatchMenuGS.IsValid() && CachedMatchMenuGS->GetSelectedLobbyMap().IsValid())
-	{
-		TargetMapTag = CachedMatchMenuGS->GetSelectedLobbyMap();
-	}
-
-	const FString LobbyMapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TargetMapTag);
-	UEasyStatics::ServerTravelToLevel(this, LobbyMapPath);
+	// Travel to the picked lobby, or the default one if the game state is unreachable
+	const FGameplayTag SelectedMap = CachedMatchMenuGS.IsValid() ? CachedMatchMenuGS->GetSelectedLobbyMap() : FGameplayTag();
+	const FGameplayTag TargetMapTag = SelectedMap.IsValid() ? SelectedMap : TromboneGamePlayTags::Trombone_Maps_Lobby_OrchestraStage;
+	UEasyStatics::ServerTravelToLevel(this, UTromboneFunctionLibrary::GetMapPathByMapTag(TargetMapTag));
 }
 
 void UMatchMenuWidget::HandleBackButtonClicked()
@@ -174,45 +180,49 @@ void UMatchMenuWidget::HandleBackButtonClicked()
 		return;
 	}
 	
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	OnlineSession->DestroySession(NAME_GameSession);
+	SetUIEnabled(false);
 	
-	UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	const bool bRequested = OnlineSession && OnlineSession->DestroySession(NAME_GameSession,
+		FOnDestroySessionCompleteDelegate::CreateWeakLambda(this, [this](FName /*SessionName*/, bool /*bSuccess*/)
+		{
+			UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
+		}));
+	
+	if (!bRequested)
+	{
+		UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
+	}
 }
 
 void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
 {
-	if (bIsStarted)
+	if (bIsStarted || !CachedMatchTypes.IsValidIndex(Value))
 	{
 		return;
 	}
 	
-	UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	if (!OnlineSession)
+	{
+		return;
+	}
 	
-	const EMatchType NewMatchType = static_cast<EMatchType>(Value);
-	const bool bNewHidden = NewMatchType != EMatchType::Public;
-	
+	const EMatchType NewMatchType = CachedMatchTypes[Value];
 	if (CachedMatchMenuGS.IsValid())
 	{
 		CachedMatchMenuGS->SetMatchType(NewMatchType);
 	}
 	
+	// Custom rooms stay out of the public search list
 	FEasySessionSettings UpdatedSettings;
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	
-	OnlineSession->OnUpdateMatchComplete().AddDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
 	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
-	UpdatedSettings.bHidden = bNewHidden;
+	UpdatedSettings.bHidden = NewMatchType != EMatchType::Public;
 	
-	TArray<FEasySessionSetting> ExtraSessionSettings = TArray<FEasySessionSetting>();
-	
-	FString LobbyCode;
-	if (UpdatedSettings.GetSessionSetting(SETTING_LOBBYCODE, LobbyCode))
-	{
-		ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, LobbyCode, EOnlineDataAdvertisementType::ViaOnlineService));
-	}
-			
-	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true, ExtraSessionSettings);
+	// Block input until the server answers
+	UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
+	OnlineSession->OnUpdateMatchComplete().AddUniqueDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
+	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
 }
 
 void UMatchMenuWidget::HandleOnRotatedMap(int32 Value, ERotatorDirection RotatorDir)
@@ -223,43 +233,54 @@ void UMatchMenuWidget::HandleOnRotatedMap(int32 Value, ERotatorDirection Rotator
 	}
 
 	const FGameplayTag SelectedLobbyTag = CachedSelectableMaps[Value];
-
-	if (AMatchMenuGameState* MatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>())
+	if (CachedMatchMenuGS.IsValid())
 	{
-		MatchMenuGS->SetSelectedLobbyMap(SelectedLobbyTag);
+		CachedMatchMenuGS->SetSelectedLobbyMap(SelectedLobbyTag);
 	}
 
+	// The session advertises the in-game map so searching players see what they would play
 	const FGameplayTag InGameTag = UTromboneFunctionLibrary::LobbyToInGameTag(SelectedLobbyTag);
-	if (InGameTag.IsValid())
+	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
+	if (!InGameTag.IsValid() || !OnlineSession)
 	{
-		if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-		{
-			FEasySessionSettings UpdatedSettings;
-			OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
-
-			TArray<FEasySessionSetting> ExtraSessionSettings;
-			ExtraSessionSettings.Add(FEasySessionSetting(SETTING_MAPNAME, InGameTag.ToString(), EOnlineDataAdvertisementType::ViaOnlineService));
-
-			OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true, ExtraSessionSettings);
-		}
+		return;
 	}
+
+	FEasySessionSettings UpdatedSettings;
+	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
+	UpdatedSettings.MapName = InGameTag.ToString();
+	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
 }
 
 void UMatchMenuWidget::HandleOnUpdateMatchComplete(bool bWasSuccessful)
 {
 	UTromboneStatics::PopOverlay(GetOwningPlayer());
 	
-	if (bWasSuccessful)
+	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
 	{
-		if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-		{
-			OnlineSession->OnUpdateMatchComplete().RemoveDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
-		}
+		OnlineSession->OnUpdateMatchComplete().RemoveDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
 	}
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
 {
-	CB_Start->SetIsEnabled(bEnabled);
-	CB_Back->SetIsEnabled(bEnabled);
+	const APlayerController* PC = GetOwningPlayer();
+	const bool bIsHost = PC && PC->HasAuthority();
+	
+	if (CB_Start)
+	{
+		CB_Start->SetIsEnabled(bEnabled && bIsHost);
+	}
+	if (CB_Back)
+	{
+		CB_Back->SetIsEnabled(bEnabled);
+	}
+	if (CR_MatchType)
+	{
+		CR_MatchType->SetInteractionEnabled(bEnabled && bIsHost);
+	}
+	if (CR_Map)
+	{
+		CR_Map->SetInteractionEnabled(bEnabled && bIsHost);
+	}
 }

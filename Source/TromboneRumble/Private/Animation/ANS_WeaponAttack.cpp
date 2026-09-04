@@ -1,7 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Animation/ANS_WeaponAttack.h"
-
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Items/WeaponBase.h"
 
@@ -16,7 +15,7 @@ void UANS_WeaponAttack::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 		
 		if (AWeaponBase* Weapon = Character->GetCurrentWeapon())
 		{
-			Weapon->BeginAttack();
+			Weapon->BeginAttack(TotalDuration);
 		}
 	}
 }

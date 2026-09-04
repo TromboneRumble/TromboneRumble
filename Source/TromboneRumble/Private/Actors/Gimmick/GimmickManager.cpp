@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/GimmickManager.h"
-
 #include "EngineUtils.h"
 #include "Actors/Gimmick/GimmickBase.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "Utilities/EnumHelper.h"
+#include "Utilities/TromboneLogs.h"
 
 void AGimmickManager::ActivateGimmickByType(const EGimmickType GimmickType)
 {
@@ -30,6 +31,8 @@ void AGimmickManager::DeactivateGimmickByType(EGimmickType GimmickType)
 
 void AGimmickManager::ActivateAllGimmicks()
 {
+	UE_LOG(LogGimmick, Log, TEXT("Activating %d gimmicks"), ManagedGimmicks.Num());
+
 	for (auto& Pair : ManagedGimmicks)
 	{
 		if (Pair.Value)
@@ -41,6 +44,8 @@ void AGimmickManager::ActivateAllGimmicks()
 
 void AGimmickManager::DeactivateAllGimmicks()
 {
+	UE_LOG(LogGimmick, Log, TEXT("Deactivating %d gimmicks"), ManagedGimmicks.Num());
+
 	for (auto& Pair : ManagedGimmicks)
 	{
 		if (Pair.Value)
@@ -95,8 +100,17 @@ void AGimmickManager::FindAndRegisterGimmicks()
 	for (TActorIterator<AGimmickBase> It(GetWorld()); It; ++It)
 	{
 		AGimmickBase* Gimmick = *It;
+
+		if (ManagedGimmicks.Contains(Gimmick->GetGimmickType()))
+		{
+			UE_LOG(LogGimmick, Warning, TEXT("%s: type %s is already registered. The earlier gimmick is replaced"),
+				*Gimmick->GetName(), *EnumHelper::EnumToString(Gimmick->GetGimmickType()));
+		}
+
 		ManagedGimmicks.Add(Gimmick->GetGimmickType(), Gimmick);
 	}
+
+	UE_LOG(LogGimmick, Log, TEXT("Registered %d gimmicks"), ManagedGimmicks.Num());
 }
 
 void AGimmickManager::BindToInGameState(AGameStateBase* NewGameState)

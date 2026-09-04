@@ -154,10 +154,10 @@ void USettingPopup::NativeConstruct()
 	CategoryButtonGroup = NewObject<UCommonButtonGroupBase>(this);
 	if (CategoryButtonGroup)
 	{
-		CategoryButtonGroup->AddWidget(CB_Audio);
-		CategoryButtonGroup->AddWidget(CB_Video);
-		CategoryButtonGroup->AddWidget(CB_Language);
-		CategoryButtonGroup->AddWidget(CB_Gameplay);
+		if (CB_Audio) CategoryButtonGroup->AddWidget(CB_Audio);
+		if (CB_Video) CategoryButtonGroup->AddWidget(CB_Video);
+		if (CB_Language) CategoryButtonGroup->AddWidget(CB_Language);
+		if (CB_Gameplay) CategoryButtonGroup->AddWidget(CB_Gameplay);
 		
 		if (CB_Audio)
 		{

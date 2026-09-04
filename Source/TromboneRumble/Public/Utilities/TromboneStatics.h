@@ -37,7 +37,16 @@ public:
 	/** Opens a level */
 	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|Game", meta = (WorldContext = "WorldContextObject"))
 	static void OpenLevel(const UObject* WorldContextObject, ELevelType Level, bool bAbsolute = true);
-	
+
+	/** @return how many players the match menu requires before the host can start.
+	 *  Set the console variable "Trombone.MatchMenu.MinPlayersToStart 1" to play alone while testing */
+	UFUNCTION(BlueprintPure, Category = "TromboneStatics|Game")
+	static int32 GetMinPlayersToStart();
+
+	/** @return true if the given player count reaches GetMinPlayersToStart(). */
+	UFUNCTION(BlueprintPure, Category = "TromboneStatics|Game")
+	static bool HasEnoughPlayersToStart(int32 PlayerCount);
+
 public:
 
 	/**

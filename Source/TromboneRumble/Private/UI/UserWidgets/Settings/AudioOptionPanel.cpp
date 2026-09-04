@@ -9,6 +9,7 @@
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 #include "UI/UserWidgets/Common/CheckBoxRowWidget.h"
 #include "Engine/LocalPlayer.h"
+#include "Framework/TromboneGameInstance.h"
 
 UWidget* UAudioOptionPanel::GetFirstFocusRow() const
 {
@@ -309,7 +310,12 @@ void UAudioOptionPanel::PopulateMicCycleWidget()
 		Options.Add(FText::FromString(Name));
 	}
 
-	OC_Microphone->ForceInit(FText::FromString(TEXT("마이크")), Options, 0);
+	const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
+	const FText Title = GI
+		? GI->GetCommonUIText(TEXT("Setting_Microphone"))
+		: FText::FromString(TEXT("Mic"));
+
+	OC_Microphone->ForceInit(Title, Options, 0);
 }
 
 int32 UAudioOptionPanel::GetSelectedMicDeviceIndex() const

@@ -24,6 +24,7 @@ AMatchPawn::AMatchPawn()
 	CapsuleComponent->InitCapsuleSize(34.0f, 88.0f);
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CapsuleComponent->SetCollisionObjectType(ECC_Pawn);
+	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECR_Block);
 	CapsuleComponent->SetShouldUpdatePhysicsVolume(true);
 	RootComponent = CapsuleComponent;

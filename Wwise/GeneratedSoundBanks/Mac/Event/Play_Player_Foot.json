@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{FBFB8D10-4EB2-9BA7-822F-D955438AD7A5}",
+    "Hash": "{0662CD31-10D3-1864-2180-53759AF53956}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -518,6 +518,6 @@
     ]
    }
   ],
-  "FileHash": "{CBCFB0FA-464D-4C72-E9D4-73109FC52D94}"
+  "FileHash": "{AE95A754-831A-62DF-6451-7561910B5D2C}"
  }
 }

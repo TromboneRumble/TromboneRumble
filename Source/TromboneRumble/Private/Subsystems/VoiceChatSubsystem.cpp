@@ -9,14 +9,13 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "Interfaces/VoiceInterface.h"
 #include "Components/AmplifiedAudioCaptureComponent.h"
 #include "HAL/IConsoleManager.h"
 #include "Net/VoiceConfig.h"
 #include "Subsystems/SaveManagerSubsystem.h"
 #include "SaveData/TromboneSaveGame.h"
-#include "Engine/Engine.h"
-#include "EngineUtils.h"
 
 void UVoiceChatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -43,18 +42,13 @@ void UVoiceChatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	UVOIPStatics::SetMicThreshold(SilenceDetectionThreshold);
 	SetNoiseSuppression(bNoiseSuppressionEnabled);
 
-	if (GEngine)
-	{
-		GEngine->OnNetworkFailure().AddUObject(this, &UVoiceChatSubsystem::OnEngineNetworkFailure);
-	}
+	WorldTearDownHandle = FWorldDelegates::OnWorldBeginTearDown.AddUObject(
+		this, &UVoiceChatSubsystem::HandleWorldBeginTearDown);
 }
 
 void UVoiceChatSubsystem::Deinitialize()
 {
-	if (GEngine)
-	{
-		GEngine->OnNetworkFailure().RemoveAll(this);
-	}
+	FWorldDelegates::OnWorldBeginTearDown.Remove(WorldTearDownHandle);
 	EndMicTest();
 	EndLocalTalk();
 	Super::Deinitialize();
@@ -347,21 +341,33 @@ void UVoiceChatSubsystem::SetNoiseSuppression(bool bEnabled)
 	}
 }
 
-void UVoiceChatSubsystem::OnEngineNetworkFailure(
-	UWorld* World, UNetDriver* NetDriver,
-	ENetworkFailure::Type FailureType, const FString& ErrorString)
+void UVoiceChatSubsystem::HandleWorldBeginTearDown(UWorld* World)
 {
-	if (!World) return;
-
-	// SeamlessTravel 도중 연결 끊김 시 VoipListenerSynthComponent가 FScene::Release() 전에
-	// 정리되지 않아 FAudioDevice::Flush()에서 크래시 발생.
-	// BroadcastNetworkFailure(Frame N)는 BeginTearingDown(Frame N+1) 직전이므로
-	// 여기서 VOIP talker를 파괴하면 VoipSynthComponent가 FScene::Release() 전에 정상 해제된다.
-	for (TActorIterator<APawn> It(World); It; ++It)
+	const ULocalPlayer* LP = GetLocalPlayer();
+	if (!World || !LP || World != LP->GetWorld() || !World->IsGameWorld())
 	{
-		if (UTromboneVOIPTalker* Talker = (*It)->FindComponentByClass<UTromboneVOIPTalker>())
-		{
-			Talker->DestroyComponent();
-		}
+		return;
+	}
+
+	// VoipListenerSynthComponent(CreateVoiceSynthComponent)는 Outer 없이 /Engine/Transient에
+	// 생성되고 소유 액터가 없어 UWorld::CleanupWorld가 UnregisterComponent를 해주지 않는다.
+	// RemoteTalkerBuffers에 항목이 남아있는 동안은 FVoiceEngineImpl의 FVoiceSerializeHelper가
+	// GC 참조를 잡고 있고, 엔진의 유일한 정리 경로(OnPostLoadMap -> FRemoteTalkerDataImpl::Reset)는
+	// 새 맵 로드 이후 — 즉 옛 월드의 FScene::Release() 이후에나 실행된다.
+	// 그 결과 해제된 FScene을 가리키는 오디오 컴포넌트가 트래블 이후까지 살아남아,
+	// 새 월드의 첫 음성 패킷이 도착할 때 오디오 워커 스레드가 죽는다.
+	//
+	// 여기서 버퍼를 비우면 reachability 분석 시점에 컴포넌트가 unreachable이 되어,
+	// 같은 full-purge GC 패스의 BeginDestroy 단계에서 스스로 unregister된다
+	// (GC는 모든 unreachable의 BeginDestroy를 FinishDestroy보다 먼저 끝내도록 보장).
+	//
+	// 주의: RemoveAllRemoteTalkers는 Reset()이 아니라 Cleanup()을 호출하므로 직접 unregister하지
+	// 않는다. 같은 FSeamlessTravelHandler::Tick 안에서 뒤따르는 full-purge GC에 의존한다.
+	//
+	// Online::GetVoiceInterface(World)를 쓰는 이유: IOnlineSubsystem::Get()과 달리 PIE 인스턴스
+	// 매핑을 존중하므로, PIE에서 클라 1의 teardown이 클라 2의 talker를 지우지 않는다.
+	if (IOnlineVoicePtr VoiceInt = Online::GetVoiceInterface(World))
+	{
+		VoiceInt->RemoveAllRemoteTalkers();
 	}
 }

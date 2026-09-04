@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
     "Language": "SFX",
-    "Hash": "{F18BD239-3333-73A0-4D7B-29D6EE31AF3A}",
+    "Hash": "{AB46AE09-BA5A-0A85-96CF-C7D28E83D1FE}",
     "ObjectPath": "Play_MapD_Main",
     "ShortName": "Play_MapD_Main",
     "Path": "Event/Play_MapD_Main.bnk",
@@ -59,8 +59,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_D_Rhythm\\Play_MapD_Main",
       "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
       "DurationType": "OneShot",
-      "DurationMin": "201.26668",
-      "DurationMax": "201.26668",
+      "DurationMin": "166.94118",
+      "DurationMax": "166.94118",
       "MediaRefs": [
        {
         "Id": "408233001"
@@ -113,6 +113,6 @@
     ]
    }
   ],
-  "FileHash": "{47640FD2-9C58-8F49-390D-849A2D9F7C84}"
+  "FileHash": "{C358F7DE-27E6-32B8-3B27-8E54B8F89A9B}"
  }
 }

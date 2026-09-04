@@ -1,31 +1,25 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/TimelineComponent.h"
 #include "Data/CharacterDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
 class UTromboneRagdollComponent;
-class UAkAudioEvent;
 class UAkComponent;
+class UAkAudioEvent;
 class UNiagaraComponent;
 class UPhysicalAnimationComponent;
 class UCharacterDataAsset;
-class UCustomizationComponent;
-class UMaterialInterface;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStunStateChanged, bool, bIsStunned);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInvincibleSignature);
 
-/** EInputBlockReason 
- * 여러 시스템(래그돌, 튜토리얼, 서버 등등)에서 입력을 차단할 수 있는데, 
- * 이를 비트 마스킹으로 관리하여 서로의 잠금을 덮어쓰지 않도록 함
- */
-enum class EInputBlockReason : uint8
+/** 여러 시스템이 동시에 캐릭터를 잠글 수 있어, 서로의 잠금을 덮어쓰지 않도록 비트 마스크로 관리한다 */
+enum class ECharacterBlockReason : uint8
 {
 	None       = 0,
 	ServerLock = 1 << 0,
@@ -34,7 +28,17 @@ enum class EInputBlockReason : uint8
 	Tutorial   = 1 << 3,
 };
 
-/** TODO : 온갖 기능이 다 들어있는 캐릭터 코드 정리하기 */
+/** ATromboneCharacterBase
+ *
+ * "맞을 수 있는 캐릭터"의 베이스. 게임 컨셉상 모든 캐릭터(플레이어/NPC)는 물리 기반이며 래그돌될 수 있다.
+ * - ICombatReceiver 구현: 넉백 계산 + 리액션 디스패치
+ * - 상태 소유: 스턴/무적/래그돌 + 전이 로직 + 상태 수치(CharacterData)
+ * - 입력 잠금(비트 마스크) 및 서버 입력 잠금 복제
+ * - 공용 상태 연출(스턴 이펙트/사운드, 래그돌 야유)은 베이스가 재생한다. 특정 메시/머티리얼 구조에
+ *   결합된 연출(표정, Bounce 등)과 외형(커마/스킨)은 소유하지 않는다 — 상태 전이는 델리게이트
+ *   (OnStunStateChanged, RagdollComponent 의 OnRagdollStarted 등)로 통지되고,
+ *   파생 클래스가 구독하여 자기 연출을 얹는다. (플레이어 = ADefaultTromboneCharacter)
+ */
 UCLASS()
 class TROMBONERUMBLE_API ATromboneCharacterBase : public ACharacter, public ICombatReceiver
 {
@@ -44,70 +48,90 @@ public:
 	ATromboneCharacterBase();
 
 	// ~ Begin ICombatReceiver Interfaces
-	virtual void OnHitReceived_Implementation(const FHitData& HitData) override;
+	virtual bool OnHitReceived_Implementation(const FHitData& HitData) override;
 	// ~ End ICombatReceiver Interfaces
-	
-	virtual void ApplySkinColor(const FLinearColor InSkinColor) const;
-	FLinearColor GetSkinColor() const { return SkinColor; }
-	
-	/** Add a reason for the input lock */
-	void AddInputBlock(EInputBlockReason Reason);
-	
-	/** Remove a reason for the input lock */
-	void RemoveInputBlock(EInputBlockReason Reason);
+
+	/** Adds a reason the character must not act. Blocks stack, so each system can hold its own. */
+	void AddBlock(ECharacterBlockReason Reason);
+
+	/** Removes one reason. The character is free again once every reason is gone. */
+	void RemoveBlock(ECharacterBlockReason Reason);
+
+	/** @return true while at least one reason holds the character. */
+	bool IsBlocked() const { return BlockMask != 0; }
 
 	/** ServerLock 비트를 리플리케이트해 각 머신의 비트 마스크에 적용. Server Only. */
 	void Server_SetInputEnabled(const bool bEnable);
 
-	// 커스터마이징용 페이스 머티리얼 교체. nullptr 전달 시 원본 머티리얼로 복원
-	void ApplyFaceMaterial(UMaterialInterface* Material);
-
-	// X-Ray 실루엣용 CustomDepth stencil 값 설정 (단일 Primitive 컴포넌트)
-	static void ApplyOccludedStencil(UPrimitiveComponent* Prim);
-	// X-Ray 실루엣용 CustomDepth 렌더 해제 (무기 드롭/원격 소유 시 등)
-	static void ClearOccludedStencil(UPrimitiveComponent* Prim);
-	// 지정 액터 내부의 모든 Primitive에만 stencil 적용 (자식 액터는 순회하지 않음)
-	static void ApplyOccludedStencilToActor(AActor* Actor);
-	// 지정 액터 내부의 모든 Primitive의 CustomDepth 렌더 해제
-	static void ClearOccludedStencilFromActor(AActor* Actor);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<UCustomizationComponent> CustomizationComp;
-
+	/** 상태 전이 통지. 파생(연출)과 외부(RingHitBox 등)가 구독한다 */
 	FOnStunStateChanged OnStunStateChanged;
 	FInvincibleSignature OnInvincibleDelegate;
 	FInvincibleSignature EndInvincibleDelegate;
 
+	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
+	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
+
+	/** Called when the get-up montage finishes. The character can move again from here. */
+	virtual void HandleGetUpFinished() {}
+
+	/** Called when the character falls into the beer. Server only. */
+	virtual void HandleDrowningStarted() {}
+
+	/** Called when the beer drains and the character is free. Server only. */
+	virtual void HandleDrowningEnded() {}
+
+	/** Plays the falling scream on every machine. Server only. */
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayFallScream();
+
+	/** Watches for the first hard landing and plays the landing sound. Only the lobby turns this on. Server only. */
+	void SetLandingSoundEnabled(bool bEnable);
+
 protected:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Config|Data")
+
+	/** Called the moment the character becomes blocked or free. Only AddBlock and RemoveBlock call it.
+	 *  Empty here - each character stops whatever it moves by, input for players and speed for AI. */
+	virtual void OnBlockedStateChanged(bool bBlocked) {}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Material")
-	FName FaceExpressionParameterName = FName("ExpressionIndex");
 
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
-	TObjectPtr<UAkAudioEvent> StunNiagaraSound;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Components|Niagara")
-	TObjectPtr<UNiagaraComponent> StunNiagaraComponent;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
-	TObjectPtr<UAkAudioEvent> RagdollBooSound;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Components")
+	TObjectPtr<UTromboneRagdollComponent> RagdollComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Components|Sound")
 	TObjectPtr<UAkComponent> AkSoundComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Animation")
-	TObjectPtr<UCurveVector> BounceCurve;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Components")
-	TObjectPtr<UTromboneRagdollComponent> RagdollComponent;
+	// 공용 상태 연출 자산: 모든 캐릭터가 스턴/래그돌 되므로 베이스가 재생. 파생 BP에서 교체/제거 가능
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Components|Niagara")
+	TObjectPtr<UNiagaraComponent> StunNiagaraComponent;
 
-	// false면 SkinColor를 skin/face MID에 틴트하지 않고 머티리얼 기본색 사용 (PlayerState 없는 더미용)
-	bool bApplySkinColorTint = true;
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> StunNiagaraSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> RagdollBooSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "로비 낙하 연출 - 낙하 비명 사운드"))
+	TObjectPtr<UAkAudioEvent> FallScreamSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "로비 낙하 연출 - 착지 비명 사운드"))
+	TObjectPtr<UAkAudioEvent> LandPainSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "착지 판정 충격량", ClampMin = "0.0"))
+	float LandingImpulseThreshold = 20000.f;
+
+	UFUNCTION()
+	void HandleRagdollLandingHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayLandPain();
+
+	/** 물리 애니메이션 (플레이어: 깃발, NPC: 상체 흐느적거림 등 파생 공용) */
+	UPROPERTY()
+	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
 
 private:
-	void SetupCharacterData() const;
 
 	void OnStun();
 	void EndStun();
@@ -115,16 +139,21 @@ private:
 	void ApplyStun();
 	void UnapplyStun();
 
+	/** 래그돌 시작/종료 시의 상태 처리(스턴 해제, 입력 잠금, 무적 타이머) + 공용 연출(야유 사운드).
+	 *  파생 전용 연출(표정 등)은 파생이 같은 래그돌 델리게이트를 구독해 별도 핸들러로 처리한다 */
 	UFUNCTION()
 	void HandleRagdollStarted();
 	UFUNCTION()
 	void HandleRagdollEnded();
-	UFUNCTION()
-	void HandleRagdollPhysicsEnabled();
 
-	void UpdateSkinFromPlayerState();
-	
-	void ApplyFlagPhysics();
+	/** FHitData 를 최종 넉백 속도로 계산한다. 폭발이면 방사형, 아니면 수평 힘 + 수직 힘 조합 */
+	FVector CalculateKnockbackVelocity(const FHitData& HitData) const;
+
+	/** @return 넉백으로 쓰러질 때 몸에 걸어줄 각속도. 밀려나는 방향으로 굴러가도록 진행 방향을 축으로 잡는다 */
+	FVector CalculateKnockbackSpin(const FVector& KnockbackVelocity) const;
+
+	UFUNCTION(Client, Reliable)
+	void Client_ApplyKnockback(FVector KnockbackVelocity);
 
 	// Replication Notifies
 	UFUNCTION()
@@ -133,17 +162,16 @@ private:
 	void OnRep_IsStun();
 	UFUNCTION()
 	void OnRep_IsInvincible();
-	UFUNCTION()
-	void OnRep_SkinColor();
 	// ~Replication Notifies
 
-	void ApplyEngineInputEnabled(const bool bEnable);
 
 	FTimerHandle OnHitTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
 
-	/** Reasons for currently active input blocking. not replicated */
-	uint8 InputBlockMask = 0;
+	/** Reasons currently holding the character. not replicated */
+	uint8 BlockMask = 0;
+
+	int32 StunNiagaraPlayingID = 0;
 
 	UPROPERTY(ReplicatedUsing = OnRep_InputEnabled)
 	bool bInputEnabled = true;
@@ -151,66 +179,27 @@ private:
 	bool bIsInvincible = false;
 	UPROPERTY(ReplicatedUsing = OnRep_IsStun)
 	bool bIsStun = false;
-	UPROPERTY(ReplicatedUsing = OnRep_SkinColor)
-	FLinearColor SkinColor = FLinearColor::Black;
-	
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> SkinMID;
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> FaceMID;
-	// BeginPlay에서 FaceMID 생성 직전 원본 머티리얼 캐싱 (커스터마이징 복원용)
-	UPROPERTY()
-	TObjectPtr<UMaterialInterface> OriginalFaceMaterial;
-	UPROPERTY()
-	TObjectPtr<UPhysicalAnimationComponent> PhysicalAnimationComp;
-	
-	// TODO : 컴포지션으로 빼기
-	// ~ Begin Face Expression Region
-	void PlayFaceSequence(ECharacterFaceState TargetState);
-	void InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence);
-	void ExecuteFaceStep();
-	void UpdateFaceExpression(ECharacterFaceType NewType);
-	
-	int32 CurrentSequenceStep = 0;
-	FCharacterFaceAnimationSequence CurrentActiveSequence;
-	FTimerHandle FaceSequenceTimerHandle;
-	// ~ End Face Expression Region
-
-	// ~ Bounce Character
-	FTimeline BounceTimeline;
-	void BoundBounceTimeline();
-	UFUNCTION()
-	void HandleBounceProgress(FVector Value);
-	// ~ End Bounce Character
-	
-	int32 StunNiagaraPlayingID = 0;
-	
-public:
-	UFUNCTION(Server, Reliable)
-	void Server_DebugStun();
-
-	UFUNCTION(Server, Reliable)
-	void Server_DebugRagdoll();
 
 public:
-	
+
 	// ~ Begin ACharacter Interface
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_PlayerState() override;
-	virtual void OnRep_Controller() override;
 	// ~ End ACharacter Interface
-	
+
 public:
-	
-	//~ Begin Setter
+
+	// ~ Begin Getters
 	bool IsStun() const { return bIsStun; }
+	bool IsInvincible() const { return bIsInvincible; }
 	bool IsRagdoll() const;
-	bool IsInputBlocked() const { return InputBlockMask != 0; }
+
+	/** @return World location of the pelvis bone. */
+	FVector GetPelvisLocation() const;
+	
+	UAkComponent* GetAkComponent() const { return AkSoundComponent; }
 	UCharacterDataAsset* GetCharacterDataAsset() const { return CharacterData; }
 	UTromboneRagdollComponent* GetRagdollComponent() const { return RagdollComponent; }
-	//~ End Setter
+	// ~ End Getters
 };

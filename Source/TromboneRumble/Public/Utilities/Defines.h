@@ -42,6 +42,8 @@ enum class EGimmickType : uint8
 	PressurePlate,
 	Ice,
 	Blizzard,
+	Drunkard,
+	BeerFlood,
 	MAX,
 	None = 255,
 };
@@ -93,12 +95,13 @@ enum class ELevelType : uint8
 
 	OrchestraStageLobby,
 	SnowFieldLobby,
+	JazzBarLobby,
 
 	OrchestraStage,
 	SnowField,
+	JazzBar,
 
-	OrchestraStageResult,
-	SnowFieldResult,
+	Result,
 
 	Invalid = 255 UMETA(Hidden)
 };
@@ -106,19 +109,19 @@ enum class ELevelType : uint8
 /** @return true if the given level type is result level */
 FORCEINLINE bool IsResultLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageResult || Type == ELevelType::SnowFieldResult;
+	return Type == ELevelType::Result;
 }
 
 /** @return true if the given level type is in-game level */
 FORCEINLINE bool IsInGameLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField;
+	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField || Type == ELevelType::JazzBar;
 }
 
 /** @return true if the given level type is lobby level */
 FORCEINLINE bool IsLobbyLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby;
+	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby || Type == ELevelType::JazzBarLobby;
 }
 
 UENUM(BlueprintType)
@@ -164,6 +167,7 @@ enum class EHitInstigatorType : uint8
 	Garbage_Chair,
 	PressurePlate,
 	Blizzard,
+	Drunkard,
 };
 
 UENUM()
@@ -172,6 +176,7 @@ enum class EHitReactionType : uint8
 	None,
 	Stun,
 	Ragdoll,
+	KnockbackOnly,
 };
 
 UENUM()
@@ -274,6 +279,11 @@ namespace TromboneRender
 {
 	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
 	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
+
+	// 원형 윈도우가 "가리는 물체가 그려진 픽셀"만 골라내는 데 쓰는 값 (UXRayWindowComponent 전용)
+	constexpr int32 OCCLUDER_STENCIL = 251;
+
+	constexpr float MAX_FRAME_RATE = 144.f;
 }
 
 namespace TromboneMaterial
@@ -282,6 +292,25 @@ namespace TromboneMaterial
 	inline const FName SkinSlotName(TEXT("skin"));
 	inline const FName FaceSlotName(TEXT("face"));
 	inline const FName BaseColorParam(TEXT("BaseColor"));
+
+	// X-Ray 실루엣 (M_XRaySilhouette의 파라미터, UXRaySilhouetteComponent가 구동)
+	inline const FName SilhouetteColorParam(TEXT("SilhouetteColor"));
+
+	// Wall Occlusion 디더 페이드 (MF_OcclusionFade의 ScalarParameter, UXRayTranslucentFadeComponent가 구동)
+	inline const FName OcclusionFadeParam(TEXT("OcclusionFade"));
+	inline const FName FadedOpacityParam(TEXT("FadedOpacity"));
+
+	// X-Ray 원형 윈도우 (M_PP_OcclusionWindow의 파라미터, UXRayWindowComponent가 구동)
+	inline const FName OcclusionCaptureRTParam(TEXT("OcclusionCaptureRT"));
+	inline const FName PlayerScreenUVParam(TEXT("PlayerScreenUV"));	// xy=원 중심 UV, z=화면 종횡비
+	inline const FName HoleScreenRadiusParam(TEXT("HoleScreenRadius"));	// 뷰포트 높이로 정규화된 반경
+	inline const FName WindowFadeParam(TEXT("WindowFade"));
+	inline const FName EdgeSoftnessParam(TEXT("EdgeSoftness"));	// 원 가장자리 그라데이션 폭 (0=칼같은 경계)
+	inline const FName WallDimParam(TEXT("WallDim"));	// 원 안쪽 벽을 얼마나 어둡게 할지 (1=그대로)
+	// 캡처가 담고 있는 화면 영역. 둘 다 xy만 쓴다 — VectorParameter의 기본 출력이 float3라 zw를 못 뽑는다.
+	// min (0,0) + size (1,1)이면 화면 전체
+	inline const FName CaptureRectMinParam(TEXT("CaptureRectMin"));
+	inline const FName CaptureRectSizeParam(TEXT("CaptureRectSize"));
 }
 
 namespace TromboneBones

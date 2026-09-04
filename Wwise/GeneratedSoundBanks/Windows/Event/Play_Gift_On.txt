@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1909714228	Play_Gift_On			\Default Work Unit\Object_SFX\Play_Gift_On	
+

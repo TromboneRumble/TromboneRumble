@@ -57,12 +57,12 @@ void UInGameResultWidget::HideSkipButtonAndShowButtons()
 		ResultOverlay->SetRenderOpacity(1.f);
 		if (ViewMyResultButton)
 		{
-			ViewMyResultButton->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ViewMyResultButton->SetVisibility(ESlateVisibility::Visible);
 			ViewMyResultButton->SetRenderOpacity(1.f);
 		}
 		if (ReturnToMainMenuButtonLeaderBoard)
 		{
-			ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			ReturnToMainMenuButtonLeaderBoard->SetVisibility(ESlateVisibility::Visible);
 			ReturnToMainMenuButtonLeaderBoard->SetRenderOpacity(1.f);
 		}
 

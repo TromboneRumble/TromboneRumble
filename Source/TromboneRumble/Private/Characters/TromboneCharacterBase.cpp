@@ -1,40 +1,43 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Characters/TromboneCharacterBase.h"
-#include "NiagaraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "AkComponent.h"
-#include "Components/ActorComponents/CustomizationComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
-#include "Data/CharacterDataAsset.h"
-#include "Framework/DefaultPlayerState.h"
-#include "Subsystems/SaveManagerSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Materials/MaterialInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "Subsystems/GameStateSubsystem.h"
-#include "Utilities/Defines.h"
+#include "Utilities/DebugHelper.h"
+
+namespace
+{
+	constexpr float FallbackStunDuration = 2.5f;
+	constexpr float FallbackInvincibilityDuration = 1.0f;
+}
 
 ATromboneCharacterBase::ATromboneCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	CustomizationComp = CreateDefaultSubobject<UCustomizationComponent>(TEXT("CustomizationComponent"));
+
 	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
 	RagdollComponent = CreateDefaultSubobject<UTromboneRagdollComponent>(TEXT("RagdollComponent"));
+
 	StunNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StunNiagaraComponent"));
 	if (StunNiagaraComponent)
 	{
 		StunNiagaraComponent->SetupAttachment(GetMesh());
 		StunNiagaraComponent->bAutoActivate = false;
 	}
+
 	AkSoundComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkSoundComponent"));
 	if (AkSoundComponent)
 	{
 		AkSoundComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
 	}
-	
+
 	if (UCapsuleComponent* CapsuleComp = GetCapsuleComponent())
 	{
 		CapsuleComp->InitCapsuleSize(42.f, 78.0f);
@@ -56,98 +59,27 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 	}
 }
 
-void ATromboneCharacterBase::ApplyOccludedStencil(UPrimitiveComponent* Prim)
+void ATromboneCharacterBase::AddBlock(const ECharacterBlockReason Reason)
 {
-	if (!Prim) return;
-	Prim->SetRenderCustomDepth(true);
-	Prim->SetCustomDepthStencilValue(TromboneRender::CHARACTER_OCCLUDED_STENCIL);
-}
+	const uint8 OldMask = BlockMask;
+	BlockMask |= static_cast<uint8>(Reason);
 
-void ATromboneCharacterBase::ClearOccludedStencil(UPrimitiveComponent* Prim)
-{
-	if (!Prim) return;
-	Prim->SetRenderCustomDepth(false);
-}
-
-void ATromboneCharacterBase::ApplyOccludedStencilToActor(AActor* Actor)
-{
-	if (!Actor) return;
-	TArray<UPrimitiveComponent*> Prims;
-	Actor->GetComponents<UPrimitiveComponent>(Prims);
-	for (UPrimitiveComponent* Prim : Prims)
+	// Only the first reason notifies. Later ones just stack onto the mask
+	if (OldMask == 0 && BlockMask != 0)
 	{
-		ApplyOccludedStencil(Prim);
+		OnBlockedStateChanged(true);
 	}
 }
 
-void ATromboneCharacterBase::ClearOccludedStencilFromActor(AActor* Actor)
+void ATromboneCharacterBase::RemoveBlock(const ECharacterBlockReason Reason)
 {
-	if (!Actor) return;
-	TArray<UPrimitiveComponent*> Prims;
-	Actor->GetComponents<UPrimitiveComponent>(Prims);
-	for (UPrimitiveComponent* Prim : Prims)
-	{
-		ClearOccludedStencil(Prim);
-	}
-}
-void ATromboneCharacterBase::ApplySkinColor(const FLinearColor InSkinColor) const
-{
-	// 머리(leader). bApplySkinColorTint=false면 머티리얼 기본색 유지 (PlayerState 없는 더미)
-	if (bApplySkinColorTint)
-	{
-		if (SkinMID)
-		{
-			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
-		}
-		if (FaceMID)
-		{
-			FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, InSkinColor);
-		}
-	}
-	// 몸통(costume)·안테나 follower 메시
-	if (CustomizationComp)
-	{
-		CustomizationComp->ApplyPartsSkinColor(InSkinColor);
-	}
-}
+	const uint8 OldMask = BlockMask;
+	BlockMask &= ~static_cast<uint8>(Reason);
 
-void ATromboneCharacterBase::AddInputBlock(const EInputBlockReason Reason)
-{
-	const uint8 OldMask = InputBlockMask;
-	InputBlockMask |= static_cast<uint8>(Reason);
-
-	if (OldMask == 0 && InputBlockMask != 0)
+	// Only the last reason leaving notifies
+	if (OldMask != 0 && BlockMask == 0)
 	{
-		ApplyEngineInputEnabled(false);
-	}
-}
-
-void ATromboneCharacterBase::RemoveInputBlock(const EInputBlockReason Reason)
-{
-	const uint8 OldMask = InputBlockMask;
-	InputBlockMask &= ~static_cast<uint8>(Reason);
-
-	if (OldMask != 0 && InputBlockMask == 0)
-	{
-		ApplyEngineInputEnabled(true);
-	}
-}
-
-void ATromboneCharacterBase::ApplyEngineInputEnabled(const bool bEnable)
-{
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (IsLocallyControlled())
-		{
-			if (bEnable)
-			{
-				EnableInput(PlayerController);
-			}
-			else
-			{
-				DisableInput(PlayerController);
-			}
-		}
+		OnBlockedStateChanged(false);
 	}
 }
 
@@ -166,64 +98,29 @@ void ATromboneCharacterBase::OnRep_InputEnabled()
 {
 	if (bInputEnabled)
 	{
-		RemoveInputBlock(EInputBlockReason::ServerLock);
+		RemoveBlock(ECharacterBlockReason::ServerLock);
 	}
 	else
 	{
-		AddInputBlock(EInputBlockReason::ServerLock);
+		AddBlock(ECharacterBlockReason::ServerLock);
 	}
 }
 
 void ATromboneCharacterBase::BeginPlay()
 {
-	// 실행 순서:
-	// 1) MID 초기화  2) LoadFromSaveData (저장 데이터 적용)
-	// 3) Super::BeginPlay() → ReceiveBeginPlay() (Blueprint BeginPlay) 실행
-	//    개발자가 BP에서 SetPartByKey/StepPart를 호출하면 저장 데이터를 덮어써서 디버깅 가능
-	// 머티리얼 슬롯은 인덱스 하드코딩 대신 슬롯 이름("skin"/"face")으로 조회
-	SkinMID = UCustomizationComponent::EnsureSlotMID(GetMesh(), TromboneMaterial::SkinSlotName);
-
-	const int32 FaceIndex = GetMesh()->GetMaterialIndex(TromboneMaterial::FaceSlotName);
-	if (FaceIndex != INDEX_NONE)
-	{
-		// MID 생성 전 원본 face 머티리얼 캐싱 (커스터마이징 복원용)
-		OriginalFaceMaterial = GetMesh()->GetMaterial(FaceIndex);
-		FaceMID = UCustomizationComponent::EnsureSlotMID(GetMesh(), TromboneMaterial::FaceSlotName);
-	}
-
-	if (CustomizationComp)
-	{
-		FCustomizationSaveData SaveData;
-		if (IsLocallyControlled())
-		{
-			if (USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
-				SaveData = SMS->LoadCustomization();
-			CustomizationComp->LoadFromSaveData(SaveData);
-			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-				DPS->Server_SetCustomization(SaveData);
-		}
-		else
-		{
-			if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-			{
-				SaveData = DPS->GetCustomizationData();
-				CustomizationComp->LoadFromSaveData(SaveData);
-			}
-		}
-	}
-
 	Super::BeginPlay();
 
-	PlayFaceSequence(ECharacterFaceState::Blink);
+	if (PhysicalAnimationComp)
+	{
+		PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
+	}
 
+	// 래그돌 상태 처리 바인딩. 연출 핸들러는 파생이 같은 델리게이트에 별도로 바인딩한다
 	if (RagdollComponent)
 	{
 		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::HandleRagdollStarted);
 		RagdollComponent->OnRagdollEnded.AddDynamic(this, &ThisClass::HandleRagdollEnded);
-		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::HandleRagdollPhysicsEnabled);
 	}
-
-	PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
 
 	if (IsLocallyControlled())
 	{
@@ -235,18 +132,6 @@ void ATromboneCharacterBase::BeginPlay()
 			AkSoundComponent->SetListeners(Listeners);
 		}
 	}
-
-	// 로컬 플레이어 캐릭터만 X-Ray stencil=252 적용 (원격 캐릭터는 X-Ray 미표시)
-	if (IsLocallyControlled())
-	{
-		ApplyOccludedStencil(GetMesh());
-	}
-
-	SetupCharacterData();
-	BoundBounceTimeline();
-
-	UpdateSkinFromPlayerState();
-	ApplyFlagPhysics();
 }
 
 void ATromboneCharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -259,162 +144,166 @@ void ATromboneCharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void ATromboneCharacterBase::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	
-	if (BounceTimeline.IsPlaying())
-	{
-		BounceTimeline.TickTimeline(DeltaSeconds);
-	}
-}
-
 void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
+	DOREPLIFETIME(ThisClass, bInputEnabled);
 	DOREPLIFETIME(ThisClass, bIsStun);
 	DOREPLIFETIME(ThisClass, bIsInvincible);
-	DOREPLIFETIME(ThisClass, bInputEnabled);
-	DOREPLIFETIME(ThisClass, SkinColor);
 }
 
-void ATromboneCharacterBase::PossessedBy(AController* NewController)
+bool ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitData)
 {
-	Super::PossessedBy(NewController);
+	if (!HasAuthority()) return false;
 
-	UpdateSkinFromPlayerState();
+	if (!CanReceiveHit()) return false;
 
-	if (CustomizationComp)
-	{
-		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-		{
-			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
-		}
-	}
-}
-
-void ATromboneCharacterBase::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-
-	UpdateSkinFromPlayerState();
-
-	if (IsLocallyControlled())
-	{
-		if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-		{
-			if (const USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
-			{
-				DPS->Server_SetCustomization(SMS->LoadCustomization());
-			}
-		}
-	}
-	else if (CustomizationComp)
-	{
-		if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-		{
-			CustomizationComp->LoadFromSaveData(DPS->GetCustomizationData());
-		}
-	}
-}
-
-void ATromboneCharacterBase::OnRep_Controller()
-{
-	Super::OnRep_Controller();
-
-	if (!IsLocallyControlled()) return;
-	const USaveManagerSubsystem* SMS = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
-	if (!SMS) return;
-
-	const FCustomizationSaveData SaveData = SMS->LoadCustomization();
-	if (CustomizationComp)
-	{
-		CustomizationComp->LoadFromSaveData(SaveData);
-	}
-	if (ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-	{
-		DPS->Server_SetCustomization(SaveData);
-	}
-}
-
-void ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitData)
-{
-	if (!HasAuthority()) return;
-
-	if (bIsInvincible || bIsStun || IsRagdoll()) return;
+	const FVector KnockbackVel = CalculateKnockbackVelocity(HitData);
 
 	switch (HitData.HitReaction)
 	{
-	case EHitReactionType::Ragdoll:
-		if (RagdollComponent) RagdollComponent->StartRagdoll();
-		break;
-	case EHitReactionType::Stun:
-		OnStun();
-		break;
-	case EHitReactionType::None:
-	default:
-		break;
+		case EHitReactionType::Ragdoll:
+			if (RagdollComponent)
+			{
+				RagdollComponent->StartRagdoll(KnockbackVel, CalculateKnockbackSpin(KnockbackVel));
+			}
+			break;
+
+		case EHitReactionType::Stun:
+			OnStun();
+			LaunchCharacter(KnockbackVel, true, true);
+			// AI 폰은 소유 클라가 없어 Client RPC를 보낼 수 없다 (No owning connection 경고 방지)
+			if (IsPlayerControlled())
+			{
+				Client_ApplyKnockback(KnockbackVel);
+			}
+			break;
+
+		case EHitReactionType::KnockbackOnly:
+			LaunchCharacter(KnockbackVel, true, true);
+			if (IsPlayerControlled())
+			{
+				Client_ApplyKnockback(KnockbackVel);
+			}
+			break;
+
+		case EHitReactionType::None:
+			; // intentional fall through
+
+		default:
+			break;
 	}
 
-	LaunchCharacter(HitData.HitDirection * HitData.KnockbackForce, true, true);
+	return true;
 }
 
-void ATromboneCharacterBase::OnRep_SkinColor()
+FVector ATromboneCharacterBase::CalculateKnockbackVelocity(const FHitData& HitData) const
 {
-	ApplySkinColor(SkinColor);
-}
-
-void ATromboneCharacterBase::ApplyFaceMaterial(UMaterialInterface* Material)
-{
-	// nullptr 전달 시 BeginPlay에서 캐싱된 원본 머티리얼로 복원
-	UMaterialInterface* Target = Material ? Material : OriginalFaceMaterial.Get();
-	if (!Target) return;
-
-	const int32 FaceIndex = GetMesh()->GetMaterialIndex(TromboneMaterial::FaceSlotName);
-	if (FaceIndex == INDEX_NONE) return;
-
-	GetMesh()->SetMaterial(FaceIndex, Target);
-	FaceMID = GetMesh()->CreateAndSetMaterialInstanceDynamic(FaceIndex);
-	if (FaceMID && bApplySkinColorTint)
+	// 폭발형 히트: 폭심에서 바깥으로 방사형
+	if (HitData.ExplosionStrength > 0.f)
 	{
-		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
-		// bApplySkinColorTint=false면 머티리얼 기본 BaseColor 유지 (PlayerState 없는 더미)
-		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
+		return (GetActorLocation() - HitData.ImpactPoint).GetSafeNormal() * HitData.ExplosionStrength;
 	}
+
+	// 일반 히트: 수평 방향 × 수평 힘 + 상향 × 수직 힘 (호출자가 준 방향의 수직 성분은 무시)
+	FVector HorizontalDir = HitData.HitDirection;
+	HorizontalDir.Z = 0.f;
+	return HorizontalDir.GetSafeNormal() * HitData.KnockbackForce + FVector::UpVector * HitData.KnockbackUpForce;
 }
 
-void ATromboneCharacterBase::SetupCharacterData() const
+FVector ATromboneCharacterBase::CalculateKnockbackSpin(const FVector& KnockbackVelocity) const
 {
-	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
-	GetCharacterMovement()->NetworkMaxSmoothUpdateDistance = 128.f;
-	GetCharacterMovement()->NetworkNoSmoothUpdateDistance = 384.f;
-
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-	
-	if (CharacterData)
+	const float SpinRate = CharacterData ? CharacterData->KnockbackSpinRate : 0.f;
+	if (SpinRate <= 0.f)
 	{
-		// Ground
-		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
-		GetCharacterMovement()->RotationRate = FRotator(0.0f, CharacterData->RotationRate, 0.0f);
-
-		// Air
-		GetCharacterMovement()->JumpZVelocity = CharacterData->JumpZVelocity;
-		GetCharacterMovement()->AirControl = CharacterData->AirControl;
-
-		// Inertia
-		GetCharacterMovement()->GravityScale = CharacterData->GravityScale;
-		GetCharacterMovement()->MaxAcceleration = CharacterData->MaxAcceleration;
-		GetCharacterMovement()->BrakingDecelerationWalking = CharacterData->BrakingDecelerationWalking;
-		GetCharacterMovement()->GroundFriction = CharacterData->GroundFriction;
+		return FVector::ZeroVector;
 	}
+
+	// 진행 방향과 위쪽의 외적 = 옆으로 누운 축. 그 축으로 돌면 밀려나는 쪽으로 굴러간다
+	const FVector SpinAxis = FVector::CrossProduct(KnockbackVelocity.GetSafeNormal2D(), FVector::UpVector);
+	return SpinAxis * SpinRate;
+}
+
+void ATromboneCharacterBase::Client_ApplyKnockback_Implementation(const FVector KnockbackVelocity)
+{
+	if (HasAuthority())
+	{
+		return;
+	}
+
+	LaunchCharacter(KnockbackVelocity, true, true);
 }
 
 bool ATromboneCharacterBase::IsRagdoll() const
 {
 	return RagdollComponent ? RagdollComponent->IsRagdoll() : false;
+}
+
+FVector ATromboneCharacterBase::GetPelvisLocation() const
+{
+	const USkeletalMeshComponent* MeshComp = GetMesh();
+	return MeshComp ? MeshComp->GetSocketLocation(TromboneBones::Pelvis) : GetActorLocation();
+}
+
+void ATromboneCharacterBase::OnStun()
+{
+	if (!HasAuthority()) return;
+
+	if (IsRagdoll() || bIsStun) return;
+
+	bIsStun = true;
+	OnRep_IsStun();
+
+	const float StunDuration = CharacterData ? CharacterData->StunDuration : FallbackStunDuration;
+	GetWorld()->GetTimerManager().SetTimer(
+		OnHitTimerHandle,
+		this,
+		&ThisClass::EndStun,
+		StunDuration,
+		false
+	);
+}
+
+void ATromboneCharacterBase::EndStun()
+{
+	if (!HasAuthority()) return;
+
+	bIsStun = false;
+	OnRep_IsStun();
+
+	bIsInvincible = true;
+	OnRep_IsInvincible();
+
+	const float InvincibleDuration = CharacterData ? CharacterData->InvincibilityDurationAfterStun : FallbackInvincibilityDuration;
+	GetWorld()->GetTimerManager().SetTimer(
+		InvincibilityTimerHandle,
+		[this]()
+		{
+			bIsInvincible = false;
+			OnRep_IsInvincible();
+		},
+		InvincibleDuration,
+		false
+	);
+}
+
+void ATromboneCharacterBase::ApplyStun()
+{
+	StopAnimMontage();
+	AddBlock(ECharacterBlockReason::Stun);
+}
+
+void ATromboneCharacterBase::UnapplyStun()
+{
+	RemoveBlock(ECharacterBlockReason::Stun);
+
+	if (IsRagdoll())
+	{
+		return;
+	}
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
 void ATromboneCharacterBase::HandleRagdollStarted()
@@ -427,12 +316,65 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 	}
 
 	/** TODO : UCharacterAnimInstance::OnGetUpMontageEnded에서 래그돌 입력 차단을 해제하는데, 여기서 콜백을 넘겨주는 식으로 개선 못하나? */
-	AddInputBlock(EInputBlockReason::Ragdoll);
-	PlayFaceSequence(ECharacterFaceState::Ragdoll);
-	if (AkSoundComponent && RagdollBooSound)
+	AddBlock(ECharacterBlockReason::Ragdoll);
+
+	bool bIsLobby = false;
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		if (const UGameStateSubsystem* GameStateSubsystem = GI->GetSubsystem<UGameStateSubsystem>())
+		{
+			bIsLobby = IsLobbyLevelType(GameStateSubsystem->GetLevelState());
+		}
+	}
+	
+	if (!bIsLobby && AkSoundComponent && RagdollBooSound)
 	{
 		AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
 	}
+}
+
+void ATromboneCharacterBase::Multicast_PlayFallScream_Implementation()
+{
+	if (AkSoundComponent && FallScreamSound)
+	{
+		AkSoundComponent->PostAkEvent(FallScreamSound, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ATromboneCharacterBase::Multicast_PlayLandPain_Implementation()
+{
+	if (AkSoundComponent && LandPainSound)
+	{
+		AkSoundComponent->PostAkEvent(LandPainSound, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ATromboneCharacterBase::SetLandingSoundEnabled(const bool bEnable)
+{
+	if (!HasAuthority() || !GetMesh())
+	{
+		return;
+	}
+
+	GetMesh()->SetAllBodiesNotifyRigidBodyCollision(bEnable);
+
+	GetMesh()->OnComponentHit.RemoveDynamic(this, &ThisClass::HandleRagdollLandingHit);
+	if (bEnable)
+	{
+		GetMesh()->OnComponentHit.AddDynamic(this, &ThisClass::HandleRagdollLandingHit);
+	}
+}
+
+void ATromboneCharacterBase::HandleRagdollLandingHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (NormalImpulse.SizeSquared() < FMath::Square(LandingImpulseThreshold))
+	{
+		return;
+	}
+
+	SetLandingSoundEnabled(false);
+	Multicast_PlayLandPain();
 }
 
 void ATromboneCharacterBase::HandleRagdollEnded()
@@ -442,6 +384,7 @@ void ATromboneCharacterBase::HandleRagdollEnded()
 		bIsInvincible = true;
 		OnRep_IsInvincible();
 
+		const float InvincibleDuration = CharacterData ? CharacterData->InvincibilityDurationAfterRagdoll : FallbackInvincibilityDuration;
 		GetWorld()->GetTimerManager().SetTimer(
 			InvincibilityTimerHandle,
 			[this]()
@@ -449,212 +392,18 @@ void ATromboneCharacterBase::HandleRagdollEnded()
 				bIsInvincible = false;
 				OnRep_IsInvincible();
 			},
-			CharacterData->InvincibilityDurationAfterRagdoll,
+			InvincibleDuration,
 			false
 		);
-	}
-	
-	PlayFaceSequence(ECharacterFaceState::Blink);
-}
-
-void ATromboneCharacterBase::HandleRagdollPhysicsEnabled()
-{
-	ApplyFlagPhysics();
-}
-
-void ATromboneCharacterBase::OnStun()
-{
-	if (!HasAuthority()) return;
-
-	if (IsRagdoll() || bIsStun) return;
-
-	bIsStun = true;
-	OnRep_IsStun();
-
-	GetWorld()->GetTimerManager().SetTimer(
-		OnHitTimerHandle, 
-		this, 
-		&ThisClass::EndStun, 
-		CharacterData->StunDuration, 
-		false
-	);
-}
-
-void ATromboneCharacterBase::EndStun()
-{
-	if (!HasAuthority()) return;
-
-	bIsStun = false;
-	OnRep_IsStun();
-	
-	bIsInvincible = true;
-	OnRep_IsInvincible();
-	
-	GetWorld()->GetTimerManager().SetTimer(
-		InvincibilityTimerHandle, 
-		[this]()
-		{
-			bIsInvincible = false;
-			OnRep_IsInvincible();
-		}, 
-		CharacterData->InvincibilityDurationAfterStun, 
-		false
-	);
-}
-
-void ATromboneCharacterBase::ApplyStun()
-{
-	StopAnimMontage();
-	AddInputBlock(EInputBlockReason::Stun);
-}
-
-void ATromboneCharacterBase::UnapplyStun()
-{
-	RemoveInputBlock(EInputBlockReason::Stun);
-
-	if (IsRagdoll())
-	{
-		return;
-	}
-
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-}
-
-void ATromboneCharacterBase::UpdateSkinFromPlayerState()
-{
-	if (const ADefaultPlayerState* DPS = GetPlayerState<ADefaultPlayerState>())
-	{
-		SkinColor = DPS->GetSkinColor();
-		ApplySkinColor(SkinColor);
-	}
-}
-
-void ATromboneCharacterBase::UpdateFaceExpression(ECharacterFaceType NewType)
-{
-	if (FaceMID)
-	{
-		FaceMID->SetScalarParameterValue(FaceExpressionParameterName, static_cast<float>(NewType));
-	}
-}
-
-void ATromboneCharacterBase::BoundBounceTimeline()
-{
-	if (BounceCurve)
-	{
-		FOnTimelineVector ProgressFunction;
-		ProgressFunction.BindUFunction(this, FName("HandleBounceProgress"));
-		BounceTimeline.AddInterpVector(BounceCurve, ProgressFunction);
-	}
-}
-
-void ATromboneCharacterBase::HandleBounceProgress(FVector Value)
-{
-	if (GetMesh())
-	{
-		GetMesh()->SetRelativeScale3D(Value);
-	}
-}
-
-void ATromboneCharacterBase::Server_DebugStun_Implementation()
-{
-	if (bIsStun)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
-		EndStun();
-	}
-	else
-	{
-		OnStun();
-	}
-}
-
-void ATromboneCharacterBase::Server_DebugRagdoll_Implementation()
-{
-	if (RagdollComponent)
-	{
-		RagdollComponent->StartRagdoll();
-	}
-}
-
-void ATromboneCharacterBase::PlayFaceSequence(const ECharacterFaceState TargetState)
-{
-	if (!CharacterData) return;
-
-	if (const FCharacterFaceAnimationSequence* FaceAnimData = CharacterData->FaceSequences.Find(TargetState))
-	{
-		InternalPlayFaceSequence(FaceAnimData);
-	}
-}
-
-void ATromboneCharacterBase::InternalPlayFaceSequence(const FCharacterFaceAnimationSequence* InSequence)
-{
-	GetWorld()->GetTimerManager().ClearTimer(FaceSequenceTimerHandle);
-	CurrentActiveSequence = *InSequence;
-	CurrentSequenceStep = 0;
-	ExecuteFaceStep();
-}
-
-void ATromboneCharacterBase::ExecuteFaceStep()
-{
-	if (CurrentActiveSequence.Sequence.Num() == 0) return;
-
-	UpdateFaceExpression(CurrentActiveSequence.Sequence[CurrentSequenceStep]);
-	CurrentSequenceStep++;
-
-	if (CurrentSequenceStep < CurrentActiveSequence.Sequence.Num())
-	{
-		GetWorld()->GetTimerManager().SetTimer(FaceSequenceTimerHandle, this, &ThisClass::ExecuteFaceStep, CurrentActiveSequence.Interval, false);
-	}
-	else if (CurrentActiveSequence.bLoop)
-	{
-		CurrentSequenceStep = 0;
-		
-		float NextDelay = FMath::FRandRange(CurrentActiveSequence.MinLoopDelay, CurrentActiveSequence.MaxLoopDelay);
-		if (NextDelay <= 0.0f) NextDelay = CurrentActiveSequence.Interval;
-
-		GetWorld()->GetTimerManager().SetTimer(FaceSequenceTimerHandle, this, &ThisClass::ExecuteFaceStep, NextDelay, false);
-	}
-}
-
-void ATromboneCharacterBase::ApplyFlagPhysics()
-{
-	if (!GetWorld() || !GetWorld()->GetGameInstance())
-	{
-		return;
-	}
-
-	if (const UGameStateSubsystem* GameStateSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameStateSubsystem>())
-	{
-		if (IsInGameLevelType(GameStateSubsystem->GetLevelState()))
-		{
-			GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			
-			FPhysicalAnimationData FlagAnimData;
-			FlagAnimData.bIsLocalSimulation = false;
-			FlagAnimData.OrientationStrength = 10.0f;
-			FlagAnimData.AngularVelocityStrength = 5.0f;
-			FlagAnimData.PositionStrength = 10.0f;
-			FlagAnimData.VelocityStrength = 0.0f;
-			FlagAnimData.MaxAngularForce = 0.0f;
-			FlagAnimData.MaxLinearForce = 0.0f;
-
-			GetMesh()->SetAllBodiesBelowSimulatePhysics(TromboneBones::Flage, true, true);
-			PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(TromboneBones::Flage, FlagAnimData, true);
-		}
 	}
 }
 
 void ATromboneCharacterBase::OnRep_IsStun()
 {
-	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 	if (bIsStun)
 	{
 		ApplyStun();
-		PlayFaceSequence(ECharacterFaceState::Stun);
-		if (BounceCurve)
-		{
-			BounceTimeline.PlayFromStart();
-		}
+
 		if (StunNiagaraComponent)
 		{
 			StunNiagaraComponent->DeactivateImmediate();
@@ -668,17 +417,19 @@ void ATromboneCharacterBase::OnRep_IsStun()
 	else
 	{
 		UnapplyStun();
-		PlayFaceSequence(ECharacterFaceState::Blink);
+
 		if (StunNiagaraComponent)
 		{
 			StunNiagaraComponent->DeactivateImmediate();
 		}
+		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 		if (AudioDevice && StunNiagaraPlayingID != 0)
 		{
 			AudioDevice->StopPlayingID(StunNiagaraPlayingID, 0, AkCurveInterpolation_Linear);
 			StunNiagaraPlayingID = 0;
 		}
 	}
+
 	OnStunStateChanged.Broadcast(bIsStun);
 }
 

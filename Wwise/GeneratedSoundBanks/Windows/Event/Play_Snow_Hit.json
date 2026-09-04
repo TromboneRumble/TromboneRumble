@@ -1,0 +1,72 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1683545633",
+    "Type": "Event",
+    "GUID": "{3EA05F32-8881-4247-9EB3-C02DE9D775F8}",
+    "Language": "SFX",
+    "Hash": "{0941F5CE-85A2-0D9D-E35A-497F43AF2C21}",
+    "ObjectPath": "Play_Snow_Hit",
+    "ShortName": "Play_Snow_Hit",
+    "Path": "Event/Play_Snow_Hit.bnk",
+    "Media": [
+     {
+      "Id": "89407379",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_1.wav",
+      "Path": "Media/89407379.wem",
+      "CachePath": "SFX/Snow_1_818F3B66.wem"
+     },
+     {
+      "Id": "258933016",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_3.wav",
+      "Path": "Media/258933016.wem",
+      "CachePath": "SFX/Snow_3_818F3B66.wem"
+     },
+     {
+      "Id": "1009372356",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Snow_2.wav",
+      "Path": "Media/1009372356.wem",
+      "CachePath": "SFX/Snow_2_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1683545633",
+      "Name": "Play_Snow_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Snow_Hit",
+      "GUID": "{3EA05F32-8881-4247-9EB3-C02DE9D775F8}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.39404166",
+      "DurationMax": "0.57991666",
+      "MediaRefs": [
+       {
+        "Id": "89407379"
+       },
+       {
+        "Id": "258933016"
+       },
+       {
+        "Id": "1009372356"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{DCF54535-FE79-FB00-CCA5-36191BD66949}"
+ }
+}

@@ -5,6 +5,7 @@
 #include "AkComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
@@ -122,6 +123,18 @@ void AGarbageBase::OnRep_ImpactStarted()
 			TrailComp->Deactivate();
 		}
 
+		if (ImpactEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		}
+
+		if (bHideOnImpact && MeshComp)
+		{
+			MeshComp->SetSimulatePhysics(false);
+			MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			MeshComp->SetVisibility(false);
+		}
+
 		FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
 		if (AudioDevice && SpawnMusicPlayingID != 0)
 		{
@@ -162,8 +175,9 @@ void AGarbageBase::HandleMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		FVector Direction = (OtherActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 		HitData.HitDirection = Direction;
-		HitData.HitReaction = HitReactionType; 
-		HitData.KnockbackForce = 500.f;    // TODO : 데이터화
+		HitData.HitReaction = HitReactionType;
+		HitData.KnockbackForce = KnockbackForce;
+		HitData.KnockbackUpForce = KnockbackUpForce;
 		HitData.HitInstigator = HitInstigatorType;
 
 		ICombatReceiver::Execute_OnHitReceived(OtherActor, HitData);

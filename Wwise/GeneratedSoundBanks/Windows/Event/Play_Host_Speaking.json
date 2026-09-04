@@ -29,7 +29,7 @@
      {
       "Id": "3304145397",
       "Name": "Play_Host_Speaking",
-      "ObjectPath": "\\Events\\Default Work Unit\\Audience_SFX\\Play_Host_Speaking",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_Host_Speaking",
       "GUID": "{A5981776-F3D0-4919-93FB-1E5275B10847}",
       "DurationType": "OneShot",
       "DurationMin": "56.5565",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{B855BB25-629A-755F-EB4A-4A51F7320C19}"
+  "FileHash": "{9896586A-E94B-3CC5-8961-5D94C68AE827}"
  }
 }

@@ -48,6 +48,7 @@ void AGarbageSpawner::Server_SpawnGarbageOnce()
 
 	if (GarbageClasses.Num() == 0 || SpawnPointActors.Num() == 0)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[AGarbageSpawner] %s has no spawn points. Nothing will be thrown."), *GetName());
 		return;
 	}
 	

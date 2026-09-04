@@ -11,6 +11,7 @@ class UAkAudioEvent;
 class UAkComponent;
 class UStaticMeshComponent;
 class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS(Abstract)
 class TROMBONERUMBLE_API AGarbageBase : public AActor
@@ -43,6 +44,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Sound")
 	TObjectPtr<UAkAudioEvent> SpawnSoundEvent = nullptr;
+
+	/** Burst played where this lands. Left empty means no effect. */
+	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Effect")
+	TObjectPtr<UNiagaraSystem> ImpactEffect = nullptr;
+
+	/** Hides the mesh the moment it lands. For things that break apart instead of rolling to a stop. */
+	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Effect")
+	bool bHideOnImpact = false;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Type")
 	EHitInstigatorType HitInstigatorType = EHitInstigatorType::None;
@@ -81,6 +90,16 @@ protected:
 	 * 이 투척물이 캐릭터와 충돌했을 때 적용할 피해 유형입니다. */
 	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "피해 유형"))
 	EHitReactionType HitReactionType = EHitReactionType::None;
+
+	/** 수평 넉백 힘
+	 * 충돌한 캐릭터를 수평으로 밀어내는 힘입니다. 피해 유형(스턴/래그돌)에 맞게 튜닝하세요. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "넉백 힘 (수평)", EditCondition = "HitReactionType != EHitReactionType::None"))
+	float KnockbackForce = 500.f;
+
+	/** 수직 넉백 힘
+	 * 충돌한 캐릭터를 위로 띄우는 힘입니다. 피해 유형(스턴/래그돌)에 맞게 튜닝하세요. */
+	UPROPERTY(EditAnywhere, Category = "Garbage|Config|HitType", meta = (DisplayName = "넉백 힘 (수직)", EditCondition = "HitReactionType != EHitReactionType::None"))
+	float KnockbackUpForce = 300.f;
 
 protected:
 	// Replication

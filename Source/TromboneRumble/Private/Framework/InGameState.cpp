@@ -39,6 +39,13 @@ void AInGameState::Multicast_BroadCastInGameStateChanged_Implementation(EInGameS
     }
 
     CurrentGameState = InGameState;
+
+    // 멀티캐스트를 놓친 클라에겐 OnRep이 유일한 백업이다. 기본 주기를 기다리지 않게 한다
+    if (HasAuthority())
+    {
+        ForceNetUpdate();
+    }
+
     OnInGameStateChanged.Broadcast(InGameState);
 }
 
@@ -88,6 +95,7 @@ void AInGameState::RecalculateLeader()
     if (NewLeader && NewLeader != OldLeader && NewLeader->GetScore()>0.f)
     {
         CurrentLeader = NewLeader;
+        ForceNetUpdate();
         OnLeaderChanged.Broadcast(NewLeader, OldLeader);
     }
 }

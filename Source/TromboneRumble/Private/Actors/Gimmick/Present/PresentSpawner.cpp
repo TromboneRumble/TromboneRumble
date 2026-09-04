@@ -2,184 +2,97 @@
 
 #include "Actors/Gimmick/Present/PresentSpawner.h"
 #include "Actors/Gimmick/Present/Present.h"
-#include "AkComponent.h"
-#include "AkGameplayTypes.h"
 #include "Engine/TargetPoint.h"
 
 APresentSpawner::APresentSpawner()
 {
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
-
-	SantaMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SantaMesh"));
-	SantaMesh->SetupAttachment(RootComponent);
-	SantaMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-
-	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
-	if (AkComponent)
-	{
-		AkComponent->OcclusionRefreshInterval = 0.f;
-		AkComponent->SetupAttachment(RootComponent);
-	}
+	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 
 	GimmickType = EGimmickType::Present;
-	bReplicates = true;
-	SetReplicateMovement(true);
-}
-
-void APresentSpawner::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void APresentSpawner::Activate()
 {
 	Super::Activate();
-	StartPatrol();
+
+	SyncActivePresentsSize();
+
+	if (HasAuthority() && SpawnInterval > 0.f)
+	{
+		GetWorldTimerManager().SetTimer(
+			SpawnTimerHandle,
+			this,
+			&ThisClass::SpawnOneDrop,
+			SpawnInterval,
+			true);
+	}
 }
 
 void APresentSpawner::Deactivate()
 {
 	Super::Deactivate();
 
-	bIsPatrolling = false;
-	bMidPointReached = false;
-	PatrolTargetLocation = FVector::ZeroVector;
-	NextPatrolTargetLocation = FVector::ZeroVector;
-	SetActorTickEnabled(false);
-	GetWorldTimerManager().ClearTimer(RespawnTimerHandle);
-	SetActorHiddenInGame(false);
-
-	Multicast_PlayJingleStop();
-}
-
-void APresentSpawner::StartPatrol()
-{
-	if (PatrolPointsA.IsEmpty() || MidPatrolPoints.IsEmpty() || PatrolPointsB.IsEmpty() || !PresentClass) return;
-
-	// 시작 지점, 중간 경유지, 종착지점을 각각 랜덤 선택
-	ATargetPoint* StartPoint = PatrolPointsA[FMath::RandRange(0, PatrolPointsA.Num() - 1)];
-	ATargetPoint* MidPoint = MidPatrolPoints[FMath::RandRange(0, MidPatrolPoints.Num() - 1)];
-	ATargetPoint* EndPoint = PatrolPointsB[FMath::RandRange(0, PatrolPointsB.Num() - 1)];
-
-	if (!StartPoint || !MidPoint || !EndPoint) return;
-
-	SetActorLocation(StartPoint->GetActorLocation());
-	SetActorHiddenInGame(false);
-
-	// 먼저 중간 경유지를 목표로 설정
-	PatrolTargetLocation = MidPoint->GetActorLocation();
-	NextPatrolTargetLocation = EndPoint->GetActorLocation();
-	bMidPointReached = false;
-	bIsPatrolling = true;
-	SetActorTickEnabled(true);
-
-	Multicast_PlayJingleStart();
-}
-
-void APresentSpawner::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (!HasAuthority() || !bIsPatrolling) return;
-
-	const FVector CurrentLocation = GetActorLocation();
-	const FVector Direction = (PatrolTargetLocation - CurrentLocation).GetSafeNormal2D();
-
-	// 산타 이동
-	SetActorLocation(CurrentLocation + Direction * SantaSpeed * DeltaTime);
-
-	// 이동 방향으로 산타 회전
-	if (!Direction.IsNearlyZero())
+	if (GetWorld())
 	{
-		SetActorRotation(Direction.ToOrientationRotator());
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+		SpawnTimerHandle.Invalidate();
 	}
+}
 
-	// 도달 거리 (100cm)
-	const float ReachDistance = 100.f;
+void APresentSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	Super::EndPlay(EndPlayReason);
+}
 
-	if (!bMidPointReached)
+void APresentSpawner::SyncActivePresentsSize()
+{
+	// Empty()가 아니라 SetNum()인 이유: AGimmickManager가 음악 큐마다
+	// DeactivateAllGimmicks(); ActivateAllGimmicks();를 호출하므로,
+	// 여기서 배열을 비우면 재활성화 직후 점유 정보가 날아가 겹쳐 스폰된다
+	if (ActivePresents.Num() != SpawnPoints.Num())
 	{
-		// 중간 경유지 도달 감지
-		if (FVector::Dist2D(CurrentLocation, PatrolTargetLocation) <= ReachDistance)
+		ActivePresents.SetNum(SpawnPoints.Num());
+	}
+}
+
+void APresentSpawner::SpawnOneDrop()
+{
+	if (!HasAuthority()) return;
+	if (!PresentClass || SpawnPoints.IsEmpty()) return;
+
+	SyncActivePresentsSize();
+
+	// 아직 선물이 없는(= 이미 획득되었거나 한 번도 안 나온) 지점만 후보로 삼는다.
+	// 낙하 중인 선물도 점유로 간주해야 공중에서 겹치지 않는다.
+	TArray<int32> FreeIndices;
+	FreeIndices.Reserve(SpawnPoints.Num());
+	for (int32 Index = 0; Index < SpawnPoints.Num(); ++Index)
+	{
+		if (SpawnPoints[Index] && !ActivePresents[Index].IsValid())
 		{
-			OnReachedMidPoint();
+			FreeIndices.Add(Index);
 		}
 	}
-	else
-	{
-		// 최종 종착지점 도달 감지
-		if (FVector::Dist2D(CurrentLocation, PatrolTargetLocation) <= ReachDistance)
-		{
-			OnReachedEndPoint();
-		}
-	}
-}
 
-void APresentSpawner::OnReachedMidPoint()
-{
-	// 중간 경유지에서 선물 드롭
-	SpawnPresent(PatrolTargetLocation);
+	// 모든 지점이 점유됨 → 아무것도 하지 않고 다음 주기를 기다린다 (타이머는 looping)
+	if (FreeIndices.IsEmpty()) return;
 
-	// 이제 최종 종착지점으로 목표 변경
-	PatrolTargetLocation = NextPatrolTargetLocation;
-	bMidPointReached = true;
-}
+	const int32 ChosenIndex = FreeIndices[FMath::RandRange(0, FreeIndices.Num() - 1)];
+	TObjectPtr<ATargetPoint> ChosenPoint = SpawnPoints[ChosenIndex];
 
-void APresentSpawner::OnReachedEndPoint()
-{
-	bIsPatrolling = false;
-	bMidPointReached = false;
-	SetActorTickEnabled(false);
-	SetActorHiddenInGame(true);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	Multicast_PlayJingleStop();
-
-	GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &APresentSpawner::RespawnSanta, RespawnDelay, false);
-}
-
-void APresentSpawner::RespawnSanta()
-{
-	if (!bIsActive) return;
-	StartPatrol();
-}
-
-void APresentSpawner::SpawnPresent(const FVector& DropLocation)
-{
-	if (!HasAuthority() || !PresentClass) return;
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	const FTransform SpawnTransform(FRotator::ZeroRotator, DropLocation);
-	if (APresent* NewPresent = GetWorld()->SpawnActor<APresent>(PresentClass, SpawnTransform, SpawnParams))
+	if (APresent* NewPresent = GetWorld()->SpawnActor<APresent>(
+		PresentClass,
+		ChosenPoint->GetActorLocation(),
+		ChosenPoint->GetActorRotation(),
+		Params))
 	{
 		NewPresent->BonusScore = PresentBonusScore;
-	}
-
-	Multicast_PlayHoHoHo();
-}
-
-void APresentSpawner::Multicast_PlayJingleStart_Implementation()
-{
-	if (AkComponent && JingleStartEvent)
-	{
-		AkComponent->PostAkEvent(JingleStartEvent, 0, FOnAkPostEventCallback());
-	}
-}
-
-void APresentSpawner::Multicast_PlayJingleStop_Implementation()
-{
-	if (AkComponent && JingleStopEvent)
-	{
-		AkComponent->PostAkEvent(JingleStopEvent, 0, FOnAkPostEventCallback());
-	}
-}
-
-void APresentSpawner::Multicast_PlayHoHoHo_Implementation()
-{
-	if (AkComponent && HoHoHoEvent)
-	{
-		AkComponent->PostAkEvent(HoHoHoEvent, 0, FOnAkPostEventCallback());
+		ActivePresents[ChosenIndex] = NewPresent;
 	}
 }

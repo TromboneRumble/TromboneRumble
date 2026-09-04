@@ -2,7 +2,9 @@
 
 #include "Components/ActorComponents/CustomizationComponent.h"
 #include "Actors/ResultScene/PodiumActor.h"
+#include "Animation/AnimInstance.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine/SkeletalMesh.h"
@@ -191,7 +193,7 @@ void UCustomizationComponent::ApplyFace(const FCustomizationPartRow* Row)
 		? nullptr
 		: Cast<UMaterialInterface>(Row->AssetPath.TryLoad());
 
-	if (ATromboneCharacterBase* Char = Cast<ATromboneCharacterBase>(GetOwner()))
+	if (ADefaultTromboneCharacter* Char = Cast<ADefaultTromboneCharacter>(GetOwner()))
 	{
 		Char->ApplyFaceMaterial(Mat);
 	}
@@ -245,10 +247,31 @@ void UCustomizationComponent::ApplyFollowerPart(const FCustomizationPartRow* Row
 	Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Comp->SetReceivesDecals(false);
 	Comp->SetupAttachment(Leader);
+
+	// 자체 본을 가진 파츠(모자 등)는 LeaderPose로 움직일 수 없다. follower는 애님도 물리도 평가하지 않기 때문.
+	// AnimBP가 지정된 행만 자기 애님을 돌리고, 비어 있으면 기존 LeaderPose 경로 그대로.
+	// 등록 전에 지정해야 OnRegister의 InitAnim에서 한 번만 초기화된다(InitAnim은 IsRegistered()를 요구).
+	UClass* AnimClass = Row->PartAnimClass.IsNull() ? nullptr : Row->PartAnimClass.LoadSynchronous();
+	if (AnimClass)
+	{
+		Comp->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+		Comp->SetAnimInstanceClass(AnimClass);
+		Comp->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
+	}
+
 	Comp->RegisterComponent();
 	Owner->AddInstanceComponent(Comp);
-	// leader(머리)의 본 포즈(애니메이션·레그돌 결과)를 그대로 복사 → 자체 PhysicsAsset/AnimBP 불필요
-	Comp->SetLeaderPoseComponent(Leader);
+
+	if (AnimClass)
+	{
+		// CopyPoseFromMesh가 leader의 '이번 프레임' 포즈를 읽도록 틱 순서를 고정. 없으면 한 프레임 지연된다.
+		Comp->AddTickPrerequisiteComponent(Leader);
+	}
+	else
+	{
+		// leader(머리)의 본 포즈(애니메이션·레그돌 결과)를 그대로 복사 → 자체 PhysicsAsset/AnimBP 불필요
+		Comp->SetLeaderPoseComponent(Leader);
+	}
 
 	// skin 슬롯이 있으면 MID 확보 후 현재 피부색 적용 (머리/몸통/안테나 색 동기)
 	// bApplyPartsSkinColor=false면 틴트 없이 기본 머티리얼 그대로 (CustomizeMap)
@@ -260,15 +283,7 @@ void UCustomizationComponent::ApplyFollowerPart(const FCustomizationPartRow* Row
 			SkinMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, GetOwnerSkinColor());
 		}
 	}
-
-	// X-Ray 스텐실은 TromboneCharacterBase 로컬 캐릭터에만 적용
-	if (ATromboneCharacterBase* TromboneChar = Cast<ATromboneCharacterBase>(Owner))
-	{
-		if (TromboneChar->IsLocallyControlled())
-		{
-			ATromboneCharacterBase::ApplyOccludedStencil(Comp);
-		}
-	}
+	
 }
 
 void UCustomizationComponent::ApplyPartsSkinColor(const FLinearColor& InColor) const

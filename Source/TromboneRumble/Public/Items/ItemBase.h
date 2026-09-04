@@ -58,6 +58,7 @@ public:
 	// ~ Begin Getters & Setters
 	FORCEINLINE TObjectPtr<UCapsuleComponent> GetCapsuleComponent() const { return CapsuleComponent; }
 	FORCEINLINE TObjectPtr<USkeletalMeshComponent> GetSkeletalMeshComponent() const { return SkeletalMeshComponent; }
+	FORCEINLINE AActor* GetCurrentOwner() const { return CurrentOwner; }
 	// ~ End Getters & Setters
 	
 public:

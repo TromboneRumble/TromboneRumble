@@ -34,10 +34,19 @@ TArray<FGameplayTag> UTromboneFunctionLibrary::GetMapTagsUnderCategory(const FGa
 
     for (const TPair<FGameplayTag, FSoftObjectPath>& Pair : Settings->GamePlayMap)
     {
-        if (Pair.Key.RequestDirectParent() == CategoryTag)
+        if (Pair.Key.RequestDirectParent() != CategoryTag)
         {
-            Result.Add(Pair.Key);
+            continue;
         }
+
+#if UE_BUILD_SHIPPING
+        if (Settings->ShippingHiddenMaps.Contains(Pair.Key))
+        {
+            continue;
+        }
+#endif
+
+        Result.Add(Pair.Key);
     }
 
     Result.Sort([](const FGameplayTag& A, const FGameplayTag& B)

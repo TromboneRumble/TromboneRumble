@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -12,23 +12,33 @@ class TROMBONERUMBLE_API AGimmickBase : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
-	AGimmickBase();
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+public:
 	
-	UFUNCTION()
+	AGimmickBase();
+	
+	/** Turns the gimmick on. */
+	UFUNCTION(BlueprintCallable, Category = "Gimmick")
 	virtual void Activate();
 	
-	UFUNCTION()
-	virtual	void Deactivate();
+	/** Turns the gimmick off. */
+	UFUNCTION(BlueprintCallable, Category = "Gimmick")
+	virtual void Deactivate();
 	
 	bool IsActive() const { return bIsActive; }
 	EGimmickType GetGimmickType() const { return GimmickType; }
-
+	
 protected:
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Config")
 	EGimmickType GimmickType = EGimmickType::None;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	bool bIsActive = false;
+	
+protected:
+	
+	//~ Begin AActor Interface
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	//~ End AActor Interface
+	
 };

@@ -19,6 +19,7 @@ class UActorPoolSubsystem;
 class ARhythmNote;
 class ARhythmNoteSpawner;
 class UBoxComponent;
+class UMaterialInterface;
 
 
 UCLASS()
@@ -118,9 +119,28 @@ private:
 	void WaitForOtherPlayers();
 	FTimerHandle CheckPlayersTimerHandle;
 
+	// 곡 데이터 로드에 실패하면 재시도한다. 재시도가 없으면 그 머신만 영영 시작하지 못한다
+	UFUNCTION()
+	void RetryPrepareRhythmGame();
+	FTimerHandle PrepareRetryTimerHandle;
+	int32 PrepareRetryCount = 0;
+
+	// 곡 태그의 원본은 GameInstance다. 로드에 실패하면 LoadedGameplayTag는 비어 있다
+	FGameplayTag GetSelectedSongTagFromGameInstance() const;
+
 	UFUNCTION()
 	void PlayMusic();
 	FTimerHandle PlayBackgroundMusicTimerHandle;
+
+	// BGM 포스트가 실패하면 EndOfEvent가 안 와서 곡이 끝난 걸 아무도 모른다
+	int32 BGMPostRetryCount = 0;
+
+	// 음악 클럭이 살아있는 스포너를 찾는다. 조회 자체가 모든 스포너의 클럭을 갱신한다
+	ARhythmNoteSpawner* GetMasterClockSpawner();
+
+	// BGM 시작 대기 상태. 노트 트랙 클럭이 BGMTriggerTimeSec를 넘으면 재생한다
+	bool bWaitingToStartBGM = false;
+	double BGMTriggerTimeSec = 3.0;
 	UFUNCTION()
 	void HandleBGMCallbacks(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	bool bHasReceivedMusicStartCallback = false;
@@ -192,6 +212,16 @@ private:
 	bool bIsSyncTesting = false;
 	// ~Rhythm Game
 
+	// Map Materials
+	// 맵별 리듬게임 캐릭터 링 히트박스 머티리얼. 미설정 시 캐릭터 BP에 지정된 기본 머티리얼 사용
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rhythm|Materials", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> HitBoxRingMaterial = nullptr;
+
+	// 맵별 리듬게임 노트 머티리얼. 미설정 시 NoteVisualizer BP에 지정된 기본 머티리얼 사용
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rhythm|Materials", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> NoteVisualizerRingMaterial = nullptr;
+	// ~Map Materials
+
 	// Cached References
 	UActorPoolSubsystem* GetCachedActorPoolSubsystem();
 	URhythmSubsystem* GetCachedRhythmSubsystem();
@@ -214,4 +244,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Rhythm")
 	FORCEINLINE int32 GetBGMPlayingID() const { return BGMPlayingID; }
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm|Materials")
+	FORCEINLINE UMaterialInterface* GetHitBoxRingMaterial() const { return HitBoxRingMaterial; }
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm|Materials")
+	FORCEINLINE UMaterialInterface* GetNoteVisualizerRingMaterial() const { return NoteVisualizerRingMaterial; }
 };

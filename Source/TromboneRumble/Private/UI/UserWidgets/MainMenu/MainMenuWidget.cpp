@@ -2,18 +2,11 @@
 
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
-#include "EasyMatchmakingManager.h"
-#include "EasyMatchmakingPolicy.h"
-#include "EasySessions.h"
-#include "TromboneGamePlayTags.h"
-#include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
-#include "Components/EditableText.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "DeveloperSettings/TromboneConfig.h"
-#include "Online/OnlineSessionNames.h"
+#include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/Defines.h"
 #include "Utilities/TromboneStatics.h"
@@ -35,20 +28,10 @@ void UMainMenuWidget::NativeOnInitialized()
 
 void UMainMenuWidget::Init()
 {
-	if (CB_CreateSession)
+	if (CB_Play)
 	{
-		CB_CreateSession->OnClicked().RemoveAll(this);
-		CB_CreateSession->OnClicked().AddUObject(this, &ThisClass::HandleCreateSessionClicked);
-	}
-	if (CB_QuickJoin)
-	{
-		CB_QuickJoin->OnClicked().RemoveAll(this);
-		CB_QuickJoin->OnClicked().AddUObject(this, &ThisClass::HandleQuickJoinButtonClicked);
-	}
-	if (CB_Join)
-	{
-		CB_Join->OnClicked().RemoveAll(this);
-		CB_Join->OnClicked().AddUObject(this, &ThisClass::HandleJoinButtonClicked);
+		CB_Play->OnClicked().RemoveAll(this);
+		CB_Play->OnClicked().AddUObject(this, &ThisClass::HandlePlayButtonClicked);
 	}
 	if (CB_Settings)
 	{
@@ -77,16 +60,24 @@ void UMainMenuWidget::Init()
 
 void UMainMenuWidget::SetUIEnabled(const bool bEnabled)
 {
-	CB_QuickJoin->SetIsEnabled(bEnabled);
-	CB_Join->SetIsEnabled(bEnabled);
-	CB_Settings->SetIsEnabled(bEnabled);
-	CB_Tutorial->SetIsEnabled(bEnabled);
-	CB_Quit->SetIsEnabled(bEnabled);
-	CB_CreateSession->SetIsEnabled(bEnabled);
-	CB_Customize->SetIsEnabled(bEnabled);
+	if (CB_Play) CB_Play->SetIsEnabled(bEnabled);
+	if (CB_Settings) CB_Settings->SetIsEnabled(bEnabled);
+	if (CB_Tutorial) CB_Tutorial->SetIsEnabled(bEnabled);
+	if (CB_Quit) CB_Quit->SetIsEnabled(bEnabled);
+	if (CB_Customize) CB_Customize->SetIsEnabled(bEnabled);
 }
 
-void UMainMenuWidget::HandleCreateSessionClicked()
+void UMainMenuWidget::HandlePlayButtonClicked()
+{
+	if (TryShowFirstTutorialPopup())
+	{
+		return;
+	}
+
+	UTromboneStatics::ShowPopup<UPlayModePopup>(GetWorld());
+}
+
+bool UMainMenuWidget::TryShowFirstTutorialPopup() const
 {
 	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
 	{
@@ -94,72 +85,32 @@ void UMainMenuWidget::HandleCreateSessionClicked()
 		{
 			ShowTutorialPopup();
 			Subsystem->MarkTutorialAsCompleted();
-			return;
+			return true;
 		}
 	}
-	
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
-	{
-		const UTromboneConfig* Config = UTromboneConfig::Get();
-		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
-		
-		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
-		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_MAPNAME, Config->DefaultInGameMap.ToString(), EOnlineDataAdvertisementType::ViaOnlineService));
-
-		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
-    
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, 0, EEasyMatchmakingMode::CreateOnly);
-	}));
+	return false;
 }
 
-void UMainMenuWidget::HandleQuickJoinButtonClicked()
+void UMainMenuWidget::ShowTutorialPopup() const
 {
-	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
+	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
 	{
-		if (Subsystem->ShouldShowTutorialPopup())
-		{
-			ShowTutorialPopup();
-			Subsystem->MarkTutorialAsCompleted();
-			return;
-		}
-	}
-	
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
-	{
-		const UTromboneConfig* Config = UTromboneConfig::Get();
-		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
-		
-		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
-		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
-		
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		Param.HostParams = HostParams;
-		Param.MinSlotsRequired = 1;
-												
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, 0, EEasyMatchmakingMode::Default);
-	}));
-}
+		FTwoButtonPopupParams Params;
+		Params.Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
+		Params.Content = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
+		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
+		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
 
-void UMainMenuWidget::HandleJoinButtonClicked()
-{
-	if (USaveManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
-	{
-		if (Subsystem->ShouldShowTutorialPopup())
+		Params.LeftCallback = [this]
 		{
-			ShowTutorialPopup();
-			Subsystem->MarkTutorialAsCompleted();
-			return;
+			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
+		};
+
+		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		{
+			Popup->Init(Params);
 		}
 	}
-	
-	UTromboneStatics::ShowPopup<UJoinCodePopup>(GetWorld());
 }
 
 void UMainMenuWidget::HandleCustomizeButtonClicked()
@@ -175,28 +126,6 @@ void UMainMenuWidget::HandleTutorialButtonClicked()
 	}
 	
 	UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
-}
-
-void UMainMenuWidget::ShowTutorialPopup()
-{
-	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{
-		FTwoButtonPopupParams Params;
-		Params.Title = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupTitle"));
-		Params.Content = GI->GetTutorialUIText(TEXT("StringKey_TutorialFirstPlayerShowPopupDescription"));
-		Params.LeftButtonText = GI->GetCommonUIText(TEXT("Common_Yes"));
-		Params.RightButtonText = GI->GetCommonUIText(TEXT("Common_No"));
-		
-		Params.LeftCallback = [this]
-		{ 
-			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
-		};
-		
-		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
-		{
-			Popup->Init(Params);
-		}
-	}
 }
 
 void UMainMenuWidget::ShowQuitPopup() const

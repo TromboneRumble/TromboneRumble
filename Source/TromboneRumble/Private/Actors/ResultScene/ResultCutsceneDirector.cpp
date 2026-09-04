@@ -5,6 +5,7 @@
 #include "Framework/InGameState.h"
 #include "Actors/ResultScene/PodiumActor.h"
 #include "Camera/CameraActor.h"
+#include "Kismet/GameplayStatics.h"
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
 #include "Blueprint/UserWidget.h"
@@ -25,6 +26,15 @@ void AResultCutsceneDirector::SkipResultSequence()
 		FMovieSceneSequencePlaybackParams Params(SequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump);
 		SequencePlayer->SetPlaybackPosition(Params);
 		SequencePlayer->Stop();
+
+		// The lights have to land on their last frame too, or whoever skips keeps the mid-cutscene look.
+		if (LightingSequencePlayer && LightingSequencePlayer->IsPlaying())
+		{
+			FMovieSceneSequencePlaybackParams LightParams(LightingSequencePlayer->GetDuration().Time, EUpdatePositionMethod::Jump);
+			LightingSequencePlayer->SetPlaybackPosition(LightParams);
+			LightingSequencePlayer->Stop();
+		}
+
 		OnSequenceFinished();
 	}
 }
@@ -81,7 +91,7 @@ void AResultCutsceneDirector::BeginPlay()
 	{
 		if (IsResultLevelType(GameStateSubsystem->GetLevelState()))
 		{
-			PlayResultCutscene();
+			LoadBackgroundThenPlayCutscene();
 		}
 	}
 }
@@ -129,6 +139,59 @@ void AResultCutsceneDirector::OnSequenceFinished()
 		{
 			Podium->SetNameWidgetVisibility(true);
 		}
+	}
+}
+
+void AResultCutsceneDirector::LoadBackgroundThenPlayCutscene()
+{
+	const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>();
+	ActiveStageTag = ResultSubsystem ? ResultSubsystem->ResolveResultMapTag() : FGameplayTag();
+
+	const FResultStageSetup* Setup = StageSetups.Find(ActiveStageTag);
+	const TSoftObjectPtr<UWorld>* Background = Setup ? &Setup->BackgroundLevel : nullptr;
+
+	// This stage keeps its background in the level itself, so there is nothing to wait for.
+	if (!Background || Background->IsNull())
+	{
+		PlayResultCutscene();
+		return;
+	}
+
+	// A level missing from the Levels window never finishes loading, which would leave the player on an empty screen.
+	const FName PackageName(*Background->ToSoftObjectPath().GetLongPackageName());
+	if (!UGameplayStatics::GetStreamingLevel(this, PackageName))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[AResultCutsceneDirector] Background level '%s' is not registered in this map. Add it in the Levels window."), *PackageName.ToString());
+		PlayResultCutscene();
+		return;
+	}
+
+	FLatentActionInfo LoadInfo;
+	LoadInfo.CallbackTarget = this;
+	LoadInfo.ExecutionFunction = FName("HandleBackgroundLoaded");
+	LoadInfo.Linkage = 0;
+	LoadInfo.UUID = ++LatentUUID;
+	UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this, *Background, true, false, LoadInfo);
+}
+
+void AResultCutsceneDirector::HandleBackgroundLoaded()
+{
+	PlayResultCutscene();
+}
+
+void AResultCutsceneDirector::StartLightingSequence()
+{
+	const FResultStageSetup* Setup = StageSetups.Find(ActiveStageTag);
+	if (!Setup || !Setup->LightingSequence)
+	{
+		return;
+	}
+
+	ALevelSequenceActor* OutActor;
+	LightingSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), Setup->LightingSequence, FMovieSceneSequencePlaybackSettings(), OutActor);
+	if (LightingSequencePlayer)
+	{
+		LightingSequencePlayer->Play();
 	}
 }
 
@@ -189,6 +252,9 @@ void AResultCutsceneDirector::PlayResultCutscene()
 		{
 			SequencePlayer->OnFinished.AddDynamic(this, &AResultCutsceneDirector::OnSequenceFinished);
 			SequencePlayer->Play();
+
+			// Right after Play so both sequences sit on the same frame.
+			StartLightingSequence();
 		}
 		if (RankingBGM)
 		{

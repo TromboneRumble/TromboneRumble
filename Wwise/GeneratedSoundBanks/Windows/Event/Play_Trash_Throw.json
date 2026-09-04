@@ -29,7 +29,7 @@
      {
       "Id": "836697457",
       "Name": "Play_Trash_Throw",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash\\Play_Trash_Throw",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Trash,Snow\\Play_Trash_Throw",
       "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
       "MaxAttenuation": "2000",
       "DurationType": "OneShot",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{491CDB0D-8866-18D8-B145-8A5873B5BCDC}"
+  "FileHash": "{B895225D-5BB1-268B-10BE-72F1D846CADA}"
  }
 }

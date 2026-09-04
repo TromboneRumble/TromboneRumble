@@ -2,6 +2,7 @@
 
 
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Actors/Rhythm/RhythmActor.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "GameFramework/Pawn.h"
@@ -106,6 +107,8 @@ void URingHitBoxComponent::OnNoteDetectedHandler(ENoteResult InNoteResult)
 
 void URingHitBoxComponent::OnInstrumentPickedHandler(EInstrumentType PrevType, EInstrumentType NewType)
 {
+	RefreshMaterialFromRhythmActor();
+
 	const APawn* PawnOwner = Cast<APawn>(GetOwner());
 	const bool bShow = PawnOwner && PawnOwner->IsLocallyControlled();
 	if (PawnOwner && bShow)
@@ -145,14 +148,55 @@ void URingHitBoxComponent::EnsureMID()
 	// 이미 만들어져 있으면 재사용
 	if (RingMID || !GetWorld()) return;
 
-	UMaterialInterface* BaseMat = RingMatOrigin ? RingMatOrigin.Get() : GetMaterial(0);
+	// 맵별 머티리얼 > RingMatOrigin > 슬롯 0 순으로 사용
+	UMaterialInterface* BaseMat = ResolvePerMapOverrideMaterial();
+	if (!BaseMat)
+	{
+		BaseMat = RingMatOrigin ? RingMatOrigin.Get() : GetMaterial(0);
+	}
 	if (!BaseMat) return;
 
 	RingMID = CreateDynamicMaterialInstance(0, BaseMat);
 
 	if (RingMID)
 	{
+		CachedParentMat = BaseMat;
 		ApplyMaterialParams();
+	}
+}
+
+UMaterialInterface* URingHitBoxComponent::ResolvePerMapOverrideMaterial() const
+{
+	const UWorld* World = GetWorld();
+	if (!World || !World->GetGameInstance()) return nullptr;
+
+	const URhythmSubsystem* RhythmSubsystem = World->GetGameInstance()->GetSubsystem<URhythmSubsystem>();
+	if (!RhythmSubsystem) return nullptr;
+
+	const ARhythmActor* CurrentRhythmActor = RhythmSubsystem->GetRegisteredRhythmActor(World);
+	return CurrentRhythmActor ? CurrentRhythmActor->GetHitBoxRingMaterial() : nullptr;
+}
+
+void URingHitBoxComponent::RefreshMaterialFromRhythmActor()
+{
+	UMaterialInterface* OverrideMat = ResolvePerMapOverrideMaterial();
+	// 이미 해당 머티리얼로 MID를 만들었거나, 맵에 지정된 머티리얼이 없으면 그대로 둔다
+	if (!OverrideMat || OverrideMat == CachedParentMat) return;
+
+	if (const UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(FlashTimerHandle);
+	}
+
+	RingMID = nullptr;
+	bHasBaseColor = false;
+
+	EnsureMID();
+	CacheBaseColorIfNeeded();
+
+	if (bIsOwnerStunned && RingMID)
+	{
+		RingMID->SetVectorParameterValue(ColorParamName, StunColor);
 	}
 }
 
@@ -168,7 +212,6 @@ void URingHitBoxComponent::ApplyMaterialParams()
 	RingMID->SetScalarParameterValue(TEXT("EndOuterRadius"), EndOuterRadius);
 	RingMID->SetScalarParameterValue(TEXT("EndInnerRadius"), EndInnerRadius);
 	RingMID->SetScalarParameterValue(TEXT("SizeAlpha"), SizeAlpha);
-	RingMID->SetScalarParameterValue(TEXT("FadePercent"), FadePercent);
 }
 
 void URingHitBoxComponent::CacheBaseColorIfNeeded()

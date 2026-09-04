@@ -37,7 +37,9 @@ public class TromboneRumble : ModuleRules
 			"Voice",
 			"AudioCapture",
 			"AudioCaptureCore",
-			"AudioMixer"
+			"AudioMixer",
+			"AIModule",
+			"NavigationSystem"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -49,11 +51,17 @@ public class TromboneRumble : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
-			"EngineSettings", 
-			"Slate", 
-			"SlateCore"
+			"EngineSettings",
+			"Slate",
+			"SlateCore",
+			"RHI",        
+			"RenderCore"  
 		});
 		
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.Add("UnrealEd");
+		}
     }
 
 }

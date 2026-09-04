@@ -4,6 +4,7 @@
 #include "Data/WwiseData.h"
 #include "Kismet/KismetInternationalizationLibrary.h"
 #include "SaveData/TromboneSaveGame.h"
+#include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
 #include "Subsystems/VoiceChatSubsystem.h"
 #include "Engine/LocalPlayer.h"
@@ -69,7 +70,9 @@ void USaveManagerSubsystem::ApplyAllSettings()
         if (UGameUserSettings* VideoSettings = GEngine->GetGameUserSettings())
         {
             VideoSettings->LoadSettings();
+            VideoSettings->SetFrameRateLimit(TromboneRender::MAX_FRAME_RATE);
             VideoSettings->ApplySettings(false);
+            VideoSettings->SaveSettings();
         }
     }
     
@@ -152,7 +155,8 @@ void USaveManagerSubsystem::ApplyVideo(const FGraphicsSettingData& InVideoData, 
         VideoSettings->SetScreenResolution(InVideoData.Resolution);
         VideoSettings->SetVSyncEnabled(InVideoData.bVSync);
         VideoSettings->SetFullscreenMode(InVideoData.WindowMode);
-        
+
+        VideoSettings->SetFrameRateLimit(TromboneRender::MAX_FRAME_RATE);
         VideoSettings->ApplySettings(false);
         
         if (bSaveData)

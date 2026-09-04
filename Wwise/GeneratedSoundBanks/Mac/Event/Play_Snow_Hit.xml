@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1683545633" Type="Event" GUID="{3EA05F32-8881-4247-9EB3-C02DE9D775F8}" Language="SFX" Hash="{0941F5CE-85A2-0D9D-E35A-497F43AF2C21}">
+			<ObjectPath>Play_Snow_Hit</ObjectPath>
+			<ShortName>Play_Snow_Hit</ShortName>
+			<Path>Event/Play_Snow_Hit.bnk</Path>
+			<Media>
+				<File Id="89407379" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Snow_1.wav</ShortName>
+					<Path>Media/89407379.wem</Path>
+					<CachePath>SFX/Snow_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="258933016" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Snow_3.wav</ShortName>
+					<Path>Media/258933016.wem</Path>
+					<CachePath>SFX/Snow_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="1009372356" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Snow_2.wav</ShortName>
+					<Path>Media/1009372356.wem</Path>
+					<CachePath>SFX/Snow_2_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1683545633" Name="Play_Snow_Hit" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Trash,Snow\Play_Snow_Hit" GUID="{3EA05F32-8881-4247-9EB3-C02DE9D775F8}" DurationType="OneShot" DurationMin="0.39404166" DurationMax="0.57991666">
+					<MediaRefs>
+						<MediaRef Id="89407379"/>
+						<MediaRef Id="258933016"/>
+						<MediaRef Id="1009372356"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{9F52659A-4CC9-2317-C535-B794AF33D18A}</FileHash>
+</SoundBanksInfo>

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -11,6 +11,7 @@ class UAkAudioEvent;
 class UAkSwitchValue;
 class UAkComponent;
 class ADefaultTromboneCharacter;
+class ATromboneCharacterBase;
 class UCharacterMovementComponent;
 
 UCLASS()
@@ -70,8 +71,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ragdoll")
 	TObjectPtr<UAnimMontage> GetUpBackMontage;
 
+	/** 플레이어 전용 소유자 (악기 타입/이동 배속). NPC에서는 null */
 	UPROPERTY(Transient)
 	TObjectPtr<ADefaultTromboneCharacter> OwnerCharacter;
+
+	/** 공통 소유자 — 이동/스턴/기상은 베이스 기준으로 처리해 NPC(취객 등)도 이 ABP를 쓸 수 있다 */
+	UPROPERTY(Transient)
+	TObjectPtr<ATromboneCharacterBase> OwnerBaseCharacter;
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UCharacterMovementComponent> MovementComponent = nullptr;

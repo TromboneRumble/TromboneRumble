@@ -60,11 +60,11 @@ void ATutorialManager::TogglePlayerInput(bool bIsEnabled)
 	{
 		if (bIsEnabled)
 		{
-			MyCharacter->RemoveInputBlock(EInputBlockReason::Tutorial);
+			MyCharacter->RemoveBlock(ECharacterBlockReason::Tutorial);
 		}
 		else
 		{
-			MyCharacter->AddInputBlock(EInputBlockReason::Tutorial);
+			MyCharacter->AddBlock(ECharacterBlockReason::Tutorial);
 		}
 	}
 }
