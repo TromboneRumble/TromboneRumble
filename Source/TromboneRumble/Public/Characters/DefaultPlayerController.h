@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -28,10 +28,14 @@ public:
 	ADefaultPlayerController();
 
 	// InputActions
+	/** Every level gets this one. Holds the keys the lobby and the match share */
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<UInputMappingContext> LobbyMappingContext;
+	TObjectPtr<UInputMappingContext> CommonMappingContext;
+	
+	/** Added on top of the common one while a match is running. Jump, Rhythm, Escape */
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> InGameMappingContext;
+	
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 	UPROPERTY(EditAnywhere, Category = Input)

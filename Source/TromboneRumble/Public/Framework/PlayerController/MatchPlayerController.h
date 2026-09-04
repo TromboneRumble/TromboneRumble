@@ -20,7 +20,7 @@ public:
 public:
 
 	UPROPERTY(EditAnywhere, Category = "Input|Voice")
-	TObjectPtr<UInputMappingContext> VoiceMappingContext;
+	TObjectPtr<UInputMappingContext> CommonMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = "Input|Voice")
 	TObjectPtr<UInputAction> PushToTalkAction;

@@ -1,4 +1,4 @@
-#include "Characters/DefaultPlayerController.h"
+﻿#include "Characters/DefaultPlayerController.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -59,6 +59,11 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 		{
 			Subsystem->ClearAllMappings();
 
+			// The shared keys live in one context, so a key only has to be set up once
+			if (CommonMappingContext) Subsystem->AddMappingContext(CommonMappingContext, 0);
+
+			bool bNeedsInGameKeys = true;
+
 			switch (NewState)
 			{
 				case ELevelType::OrchestraStage:
@@ -67,7 +72,6 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 					; // intentional fall through
 
 				case ELevelType::Tutorial:
-					if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
 					break;
 
 				case ELevelType::OrchestraStageLobby:
@@ -75,14 +79,16 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 					; // intentional fall through
 
 				case ELevelType::JazzBarLobby:
-					if (LobbyMappingContext) Subsystem->AddMappingContext(LobbyMappingContext, 0);
+					bNeedsInGameKeys = false;
 					break;
 					
 				default:
 					UE_LOG(LogTemp, Log, TEXT("[ADefaultPlayerController::HandleLevelStateChanged] Unknown Level Fallback: InGame Input Setting applied."));
-					if (InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 0);
 					break;
 			}
+
+			// Sits above the common context so a match key wins if it ever shares a key
+			if (bNeedsInGameKeys && InGameMappingContext) Subsystem->AddMappingContext(InGameMappingContext, 1);
 		}
 	}
 }

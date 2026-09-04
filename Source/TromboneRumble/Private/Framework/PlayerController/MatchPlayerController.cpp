@@ -78,11 +78,11 @@ void AMatchPlayerController::BeginPlay()
 				VCS->EndLocalTalk();
 		}
 
-		if (VoiceMappingContext)
+		if (CommonMappingContext)
 		{
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
-				Subsystem->AddMappingContext(VoiceMappingContext, 0);
+				Subsystem->AddMappingContext(CommonMappingContext, 0);
 			}
 		}
 	}
