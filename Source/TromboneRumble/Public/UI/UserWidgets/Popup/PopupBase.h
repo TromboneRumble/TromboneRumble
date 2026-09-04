@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
@@ -92,6 +92,10 @@ private:
 	bool bIsClosing = false;
 	
 protected:
+	
+	// ~ Begin UUserWidget Interface
+	virtual void NativeOnInitialized() override;
+	// ~ End UUserWidget Interface
 	
 	// ~ Begin UCommonActivatableWidget Interface
 	virtual void NativeOnActivated() override;

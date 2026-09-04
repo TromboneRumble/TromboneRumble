@@ -1,7 +1,10 @@
-// Copyright (C) 2026 biksari studio. All Rights Reserved.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "CommonButtonBase.h"
+#include "CommonInputSubsystem.h"
+#include "CommonInputTypeEnum.h"
+#include "CommonTextBlock.h"
 #include "EasyMatchmakingManager.h"
 #include "EasyMatchmakingPolicy.h"
 #include "EasySessions.h"
@@ -13,7 +16,32 @@
 #include "Framework/TromboneGameInstance.h"
 #include "Online/OnlineSessionNames.h"
 #include "Subsystems/ToastSubsystem.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 #include "Utilities/TromboneStatics.h"
+
+void UPlayModePopup::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	// PlayModePopup UI buttons overlap each other, wire them manually
+	if (CB_CreateSession && CB_QuickJoin && CB_JoinCode && CB_Join)
+	{
+		CB_CreateSession->SetNavigationRuleExplicit(EUINavigation::Left, CB_JoinCode);
+		CB_CreateSession->SetNavigationRuleExplicit(EUINavigation::Right, CB_QuickJoin);
+		CB_CreateSession->SetNavigationRuleExplicit(EUINavigation::Down, Button_Close);
+		
+		CB_QuickJoin->SetNavigationRuleExplicit(EUINavigation::Left, CB_CreateSession);
+		CB_QuickJoin->SetNavigationRuleExplicit(EUINavigation::Right, CB_JoinCode);
+		CB_QuickJoin->SetNavigationRuleExplicit(EUINavigation::Down, Button_Close);
+		
+		CB_JoinCode->SetNavigationRuleExplicit(EUINavigation::Left, CB_QuickJoin);
+		CB_JoinCode->SetNavigationRuleExplicit(EUINavigation::Right, CB_CreateSession);
+		CB_JoinCode->SetNavigationRuleExplicit(EUINavigation::Down, CB_Join);
+
+		CB_Join->SetNavigationRuleExplicit(EUINavigation::Up, CB_JoinCode);
+		CB_Join->SetNavigationRuleExplicit(EUINavigation::Down, Button_Close);
+	}
+}
 
 void UPlayModePopup::Register()
 {
@@ -39,6 +67,13 @@ void UPlayModePopup::Register()
 		CB_Join->OnClicked().RemoveAll(this);
 		CB_Join->OnClicked().AddUObject(this, &ThisClass::HandleJoinClicked);
 	}
+
+	if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer()))
+	{
+		InputSubsystem->OnInputMethodChangedNative.RemoveAll(this);
+		InputSubsystem->OnInputMethodChangedNative.AddUObject(this, &ThisClass::HandleInputMethodChanged);
+		HandleInputMethodChanged(InputSubsystem->GetCurrentInputType());
+	}
 }
 
 void UPlayModePopup::Unregister()
@@ -61,11 +96,32 @@ void UPlayModePopup::Unregister()
 	{
 		CB_Join->OnClicked().RemoveAll(this);
 	}
+
+	if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer()))
+	{
+		InputSubsystem->OnInputMethodChangedNative.RemoveAll(this);
+	}
 }
 
-UWidget* UPlayModePopup::NativeGetDesiredFocusTarget() const
+UWidget* UPlayModePopup::GetDefaultFocusWidget() const
 {
-	return CB_CreateSession;
+	// ET_Code is skipped on purpose. The text field should not take focus until the player asks for it
+	if (UWidget* Candidate = FirstFocusCandidate({ CB_CreateSession, CB_QuickJoin, CB_JoinCode }))
+	{
+		return Candidate;
+	}
+	return Super::GetDefaultFocusWidget();
+}
+
+void UPlayModePopup::HandleInputMethodChanged(const ECommonInputType NewInputType)
+{
+	if (!Text_GamepadHint)
+	{
+		return;
+	}
+
+	const bool bGamepad = NewInputType == ECommonInputType::Gamepad;
+	Text_GamepadHint->SetVisibility(bGamepad ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 }
 
 void UPlayModePopup::HandleCreateSessionClicked()

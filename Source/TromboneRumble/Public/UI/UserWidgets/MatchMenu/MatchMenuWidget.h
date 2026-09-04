@@ -1,4 +1,4 @@
-// Copyright (C) 2026 biksari studio. All Rights Reserved.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
@@ -116,6 +116,10 @@ public:
 	//~ End UBaseMenuWidget Interface
 	
 protected:
+	
+	//~ Begin UCommonActivatableWidget Interface
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	//~ End UCommonActivatableWidget Interface
 	
 	//~ Begin UUserWidget Interface
 	virtual void NativeDestruct() override;

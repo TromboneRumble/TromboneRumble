@@ -1,20 +1,23 @@
-// Copyright (C) 2026 biksari studio. All Rights Reserved.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
 #include "EasyOnlineSession.h"
 #include "EasyReservationManager.h"
-#include "EasySessions.h"
 #include "EasySessionStatics.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/GameState/MatchMenuGameState.h"
-#include "Online/OnlineSessionNames.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 #include "Utilities/TromboneStatics.h"
 #include "Utilities/DebugHelper.h"
 #include "Data/MatchMenuRows.h"
+
+UWidget* UMatchMenuWidget::NativeGetDesiredFocusTarget() const
+{
+	return CB_Start;
+}
 
 void UMatchMenuWidget::NativeDestruct()
 {

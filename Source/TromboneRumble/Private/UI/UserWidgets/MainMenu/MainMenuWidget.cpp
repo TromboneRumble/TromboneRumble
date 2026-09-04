@@ -13,7 +13,7 @@
 
 UWidget* UMainMenuWidget::NativeGetDesiredFocusTarget() const
 {
-	return CB_CreateSession;
+	return CB_Play;
 }
 
 void UMainMenuWidget::NativeOnInitialized()

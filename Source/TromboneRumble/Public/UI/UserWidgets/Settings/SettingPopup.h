@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "UI/UserWidgets/Popup/PopupBase.h"
@@ -66,10 +66,24 @@ protected:
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UCommonButtonBase> CB_Gameplay;
 	
+	/** LB row in DT_Input. Rows eat Left / Right, so the tabs need their own keys. */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (RowType = "/Script/CommonUI.CommonInputActionDataBase"))
+	FDataTableRowHandle PrevTabActionRow;
+	
+	/** RB row in DT_Input. */
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (RowType = "/Script/CommonUI.CommonInputActionDataBase"))
+	FDataTableRowHandle NextTabActionRow;
+	
 private:
 	
 	/** Changes Options Panel. (e.g. Audio -> Video) */
 	void ChangePanel(UWidget* TargetWidget) const;
+	
+	/** Called when the tab group selects a tab, by click or by LB / RB. Shows that tab's panel. */
+	void HandleTabSelected(UCommonButtonBase* Button, int32 Index);
+	
+	/** Called when the switcher starts showing a panel. Gives gamepad focus to its first row. */
+	void HandleActivePanelChanged(UWidget* ActiveWidget, int32 Index);
 	
 	void OnClickApply();
 	void OnClickReset();
@@ -84,5 +98,8 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UCommonButtonGroupBase> CategoryButtonGroup;
+	
+	FUIActionBindingHandle PrevTabActionHandle;
+	FUIActionBindingHandle NextTabActionHandle;
 	
 };

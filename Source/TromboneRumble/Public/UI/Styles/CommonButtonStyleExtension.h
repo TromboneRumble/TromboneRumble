@@ -33,6 +33,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	TObjectPtr<UAkAudioEvent> NormalHoveredAudioEvent;
 	
+	/** Image opacity while the button rests */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float NormalImageOpacity = 1.0f;
+	
+	/** Image opacity while the cursor or gamepad focus is on the button */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float HoveredImageOpacity = 1.0f;
+	
+	/** Image opacity while the button is held down */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float PressedImageOpacity = 1.0f;
+	
 public:
 	
 	/** Plays the hovered sound if set. SoundOwner may be null - the sound then plays on a global Wwise object. */

@@ -1,4 +1,4 @@
-#include "UI/UserWidgets/Popup/PopupBase.h"
+﻿#include "UI/UserWidgets/Popup/PopupBase.h"
 
 #include "AkGameplayStatics.h"
 #include "AkGameplayTypes.h"
@@ -31,6 +31,20 @@ UWidget* UPopupBase::FirstFocusCandidate(std::initializer_list<UWidget*> Candida
 		}
 	}
 	return nullptr;
+}
+
+void UPopupBase::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	// Keep gamepad focus inside the popup. The screen behind it is still painted and would be picked otherwise
+	if (UWidget* Root = GetRootWidget())
+	{
+		Root->SetNavigationRuleBase(EUINavigation::Up, EUINavigationRule::Stop);
+		Root->SetNavigationRuleBase(EUINavigation::Down, EUINavigationRule::Stop);
+		Root->SetNavigationRuleBase(EUINavigation::Left, EUINavigationRule::Stop);
+		Root->SetNavigationRuleBase(EUINavigation::Right, EUINavigationRule::Stop);
+	}
 }
 
 void UPopupBase::NativeOnActivated()

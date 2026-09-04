@@ -1,10 +1,11 @@
-#include "UI/UserWidgets/Settings/SettingPopup.h"
+﻿#include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "CommonAnimatedSwitcher.h"
 #include "CommonButtonBase.h"
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Groups/CommonButtonGroupBase.h"
+#include "Input/CommonUIInputTypes.h"
 #include "UI/UserWidgets/Settings/AudioOptionPanel.h"
 #include "UI/UserWidgets/Settings/OptionPanelBase.h"
 #include "UI/UserWidgets/Settings/GameplayOptionPanel.h"
@@ -38,18 +39,19 @@ void USettingPopup::ChangePanel(UWidget* TargetWidget) const
 	if (CAS_Settings)
 	{
 		CAS_Settings->SetActiveWidget(TargetWidget);
+	}
+}
 
-		// Panels aren't activated, so move focus to the new panel's first row for gamepad users
-		const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
-		if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+void USettingPopup::HandleActivePanelChanged(UWidget* ActiveWidget, const int32 /*Index*/)
+{
+	const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+	if (!InputSubsystem || InputSubsystem->GetCurrentInputType() != ECommonInputType::Gamepad) return;
+	
+	if (const UOptionPanelBase* Panel = Cast<UOptionPanelBase>(ActiveWidget))
+	{
+		if (UWidget* FocusWidget = Panel->GetDesiredFocusTarget())
 		{
-			if (const UOptionPanelBase* Panel = Cast<UOptionPanelBase>(TargetWidget))
-			{
-				if (UWidget* FocusWidget = Panel->GetDesiredFocusTarget())
-				{
-					FocusWidget->SetFocus();
-				}
-			}
+			FocusWidget->SetFocus();
 		}
 	}
 }
@@ -81,25 +83,20 @@ void USettingPopup::Register()
 {
 	Super::Register();
 	
-	if (CB_Audio)
+	// Tab clicks reach HandleTabSelected through the button group. LB / RB take the same path
+	if (!PrevTabActionRow.IsNull())
 	{
-		CB_Audio->OnClicked().RemoveAll(this);
-		CB_Audio->OnClicked().AddLambda([this] { ChangePanel(Widget_AudioOptions); });
+		PrevTabActionHandle = RegisterUIActionBinding(FBindUIActionArgs(PrevTabActionRow, FSimpleDelegate::CreateWeakLambda(this, [this]
+		{
+			if (CategoryButtonGroup) CategoryButtonGroup->SelectPreviousButton();
+		})));
 	}
-	if (CB_Video)
+	if (!NextTabActionRow.IsNull())
 	{
-		CB_Video->OnClicked().RemoveAll(this);
-		CB_Video->OnClicked().AddLambda([this] { ChangePanel(Widget_VideoOptions); });
-	}
-	if (CB_Language)
-	{
-		CB_Language->OnClicked().RemoveAll(this);
-		CB_Language->OnClicked().AddLambda([this] { ChangePanel(Widget_LanguageOptions); });
-	}
-	if (CB_Gameplay)
-	{
-		CB_Gameplay->OnClicked().RemoveAll(this);
-		CB_Gameplay->OnClicked().AddLambda([this] { ChangePanel(Widget_GameplayOptions); });
+		NextTabActionHandle = RegisterUIActionBinding(FBindUIActionArgs(NextTabActionRow, FSimpleDelegate::CreateWeakLambda(this, [this]
+		{
+			if (CategoryButtonGroup) CategoryButtonGroup->SelectNextButton();
+		})));
 	}
 	
 	if (Button_Apply)
@@ -121,21 +118,13 @@ void USettingPopup::Unregister()
 {
 	Super::Unregister();
 	
-	if (CB_Audio)
+	if (PrevTabActionHandle.IsValid())
 	{
-		CB_Audio->OnClicked().RemoveAll(this);
+		PrevTabActionHandle.Unregister();
 	}
-	if (CB_Video)
+	if (NextTabActionHandle.IsValid())
 	{
-		CB_Video->OnClicked().RemoveAll(this);
-	}
-	if (CB_Language)
-	{
-		CB_Language->OnClicked().RemoveAll(this);
-	}
-	if (CB_Gameplay)
-	{
-		CB_Gameplay->OnClicked().RemoveAll(this);
+		NextTabActionHandle.Unregister();
 	}
 	if (Button_Apply)
 	{
@@ -151,6 +140,17 @@ void USettingPopup::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	if (CAS_Settings)
+	{
+		CAS_Settings->OnActiveWidgetIndexChanged.RemoveAll(this);
+		CAS_Settings->OnActiveWidgetIndexChanged.AddUObject(this, &ThisClass::HandleActivePanelChanged);
+	}
+	
+	if (CategoryButtonGroup)
+	{
+		CategoryButtonGroup->RemoveAll();
+	}
+	
 	CategoryButtonGroup = NewObject<UCommonButtonGroupBase>(this);
 	if (CategoryButtonGroup)
 	{
@@ -159,12 +159,23 @@ void USettingPopup::NativeConstruct()
 		if (CB_Language) CategoryButtonGroup->AddWidget(CB_Language);
 		if (CB_Gameplay) CategoryButtonGroup->AddWidget(CB_Gameplay);
 		
+		CategoryButtonGroup->NativeOnSelectedButtonBaseChanged.AddUObject(this, &ThisClass::HandleTabSelected);
+		
 		if (CB_Audio)
 		{
 			CB_Audio->SetIsSelected(true, false);
-			ChangePanel(Widget_AudioOptions);
 		}
+		
+		CategoryButtonGroup->SetSelectionRequired(true);
 	}
+}
+
+void USettingPopup::HandleTabSelected(UCommonButtonBase* Button, const int32 /*Index*/)
+{
+	if (Button == CB_Audio)         ChangePanel(Widget_AudioOptions);
+	else if (Button == CB_Video)    ChangePanel(Widget_VideoOptions);
+	else if (Button == CB_Language) ChangePanel(Widget_LanguageOptions);
+	else if (Button == CB_Gameplay) ChangePanel(Widget_GameplayOptions);
 }
 
 void USettingPopup::ClosePopup(const bool bCloseImmediately)
