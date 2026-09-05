@@ -242,10 +242,10 @@ void ATutorialManager::ShowTutorialCompletePopup() const
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::MainMenu);
 		};
 		
-		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
 		{
-			Popup->Init(Params);
-		}
+			Popup.Init(Params);
+		});
 	}
 }
 

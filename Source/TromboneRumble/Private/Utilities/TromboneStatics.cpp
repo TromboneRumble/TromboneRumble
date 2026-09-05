@@ -152,7 +152,7 @@ UCommonActivatableWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerCont
 {
 	if (const URootUI* RootUI = GetRootUI(PlayerController))
 	{
-		if (UCommonActivatableWidget* LoadingOverlayWidget = RootUI->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
+		if (UCommonActivatableWidget* LoadingOverlayWidget = RootUI->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass.LoadSynchronous(), TromboneGamePlayTags::Trombone_UI_Layer_Overlay))
 		{
 			return LoadingOverlayWidget;
 		}
@@ -166,7 +166,7 @@ UFadeWidget* UTromboneStatics::ShowFadeOverlay(const APlayerController* PlayerCo
 {
 	if (const URootUI* RootUI = GetRootUI(PlayerController))
 	{
-		return Cast<UFadeWidget>(RootUI->AddWidgetToStack(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay));
+		return Cast<UFadeWidget>(RootUI->AddWidgetToStack(UTromboneConfig::Get()->FadeWidgetClass.LoadSynchronous(), TromboneGamePlayTags::Trombone_UI_Layer_Overlay));
 	}
 	
 	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to show fade overlay"));
@@ -177,7 +177,7 @@ bool UTromboneStatics::PopOverlay(const APlayerController* PlayerController)
 {
 	if (const URootUI* RootUI = GetRootUI(PlayerController))
 	{
-		return RootUI->PopStack(EUIStackType::Overlay);
+		return RootUI->PopStack(TromboneGamePlayTags::Trombone_UI_Layer_Overlay);
 	}
 	
 	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to pop overlay"));

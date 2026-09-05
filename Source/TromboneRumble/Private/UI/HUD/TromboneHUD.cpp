@@ -2,8 +2,8 @@
 
 #include "UI/HUD/TromboneHUD.h"
 #include "Subsystems/TromboneUISubsystem.h"
+#include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/Common/RootUI.h"
-#include "Utilities/Defines.h"
 
 void ATromboneHUD::BeginPlay()
 {
@@ -15,14 +15,14 @@ void ATromboneHUD::BeginPlay()
 		return;
 	}
 
-	// Attach here as well so the push below never depends on who ran first
+	// Every level has this HUD, so this is the one place the root gets attached
 	UISubsystem->AttachRootUI(GetOwningPlayerController());
 
 	if (URootUI* RootUI = UISubsystem->GetRootUI())
 	{
 		if (ScreenClass)
 		{
-			RootUI->AddWidgetToStack(ScreenClass, EUIStackType::Base);
+			RootUI->AddWidgetToStack(ScreenClass, TromboneGamePlayTags::Trombone_UI_Layer_Base);
 		}
 		RootUI->SetPerformanceWidgetVisible(bShowPerformanceWidget);
 	}

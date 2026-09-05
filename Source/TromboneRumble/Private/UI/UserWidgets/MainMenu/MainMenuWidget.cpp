@@ -92,7 +92,7 @@ void UMainMenuWidget::Init()
 		CB_Settings->OnClicked().RemoveAll(this);
 		CB_Settings->OnClicked().AddLambda([this]
 		{
-			UTromboneStatics::ShowPopup<USettingPopup>(GetWorld());
+			UTromboneStatics::ShowPopupAsync<USettingPopup>(GetWorld());
 		});
 	}
 	if (CB_Customize)
@@ -128,7 +128,7 @@ void UMainMenuWidget::HandlePlayButtonClicked()
 		return;
 	}
 
-	UTromboneStatics::ShowPopup<UPlayModePopup>(GetWorld());
+	UTromboneStatics::ShowPopupAsync<UPlayModePopup>(GetWorld());
 }
 
 bool UMainMenuWidget::TryShowFirstTutorialPopup() const
@@ -160,10 +160,10 @@ void UMainMenuWidget::ShowTutorialPopup() const
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
 		};
 
-		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
 		{
-			Popup->Init(Params);
-		}
+			Popup.Init(Params);
+		});
 	}
 }
 
@@ -200,9 +200,9 @@ void UMainMenuWidget::ShowQuitPopup() const
 			}
 		};
 		
-		if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
+		UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
 		{
-			Popup->Init(Params);
-		}
+			Popup.Init(Params);
+		});
 	}
 }

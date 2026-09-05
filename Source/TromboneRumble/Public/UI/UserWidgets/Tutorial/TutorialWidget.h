@@ -6,7 +6,6 @@
 
 class UCommonBorder;
 class UImage;
-class URootUI;
 struct FQuestUIData;
 class UTutorialQuestWidget;
 class UTutorialDialogueWidget;
@@ -39,10 +38,6 @@ protected:
 	TArray<FDataTableRowHandle> SkipActionRowArray;
 	
 private:
-	
-	/** Reference to the root UI layout */
-	UPROPERTY()
-	TObjectPtr<URootUI> RootUI;
 	
 	/** UI action binding handles for skipping dialogue */
 	UPROPERTY()

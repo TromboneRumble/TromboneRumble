@@ -28,7 +28,7 @@ public:
 
 	/**
 	 * Creates the root on first call, then attaches it to the given player controller.
-	 * Safe to call more than once per level. Does nothing when the root already belongs to this controller.
+	 * Called by ATromboneHUD::BeginPlay. Does nothing when the root already belongs to this controller.
 	 */
 	void AttachRootUI(APlayerController* PlayerController);
 

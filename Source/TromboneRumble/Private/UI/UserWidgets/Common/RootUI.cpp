@@ -4,20 +4,32 @@
 #include "CommonActivatableWidget.h"
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
-#include "UI/UserWidgets/Common/ProjectVersionWidget.h"
+#include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/InGame/SubWidgets/PerformanceWidget.h"
 #include "Utilities/DebugHelper.h"
-#include "Utilities/Defines.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
+
+void URootUI::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	RegisterDefaultLayers();
+}
 
 void URootUI::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	
-	// Designer preview only. At runtime the HUD of each level pushes its own screen
-	if (IsDesignTime() && DefaultWidgetClass)
+
+	// The designer preview does not always go through NativeOnInitialized
+	if (Layers.IsEmpty())
 	{
-		AddWidgetToStack(DefaultWidgetClass, EUIStackType::Base);
+		RegisterDefaultLayers();
+	}
+
+	// Designer preview only. At runtime the HUD of each level pushes its own screen, and the class is never loaded
+	if (IsDesignTime() && !DefaultWidgetClass.IsNull())
+	{
+		AddWidgetToStack(DefaultWidgetClass.LoadSynchronous(), TromboneGamePlayTags::Trombone_UI_Layer_Base);
 	}
 }
 
@@ -41,20 +53,47 @@ void URootUI::NativeDestruct()
 		InputSubsystem->OnInputMethodChangedNative.RemoveAll(this);
 	}
 
-	if (BaseStack)
+	for (const TPair<FGameplayTag, TObjectPtr<UCommonActivatableWidgetStack>>& Layer : Layers)
 	{
-		BaseStack->ClearWidgets();
-	}
-	if (PopupStack)
-	{
-		PopupStack->ClearWidgets();
-	}
-	if (OverlayStack)
-	{
-		OverlayStack->ClearWidgets();
+		if (Layer.Value)
+		{
+			Layer.Value->ClearWidgets();
+		}
 	}
 
 	Super::NativeDestruct();
+}
+
+void URootUI::RegisterDefaultLayers()
+{
+	// Bottom to top. The order decides focus priority
+	RegisterLayer(TromboneGamePlayTags::Trombone_UI_Layer_Base, BaseStack);
+	RegisterLayer(TromboneGamePlayTags::Trombone_UI_Layer_Popup, PopupStack);
+	RegisterLayer(TromboneGamePlayTags::Trombone_UI_Layer_Overlay, OverlayStack);
+}
+
+void URootUI::RegisterLayer(const FGameplayTag LayerTag, UCommonActivatableWidgetStack* Stack)
+{
+	if (!LayerTag.IsValid() || !Stack)
+	{
+		return;
+	}
+
+	if (!Layers.Contains(LayerTag))
+	{
+		LayerOrder.Add(LayerTag);
+	}
+	Layers.Add(LayerTag, Stack);
+}
+
+UCommonActivatableWidgetStack* URootUI::GetLayer(const FGameplayTag LayerTag) const
+{
+	UCommonActivatableWidgetStack* Stack = Layers.FindRef(LayerTag);
+	if (!Stack)
+	{
+		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("No layer registered for the tag."));
+	}
+	return Stack;
 }
 
 void URootUI::HandleInputMethodChanged(const ECommonInputType NewInputType)
@@ -84,16 +123,18 @@ void URootUI::HandleInputMethodChanged(const ECommonInputType NewInputType)
 
 UCommonActivatableWidget* URootUI::GetTopActiveWidget() const
 {
-	// Overlay sits above Popup, and Popup above Base. Ask them in that order
-	if (OverlayStack && OverlayStack->GetActiveWidget())
+	// Walk from the top most layer down. The first active widget owns focus
+	for (int32 Index = LayerOrder.Num() - 1; Index >= 0; --Index)
 	{
-		return OverlayStack->GetActiveWidget();
+		if (const UCommonActivatableWidgetStack* Stack = Layers.FindRef(LayerOrder[Index]))
+		{
+			if (UCommonActivatableWidget* ActiveWidget = Stack->GetActiveWidget())
+			{
+				return ActiveWidget;
+			}
+		}
 	}
-	if (PopupStack && PopupStack->GetActiveWidget())
-	{
-		return PopupStack->GetActiveWidget();
-	}
-	return BaseStack ? BaseStack->GetActiveWidget() : nullptr;
+	return nullptr;
 }
 
 void URootUI::SetPerformanceWidgetVisible(const bool bVisible) const
@@ -115,7 +156,40 @@ void URootUI::FocusActiveWidgetDesiredTarget() const
 	}
 }
 
-UCommonActivatableWidget* URootUI::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType) const
+FName URootUI::SuspendInput(const FName Reason)
+{
+	UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+	if (!InputSubsystem)
+	{
+		return NAME_None;
+	}
+
+	// Each call gets its own token so overlapping loads do not release each other's block
+	FName Token = Reason;
+	Token.SetNumber(++InputSuspensions);
+
+	InputSubsystem->SetInputTypeFilter(ECommonInputType::MouseAndKeyboard, Token, true);
+	InputSubsystem->SetInputTypeFilter(ECommonInputType::Gamepad, Token, true);
+	InputSubsystem->SetInputTypeFilter(ECommonInputType::Touch, Token, true);
+	return Token;
+}
+
+void URootUI::ResumeInput(const FName Token)
+{
+	if (Token == NAME_None)
+	{
+		return;
+	}
+
+	if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer()))
+	{
+		InputSubsystem->SetInputTypeFilter(ECommonInputType::MouseAndKeyboard, Token, false);
+		InputSubsystem->SetInputTypeFilter(ECommonInputType::Gamepad, Token, false);
+		InputSubsystem->SetInputTypeFilter(ECommonInputType::Touch, Token, false);
+	}
+}
+
+UCommonActivatableWidget* URootUI::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const FGameplayTag LayerTag) const
 {
 	if (!WidgetClass)
 	{
@@ -123,10 +197,9 @@ UCommonActivatableWidget* URootUI::AddWidgetToStack(const TSubclassOf<UCommonAct
 		return nullptr;
 	}
 
-	UCommonActivatableWidgetStack* TargetStack = GetStackByType(StackType);
+	UCommonActivatableWidgetStack* TargetStack = GetLayer(LayerTag);
 	if (!TargetStack)
 	{
-		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Invalid StackType."));
 		return nullptr;
 	}
 
@@ -141,41 +214,31 @@ UCommonActivatableWidget* URootUI::AddWidgetToStack(const TSubclassOf<UCommonAct
 	return TargetStack->AddWidget(WidgetClass);
 }
 
-bool URootUI::PopStack(const EUIStackType StackType) const
+bool URootUI::PopStack(const FGameplayTag LayerTag) const
 {
-	if (const UCommonActivatableWidgetStack* TargetStack = GetStackByType(StackType))
+	const UCommonActivatableWidgetStack* TargetStack = GetLayer(LayerTag);
+	if (!TargetStack)
 	{
-		if (UCommonActivatableWidget* ActiveWidget = TargetStack->GetActiveWidget())
-		{
-			ActiveWidget->DeactivateWidget();
+		return false;
+	}
 
-			// Closing a layer never reactivates the screen below, so hand focus back to it for gamepad users
-			if (StackType != EUIStackType::Base)
-			{
-				const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
-				if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
-				{
-					FocusActiveWidgetDesiredTarget();
-				}
-			}
-			return true;
+	UCommonActivatableWidget* ActiveWidget = TargetStack->GetActiveWidget();
+	if (!ActiveWidget)
+	{
+		return false;
+	}
+
+	ActiveWidget->DeactivateWidget();
+
+	// Closing a layer never reactivates the screen below, so hand focus back to it for gamepad users
+	const bool bIsBottomLayer = LayerOrder.Num() > 0 && LayerOrder[0] == LayerTag;
+	if (!bIsBottomLayer)
+	{
+		const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+		if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+		{
+			FocusActiveWidgetDesiredTarget();
 		}
 	}
-	return false;
-}
-
-UCommonActivatableWidgetStack* URootUI::GetStackByType(const EUIStackType StackType) const
-{
-	switch (StackType)
-	{
-	case EUIStackType::Base:
-		return BaseStack;
-	case EUIStackType::Popup:
-		return PopupStack;
-	case EUIStackType::Overlay:
-		return OverlayStack;
-	default:
-		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Invalid StackType."));
-		return nullptr;
-	}
+	return true;
 }

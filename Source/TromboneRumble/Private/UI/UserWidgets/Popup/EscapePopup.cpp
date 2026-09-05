@@ -72,53 +72,48 @@ void UEscapePopup::Unregister()
 
 void UEscapePopup::HandleOptionButtonClicked() const
 {
-	const USettingPopup* Popup = UTromboneStatics::ShowPopup<USettingPopup>(GetWorld());
-	if (!Popup)
-	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to show setting popup"));
-		return;
-	}
+	UTromboneStatics::ShowPopupAsync<USettingPopup>(GetWorld());
 }
 
 void UEscapePopup::HandleDisconnectButtonClicked() const
 {
-	if (UTwoButtonPopup* ConfirmPopup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
-	{
-		FTwoButtonPopupParams Params;
-		Params.Title = ConfirmTitle;
-		Params.Content = ConfirmDescription;
-		Params.LeftButtonText = ConfirmLeftButton;
-		Params.RightButtonText = ConfirmRightButton;
-	
-		Params.LeftCallback = [this]()
-		{
-			if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-			{
-				OnlineSession->LeaveGameSession();
-			}
-		};
+	FTwoButtonPopupParams Params;
+	Params.Title = ConfirmTitle;
+	Params.Content = ConfirmDescription;
+	Params.LeftButtonText = ConfirmLeftButton;
+	Params.RightButtonText = ConfirmRightButton;
 
-		ConfirmPopup->Init(Params);
-	}
+	Params.LeftCallback = [this]()
+	{
+		if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+		{
+			OnlineSession->LeaveGameSession();
+		}
+	};
+
+	UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
+	{
+		Popup.Init(Params);
+	});
 }
 
 void UEscapePopup::HandleTeleportButtonClicked()
 {
-	if (UTwoButtonPopup* ConfirmPopup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
-	{
-		FTwoButtonPopupParams Params;
-		Params.Title = TeleportConfirmTitle;
-		Params.Content = TeleportConfirmDescription;
-		Params.LeftButtonText = ConfirmLeftButton;
-		Params.RightButtonText = ConfirmRightButton;
-		
-		Params.LeftCallback = [this]()
-		{
-			RequestTeleportToResetPoint();
-		};
+	FTwoButtonPopupParams Params;
+	Params.Title = TeleportConfirmTitle;
+	Params.Content = TeleportConfirmDescription;
+	Params.LeftButtonText = ConfirmLeftButton;
+	Params.RightButtonText = ConfirmRightButton;
 
-		ConfirmPopup->Init(Params);
-	}
+	Params.LeftCallback = [this]()
+	{
+		RequestTeleportToResetPoint();
+	};
+
+	UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
+	{
+		Popup.Init(Params);
+	});
 }
 
 void UEscapePopup::RequestTeleportToResetPoint()

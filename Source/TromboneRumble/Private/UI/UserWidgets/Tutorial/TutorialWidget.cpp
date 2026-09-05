@@ -4,7 +4,6 @@
 #include "Components/Image.h"
 #include "Input/CommonUIInputTypes.h"
 #include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
-#include "UI/UserWidgets/Common/RootUI.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialDialogueWidget.h"
 #include "UI/UserWidgets/Tutorial/TutorialQuestWidget.h"
@@ -27,15 +26,6 @@ void UTutorialWidget::NativeConstruct()
 		TutorialSub->OnQuestSequenceEvent.AddDynamic(this, &ThisClass::HandleQuestSequence);
 		TutorialSub->OnTransitionSequenceEvent.AddDynamic(this, &ThisClass::HandleTransitionSequence);
 		TutorialSub->OnShowExtraDataEvent.AddDynamic(this, &ThisClass::HandleOnExtraData);
-	}
-	
-	if (URootUI* Root = UTromboneStatics::GetRootUI(GetOwningPlayer()))
-	{
-		RootUI = Root;
-	}
-	else
-	{
-		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Failed to find RootUI for TutorialWidget."));
 	}
 	
 	SetUIVisibility(ESlateVisibility::Collapsed);
@@ -114,11 +104,6 @@ void UTutorialWidget::HandleTransitionSequence()
 {
 	UnregisterInputActions();
 	
-	RootUI->AddWidgetToStack<UFadeWidget>(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay, [](UFadeWidget& FadeWidget)
-	{
-		
-	});
-		
 	if (UFadeWidget* Widget = UTromboneStatics::ShowFadeOverlay(GetOwningPlayer()))
 	{
 		Widget->OnFadeInComplete.Clear();
