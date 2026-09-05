@@ -9,8 +9,8 @@
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/ToastSubsystem.h"
-#include "UI/HUD/BaseHUD.h"
-#include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "Subsystems/TromboneUISubsystem.h"
+#include "UI/UserWidgets/Common/RootUI.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
@@ -150,9 +150,9 @@ bool UTromboneStatics::ShowToast(const UObject* WorldContextObject, const FToast
 
 UCommonActivatableWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerController* PlayerController)
 {
-	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	if (const URootUI* RootUI = GetRootUI(PlayerController))
 	{
-		if (UCommonActivatableWidget* LoadingOverlayWidget = RootLayout->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
+		if (UCommonActivatableWidget* LoadingOverlayWidget = RootUI->AddWidgetToStack(UTromboneConfig::Get()->LoadingWidgetClass, EUIStackType::Overlay))
 		{
 			return LoadingOverlayWidget;
 		}
@@ -164,9 +164,9 @@ UCommonActivatableWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerCont
 
 UFadeWidget* UTromboneStatics::ShowFadeOverlay(const APlayerController* PlayerController)
 {
-	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	if (const URootUI* RootUI = GetRootUI(PlayerController))
 	{
-		return Cast<UFadeWidget>(RootLayout->AddWidgetToStack(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay));
+		return Cast<UFadeWidget>(RootUI->AddWidgetToStack(UTromboneConfig::Get()->FadeWidgetClass, EUIStackType::Overlay));
 	}
 	
 	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to show fade overlay"));
@@ -175,28 +175,28 @@ UFadeWidget* UTromboneStatics::ShowFadeOverlay(const APlayerController* PlayerCo
 
 bool UTromboneStatics::PopOverlay(const APlayerController* PlayerController)
 {
-	if (const UBaseUIRoot* RootLayout = GetRootLayout(PlayerController))
+	if (const URootUI* RootUI = GetRootUI(PlayerController))
 	{
-		return RootLayout->PopStack(EUIStackType::Overlay);
+		return RootUI->PopStack(EUIStackType::Overlay);
 	}
 	
 	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to pop overlay"));
 	return false;
 }
 
-UBaseUIRoot* UTromboneStatics::GetRootLayout(const APlayerController* PlayerController)
+URootUI* UTromboneStatics::GetRootUI(const APlayerController* PlayerController)
 {
 	if (PlayerController && PlayerController->GetLocalPlayer())
 	{
-		if (const ABaseHUD* Hud = Cast<ABaseHUD>(PlayerController->GetHUD()))
+		if (const UTromboneUISubsystem* UISubsystem = UTromboneUISubsystem::Get(PlayerController))
 		{
-			if (UBaseUIRoot* RootLayout = Cast<UBaseUIRoot>(Hud->GetRootUI()))
+			if (URootUI* RootUI = UISubsystem->GetRootUI())
 			{
-				return RootLayout;
+				return RootUI;
 			}
 		}
 	}
-	
-	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to get RootLayout"));
+
+	LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Failed to get RootUI"));
 	return nullptr;
 }

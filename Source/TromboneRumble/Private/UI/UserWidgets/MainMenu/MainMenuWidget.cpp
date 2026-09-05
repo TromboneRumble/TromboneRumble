@@ -2,6 +2,7 @@
 
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
+#include "EasyMatchmakingManager.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
@@ -23,6 +24,59 @@ void UMainMenuWidget::NativeOnInitialized()
 	if (UAppearanceSubsystem* AppearanceSubsystem = GetGameInstance()->GetSubsystem<UAppearanceSubsystem>())
 	{
 		AppearanceSubsystem->ResetColors();
+	}
+}
+
+void UMainMenuWidget::NativeOnActivated()
+{
+	Super::NativeOnActivated();
+
+	// Bound on activate and removed on deactivate. The stack reuses this instance
+	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	{
+		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
+		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+	}
+}
+
+void UMainMenuWidget::NativeOnDeactivated()
+{
+	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	{
+		MatchmakingManager->OnMatchmakingStarted().RemoveDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		MatchmakingManager->OnMatchmakingComplete().RemoveDynamic(this, &ThisClass::HandleMatchmakingComplete);
+		MatchmakingManager->OnMatchmakingCanceled().RemoveDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+	}
+
+	Super::NativeOnDeactivated();
+}
+
+void UMainMenuWidget::HandleMatchmakingStarted()
+{
+	UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
+}
+
+void UMainMenuWidget::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
+{
+	if (Result == EEasyMatchmakingCompleteResult::Failure || Result == EEasyMatchmakingCompleteResult::NoResults)
+	{
+		// TODO : 로컬라이징
+		const FText ToastMessage = FText::FromString(TEXT("Matchmaking failed."));
+		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
+
+		UTromboneStatics::PopOverlay(GetOwningPlayer());
+	}
+}
+
+void UMainMenuWidget::HandleMatchmakingCanceled()
+{
+	UTromboneStatics::PopOverlay(GetOwningPlayer());
+
+	if (const UTromboneGameInstance* GI = GetGameInstance<UTromboneGameInstance>())
+	{
+		const FText ToastMessage = GI->GetCommonUIText("Matchmaking_Cancel");
+		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
 	}
 }
 

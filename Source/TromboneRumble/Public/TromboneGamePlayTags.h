@@ -53,6 +53,16 @@ namespace TromboneGamePlayTags
 
 	//GameplayEffects
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_Buff_Speed);
+
+	// UI layers of the root layout. Not used by code yet, registered ahead of the tag based layer map
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Base);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Popup);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Overlay);
+
+	// UI layers of the root layout. Not used by code yet, registered ahead of the tag based layer map
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Base);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Popup);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Overlay);
 	
 	/** Strings */
 	const FString ProjectName = TEXT("Trombone");

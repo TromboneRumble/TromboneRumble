@@ -4,8 +4,7 @@
 #include "Defines.h"
 #include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
-#include "UI/HUD/BaseHUD.h"
-#include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "UI/UserWidgets/Common/RootUI.h"
 #include "TromboneStatics.generated.h"
 
 class UFadeWidget;
@@ -13,7 +12,7 @@ class ULoadingOverlayWidget;
 struct FToastRequest;
 class UNoticePopup;
 class UTwoButtonPopup;
-class UBaseUIRoot;
+class URootUI;
 enum class ELevelType : uint8;
 
 /**
@@ -96,9 +95,9 @@ public:
 	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
 	
 	/** @return The root UI layout widget
-	 *  @see UBaseUIRoot
+	 *  @see URootUI
 	 */
-	static UBaseUIRoot* GetRootLayout(const APlayerController* PlayerController);
+	static URootUI* GetRootUI(const APlayerController* PlayerController);
 	
 	/** Shows a popup
 	 * @tparam T The type of the popup widget. Must be a child of UCommonActivatableWidget and have a corresponding entry in UTromboneConfig.
@@ -117,19 +116,11 @@ T* UTromboneStatics::ShowPopup(const UObject* WorldContextObject)
 	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 
 	const UTromboneConfig* Config = UTromboneConfig::Get();
-	
-	AHUD* Hud = World->GetFirstPlayerController()->GetHUD();
-	const ABaseHUD* BaseHud = Cast<ABaseHUD>(Hud);
-	if (!BaseHud)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] BaseHUD not found"));
-		return nullptr;
-	}
-	
-	UBaseUIRoot* RootUI = BaseHud->GetRootUI();
+
+	URootUI* RootUI = World ? GetRootUI(World->GetFirstPlayerController()) : nullptr;
 	if (!RootUI)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] RootUI not found in BaseHUD"));
+		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] RootUI not found"));
 		return nullptr;
 	}
 	

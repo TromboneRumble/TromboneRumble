@@ -1,25 +1,27 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
-#include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "UI/UserWidgets/Common/RootUI.h"
 #include "CommonActivatableWidget.h"
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
-#include "UI/UserWidgets/Common/BaseMenuWidget.h"
+#include "UI/UserWidgets/Common/ProjectVersionWidget.h"
+#include "UI/UserWidgets/InGame/SubWidgets/PerformanceWidget.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
-void UBaseUIRoot::NativePreConstruct()
+void URootUI::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	if (DefaultWidgetClass)
+	// Designer preview only. At runtime the HUD of each level pushes its own screen
+	if (IsDesignTime() && DefaultWidgetClass)
 	{
 		AddWidgetToStack(DefaultWidgetClass, EUIStackType::Base);
 	}
 }
 
-void UBaseUIRoot::NativeConstruct()
+void URootUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -32,7 +34,7 @@ void UBaseUIRoot::NativeConstruct()
 	}
 }
 
-void UBaseUIRoot::NativeDestruct()
+void URootUI::NativeDestruct()
 {
 	if (UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer()))
 	{
@@ -55,7 +57,7 @@ void UBaseUIRoot::NativeDestruct()
 	Super::NativeDestruct();
 }
 
-void UBaseUIRoot::HandleInputMethodChanged(const ECommonInputType NewInputType)
+void URootUI::HandleInputMethodChanged(const ECommonInputType NewInputType)
 {
 	APlayerController* PC = GetOwningPlayer();
 
@@ -80,7 +82,7 @@ void UBaseUIRoot::HandleInputMethodChanged(const ECommonInputType NewInputType)
 	}
 }
 
-UCommonActivatableWidget* UBaseUIRoot::GetTopActiveWidget() const
+UCommonActivatableWidget* URootUI::GetTopActiveWidget() const
 {
 	// Overlay sits above Popup, and Popup above Base. Ask them in that order
 	if (OverlayStack && OverlayStack->GetActiveWidget())
@@ -94,7 +96,15 @@ UCommonActivatableWidget* UBaseUIRoot::GetTopActiveWidget() const
 	return BaseStack ? BaseStack->GetActiveWidget() : nullptr;
 }
 
-void UBaseUIRoot::FocusActiveWidgetDesiredTarget() const
+void URootUI::SetPerformanceWidgetVisible(const bool bVisible) const
+{
+	if (PerformanceWidget)
+	{
+		PerformanceWidget->SetVisibility(bVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	}
+}
+
+void URootUI::FocusActiveWidgetDesiredTarget() const
 {
 	if (const UCommonActivatableWidget* ActiveWidget = GetTopActiveWidget())
 	{
@@ -105,7 +115,7 @@ void UBaseUIRoot::FocusActiveWidgetDesiredTarget() const
 	}
 }
 
-UCommonActivatableWidget* UBaseUIRoot::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType) const
+UCommonActivatableWidget* URootUI::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType) const
 {
 	if (!WidgetClass)
 	{
@@ -131,7 +141,7 @@ UCommonActivatableWidget* UBaseUIRoot::AddWidgetToStack(const TSubclassOf<UCommo
 	return TargetStack->AddWidget(WidgetClass);
 }
 
-bool UBaseUIRoot::PopStack(const EUIStackType StackType) const
+bool URootUI::PopStack(const EUIStackType StackType) const
 {
 	if (const UCommonActivatableWidgetStack* TargetStack = GetStackByType(StackType))
 	{
@@ -154,21 +164,7 @@ bool UBaseUIRoot::PopStack(const EUIStackType StackType) const
 	return false;
 }
 
-void UBaseUIRoot::SetBaseUIEnabled(const bool bEnabled) const
-{
-	if (BaseStack)
-	{
-		if (UCommonActivatableWidget* ActiveWidget = BaseStack->GetActiveWidget())
-		{
-			if (UBaseMenuWidget* MenuWidget = Cast<UBaseMenuWidget>(ActiveWidget))
-			{
-				MenuWidget->SetUIEnabled(bEnabled);
-			}
-		}
-	}
-}
-
-UCommonActivatableWidgetStack* UBaseUIRoot::GetStackByType(const EUIStackType StackType) const
+UCommonActivatableWidgetStack* URootUI::GetStackByType(const EUIStackType StackType) const
 {
 	switch (StackType)
 	{

@@ -1,4 +1,5 @@
 #include "Framework/PlayerController/CustomizePlayerController.h"
+#include "Subsystems/TromboneUISubsystem.h"
 #include "Camera/CameraActor.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -15,6 +16,11 @@ ACustomizePlayerController::ACustomizePlayerController()
 void ACustomizePlayerController::ReceivedPlayer()
 {
 	Super::ReceivedPlayer();
+
+	if (UTromboneUISubsystem* UISubsystem = UTromboneUISubsystem::Get(this))
+	{
+		UISubsystem->AttachRootUI(this);
+	}
 #if !UE_BUILD_SHIPPING
 	if (!CheatManager)
 		AddCheats(true);

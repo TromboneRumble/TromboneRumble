@@ -1,4 +1,5 @@
 #include "Framework/PlayerController/MatchPlayerController.h"
+#include "Subsystems/TromboneUISubsystem.h"
 #include "Camera/CameraActor.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -147,6 +148,11 @@ void AMatchPlayerController::Handle_PushToTalkEnd()
 void AMatchPlayerController::ReceivedPlayer()
 {
 	Super::ReceivedPlayer();
+
+	if (UTromboneUISubsystem* UISubsystem = UTromboneUISubsystem::Get(this))
+	{
+		UISubsystem->AttachRootUI(this);
+	}
 #if !UE_BUILD_SHIPPING
 	if (!CheatManager)
 		AddCheats(true);

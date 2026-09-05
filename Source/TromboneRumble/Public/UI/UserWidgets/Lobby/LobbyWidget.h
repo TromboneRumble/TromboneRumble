@@ -21,9 +21,10 @@ public:
 	}	
 	
 protected:
-	virtual bool Initialize() override;
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
+	//~ Begin UCommonActivatableWidget Interface
+	virtual void NativeOnActivated() override;
+	virtual void NativeOnDeactivated() override;
+	//~ End UCommonActivatableWidget Interface
 
 private:
 	UFUNCTION()

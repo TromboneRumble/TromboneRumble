@@ -72,6 +72,7 @@ public:
 	//~ End APlayerController Interface
 
 protected:
+	virtual void ReceivedPlayer() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void AcknowledgePossession(APawn* InPawn) override;

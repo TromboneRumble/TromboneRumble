@@ -7,6 +7,7 @@
 #include "MainMenuWidget.generated.h"
 
 class UCommonButtonBase;
+enum class EEasyMatchmakingCompleteResult : uint8;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
@@ -15,21 +16,23 @@ class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
 	
 public:
 	
-	// ~ Begin UBaseMenuWidget Interface
+	//~ Begin UBaseMenuWidget Interface
 	virtual void Init() override;
 	virtual void SetUIEnabled(const bool bEnabled) override;
-	// ~ End UBaseMenuWidget Interface
+	//~ End UBaseMenuWidget Interface
 	
 protected:
 	
-	// ~ Begin UCommonActivatableWidget Interface
+	//~ Begin UCommonActivatableWidget Interface
 	virtual void NativeOnInitialized() override;
+	virtual void NativeOnActivated() override;
+	virtual void NativeOnDeactivated() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
-	// ~ End UCommonActivatableWidget Interface
+	//~ End UCommonActivatableWidget Interface
 
 protected:
 	
-	// ~ Begin UI
+	//~ Begin UI
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Play;
 	UPROPERTY(meta = (BindWidget))
@@ -40,17 +43,26 @@ protected:
 	TObjectPtr<UCommonButtonBase> CB_Tutorial;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButtonBase> CB_Quit;
-	// ~ End UI
+	//~ End UI
 	
 private:
 	
-	// ~ Begin Button Callbacks
+	//~ Begin Button Callbacks
 	void HandlePlayButtonClicked();
 	void HandleCustomizeButtonClicked();
 	void HandleTutorialButtonClicked();
-	// ~ End Button Callbacks
+	//~ End Button Callbacks
 	
 	bool TryShowFirstTutorialPopup() const;
+
+	//~ Begin Matchmaking Callbacks
+	UFUNCTION()
+	void HandleMatchmakingStarted();
+	UFUNCTION()
+	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	UFUNCTION()
+	void HandleMatchmakingCanceled();
+	//~ End Matchmaking Callbacks
 
 	/** Displays the tutorial popup */
 	void ShowTutorialPopup() const;

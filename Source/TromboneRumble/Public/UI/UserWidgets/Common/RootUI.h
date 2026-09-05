@@ -6,13 +6,15 @@
 #include "CommonActivatableWidget.h"
 #include "CommonUserWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-#include "BaseUIRoot.generated.h"
+#include "RootUI.generated.h"
 
 enum class EUIStackType;
 enum class ECommonInputType : uint8;
+class UPerformanceWidget;
+class UProjectVersionWidget;
 
 UCLASS()
-class TROMBONERUMBLE_API UBaseUIRoot : public UCommonUserWidget
+class TROMBONERUMBLE_API URootUI : public UCommonUserWidget
 {
 	GENERATED_BODY()
 	
@@ -40,14 +42,14 @@ public:
 	 */
 	bool PopStack(const EUIStackType StackType) const;
 	
-	/** Enabling/Disabling the base UI */
-	void SetBaseUIEnabled(const bool bEnabled) const;
-
 	/** @return The widget that currently owns UI focus priority. Overlay, then Popup, then Base. */
 	UCommonActivatableWidget* GetTopActiveWidget() const;
 
 	/** Focuses the desired focus target of the top active widget. Used to (re)seed gamepad focus. */
 	void FocusActiveWidgetDesiredTarget() const;
+
+	/** Shows or hides the FPS / ping overlay. Collapsed widgets do not tick, so hiding also stops the cost */
+	void SetPerformanceWidgetVisible(bool bVisible) const;
 
 protected:
 
@@ -72,20 +74,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	TObjectPtr<UCommonActivatableWidgetStack> OverlayStack;
 	
+	/** Shown on the Base stack in the widget designer only. Each level's HUD pushes the real screen */
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCommonActivatableWidget> DefaultWidgetClass;
 
+	/** Placed above the stacks in the root widget. Lives as long as the root, each HUD only toggles it */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UPerformanceWidget> PerformanceWidget;
+
+	/** Placed above the stacks in the root widget. Always visible, never hit tested */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UProjectVersionWidget> ProjectVersionWidget;
+
 protected:
 	
-	// ~ Begin UCommonUserWidget Interface
+	//~ Begin UCommonUserWidget Interface
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	// ~ End UCommonUserWidget Interface
+	//~ End UCommonUserWidget Interface
 };
 
 template <typename T>
-T* UBaseUIRoot::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType, TFunctionRef<void(T&)> InstanceInitFunc) const
+T* URootUI::AddWidgetToStack(const TSubclassOf<UCommonActivatableWidget> WidgetClass, const EUIStackType StackType, TFunctionRef<void(T&)> InstanceInitFunc) const
 {
 	if (!WidgetClass) return nullptr;
 

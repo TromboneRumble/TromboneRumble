@@ -49,4 +49,9 @@ namespace TromboneGamePlayTags
 
 	//GameplayEffects
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Buff_Speed, "Trombone.Buff.Speed");
+
+	// UI layers
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Base,		"Trombone.UI.Layer.Base");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Popup,		"Trombone.UI.Layer.Popup");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Overlay,	"Trombone.UI.Layer.Overlay");
 }

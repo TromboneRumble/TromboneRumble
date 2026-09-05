@@ -6,7 +6,7 @@
 
 class UCommonBorder;
 class UImage;
-class UBaseUIRoot;
+class URootUI;
 struct FQuestUIData;
 class UTutorialQuestWidget;
 class UTutorialDialogueWidget;
@@ -42,7 +42,7 @@ private:
 	
 	/** Reference to the root UI layout */
 	UPROPERTY()
-	TObjectPtr<UBaseUIRoot> RootLayout;
+	TObjectPtr<URootUI> RootUI;
 	
 	/** UI action binding handles for skipping dialogue */
 	UPROPERTY()
@@ -87,10 +87,10 @@ private:
 	
 protected:
 	
-	// ~ Begin UCommonActivatableWidget Interface
+	//~ Begin UCommonActivatableWidget Interface
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	// ~ End UCommonActivatableWidget Interface
+	//~ End UCommonActivatableWidget Interface
 	
 };

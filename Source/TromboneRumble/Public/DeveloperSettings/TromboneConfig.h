@@ -13,6 +13,7 @@
 #include "TromboneConfig.generated.h"
 
 enum class EToastSystemPolicy : uint8;
+class URootUI;
 class UToastItemWidget;
 class UToastContainerWidget;
 class AInstrumentBase;
@@ -73,7 +74,11 @@ public:
 	}
 	
 public:
-	
+
+	/** Root layout that hosts the Base, Popup and Overlay stacks. Created once per game instance and kept across levels. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Root")
+	TSoftClassPtr<URootUI> RootUIClass;
+
 	/** Notice popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<UNoticePopup> NoticePopupWidgetClass;
@@ -93,14 +98,6 @@ public:
 	/** Play mode select popup widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
 	TSubclassOf<UPlayModePopup> PlayModePopupWidgetClass;
-	
-	/** Project version widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
-	TSubclassOf<UCommonUserWidget> ProjectVersionWidgetClass;
-	
-	/** Performance widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
-	TSubclassOf<UCommonUserWidget> PerformanceWidgetClass;
 	
 	/** Loading overlay widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")

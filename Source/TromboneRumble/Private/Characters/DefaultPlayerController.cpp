@@ -5,6 +5,7 @@
 #include "Components/ActorComponents/LobbyCameraComponent.h"
 #include "Framework/GameMode/InGameMode.h"
 #include "Subsystems/ResultSceneSubsystem.h"
+#include "Subsystems/TromboneUISubsystem.h"
 
 ADefaultPlayerController::ADefaultPlayerController()
 {
@@ -79,5 +80,16 @@ void ADefaultPlayerController::LeaveSessionAndTravelToResultLevel()
 				ResultSubsystem->OpenResultLevel(this);
 			}
 		}));
+	}
+}
+
+void ADefaultPlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+
+	// First point where a local player is set. The root lives in the game instance and is only attached here
+	if (UTromboneUISubsystem* UISubsystem = UTromboneUISubsystem::Get(this))
+	{
+		UISubsystem->AttachRootUI(this);
 	}
 }
