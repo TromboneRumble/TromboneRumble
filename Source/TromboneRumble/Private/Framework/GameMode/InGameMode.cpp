@@ -95,7 +95,7 @@ void AInGameMode::StartEndSequence(int32 InSessionPlayerCount)
 
 	if (AInGameState* GS = GetGameState<AInGameState>())
 	{
-		GS->Multicast_BroadCastInGameStateChanged(EInGameState::End);
+		GS->SetInGameState(EInGameState::End);
 
 		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
@@ -193,7 +193,7 @@ void AInGameMode::TryStartInGamePlay()
 		{
 			bInGamePlayStarted = true;
 			GetWorldTimerManager().ClearTimer(TimerHandle_RetryStartInGame);
-			GS->Multicast_BroadCastInGameStateChanged(EInGameState::Play);
+			GS->SetInGameState(EInGameState::Play);
 		}
 	}
 }
