@@ -151,9 +151,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 지속 시간"))
 	float RagdollDuration = 2.5f;
 	
-	/** The interpolation speed during ragdoll, to synchronize with the server's pelvis position */
+	/** How fast the pelvis velocity blends toward the target velocity each tick (VInterpTo speed). */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 중 메쉬의 속도 보간 속도"))
-	float VelocityInterpSpeed = 15.0f;
+	float VelocityInterpSpeed = 25.0f;
 
 	/** The interpolation speed during ragdoll, to synchronize with the server's pelvis rotation */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "래그돌 중 메쉬의 각속도 보간 속도"))
@@ -179,9 +179,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "골반 회전 강제 동기화 대기 시간", ClampMin = "0.0"))
 	float RotationSnapHoldSeconds = 0.3f;
 	
-	/** Tracking intensity factor used to pull pelvis toward target position (P-Control) */
+	/** Position error times this is the correction speed (P-control). */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "추적 강도"))
-	float TrackingIntensity = 10.0f;
+	float TrackingIntensity = 15.0f;
 
 	/** Tracking intensity factor used to pull pelvis toward target rotation (P-Control) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "회전 추적 강도"))
