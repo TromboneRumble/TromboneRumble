@@ -7,31 +7,23 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
+#include "Misc/App.h"
 #include "Net/UnrealNetwork.h"
 
 #if !UE_BUILD_SHIPPING
-static TAutoConsoleVariable<int32> CVarRagdollDebug(
-	TEXT("Trombone.Ragdoll.Debug"),
-	0,
-	TEXT("If 1, display the ragdoll synchronization status on the screen"));
-
 static TAutoConsoleVariable<int32> CVarRagdollEnableImpulseOnStart(
 	TEXT("Trombone.Ragdoll.EnableImpulseOnStart"),
 	0,
 	TEXT("If 1, character is launched when ragdoll start"));
+
+static TAutoConsoleVariable<int32> CVarRagdollSyncFeatures(
+	TEXT("Trombone.Ragdoll.SyncFeatures"),
+	static_cast<int32>(ERagdollSyncFeature::All),
+	TEXT("Bitmask of client sync parts. 1 rotation snap, 8 extrapolation, 16 rotation sync, 32 gravity term. 57 = all"));
 #endif
 
 namespace
 {
-	bool IsRagdollDebugEnabled()
-	{
-#if !UE_BUILD_SHIPPING
-		return CVarRagdollDebug.GetValueOnGameThread() != 0;
-#else
-		return false;
-#endif
-	}
-
 	bool IsRagdollImpulseOnStartEnabled()
 	{
 #if !UE_BUILD_SHIPPING
@@ -40,6 +32,15 @@ namespace
 		return false;
 #endif
 	}
+}
+
+int32 UTromboneRagdollComponent::GetSyncFeatures()
+{
+#if !UE_BUILD_SHIPPING
+	return CVarRagdollSyncFeatures.GetValueOnGameThread();
+#else
+	return static_cast<int32>(ERagdollSyncFeature::All);
+#endif
 }
 
 UTromboneRagdollComponent::UTromboneRagdollComponent()
@@ -134,6 +135,7 @@ void UTromboneRagdollComponent::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 
 	DOREPLIFETIME(ThisClass, bIsRagdoll);
 	DOREPLIFETIME(ThisClass, ServerRagdollState);
+	DOREPLIFETIME(ThisClass, RagdollStartServerTime);
 	DOREPLIFETIME(ThisClass, GetUpLocation);
 }
 
@@ -188,6 +190,12 @@ void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity, con
 	}
 
 	RagdollRestingTime = 0.0f;
+
+	// Clients ignore the state left from an earlier ragdoll until one newer than this arrives
+	if (const AGameStateBase* GameState = GetWorld()->GetGameState())
+	{
+		RagdollStartServerTime = GameState->GetServerWorldTimeSeconds();
+	}
 
 	bIsRagdoll = true;
 	OnRep_IsRagdoll();
@@ -255,6 +263,12 @@ void UTromboneRagdollComponent::Server_ComputeGetUpTransform()
 	GetUpLocation = TargetCapsuleLocation;
 }
 
+void UTromboneRagdollComponent::OnRep_ServerRagdollState()
+{
+	// World time would still be last frame's here (LevelTick.cpp: TickDispatch runs before TimeSeconds advances)
+	StateReceivedRealTime = FApp::GetCurrentTime();
+}
+
 void UTromboneRagdollComponent::OnRep_IsRagdoll()
 {
 	if (!OwnerCharacter || !OwnerMesh)
@@ -262,13 +276,12 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		return;
 	}
 	
-	if (IsRagdollDebugEnabled())
+	if (bIsRagdoll)
 	{
-		const FString DebugMsg = FString::Printf(TEXT("Max Distance in Server & Client : %.2f"), PelvisLocationMaxError);
-		if (GEngine) GEngine->AddOnScreenDebugMessage(12346, 5.0f, FColor::Red, DebugMsg);
-		PelvisLocationMaxError = 0.0f;
+		SyncStats = FRagdollSyncStats();
+		RotationSnapTime = 0.0f;
 	}
-	
+
 	SetComponentTickEnabled(bIsRagdoll || bIsBlendingOut);
 	
 	if (bIsRagdoll)
@@ -304,7 +317,7 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		OwnerMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-		OwnerMesh->SetUseCCD(true);
+		OwnerMesh->SetAllUseCCD(true);
 		GroundPenetrationTime = 0.0f;
 		OnRagdollStarted.Broadcast();
 	}
@@ -395,7 +408,7 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerCharacter->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 
 	OwnerMesh->SetSimulatePhysics(false);
-	OwnerMesh->SetUseCCD(false);
+	OwnerMesh->SetAllUseCCD(false);
 	OwnerMesh->SetCollisionObjectType(ECC_Pawn);
 	OwnerMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -499,21 +512,24 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     	return;
     }
 
+	// Nothing to follow yet. The state still belongs to an earlier ragdoll
+	if (ServerRagdollState.Timestamp < RagdollStartServerTime)
+	{
+		return;
+	}
+
     const FTransform CurrentPelvisTrans = PelvisBody->GetUnrealWorldTransform();
     const FVector CurrentPelvisLoc = CurrentPelvisTrans.GetLocation();
     const FQuat CurrentPelvisRot = CurrentPelvisTrans.GetRotation();
 
 	const UWorld* World = GetWorld();
 	float PacketAge = 0.0f;
-	if (World && World->GetGameState() && ServerRagdollState.Timestamp > 0.0f)
+	if (World && ServerRagdollState.Timestamp > 0.0f && IsSyncFeatureEnabled(ERagdollSyncFeature::Extrapolation)) // measurement switch
 	{		
-		/** GetServerWorldTimeSeconds는 서버 시간을 복제할 때 RTT/2를 보정하지 않으므로, 실제 서버 시간보다 RTT/2만큼 느리다.
-		 *  이 RTT/2는 서버에서 날아온 래그돌 패킷의 RTT/2와 동일하므로, 
-		 *  'GetServerWorldTimeSeconds - ServerRagdollState.TimeStamp'를 계산할 때 두 RTT/2가 서로 상쇄되어
-		 *  패킷이 서버에서 클라까지 날라오는 데 걸린 시간은 계산에서 빠지게 된다.
-		 *  이를 보정하기 위해 RTT/2만큼 더해준다.
-		 */
-		PacketAge = World->GetGameState()->GetServerWorldTimeSeconds() - ServerRagdollState.Timestamp;
+		/** 클라이언트 자기 시계만 쓴다. GetServerWorldTimeSeconds는 RTT/2가 아니라 게임스테이트 복제 주기 + 한 프레임만큼
+		 *  뒤처져 있어서, "추정 서버시간 - 타임스탬프"가 음수가 되고 0으로 잘렸다.
+		 *  상태를 받은 뒤 흐른 시간에는 그런 편향이 없다. 서버에서 오는 전송 시간은 아래에서 더한다. */
+		PacketAge = static_cast<float>(FApp::GetCurrentTime() - StateReceivedRealTime);
 
 		if (const APlayerController* LocalPC = World->GetFirstPlayerController())
 		{
@@ -532,8 +548,8 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
 
 	const bool bAirborne = IsPelvisAirborne();
 
-	// 중력가속도(등가속 운동) 반영
-	if (World && bAirborne)
+	// 중력가속도(등가속 운동) 반영 (measurement switch)
+	if (World && bAirborne && IsSyncFeatureEnabled(ERagdollSyncFeature::GravityTerm))
 	{
 		TargetPelvisLoc.Z += 0.5f * World->GetGravityZ() * PacketAge * PacketAge;
 	}
@@ -547,33 +563,27 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
 	}
 	TargetPelvisRot.Normalize();
 	
-	if (IsRagdollDebugEnabled() && World)
-	{
-		DrawDebugSphere(World, CurrentPelvisLoc, 10.0f, 8, FColor::Green, false, -1.0f, 0, 1.0f);
-		DrawDebugSphere(World, TargetPelvisLoc, 10.0f, 8, FColor::Red, false, -1.0f, 0, 1.0f);
-		DrawDebugLine(World, CurrentPelvisLoc, TargetPelvisLoc, FColor::Yellow, false, -1.0f, 0, 1.5f);
-		
-		// Green = Client / Red = Server
-		constexpr float AxisLength = 40.0f;
-		DrawDebugLine(World, CurrentPelvisLoc, CurrentPelvisLoc + CurrentPelvisRot.GetForwardVector() * AxisLength, FColor::Green, false, -1.0f, 0, 1.5f);
-		DrawDebugLine(World, CurrentPelvisLoc, CurrentPelvisLoc + CurrentPelvisRot.GetUpVector() * AxisLength, FColor::Emerald, false, -1.0f, 0, 1.5f);
-		DrawDebugLine(World, TargetPelvisLoc, TargetPelvisLoc + TargetPelvisRot.GetForwardVector() * AxisLength, FColor::Red, false, -1.0f, 0, 1.5f);
-		DrawDebugLine(World, TargetPelvisLoc, TargetPelvisLoc + TargetPelvisRot.GetUpVector() * AxisLength, FColor::Orange, false, -1.0f, 0, 1.5f);
+	SyncStats.bHasState = true;
+	SyncStats.StateTimestamp = ServerRagdollState.Timestamp;
+	SyncStats.TargetPelvisLocation = TargetPelvisLoc;
+	SyncStats.TargetPelvisRotation = TargetPelvisRot;
+	SyncStats.PacketAge = PacketAge;
+	SyncStats.bAirborne = bAirborne;
 
-		const float Distance = FVector::Dist(CurrentPelvisLoc, TargetPelvisLoc);
-		PelvisLocationMaxError = std::max(Distance, PelvisLocationMaxError);
-		const float AngleError = FMath::RadiansToDegrees(CurrentPelvisRot.AngularDistance(TargetPelvisRot));
+	/** 너무 오래, 너무 많이 틀어져 있으면 스냅한다. 바닥에서는 밀어서 되돌아오지 못하기 때문이다 (measurement switch).
+	 *  외삽한 목표 회전이 아니라 서버 회전 그대로와 비교한다. 지연이 크면 각속도 외삽이 목표를
+	 *  한두 프레임 흔드는데, 거기에 스냅하면 아무 이유 없이 몸이 튄다. */
+	const float RawRotationErrorDeg = FMath::RadiansToDegrees(CurrentPelvisRot.AngularDistance(ServerRagdollState.PelvisRotation));
+	RotationSnapTime = RawRotationErrorDeg >= ForceRotationUpdateAngle ? RotationSnapTime + DeltaTime : 0.0f;
+	const bool bRotationSnap = IsSyncFeatureEnabled(ERagdollSyncFeature::RotationSnap) && RotationSnapTime >= RotationSnapHoldSeconds;
 
-		const float HeightDelta = CurrentPelvisLoc.Z - TargetPelvisLoc.Z;
-
-		const FString DebugText = FString::Printf(TEXT("Ragdoll sync: %.1f cm / %.1f deg | Height %+.1f cm | Airborne %s"), Distance, AngleError, HeightDelta, bAirborne ? TEXT("O") : TEXT("X"));
-		if (GEngine) GEngine->AddOnScreenDebugMessage(12345, DeltaTime, FColor::Cyan, DebugText);
-	}
-
-    if (FVector::DistSquared(CurrentPelvisLoc, TargetPelvisLoc) > ForceLocationUpdateDistance)
+	// Too far away
+    if (FVector::DistSquared(CurrentPelvisLoc, TargetPelvisLoc) > ForceLocationUpdateDistance || bRotationSnap)
     {
         SnapRagdollToTarget(TargetPelvisLoc, TargetPelvisRot, CurrentPelvisLoc, CurrentPelvisRot);
         GroundPenetrationTime = 0.0f;
+        RotationSnapTime = 0.0f;
+        ++SyncStats.SnapCount;
         return;
     }
 
@@ -587,12 +597,19 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     {
         PositionCorrection.Z = 0.0f;
     }
+	SyncStats.CorrectionSpeed = PositionCorrection.Size();
 
     const FVector TargetVelocity = ServerVelocity + PositionCorrection;
     const FVector CurrentVelocity = OwnerMesh->GetPhysicsLinearVelocity(TromboneBones::Pelvis);
     const FVector NewVelocity = FMath::VInterpTo(CurrentVelocity, TargetVelocity, DeltaTime, VelocityInterpSpeed);
 
     OwnerMesh->SetPhysicsLinearVelocity(NewVelocity, false, TromboneBones::Pelvis);
+
+	// measurement switch
+	if (!IsSyncFeatureEnabled(ERagdollSyncFeature::RotationSync))
+	{
+		return;
+	}
 
     FQuat RotationError = TargetPelvisRot * CurrentPelvisRot.Inverse();
     RotationError.Normalize();
@@ -634,25 +651,35 @@ void UTromboneRagdollComponent::Client_RecoverFromGroundPenetration(const float 
 
 	SnapRagdollToTarget(TargetPelvisLoc, TargetPelvisRot, CurrentPelvisLoc, CurrentPelvisRot);
 	GroundPenetrationTime = 0.0f;
+	++SyncStats.PenetrationRecoveryCount;
 }
 
 void UTromboneRagdollComponent::SnapRagdollToTarget(const FVector& TargetPelvisLoc, const FQuat& TargetPelvisRot,
 	const FVector& CurrentPelvisLoc, const FQuat& CurrentPelvisRot)
 {
-	const FBodyInstance* RootBody = OwnerMesh ? OwnerMesh->GetBodyInstance() : nullptr;
-	const FBodyInstance* PelvisBody = OwnerMesh ? OwnerMesh->GetBodyInstance(TromboneBones::Pelvis) : nullptr;
-	if (!RootBody || !PelvisBody)
+	if (!OwnerMesh)
 	{
 		return;
 	}
 
-	// Rotation first.
-	OwnerMesh->SetAllPhysicsRotation(TargetPelvisRot * (CurrentPelvisRot.Inverse() * RootBody->GetUnrealWorldTransform().GetRotation()));
+	/** 골반을 축으로 몸 전체를 한 번에 강체 이동한다. 관절 모양이 그대로라 솔버가 되돌릴 것이 없다.
+	 *  SetAllPhysicsRotation은 여기에 못 쓴다. 바디를 제자리에서 돌리기만 하고 옮기지 않아서, 관절이 골반을
+	 *  팔다리가 있는 곳으로 다시 끌어당기고, 바닥에서는 팔다리가 항상 이긴다. */
+	FQuat DeltaRot = TargetPelvisRot * CurrentPelvisRot.Inverse();
+	DeltaRot.Normalize();
 
-	// Since the rotation occurred around the root body and the pelvis moved, recalculate the offset
-	const FVector PelvisOffset = PelvisBody->GetUnrealWorldTransform().GetLocation() - RootBody->GetUnrealWorldTransform().GetLocation();
-	OwnerMesh->SetAllPhysicsPosition(TargetPelvisLoc - PelvisOffset);
+	for (FBodyInstance* Body : OwnerMesh->Bodies)
+	{
+		if (!Body || !Body->IsValidBodyInstance())
+		{
+			continue;
+		}
+
+		const FTransform BodyTransform = Body->GetUnrealWorldTransform();
+		const FVector NewLocation = TargetPelvisLoc + DeltaRot.RotateVector(BodyTransform.GetLocation() - CurrentPelvisLoc);
+		const FQuat NewRotation = DeltaRot * BodyTransform.GetRotation();
+		Body->SetBodyTransform(FTransform(NewRotation, NewLocation, BodyTransform.GetScale3D()), ETeleportType::TeleportPhysics);
+	}
+
+	OwnerMesh->SyncComponentToRBPhysics();
 }
-
-
-

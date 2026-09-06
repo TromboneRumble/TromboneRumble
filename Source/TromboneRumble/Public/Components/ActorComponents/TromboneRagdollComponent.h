@@ -31,6 +31,54 @@ struct FRagdollNetState
 	float Timestamp = 0.0f;
 };
 
+/** Client sync parts that make sense either way, each behind a bit so the test can measure with any of them off.
+ *  Bits 2, 4 and 64 were the baseline's bugs (stale state, in-place snap, server clock age) and are gone, their fixes always on. */
+enum class ERagdollSyncFeature : int32
+{
+	/** Snap when the pelvis rotation error stays past ForceRotationUpdateAngle. */
+	RotationSnap = 1 << 0,
+
+	/** Push the server state forward by the packet age. */
+	Extrapolation = 1 << 3,
+
+	/** Steer the pelvis angular velocity toward the server rotation. */
+	RotationSync = 1 << 4,
+
+	/** Add the free fall term to the extrapolation while airborne. */
+	GravityTerm = 1 << 5,
+
+	All = RotationSnap | Extrapolation | RotationSync | GravityTerm,
+};
+
+/** What the client sync did this frame. Read by URagdollTestSubsystem, reset when a ragdoll starts. */
+struct FRagdollSyncStats
+{
+	/** False until the first state of this ragdoll has been used. Everything below is stale before that. */
+	bool bHasState = false;
+
+	/** Server time stamped on the state in use. The test subsystem compares it with the real server clock. */
+	float StateTimestamp = 0.0f;
+
+	/** Where the client steers the pelvis to. Server state plus extrapolation. */
+	FVector TargetPelvisLocation = FVector::ZeroVector;
+
+	FQuat TargetPelvisRotation = FQuat::Identity;
+
+	/** Seconds the last server state was extrapolated by. */
+	float PacketAge = 0.0f;
+
+	/** Velocity correction added by the P-control (cm/s). */
+	float CorrectionSpeed = 0.0f;
+
+	bool bAirborne = false;
+
+	/** Hard snaps from the distance threshold. */
+	int32 SnapCount = 0;
+
+	/** Snaps from the ground penetration recovery. */
+	int32 PenetrationRecoveryCount = 0;
+};
+
 /** UTromboneRagdollComponent
  * Keeps a ragdoll (physics simulation) in the same place on every machine.
  * Only the server's pelvis location/rotation and their speeds are sent over.
@@ -76,6 +124,13 @@ public:
 	/** @return true if the ragdoll is at rest (pelvis speed below RestSpeedThreshold), otherwise false. */
 	bool IsRagdollResting() const;
 
+	const FRagdollSyncStats& GetSyncStats() const { return SyncStats; }
+
+	/** @return Bitmask of ERagdollSyncFeature in effect. Console Trombone.Ragdoll.SyncFeatures, all on in shipping. */
+	static int32 GetSyncFeatures();
+
+	static bool IsSyncFeatureEnabled(const ERagdollSyncFeature Feature) { return (GetSyncFeatures() & static_cast<int32>(Feature)) != 0; }
+
 public:
 
 	/** Event when ragdoll is started. */
@@ -112,6 +167,14 @@ protected:
 	/** Squared distance threshold for forcing a hard location snap (cm^2) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "골반 위치 강제 동기화 거리"))
 	float ForceLocationUpdateDistance = 40000.0f;
+
+	/** Pelvis rotation error that forces a hard snap (deg). Ground friction can hold a body turned this far, so a pull never gets there. */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "골반 회전 강제 동기화 각도", ClampMin = "0.0", ClampMax = "180.0"))
+	float ForceRotationUpdateAngle = 90.0f;
+
+	/** How long the rotation error has to stay above that angle before the snap (seconds). Keeps a one frame swing from teleporting the body. */
+	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "골반 회전 강제 동기화 대기 시간", ClampMin = "0.0"))
+	float RotationSnapHoldSeconds = 0.3f;
 	
 	/** Tracking intensity factor used to pull pelvis toward target position (P-Control) */
 	UPROPERTY(EditAnywhere, Category = "RagdollComponent", meta = (DisplayName = "추적 강도"))
@@ -178,6 +241,9 @@ private:
 	UFUNCTION()
 	void OnRep_IsRagdoll();
 
+	UFUNCTION()
+	void OnRep_ServerRagdollState();
+
 	void UnapplyRagdoll();
 
 	/** Starts the physics-to-animation blend-out (ragdoll bodies are still simulating at this point). */
@@ -219,8 +285,16 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
 	bool bIsRagdoll = false;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_ServerRagdollState)
 	FRagdollNetState ServerRagdollState;
+
+	/** Real time (FApp) when ServerRagdollState last arrived. The packet age counts from here.
+	 *  Not world time: the OnRep runs in TickDispatch, before the world clock advances for the frame. */
+	double StateReceivedRealTime = 0.0;
+
+	/** Server time the current ragdoll started. A state stamped before this is left over from an earlier ragdoll. */
+	UPROPERTY(Replicated)
+	float RagdollStartServerTime = 0.0f;
 
 	/** Authoritative get-up capsule location, computed once by the server */
 	UPROPERTY(Replicated)
@@ -244,11 +318,14 @@ private:
 	/** World Z the body floats toward. Only read while floating. */
 	float WaterLevelZ = 0.f;
 
-	/** Maximum difference for pelvis location synchronization (DebugMode) */
-	float PelvisLocationMaxError = 0.0f;
+	/** Client only. */
+	FRagdollSyncStats SyncStats;
 
 	/** How long the body has been stuck under the floor (seconds). */
 	float GroundPenetrationTime = 0.0f;
+
+	/** How long the pelvis has been turned past ForceRotationUpdateAngle (seconds). */
+	float RotationSnapTime = 0.0f;
 
 	/** True while ramping SetAllBodiesPhysicsBlendWeight from 1 to 0 after the get-up montage has started. */
 	bool bIsBlendingOut = false;
