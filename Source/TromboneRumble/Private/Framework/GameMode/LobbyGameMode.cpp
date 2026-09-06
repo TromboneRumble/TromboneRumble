@@ -43,7 +43,14 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 	Super::Logout(ExitedPlayer);
 
 	const UWorld* World = GetWorld();
-	const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
+
+	// PIE stop or level change. A travel started now would finish on a world context that no longer exists
+	if (!World || World->bIsTearingDown)
+	{
+		return;
+	}
+
+	const UGameInstance* GameInstance = World->GetGameInstance();
 	const UGameStateSubsystem* GameStateSubsystem = GameInstance ? GameInstance->GetSubsystem<UGameStateSubsystem>() : nullptr;
 	if (!GameStateSubsystem)
 	{
