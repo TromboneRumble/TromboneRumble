@@ -2,6 +2,8 @@
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Characters/TromboneCharacterBase.h"
+#include "EngineUtils.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ActorComponents/CustomizationComponent.h"
 #include "Components/ActorComponents/XRayComponentBase.h"
@@ -15,8 +17,11 @@
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/ResultSceneSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "Subsystems/WorldSubsystem/RagdollTestSubsystem.h"
 #include "TromboneGamePlayTags.h"
+#include "Components/ActorComponents/LobbyDirectorComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
+#include "GameFramework/GameModeBase.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/Defines.h"
 #include "Utilities/EnumHelper.h"
@@ -29,6 +34,9 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_Spotlight - 스포트라이트를 소환합니다.\n");
 	DebugMsg += TEXT("Trombone_Throw [Count] - 쓰레기를 소환합니다. Count는 소환할 쓰레기의 수입니다. (예: Trombone_Throw 10)\n");
 	DebugMsg += TEXT("Trombone_Ragdoll - 래그돌을 실행합니다.\n");
+	DebugMsg += TEXT("Trombone_RagdollDrop - 로비 낙하를 다시 실행합니다. 호스트 콘솔에서만 동작 (래그돌 측정 반복용)\n");
+	DebugMsg += TEXT("Trombone_RagdollLaunch - 서 있는 전원을 박치기처럼 공중으로 띄웁니다. 호스트 콘솔에서만 동작\n");
+	DebugMsg += TEXT("Trombone_RagdollTest - Project Settings > Game > Ragdoll Test 의 케이스를 순서대로 자동 측정 (PIE 한 프로세스, 로비). Trombone_RagdollTestStop 으로 중단\n");
 	DebugMsg += TEXT("Trombone_Stun - 스턴을 실행합니다.\n");
 	DebugMsg += TEXT("Trombone_ResetSettingData - 설정 데이터 초기화\n");
 	DebugMsg += TEXT("Trombone_SetCustomization [AntennaKey] [FaceKey] [CostumeKey] - 커스터마이징 즉시 변경 및 복제 (None=기본값, 예: Trombone_SetCustomization None Face_02 None)\n");
@@ -139,6 +147,51 @@ void UTromboneCheatManager::Trombone_Ragdoll()
 		}
 		PRINT_WITH_CURRENT_CONTEXT(TEXT("Ragdoll executed"));
 	}
+}
+
+void UTromboneCheatManager::Trombone_RagdollDrop()
+{
+	const UWorld* World = GetWorld();
+	const AGameModeBase* GameMode = World ? World->GetAuthGameMode() : nullptr;
+	ULobbyDirectorComponent* Director = GameMode ? GameMode->FindComponentByClass<ULobbyDirectorComponent>() : nullptr;
+	if (!Director)
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("Host console only, and only in the lobby"));
+		return;
+	}
+
+	Director->RelaunchAllPlayersFalling();
+	PRINT_WITH_CURRENT_CONTEXT(TEXT("Ragdoll drop executed"));
+}
+
+void UTromboneCheatManager::Trombone_RagdollLaunch()
+{
+	UWorld* World = GetWorld();
+	if (!World || !World->GetAuthGameMode())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("Host console only"));
+		return;
+	}
+
+	for (TActorIterator<ATromboneCharacterBase> It(World); It; ++It)
+	{
+		if (UTromboneRagdollComponent* Ragdoll = It->GetRagdollComponent())
+		{
+			Ragdoll->SetAutoGetUpEnabled(true);
+			Ragdoll->StartRagdollLaunched();
+		}
+	}
+	PRINT_WITH_CURRENT_CONTEXT(TEXT("Ragdoll launch executed"));
+}
+
+void UTromboneCheatManager::Trombone_RagdollTest()
+{
+	URagdollTestSubsystem::StartCampaign();
+}
+
+void UTromboneCheatManager::Trombone_RagdollTestStop()
+{
+	URagdollTestSubsystem::StopCampaign();
 }
 
 void UTromboneCheatManager::Trombone_Stun()

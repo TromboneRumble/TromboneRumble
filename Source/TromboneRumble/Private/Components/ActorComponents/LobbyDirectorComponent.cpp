@@ -234,6 +234,14 @@ void ULobbyDirectorComponent::LaunchAllPlayersFalling()
 	WaitingPlayers.Empty();
 }
 
+void ULobbyDirectorComponent::RelaunchAllPlayersFalling()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		LaunchPlayerFalling(It->Get(), 0);
+	}
+}
+
 void ULobbyDirectorComponent::LaunchPlayerFalling(APlayerController* PC, const int32 RetryCount)
 {
 	if (!IsValid(PC))
