@@ -107,6 +107,9 @@ public:
 	
 	/** Stop ragdoll and start get-up animation. Server only. */
 	void StopRagdoll();
+
+	/** Start ragdoll and throw the body up like a headbutt hit. Server only. Debug and test. */
+	void StartRagdollLaunched();
 	
 	bool IsRagdoll() const { return bIsRagdoll; }
 
@@ -245,6 +248,9 @@ private:
 	void OnRep_ServerRagdollState();
 
 	void UnapplyRagdoll();
+
+	/** Random sideways plus UpForce kick on the pelvis. Server only. */
+	void ApplyLaunchImpulse() const;
 
 	/** Starts the physics-to-animation blend-out (ragdoll bodies are still simulating at this point). */
 	void BeginRagdollBlendOut();

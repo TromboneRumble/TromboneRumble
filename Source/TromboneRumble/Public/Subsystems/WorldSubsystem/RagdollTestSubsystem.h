@@ -7,7 +7,27 @@
 #include "RagdollTestSubsystem.generated.h"
 
 class ATromboneCharacterBase;
+class UTromboneRagdollComponent;
 struct FRagdollTestCase;
+
+/** How a ragdoll gets started in a test. */
+enum class ERagdollTestScenario : uint8
+{
+	/** Lobby fall from the drop points. Vertical, fast, hidden until the first state. */
+	Drop,
+
+	/** Thrown up from standing, like a headbutt hit. Visible the whole time. */
+	Launch,
+};
+
+/** One ragdoll of a campaign case. */
+struct FRagdollTestStep
+{
+	ERagdollTestScenario Scenario = ERagdollTestScenario::Drop;
+
+	/** False for warm-ups: measured and printed, not written. */
+	bool bRecord = true;
+};
 
 /** One frame of measurement. Client body vs the server body of the same PIE session. */
 struct FRagdollTestSample
@@ -81,6 +101,12 @@ struct FRagdollTestRun
 struct FRagdollTestSummary
 {
 	FString Label;
+
+	/** drop, launch, or manual outside a campaign. */
+	FString Scenario;
+
+	/** Parameter overrides of the case, "Name=Value;..." or empty. */
+	FString Overrides;
 	FString PlayerName;
 	bool bLocallyControlled = false;
 	int32 Features = 0;
@@ -180,15 +206,24 @@ private:
 	/** Writes the median rows of the case and moves on. */
 	void FinishCase();
 
-	void TriggerDrop();
+	/** Starts the ragdolls of one step on the server world. */
+	void TriggerStep(const FRagdollTestStep& Step);
 
 	/** Fake latency on both PIE net drivers. Zero clears it. */
 	void ApplyEmulation(int32 PktLag, int32 PktLagVariance, int32 PktLoss) const;
 
+	/** Sets the case's float properties on every ragdoll component of both worlds, remembering the old values. */
+	void ApplyOverrides(const TMap<FName, float>& Overrides);
+
+	/** Puts back every value ApplyOverrides changed. */
+	void RestoreOverrides();
+
 	void EndCampaign(const TCHAR* Reason);
 
-	/** Median of one summary field over the runs of a case, self and other apart. */
-	FRagdollTestSummary MedianOf(const TArray<FRagdollTestSummary>& Runs, bool bSelf) const;
+	/** Median of every summary field over the runs of a case with this scenario and role. */
+	FRagdollTestSummary MedianOf(const TArray<FRagdollTestSummary>& Runs, const FString& Scenario, bool bSelf) const;
+
+	static const TCHAR* ScenarioName(ERagdollTestScenario Scenario);
 	// ~ End campaign
 
 private:
@@ -200,10 +235,18 @@ private:
 	/** Campaign state. Idle unless Trombone_RagdollTest is running. */
 	bool bCampaignActive = false;
 
+	/** Cases plus expanded sweeps, fixed at campaign start. */
+	TArray<FRagdollTestCase> CampaignCases;
+
+	/** Property values as they were before the current case's overrides, per component. */
+	TMap<TWeakObjectPtr<UTromboneRagdollComponent>, TMap<FName, float>> OriginalValues;
+
 	int32 CaseIndex = -1;
 
-	/** Negative while warming up. */
-	int32 DropIndex = 0;
+	/** Warm-ups first, then drops and launches taking turns. */
+	TArray<FRagdollTestStep> Steps;
+
+	int32 StepIndex = 0;
 
 	/** True between a drop being triggered and its ragdolls all ending. */
 	bool bDropInProgress = false;

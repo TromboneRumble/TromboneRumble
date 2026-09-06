@@ -212,12 +212,28 @@ void UTromboneRagdollComponent::StartRagdoll(const FVector& InitialVelocity, con
 
 	if (IsRagdollImpulseOnStartEnabled())
 	{
-		const float RandomX = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
-		const float RandomY = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
-
-		const FVector LaunchVelocity = FVector(RandomX, RandomY, UpForce);
-		OwnerMesh->AddImpulse(LaunchVelocity, TromboneBones::Pelvis, true);
+		ApplyLaunchImpulse();
 	}
+}
+
+void UTromboneRagdollComponent::StartRagdollLaunched()
+{
+	if (!OwnerCharacter || !OwnerCharacter->HasAuthority() || bIsRagdoll)
+	{
+		return;
+	}
+
+	StartRagdoll();
+	ApplyLaunchImpulse();
+}
+
+void UTromboneRagdollComponent::ApplyLaunchImpulse() const
+{
+	const float RandomX = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
+	const float RandomY = FMath::FRandRange(-RandomRangeXY, RandomRangeXY);
+
+	const FVector LaunchVelocity = FVector(RandomX, RandomY, UpForce);
+	OwnerMesh->AddImpulse(LaunchVelocity, TromboneBones::Pelvis, true);
 }
 
 void UTromboneRagdollComponent::StopRagdoll()

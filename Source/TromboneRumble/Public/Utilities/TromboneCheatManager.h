@@ -39,6 +39,10 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_RagdollDrop();
 
+	// Throws every standing player up in a ragdoll, like a headbutt hit. Host console only
+	UFUNCTION(Exec)
+	void Trombone_RagdollLaunch();
+
 	// Runs every ragdoll test case in Project Settings > Game > Ragdoll Test. Any PIE window, lobby only
 	UFUNCTION(Exec)
 	void Trombone_RagdollTest();

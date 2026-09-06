@@ -19,6 +19,7 @@
 #include "Misc/App.h"
 #include "Misc/FileHelper.h"
 #include "PhysicsEngine/PhysicsSettings.h"
+#include "UObject/UnrealType.h"
 #include "Utilities/Defines.h"
 
 #if WITH_EDITOR
@@ -49,7 +50,7 @@ namespace
 	constexpr int32 OverlayKeyBase = 20000;
 	constexpr int32 CampaignKey = 19999;
 
-	const TCHAR* SummaryHeader = TEXT("Stamp,Label,Player,Self,Samples,Duration,SyncTime,PelvisMean,PelvisP95,PelvisMax,PelvisAirMean,PelvisGroundMean,RotMean,RotMax,BodyMean,BodyMax,SettleTime,SnapCount,RecoverCount,FpsMean,PingMean,AgeMeanMs,TrueAgeMeanMs,FirstStateMs,Features\n");
+	const TCHAR* SummaryHeader = TEXT("Stamp,Label,Scenario,Player,Self,Samples,Duration,SyncTime,PelvisMean,PelvisP95,PelvisMax,PelvisAirMean,PelvisGroundMean,RotMean,RotMax,BodyMean,BodyMax,SettleTime,SnapCount,RecoverCount,FpsMean,PingMean,AgeMeanMs,TrueAgeMeanMs,FirstStateMs,Features,Overrides\n");
 
 	float Percentile(TArray<float> Values, const float P)
 	{
@@ -396,7 +397,7 @@ void URagdollTestSubsystem::EndRun(const FRagdollTestRun& Run)
 	}
 
 	FRagdollTestSummary S = Summarize(Run);
-	const bool bWarmup = bCampaignActive && DropIndex < 0;
+	const bool bWarmup = bCampaignActive && Steps.IsValidIndex(StepIndex) && !Steps[StepIndex].bRecord;
 	if (bWarmup)
 	{
 		S.Label += TEXT(" (warm-up)");
@@ -489,6 +490,14 @@ FRagdollTestSummary URagdollTestSubsystem::Summarize(const FRagdollTestRun& Run)
 	}
 
 	S.Label = CVarRagdollTestLabel.GetValueOnGameThread();
+	S.Scenario = bCampaignActive && Steps.IsValidIndex(StepIndex) ? ScenarioName(Steps[StepIndex].Scenario) : TEXT("manual");
+	if (bCampaignActive && CampaignCases.IsValidIndex(CaseIndex))
+	{
+		for (const TPair<FName, float>& Pair : CampaignCases[CaseIndex].Overrides)
+		{
+			S.Overrides += FString::Printf(TEXT("%s%s=%g"), S.Overrides.IsEmpty() ? TEXT("") : TEXT(";"), *Pair.Key.ToString(), Pair.Value);
+		}
+	}
 	S.PlayerName = Run.PlayerName;
 	S.bLocallyControlled = Run.bLocallyControlled;
 	S.Features = UTromboneRagdollComponent::GetSyncFeatures();
@@ -516,8 +525,8 @@ void URagdollTestSubsystem::PrintSummary(const FRagdollTestSummary& S) const
 {
 #if WITH_EDITOR
 	TArray<FString> Lines;
-	Lines.Add(FString::Printf(TEXT("[RagdollTest] %s | %s (%s) | features %d | %.1fs, %d samples, %.0f fps, ping %.0f ms"),
-		*S.Label, *S.PlayerName, S.bLocallyControlled ? TEXT("self") : TEXT("other"), S.Features, S.Duration, S.Samples, S.FpsMean, S.PingMean));
+	Lines.Add(FString::Printf(TEXT("[RagdollTest] %s %s | %s (%s) | features %d | %.1fs, %d samples, %.0f fps, ping %.0f ms"),
+		*S.Label, *S.Scenario, *S.PlayerName, S.bLocallyControlled ? TEXT("self") : TEXT("other"), S.Features, S.Duration, S.Samples, S.FpsMean, S.PingMean));
 	Lines.Add(FString::Printf(TEXT("  pelvis     mean %6.1f   p95 %6.1f   max %6.1f cm   (air %.1f / ground %.1f)"), S.PelvisMean, S.PelvisP95, S.PelvisMax, S.AirMean, S.GroundMean));
 	Lines.Add(FString::Printf(TEXT("  rotation   mean %6.1f   max %6.1f deg"), S.RotMean, S.RotMax));
 	Lines.Add(FString::Printf(TEXT("  body       mean %6.1f   max %6.1f cm"), S.BodyMean, S.BodyMax));
@@ -537,7 +546,7 @@ void URagdollTestSubsystem::PrintSummary(const FRagdollTestSummary& S) const
 void URagdollTestSubsystem::WriteRunCsv(const FRagdollTestRun& Run, const FRagdollTestSummary& S, const FString& Stamp) const
 {
 #if WITH_EDITOR
-	const FString FileName = FString::Printf(TEXT("%s_%s_%s%s.csv"), *Stamp, *S.Label, *FPaths::MakeValidFileName(Run.PlayerName), Run.bLocallyControlled ? TEXT("_self") : TEXT(""));
+	const FString FileName = FString::Printf(TEXT("%s_%s_%s_%s%s.csv"), *Stamp, *S.Label, *S.Scenario, *FPaths::MakeValidFileName(Run.PlayerName), Run.bLocallyControlled ? TEXT("_self") : TEXT(""));
 
 	// One row per frame
 	FString Rows = TEXT("Time,Fps,PhysicsDt,PingMs,Airborne,PelvisError,PelvisRotError,BodyError,ServerSpeed,TargetError,PacketAge,TrueAge,CorrectionSpeed\n");
@@ -562,10 +571,12 @@ void URagdollTestSubsystem::AppendSummaryRow(const FRagdollTestSummary& S, const
 	{
 		Row += SummaryHeader;
 	}
-	Row += FString::Printf(TEXT("%s,%s,%s,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d,%d,%.0f,%.0f,%.1f,%.1f,%.0f,%d\n"),
-		*Stamp, *S.Label, *S.PlayerName, S.bLocallyControlled ? 1 : 0, S.Samples, S.Duration, S.SyncTime, S.PelvisMean, S.PelvisP95, S.PelvisMax,
+	Row += FString::Printf(TEXT("%s,%s,%s,%s,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d,%d,%.0f,%.0f,%.1f,%.1f,%.0f,%d\n"),
+		*Stamp, *S.Label, *S.Scenario, *S.PlayerName, S.bLocallyControlled ? 1 : 0, S.Samples, S.Duration, S.SyncTime, S.PelvisMean, S.PelvisP95, S.PelvisMax,
 		S.AirMean, S.GroundMean, S.RotMean, S.RotMax, S.BodyMean, S.BodyMax, S.SettleTime,
 		S.SnapCount, S.RecoverCount, S.FpsMean, S.PingMean, S.AgeMeanMs, S.TrueAgeMeanMs, S.FirstStateMs, S.Features);
+	Row.RemoveFromEnd(TEXT("\n"));
+	Row += TEXT(",") + S.Overrides + TEXT("\n");
 	FFileHelper::SaveStringToFile(Row, *SummaryPath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), FILEWRITE_Append);
 #endif
 }
@@ -605,7 +616,8 @@ void URagdollTestSubsystem::StartCampaign()
 		UE_LOG(LogTemp, Error, TEXT("[RagdollTest] Needs a PIE client world. Play as Listen Server, 2 players, one process"));
 		return;
 	}
-	if (URagdollTestSettings::Get()->Cases.Num() == 0)
+	Instance->CampaignCases = URagdollTestSettings::Get()->BuildCampaignCases();
+	if (Instance->CampaignCases.Num() == 0)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[RagdollTest] No cases. Project Settings > Game > Ragdoll Test"));
 		return;
@@ -636,21 +648,29 @@ void URagdollTestSubsystem::TickCampaign()
 {
 #if WITH_EDITOR
 	const URagdollTestSettings* Settings = URagdollTestSettings::Get();
-	if (!Settings->Cases.IsValidIndex(CaseIndex))
+	if (!CampaignCases.IsValidIndex(CaseIndex))
 	{
 		EndCampaign(TEXT("case list changed"));
 		return;
 	}
 
-	const FRagdollTestCase& Case = Settings->Cases[CaseIndex];
+	const FRagdollTestCase& Case = CampaignCases[CaseIndex];
 	const double Now = FApp::GetCurrentTime();
 
-	if (GEngine)
+	if (GEngine && Steps.IsValidIndex(StepIndex))
 	{
-		const FString Progress = DropIndex < 0
-			? FString::Printf(TEXT("[RagdollTest] case %d/%d %s | warm-up %d/%d"), CaseIndex + 1, Settings->Cases.Num(), *Case.Label, DropIndex + Settings->WarmupDrops + 1, Settings->WarmupDrops)
-			: FString::Printf(TEXT("[RagdollTest] case %d/%d %s | drop %d/%d"), CaseIndex + 1, Settings->Cases.Num(), *Case.Label, FMath::Min(DropIndex + 1, Case.Drops), Case.Drops);
-		GEngine->AddOnScreenDebugMessage(CampaignKey, 1.0f, FColor::Green, Progress);
+		const FRagdollTestStep& Step = Steps[StepIndex];
+		int32 Done = 0, Total = 0;
+		for (int32 i = 0; i < Steps.Num(); ++i)
+		{
+			if (Steps[i].Scenario == Step.Scenario && Steps[i].bRecord == Step.bRecord)
+			{
+				++Total;
+				if (i <= StepIndex) ++Done;
+			}
+		}
+		GEngine->AddOnScreenDebugMessage(CampaignKey, 1.0f, FColor::Green, FString::Printf(TEXT("[RagdollTest] case %d/%d %s | %s%s %d/%d"),
+			CaseIndex + 1, CampaignCases.Num(), *Case.Label, Step.bRecord ? TEXT("") : TEXT("warm-up "), ScenarioName(Step.Scenario), Done, Total));
 	}
 
 	if (bDropInProgress)
@@ -662,9 +682,9 @@ void URagdollTestSubsystem::TickCampaign()
 
 		if (bDropSeen && Runs.Num() == 0)
 		{
-			// Every ragdoll of this drop has ended and its summary is in
+			// Every ragdoll of this step has ended and its summary is in
 			bDropInProgress = false;
-			++DropIndex;
+			++StepIndex;
 			NextDropRealTime = Now + Settings->DropInterval;
 		}
 		else if (!bDropSeen && Now > NextDropRealTime)
@@ -679,13 +699,13 @@ void URagdollTestSubsystem::TickCampaign()
 		return;
 	}
 
-	if (DropIndex >= Case.Drops)
+	if (!Steps.IsValidIndex(StepIndex))
 	{
 		FinishCase();
 		return;
 	}
 
-	TriggerDrop();
+	TriggerStep(Steps[StepIndex]);
 #endif
 }
 
@@ -693,27 +713,41 @@ void URagdollTestSubsystem::BeginCase(const int32 InCaseIndex)
 {
 #if WITH_EDITOR
 	const URagdollTestSettings* Settings = URagdollTestSettings::Get();
-	if (!Settings->Cases.IsValidIndex(InCaseIndex))
+	RestoreOverrides();
+	if (!CampaignCases.IsValidIndex(InCaseIndex))
 	{
 		EndCampaign(TEXT("done"));
 		return;
 	}
 
 	CaseIndex = InCaseIndex;
-	const FRagdollTestCase& Case = Settings->Cases[CaseIndex];
+	const FRagdollTestCase& Case = CampaignCases[CaseIndex];
 
 	SetConsoleVariable(TEXT("Trombone.Ragdoll.SyncFeatures"), Case.Features);
 	CVarRagdollTestLabel.AsVariable()->Set(*Case.Label, ECVF_SetByConsole);
 	ApplyEmulation(Case.PktLag, Case.PktLagVariance, Case.PktLoss);
+	ApplyOverrides(Case.Overrides);
 
-	DropIndex = -Settings->WarmupDrops;
+	// Warm-ups first, then the two scenarios take turns so a drift in the session hits both alike
+	Steps.Empty();
+	for (int32 i = 0; i < Settings->WarmupDrops; ++i)
+	{
+		Steps.Add({ ERagdollTestScenario::Drop, false });
+	}
+	for (int32 Drops = 0, Launches = 0; Drops < Case.Drops || Launches < Case.Launches;)
+	{
+		if (Drops < Case.Drops) { Steps.Add({ ERagdollTestScenario::Drop, true }); ++Drops; }
+		if (Launches < Case.Launches) { Steps.Add({ ERagdollTestScenario::Launch, true }); ++Launches; }
+	}
+
+	StepIndex = 0;
 	CaseSummaries.Empty();
 	bDropInProgress = false;
 	bDropSeen = false;
 	NextDropRealTime = FApp::GetCurrentTime() + Settings->DropInterval;
 
-	UE_LOG(LogTemp, Log, TEXT("[RagdollTest] Case %d/%d '%s': features %d, lag %d +-%d ms, loss %d%%, %d drops"),
-		CaseIndex + 1, Settings->Cases.Num(), *Case.Label, Case.Features, Case.PktLag, Case.PktLagVariance, Case.PktLoss, Case.Drops);
+	UE_LOG(LogTemp, Log, TEXT("[RagdollTest] Case %d/%d '%s': features %d, lag %d +-%d ms, loss %d%%, %d drops, %d launches"),
+		CaseIndex + 1, CampaignCases.Num(), *Case.Label, Case.Features, Case.PktLag, Case.PktLagVariance, Case.PktLoss, Case.Drops, Case.Launches);
 #endif
 }
 
@@ -721,40 +755,69 @@ void URagdollTestSubsystem::FinishCase()
 {
 #if WITH_EDITOR
 	const FString Stamp = FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S"));
-	for (const bool bSelf : { true, false })
+	for (const ERagdollTestScenario Scenario : { ERagdollTestScenario::Drop, ERagdollTestScenario::Launch })
 	{
-		const FRagdollTestSummary Median = MedianOf(CaseSummaries, bSelf);
-		if (Median.Samples == 0)
+		for (const bool bSelf : { true, false })
 		{
-			continue;
-		}
+			const FRagdollTestSummary Median = MedianOf(CaseSummaries, ScenarioName(Scenario), bSelf);
+			if (Median.Samples == 0)
+			{
+				continue;
+			}
 
-		AppendSummaryRow(Median, Stamp);
-		UE_LOG(LogTemp, Log, TEXT("[RagdollTest] %s over %d runs: pelvis mean %.1f p95 %.1f | air %.1f ground %.1f | rot mean %.1f max %.1f | body %.1f | snap %.0f"),
-			*Median.Label, Median.Samples, Median.PelvisMean, Median.PelvisP95, Median.AirMean, Median.GroundMean, Median.RotMean, Median.RotMax, Median.BodyMean, static_cast<float>(Median.SnapCount));
+			AppendSummaryRow(Median, Stamp);
+			UE_LOG(LogTemp, Log, TEXT("[RagdollTest] %s over %d runs: pelvis mean %.1f p95 %.1f | air %.1f ground %.1f | rot mean %.1f max %.1f | body %.1f | snap %d"),
+				*Median.Label, Median.Samples, Median.PelvisMean, Median.PelvisP95, Median.AirMean, Median.GroundMean, Median.RotMean, Median.RotMax, Median.BodyMean, Median.SnapCount);
+		}
 	}
 
 	BeginCase(CaseIndex + 1);
 #endif
 }
 
-void URagdollTestSubsystem::TriggerDrop()
+void URagdollTestSubsystem::TriggerStep(const FRagdollTestStep& Step)
 {
 #if WITH_EDITOR
 	UWorld* Server = FindServerWorld();
-	const AGameModeBase* GameMode = Server ? Server->GetAuthGameMode() : nullptr;
-	ULobbyDirectorComponent* Director = GameMode ? GameMode->FindComponentByClass<ULobbyDirectorComponent>() : nullptr;
-	if (!Director)
+	if (!Server)
 	{
-		EndCampaign(TEXT("no lobby director on the server. Run this in the lobby"));
+		EndCampaign(TEXT("no server world"));
 		return;
 	}
 
-	Director->RelaunchAllPlayersFalling();
+	if (Step.Scenario == ERagdollTestScenario::Drop)
+	{
+		const AGameModeBase* GameMode = Server->GetAuthGameMode();
+		ULobbyDirectorComponent* Director = GameMode ? GameMode->FindComponentByClass<ULobbyDirectorComponent>() : nullptr;
+		if (!Director)
+		{
+			EndCampaign(TEXT("no lobby director on the server. Run this in the lobby"));
+			return;
+		}
+		Director->RelaunchAllPlayersFalling();
+	}
+	else
+	{
+		// Standing players thrown up in place, the closest thing to a headbutt hit without a hitter
+		for (TActorIterator<ATromboneCharacterBase> It(Server); It; ++It)
+		{
+			if (UTromboneRagdollComponent* Ragdoll = It->GetRagdollComponent())
+			{
+				Ragdoll->SetAutoGetUpEnabled(true);
+				Ragdoll->StartRagdollLaunched();
+			}
+		}
+	}
+
 	bDropInProgress = true;
 	bDropSeen = false;
 	NextDropRealTime = FApp::GetCurrentTime() + URagdollTestSettings::Get()->DropTimeout;
 #endif
+}
+
+const TCHAR* URagdollTestSubsystem::ScenarioName(const ERagdollTestScenario Scenario)
+{
+	return Scenario == ERagdollTestScenario::Launch ? TEXT("launch") : TEXT("drop");
 }
 
 void URagdollTestSubsystem::ApplyEmulation(const int32 PktLag, const int32 PktLagVariance, const int32 PktLoss) const
@@ -777,6 +840,74 @@ void URagdollTestSubsystem::ApplyEmulation(const int32 PktLag, const int32 PktLa
 #endif
 }
 
+void URagdollTestSubsystem::ApplyOverrides(const TMap<FName, float>& Overrides)
+{
+#if WITH_EDITOR
+	if (Overrides.Num() == 0)
+	{
+		return;
+	}
+
+	// By reflection, so any float UPROPERTY of the component can be swept without a setter for each
+	for (UWorld* World : { GetWorld(), FindServerWorld() })
+	{
+		if (!World)
+		{
+			continue;
+		}
+
+		for (TActorIterator<ATromboneCharacterBase> It(World); It; ++It)
+		{
+			UTromboneRagdollComponent* Ragdoll = It->GetRagdollComponent();
+			if (!Ragdoll)
+			{
+				continue;
+			}
+
+			TMap<FName, float>& Saved = OriginalValues.FindOrAdd(Ragdoll);
+			for (const TPair<FName, float>& Pair : Overrides)
+			{
+				const FFloatProperty* Property = FindFProperty<FFloatProperty>(UTromboneRagdollComponent::StaticClass(), Pair.Key);
+				if (!Property)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[RagdollTest] No float property '%s' on the ragdoll component, override skipped"), *Pair.Key.ToString());
+					continue;
+				}
+
+				if (!Saved.Contains(Pair.Key))
+				{
+					Saved.Add(Pair.Key, Property->GetPropertyValue_InContainer(Ragdoll));
+				}
+				Property->SetPropertyValue_InContainer(Ragdoll, Pair.Value);
+			}
+		}
+	}
+#endif
+}
+
+void URagdollTestSubsystem::RestoreOverrides()
+{
+#if WITH_EDITOR
+	for (const TPair<TWeakObjectPtr<UTromboneRagdollComponent>, TMap<FName, float>>& Entry : OriginalValues)
+	{
+		UTromboneRagdollComponent* Ragdoll = Entry.Key.Get();
+		if (!Ragdoll)
+		{
+			continue;
+		}
+
+		for (const TPair<FName, float>& Pair : Entry.Value)
+		{
+			if (const FFloatProperty* Property = FindFProperty<FFloatProperty>(UTromboneRagdollComponent::StaticClass(), Pair.Key))
+			{
+				Property->SetPropertyValue_InContainer(Ragdoll, Pair.Value);
+			}
+		}
+	}
+	OriginalValues.Empty();
+#endif
+}
+
 void URagdollTestSubsystem::EndCampaign(const TCHAR* Reason)
 {
 #if WITH_EDITOR
@@ -787,6 +918,7 @@ void URagdollTestSubsystem::EndCampaign(const TCHAR* Reason)
 	}
 
 	// Leave the session the way a manual test expects it
+	RestoreOverrides();
 	ApplyEmulation(0, 0, 0);
 	SetConsoleVariable(TEXT("Trombone.Ragdoll.SyncFeatures"), static_cast<int32>(ERagdollSyncFeature::All));
 	CVarRagdollTestLabel.AsVariable()->Set(TEXT("manual"), ECVF_SetByConsole);
@@ -795,19 +927,21 @@ void URagdollTestSubsystem::EndCampaign(const TCHAR* Reason)
 	bDropInProgress = false;
 	bDropSeen = false;
 	CaseIndex = -1;
-	DropIndex = 0;
+	Steps.Empty();
+	StepIndex = 0;
 	CaseSummaries.Empty();
+	CampaignCases.Empty();
 #endif
 }
 
-FRagdollTestSummary URagdollTestSubsystem::MedianOf(const TArray<FRagdollTestSummary>& InRuns, const bool bSelf) const
+FRagdollTestSummary URagdollTestSubsystem::MedianOf(const TArray<FRagdollTestSummary>& InRuns, const FString& Scenario, const bool bSelf) const
 {
 	FRagdollTestSummary M;
 #if WITH_EDITOR
 	TArray<const FRagdollTestSummary*> Picked;
 	for (const FRagdollTestSummary& S : InRuns)
 	{
-		if (S.bLocallyControlled == bSelf)
+		if (S.bLocallyControlled == bSelf && S.Scenario == Scenario)
 		{
 			Picked.Add(&S);
 		}
@@ -836,7 +970,9 @@ FRagdollTestSummary URagdollTestSubsystem::MedianOf(const TArray<FRagdollTestSum
 		return FMath::RoundToInt(Median(Values));
 	};
 
-	M.Label = Picked[0]->Label + (bSelf ? TEXT("_median_self") : TEXT("_median_other"));
+	M.Label = Picked[0]->Label + TEXT("_") + Scenario + (bSelf ? TEXT("_median_self") : TEXT("_median_other"));
+	M.Scenario = Scenario;
+	M.Overrides = Picked[0]->Overrides;
 	M.PlayerName = TEXT("median");
 	M.bLocallyControlled = bSelf;
 	M.Features = Picked[0]->Features;
