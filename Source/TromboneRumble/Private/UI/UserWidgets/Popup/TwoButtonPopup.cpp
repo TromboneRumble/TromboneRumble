@@ -1,6 +1,6 @@
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "CommonTextBlock.h"
-#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtension.h"
 
 void UTwoButtonPopup::Init(const FTwoButtonPopupParams& InParams)
 {

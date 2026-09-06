@@ -8,7 +8,7 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/GameState/MatchMenuGameState.h"
-#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtension.h"
 #include "UI/UserWidgets/Common/CommonRotatorWidgetBase.h"
 #include "Utilities/TromboneStatics.h"
 #include "Utilities/DebugHelper.h"

@@ -16,7 +16,7 @@
 #include "Framework/TromboneGameInstance.h"
 #include "Online/OnlineSessionNames.h"
 #include "Subsystems/ToastSubsystem.h"
-#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtension.h"
 #include "Utilities/TromboneStatics.h"
 
 void UPlayModePopup::NativeOnInitialized()

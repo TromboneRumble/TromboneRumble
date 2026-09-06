@@ -51,10 +51,10 @@ protected:
 	TObjectPtr<UCommonTextBlock> Text_Content;
 		
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Left;
+	TObjectPtr<UCommonButtonBaseExtension> Button_Left;
 	
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Right;
+	TObjectPtr<UCommonButtonBaseExtension> Button_Right;
 	// ~ End UI
 	
 private:

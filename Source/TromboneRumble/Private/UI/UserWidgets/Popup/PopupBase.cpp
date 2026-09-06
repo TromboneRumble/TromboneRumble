@@ -3,7 +3,7 @@
 #include "AkGameplayStatics.h"
 #include "AkGameplayTypes.h"
 #include "CommonButtonBase.h"
-#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtension.h"
 
 UPopupBase::UPopupBase()
 {

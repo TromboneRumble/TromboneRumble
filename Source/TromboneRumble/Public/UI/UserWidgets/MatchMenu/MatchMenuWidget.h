@@ -10,7 +10,7 @@
 
 class AMatchMenuGameState;
 class UDataTable;
-class UCommonButtonBaseExtensionWithText;
+class UCommonButtonBaseExtension;
 class UCommonRotatorWidgetBase;
 enum class ERotatorDirection : uint8;
 enum class EMatchType : uint8;
@@ -24,10 +24,10 @@ protected:
 	
 	//~ Begin UIs
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UCommonButtonBaseExtensionWithText> CB_Start;
+	TObjectPtr<UCommonButtonBaseExtension> CB_Start;
 	
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
-	TObjectPtr<UCommonButtonBaseExtensionWithText> CB_Back;
+	TObjectPtr<UCommonButtonBaseExtension> CB_Back;
 	
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UCommonRotatorWidgetBase> CR_MatchType;
