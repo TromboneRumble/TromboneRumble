@@ -21,6 +21,27 @@ TSubclassOf<UCommonTextStyle> UCommonButtonBaseExtension::GetDesiredTextStyleCla
 	return GetCurrentTextStyleClass();
 }
 
+void UCommonButtonBaseExtension::SetText(const FText& InText)
+{
+	if (Text_ActionName)
+	{
+		Text_ActionName->SetText(InText);
+	}
+}
+
+void UCommonButtonBaseExtension::NativeOnCurrentTextStyleChanged()
+{
+	Super::NativeOnCurrentTextStyleChanged();
+
+	// The common single text is handled here, anything else by the blueprint
+	const TSubclassOf<UCommonTextStyle> TextStyle = GetDesiredTextStyleClass();
+	if (Text_ActionName)
+	{
+		Text_ActionName->SetStyle(TextStyle);
+	}
+	ApplyTextStyle(TextStyle);
+}
+
 void UCommonButtonBaseExtension::NativePreConstruct()
 {
 	Super::NativePreConstruct();

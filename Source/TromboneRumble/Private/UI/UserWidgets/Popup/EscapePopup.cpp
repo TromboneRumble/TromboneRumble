@@ -3,7 +3,7 @@
 #include "Actors/ResetCollider.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
-#include "UI/UserWidgets/Common/CommonButtonBaseExtensionWithText.h"
+#include "UI/UserWidgets/Common/CommonButtonBaseExtension.h"
 #include "Utilities/DebugHelper.h"
 #include "Utilities/TromboneStatics.h"
 

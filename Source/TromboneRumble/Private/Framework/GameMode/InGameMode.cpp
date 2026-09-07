@@ -24,6 +24,13 @@ void AInGameMode::Logout(AController* ExitedPlayer)
 {
 	Super::Logout(ExitedPlayer); // 내부에서 UnregisterPlayer 호출 → NumOpenPublicConnections 즉시 갱신됨
 
+	// PIE stop or level change. A travel started now would finish on a world context that no longer exists
+	const UWorld* World = GetWorld();
+	if (!World || World->bIsTearingDown)
+	{
+		return;
+	}
+
 	// 나간 사람의 보고는 더 이상 유효하지 않다. 남겨두면 남은 인원과 수가 어긋난다
 	if (APlayerController* ExitedPC = Cast<APlayerController>(ExitedPlayer))
 	{
