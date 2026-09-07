@@ -222,9 +222,6 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
 	UpdatedSettings.bHidden = NewMatchType != EMatchType::Public;
 	
-	// Block input until the server answers
-	UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
-	OnlineSession->OnUpdateMatchComplete().AddUniqueDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
 	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
 }
 
@@ -253,16 +250,6 @@ void UMatchMenuWidget::HandleOnRotatedMap(int32 Value, ERotatorDirection Rotator
 	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
 	UpdatedSettings.MapName = InGameTag.ToString();
 	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
-}
-
-void UMatchMenuWidget::HandleOnUpdateMatchComplete(bool bWasSuccessful)
-{
-	UTromboneStatics::PopOverlay(GetOwningPlayer());
-	
-	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-	{
-		OnlineSession->OnUpdateMatchComplete().RemoveDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
-	}
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)
