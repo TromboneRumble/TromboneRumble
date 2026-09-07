@@ -1,5 +1,6 @@
 #include "UI/UserWidgets/Settings/SliderWidgetBase.h"
 #include "AnalogSlider.h"
+#include "CommonInputSubsystem.h"
 #include "CommonTextBlock.h"
 #include "Components/ProgressBar.h"
 
@@ -23,6 +24,8 @@ void USliderWidgetBase::NativePreConstruct()
 		Text_SliderTitle->SetVisibility(bHasTitleText ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 		Text_SliderTitle->SetText(SliderTitle);
 	}
+
+	ApplyProgressBarColors(NormalFillColor, NormalBackgroundColor);
 }
 
 void USliderWidgetBase::NativeConstruct()
@@ -43,8 +46,70 @@ void USliderWidgetBase::NativeDestruct()
 		Slider->OnValueChanged.RemoveAll(this);
 	}
 	OnValueChanged = nullptr;
-	
+
 	Super::NativeDestruct();
+}
+
+void USliderWidgetBase::NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent)
+{
+	Super::NativeOnAddedToFocusPath(InFocusEvent);
+
+	bFocused = true;
+	RefreshHighlight();
+}
+
+void USliderWidgetBase::NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent)
+{
+	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
+
+	bFocused = false;
+	RefreshHighlight();
+}
+
+void USliderWidgetBase::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+
+	bHovered = true;
+	RefreshHighlight();
+}
+
+void USliderWidgetBase::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseLeave(InMouseEvent);
+
+	bHovered = false;
+	RefreshHighlight();
+}
+
+void USliderWidgetBase::RefreshHighlight()
+{
+	// A mouse click also focuses the slider, so only gamepad focus should keep the bar lit after the pointer leaves
+	const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+	const bool bGamepad = InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad;
+	const bool bNewHighlighted = bHovered || (bFocused && bGamepad);
+	if (bNewHighlighted == bHighlighted)
+	{
+		return;
+	}
+	bHighlighted = bNewHighlighted;
+
+	ApplyProgressBarColors(bHighlighted ? HighlightedFillColor : NormalFillColor, bHighlighted ? HighlightedBackgroundColor : NormalBackgroundColor);
+	ApplyHighlight(bHighlighted);
+}
+
+void USliderWidgetBase::ApplyProgressBarColors(const FLinearColor& FillColor, const FLinearColor& BackgroundColor) const
+{
+	if (!ProgressBar)
+	{
+		return;
+	}
+
+	ProgressBar->SetFillColorAndOpacity(FillColor);
+
+	FProgressBarStyle Style = ProgressBar->GetWidgetStyle();
+	Style.BackgroundImage.TintColor = FSlateColor(BackgroundColor);
+	ProgressBar->SetWidgetStyle(Style);
 }
 
 void USliderWidgetBase::Init(TFunction<void(float)> OnValueChangedCallback)
