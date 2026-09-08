@@ -115,7 +115,6 @@ void ATromboneCharacterBase::BeginPlay()
 		PhysicalAnimationComp->SetSkeletalMeshComponent(GetMesh());
 	}
 
-	// 래그돌 상태 처리 바인딩. 연출 핸들러는 파생이 같은 델리게이트에 별도로 바인딩한다
 	if (RagdollComponent)
 	{
 		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::HandleRagdollStarted);
@@ -131,6 +130,36 @@ void ATromboneCharacterBase::BeginPlay()
 			Listeners.Add(AkSoundComponent);
 			AkSoundComponent->SetListeners(Listeners);
 		}
+	}
+
+	ApplyCharacterDataToMovement();
+}
+
+void ATromboneCharacterBase::ApplyCharacterDataToMovement() const
+{
+	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
+	GetCharacterMovement()->NetworkMaxSmoothUpdateDistance = 128.f;
+	GetCharacterMovement()->NetworkNoSmoothUpdateDistance = 384.f;
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+
+	if (CharacterData)
+	{
+		// Ground
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, CharacterData->RotationRate, 0.0f);
+
+		// Air
+		GetCharacterMovement()->JumpZVelocity = CharacterData->JumpZVelocity;
+		GetCharacterMovement()->AirControl = CharacterData->AirControl;
+
+		// Inertia
+		GetCharacterMovement()->GravityScale = CharacterData->GravityScale;
+		GetCharacterMovement()->MaxAcceleration = CharacterData->MaxAcceleration;
+		GetCharacterMovement()->BrakingDecelerationWalking = CharacterData->BrakingDecelerationWalking;
+		GetCharacterMovement()->GroundFriction = CharacterData->GroundFriction;
 	}
 }
 

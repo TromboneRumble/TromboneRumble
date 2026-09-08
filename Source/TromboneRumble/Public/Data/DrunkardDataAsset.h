@@ -66,6 +66,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Movement", meta = (DisplayName = "최대 가속도", ClampMin = "0.0"))
 	float MaxAcceleration = 800.f;
 
+	/** 공격 가능 UI가 나타나는 플레이어와의 거리 (cm) */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Indicator", meta = (DisplayName = "공격 가능 UI 표시 거리", ClampMin = "0.0"))
+	float AttackableIndicatorRange = 350.f;
+
 	/** 경로 좌우 흔들림 폭 (cm) */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Weave", meta = (DisplayName = "위빙 진폭", ClampMin = "0.0"))
 	float WeaveAmplitude = 300.f;

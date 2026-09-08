@@ -1,9 +1,12 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "UI/UserWidgets/Common/RootUI.h"
+#include "CommonActionWidget.h"
 #include "CommonActivatableWidget.h"
+#include "CommonInputSettings.h"
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
+#include "ICommonInputModule.h"
 #include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/InGame/SubWidgets/PerformanceWidget.h"
 #include "Utilities/DebugHelper.h"
@@ -14,6 +17,20 @@ void URootUI::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	RegisterDefaultLayers();
+
+	// The accept glyph is the engine's default click action, so it swaps between A and Enter by itself
+	if (AcceptActionWidget)
+	{
+		const UCommonInputSettings& InputSettings = ICommonInputModule::GetSettings();
+		if (UInputAction* EnhancedClickAction = UCommonInputSettings::IsEnhancedInputSupportEnabled() ? InputSettings.GetEnhancedInputClickAction() : nullptr)
+		{
+			AcceptActionWidget->SetEnhancedInputAction(EnhancedClickAction);
+		}
+		else
+		{
+			AcceptActionWidget->SetInputAction(InputSettings.GetDefaultClickAction());
+		}
+	}
 }
 
 void URootUI::NativePreConstruct()
@@ -84,6 +101,35 @@ void URootUI::RegisterLayer(const FGameplayTag LayerTag, UCommonActivatableWidge
 		LayerOrder.Add(LayerTag);
 	}
 	Layers.Add(LayerTag, Stack);
+
+	// Registration can run twice for the same stack (initialize and designer preview), so rebind instead of adding
+	Stack->OnDisplayedWidgetChanged().RemoveAll(this);
+	Stack->OnDisplayedWidgetChanged().AddUObject(this, &ThisClass::HandleDisplayedWidgetChanged);
+}
+
+void URootUI::HandleDisplayedWidgetChanged(UCommonActivatableWidget* DisplayedWidget) const
+{
+	UpdateActionBar();
+}
+
+void URootUI::UpdateActionBar() const
+{
+	if (!ActionBar)
+	{
+		return;
+	}
+
+	const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+	const bool bGamepad = InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad;
+	ActionBar->SetVisibility(bGamepad ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+
+	// Nothing to press when the active screen has no focus target, like the in game HUD
+	if (AcceptAction)
+	{
+		const UCommonActivatableWidget* ActiveWidget = GetTopActiveWidget();
+		const bool bCanAccept = ActiveWidget && ActiveWidget->GetDesiredFocusTarget() != nullptr;
+		AcceptAction->SetVisibility(bCanAccept ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	}
 }
 
 UCommonActivatableWidgetStack* URootUI::GetLayer(const FGameplayTag LayerTag) const
@@ -119,6 +165,8 @@ void URootUI::HandleInputMethodChanged(const ECommonInputType NewInputType)
 			PC->SetShowMouseCursor(true);
 		}
 	}
+
+	UpdateActionBar();
 }
 
 UCommonActivatableWidget* URootUI::GetTopActiveWidget() const

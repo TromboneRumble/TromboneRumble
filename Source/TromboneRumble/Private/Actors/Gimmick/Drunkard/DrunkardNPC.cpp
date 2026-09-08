@@ -10,9 +10,13 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "UI/UserWidgets/Common/PopIndicatorWidget.h"
+#include "UI/UserWidgets/InGame/DrunkardTargetWidget.h"
 #include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
@@ -40,6 +44,32 @@ ADrunkardNPC::ADrunkardNPC()
 
 	StateComponent = CreateDefaultSubobject<UDrunkardStateComponent>(TEXT("DrunkardStateComponent"));
 	XRaySilhouetteComponent = CreateDefaultSubobject<UXRaySilhouetteComponent>(TEXT("XRaySilhouetteComponent"));
+
+	// Screen space marks pinned to a bone. Widget classes and offsets are set on the components in the blueprint
+	const auto MakeIndicator = [this](const TCHAR* Name, const FName Socket) -> UWidgetComponent*
+	{
+		UWidgetComponent* Indicator = CreateDefaultSubobject<UWidgetComponent>(Name);
+		if (Indicator)
+		{
+			Indicator->SetupAttachment(GetMesh(), Socket);
+			Indicator->SetWidgetSpace(EWidgetSpace::Screen);
+			Indicator->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Indicator->bReceivesDecals = 0;
+			Indicator->SetCastShadow(false);
+		}
+		return Indicator;
+	};
+	TargetIndicatorComponent = MakeIndicator(TEXT("TargetIndicatorComponent"), FName("head"));
+	AttackableIndicatorHeadComponent = MakeIndicator(TEXT("AttackableIndicatorHeadComponent"), FName("head"));
+	AttackableIndicatorChestComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
+}
+
+void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, TargetSkinColor);
+	DOREPLIFETIME(ThisClass, ReplicatedTarget);
 }
 
 void ADrunkardNPC::BeginPlay()
@@ -69,9 +99,67 @@ void ADrunkardNPC::BeginPlay()
 		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::ApplyUpperBodyPhysics);
 	}
 
+	if (StateComponent)
+	{
+		StateComponent->OnTargetChanged.AddDynamic(this, &ThisClass::HandleTargetChanged);
+	}
+	OnRep_TargetSkinColor();
+
 	// 스폰 프레임에는 첫 포즈 평가 전이라 본 트랜스폼 버퍼가 완성되지 않았을 수 있다.
 	// 그 상태로 PhysicalAnimation 제약이 생성되면 엔진이 빈 버퍼에 무검증 접근해 크래시하므로 한 틱 미룬다
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::ApplyUpperBodyPhysics);
+}
+
+void ADrunkardNPC::HandleTargetChanged(ADefaultTromboneCharacter* NewTarget)
+{
+	if (!HasAuthority()) return;
+
+	TargetSkinColor = NewTarget ? NewTarget->GetSkinColor() : FLinearColor::Transparent;
+	OnRep_TargetSkinColor();
+
+	ReplicatedTarget = NewTarget;
+	OnRep_Target();
+}
+
+void ADrunkardNPC::OnRep_Target()
+{
+	UpdateAttackableIndicator();
+}
+
+void ADrunkardNPC::UpdateAttackableIndicator()
+{
+	constexpr float HideMargin = 50.f;
+
+	bool bShow = false;
+	if (ReplicatedTarget && ReplicatedTarget->IsLocallyControlled() && CanReceiveHit())
+	{
+		const float Range = DrunkardData ? DrunkardData->AttackableIndicatorRange : 350.f;
+		const float Limit = bAttackableShown ? Range + HideMargin : Range;
+		bShow = FVector::DistSquared(ReplicatedTarget->GetActorLocation(), GetActorLocation()) <= FMath::Square(Limit);
+	}
+
+	if (bShow == bAttackableShown)
+	{
+		return;
+	}
+	bAttackableShown = bShow;
+
+	for (const UWidgetComponent* Indicator : { AttackableIndicatorHeadComponent.Get(), AttackableIndicatorChestComponent.Get() })
+	{
+		if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(Indicator ? Indicator->GetUserWidgetObject() : nullptr))
+		{
+			Widget->SetShown(bShow);
+		}
+	}
+}
+
+void ADrunkardNPC::OnRep_TargetSkinColor()
+{
+	UUserWidget* Widget = TargetIndicatorComponent ? TargetIndicatorComponent->GetUserWidgetObject() : nullptr;
+	if (UDrunkardTargetWidget* TargetWidget = Cast<UDrunkardTargetWidget>(Widget))
+	{
+		TargetWidget->SetTargetColor(TargetSkinColor);
+	}
 }
 
 void ADrunkardNPC::BeginDoorEntrance()
@@ -228,6 +316,8 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	UpdateAttackableIndicator();
+
 	if (bDoorEntranceActive && HasAuthority())
 	{
 		const float Duration = FMath::Max(0.05f, DrunkardData ? DrunkardData->EnterBurstDuration : 0.5f);
@@ -339,9 +429,9 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 		return false;
 	}
 
-	// DrunkardNPC only gets knockback
+	// stun only
 	FHitData DrunkardHitData = HitData;
-	DrunkardHitData.HitReaction = EHitReactionType::KnockbackOnly;
+	DrunkardHitData.HitReaction = EHitReactionType::Stun;
 
 	const bool bApplied = Super::OnHitReceived_Implementation(DrunkardHitData);
 

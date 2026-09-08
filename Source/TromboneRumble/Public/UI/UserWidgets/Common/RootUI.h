@@ -12,6 +12,7 @@
 #include "RootUI.generated.h"
 
 enum class ECommonInputType : uint8;
+class UCommonActionWidget;
 class UPerformanceWidget;
 class UProjectVersionWidget;
 
@@ -125,6 +126,12 @@ private:
 	/** Handles mouse and gamepad switching. Seeds focus and toggles the cursor for gamepad play. */
 	void HandleInputMethodChanged(ECommonInputType NewInputType);
 
+	/** Any layer changed its displayed widget. Refreshes the action bar. */
+	void HandleDisplayedWidgetChanged(UCommonActivatableWidget* DisplayedWidget) const;
+
+	/** Shows the action bar for gamepad only, and the accept entry only when something can take focus. */
+	void UpdateActionBar() const;
+
 	/** Is the cursor hidden because of gamepad input. Only a cursor we hid gets restored. */
 	bool bCursorHiddenForGamepad = false;
 
@@ -163,6 +170,18 @@ protected:
 	/** Placed above the stacks in the root widget. Always visible, never hit tested. */
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UProjectVersionWidget> ProjectVersionWidget;
+
+	/** Bottom left action bar. Holds the accept entry and the bound action bar. Shown for gamepad only. */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UWidget> ActionBar;
+
+	/** The accept entry inside the action bar. Hidden when the active screen has nothing to focus. */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UWidget> AcceptAction;
+
+	/** Glyph of the accept entry. Set once to the default click action so it follows the input method. */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UCommonActionWidget> AcceptActionWidget;
 
 protected:
 
