@@ -73,9 +73,6 @@ private:
 	UFUNCTION()
 	void HandleOnRotatedMap(int32 Value, ERotatorDirection RotatorDir);
 	
-	/** Clears the loading overlay once the session update ends. */
-	UFUNCTION()
-	void HandleOnUpdateMatchComplete(bool bWasSuccessful);
 	//~ End UI Events
 	
 	/** Fills the map rotator from the table. */

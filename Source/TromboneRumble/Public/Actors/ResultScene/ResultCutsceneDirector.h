@@ -66,7 +66,7 @@ private:
 	void StartLightingSequence();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|UI")
-	TSubclassOf<UUserWidget> ResultWidgetClass;
+	TSubclassOf<UInGameResultWidget> ResultWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Cinematic")
 	TObjectPtr<ULevelSequence> ResultSequence;

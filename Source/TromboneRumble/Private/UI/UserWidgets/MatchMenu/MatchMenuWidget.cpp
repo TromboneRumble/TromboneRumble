@@ -32,15 +32,12 @@ void UMatchMenuWidget::NativeDestruct()
 
 void UMatchMenuWidget::Init()
 {
-	const APlayerController* PC = GetOwningPlayer();
-	if (!PC) return;
-	const bool bIsHost = PC->HasAuthority();
+	if (!GetOwningPlayer()) return;
 	
 	if (CB_Start)
 	{
 		CB_Start->OnClicked().RemoveAll(this);
 		CB_Start->OnClicked().AddUObject(this, &ThisClass::HandleStartButtonClicked);
-		CB_Start->SetIsEnabled(bIsHost);
 	}
 	if (CB_Back)
 	{
@@ -52,15 +49,16 @@ void UMatchMenuWidget::Init()
 		InitMatchTypes();
 		CR_MatchType->OnRotatedWithDirection().RemoveAll(this);
 		CR_MatchType->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMatchType);
-		CR_MatchType->SetInteractionEnabled(bIsHost);
 	}
 	if (CR_Map)
 	{
 		InitSelectableMaps();
 		CR_Map->OnRotatedWithDirection().RemoveAll(this);
 		CR_Map->OnRotatedWithDirection().AddDynamic(this, &ThisClass::HandleOnRotatedMap);
-		CR_Map->SetInteractionEnabled(bIsHost);
 	}
+
+	bIsStarted = false;
+	SetUIEnabled(true);
 	
 	// 게임 스테이트 구독은 로테이터 초기화 뒤여야 한다. 초기 동기화가 위에서 채운 캐시로 인덱스를 찾기 때문
 	CachedMatchMenuGS = GetWorld()->GetGameState<AMatchMenuGameState>();
@@ -222,9 +220,6 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
 	UpdatedSettings.bHidden = NewMatchType != EMatchType::Public;
 	
-	// Block input until the server answers
-	UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
-	OnlineSession->OnUpdateMatchComplete().AddUniqueDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
 	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
 }
 
@@ -253,16 +248,6 @@ void UMatchMenuWidget::HandleOnRotatedMap(int32 Value, ERotatorDirection Rotator
 	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
 	UpdatedSettings.MapName = InGameTag.ToString();
 	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
-}
-
-void UMatchMenuWidget::HandleOnUpdateMatchComplete(bool bWasSuccessful)
-{
-	UTromboneStatics::PopOverlay(GetOwningPlayer());
-	
-	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
-	{
-		OnlineSession->OnUpdateMatchComplete().RemoveDynamic(this, &ThisClass::HandleOnUpdateMatchComplete);
-	}
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)

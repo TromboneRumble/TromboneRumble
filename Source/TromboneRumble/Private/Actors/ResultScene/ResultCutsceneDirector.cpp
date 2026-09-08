@@ -12,6 +12,9 @@
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/ResultSceneSubsystem.h"
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
+#include "UI/UserWidgets/Common/RootUI.h"
+#include "Utilities/TromboneStatics.h"
+#include "TromboneGamePlayTags.h"
 #include "Wwise/API/WwiseSoundEngineAPI.h"
 
 AResultCutsceneDirector::AResultCutsceneDirector()
@@ -261,25 +264,14 @@ void AResultCutsceneDirector::PlayResultCutscene()
 			RankingPlayingID = UAkGameplayStatics::PostEvent(RankingBGM, nullptr, 0, FOnAkPostEventCallback());
 		}
 
-		if (ResultWidgetClass)
+		if (URootUI* RootUI = UTromboneStatics::GetRootUI(PC); RootUI && ResultWidgetClass)
 		{
-			UUserWidget* Widget = CreateWidget<UUserWidget>(PC, ResultWidgetClass);
-			if (UInGameResultWidget* ResultWidget = Cast<UInGameResultWidget>(Widget))
-			{
-				CachedResultWidget = ResultWidget;
-				ResultWidget->SetDirector(this);
-				ResultWidget->SetResultData(ResultSubsystem->GetLocalPlayerResultSceneData(), ResultSubsystem->GetLocalPlayerRank());
-				ResultWidget->AddToViewport();
-
-				PC->bShowMouseCursor = false;
-				FInputModeGameAndUI InputMode;
-				
-				InputMode.SetWidgetToFocus(ResultWidget->TakeWidget());
-				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-				InputMode.SetHideCursorDuringCapture(false);
-				
-				PC->SetInputMode(InputMode);
-			}
+			CachedResultWidget = RootUI->AddWidgetToStack<UInGameResultWidget>(ResultWidgetClass, TromboneGamePlayTags::Trombone_UI_Layer_Overlay,
+				[this, ResultSubsystem](UInGameResultWidget& ResultWidget)
+				{
+					ResultWidget.SetDirector(this);
+					ResultWidget.SetResultData(ResultSubsystem->GetLocalPlayerResultSceneData(), ResultSubsystem->GetLocalPlayerRank());
+				});
 		}
 	}
 	else

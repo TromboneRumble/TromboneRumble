@@ -47,6 +47,11 @@ void UPlayModePopup::Register()
 {
 	Super::Register();
 
+	if (ET_Code)
+	{
+		ET_Code->SetText(FText::GetEmpty());
+	}
+
 	if (CB_CreateSession)
 	{
 		CB_CreateSession->OnClicked().RemoveAll(this);
