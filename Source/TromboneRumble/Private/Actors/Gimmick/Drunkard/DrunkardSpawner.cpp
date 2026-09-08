@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
+#include "Actors/Gimmick/Drunkard/DrunkardDoorBreakerComponent.h"
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
 #include "Components/ActorComponents/DrunkardStateComponent.h"
 #include "Data/DrunkardDataAsset.h"
@@ -21,6 +22,7 @@ ADrunkardSpawner::ADrunkardSpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GimmickType = EGimmickType::Drunkard;
+	DoorBreaker = CreateDefaultSubobject<UDrunkardDoorBreakerComponent>(TEXT("DoorBreaker"));
 }
 
 void ADrunkardSpawner::Activate()
