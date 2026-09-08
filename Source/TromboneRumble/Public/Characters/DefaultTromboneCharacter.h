@@ -241,7 +241,6 @@ private:
 
 	// ~ Begin 외형 / 표정
 	// TODO : 컴포지션으로 빼기
-	void SetupCharacterData() const;
 	void UpdateSkinFromPlayerState();
 
 	UFUNCTION()

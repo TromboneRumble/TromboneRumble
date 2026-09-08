@@ -339,9 +339,9 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 		return false;
 	}
 
-	// DrunkardNPC only gets knockback
+	// stun only
 	FHitData DrunkardHitData = HitData;
-	DrunkardHitData.HitReaction = EHitReactionType::KnockbackOnly;
+	DrunkardHitData.HitReaction = EHitReactionType::Stun;
 
 	const bool bApplied = Super::OnHitReceived_Implementation(DrunkardHitData);
 

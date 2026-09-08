@@ -331,7 +331,6 @@ void ADefaultTromboneCharacter::BeginPlay()
 		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::HandleRagdollPhysicsEnabled);
 	}
 
-	SetupCharacterData();
 	BoundBounceTimeline();
 
 	UpdateSkinFromPlayerState();
@@ -616,34 +615,6 @@ void ADefaultTromboneCharacter::ApplyFaceMaterial(UMaterialInterface* Material)
 		// 현재 SkinColor를 새 MID에 재적용 (UpdateSkinFromPlayerState 전에 호출될 경우 초기값 Black이지만 이후 덮어써짐)
 		// bApplySkinColorTint=false면 머티리얼 기본 BaseColor 유지 (PlayerState 없는 더미)
 		FaceMID->SetVectorParameterValue(TromboneMaterial::BaseColorParam, SkinColor);
-	}
-}
-
-void ADefaultTromboneCharacter::SetupCharacterData() const
-{
-	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
-	GetCharacterMovement()->NetworkMaxSmoothUpdateDistance = 128.f;
-	GetCharacterMovement()->NetworkNoSmoothUpdateDistance = 384.f;
-
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-
-	if (CharacterData)
-	{
-		// Ground
-		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
-		GetCharacterMovement()->RotationRate = FRotator(0.0f, CharacterData->RotationRate, 0.0f);
-
-		// Air
-		GetCharacterMovement()->JumpZVelocity = CharacterData->JumpZVelocity;
-		GetCharacterMovement()->AirControl = CharacterData->AirControl;
-
-		// Inertia
-		GetCharacterMovement()->GravityScale = CharacterData->GravityScale;
-		GetCharacterMovement()->MaxAcceleration = CharacterData->MaxAcceleration;
-		GetCharacterMovement()->BrakingDecelerationWalking = CharacterData->BrakingDecelerationWalking;
-		GetCharacterMovement()->GroundFriction = CharacterData->GroundFriction;
 	}
 }
 
