@@ -15,6 +15,7 @@
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/UserWidgets/Common/PopIndicatorWidget.h"
 #include "UI/UserWidgets/InGame/DrunkardTargetWidget.h"
 #include "Utilities/TromboneLogs.h"
 
@@ -44,15 +45,23 @@ ADrunkardNPC::ADrunkardNPC()
 	StateComponent = CreateDefaultSubobject<UDrunkardStateComponent>(TEXT("DrunkardStateComponent"));
 	XRaySilhouetteComponent = CreateDefaultSubobject<UXRaySilhouetteComponent>(TEXT("XRaySilhouetteComponent"));
 
-	TargetIndicatorComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetIndicatorComponent"));
-	if (TargetIndicatorComponent)
+	// Screen space marks pinned to a bone. Widget classes and offsets are set on the components in the blueprint
+	const auto MakeIndicator = [this](const TCHAR* Name, const FName Socket) -> UWidgetComponent*
 	{
-		TargetIndicatorComponent->SetupAttachment(GetMesh(), FName("head"));
-		TargetIndicatorComponent->SetWidgetSpace(EWidgetSpace::Screen);
-		TargetIndicatorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		TargetIndicatorComponent->bReceivesDecals = 0;
-		TargetIndicatorComponent->SetCastShadow(false);
-	}
+		UWidgetComponent* Indicator = CreateDefaultSubobject<UWidgetComponent>(Name);
+		if (Indicator)
+		{
+			Indicator->SetupAttachment(GetMesh(), Socket);
+			Indicator->SetWidgetSpace(EWidgetSpace::Screen);
+			Indicator->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Indicator->bReceivesDecals = 0;
+			Indicator->SetCastShadow(false);
+		}
+		return Indicator;
+	};
+	TargetIndicatorComponent = MakeIndicator(TEXT("TargetIndicatorComponent"), FName("head"));
+	AttackableIndicatorHeadComponent = MakeIndicator(TEXT("AttackableIndicatorHeadComponent"), FName("head"));
+	AttackableIndicatorChestComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
 }
 
 void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -60,6 +69,7 @@ void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, TargetSkinColor);
+	DOREPLIFETIME(ThisClass, ReplicatedTarget);
 }
 
 void ADrunkardNPC::BeginPlay()
@@ -106,6 +116,41 @@ void ADrunkardNPC::HandleTargetChanged(ADefaultTromboneCharacter* NewTarget)
 
 	TargetSkinColor = NewTarget ? NewTarget->GetSkinColor() : FLinearColor::Transparent;
 	OnRep_TargetSkinColor();
+
+	ReplicatedTarget = NewTarget;
+	OnRep_Target();
+}
+
+void ADrunkardNPC::OnRep_Target()
+{
+	UpdateAttackableIndicator();
+}
+
+void ADrunkardNPC::UpdateAttackableIndicator()
+{
+	constexpr float HideMargin = 50.f;
+
+	bool bShow = false;
+	if (ReplicatedTarget && ReplicatedTarget->IsLocallyControlled() && CanReceiveHit())
+	{
+		const float Range = DrunkardData ? DrunkardData->AttackableIndicatorRange : 350.f;
+		const float Limit = bAttackableShown ? Range + HideMargin : Range;
+		bShow = FVector::DistSquared(ReplicatedTarget->GetActorLocation(), GetActorLocation()) <= FMath::Square(Limit);
+	}
+
+	if (bShow == bAttackableShown)
+	{
+		return;
+	}
+	bAttackableShown = bShow;
+
+	for (const UWidgetComponent* Indicator : { AttackableIndicatorHeadComponent.Get(), AttackableIndicatorChestComponent.Get() })
+	{
+		if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(Indicator ? Indicator->GetUserWidgetObject() : nullptr))
+		{
+			Widget->SetShown(bShow);
+		}
+	}
 }
 
 void ADrunkardNPC::OnRep_TargetSkinColor()
@@ -270,6 +315,8 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 void ADrunkardNPC::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	UpdateAttackableIndicator();
 
 	if (bDoorEntranceActive && HasAuthority())
 	{

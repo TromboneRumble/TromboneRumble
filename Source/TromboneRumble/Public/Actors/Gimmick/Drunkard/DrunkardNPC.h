@@ -78,18 +78,38 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UWidgetComponent> TargetIndicatorComponent;
 
+	/** Attackable mark, head placement. Only the target sees it, and only within range. One of the two placements will be removed once the team picks. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
+	TObjectPtr<UWidgetComponent> AttackableIndicatorHeadComponent;
+
+	/** Attackable mark, chest placement. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
+	TObjectPtr<UWidgetComponent> AttackableIndicatorChestComponent;
+
 private:
-	
+
 	/** Skin color of the current target. */
 	UPROPERTY(ReplicatedUsing = OnRep_TargetSkinColor)
 	FLinearColor TargetSkinColor = FLinearColor::Transparent;
 
+	/** Current target. Clients use it only to know whether the local player is the one being chased. */
+	UPROPERTY(ReplicatedUsing = OnRep_Target)
+	TObjectPtr<ADefaultTromboneCharacter> ReplicatedTarget;
+
 	UFUNCTION()
 	void OnRep_TargetSkinColor();
 
-	/** Server. Copies the new target's skin color into the replicated field. */
+	UFUNCTION()
+	void OnRep_Target();
+
+	/** Server. Copies the new target and its skin color into the replicated fields. */
 	UFUNCTION()
 	void HandleTargetChanged(ADefaultTromboneCharacter* NewTarget);
+
+	/** Local. Shows the attackable mark while the local player is the target, close enough, and the drunkard can take a hit. */
+	void UpdateAttackableIndicator();
+
+	bool bAttackableShown = false;
 
 	/** 상체(지정 본 이하) 한정 Physical Animation 적용 — "취함" 연출 레이어.
 	 *  로컬 전용 연출(복제 없음, 캡슐/판정 무관). 래그돌 종료 시 OnRagdollPhysicsEnabled로 재적용된다.
