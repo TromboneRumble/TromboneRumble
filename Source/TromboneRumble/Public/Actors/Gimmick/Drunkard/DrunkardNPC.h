@@ -6,9 +6,11 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "DrunkardNPC.generated.h"
 
+class ADefaultTromboneCharacter;
 class ADrunkardSpawner;
 class UDrunkardDataAsset;
 class UDrunkardStateComponent;
+class UWidgetComponent;
 class UXRaySilhouetteComponent;
 
 /** ADrunkardNPC
@@ -72,7 +74,23 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UXRaySilhouetteComponent> XRaySilhouetteComponent;
 
+	/** Portrait of the current target above the head. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
+	TObjectPtr<UWidgetComponent> TargetIndicatorComponent;
+
 private:
+	
+	/** Skin color of the current target. */
+	UPROPERTY(ReplicatedUsing = OnRep_TargetSkinColor)
+	FLinearColor TargetSkinColor = FLinearColor::Transparent;
+
+	UFUNCTION()
+	void OnRep_TargetSkinColor();
+
+	/** Server. Copies the new target's skin color into the replicated field. */
+	UFUNCTION()
+	void HandleTargetChanged(ADefaultTromboneCharacter* NewTarget);
+
 	/** 상체(지정 본 이하) 한정 Physical Animation 적용 — "취함" 연출 레이어.
 	 *  로컬 전용 연출(복제 없음, 캡슐/판정 무관). 래그돌 종료 시 OnRagdollPhysicsEnabled로 재적용된다.
 	 *  본 트랜스폼 버퍼가 준비되지 않았으면(첫 포즈 평가 전) 다음 틱으로 연기한다 */
@@ -107,5 +125,6 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	//~ End AActor Interface
 };

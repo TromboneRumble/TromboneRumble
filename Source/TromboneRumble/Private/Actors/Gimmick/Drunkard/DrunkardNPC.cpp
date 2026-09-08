@@ -10,9 +10,12 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "UI/UserWidgets/InGame/DrunkardTargetWidget.h"
 #include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
@@ -40,6 +43,23 @@ ADrunkardNPC::ADrunkardNPC()
 
 	StateComponent = CreateDefaultSubobject<UDrunkardStateComponent>(TEXT("DrunkardStateComponent"));
 	XRaySilhouetteComponent = CreateDefaultSubobject<UXRaySilhouetteComponent>(TEXT("XRaySilhouetteComponent"));
+
+	TargetIndicatorComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetIndicatorComponent"));
+	if (TargetIndicatorComponent)
+	{
+		TargetIndicatorComponent->SetupAttachment(GetMesh(), FName("head"));
+		TargetIndicatorComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		TargetIndicatorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		TargetIndicatorComponent->bReceivesDecals = 0;
+		TargetIndicatorComponent->SetCastShadow(false);
+	}
+}
+
+void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, TargetSkinColor);
 }
 
 void ADrunkardNPC::BeginPlay()
@@ -69,9 +89,32 @@ void ADrunkardNPC::BeginPlay()
 		RagdollComponent->OnRagdollPhysicsEnabled.AddDynamic(this, &ThisClass::ApplyUpperBodyPhysics);
 	}
 
+	if (StateComponent)
+	{
+		StateComponent->OnTargetChanged.AddDynamic(this, &ThisClass::HandleTargetChanged);
+	}
+	OnRep_TargetSkinColor();
+
 	// 스폰 프레임에는 첫 포즈 평가 전이라 본 트랜스폼 버퍼가 완성되지 않았을 수 있다.
 	// 그 상태로 PhysicalAnimation 제약이 생성되면 엔진이 빈 버퍼에 무검증 접근해 크래시하므로 한 틱 미룬다
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::ApplyUpperBodyPhysics);
+}
+
+void ADrunkardNPC::HandleTargetChanged(ADefaultTromboneCharacter* NewTarget)
+{
+	if (!HasAuthority()) return;
+
+	TargetSkinColor = NewTarget ? NewTarget->GetSkinColor() : FLinearColor::Transparent;
+	OnRep_TargetSkinColor();
+}
+
+void ADrunkardNPC::OnRep_TargetSkinColor()
+{
+	UUserWidget* Widget = TargetIndicatorComponent ? TargetIndicatorComponent->GetUserWidgetObject() : nullptr;
+	if (UDrunkardTargetWidget* TargetWidget = Cast<UDrunkardTargetWidget>(Widget))
+	{
+		TargetWidget->SetTargetColor(TargetSkinColor);
+	}
 }
 
 void ADrunkardNPC::BeginDoorEntrance()
