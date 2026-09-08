@@ -39,7 +39,9 @@ public class TromboneRumble : ModuleRules
 			"AudioCaptureCore",
 			"AudioMixer",
 			"AIModule",
-			"NavigationSystem"
+			"NavigationSystem",
+			"GeometryCollectionEngine",
+			"ChaosSolverEngine"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

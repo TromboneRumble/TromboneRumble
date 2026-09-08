@@ -275,6 +275,14 @@ enum class EVoipMode : uint8
 	AutoVoice  = 2 UMETA(DisplayName = "Auto Voice"),
 };
 
+UENUM(BlueprintType)
+enum class EBreakSource : uint8
+{
+	Script     UMETA(DisplayName = "Script"),      // 코드/치트가 직접 부순 경우 (취객 문 파괴 등)
+	PawnTouch  UMETA(DisplayName = "Pawn Touch"),  // 폰이 걸어 들어와 닿은 경우
+	Attack     UMETA(DisplayName = "Attack")       // 무기 스윕에 맞은 경우
+};
+
 namespace TromboneRender
 {
 	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더

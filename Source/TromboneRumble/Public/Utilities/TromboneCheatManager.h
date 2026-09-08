@@ -70,6 +70,10 @@ public:
 	UFUNCTION(Exec)
 	void Trombone_ResultTest(const FString& PlayerCountString, const FString& StageString);
 
+	// 레벨의 파괴 가능 오브젝트를 전부 부순다. 서버 전용
+	UFUNCTION(Exec)
+	void Trombone_BreakAll();
+
 public:
 
 	UFUNCTION(Exec)

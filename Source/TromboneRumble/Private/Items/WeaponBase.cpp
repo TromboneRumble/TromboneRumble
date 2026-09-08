@@ -1,4 +1,4 @@
-// Copyright (C) 2026 biksari studio. All Rights Reserved.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Items/WeaponBase.h"
 #include "Components/CapsuleComponent.h"
@@ -12,6 +12,7 @@
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/WeaponDataAsset.h"
 #include "Framework/DefaultPlayerState.h"
+#include "Interfaces/Breakable.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Subsystems/GameStateSubsystem.h"
 
@@ -166,6 +167,8 @@ void AWeaponBase::DetectHit()
 
 	FCollisionObjectQueryParams ObjectParams;
 	ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
+	// IBreakable Channel
+	ObjectParams.AddObjectTypesToQuery(ECC_GameTraceChannel5);
 
 	FComponentQueryParams Params;
 	Params.AddIgnoredActor(this);
@@ -190,6 +193,27 @@ void AWeaponBase::DetectHit()
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && !AlreadyHitActors.Contains(HitActor) && HitActor != CurrentOwner)
 			{
+				if (HitActor->Implements<UBreakable>())
+				{
+					AlreadyHitActors.Add(HitActor);
+
+					FVector BreakDirection = (End - Start).GetSafeNormal();
+					if (BreakDirection.IsNearlyZero())
+					{
+						BreakDirection = CurrentOwner->GetActorForwardVector();
+					}
+
+					FBreakHitInfo BreakInfo;
+					BreakInfo.Source = EBreakSource::Attack;
+					BreakInfo.ImpactPoint = Hit.ImpactPoint;
+					BreakInfo.ImpactDirection = BreakDirection;
+					BreakInfo.Strength = WeaponData ? WeaponData->KnockbackForce : 400.f;
+					BreakInfo.Instigator = CurrentOwner;
+
+					IBreakable::Execute_Break(HitActor, BreakInfo);
+					continue;
+				}
+
 				AlreadyHitActors.Add(HitActor);
 				Multicast_PlayHitSound();
 				if (HitActor->Implements<UCombatReceiver>())

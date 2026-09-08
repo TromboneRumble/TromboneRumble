@@ -1,4 +1,5 @@
 ﻿#include "Utilities/TromboneCheatManager.h"
+#include "Actors/Gimmick/Breakable/BreakableProp.h"
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
 #include "Characters/DefaultTromboneCharacter.h"
@@ -15,6 +16,7 @@
 #include "Subsystems/GameStateSubsystem.h"
 #include "Subsystems/ResultSceneSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "EngineUtils.h"
 #include "TromboneGamePlayTags.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Utilities/DebugHelper.h"
@@ -39,6 +41,7 @@ void UTromboneCheatManager::Trombone_Help()
 	DebugMsg += TEXT("Trombone_AudioOffset [ms] - 리듬 BGM 오프셋(양수=일찍 시작). 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("Trombone_RhythmSyncLog [0|1] - 리듬 싱크 실측 로그 + 음악 클럭 화면 표시. 인자 없으면 현재 값 출력\n");
 	DebugMsg += TEXT("Trombone_ResultTest [인원수] [스테이지] - 더미 플레이어로 결과 씬 확인 (기본 4명 / OrchestraStage, 예: Trombone_ResultTest 3 SnowField)\n");
+	DebugMsg += TEXT("Trombone_BreakAll - 레벨의 파괴 가능 오브젝트(술잔/문)를 전부 부숩니다. 서버(리슨/PIE 서버 창) 전용\n");
 	DebugMsg += TEXT("--------------------------------\n");
 	DebugMsg += TEXT("스폰 가능한 악기 타입 목록 :\n");
 	DebugMsg += TEXT("Trombone, Violin, Cymbal\n");
@@ -485,4 +488,37 @@ void UTromboneCheatManager::Trombone_Dump_LevelStateSubsystem()
 			}
 		}
 	}
+}
+
+void UTromboneCheatManager::Trombone_BreakAll()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	// 파괴 판정은 서버만 한다. 클라 릴레이는 디버그 치트에 과하므로 만들지 않는다
+	if (!World->GetAuthGameMode())
+	{
+		PRINT_WITH_CURRENT_CONTEXT(TEXT("서버에서만 동작합니다 (리슨 서버 / PIE 서버 창)"));
+		return;
+	}
+
+	int32 BrokenCount = 0;
+	for (TActorIterator<AActor> It(World); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor || !Actor->Implements<UBreakable>()) continue;
+
+		FBreakHitInfo Info;
+		Info.Source = EBreakSource::Script;
+		Info.ImpactPoint = Actor->GetActorLocation();
+		Info.ImpactDirection = FVector::UpVector;
+		Info.Strength = 300.f;
+
+		if (IBreakable::Execute_Break(Actor, Info))
+		{
+			++BrokenCount;
+		}
+	}
+
+	PRINT_WITH_CURRENT_CONTEXT(FString::Printf(TEXT("파괴 가능 오브젝트 %d개를 파괴했습니다"), BrokenCount));
 }
