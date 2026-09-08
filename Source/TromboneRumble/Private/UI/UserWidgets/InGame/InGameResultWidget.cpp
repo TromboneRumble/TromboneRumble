@@ -117,20 +117,25 @@ void UInGameResultWidget::NativeOnActivated()
 	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]() { RefocusForGamepad(); }));
 }
 
+void UInGameResultWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	if (SkipButton) SkipButton->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleSkipClicked);
+	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleViewMyResultClicked);
+	if (ViewLeaderboardButton) ViewLeaderboardButton->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleViewLeaderboardClicked);
+	if (ReturnToMainMenuButtonLeaderBoard) ReturnToMainMenuButtonLeaderBoard->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleExitButtonClicked);
+	if (ReturnToMainMenuButtonMyResult) ReturnToMainMenuButtonMyResult->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleExitButtonClicked);
+}
+
 void UInGameResultWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
 
-
 	if (BackgroundBlurOverlay) BackgroundBlurOverlay->SetRenderOpacity(0.f);
 	if (ResultOverlay) ResultOverlay->SetRenderOpacity(0.f);
-
-	if (SkipButton) SkipButton->OnClicked.AddDynamic(this, &ThisClass::HandleSkipClicked);
-	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewMyResultClicked);
-	if (ViewLeaderboardButton) ViewLeaderboardButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewLeaderboardClicked);
-	if (ReturnToMainMenuButtonLeaderBoard) ReturnToMainMenuButtonLeaderBoard->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
-	if (ReturnToMainMenuButtonMyResult) ReturnToMainMenuButtonMyResult->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
+	if (SkipButton) SkipButton->SetVisibility(ESlateVisibility::Visible);
 
 	if (ViewLeaderboardButton)
 	{
