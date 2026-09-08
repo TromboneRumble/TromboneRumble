@@ -27,9 +27,10 @@ struct FDrunkardDoorBinding
 
 /** UDrunkardDoorBreakerComponent
  *
- * ADrunkardSpawner BP에 붙인다. 취객이 스폰되면 그 스폰 지점에 짝지어 둔 문을 부순다. 서버 전용.
+ * ADrunkardSpawner 생성자가 네이티브 서브오브젝트로 달아준다. 취객이 스폰되면 그 스폰 지점에 짝지어 둔 문을 부순다. 서버 전용.
  *
- * GimmickManager와 무관하며 스포너 C++도 이 컴포넌트를 모른다 — 공개된 OnDrunkardSpawned 델리게이트만 구독한다.
+ * AGimmickManager와 무관하고, 스포너는 이 컴포넌트를 만들기만 할 뿐 문·파괴 로직은 전혀 모른다 —
+ * 컴포넌트가 공개된 OnDrunkardSpawned 델리게이트를 스스로 구독한다.
  * 스포너의 Doors 배열은 이름과 달리 스폰 지점(TargetPoint)이다. 실제 문은 DoorBindings가 1:1로 가리킨다.
  * 충격은 그 문의 GeometryCollection에만 직접 적용하므로 취객·플레이어·다른 소품에는 영향이 없다.
  */
@@ -42,7 +43,8 @@ public:
 	UDrunkardDoorBreakerComponent();
 
 protected:
-	/** 레벨의 스포너 인스턴스에서 지정한다. 스포너 "문 목록"의 지점마다 한 쌍 */
+	/** 레벨의 스포너 인스턴스를 골라 이 컴포넌트에서 지정한다. 스포너 "문 목록"의 지점마다 한 쌍.
+	 *  비워 두면 문 파괴를 건너뛴다 — 부술 문이 없는 맵(블록아웃 등)에서는 그게 정상이다 */
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Config", meta = (DisplayName = "스폰 지점 - 문 바인딩"))
 	TArray<FDrunkardDoorBinding> DoorBindings;
 

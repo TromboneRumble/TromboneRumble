@@ -50,7 +50,7 @@ void UDrunkardDoorBreakerComponent::ValidateBindings() const
 {
 	if (DoorBindings.IsEmpty())
 	{
-		UE_LOG(LogDrunkard, Warning, TEXT("[문 파괴] 바인딩이 비어 있습니다. 레벨의 스포너에서 스폰 지점과 문을 짝지어 주세요"));
+		UE_LOG(LogDrunkard, Log, TEXT("[문 파괴] 바인딩이 비어 있어 문 파괴를 건너뜁니다"));
 		return;
 	}
 
@@ -90,6 +90,8 @@ void UDrunkardDoorBreakerComponent::HandleDrunkardSpawned(ADrunkardNPC* NPC, AAc
 
 	UWorld* World = GetWorld();
 	if (!World) return;
+	
+	if (DoorBindings.IsEmpty()) return;
 
 	const FDrunkardDoorBinding* Binding = FindBinding(SpawnPoint);
 	if (!Binding)
@@ -99,7 +101,6 @@ void UDrunkardDoorBreakerComponent::HandleDrunkardSpawned(ADrunkardNPC* NPC, AAc
 	}
 
 	ABreakableDoor* Door = Binding->Door;
-	// 한 판 동안 부서진 채 유지되므로 같은 지점의 두 번째 스폰에서는 할 일이 없다
 	if (!Door || IBreakable::Execute_IsBroken(Door)) return;
 
 	// 취객 캡슐이 문 평면을 지나는 시점. 문 뒤에서 EnterBurstDuration 동안 실내로 이동한다

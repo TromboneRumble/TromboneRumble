@@ -10,6 +10,7 @@
 class ADefaultTromboneCharacter;
 class ADrunkardNPC;
 class UDrunkardDataAsset;
+class UDrunkardDoorBreakerComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpawnerDrunkardSpawned, ADrunkardNPC*, NPC, AActor*, Door);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpawnerDrunkardDespawned, ADrunkardNPC*, NPC);
@@ -43,6 +44,9 @@ public:
 	FOnSpawnerDrunkardCaptureSucceeded OnDrunkardCaptureSucceeded;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UDrunkardDoorBreakerComponent> DoorBreaker;
+
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "취객 데이터"))
 	TObjectPtr<UDrunkardDataAsset> DrunkardData;
 
