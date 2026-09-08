@@ -4,9 +4,7 @@
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 
 UTromboneConfig::UTromboneConfig()
-	: NoticePopupWidgetClass(UNoticePopup::StaticClass()),
-	TwoButtonPopupWidgetClass(UTwoButtonPopup::StaticClass()),
-	CharacterSkinColors( {FLinearColor::Red}),
+	: CharacterSkinColors( {FLinearColor::Red}),
 	RoomCodeLength(5), 
 	DefaultInGameMap(TromboneGamePlayTags::Trombone_Maps_InGame_OrchestraStage), 
 	LobbyGameStartDelaySeconds(5),
@@ -25,4 +23,22 @@ UTromboneConfig::UTromboneConfig()
 const UTromboneConfig* UTromboneConfig::Get()
 {
 	return GetDefault<UTromboneConfig>();
+}
+
+TSoftClassPtr<UCommonActivatableWidget> UTromboneConfig::GetPopupClass(const UClass* PopupType) const
+{
+	// Walk toward the root so a subclass falls back to its parent's entry
+	for (const UClass* Class = PopupType; Class; Class = Class->GetSuperClass())
+	{
+		for (const FPopupClassEntry& Entry : PopupClasses)
+		{
+			if (Entry.PopupType == Class)
+			{
+				return Entry.WidgetClass;
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("No popup entry for %s in Trombone Config."), *GetNameSafe(PopupType));
+	return nullptr;
 }

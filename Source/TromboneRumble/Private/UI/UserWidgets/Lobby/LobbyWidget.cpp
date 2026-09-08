@@ -7,39 +7,34 @@
 #include "Framework/LobbyGameState.h"
 #include "Utilities/Defines.h"
 
-bool ULobbyWidget::Initialize()
+void ULobbyWidget::NativeOnActivated()
 {
-	if (!Super::Initialize())
-	{
-		return false;
-	}
+	Super::NativeOnActivated();
 
+	// Bound on activate and removed on deactivate. The stack reuses this instance
 	if (ALobbyGameState* LobbyGameState = GetWorld()->GetGameState<ALobbyGameState>())
 	{
 		LobbyGameState->OnLobbyStateChanged.AddDynamic(this, &ThisClass::OnLobbyStateUpdated);
 	}
 
-	return true;
-}
-
-void ULobbyWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
 	if (CT_Countdown)
 	{
 		CT_Countdown->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
-void ULobbyWidget::NativeDestruct()
+void ULobbyWidget::NativeOnDeactivated()
 {
-	if (GetWorld())
+	if (UWorld* World = GetWorld())
 	{
-		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+		if (ALobbyGameState* LobbyGameState = World->GetGameState<ALobbyGameState>())
+		{
+			LobbyGameState->OnLobbyStateChanged.RemoveDynamic(this, &ThisClass::OnLobbyStateUpdated);
+		}
+		World->GetTimerManager().ClearAllTimersForObject(this);
 	}
-	
-	Super::NativeDestruct();
+
+	Super::NativeOnDeactivated();
 }
 
 void ULobbyWidget::OnLobbyStateUpdated(const ELobbyState NewState)

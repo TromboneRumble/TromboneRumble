@@ -34,6 +34,21 @@ public:
 
 	UFUNCTION(Exec)
 	void Trombone_Stun();
+
+	// Drops every player from the lobby falling points again. Host console only, for repeated ragdoll measurement
+	UFUNCTION(Exec)
+	void Trombone_RagdollDrop();
+
+	// Throws every standing player up in a ragdoll, like a headbutt hit. Host console only
+	UFUNCTION(Exec)
+	void Trombone_RagdollLaunch();
+
+	// Runs every ragdoll test case in Project Settings > Game > Ragdoll Test. Any PIE window, lobby only
+	UFUNCTION(Exec)
+	void Trombone_RagdollTest();
+
+	UFUNCTION(Exec)
+	void Trombone_RagdollTestStop();
 	
 	UFUNCTION(Exec)
 	void Trombone_ResetSettingData();

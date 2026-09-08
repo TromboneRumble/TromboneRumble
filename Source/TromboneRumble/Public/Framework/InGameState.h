@@ -25,8 +25,8 @@ public:
 	virtual void AddPlayerState(APlayerState* PlayerState) override;
 	virtual void RemovePlayerState(APlayerState* PlayerState) override;
 
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_BroadCastInGameStateChanged(EInGameState InGameState);
+	/** Server only. Clients follow through OnRep, the host hears the same delegate here. */
+	void SetInGameState(EInGameState NewState);
 
 	// Delegates
 	UPROPERTY(BlueprintAssignable)

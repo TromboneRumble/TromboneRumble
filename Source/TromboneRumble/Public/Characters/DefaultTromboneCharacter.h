@@ -80,6 +80,10 @@ public:
 
 	/** 피부색 적용 (leader 메시 + follower 파츠). 변경을 OnSkinColorChanged 로 통지한다 (X-Ray 컴포넌트 등이 구독) */
 	void ApplySkinColor(const FLinearColor InSkinColor);
+	
+	/** Copies the PlayerState color into the replicated member and applies it. PlayerState calls this when its color changes. */
+	void UpdateSkinFromPlayerState();
+	
 	FLinearColor GetSkinColor() const { return SkinColor; }
 
 	UPROPERTY(BlueprintAssignable)
@@ -241,9 +245,6 @@ private:
 
 	// ~ Begin 외형 / 표정
 	// TODO : 컴포지션으로 빼기
-	void SetupCharacterData() const;
-	void UpdateSkinFromPlayerState();
-
 	UFUNCTION()
 	void OnRep_SkinColor();
 

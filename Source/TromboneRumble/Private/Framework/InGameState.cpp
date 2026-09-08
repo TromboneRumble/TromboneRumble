@@ -31,22 +31,20 @@ void AInGameState::RemovePlayerState(APlayerState* PlayerState)
     OnScoreChanged.Broadcast(PlayerState);
 }
 
-void AInGameState::Multicast_BroadCastInGameStateChanged_Implementation(EInGameState InGameState)
+void AInGameState::SetInGameState(const EInGameState NewState)
 {
-    if (CurrentGameState == InGameState)
+    if (!HasAuthority() || CurrentGameState == NewState)
     {
         return;
     }
 
-    CurrentGameState = InGameState;
+    CurrentGameState = NewState;
 
-    // 멀티캐스트를 놓친 클라에겐 OnRep이 유일한 백업이다. 기본 주기를 기다리지 않게 한다
-    if (HasAuthority())
-    {
-        ForceNetUpdate();
-    }
+    // Do not wait for the next scheduled update. GameState is always relevant, so every client gets this
+    ForceNetUpdate();
 
-    OnInGameStateChanged.Broadcast(InGameState);
+    // OnRep never runs on the authority, so the host notifies its own listeners here
+    OnInGameStateChanged.Broadcast(CurrentGameState);
 }
 
 void AInGameState::OnRep_CurrentGameState()

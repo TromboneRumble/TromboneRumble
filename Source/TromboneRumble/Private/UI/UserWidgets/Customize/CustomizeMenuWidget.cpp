@@ -127,6 +127,8 @@ void UCustomizeMenuWidget::ShowBackPopup()
 	};
 	Params.RightCallback = [this]() { UTromboneStatics::OpenLevel(this, ELevelType::MainMenu); };
 
-	if (UTwoButtonPopup* Popup = UTromboneStatics::ShowPopup<UTwoButtonPopup>(GetWorld()))
-		Popup->Init(Params);
+	UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
+	{
+		Popup.Init(Params);
+	});
 }

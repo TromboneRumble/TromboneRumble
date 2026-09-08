@@ -6,19 +6,34 @@
 #include "Engine/DeveloperSettings.h"
 #include "GameplayTagContainer.h"
 #include "UI/UserWidgets/Popup/EscapePopup.h"
-#include "UI/UserWidgets/Popup/NoticePopup.h"
 #include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "TromboneConfig.generated.h"
 
 enum class EToastSystemPolicy : uint8;
+class URootUI;
 class UToastItemWidget;
 class UToastContainerWidget;
 class AInstrumentBase;
 enum class EWeaponType : uint8;
 class UMaterialInterface;
 class ADefaultTromboneCharacter;
+
+/** One popup type and the widget shown for it. */
+USTRUCT()
+struct FPopupClassEntry
+{
+	GENERATED_BODY()
+
+	/** Native popup class the entry applies to. Subclasses match too. */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCommonActivatableWidget> PopupType;
+
+	/** Widget blueprint to create for that type. */
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<UCommonActivatableWidget> WidgetClass;
+};
 
 /**
  * Config for Trombone Rumble Project.
@@ -39,76 +54,38 @@ public:
 	static const UTromboneConfig* Get();
 	
 	
-	/** @return Popup widget class of type T */
-	template<typename T>
-	TSubclassOf<T> GetPopupClass() const
-	{
-		if (T::StaticClass()->IsChildOf(UNoticePopup::StaticClass()))
-		{
-			return Cast<UClass>(NoticePopupWidgetClass);
-		}
-    
-		if (T::StaticClass()->IsChildOf(UTwoButtonPopup::StaticClass()))
-		{
-			return Cast<UClass>(TwoButtonPopupWidgetClass);
-		}
-		
-		if (T::StaticClass()->IsChildOf(UEscapePopup::StaticClass()))
-		{
-			return Cast<UClass>(EscapePopupWidgetClass);
-		}
-		
-		if (T::StaticClass()->IsChildOf(USettingPopup::StaticClass()))
-		{
-			return Cast<UClass>(SettingPopupWidgetClass);
-		}
-		
-		if (T::StaticClass()->IsChildOf(UPlayModePopup::StaticClass()))
-		{
-			return Cast<UClass>(PlayModePopupWidgetClass);
-		}
+	/**
+	 * Find the widget class for a popup type. Walks up the class hierarchy, so a subclass of a listed type finds its parent's entry.
+	 *
+	 * @param PopupType Native popup class to look up.
+	 * @return Soft class of the popup widget. Null when neither the type nor a parent is listed.
+	 */
+	TSoftClassPtr<UCommonActivatableWidget> GetPopupClass(const UClass* PopupType) const;
 
-		UE_LOG(LogTemp, Error, TEXT("No matching popup class found for type %s. Please check if it's added in UTromboneConfig."), *T::StaticClass()->GetName());
-		return nullptr;
+	/** @return Soft class of the popup widget for type T. Null when T has no entry. */
+	template<typename T>
+	TSoftClassPtr<UCommonActivatableWidget> GetPopupClass() const
+	{
+		return GetPopupClass(T::StaticClass());
 	}
 	
 public:
-	
-	/** Notice popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UNoticePopup> NoticePopupWidgetClass;
-	
-	/** Two-button without close button popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UTwoButtonPopup> TwoButtonPopupWidgetClass;
-	
-	/** Escape popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UEscapePopup> EscapePopupWidgetClass;
-	
-	/** Setting popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<USettingPopup> SettingPopupWidgetClass;
-	
-	/** Play mode select popup widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Popup")
-	TSubclassOf<UPlayModePopup> PlayModePopupWidgetClass;
-	
-	/** Project version widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
-	TSubclassOf<UCommonUserWidget> ProjectVersionWidgetClass;
-	
-	/** Performance widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
-	TSubclassOf<UCommonUserWidget> PerformanceWidgetClass;
-	
+
+	/** Popup widgets by native type. Adding a popup is one row here, the show path does not change. */
+	UPROPERTY(Config, EditAnywhere, Category = "UI|Popup", meta = (TitleProperty = "PopupType"))
+	TArray<FPopupClassEntry> PopupClasses;
+
+	/** Root layout that hosts the Base, Popup and Overlay stacks. Created once per game instance and kept across levels. */
+	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Root")
+	TSoftClassPtr<URootUI> RootUIClass;
+
 	/** Loading overlay widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
-	TSubclassOf<UCommonActivatableWidget> LoadingWidgetClass;
+	TSoftClassPtr<UCommonActivatableWidget> LoadingWidgetClass;
 	
 	/** Fade overlay widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
-	TSubclassOf<UCommonActivatableWidget> FadeWidgetClass;
+	TSoftClassPtr<UCommonActivatableWidget> FadeWidgetClass;
 
 	/** Toast container widget class. */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Toast")

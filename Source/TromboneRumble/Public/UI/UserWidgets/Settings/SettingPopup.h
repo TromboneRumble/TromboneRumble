@@ -89,7 +89,7 @@ private:
 	void OnClickReset();
 	
 	bool IsAnyPanelDirty() const;
-	void ShowIsDirtyNoticePopup();
+	void ShowUnsavedChangesPopup();
 	
 private:
 	

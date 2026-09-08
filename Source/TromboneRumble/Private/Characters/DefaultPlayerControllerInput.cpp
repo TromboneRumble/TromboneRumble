@@ -155,12 +155,7 @@ void ADefaultPlayerController::Handle_SprintReleased()
 
 void ADefaultPlayerController::Handle_Escape()
 {
-	const UEscapePopup* Popup = UTromboneStatics::ShowPopup<UEscapePopup>(GetWorld());
-	if (!Popup)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to show escape popup"));
-		return;
-	}
+	UTromboneStatics::ShowPopupAsync<UEscapePopup>(GetWorld());
 }
 
 void ADefaultPlayerController::Handle_CameraZoom(const FInputActionValue& Value)

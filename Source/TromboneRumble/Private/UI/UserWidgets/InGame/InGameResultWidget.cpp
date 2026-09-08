@@ -7,6 +7,8 @@
 #include "Components/Button.h"
 #include "Components/Overlay.h"
 #include "Components/Image.h"
+#include "CommonInputSubsystem.h"
+#include "TimerManager.h"
 #include "Subsystems/ResultSceneSubsystem.h"
 #include "Utilities/TromboneStatics.h"
 
@@ -77,24 +79,63 @@ void UInGameResultWidget::HideSkipButtonAndShowButtons()
 			ReturnToMainMenuButtonMyResult->SetRenderOpacity(0.f);
 		}
 	}
-	
+
+	RefocusForGamepad();
 }
 
+
+UWidget* UInGameResultWidget::NativeGetDesiredFocusTarget() const
+{
+	UWidget* const Candidates[] = { SkipButton.Get(), ViewMyResultButton.Get(), ViewLeaderboardButton.Get(), ReturnToMainMenuButtonLeaderBoard.Get(), ReturnToMainMenuButtonMyResult.Get() };
+	for (UWidget* Candidate : Candidates)
+	{
+		if (Candidate && Candidate->GetVisibility() == ESlateVisibility::Visible)
+		{
+			return Candidate;
+		}
+	}
+	return nullptr;
+}
+
+void UInGameResultWidget::RefocusForGamepad() const
+{
+	const UCommonInputSubsystem* InputSubsystem = UCommonInputSubsystem::Get(GetOwningLocalPlayer());
+	if (!InputSubsystem || InputSubsystem->GetCurrentInputType() != ECommonInputType::Gamepad)
+	{
+		return;
+	}
+	if (UWidget* Target = GetDesiredFocusTarget())
+	{
+		Target->SetFocus();
+	}
+}
+
+void UInGameResultWidget::NativeOnActivated()
+{
+	Super::NativeOnActivated();
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]() { RefocusForGamepad(); }));
+}
+
+void UInGameResultWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	if (SkipButton) SkipButton->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleSkipClicked);
+	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleViewMyResultClicked);
+	if (ViewLeaderboardButton) ViewLeaderboardButton->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleViewLeaderboardClicked);
+	if (ReturnToMainMenuButtonLeaderBoard) ReturnToMainMenuButtonLeaderBoard->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleExitButtonClicked);
+	if (ReturnToMainMenuButtonMyResult) ReturnToMainMenuButtonMyResult->OnClicked.AddUniqueDynamic(this, &ThisClass::HandleExitButtonClicked);
+}
 
 void UInGameResultWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	if (IsDesignTime()) return;
 
-
 	if (BackgroundBlurOverlay) BackgroundBlurOverlay->SetRenderOpacity(0.f);
 	if (ResultOverlay) ResultOverlay->SetRenderOpacity(0.f);
-
-	if (SkipButton) SkipButton->OnClicked.AddDynamic(this, &ThisClass::HandleSkipClicked);
-	if (ViewMyResultButton) ViewMyResultButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewMyResultClicked);
-	if (ViewLeaderboardButton) ViewLeaderboardButton->OnClicked.AddDynamic(this, &ThisClass::HandleViewLeaderboardClicked);
-	if (ReturnToMainMenuButtonLeaderBoard) ReturnToMainMenuButtonLeaderBoard->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
-	if (ReturnToMainMenuButtonMyResult) ReturnToMainMenuButtonMyResult->OnClicked.AddDynamic(this, &ThisClass::HandleExitButtonClicked);
+	if (SkipButton) SkipButton->SetVisibility(ESlateVisibility::Visible);
 
 	if (ViewLeaderboardButton)
 	{
@@ -145,6 +186,8 @@ void UInGameResultWidget::HandleViewMyResultClicked()
 		Director->PlayZoomSequence(true); // 줌인
 		PlayAnimation(SpawnAnimation);
 	}
+
+	RefocusForGamepad();
 }
 
 void UInGameResultWidget::HandleViewLeaderboardClicked()
@@ -173,6 +216,8 @@ void UInGameResultWidget::HandleViewLeaderboardClicked()
 		Director->PlayZoomSequence(false); // 줌아웃 (역재생)
 		PlayAnimation(SpawnAnimation, 0, 1, EUMGSequencePlayMode::Reverse);
 	}
+
+	RefocusForGamepad();
 }
 
 void UInGameResultWidget::HandleExitButtonClicked()

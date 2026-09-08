@@ -64,6 +64,9 @@ public:
 	/** Fired when the server travel countdown is finished. */
 	FOnLobbyTravelCountdownFinishedSignature OnTravelCountdownFinished;
 
+	/** Drops every standing player from the falling points again. Debug only, used by Trombone_RagdollDrop. */
+	void RelaunchAllPlayersFalling();
+
 private:
 
 	void SetLobbyState(const ELobbyState& InNewState);

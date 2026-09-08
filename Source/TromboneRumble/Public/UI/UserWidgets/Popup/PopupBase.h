@@ -4,7 +4,7 @@
 #include "CommonActivatableWidget.h"
 #include "PopupBase.generated.h"
 
-class UCommonButtonBaseExtensionWithText;
+class UCommonButtonBaseExtension;
 class UAkAudioEvent;
 class UCommonButtonBase;
 
@@ -110,7 +110,7 @@ protected:
 	TObjectPtr<UCommonButtonBase> Button_Dim;
 
 	UPROPERTY(meta = (BindWidget, OptionalWidget = true))
-	TObjectPtr<UCommonButtonBaseExtensionWithText> Button_Close;
+	TObjectPtr<UCommonButtonBaseExtension> Button_Close;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnimOptional))
 	TObjectPtr<UWidgetAnimation> FadeIn;

@@ -93,6 +93,8 @@ protected:
 	 *  Empty here - each character stops whatever it moves by, input for players and speed for AI. */
 	virtual void OnBlockedStateChanged(bool bBlocked) {}
 
+	void ApplyCharacterDataToMovement() const;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data")
 	TObjectPtr<UCharacterDataAsset> CharacterData;
 

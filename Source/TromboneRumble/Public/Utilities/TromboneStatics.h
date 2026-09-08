@@ -4,16 +4,15 @@
 #include "Defines.h"
 #include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
-#include "UI/HUD/BaseHUD.h"
-#include "UI/UserWidgets/Common/BaseUIRoot.h"
+#include "TromboneGamePlayTags.h"
+#include "UI/UserWidgets/Common/RootUI.h"
 #include "TromboneStatics.generated.h"
 
 class UFadeWidget;
 class ULoadingOverlayWidget;
 struct FToastRequest;
-class UNoticePopup;
 class UTwoButtonPopup;
-class UBaseUIRoot;
+class URootUI;
 enum class ELevelType : uint8;
 
 /**
@@ -96,69 +95,47 @@ public:
 	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
 	
 	/** @return The root UI layout widget
-	 *  @see UBaseUIRoot
+	 *  @see URootUI
 	 */
-	static UBaseUIRoot* GetRootLayout(const APlayerController* PlayerController);
+	static URootUI* GetRootUI(const APlayerController* PlayerController);
 	
-	/** Shows a popup
-	 * @tparam T The type of the popup widget. Must be a child of UCommonActivatableWidget and have a corresponding entry in UTromboneConfig.
-	 * @return popup widget instance of type T
+	/**
+	 * Show a popup on the Popup layer after loading its class. Input is blocked while the load runs.
+	 * NOTE: This operation is async. InitFunc runs before the popup activates.
+	 *
+	 * @tparam T Popup type. Must have an entry in UTromboneConfig.
+	 * @param InitFunc Optional. Put data in the popup before its first frame.
 	 */
 	template<typename T>
-	static T* ShowPopup(const UObject* WorldContextObject);
-	
+	static void ShowPopupAsync(const UObject* WorldContextObject, TFunction<void(T&)> InitFunc = nullptr);
+
 };
 
 template <typename T>
-T* UTromboneStatics::ShowPopup(const UObject* WorldContextObject)
+void UTromboneStatics::ShowPopupAsync(const UObject* WorldContextObject, TFunction<void(T&)> InitFunc)
 {
 	static_assert(std::is_base_of_v<UCommonActivatableWidget, T>, "T must be a child of UCommonActivatableWidget");
-	
-	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 
-	const UTromboneConfig* Config = UTromboneConfig::Get();
-	
-	AHUD* Hud = World->GetFirstPlayerController()->GetHUD();
-	const ABaseHUD* BaseHud = Cast<ABaseHUD>(Hud);
-	if (!BaseHud)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] BaseHUD not found"));
-		return nullptr;
-	}
-	
-	UBaseUIRoot* RootUI = BaseHud->GetRootUI();
+	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	URootUI* RootUI = World ? GetRootUI(World->GetFirstPlayerController()) : nullptr;
 	if (!RootUI)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] RootUI not found in BaseHUD"));
-		return nullptr;
+		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopupAsync] RootUI not found"));
+		return;
 	}
-	
-	TSubclassOf<T> PopupClass = Config->GetPopupClass<T>();
-	if (!PopupClass)
+
+	const TSoftClassPtr<UCommonActivatableWidget> PopupClass = UTromboneConfig::Get()->GetPopupClass<T>();
+	if (PopupClass.IsNull())
 	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] Popup class for type %s not found in config"), *T::StaticClass()->GetName());
-		return nullptr;
+		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopupAsync] Popup class for type %s not found in config"), *T::StaticClass()->GetName());
+		return;
 	}
-	
-	if (!PopupClass->IsChildOf(UCommonActivatableWidget::StaticClass()))
+
+	RootUI->AddWidgetToStackAsync<T>(PopupClass, TromboneGamePlayTags::Trombone_UI_Layer_Popup, true, [InitFunc](const EAsyncPushState State, T* Popup)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] Popup class %s is not a child of %s"), *PopupClass->GetName(), *UCommonActivatableWidget::StaticClass()->GetName());
-		return nullptr;
-	}
-	
-	UCommonActivatableWidget* Popup = RootUI->AddWidgetToStack(PopupClass, EUIStackType::Popup);
-	if (!Popup)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] Failed to push popup of type %s to RootUI"), *T::StaticClass()->GetName());
-		return nullptr;
-	}
-	
-	T* TypedPopup = Cast<T>(Popup);
-	if (!TypedPopup)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[UTromboneStatics::ShowPopup] Failed to cast popup to type %s"), *T::StaticClass()->GetName());
-		return nullptr;
-	}
-	
-	return TypedPopup;
+		if (State == EAsyncPushState::Initialize && InitFunc && Popup)
+		{
+			InitFunc(*Popup);
+		}
+	});
 }
