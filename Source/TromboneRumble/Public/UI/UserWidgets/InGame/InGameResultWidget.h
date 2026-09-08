@@ -39,6 +39,11 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeOnActivated() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+
+	/** Moves gamepad focus to the first visible button after the button set changes. */
+	void RefocusForGamepad() const;
 
 	UFUNCTION()
 	void HandleSkipClicked();           // 화면 전체 투명 버튼
