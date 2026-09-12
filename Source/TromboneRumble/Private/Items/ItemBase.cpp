@@ -36,6 +36,7 @@ AItemBase::AItemBase()
 
 void AItemBase::OnRep_CurrentOwner(AActor* OldActor)
 {
+	OnOwnerChanged.Broadcast(CurrentOwner, OldActor);
 }
 
 void AItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

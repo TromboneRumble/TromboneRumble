@@ -15,7 +15,7 @@
 #include "Framework/InGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
-#include "UI/UserWidgets/OnScreenIndicator/OSI_WidgetBase.h"
+#include "UI/UserWidgets/OnScreenIndicator/OSI_InstrumentWidget.h"
 #include "UI/UserWidgets/Rhythm/ComboWidget/RhythmComboWidgetBase.h"
 #include "Utilities/DebugHelper.h"
 
@@ -175,33 +175,26 @@ void AInstrumentBase::Unequip(AActor* OwnerActor)
 
 void AInstrumentBase::TryUpdateIndicatorVisibility()
 {
-	GetWorld()->GetTimerManager().ClearTimer(IndicatorRetryTimerHandle);
-	bool bIsReady = IsValid(IndicatorInstance) && IndicatorWidgetInstance.Get();
-	if (!bIsReady)
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	World->GetTimerManager().ClearTimer(IndicatorRetryTimerHandle);
+	
+	if (!IndicatorClass) return;
+
+	if (!IsValid(IndicatorInstance))
 	{
-		if (GetWorld())
-		{
-			GetWorld()->GetTimerManager().SetTimer(
-				IndicatorRetryTimerHandle,
-				this,
-				&AInstrumentBase::TryUpdateIndicatorVisibility,
-				0.05f,
-				false
-			);
-		}
+		World->GetTimerManager().SetTimer(
+			IndicatorRetryTimerHandle,
+			this,
+			&AInstrumentBase::TryUpdateIndicatorVisibility,
+			0.05f,
+			false
+		);
 		return;
 	}
 
-	if (CurrentOwner)
-	{
-		IndicatorInstance->GetRootComponent()->SetVisibility(false, true);
-		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	else
-	{
-		IndicatorInstance->GetRootComponent()->SetVisibility(true, true);
-		IndicatorWidgetInstance->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
+	IndicatorInstance->GetRootComponent()->SetVisibility(CurrentOwner == nullptr, true);
 }
 
 void AInstrumentBase::HandleInGameStateChanged(EInGameState InGameState)
@@ -373,15 +366,14 @@ void AInstrumentBase::TryCreateIndicatorWidget()
 	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
 	if (LocalPC && LocalPC->IsLocalController())
 	{
-		IndicatorWidgetInstance = CreateWidget<UOSI_WidgetBase>(LocalPC, IndicatorWidgetClass);
+		IndicatorWidgetInstance = CreateWidget<UOSI_InstrumentWidget>(LocalPC, IndicatorWidgetClass);
 		if (IndicatorWidgetInstance.Get())
 		{
-			IndicatorWidgetInstance->SetVisibility(ESlateVisibility::Collapsed);
 			IndicatorWidgetInstance->TargetComponent = GetRootComponent();
+			IndicatorWidgetInstance->SetTrackedItem(this);
 			//WBP_Rhythm보다 한칸 아래
 			IndicatorWidgetInstance->AddToViewport(-1);
 			GetWorld()->GetTimerManager().ClearTimer(WidgetInitTimerHandle);
-			TryUpdateIndicatorVisibility();
 			return;
 		}
 	}

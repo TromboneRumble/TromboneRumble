@@ -13,6 +13,32 @@
 void UOSI_WidgetBase::NativeConstruct()
 {
 	Super::NativeConstruct();
+    if (bIndicatorActive)
+    {
+        StartUpdateTimer();
+    }
+}
+
+void UOSI_WidgetBase::NativeDestruct()
+{
+    StopUpdateTimer();
+	Super::NativeDestruct();
+}
+
+void UOSI_WidgetBase::SetIndicatorActive(bool bInActive)
+{
+    bIndicatorActive = bInActive;
+    SetVisibility(bInActive ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
+
+    //Slate가 아직 없으면 NativeConstruct가 bIndicatorActive를 보고 타이머를 시작한다
+    if (!IsConstructed()) return;
+
+    if (bInActive) StartUpdateTimer();
+    else StopUpdateTimer();
+}
+
+void UOSI_WidgetBase::StartUpdateTimer()
+{
     OSITimer();
     if (UWorld* World = GetWorld())
     {
@@ -26,13 +52,12 @@ void UOSI_WidgetBase::NativeConstruct()
     }
 }
 
-void UOSI_WidgetBase::NativeDestruct()
+void UOSI_WidgetBase::StopUpdateTimer()
 {
     if (UWorld* World = GetWorld())
     {
         World->GetTimerManager().ClearTimer(TimerHandle_Update);
     }
-	Super::NativeDestruct();
 }
 
 void UOSI_WidgetBase::OSITimer()

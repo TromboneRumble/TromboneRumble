@@ -10,7 +10,7 @@
 #include "InstrumentBase.generated.h"
 
 class URhythmComboWidgetBase;
-class UOSI_WidgetBase;
+class UOSI_InstrumentWidget;
 class AInstrumentIndicator;
 class UInstrumentScoreData;
 class ADefaultPlayerState;
@@ -51,10 +51,10 @@ protected:
 	FVector IndicatorOffset = FVector(0.0f, 0.0f, 100.0f);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Indicator|UI")
-	TSubclassOf<UOSI_WidgetBase> IndicatorWidgetClass;
+	TSubclassOf<UOSI_InstrumentWidget> IndicatorWidgetClass;
 
 	UPROPERTY()
-	TWeakObjectPtr<UOSI_WidgetBase> IndicatorWidgetInstance = nullptr;
+	TWeakObjectPtr<UOSI_InstrumentWidget> IndicatorWidgetInstance = nullptr;
 
 	UFUNCTION()
 	void TryUpdateIndicatorVisibility();
