@@ -18,11 +18,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPropBroken, ABreakableProp*, Pro
 /** ABreakableProp
  *
  * Chaos 파편으로 부서지는 배치 소품의 베이스. AGimmickBase가 아니다(GimmickManager는 타입당 1개만 등록한다).
+ * 술잔·접시 같은 일반 소품은 C++ 파생 없이 이 클래스를 BP로 직접 상속해서 만든다.
  *
  * 네트워크: 서버가 Break()로 판정하고 bBroken + LastHit 만 복제한다.
  * 파편(GeometryCollection)은 각 머신이 로컬로 시뮬레이션하므로 파편 위치는 머신마다 다르다.
  *
- * 콜리전 프로파일은 여기서 정하지 않는다. "뚫리는가 / 막는가"는 소품 성격이라 서브클래스가 지정한다.
+ * 기본값은 일반 소품 기준(BreakableProp 프로파일 = 뚫림 + 닿거나 때리면 부서짐).
+ * 문처럼 벽으로 막아야 하는 소품만 파생에서 덮어쓴다.
  */
 UCLASS(Abstract)
 class TROMBONERUMBLE_API ABreakableProp : public AActor, public IBreakable
@@ -55,11 +57,11 @@ protected:
 
 	/** 폰이 닿기만 해도 부서지는가 (술잔 true / 문 false) */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Breakable", meta = (DisplayName = "닿으면 부서짐"))
-	bool bBreakOnPawnTouch = false;
+	bool bBreakOnPawnTouch = true;
 
 	/** 무기 공격에 부서지는가 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Breakable", meta = (DisplayName = "공격에 부서짐"))
-	bool bBreakOnAttack = false;
+	bool bBreakOnAttack = true;
 
 	/** 파편을 정리하기까지의 시간 (초). GC 에셋의 Remove on Sleep 과 이중 안전장치 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Breakable", meta = (DisplayName = "파편 수명", ClampMin = "1.0"))
