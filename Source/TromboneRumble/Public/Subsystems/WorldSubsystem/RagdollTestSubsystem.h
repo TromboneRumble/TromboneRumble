@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeveloperSettings/RagdollTestSettings.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "RagdollTestSubsystem.generated.h"
 
 class ATromboneCharacterBase;
 class UTromboneRagdollComponent;
-struct FRagdollTestCase;
 
 /** How a ragdoll gets started in a test. */
 enum class ERagdollTestScenario : uint8
