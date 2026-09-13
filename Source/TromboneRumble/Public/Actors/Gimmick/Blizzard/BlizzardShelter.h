@@ -14,6 +14,8 @@ class USkeletalMeshComponent;
 class UAnimSequence;
 class ASkeletalMeshActor;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShelterDoorChangedSignature, bool, bIsOpen);
+
 /** ABlizzardShelter
  * 눈보라 안전지대. 천막마다 하나씩 배치한다.
  * SafeZone sphere 안에 있는 캐릭터는 눈보라 효과(밀림/슬로우/래그돌)를 받지 않는다.
@@ -61,6 +63,10 @@ public:
 	/** BP FadeTimeline 의 Update 에서 호출 (Alpha 0~1) */
 	UFUNCTION(BlueprintCallable, Category = "Shelter")
 	void UpdateLightFade(float Alpha);
+
+	/** 문이 열리거나 닫혔을 때. 구독자가 스스로 붙는다 (ABlizzardGuideLine). */
+	UPROPERTY(BlueprintAssignable, Category = "Shelter")
+	FOnShelterDoorChangedSignature OnDoorChanged;
 
 protected:
 	/** BP 에서 FadeTimeline 을 PlayFromStart 할 것 */
