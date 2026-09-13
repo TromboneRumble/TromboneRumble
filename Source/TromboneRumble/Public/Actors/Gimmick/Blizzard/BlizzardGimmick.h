@@ -31,6 +31,8 @@ enum class EBlizzardState : uint8
 	Active,
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBlizzardStateChangedSignature, EBlizzardState, NewState);
+
 /** 하나의 구동 대상 환경 컴포넌트에 대한 런타임 보간 상태.
  * 라이브 월드 컴포넌트 + 값 스냅샷들(평상시/블렌드 시작/상태별 목표)을 묶는다.
  * 상태별 목표(ResolvedWarning/Active)는 평상시 값 위에 템플릿의 "오버라이드된(=클래스 기본값과 다른)"
@@ -89,6 +91,15 @@ public:
 	/** BP FrozenTL 의 Update 에서 호출 (Alpha 0~1). 상태 전이 때 잡아둔 시작->목표 라이팅을 보간 적용한다. */
 	UFUNCTION(BlueprintCallable, Category = "Blizzard")
 	void UpdateEnvironmentBlend(float Alpha);
+
+	/** 상태 전이 알림. 기믹은 구독자를 모른다 - 구독자가 스스로 붙는다 (ABlizzardGuideLine).
+	 *  이름 끝에 Delegate 가 붙은 이유: 같은 이름의 BlueprintImplementableEvent 가 이미 있고
+	 *  BP FrozenTL 타임라인이 그걸 바인딩하고 있다. 합치면 BP 그래프가 끊긴다. */
+	UPROPERTY(BlueprintAssignable, Category = "Blizzard")
+	FOnBlizzardStateChangedSignature OnBlizzardStateChangedDelegate;
+
+	/** 구독자가 BeginPlay 에서 현재 상태로 시드하기 위한 게터. */
+	EBlizzardState GetBlizzardState() const { return BlizzardState; }
 
 protected:
 	/** 상태 전이 시 클라/서버 양쪽에서 호출된다. BP 에서 FrozenTL PlayFromStart + 사운드 연출을 구현한다.

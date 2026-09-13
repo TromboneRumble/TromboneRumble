@@ -498,6 +498,10 @@ void ABlizzardGimmick::OnRep_BlizzardState()
 
 void ABlizzardGimmick::HandleBlizzardStateChanged(EBlizzardState NewState, const FVector& InWindDir)
 {
+	// 구독자에게 먼저 알린다. "상태가 바뀌었다"는 사실이지 렌더링 단계가 아니므로
+	// 연출인지 아닌지는 구독자가 판단한다 - 그래서 데디 서버 리턴보다 위다.
+	OnBlizzardStateChangedDelegate.Broadcast(NewState);
+
 	if (GetNetMode() == NM_DedicatedServer) return;
 
 	// 이전 페이드가 끝나기 전에 상태가 또 바뀔 수 있으므로, 현재 실값에서 이어 간다 (BeginEnvBlend 가 재캡처).

@@ -113,6 +113,9 @@ void ABlizzardShelter::SetDoorOpen(bool bOpen)
 void ABlizzardShelter::OnRep_DoorOpen()
 {
 	ApplyDoorState(true);
+
+	// 서버(SetDoorOpen 이 수동 호출)와 클라(복제) 양쪽이 이 한 곳으로 모인다.
+	OnDoorChanged.Broadcast(bDoorOpen);
 }
 
 void ABlizzardShelter::ResolveDoorMesh()
