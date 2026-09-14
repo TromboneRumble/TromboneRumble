@@ -18,9 +18,14 @@ class TROMBONERUMBLE_API UOSI_WidgetBase : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<USceneComponent> TargetComponent;
+	
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+
+	// 인디케이터 표시를 켜고 끈다. 끄면 갱신 타이머도 같이 멈춘다.
+	void SetIndicatorActive(bool bInActive);
+	FORCEINLINE bool IsIndicatorActive() const { return bIndicatorActive; }
 
 	void OSITimer();
 
@@ -43,15 +48,18 @@ private:
 	bool IsWorldLocationWithinScreenClamp(const FVector& InWorldPosition);
 	void UpdateWidgetLocation(bool IsOnScreen);
 	void UpdateSpriteAngle(bool IsOnScreen);
+	void StartUpdateTimer();
+	void StopUpdateTimer();
 
+	// 기본 on. 게이트를 안 쓰는 파생(RhythmRank)은 이 값이 계속 true다.
+	bool bIndicatorActive = true;
 
 	FTimerHandle TimerHandle_Update;
 
 	FVector2D SavedViewportSize;
 	FVector2D ClampMin;
 	FVector2D ClampMax;
-
-
+	
 	FVector ObjectLocation;
 	FVector ObjectDirection;
 	FVector2D WidgetScreenLocation;

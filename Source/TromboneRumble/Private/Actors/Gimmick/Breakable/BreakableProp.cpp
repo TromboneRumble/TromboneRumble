@@ -29,13 +29,12 @@ ABreakableProp::ABreakableProp()
 
 	IntactMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IntactMesh"));
 	SetRootComponent(IntactMesh);
-	IntactMesh->SetGenerateOverlapEvents(false);
 	IntactMesh->CanCharacterStepUpOn = ECB_No;
 	IntactMesh->SetReceivesDecals(false);
-	// 부서질 물건이라 정적 navmesh를 깎으면 안 된다. 문이 문간을 끊어 취객 경로가 막힌다
+	
 	IntactMesh->SetCanEverAffectNavigation(false);
-	// 콜리전 프로파일은 여기서 정하지 않는다. 술잔(뚫림+오버랩)과 문(벽처럼 막음)이 다르므로
-	// 서브클래스 생성자가 각자 지정한다.
+	IntactMesh->SetCollisionProfileName(TEXT("BreakableProp"));
+	IntactMesh->SetGenerateOverlapEvents(true);
 
 	Debris = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("Debris"));
 	Debris->SetupAttachment(IntactMesh);

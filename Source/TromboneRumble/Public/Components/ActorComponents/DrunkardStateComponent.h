@@ -7,6 +7,7 @@
 #include "DrunkardStateComponent.generated.h"
 
 class ADefaultTromboneCharacter;
+struct FDrunkardRoute;
 class UDrunkardDataAsset;
 
 UENUM(BlueprintType)
@@ -39,7 +40,7 @@ public:
 	UDrunkardStateComponent();
 
 	/** 스폰 직후 스포너가 호출. NPC가 문을 통과하고 잠시 멈춘 뒤 추격으로 전환된다 */
-	void BeginEntering();
+	void BeginEntering(const FDrunkardRoute& Route);
 
 	/** NPC가 문 통과 이동을 마쳤을 때 호출. 정지 시간 후 추격을 시작한다 */
 	void HandleDoorEntranceFinished();
