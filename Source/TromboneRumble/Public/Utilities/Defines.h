@@ -36,6 +36,7 @@ enum class EGimmickType : uint8
 	Blizzard,
 	Drunkard,
 	BeerFlood,
+	Gravity,
 	MAX,
 	None = 255,
 };

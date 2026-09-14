@@ -50,6 +50,9 @@ namespace TromboneGamePlayTags
 	//GameplayEffects
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Buff_Speed, "Trombone.Buff.Speed");
 
+	// Gimmick SetByCaller magnitudes
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Gimmick_Gravity_Scale, "Trombone.Gimmick.Gravity.Scale");
+
 	// UI layers
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Base,		"Trombone.UI.Layer.Base");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Popup,		"Trombone.UI.Layer.Popup");
