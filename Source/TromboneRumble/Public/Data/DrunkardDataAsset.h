@@ -41,13 +41,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Spawn", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.0"))
 	float EnterDuration = 1.f;
 
-	/** 문 뒤 스폰 거리 (cm). 문 forward 반대편에 스폰되며, 반대로 스폰되면 부호를 뒤집으면 된다 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Spawn", meta = (DisplayName = "문 뒤 스폰 거리"))
-	float BehindDoorOffset = 150.f;
-
-	/** 문 뒤에서 실내까지 통과 이동에 걸리는 시간 (초) */
+	/** 생성 지점에서 정지 지점까지 통과 이동에 걸리는 시간 (초) */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Spawn", meta = (DisplayName = "문 통과 시간", ClampMin = "0.05"))
 	float EnterBurstDuration = 0.5f;
+
+	/** 취객이 문을 부술 때 문 조각들에 가해지는 속도 (cm/s) */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Spawn", meta = (DisplayName = "문 파편 초속", ClampMin = "0.0"))
+	float DoorBreakStrength = 600.f;
 
 	/** 추격 지속시간. 소진되면 가장 가까운 문으로 퇴장한다 (초) */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Duration", meta = (DisplayName = "기믹 지속시간", ClampMin = "0.0"))

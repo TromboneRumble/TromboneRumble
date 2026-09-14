@@ -9,19 +9,37 @@
 
 class ADefaultTromboneCharacter;
 class ADrunkardNPC;
+class ATargetPoint;
 class UDrunkardDataAsset;
-class UDrunkardDoorBreakerComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpawnerDrunkardSpawned, ADrunkardNPC*, NPC, AActor*, Door);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpawnerDrunkardDespawned, ADrunkardNPC*, NPC);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpawnerDrunkardCaptureSucceeded, ADrunkardNPC*, NPC, ADefaultTromboneCharacter*, Target);
+
+USTRUCT(BlueprintType)
+struct FDrunkardRoute
+{
+	GENERATED_BODY()
+
+	/** Where it spawns and where it walks to when leaving. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config", meta = (DisplayName = "생성/퇴장 지점"))
+	TObjectPtr<ATargetPoint> SpawnPoint = nullptr;
+
+	/** Where it stops after coming through the door. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config", meta = (DisplayName = "정지 지점"))
+	TObjectPtr<ATargetPoint> StopPoint = nullptr;
+
+	/** Broken the frame the drunkard crosses it. Empty means no door effect, fine for a blockout */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config", meta = (DisplayName = "문"))
+	TObjectPtr<AActor> Door = nullptr;
+};
 
 /** ADrunkardSpawner
  *
  * 재즈바 레벨에 배치하는 취객 NPC 스포너. Server Only.
  * - 최초 스폰 시간 / 반복 스폰 주기 관리 (수치는 UDrunkardDataAsset)
  * - 동시 1명 제한 (NPC 존재/퇴장 중 추가 스폰 없음)
- * - 문 목록 보유: 스폰은 랜덤 문, 퇴장은 종료 시점 최근접 문
+ * - 동선 목록 보유: 스폰은 랜덤 동선, 퇴장은 들어온 동선의 생성 지점
  */
 UCLASS()
 class TROMBONERUMBLE_API ADrunkardSpawner : public AGimmickBase
@@ -30,9 +48,6 @@ class TROMBONERUMBLE_API ADrunkardSpawner : public AGimmickBase
 
 public:
 	ADrunkardSpawner();
-
-	/** 퇴장용 최근접 문 조회. 문이 없으면 nullptr */
-	AActor* FindClosestDoor(const FVector& Location) const;
 
 	/** Called when a drunkard has spawned. Door is where it came out, may be null. Server only. */
 	FOnSpawnerDrunkardSpawned OnDrunkardSpawned;
@@ -44,18 +59,15 @@ public:
 	FOnSpawnerDrunkardCaptureSucceeded OnDrunkardCaptureSucceeded;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<UDrunkardDoorBreakerComponent> DoorBreaker;
-
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "취객 데이터"))
 	TObjectPtr<UDrunkardDataAsset> DrunkardData;
 
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "취객 NPC 클래스"))
 	TSubclassOf<ADrunkardNPC> NPCClass;
 
-	/** 취객이 드나드는 문 액터들. 레벨에서 지정 */
-	UPROPERTY(EditInstanceOnly, Category = "Config", meta = (DisplayName = "문 목록"))
-	TArray<TObjectPtr<AActor>> Doors;
+	/** Every way into the bar. One is picked at random per spawn */
+	UPROPERTY(EditInstanceOnly, Category = "Config", meta = (DisplayName = "동선 목록"))
+	TArray<FDrunkardRoute> Routes;
 
 private:
 	void TrySpawnNPC();

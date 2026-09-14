@@ -8,6 +8,7 @@
 
 class ADefaultTromboneCharacter;
 class ADrunkardSpawner;
+struct FDrunkardRoute;
 class UDrunkardDataAsset;
 class UDrunkardStateComponent;
 class UWidgetComponent;
@@ -38,8 +39,11 @@ public:
 	/** 포획 성공 연출 시작 — 이동을 멈추고 다이브 몽타주를 재생한다. StateComponent가 호출. Server Only. */
 	void BeginDive();
 
-	/** 등장 연출 시작 — 문 뒤에서 실내까지 전방으로 통과 이동한다. StateComponent가 호출. Server Only. */
-	void BeginDoorEntrance();
+	/** Starts the entrance: walks from the spawn point to the stop point and breaks the door when crossing it. StateComponent calls this. Server only. */
+	void BeginDoorEntrance(const FDrunkardRoute& Route);
+
+	/** Spawn point of the entrance it came through. It leaves through the same spot. */
+	AActor* GetExitPoint() const { return ExitPoint.Get(); }
 
 	/** 다이브 몽타주의 래그돌 시작 노티파이가 호출. 서버에서만 래그돌로 전환하고 복제로 퍼진다 */
 	void HandleDiveRagdollStart();
@@ -123,7 +127,15 @@ private:
 	bool bDoorEntranceActive = false;
 	FVector DoorEntranceStart = FVector::ZeroVector;
 	FVector DoorEntranceEnd = FVector::ZeroVector;
+	FVector DoorEntranceDir = FVector::ZeroVector;
 	float DoorEntranceElapsed = 0.f;
+
+	/** Breaks the entrance door once, the frame the capsule crosses the door plane. */
+	void BreakEntranceDoor();
+
+	TWeakObjectPtr<AActor> ExitPoint;
+	TWeakObjectPtr<AActor> EntranceDoor;
+	bool bEntranceDoorBreakPending = false;
 
 	/** 다이브 몽타주는 NPC라 자동 복제가 안 되므로 모든 머신에서 직접 재생한다 */
 	UFUNCTION(NetMulticast, Reliable)
