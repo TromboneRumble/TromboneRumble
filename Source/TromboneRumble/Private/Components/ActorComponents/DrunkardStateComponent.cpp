@@ -2,6 +2,7 @@
 
 #include "Components/ActorComponents/DrunkardStateComponent.h"
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
+#include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/DrunkardDataAsset.h"
@@ -40,7 +41,7 @@ void UDrunkardStateComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void UDrunkardStateComponent::BeginEntering()
+void UDrunkardStateComponent::BeginEntering(const FDrunkardRoute& Route)
 {
 	if (!HasAuthority()) return;
 
@@ -48,7 +49,7 @@ void UDrunkardStateComponent::BeginEntering()
 
 	if (ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner()))
 	{
-		OwnerNPC->BeginDoorEntrance();
+		OwnerNPC->BeginDoorEntrance(Route);
 	}
 
 	// 통과 완료 통지가 안 오는 사고 대비 안전망. 정상 흐름에선 HandleDoorEntranceFinished가 타이머를 다시 감는다

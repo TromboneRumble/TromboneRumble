@@ -2,7 +2,6 @@
 
 #include "Actors/Gimmick/Drunkard/DrunkardAIController.h"
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
-#include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DefaultTromboneCharacter.h"
@@ -52,15 +51,12 @@ void ADrunkardAIController::HandleStateChanged(const EDrunkardState NewState)
 
 	BlackboardComp->SetValueAsEnum(BBKeyState, static_cast<uint8>(NewState));
 
-	// 퇴장할 문 = 종료 시점 최근접 문
+	// Leaves through the spot it spawned at
 	if (NewState == EDrunkardState::Exiting)
 	{
 		if (const ADrunkardNPC* NPC = Cast<ADrunkardNPC>(GetPawn()))
 		{
-			if (const ADrunkardSpawner* Spawner = NPC->GetOwningSpawner())
-			{
-				BlackboardComp->SetValueAsObject(BBKeyExitDoor, Spawner->FindClosestDoor(NPC->GetActorLocation()));
-			}
+			BlackboardComp->SetValueAsObject(BBKeyExitDoor, NPC->GetExitPoint());
 		}
 	}
 }

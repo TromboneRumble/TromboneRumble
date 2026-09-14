@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/UIData.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "ToastSubsystem.generated.h"
 
 enum class EToastSystemPolicy : uint8;
 class UToastContainerWidget;
 class UToastItemWidget;
-struct FToastRequest;
 
 UCLASS()
 class TROMBONERUMBLE_API UToastSubsystem : public UGameInstanceSubsystem

@@ -1,11 +1,11 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
-#include "Actors/Gimmick/Drunkard/DrunkardDoorBreakerComponent.h"
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
 #include "Components/ActorComponents/DrunkardStateComponent.h"
 #include "Data/DrunkardDataAsset.h"
 #include "Engine/Engine.h"
+#include "Engine/TargetPoint.h"
 #include "Utilities/TromboneLogs.h"
 
 
@@ -22,7 +22,6 @@ ADrunkardSpawner::ADrunkardSpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GimmickType = EGimmickType::Drunkard;
-	DoorBreaker = CreateDefaultSubobject<UDrunkardDoorBreakerComponent>(TEXT("DoorBreaker"));
 }
 
 void ADrunkardSpawner::Activate()
@@ -74,7 +73,7 @@ void ADrunkardSpawner::Tick(const float DeltaSeconds)
 	{
 		const float Remaining = GetWorldTimerManager().GetTimerRemaining(SpawnTimerHandle);
 		Text = (Remaining >= 0.f)
-			? FString::Printf(TEXT("[취객 스포너] 다음 스폰까지 %.1fs (문 %d개)"), Remaining, Doors.Num())
+			? FString::Printf(TEXT("[취객 스포너] 다음 스폰까지 %.1fs (동선 %d개)"), Remaining, Routes.Num())
 			: TEXT("[취객 스포너] 스폰 타이머 비활성");
 	}
 	GEngine->AddOnScreenDebugMessage(static_cast<uint64>(GetUniqueID()), 1.f, FColor::Orange, Text);
@@ -85,25 +84,26 @@ void ADrunkardSpawner::TrySpawnNPC()
 {
 	if (!HasAuthority() || ActiveNPC.IsValid() || !NPCClass) return;
 
-	// 스폰 위치 = 랜덤 문. 문이 지정되지 않았으면 스포너 위치 사용
+	// Random entrance. Without one the spawner's own transform is the entrance
+	FDrunkardRoute Route;
+	TArray<const FDrunkardRoute*> ValidRoutes;
+	for (const FDrunkardRoute& Candidate : Routes)
+	{
+		if (Candidate.SpawnPoint) ValidRoutes.Add(&Candidate);
+	}
+	if (!ValidRoutes.IsEmpty())
+	{
+		Route = *ValidRoutes[FMath::RandRange(0, ValidRoutes.Num() - 1)];
+	}
+
 	FVector SpawnLocation = GetActorLocation();
 	FRotator SpawnRotation = GetActorRotation();
-
-	AActor* SpawnDoor = nullptr;
-	TArray<AActor*> ValidDoors;
-	for (AActor* Door : Doors)
+	if (Route.SpawnPoint)
 	{
-		if (Door) ValidDoors.Add(Door);
-	}
-	if (!ValidDoors.IsEmpty())
-	{
-		SpawnDoor = ValidDoors[FMath::RandRange(0, ValidDoors.Num() - 1)];
-
-		const float Offset = DrunkardData ? DrunkardData->BehindDoorOffset : 150.f;
-		SpawnLocation = SpawnDoor->GetActorLocation() - SpawnDoor->GetActorForwardVector() * Offset;
-
-		const FVector ToDoor = SpawnDoor->GetActorLocation() - SpawnLocation;
-		SpawnRotation = ToDoor.IsNearlyZero() ? SpawnDoor->GetActorRotation() : ToDoor.GetSafeNormal().Rotation();
+		SpawnLocation = Route.SpawnPoint->GetActorLocation();
+		// Faces the stop point so the walk in goes straight forward
+		const FVector ToStop = Route.StopPoint ? (Route.StopPoint->GetActorLocation() - SpawnLocation).GetSafeNormal2D() : FVector::ZeroVector;
+		SpawnRotation = ToStop.IsNearlyZero() ? Route.SpawnPoint->GetActorRotation() : ToStop.Rotation();
 	}
 
 	FActorSpawnParameters SpawnParams;
@@ -124,10 +124,10 @@ void ADrunkardSpawner::TrySpawnNPC()
 	if (UDrunkardStateComponent* State = NPC->GetStateComponent())
 	{
 		State->OnCaptureSucceeded.AddDynamic(this, &ThisClass::HandleNPCCaptureSucceeded);
-		State->BeginEntering();
+		State->BeginEntering(Route);
 	}
 
-	OnDrunkardSpawned.Broadcast(NPC, SpawnDoor);
+	OnDrunkardSpawned.Broadcast(NPC, Route.Door);
 }
 
 void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
@@ -145,23 +145,4 @@ void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 void ADrunkardSpawner::HandleNPCCaptureSucceeded(ADefaultTromboneCharacter* Target)
 {
 	OnDrunkardCaptureSucceeded.Broadcast(ActiveNPC.Get(), Target);
-}
-
-AActor* ADrunkardSpawner::FindClosestDoor(const FVector& Location) const
-{
-	AActor* Closest = nullptr;
-	double ClosestDistSq = TNumericLimits<double>::Max();
-
-	for (AActor* Door : Doors)
-	{
-		if (!Door) continue;
-
-		const double DistSq = FVector::DistSquared(Door->GetActorLocation(), Location);
-		if (DistSq < ClosestDistSq)
-		{
-			ClosestDistSq = DistSq;
-			Closest = Door;
-		}
-	}
-	return Closest;
 }

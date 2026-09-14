@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
+#include "Actors/Gimmick/Breakable/BreakableDoor.h"
 #include "Actors/Gimmick/Drunkard/DrunkardAIController.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Components/ActorComponents/DrunkardStateComponent.h"
@@ -13,7 +14,9 @@
 #include "Components/WidgetComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
+#include "Engine/TargetPoint.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interfaces/Breakable.h"
 #include "Net/UnrealNetwork.h"
 #include "UI/UserWidgets/Common/PopIndicatorWidget.h"
 #include "UI/UserWidgets/InGame/DrunkardTargetWidget.h"
@@ -162,16 +165,53 @@ void ADrunkardNPC::OnRep_TargetSkinColor()
 	}
 }
 
-void ADrunkardNPC::BeginDoorEntrance()
+void ADrunkardNPC::BeginDoorEntrance(const FDrunkardRoute& Route)
 {
 	if (!HasAuthority()) return;
 
-	// 스폰 회전이 실내를 향하므로 전방으로 스폰 거리의 두 배 = 문을 지나 같은 거리만큼 실내 지점
-	const float Offset = FMath::Abs(DrunkardData ? DrunkardData->BehindDoorOffset : 150.f);
+	// Keeps the capsule height: the points sit on the floor, the actor sits at capsule center
 	DoorEntranceStart = GetActorLocation();
-	DoorEntranceEnd = DoorEntranceStart + GetActorForwardVector() * Offset * 2.f;
+	DoorEntranceEnd = DoorEntranceStart;
+	if (Route.StopPoint)
+	{
+		DoorEntranceEnd = Route.StopPoint->GetActorLocation();
+		DoorEntranceEnd.Z = DoorEntranceStart.Z;
+	}
+	else
+	{
+		UE_LOG(LogDrunkard, Warning, TEXT("[취객 등장] 정지 지점이 없어 생성 지점에서 바로 정지합니다"));
+	}
+	DoorEntranceDir = (DoorEntranceEnd - DoorEntranceStart).GetSafeNormal2D();
 	DoorEntranceElapsed = 0.f;
 	bDoorEntranceActive = true;
+
+	ExitPoint = Route.SpawnPoint;
+	EntranceDoor = Route.Door;
+	bEntranceDoorBreakPending = Route.Door && Route.Door->Implements<UBreakable>() && !IBreakable::Execute_IsBroken(Route.Door);
+}
+
+void ADrunkardNPC::BreakEntranceDoor()
+{
+	bEntranceDoorBreakPending = false;
+
+	AActor* Door = EntranceDoor.Get();
+	if (!Door || IBreakable::Execute_IsBroken(Door)) return;
+
+	FVector DoorOrigin, DoorExtent;
+	Door->GetActorBounds(false, DoorOrigin, DoorExtent);
+
+	// Pieces fly the way the drunkard is walking
+	FBreakHitInfo Info;
+	Info.Source = EBreakSource::Script;
+	Info.ImpactPoint = DoorOrigin;
+	Info.ImpactDirection = GetActorForwardVector().GetSafeNormal();
+	Info.Strength = DrunkardData ? DrunkardData->DoorBreakStrength : 600.f;
+	Info.Instigator = this;
+
+	if (IBreakable::Execute_Break(Door, Info))
+	{
+		UE_LOG(LogDrunkard, Log, TEXT("[문 파괴] %s 파괴"), *Door->GetName());
+	}
 }
 
 void ADrunkardNPC::BeginDive()
@@ -326,6 +366,17 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 
 		// 스윕 없이 이동해 문 콜리전을 그대로 통과
 		SetActorLocation(FMath::Lerp(DoorEntranceStart, DoorEntranceEnd, Alpha), false);
+
+		// Breaks the door the frame the capsule passes its plane. If the walk ends first, the door was placed off the path, break it anyway
+		if (bEntranceDoorBreakPending)
+		{
+			const AActor* Door = EntranceDoor.Get();
+			const bool bCrossed = Door && FVector::DotProduct(GetActorLocation() - Door->GetActorLocation(), DoorEntranceDir) >= 0.f;
+			if (bCrossed || Alpha >= 1.f)
+			{
+				BreakEntranceDoor();
+			}
+		}
 
 		if (Alpha >= 1.f)
 		{
