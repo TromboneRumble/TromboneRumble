@@ -11,6 +11,7 @@ class UAkAudioEvent;
 class UAkComponent;
 class UStaticMeshComponent;
 class UNiagaraComponent;
+class UFloatableComponent;
 class UNiagaraSystem;
 
 UCLASS(Abstract)
@@ -37,6 +38,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Garbage|Components")
 	TObjectPtr<UAkComponent> AkComponent;
+
+	/** Floats on the beer flood. */
+	UPROPERTY(VisibleAnywhere, Category = "Garbage|Components")
+	TObjectPtr<UFloatableComponent> FloatableComponent;
 	// ~Components
 
 	UPROPERTY(EditDefaultsOnly, Category = "Garbage|Sound")

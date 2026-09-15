@@ -4,6 +4,7 @@
 
 #include "AkComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/ActorComponents/FloatableComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -15,6 +16,8 @@ AGarbageBase::AGarbageBase()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	AActor::SetReplicateMovement(true);
+
+	FloatableComponent = CreateDefaultSubobject<UFloatableComponent>(TEXT("FloatableComponent"));
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	if (MeshComp)
@@ -29,6 +32,7 @@ AGarbageBase::AGarbageBase()
 		MeshComp->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 		MeshComp->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
 		MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		MeshComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Block);
 
 		MeshComp->SetLinearDamping(0.0f);
 		MeshComp->SetAngularDamping(0.0f);

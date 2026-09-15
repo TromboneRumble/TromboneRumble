@@ -92,6 +92,12 @@ private:
 	/** Lets every drowning character get up again. */
 	void ReleaseAllDrowning();
 
+	/** Sends the surface Z to the floatable subsystem. Every machine. */
+	void PushWaterLevel();
+
+	/** Tells the floatable subsystem the flood is over. Every machine. */
+	void EndFlood();
+
 	/** DEBUG : Trombone.BeerFlood.Debug 1 */
 	void DebugDrawGimmickState() const;
 	

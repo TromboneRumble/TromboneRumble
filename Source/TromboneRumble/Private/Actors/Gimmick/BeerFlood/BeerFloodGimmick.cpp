@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
+#include "Subsystems/WorldSubsystem/FloatableSubsystem.h"
 #include "Utilities/EnumHelper.h"
 #include "Utilities/TromboneLogs.h"
 #include "Engine/Engine.h"
@@ -69,6 +70,7 @@ void ABeerFloodGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		ReleaseAllDrowning();
 	}
+	EndFlood();
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -103,6 +105,16 @@ void ABeerFloodGimmick::OnRep_BeerFloodState()
 	bNeedsTick |= CVarBeerFloodDebug.GetValueOnGameThread() != 0;
 #endif
 	SetActorTickEnabled(bNeedsTick);
+
+	// The tick is off in Sustain, so the final Z of the rise gets pushed here
+	if (BeerFloodState != EBeerFloodState::Idle)
+	{
+		PushWaterLevel();
+	}
+	else
+	{
+		EndFlood();
+	}
 
 	OnBeerFloodStateChanged(BeerFloodState);
 }
@@ -170,37 +182,47 @@ void ABeerFloodGimmick::Tick(const float DeltaSeconds)
 	}
 #endif
 
-	if (!HasAuthority()) return;
-
-	if (BeerFloodState == EBeerFloodState::Rising)
+	if (HasAuthority())
 	{
-		PhaseElapsed += DeltaSeconds;
-		const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, RisingDuration), 0.f, 1.f);
-		CurrentBeerZ = FMath::Lerp(GetBaseBeerZ(), GetPeakBeerZ(), Alpha);
+		if (BeerFloodState == EBeerFloodState::Rising)
+		{
+			PhaseElapsed += DeltaSeconds;
+			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, RisingDuration), 0.f, 1.f);
+			CurrentBeerZ = FMath::Lerp(GetBaseBeerZ(), GetPeakBeerZ(), Alpha);
+		}
+		else if (BeerFloodState == EBeerFloodState::Draining)
+		{
+			PhaseElapsed += DeltaSeconds;
+			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, DrainingDuration), 0.f, 1.f);
+			CurrentBeerZ = FMath::Lerp(GetPeakBeerZ(), GetBaseBeerZ(), Alpha);
+		}
 	}
-	else if (BeerFloodState == EBeerFloodState::Draining)
+
+	if (BeerFloodState == EBeerFloodState::Rising || BeerFloodState == EBeerFloodState::Draining)
 	{
-		PhaseElapsed += DeltaSeconds;
-		const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, DrainingDuration), 0.f, 1.f);
-		CurrentBeerZ = FMath::Lerp(GetPeakBeerZ(), GetBaseBeerZ(), Alpha);
+		PushWaterLevel();
+	}
+}
+
+void ABeerFloodGimmick::PushWaterLevel()
+{
+	if (UFloatableSubsystem* Floatables = GetWorld() ? GetWorld()->GetSubsystem<UFloatableSubsystem>() : nullptr)
+	{
+		Floatables->SetWaterLevel(CurrentBeerZ);
+	}
+}
+
+void ABeerFloodGimmick::EndFlood()
+{
+	if (UFloatableSubsystem* Floatables = GetWorld() ? GetWorld()->GetSubsystem<UFloatableSubsystem>() : nullptr)
+	{
+		Floatables->EndFlood();
 	}
 }
 
 void ABeerFloodGimmick::UpdateDrowning()
 {
 	if (!HasAuthority()) return;
-
-	// 상승/배수 중에는 수면이 움직이므로 이미 빠진 캐릭터의 기준 높이도 따라가야 한다
-	for (const TWeakObjectPtr<ATromboneCharacterBase>& WeakCharacter : DrowningCharacters)
-	{
-		if (const ATromboneCharacterBase* Character = WeakCharacter.Get())
-		{
-			if (UTromboneRagdollComponent* Ragdoll = Character->GetRagdollComponent())
-			{
-				Ragdoll->SetWaterLevelZ(CurrentBeerZ);
-			}
-		}
-	}
 
 	for (TActorIterator<ATromboneCharacterBase> It(GetWorld()); It; ++It)
 	{
@@ -232,7 +254,6 @@ void ABeerFloodGimmick::UpdateDrowning()
 		{
 			Ragdoll->StartRagdoll();
 		}
-		Ragdoll->SetFloatingEnabled(true, CurrentBeerZ);
 
 		Character->AddBlock(ECharacterBlockReason::Ragdoll);
 
@@ -252,7 +273,6 @@ void ABeerFloodGimmick::ReleaseAllDrowning()
 
 		if (UTromboneRagdollComponent* Ragdoll = Character->GetRagdollComponent())
 		{
-			Ragdoll->SetFloatingEnabled(false);
 			Ragdoll->SetAutoGetUpEnabled(true);
 		}
 
@@ -278,6 +298,11 @@ void ABeerFloodGimmick::DebugDrawGimmickState() const
 	{
 		Text.Appendf(TEXT("다음 전조까지 %.1fs\n"), FMath::Max(0.f, GetWorldTimerManager().GetTimerRemaining(CycleTimerHandle)));
 		Text.Appendf(TEXT("빠진 인원   %d명\n"), DrowningCharacters.Num());
+	}
+
+	if (const UFloatableSubsystem* Floatables = GetWorld() ? GetWorld()->GetSubsystem<UFloatableSubsystem>() : nullptr)
+	{
+		Text.Appendf(TEXT("뜨는 물체   %d개 (젖음 %d)\n"), Floatables->GetCount(), Floatables->GetWetCount());
 	}
 
 	GEngine->AddOnScreenDebugMessage(static_cast<uint64>(GetUniqueID()), 1.f, FColor::Cyan, Text.ToString());
