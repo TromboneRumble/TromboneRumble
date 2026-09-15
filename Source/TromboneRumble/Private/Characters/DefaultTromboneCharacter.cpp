@@ -400,6 +400,7 @@ void ADefaultTromboneCharacter::BeginPlay()
 		CharacterAttributes->InitGroundFriction(GetCharacterMovement()->GroundFriction);
 		CharacterAttributes->InitBrakingDeceleration(GetCharacterMovement()->BrakingDecelerationWalking);
 		CharacterAttributes->InitLocomotionPlayRate(1.f);
+		CharacterAttributes->InitGravityScale(GetCharacterMovement()->GravityScale);
 	}
 	// ~GAS 초기화
 

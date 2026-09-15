@@ -40,6 +40,13 @@ void UCharacterAttributeSet::GetLifetimeReplicatedProps(
         COND_None,
         REPNOTIFY_Always
     );
+
+    DOREPLIFETIME_CONDITION_NOTIFY(
+        UCharacterAttributeSet,
+        GravityScale,
+        COND_None,
+        REPNOTIFY_Always
+    );
 }
 
 void UCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -102,6 +109,19 @@ void UCharacterAttributeSet::PostAttributeChange(const FGameplayAttribute& Attri
             }
         }
     }
+    else if (Attribute == GetGravityScaleAttribute())
+    {
+        if (AActor* Owner = GetOwningActor())
+        {
+            if (ACharacter* Character = Cast<ACharacter>(Owner))
+            {
+                if (UCharacterMovementComponent* Move = Character->GetCharacterMovement())
+                {
+                    Move->GravityScale = NewValue;
+                }
+            }
+        }
+    }
 }
 
 void UCharacterAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
@@ -153,4 +173,19 @@ void UCharacterAttributeSet::OnRep_LocomotionPlayRate(const FGameplayAttributeDa
 {
     // CMC 반영 없음 — AnimInstance 가 매 프레임 GetLocomotionPlayRate() 로 읽어 로코모션 Play Rate 에 사용
     GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, LocomotionPlayRate, OldValue);
+}
+
+void UCharacterAttributeSet::OnRep_GravityScale(const FGameplayAttributeData& OldValue)
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, GravityScale, OldValue);
+    if (AActor* Owner = GetOwningActor())
+    {
+        if (ACharacter* Character = Cast<ACharacter>(Owner))
+        {
+            if (UCharacterMovementComponent* Move = Character->GetCharacterMovement())
+            {
+                Move->GravityScale = GetGravityScale();
+            }
+        }
+    }
 }

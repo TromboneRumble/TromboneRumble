@@ -43,6 +43,10 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_LocomotionPlayRate)
     FGameplayAttributeData LocomotionPlayRate;
 
+    // 중력 기믹용 중력 배율
+    UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_GravityScale)
+    FGameplayAttributeData GravityScale;
+
 protected:
     UFUNCTION()
     void OnRep_MoveSpeed(const FGameplayAttributeData& OldValue);
@@ -56,9 +60,13 @@ protected:
     UFUNCTION()
     void OnRep_LocomotionPlayRate(const FGameplayAttributeData& OldValue);
 
+    UFUNCTION()
+    void OnRep_GravityScale(const FGameplayAttributeData& OldValue);
+
 public:
     ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MoveSpeed)
     ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, GroundFriction)
     ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, BrakingDeceleration)
     ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, LocomotionPlayRate)
+    ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, GravityScale)
 };
