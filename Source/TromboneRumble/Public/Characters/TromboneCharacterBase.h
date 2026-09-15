@@ -9,6 +9,7 @@
 #include "TromboneCharacterBase.generated.h"
 
 class UTromboneRagdollComponent;
+class UFloatableComponent;
 class UAkComponent;
 class UAkAudioEvent;
 class UNiagaraComponent;
@@ -100,6 +101,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UTromboneRagdollComponent> RagdollComponent;
+
+	/** Floats the mesh on the beer flood while ragdolled. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
+	TObjectPtr<UFloatableComponent> FloatableComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Config|Components|Sound")
 	TObjectPtr<UAkComponent> AkSoundComponent;
