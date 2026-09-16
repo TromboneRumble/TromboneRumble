@@ -3,12 +3,15 @@
 #include "Components/ActorComponents/FloatableComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "PhysicsEngine/BodyInstance.h"
+#include "PhysicsEngine/BodySetup.h"
 #include "Subsystems/WorldSubsystem/FloatableSubsystem.h"
 
 UFloatableComponent::UFloatableComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
+	// Forces added before the step land in this frame's simulation. Later groups add a frame of lag that fights the damping
+	PrimaryComponentTick.TickGroup = TG_PrePhysics;
 }
 
 void UFloatableComponent::BeginPlay()
@@ -71,6 +74,16 @@ void UFloatableComponent::TickComponent(const float DeltaTime, const ELevelTick 
 	}
 	if (!bWet) return;
 
+	// Corner sampling needs one body. Skeletal meshes have many small bodies that already tilt on their own
+	if (bSampleBoundsCorners && !Primitive->IsA<USkeletalMeshComponent>())
+	{
+		if (FBodyInstance* Body = Primitive->GetBodyInstance())
+		{
+			ApplyBuoyancyAtCorners(*Primitive, Body);
+		}
+		return;
+	}
+
 	ForEachBody(*Primitive, [this](FBodyInstance* Body) { ApplyBuoyancyToBody(Body); });
 }
 
@@ -97,13 +110,81 @@ void UFloatableComponent::ForEachBody(UPrimitiveComponent& Primitive, const TFun
 	}
 }
 
+float UFloatableComponent::GetBuoyancyAccel() const
+{
+	const float Gravity = GetWorld() ? FMath::Abs(GetWorld()->GetGravityZ()) : 980.f;
+	return Gravity / FMath::Max(0.05f, RelativeDensity);
+}
+
+float UFloatableComponent::GetFullDepth(const FVector& Size) const
+{
+	return FullSubmersionDepth > 0.f ? FullSubmersionDepth : FMath::Max(1.f, Size.GetAbsMin() * 0.5f);
+}
+
+float UFloatableComponent::GetSubmersion(const float Z, const float FullDepth) const
+{
+	return FMath::Clamp((WaterZ - Z) / FullDepth, 0.f, 1.f);
+}
+
 void UFloatableComponent::ApplyBuoyancyToBody(FBodyInstance* Body) const
 {
-	const float Depth = WaterZ - Body->GetUnrealWorldTransform().GetLocation().Z;
-	if (Depth <= 0.f) return;
+	const FBox Bounds = Body->GetBodyBounds();
+	const float Submersion = GetSubmersion(Bounds.GetCenter().Z, GetFullDepth(Bounds.GetSize()));
+	if (Submersion <= 0.f) return;
 
-	const float Submersion = FMath::Clamp(Depth / FMath::Max(1.f, FullSubmersionDepth), 0.f, 1.f);
-	Body->AddForce(FVector::UpVector * BuoyancyAccel * Submersion, true, true);
+	Body->AddForce(FVector::UpVector * GetBuoyancyAccel() * Submersion, true, true);
+}
+
+void UFloatableComponent::ApplyBuoyancyAtCorners(const UPrimitiveComponent& Primitive, FBodyInstance* Body) const
+{
+	// Collision box matches the mass better than the render bounds
+	const UBodySetup* Setup = Body->GetBodySetup();
+	FBox LocalBox = Setup ? Setup->AggGeom.CalcAABB(FTransform::Identity) : FBox(ForceInit);
+	if (!LocalBox.IsValid)
+	{
+		LocalBox = Primitive.GetLocalBounds().GetBox();
+	}
+
+	const FTransform& ToWorld = Primitive.GetComponentTransform();
+	const float FullDepth = GetFullDepth(LocalBox.GetSize() * ToWorld.GetScale3D());
+	// AddForceAtPosition takes a force, not an acceleration, so scale by mass here
+	const float MassPerCorner = Body->GetBodyMass() / 8.f;
+	const float Accel = GetBuoyancyAccel();
+
+	for (int32 Index = 0; Index < 8; ++Index)
+	{
+		const FVector LocalCorner(
+			(Index & 1) ? LocalBox.Max.X : LocalBox.Min.X,
+			(Index & 2) ? LocalBox.Max.Y : LocalBox.Min.Y,
+			(Index & 4) ? LocalBox.Max.Z : LocalBox.Min.Z);
+		const FVector Corner = ToWorld.TransformPosition(LocalCorner);
+
+		const float Submersion = GetSubmersion(Corner.Z, FullDepth);
+		if (Submersion <= 0.f) continue;
+
+		const float VerticalSpeed = Body->GetUnrealWorldVelocityAtPoint(Corner).Z;
+		const float Force = MassPerCorner * Submersion * (Accel - VerticalSpeed * CornerDrag);
+		Body->AddForceAtPosition(FVector::UpVector * Force, Corner, true);
+	}
+}
+
+void UFloatableComponent::ApplyWetTilt(UPrimitiveComponent& Primitive) const
+{
+	if (WetTiltSpeed <= 0.f || Primitive.IsA<USkeletalMeshComponent>()) return;
+
+	FBodyInstance* Body = Primitive.GetBodyInstance();
+	if (!Body) return;
+
+	const AActor* Owner = GetOwner();
+	FRandomStream Stream(Owner ? static_cast<int32>(GetTypeHash(Owner->GetFName())) : 0);
+	FVector Axis = Stream.VRand();
+	Axis.Z = 0.f;
+	if (!Axis.Normalize())
+	{
+		Axis = FVector::ForwardVector;
+	}
+
+	Body->SetAngularVelocityInRadians(Axis * FMath::DegreesToRadians(WetTiltSpeed), true);
 }
 
 void UFloatableComponent::SetWet(const bool bNewWet, UPrimitiveComponent* Primitive)
@@ -122,6 +203,7 @@ void UFloatableComponent::SetWet(const bool bNewWet, UPrimitiveComponent* Primit
 		}
 		// A prop resting on the floor is asleep and would ignore the force
 		Primitive->WakeAllRigidBodies();
+		ApplyWetTilt(*Primitive);
 	}
 
 	const float Linear = bWet ? WaterLinearDamping : SavedLinearDamping;
