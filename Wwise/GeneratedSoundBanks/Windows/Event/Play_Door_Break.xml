@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{B78A7CCA-50E6-AB91-7D82-88A3C7F98543}">
+			<ObjectPath>Play_Door_Break</ObjectPath>
+			<ShortName>Play_Door_Break</ShortName>
+			<Path>Event/Play_Door_Break.bnk</Path>
+			<Media>
+				<File Id="661274569" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Door Break\Wood door break.wav</ShortName>
+					<Path>Media/661274569.wem</Path>
+					<CachePath>SFX/Door Break/Wood door break_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3887461750" Name="Play_Door_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Door_Break" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.0844166" DurationMax="1.0844166">
+					<MediaRefs>
+						<MediaRef Id="661274569"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{869403C3-5D91-0C9F-954C-EA2D05A65DD3}</FileHash>
+</SoundBanksInfo>

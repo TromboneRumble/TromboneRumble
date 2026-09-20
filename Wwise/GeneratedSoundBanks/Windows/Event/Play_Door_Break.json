@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3887461750",
+    "Type": "Event",
+    "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
+    "Language": "SFX",
+    "Hash": "{B78A7CCA-50E6-AB91-7D82-88A3C7F98543}",
+    "ObjectPath": "Play_Door_Break",
+    "ShortName": "Play_Door_Break",
+    "Path": "Event/Play_Door_Break.bnk",
+    "Media": [
+     {
+      "Id": "661274569",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Door Break\\Wood door break.wav",
+      "Path": "Media/661274569.wem",
+      "CachePath": "SFX/Door Break/Wood door break_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3887461750",
+      "Name": "Play_Door_Break",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Door_Break",
+      "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.0844166",
+      "DurationMax": "1.0844166",
+      "MediaRefs": [
+       {
+        "Id": "661274569"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{5E30D5E9-9ADA-FF89-BA40-12E321374EF7}"
+ }
+}

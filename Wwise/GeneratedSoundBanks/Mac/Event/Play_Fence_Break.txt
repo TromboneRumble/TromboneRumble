@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	258684309	Play_Fence_Break			\Default Work Unit\Object_SFX\Play_Fence_Break	
+

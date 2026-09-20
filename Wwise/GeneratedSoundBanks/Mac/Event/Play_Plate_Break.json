@@ -1,0 +1,109 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2158942082",
+    "Type": "Event",
+    "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
+    "Language": "SFX",
+    "Hash": "{F92C806C-D308-70D2-010E-0F85CB9BDBBB}",
+    "ObjectPath": "Play_Plate_Break",
+    "ShortName": "Play_Plate_Break",
+    "Path": "Event/Play_Plate_Break.bnk",
+    "Media": [
+     {
+      "Id": "96843883",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Plate\\Plate_B_1.wav",
+      "Path": "Media/96843883.wem",
+      "CachePath": "SFX/Plate/Plate_B_1_818F3B66.wem"
+     },
+     {
+      "Id": "153100519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Plate\\Plate_B_3.wav",
+      "Path": "Media/153100519.wem",
+      "CachePath": "SFX/Plate/Plate_B_3_818F3B66.wem"
+     },
+     {
+      "Id": "252552275",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass Debris\\Glass_debris_3.wav",
+      "Path": "Media/252552275.wem",
+      "CachePath": "SFX/Glass Debris/Glass_debris_3_818F3B66.wem"
+     },
+     {
+      "Id": "397572674",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass Debris\\Glass_debris_1.wav",
+      "Path": "Media/397572674.wem",
+      "CachePath": "SFX/Glass Debris/Glass_debris_1_818F3B66.wem"
+     },
+     {
+      "Id": "425548802",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass Debris\\Glass_debris_2.wav",
+      "Path": "Media/425548802.wem",
+      "CachePath": "SFX/Glass Debris/Glass_debris_2_818F3B66.wem"
+     },
+     {
+      "Id": "548835060",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Plate\\Plate_B_2.wav",
+      "Path": "Media/548835060.wem",
+      "CachePath": "SFX/Plate/Plate_B_2_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2158942082",
+      "Name": "Play_Plate_Break",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Plate_Break",
+      "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.044",
+      "DurationMax": "1.276",
+      "MediaRefs": [
+       {
+        "Id": "96843883"
+       },
+       {
+        "Id": "153100519"
+       },
+       {
+        "Id": "252552275"
+       },
+       {
+        "Id": "397572674"
+       },
+       {
+        "Id": "425548802"
+       },
+       {
+        "Id": "548835060"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{FB741239-47DE-4090-B805-0343B2135416}"
+ }
+}

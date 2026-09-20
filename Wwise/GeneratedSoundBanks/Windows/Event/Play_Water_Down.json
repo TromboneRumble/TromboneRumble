@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3686247382",
+    "Type": "Event",
+    "GUID": "{C3AF1503-CB1F-459E-82B9-909AC87A4D1D}",
+    "Language": "SFX",
+    "Hash": "{589FA45D-FFCD-3B07-EBEC-58BC6C783BAE}",
+    "ObjectPath": "Play_Water_Down",
+    "ShortName": "Play_Water_Down",
+    "Path": "Event/Play_Water_Down.bnk",
+    "Media": [
+     {
+      "Id": "29962281",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Water up Down\\Water_Down.wav",
+      "Path": "Media/29962281.wem",
+      "CachePath": "SFX/Water up Down/Water_Down_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3686247382",
+      "Name": "Play_Water_Down",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Water_Down",
+      "GUID": "{C3AF1503-CB1F-459E-82B9-909AC87A4D1D}",
+      "DurationType": "OneShot",
+      "DurationMin": "5.2373333",
+      "DurationMax": "5.2373333",
+      "MediaRefs": [
+       {
+        "Id": "29962281"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{19CCE7E8-E445-8E13-AF39-64CDD31A7248}"
+ }
+}

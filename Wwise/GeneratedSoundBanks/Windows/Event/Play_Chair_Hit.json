@@ -1,0 +1,97 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1884231791",
+    "Type": "Event",
+    "GUID": "{BA8C2B7E-7225-486F-93A5-89E87388A573}",
+    "Language": "SFX",
+    "Hash": "{0E643459-FAA5-3BAF-7C60-1E747EFC0F61}",
+    "ObjectPath": "Play_Chair_Hit",
+    "ShortName": "Play_Chair_Hit",
+    "Path": "Event/Play_Chair_Hit.bnk",
+    "Media": [
+     {
+      "Id": "226435336",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Chair\\Chiar_Hit_4.wav",
+      "Path": "Media/226435336.wem",
+      "CachePath": "SFX/Chair/Chiar_Hit_4_818F3B66.wem"
+     },
+     {
+      "Id": "438869768",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Chair\\Chiar_Hit_2.wav",
+      "Path": "Media/438869768.wem",
+      "CachePath": "SFX/Chair/Chiar_Hit_2_818F3B66.wem"
+     },
+     {
+      "Id": "532306073",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Chair\\Chiar_Hit_3.wav",
+      "Path": "Media/532306073.wem",
+      "CachePath": "SFX/Chair/Chiar_Hit_3_818F3B66.wem"
+     },
+     {
+      "Id": "532844207",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Chair\\Chiar_Hit_5.wav",
+      "Path": "Media/532844207.wem",
+      "CachePath": "SFX/Chair/Chiar_Hit_5_818F3B66.wem"
+     },
+     {
+      "Id": "988510024",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Chair\\Chiar_Hit_1.wav",
+      "Path": "Media/988510024.wem",
+      "CachePath": "SFX/Chair/Chiar_Hit_1_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1884231791",
+      "Name": "Play_Chair_Hit",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Chair_Hit",
+      "GUID": "{BA8C2B7E-7225-486F-93A5-89E87388A573}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.49546003",
+      "DurationMax": "0.98207986",
+      "MediaRefs": [
+       {
+        "Id": "226435336"
+       },
+       {
+        "Id": "438869768"
+       },
+       {
+        "Id": "532306073"
+       },
+       {
+        "Id": "532844207"
+       },
+       {
+        "Id": "988510024"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{09426AA3-34DF-FF62-27C5-F19864F5CEF9}"
+ }
+}

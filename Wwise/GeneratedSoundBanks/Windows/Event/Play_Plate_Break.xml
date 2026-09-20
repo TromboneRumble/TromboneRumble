@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2158942082" Type="Event" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" Language="SFX" Hash="{F92C806C-D308-70D2-010E-0F85CB9BDBBB}">
+			<ObjectPath>Play_Plate_Break</ObjectPath>
+			<ShortName>Play_Plate_Break</ShortName>
+			<Path>Event/Play_Plate_Break.bnk</Path>
+			<Media>
+				<File Id="96843883" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Plate\Plate_B_1.wav</ShortName>
+					<Path>Media/96843883.wem</Path>
+					<CachePath>SFX/Plate/Plate_B_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="153100519" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Plate\Plate_B_3.wav</ShortName>
+					<Path>Media/153100519.wem</Path>
+					<CachePath>SFX/Plate/Plate_B_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="252552275" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Glass Debris\Glass_debris_3.wav</ShortName>
+					<Path>Media/252552275.wem</Path>
+					<CachePath>SFX/Glass Debris/Glass_debris_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="397572674" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Glass Debris\Glass_debris_1.wav</ShortName>
+					<Path>Media/397572674.wem</Path>
+					<CachePath>SFX/Glass Debris/Glass_debris_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="425548802" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Glass Debris\Glass_debris_2.wav</ShortName>
+					<Path>Media/425548802.wem</Path>
+					<CachePath>SFX/Glass Debris/Glass_debris_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="548835060" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Plate\Plate_B_2.wav</ShortName>
+					<Path>Media/548835060.wem</Path>
+					<CachePath>SFX/Plate/Plate_B_2_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2158942082" Name="Play_Plate_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Plate_Break" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.044" DurationMax="1.276">
+					<MediaRefs>
+						<MediaRef Id="96843883"/>
+						<MediaRef Id="153100519"/>
+						<MediaRef Id="252552275"/>
+						<MediaRef Id="397572674"/>
+						<MediaRef Id="425548802"/>
+						<MediaRef Id="548835060"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{4517813A-4047-B6D6-9CCB-5F5B4212FA92}</FileHash>
+</SoundBanksInfo>
