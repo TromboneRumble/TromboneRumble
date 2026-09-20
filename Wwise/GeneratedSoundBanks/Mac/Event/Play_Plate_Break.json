@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
     "Language": "SFX",
-    "Hash": "{F92C806C-D308-70D2-010E-0F85CB9BDBBB}",
+    "Hash": "{718DAD03-4919-C9A7-4E8E-9A4BF221C056}",
     "ObjectPath": "Play_Plate_Break",
     "ShortName": "Play_Plate_Break",
     "Path": "Event/Play_Plate_Break.bnk",
@@ -78,8 +78,8 @@
       "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "1.044",
-      "DurationMax": "1.276",
+      "DurationMin": "1.0000196",
+      "DurationMax": "1.294269",
       "MediaRefs": [
        {
         "Id": "96843883"
@@ -104,6 +104,6 @@
     ]
    }
   ],
-  "FileHash": "{FB741239-47DE-4090-B805-0343B2135416}"
+  "FileHash": "{2E8D1509-F427-F401-72B8-785228F2303C}"
  }
 }

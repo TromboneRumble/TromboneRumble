@@ -774,7 +774,7 @@
 										<Property Name="Diffusion" Type="Real32" Value="80"/>
 										<Property Name="DryLevel" Type="Real32" Value="-2"/>
 										<Property Name="ERLevel" Type="Real32" Value="-23"/>
-										<Property Name="ERPattern" Type="int32" Value="15"/>
+										<Property Name="ERPattern" Type="int32" Value="13"/>
 										<Property Name="EnableToneControls" Type="bool" Value="True"/>
 										<Property Name="Filter1Freq" Type="Real32" Value="590"/>
 										<Property Name="Filter1InsertPos" Type="int32" Value="2"/>

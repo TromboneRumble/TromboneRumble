@@ -6,14 +6,14 @@
   "SoundBankVersion": "150",
   "SoundBanks": [
    {
-    "Id": "356551040",
+    "Id": "3680363658",
     "Type": "Bus",
-    "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
+    "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
     "Language": "SFX",
-    "Hash": "{926578F3-01E2-6BC9-FFDC-683625E43774}",
-    "ObjectPath": "Map_A_Reverb",
-    "ShortName": "Map_A_Reverb",
-    "Path": "Bus/Map_A_Reverb.bnk",
+    "Hash": "{8E19AB4A-8ECD-025C-B8DB-0890214C16A2}",
+    "ObjectPath": "Map_C_Reverb",
+    "ShortName": "Map_C_Reverb",
+    "Path": "Bus/Map_C_Reverb.bnk",
     "Plugins": {
      "ShareSets": [
       {
@@ -28,10 +28,10 @@
     },
     "AuxBusses": [
      {
-      "Id": "356551040",
-      "Name": "Map_A_Reverb",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_A_Reverb",
-      "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
+      "Id": "3680363658",
+      "Name": "Map_C_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_C_Reverb",
+      "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
       "PluginRefs": {
        "ShareSets": [
         {
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{3CA19DA5-9255-2AFE-1702-6D5E92740949}"
+  "FileHash": "{FB9BB7ED-7734-DE70-BC47-BFFE1B89D7E4}"
  }
 }

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="356551040" Type="Bus" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}" Language="SFX" Hash="{926578F3-01E2-6BC9-FFDC-683625E43774}">
-			<ObjectPath>Map_A_Reverb</ObjectPath>
-			<ShortName>Map_A_Reverb</ShortName>
-			<Path>Bus/Map_A_Reverb.bnk</Path>
+		<SoundBank Id="3680363658" Type="Bus" GUID="{D5A808DA-7F35-4969-B38F-D60D48877094}" Language="SFX" Hash="{8E19AB4A-8ECD-025C-B8DB-0890214C16A2}">
+			<ObjectPath>Map_C_Reverb</ObjectPath>
+			<ShortName>Map_C_Reverb</ShortName>
+			<Path>Bus/Map_C_Reverb.bnk</Path>
 			<Plugins>
 				<ShareSets>
 					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
 				</ShareSets>
 			</Plugins>
 			<AuxBusses>
-				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
+				<AuxBus Id="3680363658" Name="Map_C_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_C_Reverb" GUID="{D5A808DA-7F35-4969-B38F-D60D48877094}">
 					<PluginRefs>
 						<ShareSets>
 							<PluginRef Id="3701691487"/>
@@ -21,5 +21,5 @@
 			</AuxBusses>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8F496738-92A5-3975-761A-5470FDA78D4D}</FileHash>
+	<FileHash>{F1C31A95-A47E-209C-DC70-7F0A57366118}</FileHash>
 </SoundBanksInfo>

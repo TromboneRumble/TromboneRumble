@@ -383,6 +383,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Glass_Debris" ID="{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}">
+							<ChildrenList>
+								<Action Name="" ID="{8D9C3A5F-635F-4957-A20C-844B5DE42C0A}" ShortID="302048793">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Glass_Break_Debris" ID="{96B60B60-C18B-4697-B12C-2C607CE23BFA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">

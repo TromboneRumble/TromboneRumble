@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2158942082" Type="Event" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" Language="SFX" Hash="{F92C806C-D308-70D2-010E-0F85CB9BDBBB}">
+		<SoundBank Id="2158942082" Type="Event" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" Language="SFX" Hash="{718DAD03-4919-C9A7-4E8E-9A4BF221C056}">
 			<ObjectPath>Play_Plate_Break</ObjectPath>
 			<ShortName>Play_Plate_Break</ShortName>
 			<Path>Event/Play_Plate_Break.bnk</Path>
@@ -38,7 +38,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="2158942082" Name="Play_Plate_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Plate_Break" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.044" DurationMax="1.276">
+				<Event Id="2158942082" Name="Play_Plate_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Plate_Break" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.0000196" DurationMax="1.294269">
 					<MediaRefs>
 						<MediaRef Id="96843883"/>
 						<MediaRef Id="153100519"/>
@@ -51,5 +51,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{51AF8E28-E479-49E4-9670-B25BF978BDC1}</FileHash>
+	<FileHash>{F47FB3E4-49F3-88EA-DD4C-814B87EB11B8}</FileHash>
 </SoundBanksInfo>

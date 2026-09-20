@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0C7F92B1-50F9-4686-8377-53DE94455FBB}",
     "Language": "SFX",
-    "Hash": "{E94B409C-11FA-BAB5-0EBB-C83A8BE0FCD9}",
+    "Hash": "{DEF3CFC4-ECE5-B581-6900-7BB966B068BE}",
     "ObjectPath": "Play_Wine_Break",
     "ShortName": "Play_Wine_Break",
     "Path": "Event/Play_Wine_Break.bnk",
@@ -78,8 +78,8 @@
       "GUID": "{0C7F92B1-50F9-4686-8377-53DE94455FBB}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
-      "DurationMin": "1.044",
-      "DurationMax": "1.276",
+      "DurationMin": "1.0000196",
+      "DurationMax": "1.294269",
       "MediaRefs": [
        {
         "Id": "226158908"
@@ -104,6 +104,6 @@
     ]
    }
   ],
-  "FileHash": "{A3E45C34-1015-DA75-6FFC-979FECEBB672}"
+  "FileHash": "{BB921429-EF39-332E-80B8-4C338E916126}"
  }
 }
