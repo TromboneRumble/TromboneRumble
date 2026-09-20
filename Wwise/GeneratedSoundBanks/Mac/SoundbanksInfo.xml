@@ -2676,7 +2676,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2401049040" Type="Event" GUID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" Language="SFX" Hash="{0B79F4A4-4867-B3A2-B257-EF360FC18A8F}">
+		<SoundBank Id="2401049040" Type="Event" GUID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" Language="SFX" Hash="{1838E1C9-C19D-49A7-5B8C-594585BE4B70}">
 			<ObjectPath>Play_Player_Pain</ObjectPath>
 			<ShortName>Play_Player_Pain</ShortName>
 			<Path>Event/Play_Player_Pain.bnk</Path>
@@ -2997,7 +2997,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="2901149947" Type="Event" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" Language="SFX" Hash="{99EE1B90-CE44-E24C-8A81-84DD0073F06A}">
+		<SoundBank Id="2901149947" Type="Event" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" Language="SFX" Hash="{410A35CB-2871-9FC7-78B2-4D221354A3DA}">
 			<ObjectPath>Play_Player_Scream</ObjectPath>
 			<ShortName>Play_Player_Scream</ShortName>
 			<Path>Event/Play_Player_Scream.bnk</Path>
@@ -3005,11 +3005,11 @@
 				<File Id="923323399" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Player_Falling_Scream.wav</ShortName>
 					<Path>Media/923323399.wem</Path>
-					<CachePath>SFX/Player_Falling_Scream_818F3B66.wem</CachePath>
+					<CachePath>SFX/Player_Falling_Scream_AC6FA047.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="2901149947" Name="Play_Player_Scream" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Scream" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" DurationType="OneShot" DurationMin="2.4190834" DurationMax="2.4190834">
+				<Event Id="2901149947" Name="Play_Player_Scream" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Scream" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" DurationType="OneShot" DurationMin="1.2365162" DurationMax="1.2365162">
 					<MediaRefs>
 						<MediaRef Id="923323399"/>
 					</MediaRefs>
@@ -4263,5 +4263,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{ED9A365B-E393-E567-A611-6319B4480D64}</FileHash>
+	<FileHash>{FCB7A75D-EF78-6084-3C9E-E8DA09109235}</FileHash>
 </SoundBanksInfo>

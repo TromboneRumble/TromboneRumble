@@ -1605,6 +1605,19 @@
 										<RandomSequenceContainer Name="Object_Glass_Break_Debris" ID="{96B60B60-C18B-4697-B12C-2C607CE23BFA}" ShortID="88977984">
 											<PropertyList>
 												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="Pitch" Type="int32">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{D61A2854-3950-4529-9B88-E5FE71292ABB}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="76"/>
+																	<Property Name="Min" Type="Real64" Value="-25"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
 												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 												<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
@@ -4961,6 +4974,11 @@
 									</ReferenceList>
 									<ChildrenList>
 										<AudioFileSource Name="Player_Falling_Scream" ID="{689B06BE-95E3-45FD-BCE8-2774D54CE8B5}">
+											<PropertyList>
+												<Property Name="FadeOutDuration" Type="Real64" Value="0.806694905789732"/>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+												<Property Name="TrimEnd" Type="Real64" Value="1.23651629057969"/>
+											</PropertyList>
 											<Language>SFX</Language>
 											<AudioFile>Player_Falling_Scream.wav</AudioFile>
 											<MediaIDList>
@@ -4980,7 +4998,7 @@
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>6</Value>
+												<Value>10</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
