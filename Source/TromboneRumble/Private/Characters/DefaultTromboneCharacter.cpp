@@ -15,6 +15,7 @@
 #include "Components/ActorComponents/InteractorComponent.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
 #include "Components/StaticMeshComponents/RingHitBoxComponent.h"
+#include "Components/ActorComponents/NoteRingOccluderComponent.h"
 #include "Components/ActorComponents/RageComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Components/WidgetComponent.h"
@@ -70,6 +71,7 @@ ADefaultTromboneCharacter::ADefaultTromboneCharacter()
 	{
 		RingHitBoxComponent->SetupAttachment(GetMesh());
 	}
+	NoteRingOccluderComponent = CreateDefaultSubobject<UNoteRingOccluderComponent>(TEXT("NoteRingOccluderComponent"));
 
 	ComboWidgetAnchorComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ComboWidgetAnchorComponent"));
 	ComboWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ComboWidgetComponent"));
