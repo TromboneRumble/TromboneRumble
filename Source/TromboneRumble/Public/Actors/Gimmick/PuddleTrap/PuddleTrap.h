@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayEffectTypes.h"  
+#include "Utilities/Defines.h"
 #include "PuddleTrap.generated.h"
 
 class UAkAudioEvent;
@@ -23,6 +24,10 @@ class TROMBONERUMBLE_API APuddleTrap : public AActor
 public:	
 	APuddleTrap();
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/** Server only, before FinishSpawning. Tells the puddle which gimmick made it, so BeginPlay reads the right config entry. */
+	void SetGimmickType(EGimmickType InGimmickType) { GimmickType = InGimmickType; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -58,19 +63,28 @@ protected:
 	TSubclassOf<UGameplayEffect> PuddleSlowEffectClass;
 	//~Components
 
+	// 아래 세 값은 BeginPlay 에서 UWaterDropGimmickConfig 의 값으로 채워진다. 여기서는 고칠 수 없다
+
 	/** 웅덩이가 생성된 후 최소 크기에서 최종 크기까지 커지는 데 걸리는 시간 (초) */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "확장 소요 시간"))
+	UPROPERTY(BlueprintReadOnly, Category = "Puddle|Config")
 	float GrowDuration = 0.5f;
 
 	/** 웅덩이가 최대 크기를 유지하는 시간이며, 이 시간이 지나면 서서히 사라지기 시작합니다. (초) */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "소멸 시작 대기 시간"))
+	UPROPERTY(BlueprintReadOnly, Category = "Puddle|Config")
 	float FadeDelay = 10.f;
 
 	/** 웅덩이가 완전히 투명해져서 사라질 때까지 걸리는 시간 (초) */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Puddle|Config", meta = (DisplayName = "소멸 단계 지속 시간"))
+	UPROPERTY(BlueprintReadOnly, Category = "Puddle|Config")
 	float FadeDuration = 1.f;
 
 private:
+	/**
+	 * Puddle or Ice. The water drop spawner and the snow drop spawner share these classes, so the type is passed down from the spawner.
+	 * Replicated, because clients read the puddle times in BeginPlay too.
+	 */
+	UPROPERTY(Replicated)
+	EGimmickType GimmickType = EGimmickType::Puddle;
+
 	float GrowElapsed = 0.f;
 	bool bGrowing = false;
 

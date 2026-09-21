@@ -5,26 +5,13 @@
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/ActorComponents/EquipmentComponent.h"
-#include "Data/DrunkardDataAsset.h"
+#include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Items/WeaponBase.h"
 #include "Utilities/TromboneLogs.h"
 
-
-namespace
-{
-	constexpr float FallbackEnterDuration = 1.f;
-	constexpr float FallbackEnterBurstDuration = 0.5f;
-	constexpr float FallbackChaseDuration = 10.f;
-	constexpr float FallbackExitTimeout = 10.f;
-	constexpr float FallbackCaptureKnockbackForce = 300.f;
-	constexpr float FallbackCaptureKnockbackUpForce = 200.f;
-	constexpr float FallbackCaptureKnockbackForceNoInstrument = 300.f;
-	constexpr float FallbackCaptureKnockbackUpForceNoInstrument = 200.f;
-	constexpr float FallbackDiveTimeout = 10.f;
-}
 
 UDrunkardStateComponent::UDrunkardStateComponent()
 {
@@ -53,9 +40,9 @@ void UDrunkardStateComponent::BeginEntering(const FDrunkardRoute& Route)
 	}
 
 	// 통과 완료 통지가 안 오는 사고 대비 안전망. 정상 흐름에선 HandleDoorEntranceFinished가 타이머를 다시 감는다
-	const UDrunkardDataAsset* Data = GetData();
-	const float SafetyTime = (Data ? Data->EnterBurstDuration : FallbackEnterBurstDuration)
-		+ (Data ? Data->EnterDuration : FallbackEnterDuration) + 2.f;
+	const UDrunkardGimmickConfig& Config = GetConfig();
+	const float SafetyTime = Config.EnterBurstDuration
+		+ Config.EnterDuration + 2.f;
 	GetWorld()->GetTimerManager().SetTimer(
 		EnterTimerHandle,
 		this,
@@ -70,12 +57,12 @@ void UDrunkardStateComponent::HandleDoorEntranceFinished()
 	if (!HasAuthority() || State != EDrunkardState::Entering) return;
 
 	// 등장 후 정지: 잠깐 멈췄다가 추격 시작
-	const UDrunkardDataAsset* Data = GetData();
+	const UDrunkardGimmickConfig& Config = GetConfig();
 	GetWorld()->GetTimerManager().SetTimer(
 		EnterTimerHandle,
 		this,
 		&ThisClass::BeginChasing,
-		Data ? Data->EnterDuration : FallbackEnterDuration,
+		Config.EnterDuration,
 		false
 	);
 }
@@ -88,8 +75,8 @@ void UDrunkardStateComponent::BeginChasing()
 	SetState(EDrunkardState::Chasing);
 
 	// 지속시간 계산 시작 시점 = 문을 완전히 나온 시점
-	const UDrunkardDataAsset* Data = GetData();
-	const float ChaseDuration = Data ? Data->ChaseDuration : FallbackChaseDuration;
+	const UDrunkardGimmickConfig& Config = GetConfig();
+	const float ChaseDuration = Config.ChaseDuration;
 	GetWorld()->GetTimerManager().SetTimer(
 		ChaseTimerHandle,
 		this,
@@ -109,12 +96,12 @@ void UDrunkardStateComponent::BeginExiting()
 
 	// 제한 시간 안에 문에 도달해 소멸하지 못하면(경로 막힘, 도달 판정 실패 등) 강제 소멸.
 	// 스포너의 재스폰이 NPC 소멸에 걸려 있어, 여기서 끼면 기믹 전체가 영구 정지한다
-	const UDrunkardDataAsset* Data = GetData();
+	const UDrunkardGimmickConfig& Config = GetConfig();
 	GetWorld()->GetTimerManager().SetTimer(
 		ExitTimerHandle,
 		this,
 		&ThisClass::HandleExitTimeout,
-		Data ? Data->ExitTimeout : FallbackExitTimeout,
+		Config.ExitTimeout,
 		false
 	);
 }
@@ -175,7 +162,7 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 		}
 	}
 
-	const UDrunkardDataAsset* Data = GetData();
+	const UDrunkardGimmickConfig& Config = GetConfig();
 
 	FHitData HitData;
 	HitData.HitDirection = (TargetCharacter->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal2D();
@@ -185,13 +172,13 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 
 	if (bHasInstrument)
 	{
-		HitData.KnockbackForce = Data ? Data->CaptureKnockbackForce : FallbackCaptureKnockbackForce;
-		HitData.KnockbackUpForce = Data ? Data->CaptureKnockbackUpForce : FallbackCaptureKnockbackUpForce;
+		HitData.KnockbackForce = Config.CaptureKnockbackForce;
+		HitData.KnockbackUpForce = Config.CaptureKnockbackUpForce;
 	}
 	else
 	{
-		HitData.KnockbackForce = Data ? Data->CaptureKnockbackForceNoInstrument : FallbackCaptureKnockbackForceNoInstrument;
-		HitData.KnockbackUpForce = Data ? Data->CaptureKnockbackUpForceNoInstrument : FallbackCaptureKnockbackUpForceNoInstrument;
+		HitData.KnockbackForce = Config.CaptureKnockbackForceNoInstrument;
+		HitData.KnockbackUpForce = Config.CaptureKnockbackUpForceNoInstrument;
 	}
 
 	const bool bApplied = ICombatReceiver::Execute_OnHitReceived(TargetCharacter, HitData);
@@ -226,12 +213,12 @@ void UDrunkardStateComponent::BeginDiving()
 	}
 
 	// 제한 시간 후 강제 퇴장
-	const UDrunkardDataAsset* Data = GetData();
+	const UDrunkardGimmickConfig& Config = GetConfig();
 	GetWorld()->GetTimerManager().SetTimer(
 		DiveTimerHandle,
 		this,
 		&ThisClass::HandleDiveFinished,
-		Data ? Data->DiveTimeout : FallbackDiveTimeout,
+		Config.DiveTimeout,
 		false
 	);
 }
@@ -296,8 +283,8 @@ ADefaultTromboneCharacter* UDrunkardStateComponent::PickTargetByRankWeight(const
 	Candidates.Sort([](const FCandidate& A, const FCandidate& B) { return A.Score > B.Score; });
 
 	// 순위 가중치 랜덤 (순위 높을수록 확률↑). 배열보다 낮은 순위는 마지막 가중치 사용
-	const UDrunkardDataAsset* Data = GetData();
-	const TArray<float>* Weights = (Data && !Data->TargetRankWeights.IsEmpty()) ? &Data->TargetRankWeights : nullptr;
+	const UDrunkardGimmickConfig& Config = GetConfig();
+	const TArray<float>* Weights = !Config.TargetRankWeights.IsEmpty() ? &Config.TargetRankWeights : nullptr;
 
 	auto GetRankWeight = [Weights](const int32 RankIndex) -> float
 	{
@@ -348,10 +335,10 @@ ADefaultTromboneCharacter* UDrunkardStateComponent::PickRandomTarget(const ADefa
 	return Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
 }
 
-const UDrunkardDataAsset* UDrunkardStateComponent::GetData() const
+const UDrunkardGimmickConfig& UDrunkardStateComponent::GetConfig() const
 {
 	const ADrunkardNPC* NPC = Cast<ADrunkardNPC>(GetOwner());
-	return NPC ? NPC->GetDrunkardData() : nullptr;
+	return NPC ? NPC->GetDrunkardConfig() : *GetDefault<UDrunkardGimmickConfig>();
 }
 
 bool UDrunkardStateComponent::HasAuthority() const

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Utilities/Defines.h"
 #include "WaterDrop.generated.h"
 
 class USphereComponent;
@@ -21,6 +22,9 @@ class TROMBONERUMBLE_API AWaterDrop : public AActor
 public:
 	AWaterDrop();
 
+	/** Server only. The spawner passes its gimmick type, and the drop hands it on to the puddle it leaves. */
+	void SetGimmickType(EGimmickType InGimmickType) { GimmickType = InGimmickType; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -37,5 +41,8 @@ protected:
 	TSubclassOf<APuddleTrap> PuddleTrapClass;
 
 	bool bHasSpawnedPuddle = false;
+
+	/** Puddle or Ice. Only the server needs it, so it is not replicated. */
+	EGimmickType GimmickType = EGimmickType::Puddle;
 
 };

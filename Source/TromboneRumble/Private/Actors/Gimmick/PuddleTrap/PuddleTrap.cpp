@@ -2,6 +2,9 @@
 
 
 #include "Actors/Gimmick/PuddleTrap/PuddleTrap.h"
+#include "Actors/Gimmick/GimmickManager.h"
+#include "Data/Gimmick/WaterDropGimmickConfig.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/Character.h"
@@ -63,9 +66,26 @@ void APuddleTrap::Tick(float DeltaTime)
 }
 
 
+void APuddleTrap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ThisClass, GimmickType, COND_InitialOnly);
+}
+
 void APuddleTrap::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// A puddle lives for a few seconds, so the times are copied once here instead of being read every tick
+	const UWaterDropGimmickConfig* Config = Cast<UWaterDropGimmickConfig>(AGimmickManager::FindConfigInWorld(GetWorld(), GimmickType));
+	if (!Config)
+	{
+		Config = GetDefault<UWaterDropGimmickConfig>();
+	}
+	GrowDuration = Config->PuddleGrowDuration;
+	FadeDelay = Config->PuddleFadeDelay;
+	FadeDuration = Config->PuddleFadeDuration;
 
 	SetActorScale3D(FVector::ZeroVector);
 

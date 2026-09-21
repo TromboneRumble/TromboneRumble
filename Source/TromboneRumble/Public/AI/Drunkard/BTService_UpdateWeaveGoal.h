@@ -21,7 +21,7 @@ struct FBTWeaveGoalMemory
  * 타겟 위치에 진행 방향의 수직 사인파 오프셋을 더해 MoveGoal에 기록한다:
  *   MoveGoal = TargetLocation + Perpendicular × Amplitude × sin(Time × Frequency)
  * 진폭은 반주기마다 랜덤 변주되고, 이동 속도도 주기적으로 변주된다 (휘청→회복).
- * 수치는 전부 UDrunkardDataAsset에서 읽는다.
+ * 수치는 전부 UDrunkardGimmickConfig에서 읽는다.
  */
 UCLASS()
 class TROMBONERUMBLE_API UBTService_UpdateWeaveGoal : public UBTService

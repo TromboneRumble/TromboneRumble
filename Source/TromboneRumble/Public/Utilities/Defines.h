@@ -24,19 +24,20 @@ enum class EMenuBGMType : uint8
 	None = 255,
 };
 
+/** The display names are what designers see in the gimmick settings panel and in warnings. The config classes use the same names. */
 UENUM()
 enum class EGimmickType : uint8
 {
-	Spotlight,
-	Puddle,
-	Trash,
-	Present,
-	PressurePlate,
-	Ice,
-	Blizzard,
-	Drunkard,
-	BeerFlood,
-	Gravity,
+	Spotlight		UMETA(DisplayName = "스포트라이트"),
+	Puddle			UMETA(DisplayName = "누수 물자국"),
+	Trash			UMETA(DisplayName = "관중 투척"),
+	Present			UMETA(DisplayName = "선물"),
+	PressurePlate	UMETA(DisplayName = "발판"),
+	Ice				UMETA(DisplayName = "빙판"),
+	Blizzard		UMETA(DisplayName = "눈보라"),
+	Drunkard		UMETA(DisplayName = "취객"),
+	BeerFlood		UMETA(DisplayName = "술통 침수"),
+	Gravity			UMETA(DisplayName = "중력"),
 	MAX,
 	None = 255,
 };
