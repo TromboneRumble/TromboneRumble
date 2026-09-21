@@ -8,7 +8,7 @@
 
 class ADefaultTromboneCharacter;
 struct FDrunkardRoute;
-class UDrunkardDataAsset;
+class UDrunkardGimmickConfig;
 
 UENUM(BlueprintType)
 enum class EDrunkardState : uint8
@@ -98,7 +98,8 @@ private:
 	/** 순위와 무관하게 균등 확률로 타겟 선정 */
 	ADefaultTromboneCharacter* PickRandomTarget(const ADefaultTromboneCharacter* Exclude) const;
 
-	const UDrunkardDataAsset* GetData() const;
+	/** Settings of the drunkard gimmick, taken from the owning NPC. Never null. */
+	const UDrunkardGimmickConfig& GetConfig() const;
 	bool HasAuthority() const;
 
 	/** 퇴장 제한 시간 초과 — 문 도달 실패(경로 막힘 등) 시 강제 소멸. 스포너의 재스폰 루프를 살리기 위한 페일세이프 */

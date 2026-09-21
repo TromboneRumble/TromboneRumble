@@ -24,19 +24,20 @@ enum class EMenuBGMType : uint8
 	None = 255,
 };
 
+/** The display names are what designers see in the gimmick settings panel and in warnings. The config classes use the same names. */
 UENUM()
 enum class EGimmickType : uint8
 {
-	Spotlight,
-	Puddle,
-	Trash,
-	Present,
-	PressurePlate,
-	Ice,
-	Blizzard,
-	Drunkard,
-	BeerFlood,
-	Gravity,
+	Spotlight		UMETA(DisplayName = "스포트라이트"),
+	Puddle			UMETA(DisplayName = "누수 물자국"),
+	Trash			UMETA(DisplayName = "관중 투척"),
+	Present			UMETA(DisplayName = "선물"),
+	PressurePlate	UMETA(DisplayName = "발판"),
+	Ice				UMETA(DisplayName = "빙판"),
+	Blizzard		UMETA(DisplayName = "눈보라"),
+	Drunkard		UMETA(DisplayName = "취객"),
+	BeerFlood		UMETA(DisplayName = "술통 침수"),
+	Gravity			UMETA(DisplayName = "중력"),
 	MAX,
 	None = 255,
 };
@@ -278,7 +279,8 @@ enum class EBreakSource : uint8
 
 namespace TromboneRender
 {
-	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
+	// 로컬 캐릭터 + 장착물 표식. X-Ray 실루엣 PP와 발밑 노트 링 마스크(M_NoteVisualizer/M_NoteHitBox)가 같이 읽는다
+	// 찍는 쪽: UXRaySilhouetteComponent, UNoteRingOccluderComponent
 	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
 
 	// 원형 윈도우가 "가리는 물체가 그려진 픽셀"만 골라내는 데 쓰는 값 (UXRayWindowComponent 전용)

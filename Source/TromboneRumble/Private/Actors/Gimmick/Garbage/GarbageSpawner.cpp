@@ -2,11 +2,13 @@
 
 #include "Actors/Gimmick/Garbage/GarbageSpawner.h"
 #include "Actors/Gimmick/Garbage/GarbageBase.h"
+#include "Data/Gimmick/GarbageGimmickConfig.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Framework/InGameState.h"
 #include "GameFramework/PlayerState.h"
+#include "Utilities/TromboneLogs.h"
 
 AGarbageSpawner::AGarbageSpawner()
 {
@@ -23,6 +25,24 @@ void AGarbageSpawner::Activate()
 		Server_StartAutoSpawn();
 	}
 }
+
+void AGarbageSpawner::ForceTrigger()
+{
+	Server_SpawnGarbageOnce();
+}
+
+#if WITH_EDITOR
+void AGarbageSpawner::GetSettingsObjects(TArray<UObject*>& OutObjects) const
+{
+	for (const TSubclassOf<AGarbageBase>& GarbageClass : GetConfig<UGarbageGimmickConfig>().GarbageClasses)
+	{
+		if (GarbageClass)
+		{
+			OutObjects.AddUnique(GarbageClass->GetDefaultObject());
+		}
+	}
+}
+#endif
 
 void AGarbageSpawner::BeginPlay()
 {
@@ -46,9 +66,15 @@ void AGarbageSpawner::Server_SpawnGarbageOnce()
 		return;
 	}
 
-	if (GarbageClasses.Num() == 0 || SpawnPointActors.Num() == 0)
+	// The two causes are fixed in different places, so each gets its own message
+	if (GetConfig<UGarbageGimmickConfig>().GarbageClasses.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AGarbageSpawner] %s has no spawn points. Nothing will be thrown."), *GetName());
+		UE_LOG(LogGimmick, Warning, TEXT("[AGarbageSpawner] %s has no garbage classes. Set them in the garbage entry of the stage gimmick data, and check that the gimmick manager points at that asset."), *GetName());
+		return;
+	}
+	if (SpawnPointActors.Num() == 0)
+	{
+		UE_LOG(LogGimmick, Warning, TEXT("[AGarbageSpawner] %s has no spawn points. Set them on the spawner in the level."), *GetName());
 		return;
 	}
 	
@@ -107,7 +133,7 @@ void AGarbageSpawner::ScheduleNextSpawn()
 {
 	if (!HasAuthority()) return;
 
-	const float NextInterval = UKismetMathLibrary::RandomFloatInRange(SpawnIntervalMin, SpawnIntervalMax);
+	const float NextInterval = GetConfig<UGarbageGimmickConfig>().SpawnInterval.Pick();
 
 	GetWorldTimerManager().SetTimer(
 		AutoSpawnTimer,
@@ -127,6 +153,9 @@ void AGarbageSpawner::SpawnAndReschedule()
 
 TSubclassOf<AGarbageBase> AGarbageSpawner::PickRandomGarbageClass() const
 {
+	const TArray<TSubclassOf<AGarbageBase>>& GarbageClasses = GetConfig<UGarbageGimmickConfig>().GarbageClasses;
+	if (GarbageClasses.IsEmpty()) return nullptr;
+
 	const int32 Index = FMath::RandRange(0, GarbageClasses.Num() - 1);
 	return GarbageClasses[Index];
 }
@@ -155,7 +184,7 @@ bool AGarbageSpawner::PickRandomSpawnTransform(FTransform& OutTransform) const
 
 AActor* AGarbageSpawner::PickTargetPawn() const
 {
-	switch (TargetingMode)
+	switch (GetConfig<UGarbageGimmickConfig>().TargetingMode)
 	{
 	case EGarbageTargetingMode::Random:
 		return PickRandomPlayerPawn();
@@ -288,6 +317,7 @@ void AGarbageSpawner::SpawnAndThrow_Server(const FTransform& SpawnTransform, AAc
 
 	const FVector StartLocation = SpawnTransform.GetLocation();
 
+	const float TargetRandomRadius = GetConfig<UGarbageGimmickConfig>().TargetRandomRadius;
 	const FVector TargetBase = TargetPawn->GetActorLocation();
 	const FVector TargetOffset(
 		FMath::FRandRange(-TargetRandomRadius, TargetRandomRadius),

@@ -5,7 +5,7 @@
 #include "AIController.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/ActorComponents/DrunkardStateComponent.h"
-#include "Data/DrunkardDataAsset.h"
+#include "Data/Gimmick/DrunkardGimmickConfig.h"
 
 UBTTask_DrunkardMoveTo::UBTTask_DrunkardMoveTo()
 {
@@ -45,14 +45,12 @@ EBTNodeResult::Type UBTTask_DrunkardMoveTo::ExecuteTask(UBehaviorTreeComponent& 
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	if (const ADrunkardNPC* NPC = AIController ? Cast<ADrunkardNPC>(AIController->GetPawn()) : nullptr)
 	{
-		if (const UDrunkardDataAsset* Data = NPC->GetDrunkardData())
-		{
-			AcceptableRadius = Data->MoveAcceptanceRadius;
+		const float Radius = NPC->GetDrunkardConfig().MoveAcceptanceRadius;
+		AcceptableRadius = Radius;
 
-			// 허용 오차는 생성자에서 엔진 기본 반경 기준으로 잡히므로 함께 갱신한다.
-			// 이 값보다 목표가 크게 움직이면 이동 요청이 취소·재발급되어 도달이 미뤄진다
-			ObservedBlackboardValueTolerance = Data->MoveAcceptanceRadius * 0.95f;
-		}
+		// 허용 오차는 생성자에서 엔진 기본 반경 기준으로 잡히므로 함께 갱신한다.
+		// 이 값보다 목표가 크게 움직이면 이동 요청이 취소·재발급되어 도달이 미뤄진다
+		ObservedBlackboardValueTolerance = Radius * 0.95f;
 	}
 
 	return Super::ExecuteTask(OwnerComp, NodeMemory);

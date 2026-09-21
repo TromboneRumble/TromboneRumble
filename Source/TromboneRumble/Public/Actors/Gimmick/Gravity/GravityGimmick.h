@@ -33,6 +33,7 @@ public:
 	//~ Begin AGimmickBase Interface
 	virtual void Activate() override;
 	virtual void Deactivate() override;
+	virtual void ForceTrigger() override;
 	//~ End AGimmickBase Interface
 
 protected:
@@ -41,24 +42,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gimmick")
 	void OnGravityStateChanged(EGravityState NewState, float Multiplier);
 
-	/** Wait time before the next warning. A random value between min and max. */
-	UPROPERTY(EditAnywhere, Category = "Gimmick|Config", meta = (DisplayName = "발동 간격 최소", ClampMin = "0.0"))
-	float MinIntervalSeconds = 30.f;
-
-	UPROPERTY(EditAnywhere, Category = "Gimmick|Config", meta = (DisplayName = "발동 간격 최대", ClampMin = "0.0"))
-	float MaxIntervalSeconds = 45.f;
-
-	/** Seconds of warning before gravity changes. */
-	UPROPERTY(EditAnywhere, Category = "Gimmick|Config", meta = (DisplayName = "예고 시간", ClampMin = "0.0"))
-	float WarningDuration = 4.f;
-
-	/** Seconds gravity stays changed. */
-	UPROPERTY(EditAnywhere, Category = "Gimmick|Config", meta = (DisplayName = "지속 시간", ClampMin = "0.1"))
-	float ActiveDuration = 10.f;
-
-	/** Gravity is multiplied by this while active. Below 1 floats, above 1 pulls down. */
-	UPROPERTY(EditAnywhere, Category = "Gimmick|Config", meta = (DisplayName = "중력 배율", ClampMin = "0.05", ClampMax = "20.0"))
-	float GravityMultiplier = 0.3f;
+	// The settings a designer tunes are in UGravityGimmickConfig. Only references stay here
 
 	/** Infinite effect on the GravityScale attribute. Its magnitude is Set By Caller with the Trombone.Gimmick.Gravity.Scale tag. The gimmick removes it. */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|GAS")
@@ -76,7 +60,8 @@ protected:
 
 private:
 
-	void ScheduleNext();
+	/** Start the timer of the next warning. Server only. */
+	void ScheduleNext(float Delay);
 	void StartWarning();
 	void StartActive();
 	void EndActive();

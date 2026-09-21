@@ -43,28 +43,10 @@ protected:
 	
 protected:
 	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "첫 전조 시작 시간", ClampMin = "0.0"))
-	float FirstWarningDelay = 30.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "(전조 시작 기준) 반복 주기", ClampMin = "1.0"))
-	float RepeatInterval = 30.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "전조 시간", ClampMin = "0.0"))
-	float WarningDuration = 5.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "수위 상승 시간", ClampMin = "0.05"))
-	float RisingDuration = 2.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "침수 유지 시간", ClampMin = "0.0"))
-	float SustainDuration = 3.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "배수 시간", ClampMin = "0.05"))
-	float DrainingDuration = 2.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "차오르는 높이", ClampMin = "0.0"))
-	float FloodHeight = 100.f;
-	
-	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "침수 판정 주기", ClampMin = "0.02"))
+	// The settings a designer tunes are in UBeerFloodGimmickConfig
+
+	/** Seconds between two checks for characters below the surface. A technical value, not a design one. */
+	UPROPERTY(EditDefaultsOnly, Category = "BeerFlood", meta = (DisplayName = "침수 판정 주기", ClampMin = "0.02"))
 	float DrowningCheckInterval = 0.1f;
 
 	/** Shows the guide lines during the warning. */
@@ -127,6 +109,7 @@ public:
 	//~ Begin AGimmickBase Interface
 	virtual void Activate() override;
 	virtual void Deactivate() override;
+	virtual void ForceTrigger() override;
 	//~ End AGimmickBase Interface
 	
 	//~ Begin AActor Interface

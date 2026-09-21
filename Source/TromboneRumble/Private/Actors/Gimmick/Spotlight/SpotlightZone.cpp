@@ -1,4 +1,6 @@
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
+#include "Actors/Gimmick/GimmickManager.h"
+#include "Data/Gimmick/SpotlightGimmickConfig.h"
 #include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "AkComponent.h"
@@ -248,20 +250,20 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 	switch (CurrentState)
 	{
 		case ESpotlightState::Warning:
-			StartLifecycleTimer(WarningDuration, &ASpotlightZone::OnWarningFinished);
+			StartLifecycleTimer(GetConfig().WarningDuration, &ASpotlightZone::OnWarningFinished);
 			break;
 
 		case ESpotlightState::Active:
 		{
 			Multicast_PlaySpotlightTurnOnSFX();
-			StartLifecycleTimer(ActiveDuration, &ASpotlightZone::OnActiveFinished);
+			StartLifecycleTimer(GetConfig().ActiveDuration, &ASpotlightZone::OnActiveFinished);
 		}
 			break;
 
 		case ESpotlightState::Fading:
 		{
 			TurnOffLight();
-			StartLifecycleTimer(FadingDuration, &ASpotlightZone::OnFadingFinished);
+			StartLifecycleTimer(GetConfig().FadingDuration, &ASpotlightZone::OnFadingFinished);
 		}
 			
 			break;
@@ -333,4 +335,11 @@ void ASpotlightZone::OnRep_CurrentState()
 		default:
 			break;
 	}
+}
+
+const USpotlightGimmickConfig& ASpotlightZone::GetConfig() const
+{
+	// The zone is not a gimmick itself, so it looks the entry up in the world. This works on clients too
+	const USpotlightGimmickConfig* Config = Cast<USpotlightGimmickConfig>(AGimmickManager::FindConfigInWorld(GetWorld(), EGimmickType::Spotlight));
+	return Config ? *Config : *GetDefault<USpotlightGimmickConfig>();
 }

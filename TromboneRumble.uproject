@@ -17,6 +17,11 @@
 				"CommonUI",
 				"CoreUObject"
 			]
+		},
+		{
+			"Name": "TromboneRumbleEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [

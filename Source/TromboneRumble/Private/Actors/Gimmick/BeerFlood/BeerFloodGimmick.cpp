@@ -5,6 +5,7 @@
 #include "Components/ActorComponents/GuideSignalComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Data/Gimmick/BeerFloodGimmickConfig.h"
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/WorldSubsystem/FloatableSubsystem.h"
@@ -47,9 +48,11 @@ void ABeerFloodGimmick::Activate()
 	if (!bWasActive && HasAuthority())
 	{
 		CurrentBeerZ = GetBaseBeerZ();
-		GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, FirstWarningDelay, false);
 
-		UE_LOG(LogBeerFlood, Log, TEXT("Flood started. First warning in %.1fs, then every %.1fs"), FirstWarningDelay, RepeatInterval);
+		const float FirstDelay = GetConfig<UBeerFloodGimmickConfig>().FirstWarningDelay;
+		GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, FirstDelay, false);
+
+		UE_LOG(LogBeerFlood, Log, TEXT("Flood started. First warning in %.1fs"), FirstDelay);
 	}
 }
 
@@ -85,7 +88,7 @@ float ABeerFloodGimmick::GetBaseBeerZ() const
 
 float ABeerFloodGimmick::GetPeakBeerZ() const
 {
-	return GetBaseBeerZ() + FloodHeight;
+	return GetBaseBeerZ() + GetConfig<UBeerFloodGimmickConfig>().FloodHeight;
 }
 
 void ABeerFloodGimmick::SetBeerFloodState(const EBeerFloodState NewState)
@@ -129,8 +132,15 @@ void ABeerFloodGimmick::BeginWarning()
 
 	SetBeerFloodState(EBeerFloodState::Warning);
 
-	GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, RepeatInterval, false);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, WarningDuration, false);
+	const UBeerFloodGimmickConfig& Config = GetConfig<UBeerFloodGimmickConfig>();
+
+	// The period runs from warning to warning, so changing a phase time does not move the next flood
+	// A period shorter than one flood would start a new warning in the middle of this flood
+	// The small margin makes the flood end first when both times are equal
+	const float Period = FMath::Max(Config.Period, Config.GetFloodDuration() + 0.1f);
+	GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, Period, false);
+
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, Config.WarningDuration, false);
 }
 
 void ABeerFloodGimmick::BeginRising()
@@ -141,7 +151,7 @@ void ABeerFloodGimmick::BeginRising()
 	SetBeerFloodState(EBeerFloodState::Rising);
 
 	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginSustain, RisingDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginSustain, GetConfig<UBeerFloodGimmickConfig>().RisingDuration, false);
 }
 
 void ABeerFloodGimmick::BeginSustain()
@@ -151,7 +161,7 @@ void ABeerFloodGimmick::BeginSustain()
 	CurrentBeerZ = GetPeakBeerZ();
 	SetBeerFloodState(EBeerFloodState::Sustain);
 
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginDraining, SustainDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginDraining, GetConfig<UBeerFloodGimmickConfig>().SustainDuration, false);
 }
 
 void ABeerFloodGimmick::BeginDraining()
@@ -161,7 +171,7 @@ void ABeerFloodGimmick::BeginDraining()
 	PhaseElapsed = 0.f;
 	SetBeerFloodState(EBeerFloodState::Draining);
 
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndBeerFlood, DrainingDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndBeerFlood, GetConfig<UBeerFloodGimmickConfig>().DrainingDuration, false);
 }
 
 void ABeerFloodGimmick::EndBeerFlood()
@@ -173,6 +183,14 @@ void ABeerFloodGimmick::EndBeerFlood()
 	CurrentBeerZ = GetBaseBeerZ();
 	ReleaseAllDrowning();
 	SetBeerFloodState(EBeerFloodState::Idle);
+}
+
+void ABeerFloodGimmick::ForceTrigger()
+{
+	if (!HasAuthority() || BeerFloodState != EBeerFloodState::Idle) return;
+
+	GetWorldTimerManager().ClearTimer(CycleTimerHandle);
+	BeginWarning();
 }
 
 void ABeerFloodGimmick::Tick(const float DeltaSeconds)
@@ -191,13 +209,13 @@ void ABeerFloodGimmick::Tick(const float DeltaSeconds)
 		if (BeerFloodState == EBeerFloodState::Rising)
 		{
 			PhaseElapsed += DeltaSeconds;
-			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, RisingDuration), 0.f, 1.f);
+			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, GetConfig<UBeerFloodGimmickConfig>().RisingDuration), 0.f, 1.f);
 			CurrentBeerZ = FMath::Lerp(GetBaseBeerZ(), GetPeakBeerZ(), Alpha);
 		}
 		else if (BeerFloodState == EBeerFloodState::Draining)
 		{
 			PhaseElapsed += DeltaSeconds;
-			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, DrainingDuration), 0.f, 1.f);
+			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, GetConfig<UBeerFloodGimmickConfig>().DrainingDuration), 0.f, 1.f);
 			CurrentBeerZ = FMath::Lerp(GetPeakBeerZ(), GetBaseBeerZ(), Alpha);
 		}
 	}
