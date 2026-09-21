@@ -7,6 +7,7 @@
 #include "BeerFloodGimmick.generated.h"
 
 class ATromboneCharacterBase;
+class UGuideSignalComponent;
 
 UENUM(BlueprintType)
 enum class EBeerFloodState : uint8
@@ -65,6 +66,10 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "BeerFlood|Config", meta = (DisplayName = "침수 판정 주기", ClampMin = "0.02"))
 	float DrowningCheckInterval = 0.1f;
+
+	/** Shows the guide lines during the warning. */
+	UPROPERTY(VisibleAnywhere, Category = "BeerFlood")
+	TObjectPtr<UGuideSignalComponent> GuideSignal;
 	
 private:
 	

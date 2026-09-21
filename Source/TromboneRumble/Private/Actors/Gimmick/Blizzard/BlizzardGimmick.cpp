@@ -202,6 +202,7 @@ void ABlizzardGimmick::Deactivate()
 		RemoveAllSlows();
 		ExposureTimeMap.Empty();
 		CloseAllShelterDoors();   // 기믹이 도중에 꺼져도 문이 열린 채 남지 않게
+		SetShelterGuides(false);
 		SetState(EBlizzardState::Idle);
 	}
 
@@ -310,6 +311,7 @@ void ABlizzardGimmick::StartWarning()
 	// 쉘터는 레벨 배치 액터라 Warning~Active 사이에 목록이 변하지 않는다 → 여기서 한 번만 수집.
 	GatherShelters();
 	OpenRandomShelterDoors();
+	SetShelterGuides(true);
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
 	GetWorldTimerManager().SetTimer(
@@ -330,6 +332,9 @@ void ABlizzardGimmick::StartBlizzard()
 
 	SetState(EBlizzardState::Active);
 	SetActorTickEnabled(true);
+
+	// 안내는 전조까지만
+	SetShelterGuides(false);
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
 	GetWorldTimerManager().SetTimer(
@@ -818,6 +823,19 @@ void ABlizzardGimmick::CloseAllShelterDoors()
 		if (ABlizzardShelter* Shelter = ShelterPtr.Get())
 		{
 			Shelter->SetDoorOpen(false);
+		}
+	}
+}
+
+void ABlizzardGimmick::SetShelterGuides(const bool bOn)
+{
+	if (!HasAuthority()) return;
+
+	for (const TWeakObjectPtr<ABlizzardShelter>& ShelterPtr : Shelters)
+	{
+		if (ABlizzardShelter* Shelter = ShelterPtr.Get())
+		{
+			Shelter->SetGuiding(bOn && Shelter->IsDoorOpen());
 		}
 	}
 }

@@ -2,6 +2,7 @@
 
 #include "Actors/Gimmick/BeerFlood/BeerFloodGimmick.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "Components/ActorComponents/GuideSignalComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "EngineUtils.h"
@@ -25,6 +26,8 @@ ABeerFloodGimmick::ABeerFloodGimmick()
 	bReplicates = true;
 	bAlwaysRelevant = true;
 	GimmickType = EGimmickType::BeerFlood;
+
+	GuideSignal = CreateDefaultSubobject<UGuideSignalComponent>(TEXT("GuideSignal"));
 }
 
 void ABeerFloodGimmick::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -90,6 +93,7 @@ void ABeerFloodGimmick::SetBeerFloodState(const EBeerFloodState NewState)
 	if (!HasAuthority() || BeerFloodState == NewState) return;
 
 	BeerFloodState = NewState;
+	GuideSignal->SetGuiding(NewState == EBeerFloodState::Warning);
 
 	UE_LOG(LogBeerFlood, Log, TEXT("Flood state %s"), *EnumHelper::EnumToString(NewState));
 

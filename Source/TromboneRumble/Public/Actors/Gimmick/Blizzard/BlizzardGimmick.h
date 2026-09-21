@@ -92,7 +92,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Blizzard")
 	void UpdateEnvironmentBlend(float Alpha);
 
-	/** 상태 전이 알림. 기믹은 구독자를 모른다 - 구독자가 스스로 붙는다 (ABlizzardGuideLine).
+	/** 상태 전이 알림. 기믹은 구독자를 모른다 - 구독자가 스스로 붙는다.
 	 *  이름 끝에 Delegate 가 붙은 이유: 같은 이름의 BlueprintImplementableEvent 가 이미 있고
 	 *  BP FrozenTL 타임라인이 그걸 바인딩하고 있다. 합치면 BP 그래프가 끊긴다. */
 	UPROPERTY(BlueprintAssignable, Category = "Blizzard")
@@ -390,6 +390,8 @@ private:
 	void OpenRandomShelterDoors();
 	/** 모든 쉘터의 문을 닫는다 (눈보라 종료 / 기믹 비활성화). */
 	void CloseAllShelterDoors();
+	/** 안내선을 켜고 끈다. 켤 때는 문이 열린 쉘터만 켠다. */
+	void SetShelterGuides(bool bOn);
 	bool IsCharacterInShelter(const ACharacter* Character) const;
 
 	/** BeginPlay 1회. 팅겨낼 목적지 후보를 모은다. */
