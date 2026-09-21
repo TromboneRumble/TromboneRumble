@@ -278,7 +278,8 @@ enum class EBreakSource : uint8
 
 namespace TromboneRender
 {
-	// PostProcess X-Ray 머티리얼이 CustomStencil == 이 값일 때 가려진 실루엣 렌더
+	// 로컬 캐릭터 + 장착물 표식. X-Ray 실루엣 PP와 발밑 노트 링 마스크(M_NoteVisualizer/M_NoteHitBox)가 같이 읽는다
+	// 찍는 쪽: UXRaySilhouetteComponent, UNoteRingOccluderComponent
 	constexpr int32 CHARACTER_OCCLUDED_STENCIL = 252;
 
 	// 원형 윈도우가 "가리는 물체가 그려진 픽셀"만 골라내는 데 쓰는 값 (UXRayWindowComponent 전용)
