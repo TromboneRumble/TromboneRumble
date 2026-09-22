@@ -26,7 +26,6 @@ public:
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
-	virtual void ValidateConfig(FDataValidationContext& Context) const override;
 	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
 	//~ End UGimmickConfig Interface
 #endif
@@ -38,12 +37,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "첫 전조 시작 시간", ClampMin = "0.0", Units = "s"))
 	float FirstWarningDelay = 30.f;
 
-	/**
-	 * Seconds from the start of one warning to the start of the next warning.
-	 * The flood times below do not change it.
-	 */
-	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "재발생 주기 (전조 시작 기준)", ClampMin = "1.0", Units = "s"))
-	float Period = 30.f;
+	/** Seconds from the end of the drain to the next warning. */
+	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "쿨다운 시간", ClampMin = "0.0", Units = "s"))
+	float Cooldown = 15.f;
 
 	/** Seconds of warning before the beer starts to rise. */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "전조 시간", ClampMin = "0.0", Units = "s"))

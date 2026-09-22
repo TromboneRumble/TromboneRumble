@@ -1,6 +1,5 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
-#include "Data/Gimmick/BeerFloodGimmickConfig.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GarbageGimmickConfig.h"
 #include "Data/Gimmick/PresentGimmickConfig.h"
@@ -21,16 +20,6 @@ void UGarbageGimmickConfig::ValidateConfig(FDataValidationContext& Context) cons
 	if (GarbageClasses.Contains(nullptr))
 	{
 		Context.AddError(FText::FromString(TEXT("관중 투척: 투척물 종류에 빈 칸이 있습니다")));
-	}
-}
-
-void UBeerFloodGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
-{
-	// The gimmick then waits for the flood to end, so the real period is longer than the number shown
-	if (Period < GetFloodDuration())
-	{
-		Context.AddError(FText::FromString(FString::Printf(
-			TEXT("술통 침수: 재발생 주기(%.1f초)가 전조부터 배수까지 걸리는 시간(%.1f초)보다 짧습니다"), Period, GetFloodDuration())));
 	}
 }
 

@@ -150,15 +150,7 @@ void ABeerFloodGimmick::BeginWarning()
 
 	SetBeerFloodState(EBeerFloodState::Warning);
 
-	const UBeerFloodGimmickConfig& Config = GetConfig<UBeerFloodGimmickConfig>();
-
-	// The period runs from warning to warning, so changing a phase time does not move the next flood
-	// A period shorter than one flood would start a new warning in the middle of this flood
-	// The small margin makes the flood end first when both times are equal
-	const float Period = FMath::Max(Config.Period, Config.GetFloodDuration() + 0.1f);
-	GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, Period, false);
-
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, Config.WarningDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, GetConfig<UBeerFloodGimmickConfig>().WarningDuration, false);
 }
 
 void ABeerFloodGimmick::BeginRising()
@@ -199,6 +191,8 @@ void ABeerFloodGimmick::EndBeerFlood()
 	CurrentBeerZ = GetBaseBeerZ();
 	ReleaseAllDrowning();
 	SetBeerFloodState(EBeerFloodState::Idle);
+
+	GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, GetConfig<UBeerFloodGimmickConfig>().Cooldown, false);
 }
 
 void ABeerFloodGimmick::ForceTrigger()

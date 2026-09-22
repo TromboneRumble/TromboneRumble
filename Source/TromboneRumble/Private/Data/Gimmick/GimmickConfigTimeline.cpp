@@ -16,7 +16,7 @@
 // ABeerFloodGimmick
 void UBeerFloodGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
 {
-	const float Step = FMath::Max3(Period, GetFloodDuration(), FGimmickTimelineBuilder::MinStep);
+	const float Step = FMath::Max(GetFloodDuration() + Cooldown, FGimmickTimelineBuilder::MinStep);
 
 	for (float WarningStart = FirstWarningDelay; Builder.IsInRound(WarningStart); WarningStart += Step)
 	{
