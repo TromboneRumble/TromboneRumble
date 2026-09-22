@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{2C63499E-CB69-E7B6-7E01-2E16D94BC1A3}">
+		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{DB393F2D-4784-0424-4D33-D36BDBA24EFD}">
 			<ObjectPath>Play_Door_Break</ObjectPath>
 			<ShortName>Play_Door_Break</ShortName>
 			<Path>Event/Play_Door_Break.bnk</Path>
@@ -11,15 +11,21 @@
 					<Path>Media/661274569.wem</Path>
 					<CachePath>SFX/Door Break/Wood door break_818F3B66.wem</CachePath>
 				</File>
+				<File Id="990272024" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Male Laugh.wav</ShortName>
+					<Path>Media/990272024.wem</Path>
+					<CachePath>SFX/Male Laugh_818F3B66.wem</CachePath>
+				</File>
 			</Media>
 			<Events>
-				<Event Id="3887461750" Name="Play_Door_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Door_Break" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.0844166" DurationMax="1.0844166">
+				<Event Id="3887461750" Name="Play_Door_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Door_Break" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" MaxAttenuation="10000" DurationType="OneShot" DurationMin="1.2643958" DurationMax="1.2643958">
 					<MediaRefs>
 						<MediaRef Id="661274569"/>
+						<MediaRef Id="990272024"/>
 					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{C5559848-CDCA-59B6-A9F0-9277EC60EE8A}</FileHash>
+	<FileHash>{86BECABB-9A01-61A7-ACC4-4D991373E02F}</FileHash>
 </SoundBanksInfo>

@@ -10,37 +10,37 @@
     "Type": "Event",
     "GUID": "{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}",
     "Language": "SFX",
-    "Hash": "{3F2E9F58-3CEE-5B26-4F49-B3355AC62AEF}",
+    "Hash": "{7369AFC3-98DC-1D8A-59BA-94074A50C446}",
     "ObjectPath": "Play_Glass_Debris",
     "ShortName": "Play_Glass_Debris",
     "Path": "Event/Play_Glass_Debris.bnk",
     "Media": [
      {
-      "Id": "252552275",
+      "Id": "525881391",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_3.wav",
-      "Path": "Media/252552275.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_3_818F3B66.wem"
+      "ShortName": "Glass_Debris_1_1.wav",
+      "Path": "Media/525881391.wem",
+      "CachePath": "SFX/Glass_Debris_1_1_818F3B66.wem"
      },
      {
-      "Id": "397572674",
+      "Id": "578452504",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_1.wav",
-      "Path": "Media/397572674.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_1_818F3B66.wem"
+      "ShortName": "Glass_Debris_1_2.wav",
+      "Path": "Media/578452504.wem",
+      "CachePath": "SFX/Glass_Debris_1_2_818F3B66.wem"
      },
      {
-      "Id": "425548802",
+      "Id": "837586496",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_2.wav",
-      "Path": "Media/425548802.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_2_818F3B66.wem"
+      "ShortName": "Glass_Debris_1_3.wav",
+      "Path": "Media/837586496.wem",
+      "CachePath": "SFX/Glass_Debris_1_3_818F3B66.wem"
      }
     ],
     "Events": [
@@ -49,25 +49,25 @@
       "Name": "Play_Glass_Debris",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Glass_Debris",
       "GUID": "{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "10000",
       "DurationType": "OneShot",
-      "DurationMin": "0.9800195",
-      "DurationMax": "1.274269",
+      "DurationMin": "1.1414219",
+      "DurationMax": "1.3146393",
       "MediaRefs": [
        {
-        "Id": "252552275"
+        "Id": "525881391"
        },
        {
-        "Id": "397572674"
+        "Id": "578452504"
        },
        {
-        "Id": "425548802"
+        "Id": "837586496"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{FF0E2348-B0FB-E715-4BB1-5FE9D340B8E6}"
+  "FileHash": "{7FF7A55D-1E0E-C1C4-1118-64E2EF0E590B}"
  }
 }
