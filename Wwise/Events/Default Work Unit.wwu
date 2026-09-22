@@ -294,7 +294,7 @@
 								</Action>
 								<Action Name="" ID="{7B7C48F2-A2BF-4B4C-9A9F-71653F9F0DE1}" ShortID="588985772">
 									<PropertyList>
-										<Property Name="Delay" Type="Real64" Value="0.02"/>
+										<Property Name="Delay" Type="Real64" Value="0.15"/>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Target">
@@ -331,6 +331,13 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Wood door break" ID="{AABC01AD-847D-411C-A77F-2009EF958B50}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+								<Action Name="" ID="{6E84D7F9-1144-43DB-BC1D-FEDF335D8218}" ShortID="270360022">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Laugh" ID="{23E26B0B-668C-496F-A928-186D272FF13E}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

@@ -9,7 +9,7 @@
 				<File Id="923323399" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Player_Falling_Scream.wav</ShortName>
 					<Path>Media/923323399.wem</Path>
-					<CachePath>SFX/Player_Falling_Scream_AC6FA047.wem</CachePath>
+					<CachePath>SFX/Player_Falling_Scream_D13135E6.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4040CC59-E573-F526-5F0A-B311738CA926}</FileHash>
+	<FileHash>{681C89DC-FE9C-6CCF-0919-16716008376B}</FileHash>
 </SoundBanksInfo>
