@@ -1,6 +1,9 @@
 ﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/BeerFlood/BeerFloodGimmick.h"
+#include "AkAudioEvent.h"
+#include "AkComponent.h"
+#include "AkGameplayStatics.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/GuideSignalComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
@@ -12,6 +15,8 @@
 #include "Utilities/EnumHelper.h"
 #include "Utilities/TromboneLogs.h"
 #include "Engine/Engine.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "Materials/MaterialParameterCollection.h"
 
 #if !UE_BUILD_SHIPPING
 static TAutoConsoleVariable<int32> CVarBeerFloodDebug(
@@ -78,6 +83,14 @@ void ABeerFloodGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 	EndFlood();
 
+	// The pour component lives in the world, not on this actor, so it has to go by hand
+	if (PourAkComponent)
+	{
+		StopPourSound();
+		PourAkComponent->DestroyComponent();
+		PourAkComponent = nullptr;
+	}
+
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -106,12 +119,17 @@ void ABeerFloodGimmick::SetBeerFloodState(const EBeerFloodState NewState)
 
 void ABeerFloodGimmick::OnRep_BeerFloodState()
 {
-	// Tick only while the surface moves, or while debug draw needs it.
-	bool bNeedsTick = BeerFloodState == EBeerFloodState::Rising || BeerFloodState == EBeerFloodState::Draining;
+	PhaseElapsed = 0.f;
+
+	// Tick while any phase runs, for the surface and for the material progress, or while debug draw needs it.
+	bool bNeedsTick = BeerFloodState != EBeerFloodState::Idle;
 #if !UE_BUILD_SHIPPING
 	bNeedsTick |= CVarBeerFloodDebug.GetValueOnGameThread() != 0;
 #endif
 	SetActorTickEnabled(bNeedsTick);
+
+	WriteMaterialParameters();
+	PlayPhaseSounds();
 
 	// The tick is off in Sustain, so the final Z of the rise gets pushed here
 	if (BeerFloodState != EBeerFloodState::Idle)
@@ -147,7 +165,6 @@ void ABeerFloodGimmick::BeginRising()
 {
 	if (!HasAuthority()) return;
 
-	PhaseElapsed = 0.f;
 	SetBeerFloodState(EBeerFloodState::Rising);
 
 	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
@@ -168,7 +185,6 @@ void ABeerFloodGimmick::BeginDraining()
 {
 	if (!HasAuthority()) return;
 
-	PhaseElapsed = 0.f;
 	SetBeerFloodState(EBeerFloodState::Draining);
 
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndBeerFlood, GetConfig<UBeerFloodGimmickConfig>().DrainingDuration, false);
@@ -204,25 +220,116 @@ void ABeerFloodGimmick::Tick(const float DeltaSeconds)
 	}
 #endif
 
+	if (BeerFloodState != EBeerFloodState::Idle)
+	{
+		PhaseElapsed += DeltaSeconds;
+	}
+
 	if (HasAuthority())
 	{
 		if (BeerFloodState == EBeerFloodState::Rising)
 		{
-			PhaseElapsed += DeltaSeconds;
-			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, GetConfig<UBeerFloodGimmickConfig>().RisingDuration), 0.f, 1.f);
-			CurrentBeerZ = FMath::Lerp(GetBaseBeerZ(), GetPeakBeerZ(), Alpha);
+			CurrentBeerZ = FMath::Lerp(GetBaseBeerZ(), GetPeakBeerZ(), GetPhaseProgress());
 		}
 		else if (BeerFloodState == EBeerFloodState::Draining)
 		{
-			PhaseElapsed += DeltaSeconds;
-			const float Alpha = FMath::Clamp(PhaseElapsed / FMath::Max(0.05f, GetConfig<UBeerFloodGimmickConfig>().DrainingDuration), 0.f, 1.f);
-			CurrentBeerZ = FMath::Lerp(GetPeakBeerZ(), GetBaseBeerZ(), Alpha);
+			CurrentBeerZ = FMath::Lerp(GetPeakBeerZ(), GetBaseBeerZ(), GetPhaseProgress());
 		}
 	}
 
 	if (BeerFloodState == EBeerFloodState::Rising || BeerFloodState == EBeerFloodState::Draining)
 	{
 		PushWaterLevel();
+	}
+
+	WriteMaterialParameters();
+}
+
+float ABeerFloodGimmick::GetPhaseDuration() const
+{
+	const UBeerFloodGimmickConfig& Config = GetConfig<UBeerFloodGimmickConfig>();
+	switch (BeerFloodState)
+	{
+	case EBeerFloodState::Warning:  return Config.WarningDuration;
+	case EBeerFloodState::Rising:   return Config.RisingDuration;
+	case EBeerFloodState::Sustain:  return Config.SustainDuration;
+	case EBeerFloodState::Draining: return Config.DrainingDuration;
+	default:                        return 0.f;
+	}
+}
+
+float ABeerFloodGimmick::GetPhaseProgress() const
+{
+	const float Duration = GetPhaseDuration();
+	return Duration > 0.f ? FMath::Clamp(PhaseElapsed / Duration, 0.f, 1.f) : 0.f;
+}
+
+void ABeerFloodGimmick::WriteMaterialParameters() const
+{
+	if (!GimmickParameterCollection || GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
+
+	if (!StateParameterName.IsNone())
+	{
+		UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), GimmickParameterCollection, StateParameterName, static_cast<float>(BeerFloodState));
+	}
+	if (!ProgressParameterName.IsNone())
+	{
+		UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), GimmickParameterCollection, ProgressParameterName, GetPhaseProgress());
+	}
+}
+
+void ABeerFloodGimmick::PlayPhaseSounds()
+{
+	if (GetNetMode() == NM_DedicatedServer) return;
+
+	// The rise and drain sounds cover the whole map, so they play without a position like the menu music
+	switch (BeerFloodState)
+	{
+	case EBeerFloodState::Rising:
+		StartPourSound();
+		if (WaterRiseEvent)
+		{
+			UAkGameplayStatics::PostEvent(WaterRiseEvent, nullptr, 0, FOnAkPostEventCallback());
+		}
+		break;
+
+	case EBeerFloodState::Draining:
+		if (WaterDrainEvent)
+		{
+			UAkGameplayStatics::PostEvent(WaterDrainEvent, nullptr, 0, FOnAkPostEventCallback());
+		}
+		// The pour already stopped in Sustain, but a forced stop skips that phase
+		[[fallthrough]];
+	case EBeerFloodState::Sustain:
+	case EBeerFloodState::Idle:
+		StopPourSound();
+		break;
+
+	default:
+		break;
+	}
+}
+
+void ABeerFloodGimmick::StartPourSound()
+{
+	if (!PourStartEvent) return;
+
+	if (!PourAkComponent)
+	{
+		const FVector Location = GetActorTransform().TransformPosition(PourSoundOffset);
+		PourAkComponent = UAkGameplayStatics::SpawnAkComponentAtLocation(this, nullptr, Location, FRotator::ZeroRotator, false, FString(), false);
+	}
+	if (PourAkComponent)
+	{
+		PourAkComponent->PostAkEvent(PourStartEvent, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ABeerFloodGimmick::StopPourSound()
+{
+	if (PourAkComponent && PourStopEvent)
+	{
+		PourAkComponent->PostAkEvent(PourStopEvent, 0, FOnAkPostEventCallback());
 	}
 }
 
