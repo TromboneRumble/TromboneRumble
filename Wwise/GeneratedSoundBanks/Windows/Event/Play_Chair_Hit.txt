@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1884231791	Play_Chair_Hit			\Default Work Unit\Object_SFX\Play_Chair_Hit	
+

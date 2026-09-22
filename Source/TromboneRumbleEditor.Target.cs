@@ -11,6 +11,6 @@ public class TromboneRumbleEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
 
-		ExtraModuleNames.AddRange(new string[] { "TromboneRumble" });
+		ExtraModuleNames.AddRange(new string[] { "TromboneRumble", "TromboneRumbleEditor" });
 	}
 }

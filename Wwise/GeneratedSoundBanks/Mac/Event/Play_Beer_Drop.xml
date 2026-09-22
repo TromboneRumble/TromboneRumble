@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3858906340" Type="Event" GUID="{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}" Language="SFX" Hash="{5F534715-130D-4136-3971-DC5EF20B7370}">
+			<ObjectPath>Play_Beer_Drop</ObjectPath>
+			<ShortName>Play_Beer_Drop</ShortName>
+			<Path>Event/Play_Beer_Drop.bnk</Path>
+			<Media>
+				<File Id="562759445" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Beer_faucet_Flow_Loop-01.wav</ShortName>
+					<Path>Media/562759445.wem</Path>
+					<CachePath>SFX/Beer_faucet_Flow_Loop-01_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3858906340" Name="Play_Beer_Drop" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Beer_Drop" GUID="{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}" MaxAttenuation="1000" DurationType="Infinite">
+					<MediaRefs>
+						<MediaRef Id="562759445"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{14BE886C-C986-99F4-B398-9956D72AC6A4}</FileHash>
+</SoundBanksInfo>

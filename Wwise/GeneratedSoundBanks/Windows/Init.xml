@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{C7D97886-588F-44FA-1F48-C995A467FC27}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{99578C13-E752-D6E1-D6C7-902BAAF57104}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -23,6 +23,13 @@
 			</Busses>
 			<AuxBusses>
 				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3701691487"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
+				<AuxBus Id="3680363658" Name="Map_C_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_C_Reverb" GUID="{D5A808DA-7F35-4969-B38F-D60D48877094}">
 					<PluginRefs>
 						<ShareSets>
 							<PluginRef Id="3701691487"/>
@@ -208,5 +215,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{10B837CA-D266-FB75-A5FE-9F91A99E3FC1}</FileHash>
+	<FileHash>{F76A2A6C-CCA0-B895-D246-35A425C6C539}</FileHash>
 </SoundBanksInfo>

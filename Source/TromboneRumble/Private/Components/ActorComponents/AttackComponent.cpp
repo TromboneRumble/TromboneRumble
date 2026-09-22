@@ -59,13 +59,9 @@ void UAttackComponent::Attack()
 	
 	if (bAttackInProgress || IsLocalAttackPredicted())
 	{
-		if (bAttackInProgress)
+		if (!bAttackInProgress && IsLocalAttackPredicted())
 		{
-			LOG_WITH_CURRENT_CONTEXT(Log, TEXT("Attack in progress is server. Cannot process attack"));
-		}
-		else if (IsLocalAttackPredicted())
-		{
-			LOG_WITH_CURRENT_CONTEXT(Log, TEXT("Attack is predicted now in local. Cannot process attack"));
+			LOG_WITH_CURRENT_CONTEXT(Log, TEXT("local machine isn't attack in progress, but the server is"));
 		}
 		return;
 	}

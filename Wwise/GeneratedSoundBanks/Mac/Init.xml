@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{D1B6D65D-BA48-A5EC-F1A2-91019174B3BD}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{C0D6371E-7BAD-3F7E-085F-D15971D8C3B5}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -23,6 +23,13 @@
 			</Busses>
 			<AuxBusses>
 				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3701691487"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
+				<AuxBus Id="3680363658" Name="Map_C_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_C_Reverb" GUID="{D5A808DA-7F35-4969-B38F-D60D48877094}">
 					<PluginRefs>
 						<ShareSets>
 							<PluginRef Id="3701691487"/>
@@ -208,5 +215,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{ED3EE3F0-E156-E591-72B1-7173E0A26D7A}</FileHash>
+	<FileHash>{9DBBEEFA-DB36-5D0E-B33E-2F9AB6D5E391}</FileHash>
 </SoundBanksInfo>

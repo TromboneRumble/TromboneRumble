@@ -20,7 +20,7 @@ class TROMBONERUMBLE_API APresent : public AActor
 public:
 	APresent();
 
-	UPROPERTY(EditAnywhere, Category = "Present|Config", meta = (DisplayName = "획득 점수"))
+	/** 획득 점수. 스포너가 스폰 직후 UPresentGimmickConfig 의 값을 넣는다. */
 	int32 BonusScore = 300;
 
 protected:

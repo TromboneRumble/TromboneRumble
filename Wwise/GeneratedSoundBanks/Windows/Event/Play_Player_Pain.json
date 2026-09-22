@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}",
     "Language": "SFX",
-    "Hash": "{0B79F4A4-4867-B3A2-B257-EF360FC18A8F}",
+    "Hash": "{1838E1C9-C19D-49A7-5B8C-594585BE4B70}",
     "ObjectPath": "Play_Player_Pain",
     "ShortName": "Play_Player_Pain",
     "Path": "Event/Play_Player_Pain.bnk",
@@ -123,6 +123,6 @@
     ]
    }
   ],
-  "FileHash": "{7036F576-2103-672C-C65D-1B959AB3CAC6}"
+  "FileHash": "{0355E793-89A3-FDD0-F7E1-BE93A87364DA}"
  }
 }

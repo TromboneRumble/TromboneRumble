@@ -3,6 +3,7 @@
 #include "Characters/TromboneCharacterBase.h"
 #include "AkComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/ActorComponents/FloatableComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -23,6 +24,7 @@ ATromboneCharacterBase::ATromboneCharacterBase()
 
 	PhysicalAnimationComp = CreateDefaultSubobject<UPhysicalAnimationComponent>(TEXT("PhysicalAnimationComponent"));
 	RagdollComponent = CreateDefaultSubobject<UTromboneRagdollComponent>(TEXT("RagdollComponent"));
+	FloatableComponent = CreateDefaultSubobject<UFloatableComponent>(TEXT("FloatableComponent"));
 
 	StunNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StunNiagaraComponent"));
 	if (StunNiagaraComponent)
@@ -119,6 +121,12 @@ void ATromboneCharacterBase::BeginPlay()
 	{
 		RagdollComponent->OnRagdollStarted.AddDynamic(this, &ThisClass::HandleRagdollStarted);
 		RagdollComponent->OnRagdollEnded.AddDynamic(this, &ThisClass::HandleRagdollEnded);
+	}
+
+	if (FloatableComponent)
+	{
+		FloatableComponent->SetTargetPrimitive(GetMesh());
+		FloatableComponent->SetFloatingAllowed(RagdollComponent && RagdollComponent->IsRagdoll());
 	}
 
 	if (IsLocallyControlled())
@@ -337,6 +345,11 @@ void ATromboneCharacterBase::UnapplyStun()
 
 void ATromboneCharacterBase::HandleRagdollStarted()
 {
+	if (FloatableComponent)
+	{
+		FloatableComponent->SetFloatingAllowed(true);
+	}
+
 	if (HasAuthority() && bIsStun)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
@@ -408,6 +421,11 @@ void ATromboneCharacterBase::HandleRagdollLandingHit(UPrimitiveComponent* HitCom
 
 void ATromboneCharacterBase::HandleRagdollEnded()
 {
+	if (FloatableComponent)
+	{
+		FloatableComponent->SetFloatingAllowed(false);
+	}
+
 	if (HasAuthority())
 	{
 		bIsInvincible = true;

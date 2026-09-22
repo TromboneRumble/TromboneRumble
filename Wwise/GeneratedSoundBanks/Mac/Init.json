@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{D1B6D65D-BA48-A5EC-F1A2-91019174B3BD}",
+    "Hash": "{C0D6371E-7BAD-3F7E-085F-D15971D8C3B5}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -82,6 +82,19 @@
       "Name": "Map_A_Reverb",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_A_Reverb",
       "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "3680363658",
+      "Name": "Map_C_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_C_Reverb",
+      "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
       "PluginRefs": {
        "ShareSets": [
         {
@@ -745,6 +758,6 @@
     ]
    }
   ],
-  "FileHash": "{F3105248-9FBA-B2CC-682C-DD861C107A55}"
+  "FileHash": "{C2DAFF07-BF11-5C4B-90BA-F3BFC295708D}"
  }
 }

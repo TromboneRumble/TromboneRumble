@@ -30,6 +30,7 @@ class UCameraComponent;
 class UInteractorComponent;
 class UAbilitySystemComponent;
 class URingHitBoxComponent;
+class UNoteRingOccluderComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UWidgetComponent;
@@ -164,6 +165,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<URingHitBoxComponent> RingHitBoxComponent;
+	
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	TObjectPtr<UNoteRingOccluderComponent> NoteRingOccluderComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components|UI")
 	TObjectPtr<USceneComponent> ComboWidgetAnchorComponent;

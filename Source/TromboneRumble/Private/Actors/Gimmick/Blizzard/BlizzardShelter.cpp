@@ -4,6 +4,7 @@
 #include "Actors/Gimmick/Blizzard/BlizzardShelter.h"
 #include "Actors/Gimmick/Blizzard/BlizzardGimmick.h"
 #include "Actors/Gimmick/Blizzard/BlizzardEnvCopyUtil.h"
+#include "Components/ActorComponents/GuideSignalComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -33,6 +34,8 @@ ABlizzardShelter::ABlizzardShelter()
 
 	ShelterLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ShelterLight"));
 	ShelterLight->SetupAttachment(SafeZone);
+
+	GuideSignal = CreateDefaultSubobject<UGuideSignalComponent>(TEXT("GuideSignal"));
 
 	// 상태별 라이트 템플릿 (invisible + bAffectsWorld=false → 렌더/씬 등록 무관). 시드값은 기존 저작값.
 	//  bEditableWhenInherited=false: Details 직접 편집을 잠근다. 값을 넣는 경로는 저장 버튼 하나뿐
@@ -108,6 +111,11 @@ void ABlizzardShelter::SetDoorOpen(bool bOpen)
 	bDoorOpen = bOpen;
 	OnRep_DoorOpen();   // 리슨 서버 호스트에서도 문이 움직이도록 수동 호출
 	ForceNetUpdate();
+}
+
+void ABlizzardShelter::SetGuiding(const bool bGuiding)
+{
+	GuideSignal->SetGuiding(bGuiding);
 }
 
 void ABlizzardShelter::OnRep_DoorOpen()

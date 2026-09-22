@@ -3,6 +3,7 @@
 #include "Actors/Gimmick/PuddleTrap/WaterDropSpawner.h"
 #include "Components/BoxComponent.h"
 #include "Actors/Gimmick/PuddleTrap/WaterDrop.h"
+#include "Data/Gimmick/WaterDropGimmickConfig.h"
 #include "Engine/TargetPoint.h"
 
 AWaterDropSpawner::AWaterDropSpawner()
@@ -15,6 +16,8 @@ void AWaterDropSpawner::Activate()
 {
 	Super::Activate();
 	
+	// The Puddle and the Ice spawner share this class. GetConfig finds the entry by gimmick type, so both get their own settings
+	const float SpawnInterval = GetConfig<UWaterDropGimmickConfig>().SpawnInterval;
 	if (HasAuthority() && SpawnInterval > 0.f)
 	{
 		GetWorldTimerManager().SetTimer(
@@ -24,6 +27,11 @@ void AWaterDropSpawner::Activate()
 			SpawnInterval,
 			true);
 	}
+}
+
+void AWaterDropSpawner::ForceTrigger()
+{
+	SpawnOneDrop();
 }
 
 void AWaterDropSpawner::Deactivate()
@@ -55,10 +63,14 @@ void AWaterDropSpawner::SpawnOneDrop()
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	GetWorld()->SpawnActor<AWaterDrop>(
+	if (AWaterDrop* Drop = GetWorld()->SpawnActor<AWaterDrop>(
 		WaterDropClass,
 		ChosenPoint->GetActorLocation(),
 		ChosenPoint->GetActorRotation(),
-		Params);
+		Params))
+	{
+		// This class serves both the Puddle and the Ice gimmick. The puddle needs to know which one made it
+		Drop->SetGimmickType(GetGimmickType());
+	}
 }
 

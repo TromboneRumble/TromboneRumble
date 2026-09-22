@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3680363658",
+    "Type": "Bus",
+    "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
+    "Language": "SFX",
+    "Hash": "{8E19AB4A-8ECD-025C-B8DB-0890214C16A2}",
+    "ObjectPath": "Map_C_Reverb",
+    "ShortName": "Map_C_Reverb",
+    "Path": "Bus/Map_C_Reverb.bnk",
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3701691487",
+       "Name": "Hall_Large_Bright",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large_Bright",
+       "GUID": "{CB602948-2D1D-4977-A8D5-378184293E80}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      }
+     ]
+    },
+    "AuxBusses": [
+     {
+      "Id": "3680363658",
+      "Name": "Map_C_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_C_Reverb",
+      "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{FB9BB7ED-7734-DE70-BC47-BFFE1B89D7E4}"
+ }
+}

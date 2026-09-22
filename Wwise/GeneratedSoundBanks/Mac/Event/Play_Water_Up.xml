@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1572483357" Type="Event" GUID="{8E51867B-3166-426A-AE62-34E2910478A0}" Language="SFX" Hash="{AE50A758-68AF-A474-AEC3-A58AEB2DF1C1}">
+			<ObjectPath>Play_Water_Up</ObjectPath>
+			<ShortName>Play_Water_Up</ShortName>
+			<Path>Event/Play_Water_Up.bnk</Path>
+			<Media>
+				<File Id="971157708" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Water up Down\Water_Up.wav</ShortName>
+					<Path>Media/971157708.wem</Path>
+					<CachePath>SFX/Water up Down/Water_Up_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1572483357" Name="Play_Water_Up" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Water_Up" GUID="{8E51867B-3166-426A-AE62-34E2910478A0}" DurationType="OneShot" DurationMin="3.8186667" DurationMax="3.8186667">
+					<MediaRefs>
+						<MediaRef Id="971157708"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{4EC00562-2A8B-6CC3-884F-26102398613F}</FileHash>
+</SoundBanksInfo>

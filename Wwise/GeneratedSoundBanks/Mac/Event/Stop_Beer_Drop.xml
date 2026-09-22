@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2560749666" Type="Event" GUID="{75B7B990-67F3-4370-89EB-C5F7DA9EEA23}" Language="SFX" Hash="{0A3CBE86-9F93-61B1-D365-DE48D3D69A9A}">
+			<ObjectPath>Stop_Beer_Drop</ObjectPath>
+			<ShortName>Stop_Beer_Drop</ShortName>
+			<Path>Event/Stop_Beer_Drop.bnk</Path>
+			<Events>
+				<Event Id="2560749666" Name="Stop_Beer_Drop" ObjectPath="\Events\Default Work Unit\Object_SFX\Stop_Beer_Drop" GUID="{75B7B990-67F3-4370-89EB-C5F7DA9EEA23}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{7FC3D133-2251-1E08-F923-68232E106A1C}</FileHash>
+</SoundBanksInfo>

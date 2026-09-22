@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3858906340	Play_Beer_Drop			\Default Work Unit\Object_SFX\Play_Beer_Drop	
+

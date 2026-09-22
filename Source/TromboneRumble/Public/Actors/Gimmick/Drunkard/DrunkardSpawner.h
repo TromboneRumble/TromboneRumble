@@ -10,7 +10,6 @@
 class ADefaultTromboneCharacter;
 class ADrunkardNPC;
 class ATargetPoint;
-class UDrunkardDataAsset;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpawnerDrunkardSpawned, ADrunkardNPC*, NPC, AActor*, Door);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpawnerDrunkardDespawned, ADrunkardNPC*, NPC);
@@ -37,7 +36,7 @@ struct FDrunkardRoute
 /** ADrunkardSpawner
  *
  * 재즈바 레벨에 배치하는 취객 NPC 스포너. Server Only.
- * - 최초 스폰 시간 / 반복 스폰 주기 관리 (수치는 UDrunkardDataAsset)
+ * - 최초 스폰 시간 / 반복 스폰 주기 관리 (수치는 UDrunkardGimmickConfig)
  * - 동시 1명 제한 (NPC 존재/퇴장 중 추가 스폰 없음)
  * - 동선 목록 보유: 스폰은 랜덤 동선, 퇴장은 들어온 동선의 생성 지점
  */
@@ -59,9 +58,6 @@ public:
 	FOnSpawnerDrunkardCaptureSucceeded OnDrunkardCaptureSucceeded;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "취객 데이터"))
-	TObjectPtr<UDrunkardDataAsset> DrunkardData;
-
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (DisplayName = "취객 NPC 클래스"))
 	TSubclassOf<ADrunkardNPC> NPCClass;
 
@@ -88,6 +84,7 @@ public:
 	//~ Begin AGimmickBase Interface
 	virtual void Activate() override;
 	virtual void Deactivate() override;
+	virtual void ForceTrigger() override;
 	//~ End AGimmickBase Interface
 	
 	//~ Begin AActor Interface

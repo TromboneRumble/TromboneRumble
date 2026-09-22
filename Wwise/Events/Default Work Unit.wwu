@@ -261,6 +261,139 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Chair_Hit" ID="{BA8C2B7E-7225-486F-93A5-89E87388A573}">
+							<ChildrenList>
+								<Action Name="" ID="{979750BD-25BB-4182-A007-87F12891CAA6}" ShortID="344406399">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Chair_Hit" ID="{854EFB09-F060-4340-8EA0-9FA9F51B50F4}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Fence_Break" ID="{11C1005F-D601-43A2-9164-83690C4969C5}">
+							<ChildrenList>
+								<Action Name="" ID="{D0D26396-66C1-42FA-A513-CA7D471439C5}" ShortID="49323294">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Fence_Break" ID="{827EBED1-EE5D-408E-9F25-EAAD853C6E56}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Wine_Break" ID="{0C7F92B1-50F9-4686-8377-53DE94455FBB}">
+							<ChildrenList>
+								<Action Name="" ID="{B1F9EBF6-E303-4B5C-922B-41B337043B8F}" ShortID="845778289">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Wine_Break" ID="{F3B49702-0184-44C1-BEB2-FF576EF6AD50}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+								<Action Name="" ID="{7B7C48F2-A2BF-4B4C-9A9F-71653F9F0DE1}" ShortID="588985772">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.02"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Glass_Break_Debris" ID="{96B60B60-C18B-4697-B12C-2C607CE23BFA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Plate_Break" ID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}">
+							<ChildrenList>
+								<Action Name="" ID="{12BBA62A-B1B9-4E34-9F26-B75C7EFA11C5}" ShortID="845328207">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Plate_Break" ID="{52C72BB9-3E7A-43D0-A79D-81A51CD7E94B}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+								<Action Name="" ID="{2CC351BB-76E4-4522-84D2-9FE820C24F06}" ShortID="598058093">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.02"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Glass_Break_Debris" ID="{96B60B60-C18B-4697-B12C-2C607CE23BFA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Door_Break" ID="{0164D119-8070-4FC1-94C9-8F678C679A79}">
+							<ChildrenList>
+								<Action Name="" ID="{7A0E3439-5DF0-482E-839D-BE0CA07E521A}" ShortID="607995333">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Wood door break" ID="{AABC01AD-847D-411C-A77F-2009EF958B50}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Beer_Drop" ID="{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}">
+							<ChildrenList>
+								<Action Name="" ID="{D6D365F4-6A8A-4926-B20F-81D8918144AD}" ShortID="172749246">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Beer_faucet_Flow_Loop" ID="{A014AE9C-F9FC-4C41-91C0-BBF55AAEAEA9}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Water_Up" ID="{8E51867B-3166-426A-AE62-34E2910478A0}">
+							<ChildrenList>
+								<Action Name="" ID="{8B0AAA82-72D8-4DEC-8F29-D575B5894123}" ShortID="318592828">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Water_Up" ID="{9319148C-5D79-49A4-AF8C-F8F0635D8DF8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Water_Down" ID="{C3AF1503-CB1F-459E-82B9-909AC87A4D1D}">
+							<ChildrenList>
+								<Action Name="" ID="{AA47CB20-5888-43FB-984F-1AC66BB304A5}" ShortID="276189825">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Water_Down" ID="{D1C4B76B-A59A-442C-A616-CAC7C0C0A4B2}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_Beer_Drop" ID="{75B7B990-67F3-4370-89EB-C5F7DA9EEA23}">
+							<ChildrenList>
+								<Action Name="" ID="{8846326A-7B53-4AD0-8E03-A6F0C524416E}" ShortID="982262839">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Beer_faucet_Flow_Loop" ID="{A014AE9C-F9FC-4C41-91C0-BBF55AAEAEA9}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Glass_Debris" ID="{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}">
+							<ChildrenList>
+								<Action Name="" ID="{8D9C3A5F-635F-4957-A20C-844B5DE42C0A}" ShortID="302048793">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_Glass_Break_Debris" ID="{96B60B60-C18B-4697-B12C-2C607CE23BFA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">

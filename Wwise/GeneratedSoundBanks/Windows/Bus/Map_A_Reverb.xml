@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="356551040" Type="Bus" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}" Language="SFX" Hash="{9924DF2A-E273-9BDE-9B9D-EAAA6FFA0251}">
+		<SoundBank Id="356551040" Type="Bus" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}" Language="SFX" Hash="{926578F3-01E2-6BC9-FFDC-683625E43774}">
 			<ObjectPath>Map_A_Reverb</ObjectPath>
 			<ShortName>Map_A_Reverb</ShortName>
 			<Path>Bus/Map_A_Reverb.bnk</Path>
@@ -21,5 +21,5 @@
 			</AuxBusses>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F02A6EF6-0809-A2CC-1737-E19494285C65}</FileHash>
+	<FileHash>{8F496738-92A5-3975-761A-5470FDA78D4D}</FileHash>
 </SoundBanksInfo>

@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1572483357	Play_Water_Up			\Default Work Unit\Object_SFX\Play_Water_Up	
+
