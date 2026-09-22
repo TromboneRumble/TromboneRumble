@@ -64,8 +64,7 @@ ADrunkardNPC::ADrunkardNPC()
 		return Indicator;
 	};
 	TargetIndicatorComponent = MakeIndicator(TEXT("TargetIndicatorComponent"), FName("head"));
-	AttackableIndicatorHeadComponent = MakeIndicator(TEXT("AttackableIndicatorHeadComponent"), FName("head"));
-	AttackableIndicatorChestComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
+	AttackableIndicatorComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
 }
 
 void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -146,12 +145,9 @@ void ADrunkardNPC::UpdateAttackableIndicator()
 	}
 	bAttackableShown = bShow;
 
-	for (const UWidgetComponent* Indicator : { AttackableIndicatorHeadComponent.Get(), AttackableIndicatorChestComponent.Get() })
+	if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(AttackableIndicatorComponent ? AttackableIndicatorComponent->GetUserWidgetObject() : nullptr))
 	{
-		if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(Indicator ? Indicator->GetUserWidgetObject() : nullptr))
-		{
-			Widget->SetShown(bShow);
-		}
+		Widget->SetShown(bShow);
 	}
 }
 

@@ -83,13 +83,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UWidgetComponent> TargetIndicatorComponent;
 
-	/** Attackable mark, head placement. Only the target sees it, and only within range. One of the two placements will be removed once the team picks. */
+	/** Attackable mark on the chest. Only the target sees it, and only within range. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
-	TObjectPtr<UWidgetComponent> AttackableIndicatorHeadComponent;
-
-	/** Attackable mark, chest placement. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
-	TObjectPtr<UWidgetComponent> AttackableIndicatorChestComponent;
+	TObjectPtr<UWidgetComponent> AttackableIndicatorComponent;
 
 private:
 
