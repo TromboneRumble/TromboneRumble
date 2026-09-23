@@ -9,7 +9,7 @@
 class ADefaultTromboneCharacter;
 class ADrunkardSpawner;
 struct FDrunkardRoute;
-class UDrunkardDataAsset;
+class UDrunkardGimmickConfig;
 class UDrunkardStateComponent;
 class UWidgetComponent;
 class UXRaySilhouetteComponent;
@@ -48,7 +48,11 @@ public:
 	/** 다이브 몽타주의 래그돌 시작 노티파이가 호출. 서버에서만 래그돌로 전환하고 복제로 퍼진다 */
 	void HandleDiveRagdollStart();
 
-	const UDrunkardDataAsset* GetDrunkardData() const { return DrunkardData; }
+	/**
+	 * Settings of the drunkard gimmick for this level.
+	 * Never null. The defaults of the config class come back when the level has no drunkard entry.
+	 */
+	const UDrunkardGimmickConfig& GetDrunkardConfig() const;
 	UDrunkardStateComponent* GetStateComponent() const { return StateComponent; }
 
 	//~ Begin ATromboneCharacterBase Interface
@@ -68,13 +72,10 @@ protected:
 	virtual void OnBlockedStateChanged(bool bBlocked) override;
 	//~ End ATromboneCharacterBase Interface
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config|Data", meta = (DisplayName = "취객 데이터"))
-	TObjectPtr<UDrunkardDataAsset> DrunkardData;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UDrunkardStateComponent> StateComponent;
 
-	/** 벽 뒤 실루엣. DrunkardData의 토글이 꺼져 있으면 BeginPlay에서 제거된다 */
+	/** 벽 뒤 실루엣. UDrunkardGimmickConfig의 토글이 꺼져 있으면 BeginPlay에서 제거된다 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UXRaySilhouetteComponent> XRaySilhouetteComponent;
 
@@ -82,13 +83,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UWidgetComponent> TargetIndicatorComponent;
 
-	/** Attackable mark, head placement. Only the target sees it, and only within range. One of the two placements will be removed once the team picks. */
+	/** Attackable mark on the chest. Only the target sees it, and only within range. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
-	TObjectPtr<UWidgetComponent> AttackableIndicatorHeadComponent;
-
-	/** Attackable mark, chest placement. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
-	TObjectPtr<UWidgetComponent> AttackableIndicatorChestComponent;
+	TObjectPtr<UWidgetComponent> AttackableIndicatorComponent;
 
 private:
 
@@ -136,6 +133,12 @@ private:
 	TWeakObjectPtr<AActor> ExitPoint;
 	TWeakObjectPtr<AActor> EntranceDoor;
 	bool bEntranceDoorBreakPending = false;
+
+	/** Drunkard entry of the stage data. Filled by GetDrunkardConfig on first use. The manager keeps the asset loaded. */
+	mutable TWeakObjectPtr<const UDrunkardGimmickConfig> CachedConfig;
+
+	/** Has GetDrunkardConfig searched already. A search that found nothing is not repeated. */
+	mutable bool bConfigSearched = false;
 
 	/** 다이브 몽타주는 NPC라 자동 복제가 안 되므로 모든 머신에서 직접 재생한다 */
 	UFUNCTION(NetMulticast, Reliable)

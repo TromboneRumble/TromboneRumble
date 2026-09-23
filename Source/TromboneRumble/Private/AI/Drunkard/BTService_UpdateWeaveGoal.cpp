@@ -9,7 +9,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-#include "Data/DrunkardDataAsset.h"
+#include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -59,10 +59,9 @@ void UBTService_UpdateWeaveGoal::OnCeaseRelevant(UBehaviorTreeComponent& OwnerCo
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	if (const ADrunkardNPC* NPC = AIController ? Cast<ADrunkardNPC>(AIController->GetPawn()) : nullptr)
 	{
-		const UDrunkardDataAsset* Data = NPC->GetDrunkardData();
-		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement(); Move && Data && !NPC->IsBlocked())
+		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement(); Move && !NPC->IsBlocked())
 		{
-			Move->MaxWalkSpeed = Data->WalkSpeed;
+			Move->MaxWalkSpeed = NPC->GetDrunkardConfig().WalkSpeed;
 		}
 	}
 
@@ -78,8 +77,7 @@ void UBTService_UpdateWeaveGoal::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 	if (!NPC || !Blackboard) return;
 
-	const UDrunkardDataAsset* Data = NPC->GetDrunkardData();
-	if (!Data) return;
+	const UDrunkardGimmickConfig& Config = NPC->GetDrunkardConfig();
 
 	// 이동이 잠긴 동안에는 위빙/속도 변주를 멈춘다. 잠금을 덮어쓰면 스턴/래그돌 중에 걸어다닌다
 	if (NPC->IsBlocked()) return;
@@ -97,14 +95,14 @@ void UBTService_UpdateWeaveGoal::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
 	FBTWeaveGoalMemory* Memory = CastInstanceNodeMemory<FBTWeaveGoalMemory>(NodeMemory);
 	const float Time = NPC->GetWorld()->GetTimeSeconds();
-	const float SinArg = Time * Data->WeaveFrequency + Memory->WeavePhase;
+	const float SinArg = Time * Config.WeaveFrequency + Memory->WeavePhase;
 
 	// 반주기(방향이 바뀌는 지점)마다 진폭 배율을 재롤 — 기계적인 사인파로 보이는 것을 방지
 	const int32 HalfCycle = FMath::FloorToInt32(SinArg / PI);
 	if (HalfCycle != Memory->LastHalfCycle)
 	{
 		Memory->LastHalfCycle = HalfCycle;
-		Memory->AmplitudeMul = FMath::FRandRange(1.f - Data->WeaveAmplitudeNoise, 1.f + Data->WeaveAmplitudeNoise);
+		Memory->AmplitudeMul = FMath::FRandRange(1.f - Config.WeaveAmplitudeNoise, 1.f + Config.WeaveAmplitudeNoise);
 	}
 
 	const ATromboneCharacterBase* TargetCharacter = Cast<ATromboneCharacterBase>(Target);
@@ -132,19 +130,19 @@ void UBTService_UpdateWeaveGoal::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 		const FVector Perpendicular = FVector::CrossProduct(ToTarget, FVector::UpVector);
 
 		// 타겟에 가까워지면 오프셋을 줄인다 — 목표가 계속 옆으로 흔들리면 접촉(포획 판정)이 어려워짐
-		const float ProximityDamp = FMath::Min(1.f, Distance / FMath::Max(Data->WeaveAmplitude * 2.f, KINDA_SMALL_NUMBER));
-		const float Offset = Data->WeaveAmplitude * Memory->AmplitudeMul * ProximityDamp * FMath::Sin(SinArg);
+		const float ProximityDamp = FMath::Min(1.f, Distance / FMath::Max(Config.WeaveAmplitude * 2.f, KINDA_SMALL_NUMBER));
+		const float Offset = Config.WeaveAmplitude * Memory->AmplitudeMul * ProximityDamp * FMath::Sin(SinArg);
 		MoveGoal += Perpendicular * Offset;
 	}
 	Blackboard->SetValue<UBlackboardKeyType_Vector>(MoveGoalKey.GetSelectedKeyID(), MoveGoal);
 
 	// 이동 속도 주기적 변주 (휘청→회복). 위빙과 다른 주기로 돌려 패턴이 겹쳐 보이지 않게 한다
-	if (Data->SpeedVariance > 0.f)
+	if (Config.SpeedVariance > 0.f)
 	{
 		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement())
 		{
-			const float SpeedSin = FMath::Sin(Time * Data->WeaveFrequency * 0.7f + Memory->SpeedPhase);
-			Move->MaxWalkSpeed = Data->WalkSpeed * (1.f + Data->SpeedVariance * SpeedSin);
+			const float SpeedSin = FMath::Sin(Time * Config.WeaveFrequency * 0.7f + Memory->SpeedPhase);
+			Move->MaxWalkSpeed = Config.WalkSpeed * (1.f + Config.SpeedVariance * SpeedSin);
 		}
 	}
 }

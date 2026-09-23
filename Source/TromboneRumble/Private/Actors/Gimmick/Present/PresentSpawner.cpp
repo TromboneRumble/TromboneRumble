@@ -2,6 +2,7 @@
 
 #include "Actors/Gimmick/Present/PresentSpawner.h"
 #include "Actors/Gimmick/Present/Present.h"
+#include "Data/Gimmick/PresentGimmickConfig.h"
 #include "Engine/TargetPoint.h"
 
 APresentSpawner::APresentSpawner()
@@ -18,6 +19,7 @@ void APresentSpawner::Activate()
 
 	SyncActivePresentsSize();
 
+	const float SpawnInterval = GetConfig<UPresentGimmickConfig>().SpawnInterval;
 	if (HasAuthority() && SpawnInterval > 0.f)
 	{
 		GetWorldTimerManager().SetTimer(
@@ -27,6 +29,11 @@ void APresentSpawner::Activate()
 			SpawnInterval,
 			true);
 	}
+}
+
+void APresentSpawner::ForceTrigger()
+{
+	SpawnOneDrop();
 }
 
 void APresentSpawner::Deactivate()
@@ -60,7 +67,9 @@ void APresentSpawner::SyncActivePresentsSize()
 void APresentSpawner::SpawnOneDrop()
 {
 	if (!HasAuthority()) return;
-	if (!PresentClass || SpawnPoints.IsEmpty()) return;
+
+	const UPresentGimmickConfig& Config = GetConfig<UPresentGimmickConfig>();
+	if (!Config.PresentClass || SpawnPoints.IsEmpty()) return;
 
 	SyncActivePresentsSize();
 
@@ -87,12 +96,12 @@ void APresentSpawner::SpawnOneDrop()
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	if (APresent* NewPresent = GetWorld()->SpawnActor<APresent>(
-		PresentClass,
+		Config.PresentClass,
 		ChosenPoint->GetActorLocation(),
 		ChosenPoint->GetActorRotation(),
 		Params))
 	{
-		NewPresent->BonusScore = PresentBonusScore;
+		NewPresent->BonusScore = Config.BonusScore;
 		ActivePresents[ChosenIndex] = NewPresent;
 	}
 }

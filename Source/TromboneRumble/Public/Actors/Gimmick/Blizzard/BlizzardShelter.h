@@ -7,6 +7,7 @@
 #include "BlizzardShelter.generated.h"
 
 enum class EBlizzardState : uint8;
+class UGuideSignalComponent;
 class USphereComponent;
 class UPointLightComponent;
 class USceneComponent;
@@ -60,11 +61,14 @@ public:
 	bool IsSheltering() const { return !HasDoor() || bDoorOpen; }
 	//~
 
+	/** 서버 전용. 이 쉘터를 가리키는 안내선(AGuideLine)을 켜고 끈다. */
+	void SetGuiding(bool bGuiding);
+
 	/** BP FadeTimeline 의 Update 에서 호출 (Alpha 0~1) */
 	UFUNCTION(BlueprintCallable, Category = "Shelter")
 	void UpdateLightFade(float Alpha);
 
-	/** 문이 열리거나 닫혔을 때. 구독자가 스스로 붙는다 (ABlizzardGuideLine). */
+	/** 문이 열리거나 닫혔을 때. */
 	UPROPERTY(BlueprintAssignable, Category = "Shelter")
 	FOnShelterDoorChangedSignature OnDoorChanged;
 
@@ -80,6 +84,10 @@ protected:
 	 *  평상시(Idle) 상태 = 배치된 이 라이트의 값 그대로 (BP 에서 Intensity 0 저작). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config|Shelter")
 	TObjectPtr<UPointLightComponent> ShelterLight;
+
+	/** 안내선에게 보내는 복제 신호. 안내선은 이 쉘터를 "안내 신호 액터" 로 지정한다. */
+	UPROPERTY(VisibleAnywhere, Category = "Config|Shelter")
+	TObjectPtr<UGuideSignalComponent> GuideSignal;
 
 private:
 	//~ 천막 문. 둘 다 비어 있어도 동작해야 한다 (문 없는 쉘터 = 항상 안전).

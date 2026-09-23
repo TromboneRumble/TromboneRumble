@@ -1431,7 +1431,7 @@
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Attenuation">
-													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+													<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 												</Reference>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1573,7 +1573,7 @@
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Attenuation">
-													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+													<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 												</Reference>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1628,7 +1628,7 @@
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Attenuation">
-													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+													<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 												</Reference>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1638,7 +1638,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="Glass_debris_1" ID="{2E8B4A15-10D3-4310-AB8C-8EA76E93964B}" ShortID="83170800">
+												<Sound Name="Glass_Debris_1_1" ID="{F8B8AA5C-0A3D-4FCA-99CF-613B40C429E1}" ShortID="1051153518">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1648,19 +1648,19 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<AudioFileSource Name="Glass_debris_1" ID="{A3AFDD9B-C9B3-47E2-B2C6-0E598ED203B2}">
+														<AudioFileSource Name="Glass_Debris_1_1" ID="{49280F4E-8CE2-4540-9D01-A66DAE76EE08}">
 															<Language>SFX</Language>
-															<AudioFile>Glass Debris\Glass_debris_1.wav</AudioFile>
+															<AudioFile>Glass_Debris_1_1.wav</AudioFile>
 															<MediaIDList>
-																<MediaID ID="397572674"/>
+																<MediaID ID="525881391"/>
 															</MediaIDList>
 														</AudioFileSource>
 													</ChildrenList>
 													<ActiveSourceList>
-														<ActiveSource Name="Glass_debris_1" ID="{A3AFDD9B-C9B3-47E2-B2C6-0E598ED203B2}" Platform="Linked"/>
+														<ActiveSource Name="Glass_Debris_1_1" ID="{49280F4E-8CE2-4540-9D01-A66DAE76EE08}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="Glass_debris_2" ID="{7E67C5CB-C863-4816-B615-6A211BDA19DF}" ShortID="1023071165">
+												<Sound Name="Glass_Debris_1_2" ID="{27A67593-2EA2-4AA5-82C0-B07C5164B9F0}" ShortID="333331733">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1670,19 +1670,19 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<AudioFileSource Name="Glass_debris_2" ID="{EC640B43-C70A-40F2-89A2-65CE2321F0A1}">
+														<AudioFileSource Name="Glass_Debris_1_2" ID="{114ECAD0-975C-4F55-8CA7-0075C69107C2}">
 															<Language>SFX</Language>
-															<AudioFile>Glass Debris\Glass_debris_2.wav</AudioFile>
+															<AudioFile>Glass_Debris_1_2.wav</AudioFile>
 															<MediaIDList>
-																<MediaID ID="425548802"/>
+																<MediaID ID="578452504"/>
 															</MediaIDList>
 														</AudioFileSource>
 													</ChildrenList>
 													<ActiveSourceList>
-														<ActiveSource Name="Glass_debris_2" ID="{EC640B43-C70A-40F2-89A2-65CE2321F0A1}" Platform="Linked"/>
+														<ActiveSource Name="Glass_Debris_1_2" ID="{114ECAD0-975C-4F55-8CA7-0075C69107C2}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="Glass_debris_3" ID="{3FE80194-17DB-407A-913F-8A4FEF551581}" ShortID="794468153">
+												<Sound Name="Glass_Debris_1_3" ID="{E1903183-A5AE-4ECE-BA3C-DB30B8D93A3B}" ShortID="268998300">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1692,16 +1692,16 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<AudioFileSource Name="Glass_debris_3" ID="{E8EEEBA9-FC9B-4BF5-B082-7B7E4D16D40D}">
+														<AudioFileSource Name="Glass_Debris_1_3" ID="{D72DD631-2D4C-4C1A-9FD4-265917D52A85}">
 															<Language>SFX</Language>
-															<AudioFile>Glass Debris\Glass_debris_3.wav</AudioFile>
+															<AudioFile>Glass_Debris_1_3.wav</AudioFile>
 															<MediaIDList>
-																<MediaID ID="252552275"/>
+																<MediaID ID="837586496"/>
 															</MediaIDList>
 														</AudioFileSource>
 													</ChildrenList>
 													<ActiveSourceList>
-														<ActiveSource Name="Glass_debris_3" ID="{E8EEEBA9-FC9B-4BF5-B082-7B7E4D16D40D}" Platform="Linked"/>
+														<ActiveSource Name="Glass_Debris_1_3" ID="{D72DD631-2D4C-4C1A-9FD4-265917D52A85}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
 											</ChildrenList>
@@ -1726,7 +1726,7 @@
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Attenuation">
-													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+													<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 												</Reference>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1824,7 +1824,7 @@
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Attenuation">
-													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+													<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 												</Reference>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -1916,13 +1916,13 @@
 												<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>-11</Value>
+														<Value>-20</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Attenuation">
-													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+													<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 												</Reference>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -2043,7 +2043,7 @@
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
-											<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+											<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
 										</Reference>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
@@ -3716,6 +3716,8 @@
 						</Sound>
 						<Sound Name="Player_Standup" ID="{530D89D7-8B38-435A-9826-FF4C2D00BC7D}" ShortID="226220558">
 							<PropertyList>
+								<Property Name="BelowThresholdBehavior" Type="int16" Value="1"/>
+								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
 										<Value>1</Value>
@@ -5330,6 +5332,44 @@
 								<Panner Name="" ID="{C6DF6DF0-A958-4A0E-ACD0-BCD4D2F3C06F}"/>
 							</PositioningInfo>
 						</RandomSequenceContainer>
+						<Sound Name="Player_Laugh" ID="{23E26B0B-668C-496F-A928-186D272FF13E}" ShortID="69748013">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
+								<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-4</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Props" ID="{54BA927C-368D-4EE8-B3DE-06A8333AE696}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Male Laugh" ID="{F6A9FBE5-0B02-4833-95AE-0E260AED9471}">
+									<Language>SFX</Language>
+									<AudioFile>Male Laugh.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="990272024"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<PositioningInfo>
+								<Panner Name="" ID="{B8509E06-76DA-4060-AECD-2577490556E4}"/>
+							</PositioningInfo>
+							<ActiveSourceList>
+								<ActiveSource Name="Male Laugh" ID="{F6A9FBE5-0B02-4833-95AE-0E260AED9471}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Audience_SFX" ID="{AA4A51ED-DF1D-4CC1-A626-F52CFC48E19C}" ShortID="589204198">

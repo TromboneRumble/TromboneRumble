@@ -8,7 +8,7 @@
 
 /** UBTTask_DrunkardMoveTo
  *
- * 표준 MoveTo에서 도달 판정 반경만 UDrunkardDataAsset 값으로 덮어쓴다.
+ * 표준 MoveTo에서 도달 판정 반경만 UDrunkardGimmickConfig 값으로 덮어쓴다.
  * 반경이 크면 목표 근처에서 위빙이 죽기 때문에 기획자가 데이터 에셋에서 튜닝한다.
  */
 UCLASS()

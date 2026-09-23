@@ -81,14 +81,14 @@ void AWaterDrop::OnCollisionHit(UPrimitiveComponent* HitComponent, AActor* Other
 		const FRotator SpawnRotation =
 			UKismetMathLibrary::MakeRotFromZ(Hit.ImpactNormal);
 
-		FActorSpawnParameters Params;
-		Params.SpawnCollisionHandlingOverride =
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		GetWorld()->SpawnActor<APuddleTrap>(
-			PuddleTrapClass,
-			FTransform(SpawnRotation, SpawnLocation),
-			Params);
+		// Deferred, so the puddle knows its gimmick type before BeginPlay reads the config
+		const FTransform SpawnTransform(SpawnRotation, SpawnLocation);
+		if (APuddleTrap* Puddle = GetWorld()->SpawnActorDeferred<APuddleTrap>(
+			PuddleTrapClass, SpawnTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			Puddle->SetGimmickType(GimmickType);
+			Puddle->FinishSpawning(SpawnTransform);
+		}
 	}
 
 	// 물방울은 역할 끝났으니 제거

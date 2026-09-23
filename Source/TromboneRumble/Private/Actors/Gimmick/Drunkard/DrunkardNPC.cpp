@@ -4,10 +4,11 @@
 #include "Actors/Gimmick/Breakable/BreakableDoor.h"
 #include "Actors/Gimmick/Drunkard/DrunkardAIController.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
+#include "Actors/Gimmick/GimmickManager.h"
 #include "Components/ActorComponents/DrunkardStateComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
 #include "Components/ActorComponents/XRaySilhouetteComponent.h"
-#include "Data/DrunkardDataAsset.h"
+#include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/CapsuleComponent.h"
@@ -63,8 +64,7 @@ ADrunkardNPC::ADrunkardNPC()
 		return Indicator;
 	};
 	TargetIndicatorComponent = MakeIndicator(TEXT("TargetIndicatorComponent"), FName("head"));
-	AttackableIndicatorHeadComponent = MakeIndicator(TEXT("AttackableIndicatorHeadComponent"), FName("head"));
-	AttackableIndicatorChestComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
+	AttackableIndicatorComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
 }
 
 void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -79,17 +79,15 @@ void ADrunkardNPC::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (DrunkardData)
+	const UDrunkardGimmickConfig& Config = GetDrunkardConfig();
+	if (UCharacterMovementComponent* Move = GetCharacterMovement())
 	{
-		if (UCharacterMovementComponent* Move = GetCharacterMovement())
-		{
-			Move->MaxWalkSpeed = DrunkardData->WalkSpeed;
-			Move->MaxAcceleration = DrunkardData->MaxAcceleration;
-		}
+		Move->MaxWalkSpeed = Config.WalkSpeed;
+		Move->MaxAcceleration = Config.MaxAcceleration;
 	}
 
 	// X-Ray 토글이 꺼져 있으면 컴포넌트 제거 (안 쓰는 CustomDepth 비용 방지)
-	if (XRaySilhouetteComponent && (!DrunkardData || !DrunkardData->bEnableXRaySilhouette))
+	if (XRaySilhouetteComponent && !Config.bEnableXRaySilhouette)
 	{
 		XRaySilhouetteComponent->DestroyComponent();
 		XRaySilhouetteComponent = nullptr;
@@ -136,7 +134,7 @@ void ADrunkardNPC::UpdateAttackableIndicator()
 	bool bShow = false;
 	if (ReplicatedTarget && ReplicatedTarget->IsLocallyControlled() && CanReceiveHit())
 	{
-		const float Range = DrunkardData ? DrunkardData->AttackableIndicatorRange : 350.f;
+		const float Range = GetDrunkardConfig().AttackableIndicatorRange;
 		const float Limit = bAttackableShown ? Range + HideMargin : Range;
 		bShow = FVector::DistSquared(ReplicatedTarget->GetActorLocation(), GetActorLocation()) <= FMath::Square(Limit);
 	}
@@ -147,12 +145,9 @@ void ADrunkardNPC::UpdateAttackableIndicator()
 	}
 	bAttackableShown = bShow;
 
-	for (const UWidgetComponent* Indicator : { AttackableIndicatorHeadComponent.Get(), AttackableIndicatorChestComponent.Get() })
+	if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(AttackableIndicatorComponent ? AttackableIndicatorComponent->GetUserWidgetObject() : nullptr))
 	{
-		if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(Indicator ? Indicator->GetUserWidgetObject() : nullptr))
-		{
-			Widget->SetShown(bShow);
-		}
+		Widget->SetShown(bShow);
 	}
 }
 
@@ -205,7 +200,7 @@ void ADrunkardNPC::BreakEntranceDoor()
 	Info.Source = EBreakSource::Script;
 	Info.ImpactPoint = DoorOrigin;
 	Info.ImpactDirection = GetActorForwardVector().GetSafeNormal();
-	Info.Strength = DrunkardData ? DrunkardData->DoorBreakStrength : 600.f;
+	Info.Strength = GetDrunkardConfig().DoorBreakStrength;
 	Info.Instigator = this;
 
 	if (IBreakable::Execute_Break(Door, Info))
@@ -229,12 +224,12 @@ void ADrunkardNPC::BeginDive()
 
 void ADrunkardNPC::Multicast_PlayDiveMontage_Implementation()
 {
-	if (!DrunkardData || !DrunkardData->DiveMontage) return;
+	if (!GetDrunkardConfig().DiveMontage) return;
 
 	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
 	if (AnimInstance)
 	{
-		AnimInstance->Montage_Play(DrunkardData->DiveMontage);
+		AnimInstance->Montage_Play(GetDrunkardConfig().DiveMontage);
 	}
 }
 
@@ -245,7 +240,7 @@ void ADrunkardNPC::HandleDiveRagdollStart()
 	if (!StateComponent || StateComponent->GetState() != EDrunkardState::Diving) return;
 
 	// 진행 방향으로 엎어지는 회전. 부호는 데이터에서 뒤집을 수 있다
-	const float SpinSpeed = DrunkardData ? DrunkardData->DiveSpinSpeed : 0.f;
+	const float SpinSpeed = GetDrunkardConfig().DiveSpinSpeed;
 	RagdollComponent->StartRagdoll(GetVelocity(), GetActorRightVector() * SpinSpeed);
 }
 
@@ -263,7 +258,7 @@ void ADrunkardNPC::OnBlockedStateChanged(const bool bBlocked)
 {
 	if (UCharacterMovementComponent* Move = GetCharacterMovement())
 	{
-		Move->MaxWalkSpeed = bBlocked ? 0.f : (DrunkardData ? DrunkardData->WalkSpeed : 250.f);
+		Move->MaxWalkSpeed = bBlocked ? 0.f : GetDrunkardConfig().WalkSpeed;
 	}
 
 	// 이미 내려간 이동 명령은 속도를 0으로 만들어도 살아 있다
@@ -278,16 +273,16 @@ void ADrunkardNPC::OnBlockedStateChanged(const bool bBlocked)
 
 void ADrunkardNPC::ClearUpperBodyPhysics()
 {
-	if (!PhysicalAnimationComp || !DrunkardData) return;
+	if (!PhysicalAnimationComp) return;
 
 	// 세기 0짜리 빈 프로파일을 같은 본 이하에 적용하면 제약 드라이브가 전부 0이 되어 모터가 꺼진다
 	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(
-		DrunkardData->UpperBodyPhysicsRootBone, FPhysicalAnimationData(), true);
+		GetDrunkardConfig().UpperBodyPhysicsRootBone, FPhysicalAnimationData(), true);
 }
 
 void ADrunkardNPC::ApplyUpperBodyPhysics()
 {
-	if (!DrunkardData || !DrunkardData->bEnableUpperBodyPhysics) return;
+	if (!GetDrunkardConfig().bEnableUpperBodyPhysics) return;
 
 	USkeletalMeshComponent* MeshComp = GetMesh();
 	if (!MeshComp || !PhysicalAnimationComp) return;
@@ -323,10 +318,10 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 		return;
 	}
 	UpperBodyPhysicsRetryCount = 0;
-	if (MeshComp->GetBoneIndex(DrunkardData->UpperBodyPhysicsRootBone) == INDEX_NONE)
+	if (MeshComp->GetBoneIndex(GetDrunkardConfig().UpperBodyPhysicsRootBone) == INDEX_NONE)
 	{
 		UE_LOG(LogDrunkard, Warning, TEXT("%s: 상체 물리 시작 본 '%s' 이 스켈레톤에 없음 — 상체 물리 미적용"),
-			*GetName(), *DrunkardData->UpperBodyPhysicsRootBone.ToString());
+			*GetName(), *GetDrunkardConfig().UpperBodyPhysicsRootBone.ToString());
 		return;
 	}
 
@@ -340,12 +335,12 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 	}
 
 	// 하반신(지정 본 위쪽 계층)은 애니메이션 유지 — 전신에 걸면 메시가 캡슐에서 이탈해 포획 판정이 거짓말을 하게 된다
-	MeshComp->SetAllBodiesBelowSimulatePhysics(DrunkardData->UpperBodyPhysicsRootBone, true, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(DrunkardData->UpperBodyPhysicsRootBone, DrunkardData->UpperBodyPhysicsProfile, true);
+	MeshComp->SetAllBodiesBelowSimulatePhysics(GetDrunkardConfig().UpperBodyPhysicsRootBone, true, true);
+	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(GetDrunkardConfig().UpperBodyPhysicsRootBone, GetDrunkardConfig().UpperBodyPhysicsProfile, true);
 
 	// 피직스 에셋 바디가 자체 콜리전 프로파일(Ragdoll 등, Pawn을 Block)을 쓰면 위의 컴포넌트 레벨
 	// 응답 설정이 무시된다. 시뮬 상체가 자기/타 캐릭터의 캡슐 이동을 막지 않도록 바디 단위로 강제
-	MeshComp->ForEachBodyBelow(DrunkardData->UpperBodyPhysicsRootBone, true, false,
+	MeshComp->ForEachBodyBelow(GetDrunkardConfig().UpperBodyPhysicsRootBone, true, false,
 		[](FBodyInstance* Body)
 		{
 			Body->SetResponseToChannel(ECC_Pawn, ECR_Ignore);
@@ -360,7 +355,7 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 
 	if (bDoorEntranceActive && HasAuthority())
 	{
-		const float Duration = FMath::Max(0.05f, DrunkardData ? DrunkardData->EnterBurstDuration : 0.5f);
+		const float Duration = FMath::Max(0.05f, GetDrunkardConfig().EnterBurstDuration);
 		DoorEntranceElapsed += DeltaSeconds;
 		const float Alpha = FMath::Clamp(DoorEntranceElapsed / Duration, 0.f, 1.f);
 
@@ -536,4 +531,18 @@ bool ADrunkardNPC::CanReceiveHit() const
 	}
 
 	return Super::CanReceiveHit();
+}
+
+const UDrunkardGimmickConfig& ADrunkardNPC::GetDrunkardConfig() const
+{
+	const UWorld* World = GetWorld();
+	if (!bConfigSearched && World)
+	{
+		// The editor world can get another stage data asset at any time, so only a game world caches the result
+		bConfigSearched = World->IsGameWorld();
+		CachedConfig = Cast<UDrunkardGimmickConfig>(AGimmickManager::FindConfigInWorld(World, EGimmickType::Drunkard));
+	}
+
+	const UDrunkardGimmickConfig* Config = CachedConfig.Get();
+	return Config ? *Config : *GetDefault<UDrunkardGimmickConfig>();
 }

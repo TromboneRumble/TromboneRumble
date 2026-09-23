@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Data/Gimmick/GravityGimmickConfig.h"
 #include "Engine/Engine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameStateBase.h"
@@ -75,7 +76,7 @@ void AGravityGimmick::Activate()
 
 	if (!bWasActive && HasAuthority())
 	{
-		ScheduleNext();
+		ScheduleNext(GetConfig<UGravityGimmickConfig>().Schedule.PickFirstDelay());
 	}
 }
 
@@ -91,13 +92,20 @@ void AGravityGimmick::Deactivate()
 	Super::Deactivate();
 }
 
-void AGravityGimmick::ScheduleNext()
+void AGravityGimmick::ForceTrigger()
+{
+	if (!HasAuthority() || State != EGravityState::Idle) return;
+
+	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
+	StartWarning();
+}
+
+void AGravityGimmick::ScheduleNext(const float Delay)
 {
 	if (!HasAuthority()) return;
 
-	const float Interval = FMath::RandRange(MinIntervalSeconds, FMath::Max(MinIntervalSeconds, MaxIntervalSeconds));
 	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
-	GetWorldTimerManager().SetTimer(ScheduleTimerHandle, this, &ThisClass::StartWarning, Interval, false);
+	GetWorldTimerManager().SetTimer(ScheduleTimerHandle, this, &ThisClass::StartWarning, Delay, false);
 }
 
 void AGravityGimmick::StartWarning()
@@ -107,7 +115,7 @@ void AGravityGimmick::StartWarning()
 	SetState(EGravityState::Warning);
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, WarningDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, GetConfig<UGravityGimmickConfig>().Schedule.WarningDuration, false);
 }
 
 void AGravityGimmick::StartActive()
@@ -118,7 +126,7 @@ void AGravityGimmick::StartActive()
 	SetState(EGravityState::Active);
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndActive, ActiveDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndActive, GetConfig<UGravityGimmickConfig>().ActiveDuration, false);
 }
 
 void AGravityGimmick::EndActive()
@@ -128,7 +136,7 @@ void AGravityGimmick::EndActive()
 	RemoveAllEffects();
 	SetState(EGravityState::Idle);
 
-	ScheduleNext();
+	ScheduleNext(GetConfig<UGravityGimmickConfig>().Schedule.PickInterval());
 }
 
 void AGravityGimmick::SetState(const EGravityState NewState)
@@ -149,6 +157,8 @@ void AGravityGimmick::OnRep_State()
 void AGravityGimmick::HandleStateChanged()
 {
 	if (GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
+
+	const float GravityMultiplier = GetConfig<UGravityGimmickConfig>().GravityMultiplier;
 
 	if (GimmickParameterCollection)
 	{
@@ -183,7 +193,7 @@ void AGravityGimmick::ApplyEffectToAllPlayers()
 
 		const FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(GravityEffectClass, 1.f, Context);
 		if (!SpecHandle.IsValid()) continue;
-		SpecHandle.Data->SetSetByCallerMagnitude(TromboneGamePlayTags::Trombone_Gimmick_Gravity_Scale, GravityMultiplier);
+		SpecHandle.Data->SetSetByCallerMagnitude(TromboneGamePlayTags::Trombone_Gimmick_Gravity_Scale, GetConfig<UGravityGimmickConfig>().GravityMultiplier);
 
 		const FActiveGameplayEffectHandle Handle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 		if (Handle.IsValid())
@@ -232,7 +242,7 @@ void AGravityGimmick::DebugDraw() const
 	const FString Text = FString::Printf(TEXT("[중력 기믹] 상태 %s | 남은 시간 %s | 설정 배율 x%.2f | 적용 인원 %d | 캐릭터 중력 %s"),
 		*UEnum::GetDisplayValueAsText(State).ToString(),
 		*Remaining,
-		GravityMultiplier,
+		GetConfig<UGravityGimmickConfig>().GravityMultiplier,
 		ActiveEffects.Num(),
 		Gravities.IsEmpty() ? TEXT("-") : *Gravities);
 	GEngine->AddOnScreenDebugMessage(static_cast<uint64>(GetUniqueID()), 1.f, FColor::Cyan, Text);

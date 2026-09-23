@@ -3,7 +3,7 @@
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
 #include "Components/ActorComponents/DrunkardStateComponent.h"
-#include "Data/DrunkardDataAsset.h"
+#include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Engine/Engine.h"
 #include "Engine/TargetPoint.h"
 #include "Utilities/TromboneLogs.h"
@@ -12,11 +12,6 @@
 #if !UE_BUILD_SHIPPING
 extern TAutoConsoleVariable<int32> CVarDrunkardDebug;
 #endif
-
-namespace
-{
-	constexpr float FallbackSpawnDelay = 20.f;
-}
 
 ADrunkardSpawner::ADrunkardSpawner()
 {
@@ -32,11 +27,19 @@ void ADrunkardSpawner::Activate()
 
 	if (!bWasActive && HasAuthority())
 	{
-		const float Delay = DrunkardData ? DrunkardData->InitialSpawnDelay : FallbackSpawnDelay;
+		const float Delay = GetConfig<UDrunkardGimmickConfig>().InitialSpawnDelay;
 		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Delay, false);
 
 		UE_LOG(LogGimmick, Log, TEXT("Drunkard spawner started. First spawn in %.1fs"), Delay);
 	}
+}
+
+void ADrunkardSpawner::ForceTrigger()
+{
+	if (!HasAuthority()) return;
+
+	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	TrySpawnNPC();
 }
 
 void ADrunkardSpawner::Deactivate()
@@ -138,7 +141,7 @@ void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 
 	if (!IsActive()) return;
 
-	const float Interval = DrunkardData ? DrunkardData->RespawnInterval : FallbackSpawnDelay;
+	const float Interval = GetConfig<UDrunkardGimmickConfig>().RespawnInterval;
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Interval, false);
 }
 

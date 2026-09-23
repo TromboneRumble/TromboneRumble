@@ -1,4 +1,5 @@
 #include "Actors/Gimmick/Spotlight/SpotlightManager.h"
+#include "Data/Gimmick/SpotlightGimmickConfig.h"
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
 #include "Data/QuestData.h"
 #include "Engine/TargetPoint.h"
@@ -66,16 +67,19 @@ void ASpotlightManager::OnMusicCallbackReceived(EAkCallbackType CallbackType, UA
     }
 }
 
+void ASpotlightManager::ForceTrigger()
+{
+	TriggerSpotlightSpawn();
+}
+
 void ASpotlightManager::TriggerSpotlightSpawn()
 {
 	if (!HasAuthority()) return;
 
-    const int32 MinCount = bIsFeverTime ? MinSpawnCount_Fever : MinSpawnCount_Normal;
-    const int32 MaxCount = bIsFeverTime ? MaxSpawnCount_Fever : MaxSpawnCount_Normal;
-    const float MinInterval = bIsFeverTime ? MinSpawnInterval_Fever : MinSpawnInterval_Normal;
-    const float MaxInterval = bIsFeverTime ? MaxSpawnInterval_Fever : MaxSpawnInterval_Fever;
+    const USpotlightGimmickConfig& Config = GetConfig<USpotlightGimmickConfig>();
+    const FSpotlightSpawnRule& Rule = Config.GetRule(bIsFeverTime);
 
-    const int32 SpawnCount = FMath::RandRange(MinCount, MaxCount);
+    const int32 SpawnCount = FMath::RandRange(Rule.MinCount, FMath::Max(Rule.MinCount, Rule.MaxCount));
     
     TArray<TObjectPtr<ATargetPoint>> AvailableSpawnPoints;
     for (auto Point : SpawnPoints)
@@ -110,10 +114,10 @@ void ASpotlightManager::TriggerSpotlightSpawn()
 
             if (NewZone)
             {
-                NewZone->InitializeZone(bIsFeverTime, SpotlightBonusScore);
+                NewZone->InitializeZone(bIsFeverTime, Config.BonusScore);
                 ActiveSpotlightZones.Add(NewZone);
                 NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
-                
+
                 if (UTutorialWorldSubsystem* TutorialSub = GetWorld()->GetSubsystem<UTutorialWorldSubsystem>())
                 {
                     NewZone->OnSpotlightBonusEarned.AddUObject(TutorialSub, 
@@ -126,7 +130,7 @@ void ASpotlightManager::TriggerSpotlightSpawn()
         }
     }
 
-    const float NextSpawnInterval = FMath::RandRange(MinInterval, MaxInterval);
+    const float NextSpawnInterval = Rule.Interval.Pick();
 
     GetWorldTimerManager().ClearTimer(SpawnTimerHandle); 
     
@@ -186,7 +190,7 @@ void ASpotlightManager::Server_TriggerAllSpotlightSpawn_Implementation()
 
         if (NewZone)
         {
-            NewZone->InitializeZone(bIsFeverTime, SpotlightBonusScore);
+            NewZone->InitializeZone(bIsFeverTime, GetConfig<USpotlightGimmickConfig>().BonusScore);
             ActiveSpotlightZones.Add(NewZone);
             NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
         }

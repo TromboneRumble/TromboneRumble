@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}",
     "Language": "SFX",
-    "Hash": "{5F534715-130D-4136-3971-DC5EF20B7370}",
+    "Hash": "{0EDD3CEF-922D-ECB4-2392-8701DC2B6518}",
     "ObjectPath": "Play_Beer_Drop",
     "ShortName": "Play_Beer_Drop",
     "Path": "Event/Play_Beer_Drop.bnk",
@@ -31,7 +31,7 @@
       "Name": "Play_Beer_Drop",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Beer_Drop",
       "GUID": "{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "10000",
       "DurationType": "Infinite",
       "MediaRefs": [
        {
@@ -42,6 +42,6 @@
     ]
    }
   ],
-  "FileHash": "{18F8A6A8-9888-3453-8189-67C963419E9D}"
+  "FileHash": "{B8A3FF29-73A7-D3CD-9E69-F99801946297}"
  }
 }

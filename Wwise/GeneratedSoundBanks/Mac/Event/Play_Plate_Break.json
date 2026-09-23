@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
     "Language": "SFX",
-    "Hash": "{718DAD03-4919-C9A7-4E8E-9A4BF221C056}",
+    "Hash": "{AE2693DB-1F1D-E0E1-68AE-17EE7913DCB4}",
     "ObjectPath": "Play_Plate_Break",
     "ShortName": "Play_Plate_Break",
     "Path": "Event/Play_Plate_Break.bnk",
@@ -34,31 +34,13 @@
       "CachePath": "SFX/Plate/Plate_B_3_818F3B66.wem"
      },
      {
-      "Id": "252552275",
+      "Id": "525881391",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_3.wav",
-      "Path": "Media/252552275.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_3_818F3B66.wem"
-     },
-     {
-      "Id": "397572674",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_1.wav",
-      "Path": "Media/397572674.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_1_818F3B66.wem"
-     },
-     {
-      "Id": "425548802",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_2.wav",
-      "Path": "Media/425548802.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_2_818F3B66.wem"
+      "ShortName": "Glass_Debris_1_1.wav",
+      "Path": "Media/525881391.wem",
+      "CachePath": "SFX/Glass_Debris_1_1_818F3B66.wem"
      },
      {
       "Id": "548835060",
@@ -68,6 +50,24 @@
       "ShortName": "Plate\\Plate_B_2.wav",
       "Path": "Media/548835060.wem",
       "CachePath": "SFX/Plate/Plate_B_2_818F3B66.wem"
+     },
+     {
+      "Id": "578452504",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass_Debris_1_2.wav",
+      "Path": "Media/578452504.wem",
+      "CachePath": "SFX/Glass_Debris_1_2_818F3B66.wem"
+     },
+     {
+      "Id": "837586496",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass_Debris_1_3.wav",
+      "Path": "Media/837586496.wem",
+      "CachePath": "SFX/Glass_Debris_1_3_818F3B66.wem"
      }
     ],
     "Events": [
@@ -76,10 +76,10 @@
       "Name": "Play_Plate_Break",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Plate_Break",
       "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "10000",
       "DurationType": "OneShot",
-      "DurationMin": "1.0000196",
-      "DurationMax": "1.294269",
+      "DurationMin": "1.1614219",
+      "DurationMax": "1.3346393",
       "MediaRefs": [
        {
         "Id": "96843883"
@@ -88,22 +88,22 @@
         "Id": "153100519"
        },
        {
-        "Id": "252552275"
-       },
-       {
-        "Id": "397572674"
-       },
-       {
-        "Id": "425548802"
+        "Id": "525881391"
        },
        {
         "Id": "548835060"
+       },
+       {
+        "Id": "578452504"
+       },
+       {
+        "Id": "837586496"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{2E8D1509-F427-F401-72B8-785228F2303C}"
+  "FileHash": "{66E238A9-2AF8-9E05-7D66-E41DF92D026F}"
  }
 }

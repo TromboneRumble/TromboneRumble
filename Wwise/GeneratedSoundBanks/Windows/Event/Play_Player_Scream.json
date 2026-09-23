@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "Player_Falling_Scream.wav",
       "Path": "Media/923323399.wem",
-      "CachePath": "SFX/Player_Falling_Scream_AC6FA047.wem"
+      "CachePath": "SFX/Player_Falling_Scream_D13135E6.wem"
      }
     ],
     "Events": [
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{1254269E-C6B8-0826-95DE-569C6E781A6F}"
+  "FileHash": "{87859BFC-2007-AB88-93E5-345D9E30D460}"
  }
 }
