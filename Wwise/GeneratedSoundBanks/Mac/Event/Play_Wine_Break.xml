@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3371435525" Type="Event" GUID="{0C7F92B1-50F9-4686-8377-53DE94455FBB}" Language="SFX" Hash="{DEF3CFC4-ECE5-B581-6900-7BB966B068BE}">
+		<SoundBank Id="3371435525" Type="Event" GUID="{0C7F92B1-50F9-4686-8377-53DE94455FBB}" Language="SFX" Hash="{2B566D4E-ABD6-9AA3-58DC-D65E3D2E1C77}">
 			<ObjectPath>Play_Wine_Break</ObjectPath>
 			<ShortName>Play_Wine_Break</ShortName>
 			<Path>Event/Play_Wine_Break.bnk</Path>
@@ -11,45 +11,45 @@
 					<Path>Media/226158908.wem</Path>
 					<CachePath>SFX/Wine Glass Break/Wine_Break_3_818F3B66.wem</CachePath>
 				</File>
-				<File Id="252552275" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Glass Debris\Glass_debris_3.wav</ShortName>
-					<Path>Media/252552275.wem</Path>
-					<CachePath>SFX/Glass Debris/Glass_debris_3_818F3B66.wem</CachePath>
-				</File>
 				<File Id="375781344" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Wine Glass Break\Wine_Break_2.wav</ShortName>
 					<Path>Media/375781344.wem</Path>
 					<CachePath>SFX/Wine Glass Break/Wine_Break_2_818F3B66.wem</CachePath>
-				</File>
-				<File Id="397572674" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Glass Debris\Glass_debris_1.wav</ShortName>
-					<Path>Media/397572674.wem</Path>
-					<CachePath>SFX/Glass Debris/Glass_debris_1_818F3B66.wem</CachePath>
-				</File>
-				<File Id="425548802" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Glass Debris\Glass_debris_2.wav</ShortName>
-					<Path>Media/425548802.wem</Path>
-					<CachePath>SFX/Glass Debris/Glass_debris_2_818F3B66.wem</CachePath>
 				</File>
 				<File Id="487054294" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Wine Glass Break\Wine_Break_1.wav</ShortName>
 					<Path>Media/487054294.wem</Path>
 					<CachePath>SFX/Wine Glass Break/Wine_Break_1_818F3B66.wem</CachePath>
 				</File>
+				<File Id="525881391" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Glass_Debris_1_1.wav</ShortName>
+					<Path>Media/525881391.wem</Path>
+					<CachePath>SFX/Glass_Debris_1_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="578452504" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Glass_Debris_1_2.wav</ShortName>
+					<Path>Media/578452504.wem</Path>
+					<CachePath>SFX/Glass_Debris_1_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="837586496" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Glass_Debris_1_3.wav</ShortName>
+					<Path>Media/837586496.wem</Path>
+					<CachePath>SFX/Glass_Debris_1_3_818F3B66.wem</CachePath>
+				</File>
 			</Media>
 			<Events>
-				<Event Id="3371435525" Name="Play_Wine_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Wine_Break" GUID="{0C7F92B1-50F9-4686-8377-53DE94455FBB}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.0000196" DurationMax="1.294269">
+				<Event Id="3371435525" Name="Play_Wine_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Wine_Break" GUID="{0C7F92B1-50F9-4686-8377-53DE94455FBB}" MaxAttenuation="10000" DurationType="OneShot" DurationMin="1.2914219" DurationMax="1.4646393">
 					<MediaRefs>
 						<MediaRef Id="226158908"/>
-						<MediaRef Id="252552275"/>
 						<MediaRef Id="375781344"/>
-						<MediaRef Id="397572674"/>
-						<MediaRef Id="425548802"/>
 						<MediaRef Id="487054294"/>
+						<MediaRef Id="525881391"/>
+						<MediaRef Id="578452504"/>
+						<MediaRef Id="837586496"/>
 					</MediaRefs>
 				</Event>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{1050C6B9-DEC7-4B1B-6FE9-2E11A87BD236}</FileHash>
+	<FileHash>{5F727245-0253-5FC9-AB02-D8D248D03CBE}</FileHash>
 </SoundBanksInfo>
