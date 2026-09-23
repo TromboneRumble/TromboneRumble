@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0C7F92B1-50F9-4686-8377-53DE94455FBB}",
     "Language": "SFX",
-    "Hash": "{DEF3CFC4-ECE5-B581-6900-7BB966B068BE}",
+    "Hash": "{2B566D4E-ABD6-9AA3-58DC-D65E3D2E1C77}",
     "ObjectPath": "Play_Wine_Break",
     "ShortName": "Play_Wine_Break",
     "Path": "Event/Play_Wine_Break.bnk",
@@ -25,15 +25,6 @@
       "CachePath": "SFX/Wine Glass Break/Wine_Break_3_818F3B66.wem"
      },
      {
-      "Id": "252552275",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_3.wav",
-      "Path": "Media/252552275.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_3_818F3B66.wem"
-     },
-     {
       "Id": "375781344",
       "Language": "SFX",
       "Streaming": "false",
@@ -43,24 +34,6 @@
       "CachePath": "SFX/Wine Glass Break/Wine_Break_2_818F3B66.wem"
      },
      {
-      "Id": "397572674",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_1.wav",
-      "Path": "Media/397572674.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_1_818F3B66.wem"
-     },
-     {
-      "Id": "425548802",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Glass Debris\\Glass_debris_2.wav",
-      "Path": "Media/425548802.wem",
-      "CachePath": "SFX/Glass Debris/Glass_debris_2_818F3B66.wem"
-     },
-     {
       "Id": "487054294",
       "Language": "SFX",
       "Streaming": "false",
@@ -68,6 +41,33 @@
       "ShortName": "Wine Glass Break\\Wine_Break_1.wav",
       "Path": "Media/487054294.wem",
       "CachePath": "SFX/Wine Glass Break/Wine_Break_1_818F3B66.wem"
+     },
+     {
+      "Id": "525881391",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass_Debris_1_1.wav",
+      "Path": "Media/525881391.wem",
+      "CachePath": "SFX/Glass_Debris_1_1_818F3B66.wem"
+     },
+     {
+      "Id": "578452504",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass_Debris_1_2.wav",
+      "Path": "Media/578452504.wem",
+      "CachePath": "SFX/Glass_Debris_1_2_818F3B66.wem"
+     },
+     {
+      "Id": "837586496",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Glass_Debris_1_3.wav",
+      "Path": "Media/837586496.wem",
+      "CachePath": "SFX/Glass_Debris_1_3_818F3B66.wem"
      }
     ],
     "Events": [
@@ -76,34 +76,34 @@
       "Name": "Play_Wine_Break",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Wine_Break",
       "GUID": "{0C7F92B1-50F9-4686-8377-53DE94455FBB}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "10000",
       "DurationType": "OneShot",
-      "DurationMin": "1.0000196",
-      "DurationMax": "1.294269",
+      "DurationMin": "1.2914219",
+      "DurationMax": "1.4646393",
       "MediaRefs": [
        {
         "Id": "226158908"
        },
        {
-        "Id": "252552275"
-       },
-       {
         "Id": "375781344"
        },
        {
-        "Id": "397572674"
-       },
-       {
-        "Id": "425548802"
-       },
-       {
         "Id": "487054294"
+       },
+       {
+        "Id": "525881391"
+       },
+       {
+        "Id": "578452504"
+       },
+       {
+        "Id": "837586496"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{BB921429-EF39-332E-80B8-4C338E916126}"
+  "FileHash": "{E50D91DE-230F-0DF0-3F53-898FA16CAA85}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{BA8C2B7E-7225-486F-93A5-89E87388A573}",
     "Language": "SFX",
-    "Hash": "{0E643459-FAA5-3BAF-7C60-1E747EFC0F61}",
+    "Hash": "{DE4E09E0-5770-93DE-7C18-DC882667510B}",
     "ObjectPath": "Play_Chair_Hit",
     "ShortName": "Play_Chair_Hit",
     "Path": "Event/Play_Chair_Hit.bnk",
@@ -67,7 +67,7 @@
       "Name": "Play_Chair_Hit",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Chair_Hit",
       "GUID": "{BA8C2B7E-7225-486F-93A5-89E87388A573}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "10000",
       "DurationType": "OneShot",
       "DurationMin": "0.49546003",
       "DurationMax": "0.98207986",
@@ -92,6 +92,6 @@
     ]
    }
   ],
-  "FileHash": "{C090A608-AE7A-4CE8-9F1E-AA8DBB5EDA9D}"
+  "FileHash": "{8FCDB01E-4259-E3A9-4BBF-0FF89A94B815}"
  }
 }

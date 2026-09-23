@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{11C1005F-D601-43A2-9164-83690C4969C5}",
     "Language": "SFX",
-    "Hash": "{4FCEA136-9C76-7E07-2244-F4B5A03291CD}",
+    "Hash": "{0A860A53-CF00-A57E-411E-313E574A6251}",
     "ObjectPath": "Play_Fence_Break",
     "ShortName": "Play_Fence_Break",
     "Path": "Event/Play_Fence_Break.bnk",
@@ -40,7 +40,7 @@
       "Name": "Play_Fence_Break",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Fence_Break",
       "GUID": "{11C1005F-D601-43A2-9164-83690C4969C5}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "10000",
       "DurationType": "OneShot",
       "DurationMin": "1.018",
       "DurationMax": "1.1806667",
@@ -56,6 +56,6 @@
     ]
    }
   ],
-  "FileHash": "{4EF58C7F-DF1A-532A-142D-43CF7817F742}"
+  "FileHash": "{BC618DB7-9ACA-3F8E-4D31-F1E271AFFF0B}"
  }
 }
