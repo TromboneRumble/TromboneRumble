@@ -13,16 +13,19 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_OrchestraStage,		"Trombone.Maps.Result.OrchestraStage");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_SnowField,			"Trombone.Maps.Result.SnowField");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_JazzBar,			"Trombone.Maps.Result.JazzBar");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Result_SpaceStation,		"Trombone.Maps.Result.SpaceStation");
 
 	// 로비 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_OrchestraStage,		"Trombone.Maps.Lobby.OrchestraStage");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_SnowField,			"Trombone.Maps.Lobby.SnowField");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_JazzBar,				"Trombone.Maps.Lobby.JazzBar");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Lobby_SpaceStation,			"Trombone.Maps.Lobby.SpaceStation");
 	
 	// 인게임 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_OrchestraStage,		"Trombone.Maps.InGame.OrchestraStage");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_SnowField,			"Trombone.Maps.InGame.SnowField");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_JazzBar,			"Trombone.Maps.InGame.JazzBar");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_InGame_SpaceStation,		"Trombone.Maps.InGame.SpaceStation");
 
 	// 테스트 맵
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_Maps_Test_Proto,				"Trombone.Maps.Test.Proto");
