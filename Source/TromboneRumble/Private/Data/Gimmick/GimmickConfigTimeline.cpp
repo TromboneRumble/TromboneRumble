@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Data/Gimmick/BeerFloodGimmickConfig.h"
+#include "Data/Gimmick/BlackHoleGimmickConfig.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GarbageGimmickConfig.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
@@ -39,6 +40,23 @@ void UGravityGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) cons
 		const float End = Builder.AddSpan(ActiveStart, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("중력 변경")));
 
 		// The next wait starts when this event ends
+		WarningStart = FMath::Max(End + PickInterval(), WarningStart + FGimmickTimelineBuilder::MinStep);
+	}
+}
+
+// ABlackHoleGimmick
+void UBlackHoleGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+{
+	const auto PickInterval = [this, &Builder]() { return Builder.Pick(Schedule.IntervalMin, Schedule.IntervalMax); };
+
+	float WarningStart = Schedule.FirstDelay >= 0.f ? Schedule.FirstDelay : PickInterval();
+	while (Builder.IsInRound(WarningStart))
+	{
+		const float GrowStart = Builder.AddSpan(WarningStart, Schedule.WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+		const float CollapseStart = Builder.AddSpan(GrowStart, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("성장")));
+		const float End = Builder.AddSpan(CollapseStart, CollapseDuration, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("붕괴")));
+
+		// The next wait starts when the burst is over
 		WarningStart = FMath::Max(End + PickInterval(), WarningStart + FGimmickTimelineBuilder::MinStep);
 	}
 }
