@@ -274,7 +274,8 @@ enum class EBreakSource : uint8
 {
 	Script     UMETA(DisplayName = "Script"),      // 코드/치트가 직접 부순 경우 (취객 문 파괴 등)
 	PawnTouch  UMETA(DisplayName = "Pawn Touch"),  // 폰이 걸어 들어와 닿은 경우
-	Attack     UMETA(DisplayName = "Attack")       // 무기 스윕에 맞은 경우
+	Attack     UMETA(DisplayName = "Attack"),      // 무기 스윕에 맞은 경우
+	Impact     UMETA(DisplayName = "Impact")       // 물리 소품이 세게 부딪힌 경우 (ABreakablePhysicsProp)
 };
 
 namespace TromboneRender

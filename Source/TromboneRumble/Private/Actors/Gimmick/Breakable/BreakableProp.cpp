@@ -133,6 +133,11 @@ void ABreakableProp::PlayBreakLocal()
 
 	if (IntactMesh)
 	{
+		// 시뮬 중인 채로 콜리전을 끄면 엔진이 경고한다. 물리 소품은 시뮬부터 멈춘다
+		if (IntactMesh->IsSimulatingPhysics())
+		{
+			IntactMesh->SetSimulatePhysics(false);
+		}
 		IntactMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		IntactMesh->SetGenerateOverlapEvents(false);
 		// 전파하지 않는다 — 자식인 Debris 까지 숨어버린다
