@@ -472,7 +472,7 @@ void ABlackHoleGimmick::CheckCaptures()
 	}
 }
 
-void ABlackHoleGimmick::CaptureCharacter(ATromboneCharacterBase* Character)
+FBlackHoleRingSlot ABlackHoleGimmick::MakeRingSlot() const
 {
 	const UBlackHoleGimmickConfig& Config = GetConfig<UBlackHoleGimmickConfig>();
 
@@ -481,6 +481,13 @@ void ABlackHoleGimmick::CaptureCharacter(ATromboneCharacterBase* Character)
 	Slot.RadiusOffset = FMath::FRandRange(-Config.RingRadiusJitter, Config.RingRadiusJitter);
 	Slot.HeightOffset = FMath::FRandRange(-Config.RingHeightJitter, Config.RingHeightJitter);
 	Slot.AngularSpeed = FMath::Max(0.f, Config.RingAngularSpeed + FMath::FRandRange(-Config.RingAngularSpeedJitter, Config.RingAngularSpeedJitter));
+
+	return Slot;
+}
+
+void ABlackHoleGimmick::CaptureCharacter(ATromboneCharacterBase* Character)
+{
+	const FBlackHoleRingSlot Slot = MakeRingSlot();
 
 	// 공전 중에는 골반이 계속 움직여 스스로 일어나지 않지만, 잡고 있다는 계약을 명시한다
 	if (UTromboneRagdollComponent* Ragdoll = Character->GetRagdollComponent())

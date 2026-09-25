@@ -133,6 +133,12 @@ public:
 	 */
 	FVector ComputeBurstVelocity(const FVector& Location) const;
 
+	/**
+	 * One place on the ring, jittered per object so several captured things read as a band.
+	 * Characters and props both take theirs from here, which keeps the settings in one place.
+	 */
+	FBlackHoleRingSlot MakeRingSlot() const;
+
 	/** @return Acceleration that moves CurrentVelocity toward DesiredVelocity, with the gain and the ceiling applied. */
 	FVector SteerToward(const FVector& DesiredVelocity, const FVector& CurrentVelocity) const;
 
