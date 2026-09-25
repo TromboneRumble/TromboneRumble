@@ -113,7 +113,7 @@ void ABlackHoleGimmick::Deactivate()
 {
 	if (HasAuthority())
 	{
-		ReleaseAllCaptured();
+		ReleaseAllCaptured(/*bBurst*/ false);
 		SetState(EBlackHoleState::Idle);
 	}
 
@@ -187,7 +187,10 @@ void ABlackHoleGimmick::EndCollapse()
 {
 	if (!HasAuthority()) return;
 
-	ReleaseAllCaptured();
+	// 소품 컴포넌트가 여기서 방출을 받는다. Idle 전이보다 먼저 쏴야 구독자가 아직 포획 상태를 들고 있다
+	OnBlackHoleBurstDelegate.Broadcast(GetActorLocation());
+
+	ReleaseAllCaptured(/*bBurst*/ true);
 	SetState(EBlackHoleState::Idle);
 
 	ScheduleNext(GetConfig<UBlackHoleGimmickConfig>().Schedule.PickInterval());
@@ -321,6 +324,31 @@ FVector ABlackHoleGimmick::ComputeRingVelocity(const FVector& Location, const FB
 	Velocity.Z = (Center.Z + Slot.HeightOffset - Location.Z) * Config.RingSpring;
 
 	return Velocity;
+}
+
+FVector ABlackHoleGimmick::ComputeBurstVelocity(const FVector& Location) const
+{
+	const UBlackHoleGimmickConfig& Config = GetConfig<UBlackHoleGimmickConfig>();
+
+	FVector Flat = Location - GetActorLocation();
+	Flat.Z = 0.f;
+
+	// 중심과 정확히 겹쳐 있으면 방향이 없다. 아무 수평 방향으로나 내보낸다
+	FVector Direction = Flat.GetSafeNormal();
+	if (Direction.IsNearlyZero())
+	{
+		const FVector Random = FMath::VRand();
+		Direction = FVector(Random.X, Random.Y, 0.f).GetSafeNormal();
+		if (Direction.IsNearlyZero())
+		{
+			Direction = FVector::ForwardVector;
+		}
+	}
+
+	// 위를 섞어 포물선을 만든다. 수평만 주면 바닥을 미끄러진다
+	Direction = (Direction * (1.f - Config.BurstUpRatio) + FVector::UpVector * Config.BurstUpRatio).GetSafeNormal();
+
+	return Direction * Config.BurstSpeed;
 }
 
 FVector ABlackHoleGimmick::SteerToward(const FVector& DesiredVelocity, const FVector& CurrentVelocity) const
@@ -489,14 +517,42 @@ void ABlackHoleGimmick::TriggerRagdoll(ATromboneCharacterBase* Character)
 	ICombatReceiver::Execute_OnHitReceived(Character, HitData);
 }
 
-void ABlackHoleGimmick::ReleaseAllCaptured()
+void ABlackHoleGimmick::ReleaseAllCaptured(const bool bBurst)
 {
+	int32 BurstCount = 0;
+
 	for (const TPair<TWeakObjectPtr<ATromboneCharacterBase>, FBlackHoleRingSlot>& Pair : CapturedCharacters)
 	{
 		ATromboneCharacterBase* Character = Pair.Key.Get();
 		if (!IsValid(Character)) continue;
 
-		if (USkeletalMeshComponent* Mesh = Character->GetMesh())
+		USkeletalMeshComponent* Mesh = Character->GetMesh();
+		const bool bRagdoll = Character->IsRagdoll();
+
+		if (bBurst)
+		{
+			const FVector Sample = bRagdoll ? Character->GetPelvisLocation() : Character->GetActorLocation();
+			const FVector BurstVelocity = ComputeBurstVelocity(Sample);
+
+			if (bRagdoll && Mesh)
+			{
+				// 끌 때와 같은 이유로 모든 바디에. 속도 변화라 무거운 바디도 같은 속도로 나간다.
+				// 일회성이라 조향과 달리 임펄스를 쓴다
+				Mesh->AddImpulseToAllBodiesBelow(BurstVelocity, NAME_None, /*bVelChange*/ true);
+			}
+			else
+			{
+				// 무적이나 스턴에 막혀 래그돌 없이 잡혀 있던 경우. 캡슐을 직접 띄운다
+				Character->LaunchCharacter(BurstVelocity, true, true);
+			}
+
+			// 한 프레임짜리 사건이라 잠깐 남겨야 방향을 눈으로 쫓을 수 있다
+			DebugDrawVelocity(Sample, BurstVelocity, 2.f);
+			++BurstCount;
+		}
+
+		// 중력은 임펄스 뒤에 켠다. 붕괴 프레임의 한 스텝을 중력 없이 날지 않도록
+		if (Mesh)
 		{
 			Mesh->SetEnableGravity(true);
 		}
@@ -507,10 +563,15 @@ void ABlackHoleGimmick::ReleaseAllCaptured()
 		}
 	}
 
+	if (bBurst)
+	{
+		UE_LOG(LogBlackHole, Log, TEXT("붕괴 방출: %d명 (속도 %.0f)"), BurstCount, GetConfig<UBlackHoleGimmickConfig>().BurstSpeed);
+	}
+
 	CapturedCharacters.Reset();
 }
 
-void ABlackHoleGimmick::DebugDrawVelocity(const FVector& From, const FVector& Velocity) const
+void ABlackHoleGimmick::DebugDrawVelocity(const FVector& From, const FVector& Velocity, const float LifeTime) const
 {
 #if !UE_BUILD_SHIPPING
 	if (CVarBlackHoleDebug.GetValueOnGameThread() == 0 || Velocity.IsNearlyZero()) return;
@@ -519,7 +580,7 @@ void ABlackHoleGimmick::DebugDrawVelocity(const FVector& From, const FVector& Ve
 	if (!World) return;
 
 	// 0.5초 뒤 위치까지 그린다. 접선 성분이 실제로 있는지 한눈에 보인다
-	DrawDebugDirectionalArrow(World, From, From + Velocity * 0.5f, 30.f, FColor::Yellow, false, -1.f, 0, 2.f);
+	DrawDebugDirectionalArrow(World, From, From + Velocity * 0.5f, 30.f, FColor::Yellow, false, LifeTime, 0, 2.f);
 #endif
 }
 

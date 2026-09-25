@@ -22,6 +22,7 @@ enum class EBlackHoleState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBlackHoleStateChangedSignature, EBlackHoleState, NewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBlackHoleBurstSignature, FVector, Center);
 
 /**
  * One place on the ring. Each captured object gets its own, so several of them read as a band
@@ -72,6 +73,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "BlackHole")
 	FOnBlackHoleStateChangedSignature OnBlackHoleStateChangedDelegate;
 
+	/**
+	 * Fires the instant the collapse throws everything out, with the center of the hole.
+	 * Server only, and before the state goes back to Idle, so a subscriber still knows what it had captured.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "BlackHole")
+	FOnBlackHoleBurstSignature OnBlackHoleBurstDelegate;
+
 	EBlackHoleState GetState() const { return State; }
 
 	/** @return Is the hole pulling right now, which is true while it grows and while it collapses. */
@@ -119,6 +127,12 @@ public:
 	 */
 	FVector ComputeRingVelocity(const FVector& Location, const FBlackHoleRingSlot& Slot) const;
 
+	/**
+	 * Speed the collapse throws an object at: away from the center, mixed with some up so it arcs.
+	 * Props read it as well, which keeps the direction in one place.
+	 */
+	FVector ComputeBurstVelocity(const FVector& Location) const;
+
 	/** @return Acceleration that moves CurrentVelocity toward DesiredVelocity, with the gain and the ceiling applied. */
 	FVector SteerToward(const FVector& DesiredVelocity, const FVector& CurrentVelocity) const;
 
@@ -162,11 +176,15 @@ private:
 	/** Hold one character on the ring: stop its get-up, turn its gravity off, give it a ring slot. Server only. */
 	void CaptureCharacter(ATromboneCharacterBase* Character);
 
-	/** Give every captured character its gravity and its automatic get-up back, and forget it. Server only. */
-	void ReleaseAllCaptured();
+	/**
+	 * Give every captured character its gravity and its automatic get-up back, and forget it. Server only.
+	 *
+	 * @param bBurst Throws each one out first. The round ending lets them go without a burst.
+	 */
+	void ReleaseAllCaptured(bool bBurst);
 
-	/** One arrow showing where the hole wants this object to go. Debug only. */
-	void DebugDrawVelocity(const FVector& From, const FVector& Velocity) const;
+	/** One arrow showing where the hole wants this object to go. Debug only. LifeTime -1 draws it for this frame alone. */
+	void DebugDrawVelocity(const FVector& From, const FVector& Velocity, float LifeTime = -1.f) const;
 
 	/** Start the timer of the next warning. Server only. */
 	void ScheduleNext(float Delay);

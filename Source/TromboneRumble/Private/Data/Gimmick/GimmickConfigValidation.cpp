@@ -68,5 +68,11 @@ void UBlackHoleGimmickConfig::ValidateConfig(FDataValidationContext& Context) co
 	{
 		Context.AddWarning(FText::FromString(TEXT("블랙홀: 방출 속도가 0이라 붕괴해도 튕기지 않습니다")));
 	}
+
+	// cm/s 이므로 5000이면 초속 50m다. 실내 맵에서는 벽을 넘어 낙사한다
+	if (BurstSpeed > 5000.f)
+	{
+		Context.AddWarning(FText::FromString(TEXT("블랙홀: 방출 속도가 너무 커서 맵 밖으로 날아갑니다 (단위는 cm/s)")));
+	}
 }
 #endif
