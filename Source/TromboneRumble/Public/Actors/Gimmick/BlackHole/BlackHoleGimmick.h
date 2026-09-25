@@ -6,6 +6,7 @@
 #include "Actors/Gimmick/GimmickBase.h"
 #include "BlackHoleGimmick.generated.h"
 
+class ATromboneCharacterBase;
 class IConsoleVariable;
 class UBlackHoleGimmickConfig;
 class USphereComponent;
@@ -21,6 +22,23 @@ enum class EBlackHoleState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBlackHoleStateChangedSignature, EBlackHoleState, NewState);
+
+/**
+ * One place on the ring. Each captured object gets its own, so several of them read as a band
+ * rather than as one wire. Server only, and the sign of the rotation is not kept here
+ * so that flipping the direction in the settings reaches objects that are already captured.
+ */
+struct FBlackHoleRingSlot
+{
+	/** Added to the ring radius, in cm. */
+	float RadiusOffset = 0.f;
+
+	/** Height above the center of the hole, in cm. */
+	float HeightOffset = 0.f;
+
+	/** How fast this object goes around, in degrees per second. Always positive. */
+	float AngularSpeed = 0.f;
+};
 
 /**
  * ABlackHoleGimmick pulls players and props around one fixed point and throws the captured ones out when it collapses.
@@ -75,6 +93,35 @@ public:
 	bool IsInsideInfluence(const FVector& Location) const;
 	bool IsInsideInner(const FVector& Location) const;
 
+	/**
+	 * Speed the hole wants an object at Location to move at. This is the whole orbit:
+	 * the pull curve gives the part toward the center and the orbit curve the part around it.
+	 *
+	 * @param BaseSpeed       Speed both curve values are a ratio of.
+	 * @param bHorizontalOnly Drops the height difference, which walking characters need.
+	 * @return Wanted speed, or zero outside the influence radius.
+	 */
+	FVector ComputeDesiredVelocity(const FVector& Location, float BaseSpeed, bool bHorizontalOnly) const;
+
+	/**
+	 * Acceleration that steers a simulating body toward ComputeDesiredVelocity.
+	 * Props and ragdolls share it so one set of curves shapes every orbit.
+	 *
+	 * @param SpeedScale Multiplies the reference speed of this body. 1 is the config value.
+	 * @return Acceleration in cm/s2, clamped, or zero outside the influence radius.
+	 */
+	FVector ComputeSteerAccel(const FVector& Location, const FVector& CurrentVelocity, float SpeedScale) const;
+
+	/**
+	 * Speed that holds a captured object on its ring: a spring onto the ring radius and height,
+	 * plus a steady turn around the hole. The spring is why a captured object circles instead of
+	 * winding into the center, which is the one thing the approach curves cannot do.
+	 */
+	FVector ComputeRingVelocity(const FVector& Location, const FBlackHoleRingSlot& Slot) const;
+
+	/** @return Acceleration that moves CurrentVelocity toward DesiredVelocity, with the gain and the ceiling applied. */
+	FVector SteerToward(const FVector& DesiredVelocity, const FVector& CurrentVelocity) const;
+
 protected:
 
 	/** Called on server and clients when the state changes. Put sound and particles here. */
@@ -91,7 +138,35 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "BlackHole")
 	TObjectPtr<USphereComponent> InnerSphere;
 
+	/** Seconds between two capture checks. A player reaches the capture radius at most this late. */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole", meta = (DisplayName = "포획 판정 주기", ClampMin = "0.02", Units = "s"))
+	float CaptureCheckInterval = 0.1f;
+
 private:
+
+	/** Pull everything the hole reaches. Server only, every frame while the hole is on. */
+	void TickPull(float DeltaSeconds);
+
+	/** Walking character. Moves the capsule instead of its speed, the same way the blizzard wind does. */
+	void PullCharacter(ATromboneCharacterBase* Character, float DeltaSeconds);
+
+	/** Ragdolled character. Rides the ring once captured, still on its way in otherwise. Server only, because clients overwrite that speed every frame. */
+	void SteerRagdoll(ATromboneCharacterBase* Character);
+
+	/** Ragdoll and hold every character inside the capture radius. Server only, on a timer. */
+	void CheckCaptures();
+
+	/** Ask the character to ragdoll through its combat interface, so invincibility and stun still gate it. */
+	void TriggerRagdoll(ATromboneCharacterBase* Character);
+
+	/** Hold one character on the ring: stop its get-up, turn its gravity off, give it a ring slot. Server only. */
+	void CaptureCharacter(ATromboneCharacterBase* Character);
+
+	/** Give every captured character its gravity and its automatic get-up back, and forget it. Server only. */
+	void ReleaseAllCaptured();
+
+	/** One arrow showing where the hole wants this object to go. Debug only. */
+	void DebugDrawVelocity(const FVector& From, const FVector& Velocity) const;
 
 	/** Start the timer of the next warning. Server only. */
 	void ScheduleNext(float Delay);
@@ -123,8 +198,18 @@ private:
 	UPROPERTY(Replicated)
 	float ActiveStartServerTime = 0.f;
 
+	/**
+	 * Characters the hole holds until it collapses, each with its place on the ring. Server only.
+	 * Leaving the capture radius does not let a character go, because the burst needs the list.
+	 */
+	TMap<TWeakObjectPtr<ATromboneCharacterBase>, FBlackHoleRingSlot> CapturedCharacters;
+
+	/** How many characters the last server tick pulled. Debug only, stays 0 on clients. */
+	int32 PulledCount = 0;
+
 	FTimerHandle ScheduleTimerHandle;
 	FTimerHandle PhaseTimerHandle;
+	FTimerHandle CaptureTimerHandle;
 
 public:
 
