@@ -38,6 +38,7 @@ enum class EGimmickType : uint8
 	Drunkard		UMETA(DisplayName = "취객"),
 	BeerFlood		UMETA(DisplayName = "술통 침수"),
 	Gravity			UMETA(DisplayName = "중력"),
+	BlackHole		UMETA(DisplayName = "블랙홀"),
 	MAX,
 	None = 255,
 };
@@ -162,6 +163,7 @@ enum class EHitInstigatorType : uint8
 	PressurePlate,
 	Blizzard,
 	Drunkard,
+	BlackHole,
 };
 
 UENUM()
