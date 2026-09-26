@@ -77,8 +77,6 @@ private:
 
 	TWeakObjectPtr<ADrunkardNPC> ActiveNPC;
 
-	FTimerHandle SpawnTimerHandle;
-
 public:
 	
 	//~ Begin AGimmickBase Interface

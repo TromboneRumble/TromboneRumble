@@ -30,6 +30,14 @@ void AGimmickBase::Deactivate()
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
+void AGimmickBase::NotifyEventFinished()
+{
+	if (AGimmickManager* Manager = AGimmickManager::Find(GetWorld()))
+	{
+		Manager->HandleEventFinished(*this);
+	}
+}
+
 const UGimmickConfig* AGimmickBase::FindConfig() const
 {
 	if (bConfigSearched) return CachedConfig.Get();

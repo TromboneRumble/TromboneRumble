@@ -35,6 +35,12 @@ public:
 	/** @return Gimmick Blueprint the manager spawns when the level has no gimmick of this type. Can be null. */
 	TSubclassOf<AGimmickBase> GetGimmickClass() const { return GimmickClass; }
 
+	/**
+	 * @return Whether the gimmick starts only when a sequence of the stage data gives it a turn.
+	 *         Such a gimmick has no timer of its own and must be in a sequence, or it never starts.
+	 */
+	virtual bool RunsOnlyInSequence() const { return false; }
+
 #if WITH_EDITOR
 	/** Add an error to Context for each value that would stop the gimmick from working, for example an empty class list. */
 	virtual void ValidateConfig(FDataValidationContext& Context) const {}
@@ -44,6 +50,13 @@ public:
 	 * Repeat the timer rule of the gimmick actor with the values of this config.
 	 */
 	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const {}
+
+	/**
+	 * Add the spans of one event that starts at Start. The panel calls it for gimmicks in a sequence.
+	 *
+	 * @return Time the event ends.
+	 */
+	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const { return Start; }
 #endif
 
 protected:
@@ -89,9 +102,13 @@ struct FGimmickSchedule
 {
 	GENERATED_BODY()
 
-	/** Seconds from the start of the round to the first warning. Below 0 uses a normal interval instead. */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 지연 (-1 = 발동 간격 사용)", ClampMin = "-1.0", Units = "s"))
-	float FirstDelay = -1.f;
+	/** Is the first warning at a fixed time. Off picks it between IntervalMin and IntervalMax like every later one. */
+	UPROPERTY(EditAnywhere, meta = (InlineEditConditionToggle))
+	bool bFixedFirstDelay = false;
+
+	/** Seconds from the start of the gimmick to the first warning. */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 시간", ClampMin = "0.0", Units = "s", EditCondition = "bFixedFirstDelay"))
+	float FirstDelay = 0.f;
 
 	/** Shortest wait in seconds from the end of one event to the next warning. */
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "발동 간격 최소", ClampMin = "0.0", Units = "s"))
@@ -108,13 +125,13 @@ struct FGimmickSchedule
 	/** @return A random wait between IntervalMin and IntervalMax. */
 	float PickInterval() const { return FMath::RandRange(IntervalMin, FMath::Max(IntervalMin, IntervalMax)); }
 
-	/** @return FirstDelay, or a normal interval when FirstDelay is below 0. */
-	float PickFirstDelay() const { return FirstDelay >= 0.f ? FirstDelay : PickInterval(); }
+	/** @return FirstDelay when it is fixed, or a random interval. */
+	float PickFirstDelay() const { return bFixedFirstDelay ? FirstDelay : PickInterval(); }
 };
 
 /**
  * UEventGimmickConfig is the base for gimmicks that wait a random time after one event ends and then warn again.
- * Gravity uses it. Beer flood repeats on a fixed period and drunkard has its own timing, so they do not.
+ * Gravity and black hole use it. Beer flood and drunkard wait a fixed cooldown and have their own fields.
  */
 UCLASS(Abstract)
 class TROMBONERUMBLE_API UEventGimmickConfig : public UGimmickConfig
@@ -122,6 +139,16 @@ class TROMBONERUMBLE_API UEventGimmickConfig : public UGimmickConfig
 	GENERATED_BODY()
 
 public:
+
+#if WITH_EDITOR
+	/**
+	 * Add warn, run, wait and repeat spans that follow Schedule, for BuildTimeline of a subclass.
+	 *
+	 * @param EventDuration Seconds the event runs after its warning.
+	 * @param EventLabel Name of the event span in the tooltip.
+	 */
+	void BuildScheduleTimeline(FGimmickTimelineBuilder& Builder, float EventDuration, const FText& EventLabel) const;
+#endif
 
 	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "일정"))
 	FGimmickSchedule Schedule;

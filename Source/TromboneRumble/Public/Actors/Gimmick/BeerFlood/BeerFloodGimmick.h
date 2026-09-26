@@ -155,7 +155,6 @@ private:
 	TArray<TWeakObjectPtr<ATromboneCharacterBase>> DrowningCharacters;
 	
 	FTimerHandle PhaseTimerHandle;
-	FTimerHandle CycleTimerHandle;
 	FTimerHandle DrowningTimerHandle;
 	
 public:

@@ -55,9 +55,8 @@ void APresentSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void APresentSpawner::SyncActivePresentsSize()
 {
-	// Empty()가 아니라 SetNum()인 이유: AGimmickManager가 음악 큐마다
-	// DeactivateAllGimmicks(); ActivateAllGimmicks();를 호출하므로,
-	// 여기서 배열을 비우면 재활성화 직후 점유 정보가 날아가 겹쳐 스폰된다
+	// Empty()가 아니라 SetNum()인 이유: 기믹 설정 패널의 재시작처럼 Deactivate 후 Activate가 불리면
+	// 여기서 배열을 비울 경우 재활성화 직후 점유 정보가 날아가 겹쳐 스폰된다
 	if (ActivePresents.Num() != SpawnPoints.Num())
 	{
 		ActivePresents.SetNum(SpawnPoints.Num());

@@ -40,17 +40,13 @@ public:
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
 	virtual void ValidateConfig(FDataValidationContext& Context) const override;
-	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
+	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	//~ End UGimmickConfig Interface
 #endif
 
-	/** 라운드 시작 후 최초 스폰까지 대기 시간 (초) */
-	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "최초 스폰 시간", ClampMin = "0.0", Units = "s"))
-	float InitialSpawnDelay = 20.f;
-
-	/** NPC 퇴장 후 다음 스폰까지 대기 시간 (초) */
-	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "반복 스폰 주기", ClampMin = "0.0", Units = "s"))
-	float RespawnInterval = 20.f;
+	//~ Begin UGimmickConfig Interface
+	virtual bool RunsOnlyInSequence() const override { return true; }
+	//~ End UGimmickConfig Interface
 
 	/** 문 통과 후 추격 시작 전까지 멈춰 있는 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.0", Units = "s"))
@@ -69,7 +65,7 @@ public:
 	float ChaseDuration = 30.f;
 
 	/** 퇴장 제한 시간. 이 시간 안에 퇴장 지점에 도달해 소멸하지 못하면(경로 막힘 등) 강제 소멸한다.
-	 *  NPC가 끼어 있으면 재스폰 루프 전체가 멈추므로 페일세이프 필수 (초) */
+	 *  NPC가 끼어 있으면 재스폰 루프 전체가 멈추므로 필수 (초) */
 	UPROPERTY(EditAnywhere, Category = "Duration", meta = (DisplayName = "퇴장 제한 시간", ClampMin = "1.0", Units = "s"))
 	float ExitTimeout = 10.f;
 

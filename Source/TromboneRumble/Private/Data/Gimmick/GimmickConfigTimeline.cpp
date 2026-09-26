@@ -14,42 +14,44 @@
 
 // Each function repeats the timer rule of its gimmick actor. The actor is named above the function
 
-// ABeerFloodGimmick
-void UBeerFloodGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
-{
-	const float Step = FMath::Max(GetFloodDuration() + Cooldown, FGimmickTimelineBuilder::MinStep);
-
-	for (float WarningStart = FirstWarningDelay; Builder.IsInRound(WarningStart); WarningStart += Step)
-	{
-		float Time = Builder.AddSpan(WarningStart, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("전조")));
-		Time = Builder.AddSpan(Time, RisingDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("수위 상승")));
-		Time = Builder.AddSpan(Time, SustainDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("침수 유지")));
-		Builder.AddSpan(Time, DrainingDuration, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("배수")));
-	}
-}
-
-// AGravityGimmick
-void UGravityGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+// Gravity and black hole: warn, run, wait a random interval from the end, warn again
+void UEventGimmickConfig::BuildScheduleTimeline(FGimmickTimelineBuilder& Builder, const float EventDuration, const FText& EventLabel) const
 {
 	const auto PickInterval = [this, &Builder]() { return Builder.Pick(Schedule.IntervalMin, Schedule.IntervalMax); };
 
-	float WarningStart = Schedule.FirstDelay >= 0.f ? Schedule.FirstDelay : PickInterval();
+	float WarningStart = Schedule.bFixedFirstDelay ? Schedule.FirstDelay : PickInterval();
 	while (Builder.IsInRound(WarningStart))
 	{
-		const float ActiveStart = Builder.AddSpan(WarningStart, Schedule.WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
-		const float End = Builder.AddSpan(ActiveStart, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("중력 변경")));
+		const float EventStart = Builder.AddSpan(WarningStart, Schedule.WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+		const float End = Builder.AddSpan(EventStart, EventDuration, EGimmickTimelinePhase::Active, EventLabel);
 
 		// The next wait starts when this event ends
 		WarningStart = FMath::Max(End + PickInterval(), WarningStart + FGimmickTimelineBuilder::MinStep);
 	}
 }
 
+// ABeerFloodGimmick
+float UBeerFloodGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
+{
+	float Time = Builder.AddSpan(Start, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("전조")));
+	Time = Builder.AddSpan(Time, RisingDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("수위 상승")));
+	Time = Builder.AddSpan(Time, SustainDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("침수 유지")));
+	return Builder.AddSpan(Time, DrainingDuration, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("배수")));
+}
+
+// AGravityGimmick
+void UGravityGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+{
+	BuildScheduleTimeline(Builder, ActiveDuration, FText::FromString(TEXT("중력 변경")));
+}
+
 // ABlackHoleGimmick
 void UBlackHoleGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
 {
+	// The black hole grows, then collapses, and both count as the event
 	const auto PickInterval = [this, &Builder]() { return Builder.Pick(Schedule.IntervalMin, Schedule.IntervalMax); };
 
-	float WarningStart = Schedule.FirstDelay >= 0.f ? Schedule.FirstDelay : PickInterval();
+	float WarningStart = Schedule.bFixedFirstDelay ? Schedule.FirstDelay : PickInterval();
 	while (Builder.IsInRound(WarningStart))
 	{
 		const float GrowStart = Builder.AddSpan(WarningStart, Schedule.WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
@@ -62,20 +64,13 @@ void UBlackHoleGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) co
 }
 
 // ADrunkardSpawner and UDrunkardStateComponent
-void UDrunkardGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+float UDrunkardGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
 {
 	Builder.SetNote(FText::FromString(TEXT("아무도 잡히지 않아 지속시간을 끝까지 쓰고, 퇴장도 제한 시간을 끝까지 쓴 경우입니다. 포획되거나 문에 일찍 닿으면 그만큼 앞당겨집니다")));
 
-	float SpawnTime = InitialSpawnDelay;
-	while (Builder.IsInRound(SpawnTime))
-	{
-		float Time = Builder.AddSpan(SpawnTime, EnterBurstDuration + EnterDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("등장")));
-		Time = Builder.AddSpan(Time, ChaseDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("추격 (최대)")));
-		const float End = Builder.AddSpan(Time, ExitTimeout, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("퇴장 (최대)")));
-
-		// The respawn wait starts when the NPC is destroyed
-		SpawnTime = FMath::Max(End + RespawnInterval, SpawnTime + FGimmickTimelineBuilder::MinStep);
-	}
+	float Time = Builder.AddSpan(Start, EnterBurstDuration + EnterDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("등장")));
+	Time = Builder.AddSpan(Time, ChaseDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("추격 (최대)")));
+	return Builder.AddSpan(Time, ExitTimeout, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("퇴장 (최대)")));
 }
 
 // ASpotlightManager and ASpotlightZone

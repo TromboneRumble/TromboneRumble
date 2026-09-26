@@ -412,20 +412,65 @@ void SGimmickSettingsPanel::RebuildTimeline()
 	TArray<FGimmickTimelineRow> Rows;
 	if (StageData.IsValid())
 	{
+		// One builder per config, in the order of the list. Sequences fill theirs below
+		TArray<const UGimmickConfig*> Configs;
+		TArray<FGimmickTimelineBuilder> Builders;
 		for (const UGimmickConfig* Config : StageData->GetGimmicks())
 		{
 			if (!Config) continue;
 
 			// Each row gets its own stream, so adding or editing one gimmick does not move the random waits of the others
 			const int32 RowSeed = HashCombine(GetTypeHash(TimelineSeed), GetTypeHash(Config->GetGimmickType()));
-			FGimmickTimelineBuilder Builder(TimelineRoundLength, TimelineFeverStart, RowSeed);
-			Config->BuildTimeline(Builder);
+			Configs.Add(Config);
+			Builders.Emplace(TimelineRoundLength, TimelineFeverStart, RowSeed);
 
+			if (StageData->FindSequence(Config->GetGimmickType())) continue;
+
+			if (Config->RunsOnlyInSequence())
+			{
+				Builders.Last().SetNote(FText::FromString(TEXT("순서 그룹에 없어 발동하지 않습니다. 레벨 설정 탭의 순서 그룹에 넣어 주세요")));
+				continue;
+			}
+			Config->BuildTimeline(Builders.Last());
+		}
+
+		const auto FindIndex = [&Configs](const EGimmickType Type) { return Configs.IndexOfByPredicate([Type](const UGimmickConfig* Config) { return Config->GetGimmickType() == Type; }); };
+
+		// Repeat the rule of AGimmickManager: each gimmick starts a gap after the one before it ends
+		for (const FGimmickSequence& Sequence : StageData->GetSequences())
+		{
+			if (Sequence.Order.IsEmpty()) continue;
+
+			float Time = Sequence.FirstDelay;
+			for (int32 Turn = 0; Time < TimelineRoundLength; ++Turn)
+			{
+				const int32 Index = FindIndex(Sequence.Order[Turn % Sequence.Order.Num()]);
+				const float EventEnd = Configs.IsValidIndex(Index) ? Configs[Index]->BuildEventTimeline(Builders[Index], Time) : Time;
+				Time = FMath::Max(EventEnd + Sequence.Gap, Time + FGimmickTimelineBuilder::MinStep);
+			}
+
+			FString OrderText;
+			for (const EGimmickType Type : Sequence.Order)
+			{
+				OrderText += (OrderText.IsEmpty() ? TEXT("") : TEXT(" → ")) + UEnum::GetDisplayValueAsText(Type).ToString();
+			}
+			for (const EGimmickType Type : Sequence.Order)
+			{
+				const int32 Index = FindIndex(Type);
+				if (!Builders.IsValidIndex(Index)) continue;
+
+				const FText SequenceNote = FText::FromString(FString::Printf(TEXT("순서 그룹: %s 순서로 이어집니다"), *OrderText));
+				Builders[Index].SetNote(Builders[Index].GetNote().IsEmpty() ? SequenceNote : FText::Format(INVTEXT("{0}\n{1}"), SequenceNote, Builders[Index].GetNote()));
+			}
+		}
+
+		for (int32 Index = 0; Index < Configs.Num(); ++Index)
+		{
 			FGimmickTimelineRow& Row = Rows.AddDefaulted_GetRef();
-			Row.Label = UEnum::GetDisplayValueAsText(Config->GetGimmickType());
-			Row.Note = Builder.GetNote();
-			Row.Spans = Builder.GetSpans();
-			Row.bUsesFever = Builder.UsesFever();
+			Row.Label = UEnum::GetDisplayValueAsText(Configs[Index]->GetGimmickType());
+			Row.Note = Builders[Index].GetNote();
+			Row.Spans = Builders[Index].GetSpans();
+			Row.bUsesFever = Builders[Index].UsesFever();
 		}
 	}
 
