@@ -165,7 +165,6 @@ void ABeerFloodGimmick::BeginRising()
 
 	SetBeerFloodState(EBeerFloodState::Rising);
 
-	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginSustain, GetConfig<UBeerFloodGimmickConfig>().RisingDuration, false);
 }
 
@@ -176,6 +175,8 @@ void ABeerFloodGimmick::BeginSustain()
 	CurrentBeerZ = GetPeakBeerZ();
 	SetBeerFloodState(EBeerFloodState::Sustain);
 
+	UpdateDrowning();
+	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginDraining, GetConfig<UBeerFloodGimmickConfig>().SustainDuration, false);
 }
 
@@ -185,6 +186,7 @@ void ABeerFloodGimmick::BeginDraining()
 
 	SetBeerFloodState(EBeerFloodState::Draining);
 
+	GetWorldTimerManager().ClearTimer(DrowningTimerHandle);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndBeerFlood, GetConfig<UBeerFloodGimmickConfig>().DrainingDuration, false);
 }
 
