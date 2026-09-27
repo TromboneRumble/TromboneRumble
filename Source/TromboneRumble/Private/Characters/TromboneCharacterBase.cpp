@@ -383,6 +383,19 @@ void ATromboneCharacterBase::Multicast_PlayFallScream_Implementation()
 	}
 }
 
+void ATromboneCharacterBase::HandleDrowningStarted()
+{
+	Multicast_PlayDrowningSound();
+}
+
+void ATromboneCharacterBase::Multicast_PlayDrowningSound_Implementation()
+{
+	if (AkSoundComponent && DrowningSound)
+	{
+		AkSoundComponent->PostAkEvent(DrowningSound, 0, FOnAkPostEventCallback());
+	}
+}
+
 void ATromboneCharacterBase::Multicast_PlayLandPain_Implementation()
 {
 	if (AkSoundComponent && LandPainSound)

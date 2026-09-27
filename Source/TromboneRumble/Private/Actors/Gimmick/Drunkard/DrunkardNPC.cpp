@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
+#include "AkGameplayStatics.h"
 #include "Actors/Gimmick/Breakable/BreakableDoor.h"
 #include "Actors/Gimmick/Drunkard/DrunkardAIController.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
@@ -79,6 +80,11 @@ void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 void ADrunkardNPC::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (SpawnLaughEvent)
+	{
+		UAkGameplayStatics::PostEvent(SpawnLaughEvent, this, 0, FOnAkPostEventCallback());
+	}
 
 	const UDrunkardGimmickConfig& Config = GetDrunkardConfig();
 	if (UCharacterMovementComponent* Move = GetCharacterMovement())
@@ -564,6 +570,8 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 
 void ADrunkardNPC::HandleDrowningStarted()
 {
+	Super::HandleDrowningStarted();
+
 	if (!HasAuthority()) return;
 
 	// The door walk moves the capsule every tick and would drag the ragdoll along

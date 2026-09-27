@@ -14,6 +14,7 @@ class UDrunkardGimmickConfig;
 class UDrunkardStateComponent;
 class UWidgetComponent;
 class UXRaySilhouetteComponent;
+class UAkAudioEvent;
 
 /** ADrunkardNPC
  *
@@ -106,6 +107,10 @@ protected:
 	/** Attackable mark on the chest. Only the target sees it, and only within range. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UWidgetComponent> AttackableIndicatorComponent;
+
+	/** Laugh played when the drunkard spawns. */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> SpawnLaughEvent;
 
 private:
 

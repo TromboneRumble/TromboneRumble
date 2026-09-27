@@ -76,7 +76,7 @@ public:
 	virtual void HandleGetUpFinished() {}
 
 	/** Called when the character falls into the beer. Server only. */
-	virtual void HandleDrowningStarted() {}
+	virtual void HandleDrowningStarted();
 
 	/** Called when the beer drains and the character is free. Server only. */
 	virtual void HandleDrowningEnded() {}
@@ -84,6 +84,10 @@ public:
 	/** Plays the falling scream on every machine. Server only. */
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayFallScream();
+
+	/** Plays the drowning sound on every machine. Server only. */
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayDrowningSound();
 
 	/** Watches for the first hard landing and plays the landing sound. Only the lobby turns this on. Server only. */
 	void SetLandingSoundEnabled(bool bEnable);
@@ -124,6 +128,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "로비 낙하 연출 - 착지 비명 사운드"))
 	TObjectPtr<UAkAudioEvent> LandPainSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "술통 침수 - 빠짐 사운드"))
+	TObjectPtr<UAkAudioEvent> DrowningSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "착지 판정 충격량", ClampMin = "0.0"))
 	float LandingImpulseThreshold = 20000.f;
