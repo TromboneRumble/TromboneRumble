@@ -113,7 +113,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 상향 넉백 (악기 보유)", ClampMin = "0.0"))
 	float CaptureKnockbackUpForce = 100.f;
 
-	/** 악기 미보유 타겟 접촉 시 수평 넉백 (cm/s). 래그돌 없이 밀려나기만 한다 */
+	/** 악기 미보유 타겟 접촉 시 수평 넉백 (cm/s). 래그돌 없이 스턴되며 밀려난다 */
 	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 넉백 세기 (악기 없음)", ClampMin = "0.0"))
 	float CaptureKnockbackForceNoInstrument = 300.f;
 
