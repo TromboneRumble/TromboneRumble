@@ -75,6 +75,9 @@ public:
 	/** Called when the get-up montage finishes. The character can move again from here. */
 	virtual void HandleGetUpFinished() {}
 
+	/** @return Whether the character holds an instrument. The base holds none. */
+	virtual bool IsHoldingInstrument() const { return false; }
+
 	/** Called when the character falls into the beer. Server only. */
 	virtual void HandleDrowningStarted();
 
@@ -140,6 +143,10 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayLandPain();
+
+	/** Plays the ragdoll boo only for the player who controls this character. */
+	UFUNCTION(Client, Reliable)
+	void Client_PlayRagdollBoo();
 
 	/** 물리 애니메이션 (플레이어: 깃발, NPC: 상체 흐느적거림 등 파생 공용) */
 	UPROPERTY()

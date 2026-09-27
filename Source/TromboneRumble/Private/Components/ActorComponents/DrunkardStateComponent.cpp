@@ -4,12 +4,10 @@
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Characters/DefaultTromboneCharacter.h"
-#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/CombatReceiver.h"
-#include "Items/WeaponBase.h"
 #include "Utilities/TromboneLogs.h"
 
 
@@ -184,14 +182,7 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 		return;
 	}
 
-	bool bHasInstrument = false;
-	if (const UEquipmentComponent* Equipment = TargetCharacter->GetEquipmentComponent())
-	{
-		if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Equipment->GetItemInSlot(EEquipmentSlotType::Weapon)))
-		{
-			bHasInstrument = Weapon->GetWeaponType() != EWeaponType::Headbutt;
-		}
-	}
+	const bool bHasInstrument = TargetCharacter->IsHoldingInstrument();
 
 	FHitData HitData;
 	HitData.HitDirection = (TargetCharacter->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal2D();

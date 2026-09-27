@@ -369,7 +369,15 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 		}
 	}
 	
-	if (!bIsLobby && AkSoundComponent && RagdollBooSound)
+	if (HasAuthority() && IsPlayerControlled() && !bIsLobby && IsHoldingInstrument())
+	{
+		Client_PlayRagdollBoo();
+	}
+}
+
+void ATromboneCharacterBase::Client_PlayRagdollBoo_Implementation()
+{
+	if (AkSoundComponent && RagdollBooSound)
 	{
 		AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
 	}
