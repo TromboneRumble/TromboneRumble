@@ -10,6 +10,7 @@
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatReceiver.h"
+#include "Utilities/PushablePhysics.h"
 
 AGarbageBase::AGarbageBase()
 {
@@ -40,7 +41,7 @@ AGarbageBase::AGarbageBase()
 		MeshComp->SetGenerateOverlapEvents(false);
 		MeshComp->SetSimulatePhysics(false);
 		MeshComp->SetEnableGravity(true);
-		MeshComp->CanCharacterStepUpOn = ECB_No;
+		PushablePhysics::ApplyDefaults(*MeshComp);
 
 		MeshComp->BodyInstance.bUseCCD = true;
 	}

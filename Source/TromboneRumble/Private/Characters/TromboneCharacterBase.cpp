@@ -153,6 +153,15 @@ void ATromboneCharacterBase::ApplyCharacterDataToMovement() const
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
+	// A light prop spins under the feet, and its edge speed would fling the character on jump or fall
+	GetCharacterMovement()->bImpartBaseVelocityX = false;
+	GetCharacterMovement()->bImpartBaseVelocityY = false;
+	GetCharacterMovement()->bImpartBaseVelocityZ = false;
+	GetCharacterMovement()->bImpartBaseAngularVelocity = false;
+
+	// The full push sinks a light prop into the floor, and it pops back up with the character on it
+	GetCharacterMovement()->StandingDownwardForceScale = 0.1f;
+
 	if (CharacterData)
 	{
 		// Ground
