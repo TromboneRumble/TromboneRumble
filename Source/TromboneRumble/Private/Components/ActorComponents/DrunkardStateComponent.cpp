@@ -106,6 +106,31 @@ void UDrunkardStateComponent::BeginExiting()
 	);
 }
 
+void UDrunkardStateComponent::BeginDoorExit()
+{
+	if (!HasAuthority() || State != EDrunkardState::Exiting) return;
+
+	ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner());
+	if (!OwnerNPC)
+	{
+		DespawnOwner();
+		return;
+	}
+
+	// 제한 시간을 문 밖 이동 시간 기준으로 다시 건다.
+	// 이동이 도중에 끊겨도(침수 등) 소멸은 보장된다
+	const UDrunkardGimmickConfig& Config = GetConfig();
+	GetWorld()->GetTimerManager().SetTimer(
+		ExitTimerHandle,
+		this,
+		&ThisClass::HandleExitTimeout,
+		Config.EnterBurstDuration + 2.f,
+		false
+	);
+
+	OwnerNPC->BeginDoorExit();
+}
+
 void UDrunkardStateComponent::HandleExitTimeout()
 {
 	if (!HasAuthority() || !GetOwner()) return;
