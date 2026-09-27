@@ -8,6 +8,7 @@
 
 class ADefaultTromboneCharacter;
 class ADrunkardSpawner;
+class AGimmickManager;
 struct FDrunkardRoute;
 class UDrunkardGimmickConfig;
 class UDrunkardStateComponent;
@@ -67,6 +68,12 @@ public:
 	 */
 	const UDrunkardGimmickConfig& GetDrunkardConfig() const;
 	UDrunkardStateComponent* GetStateComponent() const { return StateComponent; }
+
+	/** @return Whether fever time has started. Only the server knows, because the manager does not replicate it. */
+	bool IsFeverTime() const;
+
+	/** @return Walk speed for now, the fever value in fever time. */
+	float GetWalkSpeed() const;
 
 	//~ Begin ATromboneCharacterBase Interface
 	virtual bool CanReceiveHit() const override;
@@ -155,6 +162,14 @@ private:
 	/** Has GetDrunkardConfig searched already. A search that found nothing is not repeated. */
 	mutable bool bConfigSearched = false;
 
+	/** Gimmick manager of the world. Filled by IsFeverTime on first use. */
+	mutable TWeakObjectPtr<AGimmickManager> CachedManager;
+
+	/** Server. Puts the fever walk speed on at once, unless the movement is locked. */
+	void HandleFeverTimeStarted();
+
+	FDelegateHandle FeverTimeStartedHandle;
+
 	/** 다이브 몽타주는 NPC라 자동 복제가 안 되므로 모든 머신에서 직접 재생한다 */
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayDiveMontage();
@@ -172,6 +187,7 @@ private:
 	//~ Begin AActor Interface
 public:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;

@@ -193,24 +193,14 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 		}
 	}
 
-	const UDrunkardGimmickConfig& Config = GetConfig();
-
 	FHitData HitData;
 	HitData.HitDirection = (TargetCharacter->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal2D();
 	HitData.HitInstigator = EHitInstigatorType::Drunkard;
 	HitData.HitInstigatorActor = GetOwner();
 	HitData.HitReaction = bHasInstrument ? EHitReactionType::Ragdoll : EHitReactionType::Stun;
 
-	if (bHasInstrument)
-	{
-		HitData.KnockbackForce = Config.CaptureKnockbackForce;
-		HitData.KnockbackUpForce = Config.CaptureKnockbackUpForce;
-	}
-	else
-	{
-		HitData.KnockbackForce = Config.CaptureKnockbackForceNoInstrument;
-		HitData.KnockbackUpForce = Config.CaptureKnockbackUpForceNoInstrument;
-	}
+	const bool bFever = OwnerNPC && OwnerNPC->IsFeverTime();
+	GetConfig().GetCaptureKnockback(bFever, bHasInstrument, HitData.KnockbackForce, HitData.KnockbackUpForce);
 
 	const bool bApplied = ICombatReceiver::Execute_OnHitReceived(TargetCharacter, HitData);
 	if (!bApplied)

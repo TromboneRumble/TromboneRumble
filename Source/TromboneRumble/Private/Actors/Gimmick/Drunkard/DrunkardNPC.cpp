@@ -83,8 +83,17 @@ void ADrunkardNPC::BeginPlay()
 	const UDrunkardGimmickConfig& Config = GetDrunkardConfig();
 	if (UCharacterMovementComponent* Move = GetCharacterMovement())
 	{
-		Move->MaxWalkSpeed = Config.WalkSpeed;
+		Move->MaxWalkSpeed = GetWalkSpeed();
 		Move->MaxAcceleration = Config.MaxAcceleration;
+	}
+
+	if (HasAuthority())
+	{
+		if (AGimmickManager* Manager = AGimmickManager::Find(GetWorld()))
+		{
+			CachedManager = Manager;
+			FeverTimeStartedHandle = Manager->OnFeverTimeStarted.AddUObject(this, &ThisClass::HandleFeverTimeStarted);
+		}
 	}
 
 	// X-Ray 토글이 꺼져 있으면 컴포넌트 제거 (안 쓰는 CustomDepth 비용 방지)
@@ -300,7 +309,7 @@ void ADrunkardNPC::OnBlockedStateChanged(const bool bBlocked)
 {
 	if (UCharacterMovementComponent* Move = GetCharacterMovement())
 	{
-		Move->MaxWalkSpeed = bBlocked ? 0.f : GetDrunkardConfig().WalkSpeed;
+		Move->MaxWalkSpeed = bBlocked ? 0.f : GetWalkSpeed();
 	}
 
 	// 이미 내려간 이동 명령은 속도를 0으로 만들어도 살아 있다
@@ -594,6 +603,42 @@ bool ADrunkardNPC::CanReceiveHit() const
 	}
 
 	return Super::CanReceiveHit();
+}
+
+void ADrunkardNPC::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (AGimmickManager* Manager = CachedManager.Get())
+	{
+		Manager->OnFeverTimeStarted.Remove(FeverTimeStartedHandle);
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
+bool ADrunkardNPC::IsFeverTime() const
+{
+	if (!CachedManager.IsValid())
+	{
+		CachedManager = AGimmickManager::Find(GetWorld());
+	}
+
+	const AGimmickManager* Manager = CachedManager.Get();
+	return Manager && Manager->IsFeverTime();
+}
+
+float ADrunkardNPC::GetWalkSpeed() const
+{
+	return GetDrunkardConfig().GetWalkSpeed(IsFeverTime());
+}
+
+void ADrunkardNPC::HandleFeverTimeStarted()
+{
+	// A locked speed stays 0. OnBlockedStateChanged puts the fever speed on when the lock ends
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (Move && !IsBlocked())
+	{
+		Move->MaxWalkSpeed = GetWalkSpeed();
+	}
 }
 
 const UDrunkardGimmickConfig& ADrunkardNPC::GetDrunkardConfig() const

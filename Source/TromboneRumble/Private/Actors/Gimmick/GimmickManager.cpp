@@ -68,6 +68,20 @@ namespace GimmickConsole
 		TEXT("Trombone.Gimmick.Restart"),
 		TEXT("기믹을 껐다 켜서 바뀐 설정을 바로 반영. 예: Trombone.Gimmick.Restart Gravity"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World) { Run(ECommand::Restart, Args, World); }));
+
+	static FAutoConsoleCommandWithWorld FeverCommand(
+		TEXT("Trombone.Gimmick.Fever"),
+		TEXT("곡의 피버 큐를 기다리지 않고 기믹의 피버 타임을 바로 시작. 스포트라이트와 압력판은 곡의 큐만 따른다"),
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+		{
+			AGimmickManager* Manager = AGimmickManager::Find(World);
+			if (!Manager || !Manager->HasAuthority())
+			{
+				UE_LOG(LogGimmick, Warning, TEXT("No gimmick manager with authority in this world. Run the command on the host"));
+				return;
+			}
+			Manager->BeginFeverTime();
+		}));
 }
 #endif
 
@@ -110,6 +124,7 @@ void AGimmickManager::DeactivateAllGimmicks()
 
 	// First, so the events the gimmicks end while turning off do not start another turn
 	StopSequences();
+	bIsFeverTime = false;
 
 	for (auto& Pair : ManagedGimmicks)
 	{
@@ -185,15 +200,23 @@ void AGimmickManager::StartNextInSequence(const int32 RunIndex)
 	FSequenceRun& Run = SequenceRuns[RunIndex];
 	const FGimmickSequence& Sequence = StageData->GetSequences()[Run.SequenceIndex];
 
-	const EGimmickType Type = Sequence.Order[Run.NextIndex];
-	Run.NextIndex = (Run.NextIndex + 1) % Sequence.Order.Num();
+	// An empty fever order stops the sequence until the round ends
+	const TArray<EGimmickType>& Order = Sequence.GetOrder(bIsFeverTime);
+	if (Order.IsEmpty())
+	{
+		Run.Running = EGimmickType::None;
+		return;
+	}
+
+	const EGimmickType Type = Order[Run.NextIndex % Order.Num()];
+	Run.NextIndex = (Run.NextIndex + 1) % Order.Num();
 
 	// A missing or stopped gimmick must not stall the others, so its turn passes to the next one
 	AGimmickBase* Gimmick = FindGimmick(Type);
 	if (!Gimmick || !Gimmick->IsActive())
 	{
 		UE_LOG(LogGimmick, Warning, TEXT("Sequence skips %s, the level has no such gimmick or it is off"), *EnumHelper::EnumToString(Type));
-		ScheduleNextInSequence(RunIndex, Sequence.Gap);
+		ScheduleNextInSequence(RunIndex, Sequence.GetGap(bIsFeverTime));
 		return;
 	}
 
@@ -211,9 +234,31 @@ void AGimmickManager::HandleEventFinished(const AGimmickBase& Gimmick)
 		// A forced event outside the turn also ends here. Only the gimmick whose turn it is moves the sequence on
 		if (SequenceRuns[RunIndex].Running != Gimmick.GetGimmickType()) continue;
 
-		ScheduleNextInSequence(RunIndex, StageData->GetSequences()[SequenceRuns[RunIndex].SequenceIndex].Gap);
+		ScheduleNextInSequence(RunIndex, StageData->GetSequences()[SequenceRuns[RunIndex].SequenceIndex].GetGap(bIsFeverTime));
 		return;
 	}
+}
+
+void AGimmickManager::BeginFeverTime()
+{
+	if (!HasAuthority() || bIsFeverTime) return;
+
+	UE_LOG(LogGimmick, Log, TEXT("Fever time starts"));
+	bIsFeverTime = true;
+
+	// Only the next turn changes. A running gimmick and a gap timer are left alone, so nothing is cut off
+	if (StageData)
+	{
+		for (FSequenceRun& Run : SequenceRuns)
+		{
+			if (StageData->GetSequences()[Run.SequenceIndex].bUseFeverOrder)
+			{
+				Run.NextIndex = 0;
+			}
+		}
+	}
+
+	OnFeverTimeStarted.Broadcast();
 }
 
 AGimmickBase* AGimmickManager::FindGimmick(const EGimmickType GimmickType) const
@@ -452,6 +497,10 @@ void AGimmickManager::HandleMusicCallback(EAkCallbackType CallbackType, UAkCallb
 			if (CueName == TEXT("Event_Spotlight_Start"))
 			{
 				ActivateAllGimmicks();
+			}
+			else if (CueName == TEXT("Event_Spotlight_Fever"))
+			{
+				BeginFeverTime();
 			}
 		}
 	}

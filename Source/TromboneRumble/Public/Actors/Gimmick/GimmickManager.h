@@ -44,6 +44,19 @@ public:
 	 */
 	void HandleEventFinished(const AGimmickBase& Gimmick);
 
+	/** @return Whether the song has sent the Event_Spotlight_Fever cue in this round. Server only. */
+	bool IsFeverTime() const { return bIsFeverTime; }
+
+	/**
+	 * Start fever time. The Event_Spotlight_Fever cue calls it, and so does the Trombone.Gimmick.Fever command. Server only.
+	 * A gimmick that is running goes on until it ends.
+	 * Each sequence with a fever order uses it from the next turn.
+	 */
+	void BeginFeverTime();
+
+	/** Called on the server when fever time starts. */
+	FSimpleMulticastDelegate OnFeverTimeStarted;
+
 	/** @return The gimmick manager of this world, or null. */
 	static AGimmickManager* Find(const UWorld* World);
 
@@ -103,7 +116,10 @@ private:
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
 	
-	/** Turn on every gimmick when the song sends the Event_Spotlight_Start cue. The song sends it once. */
+	/**
+	 * Turn on every gimmick on the Event_Spotlight_Start cue, and start fever time on the Event_Spotlight_Fever cue.
+	 * The song sends each cue once.
+	 */
 	UFUNCTION()
 	void HandleMusicCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	
@@ -135,6 +151,9 @@ private:
 
 	/** One run per sequence of the stage data, filled by StartSequences. */
 	TArray<FSequenceRun> SequenceRuns;
+
+	/** Has fever time started in this round. */
+	bool bIsFeverTime = false;
 
 protected:
 	

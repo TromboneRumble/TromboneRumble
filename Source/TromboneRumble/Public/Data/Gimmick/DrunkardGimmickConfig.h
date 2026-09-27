@@ -9,6 +9,33 @@
 
 class UAnimMontage;
 
+/** Drunkard values that differ between the normal part and the fever part of the song. */
+USTRUCT(BlueprintType)
+struct FDrunkardRule
+{
+	GENERATED_BODY()
+
+	/** 이동 속도. 악기를 장착한 플레이어의 달리기(480)보다 느려야 한다 (cm/s) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "이동 속도", ClampMin = "0.0"))
+	float WalkSpeed = 400.f;
+
+	/** 악기 보유 타겟 포획(래그돌) 시 수평 넉백 (래그돌 초기 속도, cm/s) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "포획 넉백 세기 (악기 보유)", ClampMin = "0.0"))
+	float CaptureKnockbackForce = 200.f;
+
+	/** 악기 보유 타겟 포획(래그돌) 시 수직(상향) 넉백 (cm/s) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "포획 상향 넉백 (악기 보유)", ClampMin = "0.0"))
+	float CaptureKnockbackUpForce = 100.f;
+
+	/** 악기 미보유 타겟 포획(스턴) 시 수평 넉백 (cm/s) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "포획 넉백 세기 (악기 없음)", ClampMin = "0.0"))
+	float CaptureKnockbackForceNoInstrument = 500.f;
+
+	/** 악기 미보유 타겟 포획(스턴) 시 수직(상향) 넉백 (cm/s) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "포획 상향 넉백 (악기 없음)", ClampMin = "0.0"))
+	float CaptureKnockbackUpForceNoInstrument = 300.f;
+};
+
 /**
  * Settings of the drunkard gimmick. The spawner, the NPC, its state component and its behavior tree nodes all read this one object.
  * It replaced DA_Drunkard, and the defaults are the values that asset held.
@@ -48,6 +75,35 @@ public:
 	virtual bool RunsOnlyInSequence() const override { return true; }
 	//~ End UGimmickConfig Interface
 
+	/** @return The rule for the current part of the song. */
+	const FDrunkardRule& GetRule(const bool bIsFeverTime) const { return bIsFeverTime ? Fever : Normal; }
+
+	/** @return Walk speed for the current part of the song. */
+	float GetWalkSpeed(const bool bIsFeverTime) const { return GetRule(bIsFeverTime).WalkSpeed; }
+
+	/**
+	 * Get the knockback of a capture.
+	 *
+	 * @param bIsFeverTime Whether fever time has started.
+	 * @param bHasInstrument Whether the captured target holds an instrument.
+	 * @param OutForce Horizontal knockback (cm/s).
+	 * @param OutUpForce Upward knockback (cm/s).
+	 */
+	void GetCaptureKnockback(const bool bIsFeverTime, const bool bHasInstrument, float& OutForce, float& OutUpForce) const
+	{
+		const FDrunkardRule& Rule = GetRule(bIsFeverTime);
+		OutForce = bHasInstrument ? Rule.CaptureKnockbackForce : Rule.CaptureKnockbackForceNoInstrument;
+		OutUpForce = bHasInstrument ? Rule.CaptureKnockbackUpForce : Rule.CaptureKnockbackUpForceNoInstrument;
+	}
+
+	/** Used before the fever cue of the song. */
+	UPROPERTY(EditAnywhere, Category = "Rule", meta = (DisplayName = "일반"))
+	FDrunkardRule Normal;
+
+	/** Used after the fever cue of the song. A drunkard that is already out switches to it at once. */
+	UPROPERTY(EditAnywhere, Category = "Rule", meta = (DisplayName = "피버"))
+	FDrunkardRule Fever;
+
 	/** 문 통과 후 추격 시작 전까지 멈춰 있는 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.0", Units = "s"))
 	float EnterDuration = 1.f;
@@ -68,10 +124,6 @@ public:
 	 *  NPC가 끼어 있으면 재스폰 루프 전체가 멈추므로 필수 (초) */
 	UPROPERTY(EditAnywhere, Category = "Duration", meta = (DisplayName = "퇴장 제한 시간", ClampMin = "1.0", Units = "s"))
 	float ExitTimeout = 10.f;
-
-	/** 기본 이동 속도. 악기를 장착한 플레이어의 달리기(480)보다 느려야 한다 (cm/s) */
-	UPROPERTY(EditAnywhere, Category = "Movement", meta = (DisplayName = "이동 속도", ClampMin = "0.0"))
-	float WalkSpeed = 400.f;
 
 	/** 목표 속도에 도달하기까지의 가속도 */
 	UPROPERTY(EditAnywhere, Category = "Movement", meta = (DisplayName = "최대 가속도", ClampMin = "0.0"))
@@ -104,22 +156,6 @@ public:
 	/** 순위별 타겟 선정 가중치. [0] = 1위. 순위가 배열 길이를 넘으면 마지막 값을 사용 */
 	UPROPERTY(EditAnywhere, Category = "Target", meta = (DisplayName = "순위별 타겟 가중치"))
 	TArray<float> TargetRankWeights = { 4.f, 3.f, 2.f, 1.f };
-
-	/** 악기 보유 타겟 포획(래그돌) 시 수평 넉백 (래그돌 초기 속도, cm/s) */
-	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 넉백 세기 (악기 보유)", ClampMin = "0.0"))
-	float CaptureKnockbackForce = 200.f;
-
-	/** 악기 보유 타겟 포획(래그돌) 시 수직(상향) 넉백 (cm/s) */
-	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 상향 넉백 (악기 보유)", ClampMin = "0.0"))
-	float CaptureKnockbackUpForce = 100.f;
-
-	/** 악기 미보유 타겟 포획 시 수평 넉백 (cm/s). */
-	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 넉백 세기 (악기 없음)", ClampMin = "0.0"))
-	float CaptureKnockbackForceNoInstrument = 500.f;
-
-	/** 악기 미보유 타겟 포획 시 수직(상향) 넉백 (cm/s) */
-	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 상향 넉백 (악기 없음)", ClampMin = "0.0"))
-	float CaptureKnockbackUpForceNoInstrument = 300.f;
 
 	/** 포획 성공 후 대상 자리로 몸을 날리는 다이브 몽타주. 비워두면 도약만 하고 애니메이션 전환이 없다 */
 	UPROPERTY(EditAnywhere, Category = "Visual", meta = (DisplayName = "다이브 몽타주"))

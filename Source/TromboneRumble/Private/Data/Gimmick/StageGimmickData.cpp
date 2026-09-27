@@ -99,6 +99,18 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 			}
 		}
 		SequencedTypes.Append(TypesInThis);
+
+		// FindSequence only looks at Order, so a gimmick only in FeverOrder would still start on its own
+		if (Sequence.bUseFeverOrder)
+		{
+			for (const EGimmickType Type : Sequence.FeverOrder)
+			{
+				if (!TypesInThis.Contains(Type))
+				{
+					AddError(FString::Printf(TEXT("순서 그룹 %d: %s 이(가) 피버 순서에 있지만 기본 순서에는 없습니다"), Index, *UEnum::GetDisplayValueAsText(Type).ToString()));
+				}
+			}
+		}
 	}
 
 	for (const UGimmickConfig* Config : Gimmicks)
