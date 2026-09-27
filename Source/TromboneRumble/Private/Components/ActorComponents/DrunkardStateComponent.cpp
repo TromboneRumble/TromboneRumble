@@ -168,7 +168,7 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 	HitData.HitDirection = (TargetCharacter->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal2D();
 	HitData.HitInstigator = EHitInstigatorType::Drunkard;
 	HitData.HitInstigatorActor = GetOwner();
-	HitData.HitReaction = bHasInstrument ? EHitReactionType::Ragdoll : EHitReactionType::KnockbackOnly;
+	HitData.HitReaction = bHasInstrument ? EHitReactionType::Ragdoll : EHitReactionType::Stun;
 
 	if (bHasInstrument)
 	{

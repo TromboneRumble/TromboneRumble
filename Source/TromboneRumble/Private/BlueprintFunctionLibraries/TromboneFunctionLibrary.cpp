@@ -91,6 +91,19 @@ FGameplayTag UTromboneFunctionLibrary::PickRandomSongForMap(const FGameplayTag I
                                  : TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
     }
 
+    if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_JazzBar)
+    {
+        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapE
+                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapF;
+    }
+
+    // The space station has no songs of its own yet, so it borrows the orchestra songs until they arrive
+    if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_SpaceStation)
+    {
+        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA
+                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
+    }
+
     // OrchestraStage 및 그 외 폴백
     return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA
                              : TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;

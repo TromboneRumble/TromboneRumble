@@ -159,6 +159,10 @@ void UMainMenuWidget::ShowTutorialPopup() const
 		{
 			UTromboneStatics::OpenLevel(GetWorld(), ELevelType::Tutorial);
 		};
+		Params.RightCallback = [this]
+		{
+			UTromboneStatics::ShowPopupAsync<UPlayModePopup>(GetWorld());
+		};
 
 		UTromboneStatics::ShowPopupAsync<UTwoButtonPopup>(GetWorld(), [Params](UTwoButtonPopup& Popup)
 		{
