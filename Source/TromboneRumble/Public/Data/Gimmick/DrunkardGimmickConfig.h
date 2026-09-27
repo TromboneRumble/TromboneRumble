@@ -113,15 +113,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 상향 넉백 (악기 보유)", ClampMin = "0.0"))
 	float CaptureKnockbackUpForce = 100.f;
 
-	/** 악기 미보유 타겟 접촉 시 수평 넉백 (cm/s). 래그돌 없이 스턴되며 밀려난다 */
+	/** 악기 미보유 타겟 포획 시 수평 넉백 (cm/s). */
 	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 넉백 세기 (악기 없음)", ClampMin = "0.0"))
-	float CaptureKnockbackForceNoInstrument = 300.f;
+	float CaptureKnockbackForceNoInstrument = 500.f;
 
-	/** 악기 미보유 타겟 접촉 시 수직(상향) 넉백 (cm/s) */
+	/** 악기 미보유 타겟 포획 시 수직(상향) 넉백 (cm/s) */
 	UPROPERTY(EditAnywhere, Category = "Capture", meta = (DisplayName = "포획 상향 넉백 (악기 없음)", ClampMin = "0.0"))
-	float CaptureKnockbackUpForceNoInstrument = 200.f;
+	float CaptureKnockbackUpForceNoInstrument = 300.f;
 
-	/** 포획 성공 후 대상 자리로 몸을 날리는 다이브 몽타주. 비워두면 도약만 하고 정점 전환이 없다 */
+	/** 포획 성공 후 대상 자리로 몸을 날리는 다이브 몽타주. 비워두면 도약만 하고 애니메이션 전환이 없다 */
 	UPROPERTY(EditAnywhere, Category = "Visual", meta = (DisplayName = "다이브 몽타주"))
 	TObjectPtr<UAnimMontage> DiveMontage;
 
@@ -133,7 +133,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Duration", meta = (DisplayName = "다이브 제한 시간", ClampMin = "1.0", Units = "s"))
 	float DiveTimeout = 10.f;
 
-	/** 상체 물리 활성화 (지정 본 이상만 시뮬레이션. 하반신은 애니메이션 유지 — 캡슐 이탈 방지) */
+	/** 상체 물리 활성화 (지정 본 이상만 시뮬레이션. 하반신은 애니메이션 유지. 캡슐 이탈 방지) */
 	UPROPERTY(EditAnywhere, Category = "Visual", meta = (DisplayName = "상체 물리 사용"))
 	bool bEnableUpperBodyPhysics = true;
 
