@@ -1,0 +1,73 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2957674202",
+    "Type": "Event",
+    "GUID": "{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}",
+    "Language": "SFX",
+    "Hash": "{808C1E59-0356-C4AC-A103-A7C093F0E36F}",
+    "ObjectPath": "Play_Player_Drowning",
+    "ShortName": "Play_Player_Drowning",
+    "Path": "Event/Play_Player_Drowning.bnk",
+    "Media": [
+     {
+      "Id": "219425058",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Drowning_2.wav",
+      "Path": "Media/219425058.wem",
+      "CachePath": "SFX/Drowning_2_818F3B66.wem"
+     },
+     {
+      "Id": "275163760",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Drowning_1.wav",
+      "Path": "Media/275163760.wem",
+      "CachePath": "SFX/Drowning_1_818F3B66.wem"
+     },
+     {
+      "Id": "348199533",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Drowning_3.wav",
+      "Path": "Media/348199533.wem",
+      "CachePath": "SFX/Drowning_3_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2957674202",
+      "Name": "Play_Player_Drowning",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Player_Drowning",
+      "GUID": "{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.40752247",
+      "DurationMax": "0.5934394",
+      "MediaRefs": [
+       {
+        "Id": "219425058"
+       },
+       {
+        "Id": "275163760"
+       },
+       {
+        "Id": "348199533"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{9F36EAFC-C3B5-C7F2-BAB5-6836333A30BE}"
+ }
+}

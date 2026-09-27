@@ -1,0 +1,96 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1197678622",
+    "Type": "Event",
+    "GUID": "{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}",
+    "Language": "SFX",
+    "Hash": "{5C41E0E2-9883-E4DB-5814-875408B636BD}",
+    "ObjectPath": "Play_JazzLobby_Ambience",
+    "ShortName": "Play_JazzLobby_Ambience",
+    "Path": "Event/Play_JazzLobby_Ambience.bnk",
+    "Media": [
+     {
+      "Id": "154483065",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm_01.wav",
+      "Path": "Media/154483065.wem",
+      "CachePath": "SFX/Amb_C-cm_01_FBC78EF0.wem"
+     },
+     {
+      "Id": "481072958",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm_03.wav",
+      "Path": "Media/481072958.wem",
+      "CachePath": "SFX/Amb_C-cm_03_FBC78EF0.wem"
+     },
+     {
+      "Id": "527478948",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C_4 -cm.wav",
+      "Path": "Media/527478948.wem",
+      "CachePath": "SFX/Amb_C_4 -cm_FBC78EF0.wem"
+     },
+     {
+      "Id": "794969355",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm.wav",
+      "Path": "Media/794969355.wem",
+      "CachePath": "SFX/Amb_C-cm_FBC78EF0.wem"
+     },
+     {
+      "Id": "901455848",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm_02.wav",
+      "Path": "Media/901455848.wem",
+      "CachePath": "SFX/Amb_C-cm_02_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1197678622",
+      "Name": "Play_JazzLobby_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_JazzLobby_Ambience",
+      "GUID": "{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}",
+      "DurationType": "OneShot",
+      "DurationMin": "655.45764",
+      "DurationMax": "655.45764",
+      "MediaRefs": [
+       {
+        "Id": "154483065"
+       },
+       {
+        "Id": "481072958"
+       },
+       {
+        "Id": "527478948"
+       },
+       {
+        "Id": "794969355"
+       },
+       {
+        "Id": "901455848"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{F5FBF10D-6568-9C81-5E12-241E88292EF9}"
+ }
+}
