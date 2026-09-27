@@ -47,7 +47,7 @@
      {
       "Id": "2957674202",
       "Name": "Play_Player_Drowning",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Player_Drowning",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Drowning",
       "GUID": "{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}",
       "MaxAttenuation": "1000",
       "DurationType": "OneShot",
@@ -68,6 +68,6 @@
     ]
    }
   ],
-  "FileHash": "{13FBB5A2-D5FB-EF51-DC22-F300EC89A7DB}"
+  "FileHash": "{B52A9755-7FC8-1ABF-3474-9498955047DB}"
  }
 }

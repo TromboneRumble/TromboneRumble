@@ -23,7 +23,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="2957674202" Name="Play_Player_Drowning" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Player_Drowning" GUID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.40752247" DurationMax="0.5934394">
+				<Event Id="2957674202" Name="Play_Player_Drowning" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Drowning" GUID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.40752247" DurationMax="0.5934394">
 					<MediaRefs>
 						<MediaRef Id="219425058"/>
 						<MediaRef Id="275163760"/>
@@ -33,5 +33,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E44B84B1-75E8-F79C-A9EE-B5AF5D6E3C87}</FileHash>
+	<FileHash>{2A2BFD7D-4002-1C5B-7229-73A9B8323CB3}</FileHash>
 </SoundBanksInfo>

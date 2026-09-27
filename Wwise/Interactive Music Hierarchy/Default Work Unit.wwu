@@ -73812,6 +73812,11 @@
 						<MusicSegment Name="Jazzbar_Lobby_Ambience" ID="{33C2C1F7-68DF-4623-9DD0-3EA3A92B8EEB}" ShortID="592802261">
 							<PropertyList>
 								<Property Name="EndPosition" Type="Real64" Value="840500"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-13</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -73934,6 +73939,13 @@
 									</ObjectLists>
 								</MusicTrack>
 								<MusicTrack Name="Amb_C-cm_01" ID="{C72DA0AD-AF6E-4A0D-8E42-2B685B756702}" ShortID="42156790">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
