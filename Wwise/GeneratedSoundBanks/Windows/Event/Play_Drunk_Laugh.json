@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2523270790",
+    "Type": "Event",
+    "GUID": "{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}",
+    "Language": "SFX",
+    "Hash": "{E75E3B9A-2149-2BC8-853C-DC42318FCA4B}",
+    "ObjectPath": "Play_Drunk_Laugh",
+    "ShortName": "Play_Drunk_Laugh",
+    "Path": "Event/Play_Drunk_Laugh.bnk",
+    "Media": [
+     {
+      "Id": "990272024",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Male Laugh.wav",
+      "Path": "Media/990272024.wem",
+      "CachePath": "SFX/Male Laugh_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2523270790",
+      "Name": "Play_Drunk_Laugh",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Drunk_Laugh",
+      "GUID": "{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}",
+      "MaxAttenuation": "10000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.2643958",
+      "DurationMax": "1.2643958",
+      "MediaRefs": [
+       {
+        "Id": "990272024"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{CD031285-F10A-BBA4-08FD-76A03DA73EDB}"
+ }
+}

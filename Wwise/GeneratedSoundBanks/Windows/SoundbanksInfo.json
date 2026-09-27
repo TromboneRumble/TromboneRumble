@@ -2321,6 +2321,91 @@
     ]
    },
    {
+    "Id": "1197678622",
+    "Type": "Event",
+    "GUID": "{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}",
+    "Language": "SFX",
+    "Hash": "{5C41E0E2-9883-E4DB-5814-875408B636BD}",
+    "ObjectPath": "Play_JazzLobby_Ambience",
+    "ShortName": "Play_JazzLobby_Ambience",
+    "Path": "Event/Play_JazzLobby_Ambience.bnk",
+    "Media": [
+     {
+      "Id": "154483065",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm_01.wav",
+      "Path": "Media/154483065.wem",
+      "CachePath": "SFX/Amb_C-cm_01_FBC78EF0.wem"
+     },
+     {
+      "Id": "481072958",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm_03.wav",
+      "Path": "Media/481072958.wem",
+      "CachePath": "SFX/Amb_C-cm_03_FBC78EF0.wem"
+     },
+     {
+      "Id": "527478948",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C_4 -cm.wav",
+      "Path": "Media/527478948.wem",
+      "CachePath": "SFX/Amb_C_4 -cm_FBC78EF0.wem"
+     },
+     {
+      "Id": "794969355",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm.wav",
+      "Path": "Media/794969355.wem",
+      "CachePath": "SFX/Amb_C-cm_FBC78EF0.wem"
+     },
+     {
+      "Id": "901455848",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Amb_C-cm_02.wav",
+      "Path": "Media/901455848.wem",
+      "CachePath": "SFX/Amb_C-cm_02_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1197678622",
+      "Name": "Play_JazzLobby_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_JazzLobby_Ambience",
+      "GUID": "{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}",
+      "DurationType": "OneShot",
+      "DurationMin": "655.45764",
+      "DurationMax": "655.45764",
+      "MediaRefs": [
+       {
+        "Id": "154483065"
+       },
+       {
+        "Id": "481072958"
+       },
+       {
+        "Id": "527478948"
+       },
+       {
+        "Id": "794969355"
+       },
+       {
+        "Id": "901455848"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "1296229240",
     "Type": "Event",
     "GUID": "{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}",
@@ -5893,6 +5978,44 @@
     ]
    },
    {
+    "Id": "2523270790",
+    "Type": "Event",
+    "GUID": "{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}",
+    "Language": "SFX",
+    "Hash": "{E75E3B9A-2149-2BC8-853C-DC42318FCA4B}",
+    "ObjectPath": "Play_Drunk_Laugh",
+    "ShortName": "Play_Drunk_Laugh",
+    "Path": "Event/Play_Drunk_Laugh.bnk",
+    "Media": [
+     {
+      "Id": "990272024",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Male Laugh.wav",
+      "Path": "Media/990272024.wem",
+      "CachePath": "SFX/Male Laugh_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2523270790",
+      "Name": "Play_Drunk_Laugh",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Drunk_Laugh",
+      "GUID": "{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}",
+      "MaxAttenuation": "10000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.2643958",
+      "DurationMax": "1.2643958",
+      "MediaRefs": [
+       {
+        "Id": "990272024"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "2550201584",
     "Type": "Event",
     "GUID": "{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}",
@@ -6489,6 +6612,68 @@
       "MediaRefs": [
        {
         "Id": "923323399"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "Id": "2957674202",
+    "Type": "Event",
+    "GUID": "{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}",
+    "Language": "SFX",
+    "Hash": "{808C1E59-0356-C4AC-A103-A7C093F0E36F}",
+    "ObjectPath": "Play_Player_Drowning",
+    "ShortName": "Play_Player_Drowning",
+    "Path": "Event/Play_Player_Drowning.bnk",
+    "Media": [
+     {
+      "Id": "219425058",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Drowning_2.wav",
+      "Path": "Media/219425058.wem",
+      "CachePath": "SFX/Drowning_2_818F3B66.wem"
+     },
+     {
+      "Id": "275163760",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Drowning_1.wav",
+      "Path": "Media/275163760.wem",
+      "CachePath": "SFX/Drowning_1_818F3B66.wem"
+     },
+     {
+      "Id": "348199533",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Drowning_3.wav",
+      "Path": "Media/348199533.wem",
+      "CachePath": "SFX/Drowning_3_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2957674202",
+      "Name": "Play_Player_Drowning",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Drowning",
+      "GUID": "{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.40752247",
+      "DurationMax": "0.5934394",
+      "MediaRefs": [
+       {
+        "Id": "219425058"
+       },
+       {
+        "Id": "275163760"
+       },
+       {
+        "Id": "348199533"
        }
       ]
      }
@@ -8618,7 +8803,7 @@
     "Type": "Event",
     "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
     "Language": "SFX",
-    "Hash": "{DB393F2D-4784-0424-4D33-D36BDBA24EFD}",
+    "Hash": "{0783C362-960E-3B69-F151-0DAC23BAFEF3}",
     "ObjectPath": "Play_Door_Break",
     "ShortName": "Play_Door_Break",
     "Path": "Event/Play_Door_Break.bnk",
@@ -8631,15 +8816,6 @@
       "ShortName": "Door Break\\Wood door break.wav",
       "Path": "Media/661274569.wem",
       "CachePath": "SFX/Door Break/Wood door break_818F3B66.wem"
-     },
-     {
-      "Id": "990272024",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Male Laugh.wav",
-      "Path": "Media/990272024.wem",
-      "CachePath": "SFX/Male Laugh_818F3B66.wem"
      }
     ],
     "Events": [
@@ -8650,14 +8826,11 @@
       "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
       "MaxAttenuation": "10000",
       "DurationType": "OneShot",
-      "DurationMin": "1.2643958",
-      "DurationMax": "1.2643958",
+      "DurationMin": "1.0844166",
+      "DurationMax": "1.0844166",
       "MediaRefs": [
        {
         "Id": "661274569"
-       },
-       {
-        "Id": "990272024"
        }
       ]
      }
@@ -8954,6 +9127,6 @@
     ]
    }
   ],
-  "FileHash": "{1CEC2411-0CA3-807F-2577-9A33BFD8B684}"
+  "FileHash": "{511EC87E-29AD-6285-0E80-1E1EB0933731}"
  }
 }

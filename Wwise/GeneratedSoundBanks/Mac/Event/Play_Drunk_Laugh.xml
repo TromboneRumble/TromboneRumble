@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2523270790" Type="Event" GUID="{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}" Language="SFX" Hash="{E75E3B9A-2149-2BC8-853C-DC42318FCA4B}">
+			<ObjectPath>Play_Drunk_Laugh</ObjectPath>
+			<ShortName>Play_Drunk_Laugh</ShortName>
+			<Path>Event/Play_Drunk_Laugh.bnk</Path>
+			<Media>
+				<File Id="990272024" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Male Laugh.wav</ShortName>
+					<Path>Media/990272024.wem</Path>
+					<CachePath>SFX/Male Laugh_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2523270790" Name="Play_Drunk_Laugh" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Drunk_Laugh" GUID="{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}" MaxAttenuation="10000" DurationType="OneShot" DurationMin="1.2643958" DurationMax="1.2643958">
+					<MediaRefs>
+						<MediaRef Id="990272024"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{EEED6AC8-B3DE-3FD8-8492-15DFE53337DE}</FileHash>
+</SoundBanksInfo>

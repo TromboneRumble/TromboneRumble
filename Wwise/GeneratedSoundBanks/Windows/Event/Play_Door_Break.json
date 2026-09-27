@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
     "Language": "SFX",
-    "Hash": "{DB393F2D-4784-0424-4D33-D36BDBA24EFD}",
+    "Hash": "{0783C362-960E-3B69-F151-0DAC23BAFEF3}",
     "ObjectPath": "Play_Door_Break",
     "ShortName": "Play_Door_Break",
     "Path": "Event/Play_Door_Break.bnk",
@@ -23,15 +23,6 @@
       "ShortName": "Door Break\\Wood door break.wav",
       "Path": "Media/661274569.wem",
       "CachePath": "SFX/Door Break/Wood door break_818F3B66.wem"
-     },
-     {
-      "Id": "990272024",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Male Laugh.wav",
-      "Path": "Media/990272024.wem",
-      "CachePath": "SFX/Male Laugh_818F3B66.wem"
      }
     ],
     "Events": [
@@ -42,20 +33,17 @@
       "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
       "MaxAttenuation": "10000",
       "DurationType": "OneShot",
-      "DurationMin": "1.2643958",
-      "DurationMax": "1.2643958",
+      "DurationMin": "1.0844166",
+      "DurationMax": "1.0844166",
       "MediaRefs": [
        {
         "Id": "661274569"
-       },
-       {
-        "Id": "990272024"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{CBBE6109-091E-9BDA-AB53-537656B9DFF5}"
+  "FileHash": "{5AC3C8DC-BEA0-D0A8-2B55-7C2F128F7814}"
  }
 }
