@@ -153,6 +153,12 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 	ADefaultTromboneCharacter* TargetCharacter = Target.Get();
 	if (!TargetCharacter || OtherActor != TargetCharacter) return;
 
+	if (!TargetCharacter->CanReceiveHit())
+	{
+		RequestTargetChange();
+		return;
+	}
+
 	bool bHasInstrument = false;
 	if (const UEquipmentComponent* Equipment = TargetCharacter->GetEquipmentComponent())
 	{
@@ -188,14 +194,15 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 		return;
 	}
 
+	OnCaptureSucceeded.Broadcast(TargetCharacter);
+
 	if (bHasInstrument)
 	{
-		OnCaptureSucceeded.Broadcast(TargetCharacter);
 		BeginDiving();
 	}
 	else
 	{
-		RequestTargetChange();
+		BeginExiting();
 	}
 }
 
