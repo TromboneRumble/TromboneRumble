@@ -153,6 +153,15 @@ void ATromboneCharacterBase::ApplyCharacterDataToMovement() const
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
+	// A light prop spins under the feet, and its edge speed would fling the character on jump or fall
+	GetCharacterMovement()->bImpartBaseVelocityX = false;
+	GetCharacterMovement()->bImpartBaseVelocityY = false;
+	GetCharacterMovement()->bImpartBaseVelocityZ = false;
+	GetCharacterMovement()->bImpartBaseAngularVelocity = false;
+
+	// The full push sinks a light prop into the floor, and it pops back up with the character on it
+	GetCharacterMovement()->StandingDownwardForceScale = 0.1f;
+
 	if (CharacterData)
 	{
 		// Ground
@@ -369,7 +378,15 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 		}
 	}
 	
-	if (!bIsLobby && AkSoundComponent && RagdollBooSound)
+	if (HasAuthority() && IsPlayerControlled() && !bIsLobby && IsHoldingInstrument())
+	{
+		Client_PlayRagdollBoo();
+	}
+}
+
+void ATromboneCharacterBase::Client_PlayRagdollBoo_Implementation()
+{
+	if (AkSoundComponent && RagdollBooSound)
 	{
 		AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
 	}
@@ -380,6 +397,19 @@ void ATromboneCharacterBase::Multicast_PlayFallScream_Implementation()
 	if (AkSoundComponent && FallScreamSound)
 	{
 		AkSoundComponent->PostAkEvent(FallScreamSound, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ATromboneCharacterBase::HandleDrowningStarted()
+{
+	Multicast_PlayDrowningSound();
+}
+
+void ATromboneCharacterBase::Multicast_PlayDrowningSound_Implementation()
+{
+	if (AkSoundComponent && DrowningSound)
+	{
+		AkSoundComponent->PostAkEvent(DrowningSound, 0, FOnAkPostEventCallback());
 	}
 }
 

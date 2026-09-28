@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2957674202" Type="Event" GUID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}" Language="SFX" Hash="{808C1E59-0356-C4AC-A103-A7C093F0E36F}">
+			<ObjectPath>Play_Player_Drowning</ObjectPath>
+			<ShortName>Play_Player_Drowning</ShortName>
+			<Path>Event/Play_Player_Drowning.bnk</Path>
+			<Media>
+				<File Id="219425058" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Drowning_2.wav</ShortName>
+					<Path>Media/219425058.wem</Path>
+					<CachePath>SFX/Drowning_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="275163760" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Drowning_1.wav</ShortName>
+					<Path>Media/275163760.wem</Path>
+					<CachePath>SFX/Drowning_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="348199533" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Drowning_3.wav</ShortName>
+					<Path>Media/348199533.wem</Path>
+					<CachePath>SFX/Drowning_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2957674202" Name="Play_Player_Drowning" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Drowning" GUID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.40752247" DurationMax="0.5934394">
+					<MediaRefs>
+						<MediaRef Id="219425058"/>
+						<MediaRef Id="275163760"/>
+						<MediaRef Id="348199533"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{94222FE7-3370-A660-919E-6BAE9A97DA5F}</FileHash>
+</SoundBanksInfo>

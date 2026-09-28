@@ -8,11 +8,13 @@
 
 class ADefaultTromboneCharacter;
 class ADrunkardSpawner;
+class AGimmickManager;
 struct FDrunkardRoute;
 class UDrunkardGimmickConfig;
 class UDrunkardStateComponent;
 class UWidgetComponent;
 class UXRaySilhouetteComponent;
+class UAkAudioEvent;
 
 /** ADrunkardNPC
  *
@@ -45,6 +47,19 @@ public:
 	/** Spawn point of the entrance it came through. It leaves through the same spot. */
 	AActor* GetExitPoint() const { return ExitPoint.Get(); }
 
+	/**
+	 * Where the exit walk on the navmesh ends.
+	 * This is the stop point of the entrance, or the spawn point when the route has no stop point.
+	 */
+	AActor* GetExitWalkGoal() const { return ExitStopPoint.IsValid() ? ExitStopPoint.Get() : ExitPoint.Get(); }
+
+	/**
+	 * Starts the exit through the door: moves from here to the spawn point without a collision sweep, then despawns.
+	 * The move goes through the walls around the door, the same way the entrance does.
+	 * StateComponent calls this. Server only.
+	 */
+	void BeginDoorExit();
+
 	/** 다이브 몽타주의 래그돌 시작 노티파이가 호출. 서버에서만 래그돌로 전환하고 복제로 퍼진다 */
 	void HandleDiveRagdollStart();
 
@@ -54,6 +69,12 @@ public:
 	 */
 	const UDrunkardGimmickConfig& GetDrunkardConfig() const;
 	UDrunkardStateComponent* GetStateComponent() const { return StateComponent; }
+
+	/** @return Whether fever time has started. Only the server knows, because the manager does not replicate it. */
+	bool IsFeverTime() const;
+
+	/** @return Walk speed for now, the fever value in fever time. */
+	float GetWalkSpeed() const;
 
 	//~ Begin ATromboneCharacterBase Interface
 	virtual bool CanReceiveHit() const override;
@@ -86,6 +107,10 @@ protected:
 	/** Attackable mark on the chest. Only the target sees it, and only within range. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UWidgetComponent> AttackableIndicatorComponent;
+
+	/** Laugh played when the drunkard spawns. */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
+	TObjectPtr<UAkAudioEvent> SpawnLaughEvent;
 
 private:
 
@@ -120,17 +145,19 @@ private:
 
 	int32 UpperBodyPhysicsRetryCount = 0;
 
-	/** 문 통과 이동 상태. Tick에서 보간하고 끝나면 StateComponent에 알린다 */
-	bool bDoorEntranceActive = false;
-	FVector DoorEntranceStart = FVector::ZeroVector;
-	FVector DoorEntranceEnd = FVector::ZeroVector;
-	FVector DoorEntranceDir = FVector::ZeroVector;
-	float DoorEntranceElapsed = 0.f;
+	/** 문 통과 이동 상태 (등장/퇴장 공용). Tick에서 보간하고 끝나면 StateComponent에 알린다 */
+	bool bDoorWalkActive = false;
+	bool bDoorWalkIsExit = false;
+	FVector DoorWalkStart = FVector::ZeroVector;
+	FVector DoorWalkEnd = FVector::ZeroVector;
+	FVector DoorWalkDir = FVector::ZeroVector;
+	float DoorWalkElapsed = 0.f;
 
 	/** Breaks the entrance door once, the frame the capsule crosses the door plane. */
 	void BreakEntranceDoor();
 
 	TWeakObjectPtr<AActor> ExitPoint;
+	TWeakObjectPtr<AActor> ExitStopPoint;
 	TWeakObjectPtr<AActor> EntranceDoor;
 	bool bEntranceDoorBreakPending = false;
 
@@ -139,6 +166,14 @@ private:
 
 	/** Has GetDrunkardConfig searched already. A search that found nothing is not repeated. */
 	mutable bool bConfigSearched = false;
+
+	/** Gimmick manager of the world. Filled by IsFeverTime on first use. */
+	mutable TWeakObjectPtr<AGimmickManager> CachedManager;
+
+	/** Server. Puts the fever walk speed on at once, unless the movement is locked. */
+	void HandleFeverTimeStarted();
+
+	FDelegateHandle FeverTimeStartedHandle;
 
 	/** 다이브 몽타주는 NPC라 자동 복제가 안 되므로 모든 머신에서 직접 재생한다 */
 	UFUNCTION(NetMulticast, Reliable)
@@ -157,6 +192,7 @@ private:
 	//~ Begin AActor Interface
 public:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;

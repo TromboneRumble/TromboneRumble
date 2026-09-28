@@ -16,3 +16,6 @@ DECLARE_LOG_CATEGORY_EXTERN(LogDrunkard, Log, All);
 
 /** JazzBar beer flood gimmick. */
 DECLARE_LOG_CATEGORY_EXTERN(LogBeerFlood, Log, All);
+
+/** SpaceStation black hole gimmick. */
+DECLARE_LOG_CATEGORY_EXTERN(LogBlackHole, Log, All);

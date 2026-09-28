@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1197678622" Type="Event" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" Language="SFX" Hash="{5C41E0E2-9883-E4DB-5814-875408B636BD}">
+			<ObjectPath>Play_JazzLobby_Ambience</ObjectPath>
+			<ShortName>Play_JazzLobby_Ambience</ShortName>
+			<Path>Event/Play_JazzLobby_Ambience.bnk</Path>
+			<Media>
+				<File Id="154483065" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm_01.wav</ShortName>
+					<Path>Media/154483065.wem</Path>
+					<CachePath>SFX/Amb_C-cm_01_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="481072958" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm_03.wav</ShortName>
+					<Path>Media/481072958.wem</Path>
+					<CachePath>SFX/Amb_C-cm_03_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="527478948" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C_4 -cm.wav</ShortName>
+					<Path>Media/527478948.wem</Path>
+					<CachePath>SFX/Amb_C_4 -cm_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="794969355" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm.wav</ShortName>
+					<Path>Media/794969355.wem</Path>
+					<CachePath>SFX/Amb_C-cm_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="901455848" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm_02.wav</ShortName>
+					<Path>Media/901455848.wem</Path>
+					<CachePath>SFX/Amb_C-cm_02_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1197678622" Name="Play_JazzLobby_Ambience" ObjectPath="\Events\Default Work Unit\Ambience\Play_JazzLobby_Ambience" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" DurationType="OneShot" DurationMin="655.45764" DurationMax="655.45764">
+					<MediaRefs>
+						<MediaRef Id="154483065"/>
+						<MediaRef Id="481072958"/>
+						<MediaRef Id="527478948"/>
+						<MediaRef Id="794969355"/>
+						<MediaRef Id="901455848"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{13089721-E674-9EEC-A42F-59F54A943687}</FileHash>
+</SoundBanksInfo>

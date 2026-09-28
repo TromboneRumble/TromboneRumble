@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	2523270790	Play_Drunk_Laugh			\Default Work Unit\Object_SFX\Play_Drunk_Laugh	
+

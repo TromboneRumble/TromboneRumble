@@ -61,7 +61,7 @@ void UBTService_UpdateWeaveGoal::OnCeaseRelevant(UBehaviorTreeComponent& OwnerCo
 	{
 		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement(); Move && !NPC->IsBlocked())
 		{
-			Move->MaxWalkSpeed = NPC->GetDrunkardConfig().WalkSpeed;
+			Move->MaxWalkSpeed = NPC->GetWalkSpeed();
 		}
 	}
 
@@ -142,7 +142,7 @@ void UBTService_UpdateWeaveGoal::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 		if (UCharacterMovementComponent* Move = NPC->GetCharacterMovement())
 		{
 			const float SpeedSin = FMath::Sin(Time * Config.WeaveFrequency * 0.7f + Memory->SpeedPhase);
-			Move->MaxWalkSpeed = Config.WalkSpeed * (1.f + Config.SpeedVariance * SpeedSin);
+			Move->MaxWalkSpeed = NPC->GetWalkSpeed() * (1.f + Config.SpeedVariance * SpeedSin);
 		}
 	}
 }

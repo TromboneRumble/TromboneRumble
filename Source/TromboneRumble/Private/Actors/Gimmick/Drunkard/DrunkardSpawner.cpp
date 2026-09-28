@@ -25,12 +25,10 @@ void ADrunkardSpawner::Activate()
 
 	Super::Activate();
 
+	// The spawner has no timer. A sequence of the stage data calls ForceTrigger when it is the drunkard's turn
 	if (!bWasActive && HasAuthority())
 	{
-		const float Delay = GetConfig<UDrunkardGimmickConfig>().InitialSpawnDelay;
-		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Delay, false);
-
-		UE_LOG(LogGimmick, Log, TEXT("Drunkard spawner started. First spawn in %.1fs"), Delay);
+		UE_LOG(LogGimmick, Log, TEXT("Drunkard spawner started. It waits for its turn in the sequence"));
 	}
 }
 
@@ -38,7 +36,6 @@ void ADrunkardSpawner::ForceTrigger()
 {
 	if (!HasAuthority()) return;
 
-	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 	TrySpawnNPC();
 }
 
@@ -74,10 +71,7 @@ void ADrunkardSpawner::Tick(const float DeltaSeconds)
 	}
 	else
 	{
-		const float Remaining = GetWorldTimerManager().GetTimerRemaining(SpawnTimerHandle);
-		Text = (Remaining >= 0.f)
-			? FString::Printf(TEXT("[취객 스포너] 다음 스폰까지 %.1fs (동선 %d개)"), Remaining, Routes.Num())
-			: TEXT("[취객 스포너] 스폰 타이머 비활성");
+		Text = FString::Printf(TEXT("[취객 스포너] 차례를 기다리는 중 (동선 %d개)"), Routes.Num());
 	}
 	GEngine->AddOnScreenDebugMessage(static_cast<uint64>(GetUniqueID()), 1.f, FColor::Orange, Text);
 #endif
@@ -85,7 +79,14 @@ void ADrunkardSpawner::Tick(const float DeltaSeconds)
 
 void ADrunkardSpawner::TrySpawnNPC()
 {
-	if (!HasAuthority() || ActiveNPC.IsValid() || !NPCClass) return;
+	if (!HasAuthority() || ActiveNPC.IsValid()) return;
+
+	// Nothing spawns without a class, and a sequence would wait forever for the end of this turn
+	if (!NPCClass)
+	{
+		NotifyEventFinished();
+		return;
+	}
 
 	// Random entrance. Without one the spawner's own transform is the entrance
 	FDrunkardRoute Route;
@@ -139,10 +140,8 @@ void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 
 	ActiveNPC = nullptr;
 
-	if (!IsActive()) return;
-
-	const float Interval = GetConfig<UDrunkardGimmickConfig>().RespawnInterval;
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::TrySpawnNPC, Interval, false);
+	// Also when the spawner is turned off, so a sequence waiting for this turn does not stall
+	NotifyEventFinished();
 }
 
 void ADrunkardSpawner::HandleNPCCaptureSucceeded(ADefaultTromboneCharacter* Target)

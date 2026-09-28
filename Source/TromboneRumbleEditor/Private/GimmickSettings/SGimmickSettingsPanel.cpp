@@ -412,20 +412,96 @@ void SGimmickSettingsPanel::RebuildTimeline()
 	TArray<FGimmickTimelineRow> Rows;
 	if (StageData.IsValid())
 	{
+		// One builder per config, in the order of the list. Sequences fill theirs below
+		TArray<const UGimmickConfig*> Configs;
+		TArray<FGimmickTimelineBuilder> Builders;
 		for (const UGimmickConfig* Config : StageData->GetGimmicks())
 		{
 			if (!Config) continue;
 
 			// Each row gets its own stream, so adding or editing one gimmick does not move the random waits of the others
 			const int32 RowSeed = HashCombine(GetTypeHash(TimelineSeed), GetTypeHash(Config->GetGimmickType()));
-			FGimmickTimelineBuilder Builder(TimelineRoundLength, TimelineFeverStart, RowSeed);
-			Config->BuildTimeline(Builder);
+			Configs.Add(Config);
+			Builders.Emplace(TimelineRoundLength, TimelineFeverStart, RowSeed);
 
+			if (StageData->FindSequence(Config->GetGimmickType())) continue;
+
+			if (Config->RunsOnlyInSequence())
+			{
+				Builders.Last().SetNote(FText::FromString(TEXT("순서 그룹에 없어 발동하지 않습니다. 레벨 설정 탭의 순서 그룹에 넣어 주세요")));
+				continue;
+			}
+			Config->BuildTimeline(Builders.Last());
+		}
+
+		const auto FindIndex = [&Configs](const EGimmickType Type) { return Configs.IndexOfByPredicate([Type](const UGimmickConfig* Config) { return Config->GetGimmickType() == Type; }); };
+
+		// Repeat the rule of AGimmickManager: each gimmick starts a gap after the one before it ends
+		// From fever time on, the next turn starts from the first gimmick of the fever order and uses the fever gap
+		for (const FGimmickSequence& Sequence : StageData->GetSequences())
+		{
+			if (Sequence.Order.IsEmpty()) continue;
+
+			float Time = Sequence.FirstDelay;
+			bool bFeverOrderStarted = false;
+			for (int32 Turn = 0; Time < TimelineRoundLength; ++Turn)
+			{
+				const bool bFever = Time >= TimelineFeverStart;
+				if (bFever && Sequence.bUseFeverOrder && !bFeverOrderStarted)
+				{
+					bFeverOrderStarted = true;
+					Turn = 0;
+				}
+
+				const TArray<EGimmickType>& Order = Sequence.GetOrder(bFever);
+				if (Order.IsEmpty()) break;
+
+				const int32 Index = FindIndex(Order[Turn % Order.Num()]);
+				const float EventEnd = Configs.IsValidIndex(Index) ? Configs[Index]->BuildEventTimeline(Builders[Index], Time) : Time;
+				Time = FMath::Max(EventEnd + Sequence.GetGap(EventEnd >= TimelineFeverStart), Time + FGimmickTimelineBuilder::MinStep);
+			}
+
+			const auto JoinOrder = [](const TArray<EGimmickType>& Order)
+			{
+				FString Text;
+				for (const EGimmickType Type : Order)
+				{
+					Text += (Text.IsEmpty() ? TEXT("") : TEXT(" → ")) + UEnum::GetDisplayValueAsText(Type).ToString();
+				}
+				return Text;
+			};
+
+			FString NoteText = FString::Printf(TEXT("순서 그룹: %s 순서로 이어집니다"), *JoinOrder(Sequence.Order));
+			if (Sequence.bUseFeverOrder)
+			{
+				NoteText += Sequence.FeverOrder.IsEmpty()
+					? FString(TEXT("\n피버부터는 진행 중인 기믹만 끝내고 더 발동하지 않습니다"))
+					: FString::Printf(TEXT("\n피버부터는 진행 중인 기믹을 끝낸 뒤 %s 순서로 이어집니다 (사이 간격 %.1f초)"), *JoinOrder(Sequence.FeverOrder), Sequence.FeverGap);
+			}
+
+			for (const EGimmickType Type : Sequence.Order)
+			{
+				const int32 Index = FindIndex(Type);
+				if (!Builders.IsValidIndex(Index)) continue;
+
+				// Shows where fever time starts on the rows the fever order changes
+				if (Sequence.bUseFeverOrder)
+				{
+					Builders[Index].IsFever(0.f);
+				}
+
+				const FText SequenceNote = FText::FromString(NoteText);
+				Builders[Index].SetNote(Builders[Index].GetNote().IsEmpty() ? SequenceNote : FText::Format(INVTEXT("{0}\n{1}"), SequenceNote, Builders[Index].GetNote()));
+			}
+		}
+
+		for (int32 Index = 0; Index < Configs.Num(); ++Index)
+		{
 			FGimmickTimelineRow& Row = Rows.AddDefaulted_GetRef();
-			Row.Label = UEnum::GetDisplayValueAsText(Config->GetGimmickType());
-			Row.Note = Builder.GetNote();
-			Row.Spans = Builder.GetSpans();
-			Row.bUsesFever = Builder.UsesFever();
+			Row.Label = UEnum::GetDisplayValueAsText(Configs[Index]->GetGimmickType());
+			Row.Note = Builders[Index].GetNote();
+			Row.Spans = Builders[Index].GetSpans();
+			Row.bUsesFever = Builders[Index].UsesFever();
 		}
 	}
 
@@ -492,7 +568,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
 					.MinValue(0.f)
 					.MaxValue(600.f)
 					.Delta(1.f)
-					.ToolTipText(LOCTEXT("FeverStartTip", "곡의 피버 큐(Event_Spotlight_Fever)가 오는 시점(초)입니다. 스포트라이트만 이 시점부터 피버 간격을 씁니다. 이 창에서만 쓰고 저장되지 않습니다"))
+					.ToolTipText(LOCTEXT("FeverStartTip", "곡의 피버 큐(Event_Spotlight_Fever)가 오는 시점(초)입니다. 스포트라이트는 이 시점부터 피버 간격을 쓰고, 피버 순서가 있는 순서 그룹은 이 시점 이후 차례부터 피버 순서를 씁니다. 이 창에서만 쓰고 저장되지 않습니다"))
 					.Value_Lambda([this]() { return TimelineFeverStart; })
 					.OnValueChanged_Lambda([this](const float NewValue) { TimelineFeverStart = NewValue; RebuildTimeline(); })
 				]

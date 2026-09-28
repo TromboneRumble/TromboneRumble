@@ -1120,6 +1120,49 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="1197678622" Type="Event" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" Language="SFX" Hash="{5C41E0E2-9883-E4DB-5814-875408B636BD}">
+			<ObjectPath>Play_JazzLobby_Ambience</ObjectPath>
+			<ShortName>Play_JazzLobby_Ambience</ShortName>
+			<Path>Event/Play_JazzLobby_Ambience.bnk</Path>
+			<Media>
+				<File Id="154483065" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm_01.wav</ShortName>
+					<Path>Media/154483065.wem</Path>
+					<CachePath>SFX/Amb_C-cm_01_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="481072958" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm_03.wav</ShortName>
+					<Path>Media/481072958.wem</Path>
+					<CachePath>SFX/Amb_C-cm_03_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="527478948" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C_4 -cm.wav</ShortName>
+					<Path>Media/527478948.wem</Path>
+					<CachePath>SFX/Amb_C_4 -cm_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="794969355" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm.wav</ShortName>
+					<Path>Media/794969355.wem</Path>
+					<CachePath>SFX/Amb_C-cm_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="901455848" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Amb_C-cm_02.wav</ShortName>
+					<Path>Media/901455848.wem</Path>
+					<CachePath>SFX/Amb_C-cm_02_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1197678622" Name="Play_JazzLobby_Ambience" ObjectPath="\Events\Default Work Unit\Ambience\Play_JazzLobby_Ambience" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" DurationType="OneShot" DurationMin="655.45764" DurationMax="655.45764">
+					<MediaRefs>
+						<MediaRef Id="154483065"/>
+						<MediaRef Id="481072958"/>
+						<MediaRef Id="527478948"/>
+						<MediaRef Id="794969355"/>
+						<MediaRef Id="901455848"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="1296229240" Type="Event" GUID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}" Language="SFX" Hash="{45166D77-6F57-0BD5-EEE0-6230040F00B7}">
 			<ObjectPath>Play_Cymbal_Attack_Voice</ObjectPath>
 			<ShortName>Play_Cymbal_Attack_Voice</ShortName>
@@ -2735,6 +2778,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="2523270790" Type="Event" GUID="{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}" Language="SFX" Hash="{E75E3B9A-2149-2BC8-853C-DC42318FCA4B}">
+			<ObjectPath>Play_Drunk_Laugh</ObjectPath>
+			<ShortName>Play_Drunk_Laugh</ShortName>
+			<Path>Event/Play_Drunk_Laugh.bnk</Path>
+			<Media>
+				<File Id="990272024" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Male Laugh.wav</ShortName>
+					<Path>Media/990272024.wem</Path>
+					<CachePath>SFX/Male Laugh_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2523270790" Name="Play_Drunk_Laugh" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Drunk_Laugh" GUID="{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}" MaxAttenuation="10000" DurationType="OneShot" DurationMin="1.2643958" DurationMax="1.2643958">
+					<MediaRefs>
+						<MediaRef Id="990272024"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="2550201584" Type="Event" GUID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" Language="SFX" Hash="{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}">
 			<ObjectPath>Play_Rhythm_Perfect</ObjectPath>
 			<ShortName>Play_Rhythm_Perfect</ShortName>
@@ -3012,6 +3074,37 @@
 				<Event Id="2901149947" Name="Play_Player_Scream" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Scream" GUID="{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}" DurationType="OneShot" DurationMin="1.2365162" DurationMax="1.2365162">
 					<MediaRefs>
 						<MediaRef Id="923323399"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+		<SoundBank Id="2957674202" Type="Event" GUID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}" Language="SFX" Hash="{808C1E59-0356-C4AC-A103-A7C093F0E36F}">
+			<ObjectPath>Play_Player_Drowning</ObjectPath>
+			<ShortName>Play_Player_Drowning</ShortName>
+			<Path>Event/Play_Player_Drowning.bnk</Path>
+			<Media>
+				<File Id="219425058" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Drowning_2.wav</ShortName>
+					<Path>Media/219425058.wem</Path>
+					<CachePath>SFX/Drowning_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="275163760" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Drowning_1.wav</ShortName>
+					<Path>Media/275163760.wem</Path>
+					<CachePath>SFX/Drowning_1_818F3B66.wem</CachePath>
+				</File>
+				<File Id="348199533" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Drowning_3.wav</ShortName>
+					<Path>Media/348199533.wem</Path>
+					<CachePath>SFX/Drowning_3_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2957674202" Name="Play_Player_Drowning" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Drowning" GUID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.40752247" DurationMax="0.5934394">
+					<MediaRefs>
+						<MediaRef Id="219425058"/>
+						<MediaRef Id="275163760"/>
+						<MediaRef Id="348199533"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -4096,7 +4189,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{DB393F2D-4784-0424-4D33-D36BDBA24EFD}">
+		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{0783C362-960E-3B69-F151-0DAC23BAFEF3}">
 			<ObjectPath>Play_Door_Break</ObjectPath>
 			<ShortName>Play_Door_Break</ShortName>
 			<Path>Event/Play_Door_Break.bnk</Path>
@@ -4106,17 +4199,11 @@
 					<Path>Media/661274569.wem</Path>
 					<CachePath>SFX/Door Break/Wood door break_818F3B66.wem</CachePath>
 				</File>
-				<File Id="990272024" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>Male Laugh.wav</ShortName>
-					<Path>Media/990272024.wem</Path>
-					<CachePath>SFX/Male Laugh_818F3B66.wem</CachePath>
-				</File>
 			</Media>
 			<Events>
-				<Event Id="3887461750" Name="Play_Door_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Door_Break" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" MaxAttenuation="10000" DurationType="OneShot" DurationMin="1.2643958" DurationMax="1.2643958">
+				<Event Id="3887461750" Name="Play_Door_Break" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Door_Break" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" MaxAttenuation="10000" DurationType="OneShot" DurationMin="1.0844166" DurationMax="1.0844166">
 					<MediaRefs>
 						<MediaRef Id="661274569"/>
-						<MediaRef Id="990272024"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -4269,5 +4356,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{CF96FBF1-B43F-20AA-5C75-C91040850AEF}</FileHash>
+	<FileHash>{0C8142E4-E454-6CEC-C73D-6D1FF3A7D6C8}</FileHash>
 </SoundBanksInfo>

@@ -334,13 +334,6 @@
 										</Reference>
 									</ReferenceList>
 								</Action>
-								<Action Name="" ID="{6E84D7F9-1144-43DB-BC1D-FEDF335D8218}" ShortID="270360022">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Player_Laugh" ID="{23E26B0B-668C-496F-A928-186D272FF13E}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
 							</ChildrenList>
 						</Event>
 						<Event Name="Play_Beer_Drop" ID="{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}">
@@ -396,6 +389,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Object_Glass_Break_Debris" ID="{96B60B60-C18B-4697-B12C-2C607CE23BFA}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Drunk_Laugh" ID="{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}">
+							<ChildrenList>
+								<Action Name="" ID="{76F96258-5BB5-4CB4-A22C-550848790D8C}" ShortID="30334482">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Laugh" ID="{23E26B0B-668C-496F-A928-186D272FF13E}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -613,6 +617,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Player_Falling_Pain" ID="{5B448B6C-7F0A-4CF0-A20D-967750C22D76}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Player_Drowning" ID="{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}">
+							<ChildrenList>
+								<Action Name="" ID="{5D7A46F3-8BC4-4114-BF54-F6E3BB7160A6}" ShortID="304681085">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player_Drowning_Voice" ID="{7378EDA2-63DC-4213-A940-B1B5702805C8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -1413,6 +1428,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Audience_ShowHost" ID="{69039D01-9671-435F-8F12-FA5350103EA8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_JazzLobby_Ambience" ID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}">
+							<ChildrenList>
+								<Action Name="" ID="{D7AB4BA5-A8CE-4067-AB8C-E541A851C452}" ShortID="762332970">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Jazzbar_Lobby_Ambience" ID="{33C2C1F7-68DF-4623-9DD0-3EA3A92B8EEB}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

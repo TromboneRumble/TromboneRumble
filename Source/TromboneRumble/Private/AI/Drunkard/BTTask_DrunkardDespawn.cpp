@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTask_DrunkardDespawn::ExecuteTask(UBehaviorTreeComponent&
 		return EBTNodeResult::Failed;
 	}
 
-	StateComponent->DespawnOwner();
+	StateComponent->BeginDoorExit();
 
 	return EBTNodeResult::Succeeded;
 }

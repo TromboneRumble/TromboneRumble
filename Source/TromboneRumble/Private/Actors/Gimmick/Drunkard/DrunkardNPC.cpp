@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
+#include "AkGameplayStatics.h"
 #include "Actors/Gimmick/Breakable/BreakableDoor.h"
 #include "Actors/Gimmick/Drunkard/DrunkardAIController.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
@@ -10,6 +11,7 @@
 #include "Components/ActorComponents/XRaySilhouetteComponent.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BrainComponent.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -79,11 +81,25 @@ void ADrunkardNPC::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (SpawnLaughEvent)
+	{
+		UAkGameplayStatics::PostEvent(SpawnLaughEvent, this, 0, FOnAkPostEventCallback());
+	}
+
 	const UDrunkardGimmickConfig& Config = GetDrunkardConfig();
 	if (UCharacterMovementComponent* Move = GetCharacterMovement())
 	{
-		Move->MaxWalkSpeed = Config.WalkSpeed;
+		Move->MaxWalkSpeed = GetWalkSpeed();
 		Move->MaxAcceleration = Config.MaxAcceleration;
+	}
+
+	if (HasAuthority())
+	{
+		if (AGimmickManager* Manager = AGimmickManager::Find(GetWorld()))
+		{
+			CachedManager = Manager;
+			FeverTimeStartedHandle = Manager->OnFeverTimeStarted.AddUObject(this, &ThisClass::HandleFeverTimeStarted);
+		}
 	}
 
 	// X-Ray 토글이 꺼져 있으면 컴포넌트 제거 (안 쓰는 CustomDepth 비용 방지)
@@ -165,24 +181,65 @@ void ADrunkardNPC::BeginDoorEntrance(const FDrunkardRoute& Route)
 	if (!HasAuthority()) return;
 
 	// Keeps the capsule height: the points sit on the floor, the actor sits at capsule center
-	DoorEntranceStart = GetActorLocation();
-	DoorEntranceEnd = DoorEntranceStart;
+	DoorWalkStart = GetActorLocation();
+	DoorWalkEnd = DoorWalkStart;
 	if (Route.StopPoint)
 	{
-		DoorEntranceEnd = Route.StopPoint->GetActorLocation();
-		DoorEntranceEnd.Z = DoorEntranceStart.Z;
+		DoorWalkEnd = Route.StopPoint->GetActorLocation();
+		DoorWalkEnd.Z = DoorWalkStart.Z;
 	}
 	else
 	{
 		UE_LOG(LogDrunkard, Warning, TEXT("[취객 등장] 정지 지점이 없어 생성 지점에서 바로 정지합니다"));
 	}
-	DoorEntranceDir = (DoorEntranceEnd - DoorEntranceStart).GetSafeNormal2D();
-	DoorEntranceElapsed = 0.f;
-	bDoorEntranceActive = true;
+	DoorWalkDir = (DoorWalkEnd - DoorWalkStart).GetSafeNormal2D();
+	DoorWalkElapsed = 0.f;
+	bDoorWalkIsExit = false;
+	bDoorWalkActive = true;
 
 	ExitPoint = Route.SpawnPoint;
+	ExitStopPoint = Route.StopPoint;
 	EntranceDoor = Route.Door;
 	bEntranceDoorBreakPending = Route.Door && Route.Door->Implements<UBreakable>() && !IBreakable::Execute_IsBroken(Route.Door);
+}
+
+void ADrunkardNPC::BeginDoorExit()
+{
+	if (!HasAuthority() || bDoorWalkActive) return;
+
+	const AActor* SpawnPoint = ExitPoint.Get();
+	if (!SpawnPoint)
+	{
+		// No spawn point to walk to, so it leaves from where it stands
+		if (StateComponent)
+		{
+			StateComponent->DespawnOwner();
+		}
+		return;
+	}
+
+	// The BT would keep sending move requests and fight the direct move
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->StopMovement();
+		if (UBrainComponent* Brain = AIController->GetBrainComponent())
+		{
+			Brain->StopLogic(TEXT("Door exit"));
+		}
+	}
+
+	DoorWalkStart = GetActorLocation();
+	DoorWalkEnd = SpawnPoint->GetActorLocation();
+	DoorWalkEnd.Z = DoorWalkStart.Z;
+	DoorWalkDir = (DoorWalkEnd - DoorWalkStart).GetSafeNormal2D();
+	DoorWalkElapsed = 0.f;
+	bDoorWalkIsExit = true;
+	bDoorWalkActive = true;
+
+	if (!DoorWalkDir.IsNearlyZero())
+	{
+		SetActorRotation(DoorWalkDir.Rotation());
+	}
 }
 
 void ADrunkardNPC::BreakEntranceDoor()
@@ -258,7 +315,7 @@ void ADrunkardNPC::OnBlockedStateChanged(const bool bBlocked)
 {
 	if (UCharacterMovementComponent* Move = GetCharacterMovement())
 	{
-		Move->MaxWalkSpeed = bBlocked ? 0.f : GetDrunkardConfig().WalkSpeed;
+		Move->MaxWalkSpeed = bBlocked ? 0.f : GetWalkSpeed();
 	}
 
 	// 이미 내려간 이동 명령은 속도를 0으로 만들어도 살아 있다
@@ -353,20 +410,34 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 
 	UpdateAttackableIndicator();
 
-	if (bDoorEntranceActive && HasAuthority())
+	// 퇴장 MoveTo는 정지 지점 액터 위치 자체에 닿아야 끝난다.
+	// 정지 지점이 벽에 붙어 있으면 캡슐이 그 앞에서 막혀 이동이 영원히 안 끝나므로, 충분히 가까워지면 여기서 문 밖 이동을 시작한다
+	if (HasAuthority() && !bDoorWalkActive && StateComponent && StateComponent->GetState() == EDrunkardState::Exiting)
+	{
+		if (const AActor* WalkGoal = GetExitWalkGoal())
+		{
+			const float StartRadius = GetDrunkardConfig().MoveAcceptanceRadius + GetCapsuleComponent()->GetScaledCapsuleRadius();
+			if (FVector::DistSquared2D(GetActorLocation(), WalkGoal->GetActorLocation()) <= FMath::Square(StartRadius))
+			{
+				StateComponent->BeginDoorExit();
+			}
+		}
+	}
+
+	if (bDoorWalkActive && HasAuthority())
 	{
 		const float Duration = FMath::Max(0.05f, GetDrunkardConfig().EnterBurstDuration);
-		DoorEntranceElapsed += DeltaSeconds;
-		const float Alpha = FMath::Clamp(DoorEntranceElapsed / Duration, 0.f, 1.f);
+		DoorWalkElapsed += DeltaSeconds;
+		const float Alpha = FMath::Clamp(DoorWalkElapsed / Duration, 0.f, 1.f);
 
-		// 스윕 없이 이동해 문 콜리전을 그대로 통과
-		SetActorLocation(FMath::Lerp(DoorEntranceStart, DoorEntranceEnd, Alpha), false);
+		// 스윕 없이 이동해 문과 주변 투명 벽 콜리전을 그대로 통과
+		SetActorLocation(FMath::Lerp(DoorWalkStart, DoorWalkEnd, Alpha), false);
 
 		// Breaks the door the frame the capsule passes its plane. If the walk ends first, the door was placed off the path, break it anyway
 		if (bEntranceDoorBreakPending)
 		{
 			const AActor* Door = EntranceDoor.Get();
-			const bool bCrossed = Door && FVector::DotProduct(GetActorLocation() - Door->GetActorLocation(), DoorEntranceDir) >= 0.f;
+			const bool bCrossed = Door && FVector::DotProduct(GetActorLocation() - Door->GetActorLocation(), DoorWalkDir) >= 0.f;
 			if (bCrossed || Alpha >= 1.f)
 			{
 				BreakEntranceDoor();
@@ -375,10 +446,17 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 
 		if (Alpha >= 1.f)
 		{
-			bDoorEntranceActive = false;
+			bDoorWalkActive = false;
 			if (StateComponent)
 			{
-				StateComponent->HandleDoorEntranceFinished();
+				if (bDoorWalkIsExit)
+				{
+					StateComponent->DespawnOwner();
+				}
+				else
+				{
+					StateComponent->HandleDoorEntranceFinished();
+				}
 			}
 		}
 	}
@@ -492,10 +570,12 @@ bool ADrunkardNPC::OnHitReceived_Implementation(const FHitData& HitData)
 
 void ADrunkardNPC::HandleDrowningStarted()
 {
+	Super::HandleDrowningStarted();
+
 	if (!HasAuthority()) return;
 
-	// The door entrance moves the capsule every tick and would drag the ragdoll along
-	bDoorEntranceActive = false;
+	// The door walk moves the capsule every tick and would drag the ragdoll along
+	bDoorWalkActive = false;
 }
 
 void ADrunkardNPC::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, const bool bSelfMoved,
@@ -531,6 +611,42 @@ bool ADrunkardNPC::CanReceiveHit() const
 	}
 
 	return Super::CanReceiveHit();
+}
+
+void ADrunkardNPC::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (AGimmickManager* Manager = CachedManager.Get())
+	{
+		Manager->OnFeverTimeStarted.Remove(FeverTimeStartedHandle);
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
+bool ADrunkardNPC::IsFeverTime() const
+{
+	if (!CachedManager.IsValid())
+	{
+		CachedManager = AGimmickManager::Find(GetWorld());
+	}
+
+	const AGimmickManager* Manager = CachedManager.Get();
+	return Manager && Manager->IsFeverTime();
+}
+
+float ADrunkardNPC::GetWalkSpeed() const
+{
+	return GetDrunkardConfig().GetWalkSpeed(IsFeverTime());
+}
+
+void ADrunkardNPC::HandleFeverTimeStarted()
+{
+	// A locked speed stays 0. OnBlockedStateChanged puts the fever speed on when the lock ends
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (Move && !IsBlocked())
+	{
+		Move->MaxWalkSpeed = GetWalkSpeed();
+	}
 }
 
 const UDrunkardGimmickConfig& ADrunkardNPC::GetDrunkardConfig() const

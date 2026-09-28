@@ -11,6 +11,7 @@
 #include "Framework/TromboneGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameModeBase.h"
+#include "Items/InstrumentBase.h"
 #include "Items/WeaponBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameDataSubsystem.h"
@@ -103,13 +104,7 @@ void ULobbyDirectorComponent::NotifyItemEquipped(APawn* EquippedPlayer, AItemBas
 		return;
 	}
 
-	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(EquippedItem))
-	{
-		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
-		{
-			return;
-		}
-	}
+	if (!EquippedItem->IsA<AInstrumentBase>()) return;
 
 	if (++EquippedInstrumentCount >= SpawnedInstrumentCount)
 	{

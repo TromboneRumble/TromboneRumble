@@ -54,10 +54,8 @@ void ABeerFloodGimmick::Activate()
 	{
 		CurrentBeerZ = GetBaseBeerZ();
 
-		const float FirstDelay = GetConfig<UBeerFloodGimmickConfig>().FirstWarningDelay;
-		GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, FirstDelay, false);
-
-		UE_LOG(LogBeerFlood, Log, TEXT("Flood started. First warning in %.1fs"), FirstDelay);
+		// The flood has no timer. A sequence of the stage data calls ForceTrigger when it is the flood's turn
+		UE_LOG(LogBeerFlood, Log, TEXT("Flood started. It waits for its turn in the sequence"));
 	}
 }
 
@@ -65,10 +63,18 @@ void ABeerFloodGimmick::Deactivate()
 {
 	if (HasAuthority())
 	{
+		const bool bWasFlooding = BeerFloodState != EBeerFloodState::Idle;
+
 		ReleaseAllDrowning();
 		SetActorTickEnabled(false);
 		CurrentBeerZ = GetBaseBeerZ();
 		SetBeerFloodState(EBeerFloodState::Idle);
+
+		// A flood stopped half way still ends its turn, so a sequence waiting for it does not stall
+		if (bWasFlooding)
+		{
+			NotifyEventFinished();
+		}
 	}
 
 	// Super clears the timers
@@ -159,7 +165,6 @@ void ABeerFloodGimmick::BeginRising()
 
 	SetBeerFloodState(EBeerFloodState::Rising);
 
-	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginSustain, GetConfig<UBeerFloodGimmickConfig>().RisingDuration, false);
 }
 
@@ -170,6 +175,8 @@ void ABeerFloodGimmick::BeginSustain()
 	CurrentBeerZ = GetPeakBeerZ();
 	SetBeerFloodState(EBeerFloodState::Sustain);
 
+	UpdateDrowning();
+	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginDraining, GetConfig<UBeerFloodGimmickConfig>().SustainDuration, false);
 }
 
@@ -179,6 +186,7 @@ void ABeerFloodGimmick::BeginDraining()
 
 	SetBeerFloodState(EBeerFloodState::Draining);
 
+	GetWorldTimerManager().ClearTimer(DrowningTimerHandle);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndBeerFlood, GetConfig<UBeerFloodGimmickConfig>().DrainingDuration, false);
 }
 
@@ -192,14 +200,13 @@ void ABeerFloodGimmick::EndBeerFlood()
 	ReleaseAllDrowning();
 	SetBeerFloodState(EBeerFloodState::Idle);
 
-	GetWorldTimerManager().SetTimer(CycleTimerHandle, this, &ThisClass::BeginWarning, GetConfig<UBeerFloodGimmickConfig>().Cooldown, false);
+	NotifyEventFinished();
 }
 
 void ABeerFloodGimmick::ForceTrigger()
 {
 	if (!HasAuthority() || BeerFloodState != EBeerFloodState::Idle) return;
 
-	GetWorldTimerManager().ClearTimer(CycleTimerHandle);
 	BeginWarning();
 }
 
@@ -419,7 +426,6 @@ void ABeerFloodGimmick::DebugDrawGimmickState() const
 
 	if (HasAuthority())
 	{
-		Text.Appendf(TEXT("다음 전조까지 %.1fs\n"), FMath::Max(0.f, GetWorldTimerManager().GetTimerRemaining(CycleTimerHandle)));
 		Text.Appendf(TEXT("빠진 인원   %d명\n"), DrowningCharacters.Num());
 	}
 

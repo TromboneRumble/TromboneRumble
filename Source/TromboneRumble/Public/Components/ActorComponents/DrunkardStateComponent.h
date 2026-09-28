@@ -48,10 +48,13 @@ public:
 	/** 문을 완전히 나온 시점. 타겟을 선정하고 지속시간 계산을 시작한다 */
 	void BeginChasing();
 
-	/** 지속시간 소진 시. 이동/디스폰은 BT가 처리한다 */
+	/** 퇴장 시작 (지속시간 소진, 포획 성공). 정지 지점까지는 BT가 걷고, 그 뒤는 BeginDoorExit가 처리한다 */
 	void BeginExiting();
 
-	/** 포획 성공 시. 다이브 연출을 시작하고, 완전히 일어나면 퇴장으로 이어진다 */
+	/** 퇴장 중 정지 지점에 도착했을 때 BT가 호출. 문 밖 생성 지점까지 콜리전 없이 이동한 뒤 소멸한다 */
+	void BeginDoorExit();
+
+	/** 악기 보유 타겟 포획 성공 시. 다이브 연출을 시작하고, 완전히 일어나면 퇴장으로 이어진다 */
 	void BeginDiving();
 
 	/** 다이브 래그돌 종료 시 NPC가 호출. 퇴장으로 전환한다 */
@@ -68,8 +71,8 @@ public:
 	/** NPC 캡슐이 블로킹 접촉했을 때 호출 (폰의 NotifyHit). 포획 판정의 진입점:
 	 *  - 현재 타겟과의 접촉만 유효 (비타겟은 Block만 되고 무시), 피격 경직 중에는 발동 안 함
 	 *  - 악기 보유 타겟: 래그돌 + 악기 드랍(래그돌 시 자동) + 콤보 초기화(드랍 시 자동) → 다이브 연출 후 퇴장
-	 *  - 악기 미보유 타겟: 넉백만 → 타겟 변경, 계속 활동
-	 *  - 이미 무력화(래그돌/스턴/무적)된 타겟: 포획 대신 타겟 변경 */
+	 *  - 악기 미보유 타겟: 스턴 + 넉백 → 바로 퇴장
+	 *  - 이미 무력화(래그돌/스턴/무적)된 타겟: 포획 대신 타겟 변경, 계속 활동 */
 	void HandleCaptureContact(AActor* OtherActor);
 
 	EDrunkardState GetState() const { return State; }
@@ -84,7 +87,10 @@ public:
 	FOnDrunkardStateChanged OnStateChanged;
 	FOnDrunkardTargetChanged OnTargetChanged;
 
-	/** Called when an instrument-holding target has been captured. Push-only contacts do not count. */
+	/**
+	 * Called when a target has been captured, by ragdoll or by stun.
+	 * Contacts with a target that is already stunned, in ragdoll or invincible do not count.
+	 */
 	FOnDrunkardCaptureSucceeded OnCaptureSucceeded;
 
 private:

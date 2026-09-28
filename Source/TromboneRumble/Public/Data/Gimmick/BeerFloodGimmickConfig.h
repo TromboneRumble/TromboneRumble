@@ -26,38 +26,34 @@ public:
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
-	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
+	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	//~ End UGimmickConfig Interface
 #endif
+
+	//~ Begin UGimmickConfig Interface
+	virtual bool RunsOnlyInSequence() const override { return true; }
+	//~ End UGimmickConfig Interface
 
 	/** @return Seconds one flood takes from the start of the warning to the end of the drain. */
 	float GetFloodDuration() const { return WarningDuration + RisingDuration + SustainDuration + DrainingDuration; }
 
-	/** Seconds from the start of the gimmick to the first warning. */
-	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "첫 전조 시작 시간", ClampMin = "0.0", Units = "s"))
-	float FirstWarningDelay = 30.f;
-
-	/** Seconds from the end of the drain to the next warning. */
-	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "쿨다운 시간", ClampMin = "0.0", Units = "s"))
-	float Cooldown = 15.f;
-
-	/** Seconds of warning before the beer starts to rise. */
+	/** 술통이 부풀어 오르며 침수를 예고하는 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "전조 시간", ClampMin = "0.0", Units = "s"))
 	float WarningDuration = 5.f;
 
-	/** Seconds the beer takes to reach its top. */
+	/** 맥주가 최고 수위까지 차오르는 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "수위 상승 시간", ClampMin = "0.05", Units = "s"))
 	float RisingDuration = 3.f;
 
-	/** Seconds the beer stays at its top. */
+	/** 최고 수위에서 침수가 유지되는 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "침수 유지 시간", ClampMin = "0.0", Units = "s"))
 	float SustainDuration = 5.f;
 
-	/** Seconds the beer takes to drain. */
+	/** 맥주가 빠져 원래 수위로 돌아가는 시간 (초) */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "배수 시간", ClampMin = "0.05", Units = "s"))
 	float DrainingDuration = 3.f;
 
-	/** How far the surface rises above the gimmick actor, in cm. */
+	/** 기믹 액터 위치에서 수면이 올라오는 높이 (cm) */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "차오르는 높이", ClampMin = "0.0", Units = "cm"))
 	float FloodHeight = 100.f;
 };
