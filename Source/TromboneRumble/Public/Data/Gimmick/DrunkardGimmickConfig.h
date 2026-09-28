@@ -105,7 +105,7 @@ public:
 	FDrunkardRule Fever;
 
 	/** 문 통과 후 추격 시작 전까지 멈춰 있는 시간 (초) */
-	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.1", Units = "s"))
 	float EnterDuration = 1.f;
 
 	/** 생성 지점에서 정지 지점까지 통과 이동에 걸리는 시간 (초) */
@@ -117,7 +117,7 @@ public:
 	float DoorBreakStrength = 600.f;
 
 	/** 추격 지속시간. 소진되면 들어온 지점으로 퇴장한다 (초) */
-	UPROPERTY(EditAnywhere, Category = "Duration", meta = (DisplayName = "기믹 지속시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "Duration", meta = (DisplayName = "기믹 지속시간", ClampMin = "0.1", Units = "s"))
 	float ChaseDuration = 30.f;
 
 	/** 퇴장 제한 시간. 이 시간 안에 퇴장 지점에 도달해 소멸하지 못하면(경로 막힘 등) 강제 소멸한다.

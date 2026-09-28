@@ -7,14 +7,17 @@
 #include "Data/Gimmick/GravityGimmickConfig.h"
 #include "Data/Gimmick/PresentGimmickConfig.h"
 #include "Data/Gimmick/SpotlightGimmickConfig.h"
+#include "Data/Gimmick/UfoGimmickConfig.h"
 #include "Data/Gimmick/WaterDropGimmickConfig.h"
 
 #if WITH_EDITOR
+#include "Actors/Gimmick/Ufo/UfoGimmick.h"
 #include "Data/Gimmick/GimmickTimeline.h"
+#include "EngineUtils.h"
 
 // Each function repeats the timer rule of its gimmick actor. The actor is named above the function
 
-// Gravity and black hole: warn, run, wait a random interval from the end, warn again
+// Gravity and UFO: warn, run, wait a random interval from the end, warn again
 void UEventGimmickConfig::BuildScheduleTimeline(FGimmickTimelineBuilder& Builder, const float EventDuration, const FText& EventLabel) const
 {
 	const auto PickInterval = [this, &Builder]() { return Builder.Pick(Schedule.IntervalMin, Schedule.IntervalMax); };
@@ -61,6 +64,29 @@ void UBlackHoleGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) co
 		// The next wait starts when the burst is over
 		WarningStart = FMath::Max(End + PickInterval(), WarningStart + FGimmickTimelineBuilder::MinStep);
 	}
+}
+
+// AUfoGimmick and AUfo
+void UUfoGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+{
+	// The beam stays on as long as the line is, and only the gimmick actor in the level knows the lines
+	float LineLength = 0.f;
+	if (const UWorld* World = Builder.GetWorld())
+	{
+		for (TActorIterator<AUfoGimmick> It(World); It; ++It)
+		{
+			LineLength = It->GetAverageLineLength();
+			break;
+		}
+	}
+
+	constexpr float FallbackLineSeconds = 5.f;
+	const float LineSeconds = LineLength > 0.f ? LineLength / FMath::Max(MoveSpeed, 1.f) : FallbackLineSeconds;
+	Builder.SetNote(FText::FromString(LineLength > 0.f
+		? TEXT("광선은 라인 길이만큼 켜집니다. 레벨 이동 라인들의 평균 길이로 도착, 광선 펼침, 이동, 광선 접힘, 퇴장을 이어서 그립니다")
+		: TEXT("레벨에 이동 라인이 없어 라인 이동을 5초로 두고 도착, 광선 펼침, 이동, 광선 접힘, 퇴장을 이어서 그립니다")));
+	const float EventDuration = GetIntroDuration() + LineSeconds + BeamDeployDuration + WarpDuration;
+	BuildScheduleTimeline(Builder, EventDuration, FText::FromString(TEXT("광선")));
 }
 
 // ADrunkardSpawner and UDrunkardStateComponent

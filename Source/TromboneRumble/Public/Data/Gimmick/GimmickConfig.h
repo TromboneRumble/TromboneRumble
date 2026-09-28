@@ -86,10 +86,10 @@ struct FGimmickInterval
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "최소", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "최소", ClampMin = "0.1", Units = "s"))
 	float Min = 5.f;
 
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "최대", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "최대", ClampMin = "0.1", Units = "s"))
 	float Max = 10.f;
 
 	/** @return A random wait between Min and Max. */
@@ -102,23 +102,23 @@ struct FGimmickSchedule
 {
 	GENERATED_BODY()
 
-	/** Is the first warning at a fixed time. Off picks it between IntervalMin and IntervalMax like every later one. */
+	/** 켜면 첫 발동 시간에 첫 예고를 한다. 끄면 첫 예고도 발동 간격 최소~최대 사이에서 무작위로 정한다 */
 	UPROPERTY(EditAnywhere, meta = (InlineEditConditionToggle))
 	bool bFixedFirstDelay = false;
 
-	/** Seconds from the start of the gimmick to the first warning. */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 시간", ClampMin = "0.0", Units = "s", EditCondition = "bFixedFirstDelay"))
-	float FirstDelay = 0.f;
+	/** 기믹이 켜진 뒤 첫 예고가 시작되기까지의 시간 (초) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 시간", ClampMin = "0.1", Units = "s", EditCondition = "bFixedFirstDelay"))
+	float FirstDelay = 20.f;
 
-	/** Shortest wait in seconds from the end of one event to the next warning. */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "발동 간격 최소", ClampMin = "0.0", Units = "s"))
+	/** 이벤트가 끝난 뒤 다음 예고가 시작되기까지 기다리는 최소 시간 (초) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "발동 간격 최소", ClampMin = "0.1", Units = "s"))
 	float IntervalMin = 30.f;
 
-	/** Longest wait in seconds from the end of one event to the next warning. */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "발동 간격 최대", ClampMin = "0.0", Units = "s"))
+	/** 이벤트가 끝난 뒤 다음 예고가 시작되기까지 기다리는 최대 시간 (초) */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "발동 간격 최대", ClampMin = "0.1", Units = "s"))
 	float IntervalMax = 45.f;
 
-	/** Seconds of warning before the gimmick starts. */
+	/** 예고가 시작된 뒤 실제로 발동하기까지의 시간. 0이면 예고 없이 바로 발동한다 (초) */
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "예고 시간", ClampMin = "0.0", Units = "s"))
 	float WarningDuration = 4.f;
 

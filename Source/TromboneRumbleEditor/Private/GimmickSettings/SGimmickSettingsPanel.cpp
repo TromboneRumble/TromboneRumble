@@ -422,7 +422,7 @@ void SGimmickSettingsPanel::RebuildTimeline()
 			// Each row gets its own stream, so adding or editing one gimmick does not move the random waits of the others
 			const int32 RowSeed = HashCombine(GetTypeHash(TimelineSeed), GetTypeHash(Config->GetGimmickType()));
 			Configs.Add(Config);
-			Builders.Emplace(TimelineRoundLength, TimelineFeverStart, RowSeed);
+			Builders.Emplace(TimelineRoundLength, TimelineFeverStart, RowSeed, GetOpenLevelWorld());
 
 			if (StageData->FindSequence(Config->GetGimmickType())) continue;
 
@@ -682,7 +682,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeGimmickRow(const FText& Label, co
 
 		+ SHorizontalBox::Slot().AutoWidth().Padding(4.f, 0.f)
 		[
-			MakeCommandButton(LOCTEXT("Trigger", "강제 발동"), LOCTEXT("TriggerTip", "타이머를 기다리지 않고 지금 발동합니다. 꺼져 있으면 켠 뒤에 발동합니다. 중력과 술통 침수는 예고 단계부터 시작하고, 취객은 예고 없이 바로 등장합니다. 이 셋은 이미 진행 중이면 아무 일도 없습니다. 관중 투척, 선물, 스포트라이트, 누수 물자국, 빙판은 누를 때마다 한 번 더 스폰합니다. 눈보라는 강제 발동이 없어 켜지기만 합니다"), TEXT("Trombone.Gimmick.Trigger"))
+			MakeCommandButton(LOCTEXT("Trigger", "강제 발동"), LOCTEXT("TriggerTip", "타이머를 기다리지 않고 지금 발동합니다. 꺼져 있으면 켠 뒤에 발동합니다. 중력, 술통 침수, 미니 UFO는 예고 단계부터 시작하고, 취객은 예고 없이 바로 등장합니다. 이 넷은 이미 진행 중이면 아무 일도 없습니다. 관중 투척, 선물, 스포트라이트, 누수 물자국, 빙판은 누를 때마다 한 번 더 스폰합니다. 눈보라는 강제 발동이 없어 켜지기만 합니다"), TEXT("Trombone.Gimmick.Trigger"))
 		]
 
 		+ SHorizontalBox::Slot().AutoWidth().Padding(4.f, 0.f)

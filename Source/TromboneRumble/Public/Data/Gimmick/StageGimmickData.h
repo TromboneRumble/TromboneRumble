@@ -23,11 +23,11 @@ struct FGimmickSequence
 	TArray<EGimmickType> Order;
 
 	/** 기믹이 켜진 뒤 첫 번째 기믹이 발동하기까지의 시간 (초) */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 시간", ClampMin = "0.1", Units = "s"))
 	float FirstDelay = 20.f;
 
 	/** 앞 기믹이 끝나고 다음 기믹이 발동하기까지의 시간 (초) */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "사이 간격", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "사이 간격", ClampMin = "0.1", Units = "s"))
 	float Gap = 5.f;
 
 	/** 켜면 피버 타임부터 피버 순서와 피버 사이 간격을 사용 */
@@ -39,7 +39,7 @@ struct FGimmickSequence
 	TArray<EGimmickType> FeverOrder;
 
 	/** 피버 타임에 앞 기믹이 끝나고 다음 기믹이 발동하기까지의 시간 (초) */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 사이 간격", ClampMin = "0.0", Units = "s", EditCondition = "bUseFeverOrder"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 사이 간격", ClampMin = "0.1", Units = "s", EditCondition = "bUseFeverOrder"))
 	float FeverGap = 5.f;
 
 	/** @return The order in use, which is FeverOrder in fever time when the sequence has one. */

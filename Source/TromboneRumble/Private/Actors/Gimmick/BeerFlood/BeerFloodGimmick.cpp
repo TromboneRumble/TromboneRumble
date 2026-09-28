@@ -154,9 +154,17 @@ void ABeerFloodGimmick::BeginWarning()
 {
 	if (!HasAuthority()) return;
 
+	// No warning time means no warning. A zero timer would never fire, and the beer would never rise
+	const float WarningDuration = GetConfig<UBeerFloodGimmickConfig>().WarningDuration;
+	if (WarningDuration <= 0.f)
+	{
+		BeginRising();
+		return;
+	}
+
 	SetBeerFloodState(EBeerFloodState::Warning);
 
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, GetConfig<UBeerFloodGimmickConfig>().WarningDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, WarningDuration, false);
 }
 
 void ABeerFloodGimmick::BeginRising()

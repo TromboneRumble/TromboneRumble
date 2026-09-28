@@ -112,10 +112,18 @@ void AGravityGimmick::StartWarning()
 {
 	if (!HasAuthority()) return;
 
+	// No warning time means no warning. A zero timer would never fire, and the gravity would never change
+	const float WarningDuration = GetConfig<UGravityGimmickConfig>().Schedule.WarningDuration;
+	if (WarningDuration <= 0.f)
+	{
+		StartActive();
+		return;
+	}
+
 	SetState(EGravityState::Warning);
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, GetConfig<UGravityGimmickConfig>().Schedule.WarningDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, WarningDuration, false);
 }
 
 void AGravityGimmick::StartActive()

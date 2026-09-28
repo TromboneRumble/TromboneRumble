@@ -39,6 +39,7 @@ enum class EGimmickType : uint8
 	BeerFlood		UMETA(DisplayName = "술통 침수"),
 	Gravity			UMETA(DisplayName = "중력"),
 	BlackHole		UMETA(DisplayName = "블랙홀"),
+	Ufo				UMETA(DisplayName = "미니 UFO"),
 	MAX,
 	None = 255,
 };
