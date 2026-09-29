@@ -96,6 +96,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelType::JazzBar:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_JazzBar);
 			break;
+		case ELevelType::SpaceStation:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_SpaceStation);
+			break;
 
 		// Lobby
 		case ELevelType::OrchestraStageLobby:
@@ -106,6 +109,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 			break;
 		case ELevelType::JazzBarLobby:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_JazzBar);
+			break;
+		case ELevelType::SpaceStationLobby:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_SpaceStation);
 			break;
 		
 		// OutGame

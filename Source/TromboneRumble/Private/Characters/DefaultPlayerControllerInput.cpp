@@ -69,6 +69,7 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 				case ELevelType::OrchestraStage:
 				case ELevelType::SnowField:
 				case ELevelType::JazzBar:
+				case ELevelType::SpaceStation:
 					; // intentional fall through
 
 				case ELevelType::Tutorial:
@@ -76,6 +77,7 @@ void ADefaultPlayerController::HandleLevelStateChanged(ELevelType NewState)
 
 				case ELevelType::OrchestraStageLobby:
 				case ELevelType::SnowFieldLobby:
+				case ELevelType::SpaceStationLobby:
 					; // intentional fall through
 
 				case ELevelType::JazzBarLobby:

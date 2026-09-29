@@ -93,10 +93,12 @@ enum class ELevelType : uint8
 	OrchestraStageLobby,
 	SnowFieldLobby,
 	JazzBarLobby,
+	SpaceStationLobby,
 
 	OrchestraStage,
 	SnowField,
 	JazzBar,
+	SpaceStation,
 
 	Result,
 
@@ -112,13 +114,13 @@ FORCEINLINE bool IsResultLevelType(const ELevelType Type)
 /** @return true if the given level type is in-game level */
 FORCEINLINE bool IsInGameLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField || Type == ELevelType::JazzBar;
+	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField || Type == ELevelType::JazzBar || Type == ELevelType::SpaceStation;
 }
 
 /** @return true if the given level type is lobby level */
 FORCEINLINE bool IsLobbyLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby || Type == ELevelType::JazzBarLobby;
+	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby || Type == ELevelType::JazzBarLobby || Type == ELevelType::SpaceStationLobby;
 }
 
 UENUM(BlueprintType)
