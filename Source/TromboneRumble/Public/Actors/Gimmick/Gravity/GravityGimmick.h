@@ -80,8 +80,7 @@ private:
 		float BaseIntensity = 0.f;
 	};
 
-	/** Start the timer of the next warning. Server only. */
-	void ScheduleNext(float Delay);
+	/** Start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
 	void StartWarning();
 	void StartActive();
 	void EndActive();
@@ -137,7 +136,6 @@ private:
 	/** One effect handle per player. Removing by handle leaves other effects on the same attribute alone. */
 	TMap<TWeakObjectPtr<ACharacter>, FActiveGameplayEffectHandle> ActiveEffects;
 
-	FTimerHandle ScheduleTimerHandle;
 	FTimerHandle PhaseTimerHandle;
 
 	/** Lights that flicker during the warning. Empty on a dedicated server. */

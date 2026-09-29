@@ -39,11 +39,11 @@ struct FUfoLine
 };
 
 /**
- * UfoGimmick spawns one AUfo at a time on its own timer.
+ * UfoGimmick spawns one AUfo each time a sequence of the stage data gives it a turn.
  * Place it in the level and give it the lines the UFO can fly along.
  * Every number comes from UUfoGimmickConfig.
  *
- * Idle, wait, Warning, spawn the UFO, Active until the UFO is gone, then wait again.
+ * Idle, Warning, spawn the UFO, Active until the UFO is gone, then Idle and the sequence moves on.
  *
  * @see AUfo
  * @see UUfoGimmickConfig
@@ -93,12 +93,11 @@ protected:
 
 private:
 
-	/** Start the timer of the next warning. Server only. */
-	void ScheduleNext(float Delay);
+	/** Pick a line and start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
 	void StartWarning();
 	void StartActive();
 
-	/** Go back to Idle and wait a normal interval before the next warning. Server only. */
+	/** Go back to Idle and tell the manager the turn is over. Server only. */
 	void ReturnToIdle();
 
 	UFUNCTION()
@@ -127,7 +126,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AUfo> ActiveUfo;
 
-	FTimerHandle ScheduleTimerHandle;
 	FTimerHandle PhaseTimerHandle;
 
 public:

@@ -22,11 +22,7 @@ public:
 	UUfoGimmickConfig()
 	{
 		GimmickType = EGimmickType::Ufo;
-		Schedule.bFixedFirstDelay = true;
-		Schedule.FirstDelay = 20.f;
-		Schedule.IntervalMin = 25.f;
-		Schedule.IntervalMax = 30.f;
-		Schedule.WarningDuration = 2.f;
+		WarningDuration = 2.f;
 	}
 
 	/** @return Height the UFO flies at, so its beam ends right on the floor. */
@@ -40,7 +36,7 @@ public:
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
-	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
+	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	//~ End UGimmickConfig Interface
 #endif
 
