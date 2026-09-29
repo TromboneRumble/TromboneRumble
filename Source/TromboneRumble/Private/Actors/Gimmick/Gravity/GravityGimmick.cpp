@@ -64,7 +64,12 @@ void AGravityGimmick::HandleDebugCVarChanged(IConsoleVariable* Variable)
 
 void AGravityGimmick::UpdateTickEnabled()
 {
-	SetActorTickEnabled(bDebugDraw || (bWarningLightsOn && !WarningLights.IsEmpty()));
+	SetActorTickEnabled(bDebugDraw || (bWarningLightsOn && HasWarningVisuals()));
+}
+
+bool AGravityGimmick::HasWarningVisuals() const
+{
+	return !WarningLights.IsEmpty() || (GimmickParameterCollection && !WarningPulseParameterName.IsNone());
 }
 
 void AGravityGimmick::Tick(const float DeltaSeconds)
@@ -316,6 +321,8 @@ void AGravityGimmick::SetWarningLightRatio(const float Ratio)
 			Light->SetIntensity(Entry.BaseIntensity * Ratio);
 		}
 	}
+
+	SetWarningPulse(Ratio);
 }
 
 void AGravityGimmick::TurnOffWarningLights()
@@ -333,6 +340,17 @@ void AGravityGimmick::TurnOffWarningLights()
 		}
 	}
 	CurrentWarningLightRatio = 1.f;
+
+	SetWarningPulse(0.f);
+}
+
+void AGravityGimmick::SetWarningPulse(const float Pulse)
+{
+	// A dedicated server draws nothing, and the world is gone while it is destroyed
+	if (!GimmickParameterCollection || WarningPulseParameterName.IsNone()) return;
+	if (GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
+
+	UKismetMaterialLibrary::SetScalarParameterValue(this, GimmickParameterCollection, WarningPulseParameterName, Pulse);
 }
 
 void AGravityGimmick::ApplyEffectToAllPlayers()

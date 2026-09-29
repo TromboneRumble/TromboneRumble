@@ -59,6 +59,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
 	FName MultiplierParameterName = TEXT("GravityMultiplier");
 
+	/** Collection value that follows the warning lights from 0 to 1, for effects such as the red flash of the screen. */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
+	FName WarningPulseParameterName = TEXT("GravityWarningPulse");
+
 	/**
 	 * Actor tag of the level lights that flicker during the warning.
 	 * The intensity a light is placed with is its brightest point, and the light stays off outside the warning.
@@ -106,13 +110,19 @@ private:
 	/** Dim the warning lights toward 0, and turn them off at the end. Runs every frame after the warning. */
 	void UpdateWarningLightFadeOut();
 
-	/** Set every warning light to this part of the intensity it was placed with. */
+	/** Set every warning light to this part of the intensity it was placed with, and write the same value as the warning pulse. */
 	void SetWarningLightRatio(float Ratio);
 
-	/** Turn the warning lights off at once and give them back the intensity they were placed with. */
+	/** Turn the warning lights off at once, give them back the intensity they were placed with, and set the warning pulse to 0. */
 	void TurnOffWarningLights();
 
-	/** Tick runs only while the warning lights are on or Trombone.Gravity.Debug is on. */
+	/** Write the warning pulse to the collection. */
+	void SetWarningPulse(float Pulse);
+
+	/** @return Whether the warning shows anything: a warning light, or the warning pulse of the collection. */
+	bool HasWarningVisuals() const;
+
+	/** Tick runs only while the warning visuals are on or Trombone.Gravity.Debug is on. */
 	void UpdateTickEnabled();
 
 	/** Read Trombone.Gravity.Debug again when it changes. */
@@ -145,7 +155,7 @@ private:
 	/** Ratio last applied to the warning lights. */
 	float CurrentWarningLightRatio = 1.f;
 
-	/** Are the warning lights on, flickering or fading out. */
+	/** Are the warning visuals on, flickering or fading out. */
 	bool bWarningLightsOn = false;
 
 	/** Is Trombone.Gravity.Debug on. */
