@@ -10,6 +10,7 @@
 class ACharacter;
 class IConsoleVariable;
 class UGameplayEffect;
+class ULightComponent;
 class UMaterialParameterCollection;
 
 /** Level materials read these numbers from the parameter collection. Do not change the values. */
@@ -58,7 +59,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
 	FName MultiplierParameterName = TEXT("GravityMultiplier");
 
+	/**
+	 * Actor tag of the level lights that flicker during the warning.
+	 * The intensity a light is placed with is its brightest point, and the light stays off outside the warning.
+	 * Keep in mind that a light must be Movable or Stationary, because a Static light is baked and cannot change.
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
+	FName WarningLightTag = TEXT("GravityWarning");
+
 private:
+
+	/** A level light found by WarningLightTag, with the intensity it was placed with. */
+	struct FWarningLight
+	{
+		TWeakObjectPtr<ULightComponent> Light;
+		float BaseIntensity = 0.f;
+	};
 
 	/** Start the timer of the next warning. Server only. */
 	void ScheduleNext(float Delay);
@@ -78,7 +94,28 @@ private:
 	void ApplyEffectToAllPlayers();
 	void RemoveAllEffects();
 
-	/** Tick runs only while Trombone.Gravity.Debug is on. */
+	/** Find the lights with WarningLightTag in the level. Runs on every machine except a dedicated server. */
+	void CollectWarningLights();
+
+	/** Turn the warning lights on when the warning starts, and start their fade out when it ends. */
+	void RefreshWarningLights();
+
+	/** Move the intensity of the warning lights along the sine wave. Runs every frame during the warning. */
+	void UpdateWarningLightFlicker();
+
+	/** Dim the warning lights toward 0, and turn them off at the end. Runs every frame after the warning. */
+	void UpdateWarningLightFadeOut();
+
+	/** Set every warning light to this part of the intensity it was placed with. */
+	void SetWarningLightRatio(float Ratio);
+
+	/** Turn the warning lights off at once and give them back the intensity they were placed with. */
+	void TurnOffWarningLights();
+
+	/** Tick runs only while the warning lights are on or Trombone.Gravity.Debug is on. */
+	void UpdateTickEnabled();
+
+	/** Read Trombone.Gravity.Debug again when it changes. */
 	void HandleDebugCVarChanged(IConsoleVariable* Variable);
 
 	/** One line on screen: state, time left, affected players, local gravity scale. */
@@ -92,6 +129,27 @@ private:
 
 	FTimerHandle ScheduleTimerHandle;
 	FTimerHandle PhaseTimerHandle;
+
+	/** Lights that flicker during the warning. Empty on a dedicated server. */
+	TArray<FWarningLight> WarningLights;
+
+	/** Local world time the current warning started. The sine wave of the lights starts here. */
+	float WarningStartTime = 0.f;
+
+	/** Local world time the fade out started. Negative while the lights do not fade. */
+	float FadeOutStartTime = -1.f;
+
+	/** Ratio the fade out starts from, so it continues from wherever the flicker was. */
+	float FadeOutStartRatio = 1.f;
+
+	/** Ratio last applied to the warning lights. */
+	float CurrentWarningLightRatio = 1.f;
+
+	/** Are the warning lights on, flickering or fading out. */
+	bool bWarningLightsOn = false;
+
+	/** Is Trombone.Gravity.Debug on. */
+	bool bDebugDraw = false;
 
 public:
 
