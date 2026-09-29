@@ -37,7 +37,4 @@ struct FUfoPath
 		const float Alpha = FMath::Clamp((ServerTime - StartServerTime) / Duration, 0.f, 1.f);
 		return FMath::Lerp(Start, End, Alpha);
 	}
-
-	/** @return Server world time, or the local world time when there is no game state yet. */
-	static float GetServerTime(const UWorld* World);
 };

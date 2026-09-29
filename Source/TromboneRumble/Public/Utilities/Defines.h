@@ -40,6 +40,7 @@ enum class EGimmickType : uint8
 	Gravity			UMETA(DisplayName = "중력"),
 	BlackHole		UMETA(DisplayName = "블랙홀"),
 	Ufo				UMETA(DisplayName = "미니 UFO"),
+	DockingPort		UMETA(DisplayName = "도킹 포트 보급"),
 	MAX,
 	None = 255,
 };
@@ -242,6 +243,7 @@ enum class EScoreType : uint8
 	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
 	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
 	Present = 7					UMETA(DisplayName = "Present"),
+	DockingPort = 8				UMETA(DisplayName = "DockingPort"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)

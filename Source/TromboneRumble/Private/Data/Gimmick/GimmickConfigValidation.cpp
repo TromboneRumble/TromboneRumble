@@ -1,13 +1,13 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Data/Gimmick/BlackHoleGimmickConfig.h"
+#include "Data/Gimmick/BonusGimmickConfig.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GarbageGimmickConfig.h"
-#include "Data/Gimmick/PresentGimmickConfig.h"
 
 #if WITH_EDITOR
+#include "Actors/Gimmick/Bonus/BonusDrop.h"
 #include "Actors/Gimmick/Garbage/GarbageBase.h"
-#include "Actors/Gimmick/Present/Present.h"
 #include "Misc/DataValidation.h"
 
 void UGarbageGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
@@ -33,13 +33,28 @@ void UDrunkardGimmickConfig::ValidateConfig(FDataValidationContext& Context) con
 	}
 }
 
-void UPresentGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
+void UBonusGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
 {
-	if (!PresentClass)
+	// The present and the docking port share this function, so the message takes the name from the config class
+	const FText Name = GetClass()->GetDisplayNameText();
+
+	if (!DropClass)
 	{
-		Context.AddError(FText::FromString(TEXT("선물: 선물 클래스가 비어 있어 선물이 나오지 않습니다")));
+		Context.AddError(FText::Format(FText::FromString(TEXT("{0}: 떨어뜨릴 클래스가 비어 있어 아무것도 떨어지지 않습니다")), Name));
+	}
+
+	// The spawner still works and always drops the minimum, so this is a warning and not an error
+	if (MinDropCount > MaxDropCount)
+	{
+		Context.AddWarning(FText::Format(FText::FromString(TEXT("{0}: 최소 개수가 최대 개수보다 커서 항상 최소 개수만큼 떨어집니다")), Name));
+	}
+
+	if (WarningDuration > 0.f && !WarningMarkerClass)
+	{
+		Context.AddWarning(FText::Format(FText::FromString(TEXT("{0}: 예고 표시 클래스가 비어 있어 예고 시간 동안 아무것도 보이지 않습니다")), Name));
 	}
 }
+
 void UBlackHoleGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
 {
 	if (InfluenceRadiusEnd < InfluenceRadiusStart)

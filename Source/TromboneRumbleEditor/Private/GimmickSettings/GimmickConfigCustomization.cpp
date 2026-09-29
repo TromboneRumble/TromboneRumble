@@ -11,12 +11,15 @@ namespace
 	/** Class meta that turns the category groups on for the properties that class declares. */
 	const FName GroupSettingsByCategoryMetaKey(TEXT("GroupSettingsByCategory"));
 
-	/** @return Whether the class that declares this property asked for category groups. */
+	/**
+	 * @return Whether the class that declares this property asked for category groups.
+	 *         A property without its own category gets the class name as its category, and it stays out of the groups.
+	 */
 	bool ShouldGroup(const IPropertyHandle& Handle)
 	{
 		const FProperty* Property = Handle.GetProperty();
 		const UClass* OwnerClass = Property ? Property->GetOwnerClass() : nullptr;
-		return OwnerClass && OwnerClass->HasMetaData(GroupSettingsByCategoryMetaKey);
+		return OwnerClass && OwnerClass->HasMetaData(GroupSettingsByCategoryMetaKey) && Handle.GetMetaData(TEXT("Category")) != OwnerClass->GetName();
 	}
 
 	/** Collect the property handles of the config, in the order the details view lists them. */

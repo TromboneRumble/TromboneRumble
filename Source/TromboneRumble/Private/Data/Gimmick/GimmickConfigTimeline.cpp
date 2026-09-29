@@ -2,10 +2,10 @@
 
 #include "Data/Gimmick/BeerFloodGimmickConfig.h"
 #include "Data/Gimmick/BlackHoleGimmickConfig.h"
+#include "Data/Gimmick/BonusGimmickConfig.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GarbageGimmickConfig.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
-#include "Data/Gimmick/PresentGimmickConfig.h"
 #include "Data/Gimmick/SpotlightGimmickConfig.h"
 #include "Data/Gimmick/UfoGimmickConfig.h"
 #include "Data/Gimmick/WaterDropGimmickConfig.h"
@@ -131,16 +131,36 @@ void UGarbageGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) cons
 	}
 }
 
-// APresentSpawner
-void UPresentGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+// ABonusSpawner
+void UBonusGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
 {
 	// 0 stops the spawner
 	if (SpawnInterval <= 0.f) return;
 
+	Builder.SetNote(FText::FromString(TEXT("떨어지는 시간은 빼고 그립니다. 빈 지점이 모자라 적게 떨어지거나 건너뛰는 경우는 표시하지 않습니다")));
+
 	const float Step = FMath::Max(SpawnInterval, FGimmickTimelineBuilder::MinStep);
-	for (float SpawnTime = Step; Builder.IsInRound(SpawnTime); SpawnTime += Step)
+	float WarningEnd = 0.f;
+	for (float StartTime = Step; Builder.IsInRound(StartTime); StartTime += Step)
 	{
-		Builder.AddSpan(SpawnTime, 0.f, EGimmickTimelinePhase::Spawn, FText::FromString(TEXT("선물 낙하")));
+		// The spawner skips a round that starts while the last warning is still up
+		if (StartTime < WarningEnd) continue;
+
+		float DropTime = StartTime;
+		if (WarningDuration > 0.f)
+		{
+			DropTime = Builder.AddSpan(StartTime, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+		}
+		WarningEnd = DropTime;
+
+		if (Lifetime > 0.f)
+		{
+			Builder.AddSpan(DropTime, Lifetime, EGimmickTimelinePhase::Active, FText::FromString(TEXT("유지")));
+		}
+		else
+		{
+			Builder.AddSpan(DropTime, 0.f, EGimmickTimelinePhase::Spawn, FText::FromString(TEXT("낙하")));
+		}
 	}
 }
 

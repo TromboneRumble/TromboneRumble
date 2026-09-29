@@ -6,6 +6,7 @@
 #include "NativeGameplayTags.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "GameFramework/GameStateBase.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/ToastSubsystem.h"
@@ -68,6 +69,16 @@ int32 UTromboneStatics::GetMinPlayersToStart()
 bool UTromboneStatics::HasEnoughPlayersToStart(const int32 PlayerCount)
 {
 	return PlayerCount >= GetMinPlayersToStart();
+}
+
+float UTromboneStatics::GetServerWorldTime(const UObject* WorldContextObject)
+{
+	// Gimmicks call it every frame, so a missing world returns quietly instead of logging
+	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
+	if (!World) return 0.f;
+
+	const AGameStateBase* GameState = World->GetGameState();
+	return GameState ? GameState->GetServerWorldTimeSeconds() : World->GetTimeSeconds();
 }
 
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelType Level, const bool bAbsolute)

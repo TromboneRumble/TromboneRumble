@@ -6,9 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Data/Gimmick/UfoGimmickConfig.h"
-#include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Utilities/TromboneLogs.h"
+#include "Utilities/TromboneStatics.h"
 
 namespace UfoWarp
 {
@@ -29,14 +29,6 @@ namespace UfoWarp
 
 	/** Part of the warp the body takes to grow from nothing, or to shrink to nothing. */
 	constexpr float GrowPart = 0.3f;
-}
-
-float FUfoPath::GetServerTime(const UWorld* World)
-{
-	if (!World) return 0.f;
-
-	const AGameStateBase* GameState = World->GetGameState();
-	return GameState ? GameState->GetServerWorldTimeSeconds() : World->GetTimeSeconds();
 }
 
 AUfo::AUfo()
@@ -83,7 +75,7 @@ void AUfo::BeginPlay()
 
 	// The beam spreads only after the warp in. A client may skip the construction of a replicated actor, so this runs here too
 	FitBeamToLength(0.f);
-	UpdateMotion(FUfoPath::GetServerTime(GetWorld()));
+	UpdateMotion(UTromboneStatics::GetServerWorldTime(this));
 
 	// The Blueprint is ready only now, so the first beam event waits until here
 	ApplyBeamState();
@@ -247,7 +239,7 @@ void AUfo::TornOff()
 	Super::TornOff();
 
 	// The start of the leave comes in the same update as the tear off. Starting now is the fallback when it did not
-	const float Now = FUfoPath::GetServerTime(GetWorld());
+	const float Now = UTromboneStatics::GetServerWorldTime(this);
 	if (LeaveStartServerTime < 0.f)
 	{
 		LeaveStartServerTime = Now;
@@ -261,7 +253,7 @@ void AUfo::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	const float Now = FUfoPath::GetServerTime(GetWorld());
+	const float Now = UTromboneStatics::GetServerWorldTime(this);
 	UpdateMotion(Now);
 
 	// A torn off copy on a client counts as authority too, and it must not run the server rules

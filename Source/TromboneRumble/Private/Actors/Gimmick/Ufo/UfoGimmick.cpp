@@ -6,6 +6,7 @@
 #include "Engine/TargetPoint.h"
 #include "Net/UnrealNetwork.h"
 #include "Utilities/TromboneLogs.h"
+#include "Utilities/TromboneStatics.h"
 
 #if WITH_EDITOR
 #include "Logging/MessageLog.h"
@@ -95,7 +96,7 @@ void AUfoGimmick::StartActive()
 		return;
 	}
 
-	PlannedPath.StartServerTime = FUfoPath::GetServerTime(GetWorld());
+	PlannedPath.StartServerTime = UTromboneStatics::GetServerWorldTime(this);
 
 	AUfo* Ufo = GetWorld()->SpawnActorDeferred<AUfo>(UfoClass, FTransform(PlannedPath.Start), this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	if (!Ufo)
