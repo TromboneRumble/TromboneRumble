@@ -192,8 +192,7 @@ private:
 	/** One arrow showing where the hole wants this object to go. Debug only. LifeTime -1 draws it for this frame alone. */
 	void DebugDrawVelocity(const FVector& From, const FVector& Velocity, float LifeTime = -1.f) const;
 
-	/** Start the timer of the next warning. Server only. */
-	void ScheduleNext(float Delay);
+	/** Start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
 	void StartWarning();
 	void StartActive();
 	void StartCollapse();
@@ -231,7 +230,6 @@ private:
 	/** How many characters the last server tick pulled. Debug only, stays 0 on clients. */
 	int32 PulledCount = 0;
 
-	FTimerHandle ScheduleTimerHandle;
 	FTimerHandle PhaseTimerHandle;
 	FTimerHandle CaptureTimerHandle;
 

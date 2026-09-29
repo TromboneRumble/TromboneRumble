@@ -27,7 +27,7 @@ public:
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
-	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
+	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	//~ End UGimmickConfig Interface
 #endif
 

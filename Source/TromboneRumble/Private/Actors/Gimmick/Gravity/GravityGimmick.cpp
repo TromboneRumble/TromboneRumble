@@ -100,22 +100,24 @@ void AGravityGimmick::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void AGravityGimmick::Activate()
 {
-	const bool bWasActive = IsActive();
-
+	// The gravity has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
 	Super::Activate();
-
-	if (!bWasActive && HasAuthority())
-	{
-		ScheduleNext(GetConfig<UGravityGimmickConfig>().Schedule.PickFirstDelay());
-	}
 }
 
 void AGravityGimmick::Deactivate()
 {
 	if (HasAuthority())
 	{
+		const bool bWasRunning = State != EGravityState::Idle;
+
 		RemoveAllEffects();
 		SetState(EGravityState::Idle);
+
+		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
+		if (bWasRunning)
+		{
+			NotifyEventFinished();
+		}
 	}
 
 	// Super clears the timers
@@ -126,16 +128,7 @@ void AGravityGimmick::ForceTrigger()
 {
 	if (!HasAuthority() || State != EGravityState::Idle) return;
 
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
 	StartWarning();
-}
-
-void AGravityGimmick::ScheduleNext(const float Delay)
-{
-	if (!HasAuthority()) return;
-
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
-	GetWorldTimerManager().SetTimer(ScheduleTimerHandle, this, &ThisClass::StartWarning, Delay, false);
 }
 
 void AGravityGimmick::StartWarning()
@@ -143,7 +136,7 @@ void AGravityGimmick::StartWarning()
 	if (!HasAuthority()) return;
 
 	// No warning time means no warning. A zero timer would never fire, and the gravity would never change
-	const float WarningDuration = GetConfig<UGravityGimmickConfig>().Schedule.WarningDuration;
+	const float WarningDuration = GetConfig<UGravityGimmickConfig>().WarningDuration;
 	if (WarningDuration <= 0.f)
 	{
 		StartActive();
@@ -174,7 +167,7 @@ void AGravityGimmick::EndActive()
 	RemoveAllEffects();
 	SetState(EGravityState::Idle);
 
-	ScheduleNext(GetConfig<UGravityGimmickConfig>().Schedule.PickInterval());
+	NotifyEventFinished();
 }
 
 void AGravityGimmick::SetState(const EGravityState NewState)
@@ -402,9 +395,9 @@ void AGravityGimmick::DebugDraw() const
 #if !UE_BUILD_SHIPPING
 	if (!GEngine || !HasAuthority()) return;
 
-	const FTimerHandle& Handle = (State == EGravityState::Idle) ? ScheduleTimerHandle : PhaseTimerHandle;
-	const float Seconds = GetWorldTimerManager().GetTimerRemaining(Handle);
-	const FString Remaining = Seconds >= 0.f ? FString::Printf(TEXT("%.1fs"), Seconds) : TEXT("타이머 없음");
+	// Idle waits for its turn in the sequence, so only the phases have a time left
+	const float Seconds = GetWorldTimerManager().GetTimerRemaining(PhaseTimerHandle);
+	const FString Remaining = State == EGravityState::Idle ? FString(TEXT("순서 대기")) : Seconds >= 0.f ? FString::Printf(TEXT("%.1fs"), Seconds) : FString(TEXT("타이머 없음"));
 
 	FString Gravities;
 	if (const AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr)

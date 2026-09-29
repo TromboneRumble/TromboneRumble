@@ -21,20 +21,16 @@ AUfoGimmick::AUfoGimmick()
 
 void AUfoGimmick::Activate()
 {
-	const bool bWasActive = IsActive();
-
+	// The UFO has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
 	Super::Activate();
-
-	if (!bWasActive && HasAuthority())
-	{
-		ScheduleNext(GetConfig<UUfoGimmickConfig>().Schedule.PickFirstDelay());
-	}
 }
 
 void AUfoGimmick::Deactivate()
 {
 	if (HasAuthority())
 	{
+		const bool bWasRunning = State != EUfoState::Idle;
+
 		if (ActiveUfo)
 		{
 			ActiveUfo->OnDestroyed.RemoveDynamic(this, &ThisClass::HandleUfoDestroyed);
@@ -42,6 +38,12 @@ void AUfoGimmick::Deactivate()
 			ActiveUfo = nullptr;
 		}
 		SetState(EUfoState::Idle);
+
+		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
+		if (bWasRunning)
+		{
+			NotifyEventFinished();
+		}
 	}
 
 	// Super clears the timers
@@ -52,13 +54,7 @@ void AUfoGimmick::ForceTrigger()
 {
 	if (!HasAuthority() || State != EUfoState::Idle) return;
 
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
 	StartWarning();
-}
-
-void AUfoGimmick::ScheduleNext(const float Delay)
-{
-	GetWorldTimerManager().SetTimer(ScheduleTimerHandle, this, &ThisClass::StartWarning, Delay, false);
 }
 
 void AUfoGimmick::StartWarning()
@@ -74,7 +70,7 @@ void AUfoGimmick::StartWarning()
 	}
 
 	// No warning time means no warning. A zero timer would never fire, and the UFO would never come
-	const float WarningDuration = GetConfig<UUfoGimmickConfig>().Schedule.WarningDuration;
+	const float WarningDuration = GetConfig<UUfoGimmickConfig>().WarningDuration;
 	if (WarningDuration <= 0.f)
 	{
 		StartActive();
@@ -126,8 +122,8 @@ void AUfoGimmick::ReturnToIdle()
 {
 	SetState(EUfoState::Idle);
 
-	// The wait starts when this event ends, the same rule every event gimmick uses
-	ScheduleNext(GetConfig<UUfoGimmickConfig>().Schedule.PickInterval());
+	// A turn that failed to start ends here too, so the sequence moves on instead of waiting forever
+	NotifyEventFinished();
 }
 
 bool AUfoGimmick::PickPath(FUfoPath& OutPath) const
