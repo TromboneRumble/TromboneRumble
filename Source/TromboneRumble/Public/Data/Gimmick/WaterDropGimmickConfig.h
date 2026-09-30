@@ -36,7 +36,7 @@ public:
 	float PuddleGrowDuration = 0.5f;
 
 	/** Seconds the puddle stays at full size before it starts to fade. */
-	UPROPERTY(EditAnywhere, Category = "Puddle", meta = (DisplayName = "웅덩이 유지 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "Puddle", meta = (DisplayName = "웅덩이 유지 시간", ClampMin = "0.1", Units = "s"))
 	float PuddleFadeDelay = 10.f;
 
 	/** Seconds the puddle takes to fade out. It is removed when this ends. */

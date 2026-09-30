@@ -37,7 +37,7 @@ public:
 	/** @return Seconds one flood takes from the start of the warning to the end of the drain. */
 	float GetFloodDuration() const { return WarningDuration + RisingDuration + SustainDuration + DrainingDuration; }
 
-	/** 술통이 부풀어 오르며 침수를 예고하는 시간 (초) */
+	/** 술통이 부풀어 오르며 침수를 예고하는 시간. 0이면 전조 없이 바로 수위가 오른다 (초) */
 	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "전조 시간", ClampMin = "0.0", Units = "s"))
 	float WarningDuration = 5.f;
 
@@ -46,7 +46,7 @@ public:
 	float RisingDuration = 3.f;
 
 	/** 최고 수위에서 침수가 유지되는 시간 (초) */
-	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "침수 유지 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "BeerFlood", meta = (DisplayName = "침수 유지 시간", ClampMin = "0.1", Units = "s"))
 	float SustainDuration = 5.f;
 
 	/** 맥주가 빠져 원래 수위로 돌아가는 시간 (초) */

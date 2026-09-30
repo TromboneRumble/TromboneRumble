@@ -6,6 +6,7 @@
 #include "NativeGameplayTags.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
+#include "GameFramework/GameStateBase.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/ToastSubsystem.h"
@@ -70,6 +71,16 @@ bool UTromboneStatics::HasEnoughPlayersToStart(const int32 PlayerCount)
 	return PlayerCount >= GetMinPlayersToStart();
 }
 
+float UTromboneStatics::GetServerWorldTime(const UObject* WorldContextObject)
+{
+	// Gimmicks call it every frame, so a missing world returns quietly instead of logging
+	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
+	if (!World) return 0.f;
+
+	const AGameStateBase* GameState = World->GetGameState();
+	return GameState ? GameState->GetServerWorldTimeSeconds() : World->GetTimeSeconds();
+}
+
 void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevelType Level, const bool bAbsolute)
 {
 	FString MapPath;
@@ -85,6 +96,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 		case ELevelType::JazzBar:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_JazzBar);
 			break;
+		case ELevelType::SpaceStation:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_InGame_SpaceStation);
+			break;
 
 		// Lobby
 		case ELevelType::OrchestraStageLobby:
@@ -95,6 +109,9 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 			break;
 		case ELevelType::JazzBarLobby:
 			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_JazzBar);
+			break;
+		case ELevelType::SpaceStationLobby:
+			MapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_Lobby_SpaceStation);
 			break;
 		
 		// OutGame

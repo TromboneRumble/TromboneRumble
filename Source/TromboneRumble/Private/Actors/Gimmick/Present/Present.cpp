@@ -2,16 +2,10 @@
 
 #include "Actors/Gimmick/Present/Present.h"
 #include "Components/SphereComponent.h"
-#include "AkGameplayTypes.h"
-#include "AkGameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/RotatingMovementComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/PlayerController.h"
-#include "Framework/DefaultPlayerState.h"
-#include "Utilities/Defines.h"
 
 namespace
 {
@@ -47,12 +41,8 @@ APresent::APresent()
 	GiftMesh->SetCollisionObjectType(ECC_WorldDynamic);
 	GiftMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 
-	OverlapSphere = CreateDefaultSubobject<USphereComponent>(TEXT("OverlapSphere"));
+	// 획득 판정 구체는 부모(ABonusDrop)가 만들고 절대 스케일로 둔다. 여기서는 루트에 붙이기만 한다
 	OverlapSphere->SetupAttachment(GiftMesh);
-	OverlapSphere->SetSphereRadius(80.f);
-	OverlapSphere->SetCollisionProfileName(TEXT("Trigger"));
-	// 루트(GiftMesh)를 스케일해서 팝인을 하므로, 절대 스케일로 두지 않으면 획득 판정 반경까지 0배가 된다
-	OverlapSphere->SetUsingAbsoluteScale(true);
 
 	PendulumPivot = CreateDefaultSubobject<USceneComponent>(TEXT("PendulumPivot"));
 	PendulumPivot->SetupAttachment(GiftMesh);
@@ -72,9 +62,6 @@ APresent::APresent()
 	RotatingMovement->bRotationInLocalSpace = false;
 	// 낙하 중 Tick의 진자 운동과 싸우지 않도록 착지 전까지 꺼둔다
 	RotatingMovement->SetAutoActivate(false);
-
-	bReplicates = true;
-	SetReplicateMovement(false);
 }
 
 void APresent::BeginPlay()
@@ -96,20 +83,11 @@ void APresent::BeginPlay()
 		GiftMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
-	OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &APresent::HandleOverlapBegin);
 	SetActorTickEnabled(true);
 }
 
-void APresent::Tick(float DeltaTime)
+void APresent::TickFalling(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
-	if (bHasLanded)
-	{
-		TickLandedVisual(DeltaTime);
-		return;
-	}
-
 	SwayTime += DeltaTime;
 
 	//수직 위치 계산
@@ -134,15 +112,9 @@ void APresent::Tick(float DeltaTime)
 
 		if (HitResult.bBlockingHit)
 		{
-			bHasLanded = true;
-
 			// 스윕이 멈춘 위치는 이미 메시 두께만큼 지면에서 떨어져 있으므로,
 			// 여기에 HoverHeight만 더하면 메시 크기와 무관하게 일정하게 뜬다
-			HoverLocation = GetActorLocation() + FVector(0.f, 0.f, HoverHeight);
-
-			PendulumPivot->SetRelativeRotation(FRotator::ZeroRotator);
-
-			EnterLandedState();
+			Land(GetActorLocation() + FVector(0.f, 0.f, HoverHeight));
 		}
 	}
 	else
@@ -151,19 +123,12 @@ void APresent::Tick(float DeltaTime)
 	}
 }
 
-void APresent::OnRep_HasLanded()
+void APresent::OnLanded()
 {
-	if (bHasLanded)
-	{
-		PendulumPivot->SetRelativeRotation(FRotator::ZeroRotator);
-		EnterLandedState();
-	}
-}
+	PendulumPivot->SetRelativeRotation(FRotator::ZeroRotator);
 
-void APresent::EnterLandedState()
-{
 	// 서버가 확정한 위치로 스냅. 바닥에 붙지 않고 HoverHeight만큼 떠 있는 지점이다
-	SetActorLocation(HoverLocation);
+	SetActorLocation(LandedLocation);
 
 	// 낙하 스윕이 끝났으므로 메시 충돌은 더 이상 필요 없다. 획득 판정은 OverlapSphere가 담당한다.
 	// 팝인 중 매 프레임 스케일이 바뀌는데, 충돌이 켜져 있으면 그때마다 콜리전 지오메트리를 다시 만든다.
@@ -194,7 +159,7 @@ void APresent::EnterLandedState()
 	PlayLandingVFX();
 }
 
-void APresent::TickLandedVisual(float DeltaTime)
+void APresent::TickLanded(float DeltaTime)
 {
 	LandedElapsed += DeltaTime;
 
@@ -217,7 +182,7 @@ void APresent::TickLandedVisual(float DeltaTime)
 	const float Phase = LandedElapsed * WaveSpeed + ReplicatedSwayPhaseOffset;
 
 	// 착지 시 GiftMesh 충돌을 껐으므로 스윕 없이 이동해도 된다
-	FVector WaveLocation = HoverLocation;
+	FVector WaveLocation = LandedLocation;
 	WaveLocation.Z += SampleWaveCrest(Phase, WaveCrestSharpness) * WaveHeight;
 	SetActorLocation(WaveLocation);
 
@@ -236,7 +201,7 @@ void APresent::PlayLandingVFX()
 	if (PopBurstVFX)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			this, PopBurstVFX, HoverLocation, FRotator::ZeroRotator, FVector(1.f),
+			this, PopBurstVFX, LandedLocation, FRotator::ZeroRotator, FVector(1.f),
 			true, true, ENCPoolMethod::None, true);
 	}
 
@@ -262,47 +227,6 @@ void APresent::RestartSparkleVFX()
 	}
 }
 
-void APresent::HandleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (bBonusAwarded) return;
-
-	ACharacter* Character = Cast<ACharacter>(OtherActor);
-	if (!Character) return;
-
-	APlayerController* PC = Cast<APlayerController>(Character->GetController());
-
-	if (PC && PC->IsLocalController())
-	{
-		if (PresentHitSoundEvent)
-		{
-			UAkGameplayStatics::PostEvent(PresentHitSoundEvent, nullptr, 0, FOnAkPostEventCallback());
-		}
-
-		// 로컬 스코어 UI 즉시 반영 (Trombone Rumble 프로젝트 구조 반영)
-		if (ADefaultPlayerState* PS = Character->GetPlayerState<ADefaultPlayerState>())
-		{
-			PS->AddScore(BonusScore, EScoreType::Present);
-		}
-	}
-
-	bBonusAwarded = true;
-
-	if (HasAuthority())
-	{
-		Destroy();
-	}
-	else
-	{
-		Server_OnPlayerTouched();
-	}
-}
-
-void APresent::Server_OnPlayerTouched_Implementation()
-{
-	if (IsValid(this)) Destroy();
-}
-
 void APresent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	GetWorldTimerManager().ClearTimer(SparkleRepeatTimerHandle);
@@ -312,8 +236,6 @@ void APresent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void APresent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(APresent, bHasLanded);
-	DOREPLIFETIME(APresent, HoverLocation);
 	DOREPLIFETIME(APresent, AnchorSpawnLocation);
 	DOREPLIFETIME(APresent, ReplicatedSwayAxis);
 	DOREPLIFETIME(APresent, ReplicatedSwayPhaseOffset);

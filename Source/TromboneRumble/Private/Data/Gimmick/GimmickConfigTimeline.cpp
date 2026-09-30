@@ -2,33 +2,20 @@
 
 #include "Data/Gimmick/BeerFloodGimmickConfig.h"
 #include "Data/Gimmick/BlackHoleGimmickConfig.h"
+#include "Data/Gimmick/BonusGimmickConfig.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GarbageGimmickConfig.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
-#include "Data/Gimmick/PresentGimmickConfig.h"
 #include "Data/Gimmick/SpotlightGimmickConfig.h"
+#include "Data/Gimmick/UfoGimmickConfig.h"
 #include "Data/Gimmick/WaterDropGimmickConfig.h"
 
 #if WITH_EDITOR
+#include "Actors/Gimmick/Ufo/UfoGimmick.h"
 #include "Data/Gimmick/GimmickTimeline.h"
+#include "EngineUtils.h"
 
 // Each function repeats the timer rule of its gimmick actor. The actor is named above the function
-
-// Gravity and black hole: warn, run, wait a random interval from the end, warn again
-void UEventGimmickConfig::BuildScheduleTimeline(FGimmickTimelineBuilder& Builder, const float EventDuration, const FText& EventLabel) const
-{
-	const auto PickInterval = [this, &Builder]() { return Builder.Pick(Schedule.IntervalMin, Schedule.IntervalMax); };
-
-	float WarningStart = Schedule.bFixedFirstDelay ? Schedule.FirstDelay : PickInterval();
-	while (Builder.IsInRound(WarningStart))
-	{
-		const float EventStart = Builder.AddSpan(WarningStart, Schedule.WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
-		const float End = Builder.AddSpan(EventStart, EventDuration, EGimmickTimelinePhase::Active, EventLabel);
-
-		// The next wait starts when this event ends
-		WarningStart = FMath::Max(End + PickInterval(), WarningStart + FGimmickTimelineBuilder::MinStep);
-	}
-}
 
 // ABeerFloodGimmick
 float UBeerFloodGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
@@ -40,27 +27,44 @@ float UBeerFloodGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Build
 }
 
 // AGravityGimmick
-void UGravityGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+float UGravityGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
 {
-	BuildScheduleTimeline(Builder, ActiveDuration, FText::FromString(TEXT("중력 변경")));
+	const float Time = Builder.AddSpan(Start, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+	return Builder.AddSpan(Time, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("중력 변경")));
 }
 
 // ABlackHoleGimmick
-void UBlackHoleGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+float UBlackHoleGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
 {
 	// The black hole grows, then collapses, and both count as the event
-	const auto PickInterval = [this, &Builder]() { return Builder.Pick(Schedule.IntervalMin, Schedule.IntervalMax); };
+	float Time = Builder.AddSpan(Start, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+	Time = Builder.AddSpan(Time, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("성장")));
+	return Builder.AddSpan(Time, CollapseDuration, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("붕괴")));
+}
 
-	float WarningStart = Schedule.bFixedFirstDelay ? Schedule.FirstDelay : PickInterval();
-	while (Builder.IsInRound(WarningStart))
+// AUfoGimmick and AUfo
+float UUfoGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
+{
+	// The beam stays on as long as the line is, and only the gimmick actor in the level knows the lines
+	float LineLength = 0.f;
+	if (const UWorld* World = Builder.GetWorld())
 	{
-		const float GrowStart = Builder.AddSpan(WarningStart, Schedule.WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
-		const float CollapseStart = Builder.AddSpan(GrowStart, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("성장")));
-		const float End = Builder.AddSpan(CollapseStart, CollapseDuration, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("붕괴")));
-
-		// The next wait starts when the burst is over
-		WarningStart = FMath::Max(End + PickInterval(), WarningStart + FGimmickTimelineBuilder::MinStep);
+		for (TActorIterator<AUfoGimmick> It(World); It; ++It)
+		{
+			LineLength = It->GetAverageLineLength();
+			break;
+		}
 	}
+
+	constexpr float FallbackLineSeconds = 5.f;
+	const float LineSeconds = LineLength > 0.f ? LineLength / FMath::Max(MoveSpeed, 1.f) : FallbackLineSeconds;
+	Builder.SetNote(FText::FromString(LineLength > 0.f
+		? TEXT("광선은 라인 길이만큼 켜집니다. 레벨 이동 라인들의 평균 길이로 도착, 광선 펼침, 이동, 광선 접힘, 퇴장을 이어서 그립니다")
+		: TEXT("레벨에 이동 라인이 없어 라인 이동을 5초로 두고 도착, 광선 펼침, 이동, 광선 접힘, 퇴장을 이어서 그립니다")));
+	const float EventDuration = GetIntroDuration() + LineSeconds + BeamDeployDuration + WarpDuration;
+
+	const float Time = Builder.AddSpan(Start, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+	return Builder.AddSpan(Time, EventDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("광선")));
 }
 
 // ADrunkardSpawner and UDrunkardStateComponent
@@ -105,16 +109,36 @@ void UGarbageGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) cons
 	}
 }
 
-// APresentSpawner
-void UPresentGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
+// ABonusSpawner
+void UBonusGimmickConfig::BuildTimeline(FGimmickTimelineBuilder& Builder) const
 {
 	// 0 stops the spawner
 	if (SpawnInterval <= 0.f) return;
 
+	Builder.SetNote(FText::FromString(TEXT("떨어지는 시간은 빼고 그립니다. 빈 지점이 모자라 적게 떨어지거나 건너뛰는 경우는 표시하지 않습니다")));
+
 	const float Step = FMath::Max(SpawnInterval, FGimmickTimelineBuilder::MinStep);
-	for (float SpawnTime = Step; Builder.IsInRound(SpawnTime); SpawnTime += Step)
+	float WarningEnd = 0.f;
+	for (float StartTime = Step; Builder.IsInRound(StartTime); StartTime += Step)
 	{
-		Builder.AddSpan(SpawnTime, 0.f, EGimmickTimelinePhase::Spawn, FText::FromString(TEXT("선물 낙하")));
+		// The spawner skips a round that starts while the last warning is still up
+		if (StartTime < WarningEnd) continue;
+
+		float DropTime = StartTime;
+		if (WarningDuration > 0.f)
+		{
+			DropTime = Builder.AddSpan(StartTime, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
+		}
+		WarningEnd = DropTime;
+
+		if (Lifetime > 0.f)
+		{
+			Builder.AddSpan(DropTime, Lifetime, EGimmickTimelinePhase::Active, FText::FromString(TEXT("유지")));
+		}
+		else
+		{
+			Builder.AddSpan(DropTime, 0.f, EGimmickTimelinePhase::Spawn, FText::FromString(TEXT("낙하")));
+		}
 	}
 }
 

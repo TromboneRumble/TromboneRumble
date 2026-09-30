@@ -4,8 +4,10 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Components/LightComponent.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
 #include "Engine/Engine.h"
+#include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
@@ -13,6 +15,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "TromboneGamePlayTags.h"
+#include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
 TAutoConsoleVariable<int32> CVarGravityDebug(
@@ -33,6 +36,10 @@ void AGravityGimmick::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// The state can arrive before BeginPlay on a client that joins during a warning, so the lights follow it right away
+	CollectWarningLights();
+	RefreshWarningLights();
+
 #if !UE_BUILD_SHIPPING
 	IConsoleVariable* DebugVariable = CVarGravityDebug.AsVariable();
 	DebugVariable->OnChangedDelegate().AddUObject(this, &ThisClass::HandleDebugCVarChanged);
@@ -51,14 +58,37 @@ void AGravityGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AGravityGimmick::HandleDebugCVarChanged(IConsoleVariable* Variable)
 {
-	SetActorTickEnabled(Variable && Variable->GetInt() != 0);
+	bDebugDraw = Variable && Variable->GetInt() != 0;
+	UpdateTickEnabled();
+}
+
+void AGravityGimmick::UpdateTickEnabled()
+{
+	SetActorTickEnabled(bDebugDraw || (bWarningLightsOn && HasWarningVisuals()));
+}
+
+bool AGravityGimmick::HasWarningVisuals() const
+{
+	return !WarningLights.IsEmpty() || (GimmickParameterCollection && !WarningPulseParameterName.IsNone());
 }
 
 void AGravityGimmick::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	DebugDraw();
+	if (State == EGravityState::Warning)
+	{
+		UpdateWarningLightFlicker();
+	}
+	else if (FadeOutStartTime >= 0.f)
+	{
+		UpdateWarningLightFadeOut();
+	}
+
+	if (bDebugDraw)
+	{
+		DebugDraw();
+	}
 }
 
 void AGravityGimmick::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -70,22 +100,24 @@ void AGravityGimmick::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void AGravityGimmick::Activate()
 {
-	const bool bWasActive = IsActive();
-
+	// The gravity has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
 	Super::Activate();
-
-	if (!bWasActive && HasAuthority())
-	{
-		ScheduleNext(GetConfig<UGravityGimmickConfig>().Schedule.PickFirstDelay());
-	}
 }
 
 void AGravityGimmick::Deactivate()
 {
 	if (HasAuthority())
 	{
+		const bool bWasRunning = State != EGravityState::Idle;
+
 		RemoveAllEffects();
 		SetState(EGravityState::Idle);
+
+		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
+		if (bWasRunning)
+		{
+			NotifyEventFinished();
+		}
 	}
 
 	// Super clears the timers
@@ -96,26 +128,25 @@ void AGravityGimmick::ForceTrigger()
 {
 	if (!HasAuthority() || State != EGravityState::Idle) return;
 
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
 	StartWarning();
-}
-
-void AGravityGimmick::ScheduleNext(const float Delay)
-{
-	if (!HasAuthority()) return;
-
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
-	GetWorldTimerManager().SetTimer(ScheduleTimerHandle, this, &ThisClass::StartWarning, Delay, false);
 }
 
 void AGravityGimmick::StartWarning()
 {
 	if (!HasAuthority()) return;
 
+	// No warning time means no warning. A zero timer would never fire, and the gravity would never change
+	const float WarningDuration = GetConfig<UGravityGimmickConfig>().WarningDuration;
+	if (WarningDuration <= 0.f)
+	{
+		StartActive();
+		return;
+	}
+
 	SetState(EGravityState::Warning);
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, GetConfig<UGravityGimmickConfig>().Schedule.WarningDuration, false);
+	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, WarningDuration, false);
 }
 
 void AGravityGimmick::StartActive()
@@ -136,7 +167,7 @@ void AGravityGimmick::EndActive()
 	RemoveAllEffects();
 	SetState(EGravityState::Idle);
 
-	ScheduleNext(GetConfig<UGravityGimmickConfig>().Schedule.PickInterval());
+	NotifyEventFinished();
 }
 
 void AGravityGimmick::SetState(const EGravityState NewState)
@@ -172,7 +203,147 @@ void AGravityGimmick::HandleStateChanged()
 		}
 	}
 
+	RefreshWarningLights();
+
 	OnGravityStateChanged(State, GravityMultiplier);
+}
+
+void AGravityGimmick::CollectWarningLights()
+{
+	// Lights only change what players see, so a dedicated server skips them
+	if (GetNetMode() == NM_DedicatedServer || WarningLightTag.IsNone()) return;
+
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		if (!It->ActorHasTag(WarningLightTag)) continue;
+
+		TInlineComponentArray<ULightComponent*> Lights(*It);
+		for (ULightComponent* Light : Lights)
+		{
+			if (Light->Mobility == EComponentMobility::Static)
+			{
+				UE_LOG(LogGimmick, Warning, TEXT("[AGravityGimmick] %s is a static light and cannot flicker. Set its Mobility to Movable."), *It->GetName());
+				continue;
+			}
+
+			WarningLights.Add({ Light, Light->Intensity });
+		}
+	}
+
+	if (WarningLights.IsEmpty())
+	{
+		UE_LOG(LogGimmick, Log, TEXT("[AGravityGimmick] No light has the tag %s, so the warning shows no lights."), *WarningLightTag.ToString());
+	}
+}
+
+void AGravityGimmick::RefreshWarningLights()
+{
+	const float Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.f;
+
+	if (State == EGravityState::Warning)
+	{
+		WarningStartTime = Now;
+		FadeOutStartTime = -1.f;
+		bWarningLightsOn = true;
+
+		for (const FWarningLight& Entry : WarningLights)
+		{
+			if (ULightComponent* Light = Entry.Light.Get())
+			{
+				Light->SetVisibility(true);
+			}
+		}
+		SetWarningLightRatio(0.f);
+	}
+	else if (!bWarningLightsOn)
+	{
+		// Nothing to fade, as when the gimmick starts in Idle
+		TurnOffWarningLights();
+	}
+	else if (FadeOutStartTime < 0.f)
+	{
+		// Active and then Idle both come after the warning, so only the first one starts the fade
+		FadeOutStartTime = Now;
+		FadeOutStartRatio = CurrentWarningLightRatio;
+	}
+
+	UpdateTickEnabled();
+}
+
+void AGravityGimmick::UpdateWarningLightFlicker()
+{
+	const UGravityGimmickConfig& Config = GetConfig<UGravityGimmickConfig>();
+	const float Elapsed = GetWorld()->GetTimeSeconds() - WarningStartTime;
+
+	const float Frequency = FMath::Max(Config.WarningLightFrequency, KINDA_SMALL_NUMBER);
+
+	// The wave starts dark, so the lights turn on smoothly
+	const float Wave = 0.5f - 0.5f * FMath::Cos(2.f * PI * Frequency * Elapsed);
+
+	// The first rise goes from 0 and every later swing from the minimum. Both meet at full brightness, so there is no jump
+	const float HalfPeriod = 0.5f / Frequency;
+	const float MinRatio = Elapsed < HalfPeriod ? 0.f : Config.WarningLightMinRatio;
+	SetWarningLightRatio(FMath::Lerp(MinRatio, 1.f, Wave));
+}
+
+void AGravityGimmick::UpdateWarningLightFadeOut()
+{
+	// The fade takes half a flicker, the time the flicker takes to go from bright to dark, so it moves at the same pace
+	const float Duration = 0.5f / FMath::Max(GetConfig<UGravityGimmickConfig>().WarningLightFrequency, KINDA_SMALL_NUMBER);
+	const float Alpha = (GetWorld()->GetTimeSeconds() - FadeOutStartTime) / Duration;
+
+	if (Alpha >= 1.f)
+	{
+		TurnOffWarningLights();
+		UpdateTickEnabled();
+		return;
+	}
+
+	// The same sine shape as the flicker, so the last dimming looks like one more swing of it
+	SetWarningLightRatio(FMath::InterpSinInOut(FadeOutStartRatio, 0.f, Alpha));
+}
+
+void AGravityGimmick::SetWarningLightRatio(const float Ratio)
+{
+	CurrentWarningLightRatio = Ratio;
+
+	for (const FWarningLight& Entry : WarningLights)
+	{
+		if (ULightComponent* Light = Entry.Light.Get())
+		{
+			Light->SetIntensity(Entry.BaseIntensity * Ratio);
+		}
+	}
+
+	SetWarningPulse(Ratio);
+}
+
+void AGravityGimmick::TurnOffWarningLights()
+{
+	bWarningLightsOn = false;
+	FadeOutStartTime = -1.f;
+
+	// The intensity goes back to the placed value, so the next warning starts from it
+	for (const FWarningLight& Entry : WarningLights)
+	{
+		if (ULightComponent* Light = Entry.Light.Get())
+		{
+			Light->SetVisibility(false);
+			Light->SetIntensity(Entry.BaseIntensity);
+		}
+	}
+	CurrentWarningLightRatio = 1.f;
+
+	SetWarningPulse(0.f);
+}
+
+void AGravityGimmick::SetWarningPulse(const float Pulse)
+{
+	// A dedicated server draws nothing, and the world is gone while it is destroyed
+	if (!GimmickParameterCollection || WarningPulseParameterName.IsNone()) return;
+	if (GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
+
+	UKismetMaterialLibrary::SetScalarParameterValue(this, GimmickParameterCollection, WarningPulseParameterName, Pulse);
 }
 
 void AGravityGimmick::ApplyEffectToAllPlayers()
@@ -224,9 +395,9 @@ void AGravityGimmick::DebugDraw() const
 #if !UE_BUILD_SHIPPING
 	if (!GEngine || !HasAuthority()) return;
 
-	const FTimerHandle& Handle = (State == EGravityState::Idle) ? ScheduleTimerHandle : PhaseTimerHandle;
-	const float Seconds = GetWorldTimerManager().GetTimerRemaining(Handle);
-	const FString Remaining = Seconds >= 0.f ? FString::Printf(TEXT("%.1fs"), Seconds) : TEXT("타이머 없음");
+	// Idle waits for its turn in the sequence, so only the phases have a time left
+	const float Seconds = GetWorldTimerManager().GetTimerRemaining(PhaseTimerHandle);
+	const FString Remaining = State == EGravityState::Idle ? FString(TEXT("순서 대기")) : Seconds >= 0.f ? FString::Printf(TEXT("%.1fs"), Seconds) : FString(TEXT("타이머 없음"));
 
 	FString Gravities;
 	if (const AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr)

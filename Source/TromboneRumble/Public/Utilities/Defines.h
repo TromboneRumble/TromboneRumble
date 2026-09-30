@@ -39,6 +39,8 @@ enum class EGimmickType : uint8
 	BeerFlood		UMETA(DisplayName = "술통 침수"),
 	Gravity			UMETA(DisplayName = "중력"),
 	BlackHole		UMETA(DisplayName = "블랙홀"),
+	Ufo				UMETA(DisplayName = "미니 UFO"),
+	DockingPort		UMETA(DisplayName = "도킹 포트 보급"),
 	MAX,
 	None = 255,
 };
@@ -91,10 +93,12 @@ enum class ELevelType : uint8
 	OrchestraStageLobby,
 	SnowFieldLobby,
 	JazzBarLobby,
+	SpaceStationLobby,
 
 	OrchestraStage,
 	SnowField,
 	JazzBar,
+	SpaceStation,
 
 	Result,
 
@@ -110,13 +114,13 @@ FORCEINLINE bool IsResultLevelType(const ELevelType Type)
 /** @return true if the given level type is in-game level */
 FORCEINLINE bool IsInGameLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField || Type == ELevelType::JazzBar;
+	return Type == ELevelType::OrchestraStage || Type == ELevelType::SnowField || Type == ELevelType::JazzBar || Type == ELevelType::SpaceStation;
 }
 
 /** @return true if the given level type is lobby level */
 FORCEINLINE bool IsLobbyLevelType(const ELevelType Type)
 {
-	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby || Type == ELevelType::JazzBarLobby;
+	return Type == ELevelType::OrchestraStageLobby || Type == ELevelType::SnowFieldLobby || Type == ELevelType::JazzBarLobby || Type == ELevelType::SpaceStationLobby;
 }
 
 UENUM(BlueprintType)
@@ -241,6 +245,7 @@ enum class EScoreType : uint8
 	CymbalsHit = 5				UMETA(DisplayName = "CymbalsHit"),
 	SpotLight = 6				UMETA(DisplayName = "SpotLight"),
 	Present = 7					UMETA(DisplayName = "Present"),
+	DockingPort = 8				UMETA(DisplayName = "DockingPort"),
 
 	None = 254					UMETA(DisplayName = "None"),
 	Invalid = 255				UMETA(Hidden)

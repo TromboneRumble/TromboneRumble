@@ -69,15 +69,15 @@ public:
 	FSpotlightSpawnRule Fever;
 
 	/** Seconds from the spawn of a spotlight until it turns on. Players use this time to get inside. */
-	UPROPERTY(EditAnywhere, Category = "Spotlight", meta = (DisplayName = "전조 상태 지속 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "Spotlight", meta = (DisplayName = "전조 상태 지속 시간", ClampMin = "0.1", Units = "s"))
 	float WarningDuration = 1.5f;
 
 	/** Seconds a spotlight stays on. A play inside it scores during this time. */
-	UPROPERTY(EditAnywhere, Category = "Spotlight", meta = (DisplayName = "활성 상태 지속 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "Spotlight", meta = (DisplayName = "활성 상태 지속 시간", ClampMin = "0.1", Units = "s"))
 	float ActiveDuration = 3.f;
 
 	/** Seconds a spotlight takes to fade out after its active time ran out. */
-	UPROPERTY(EditAnywhere, Category = "Spotlight", meta = (DisplayName = "소멸 단계 지속 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "Spotlight", meta = (DisplayName = "소멸 단계 지속 시간", ClampMin = "0.1", Units = "s"))
 	float FadingDuration = 2.f;
 
 	/** Score for a successful play inside a spotlight. */

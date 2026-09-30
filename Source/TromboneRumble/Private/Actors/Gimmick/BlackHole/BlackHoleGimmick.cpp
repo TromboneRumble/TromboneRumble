@@ -64,7 +64,6 @@ void ABlackHoleGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
 #endif
 
 	// Deactivate 가 전부 지우지만, Deactivate 없이 파괴될 수도 있다
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
 	GetWorldTimerManager().ClearTimer(CaptureTimerHandle);
 
@@ -99,22 +98,24 @@ void ABlackHoleGimmick::Tick(const float DeltaSeconds)
 
 void ABlackHoleGimmick::Activate()
 {
-	const bool bWasActive = IsActive();
-
+	// The black hole has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
 	Super::Activate();
-
-	if (!bWasActive && HasAuthority())
-	{
-		ScheduleNext(GetConfig<UBlackHoleGimmickConfig>().Schedule.PickFirstDelay());
-	}
 }
 
 void ABlackHoleGimmick::Deactivate()
 {
 	if (HasAuthority())
 	{
+		const bool bWasRunning = State != EBlackHoleState::Idle;
+
 		ReleaseAllCaptured(/*bBurst*/ false);
 		SetState(EBlackHoleState::Idle);
+
+		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
+		if (bWasRunning)
+		{
+			NotifyEventFinished();
+		}
 	}
 
 	// Super clears the timers
@@ -125,16 +126,7 @@ void ABlackHoleGimmick::ForceTrigger()
 {
 	if (!HasAuthority() || State != EBlackHoleState::Idle) return;
 
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
 	StartWarning();
-}
-
-void ABlackHoleGimmick::ScheduleNext(const float Delay)
-{
-	if (!HasAuthority()) return;
-
-	GetWorldTimerManager().ClearTimer(ScheduleTimerHandle);
-	GetWorldTimerManager().SetTimer(ScheduleTimerHandle, this, &ThisClass::StartWarning, FMath::Max(0.01f, Delay), false);
 }
 
 void ABlackHoleGimmick::StartWarning()
@@ -145,7 +137,7 @@ void ABlackHoleGimmick::StartWarning()
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive,
-		FMath::Max(0.01f, GetConfig<UBlackHoleGimmickConfig>().Schedule.WarningDuration), false);
+		FMath::Max(0.01f, GetConfig<UBlackHoleGimmickConfig>().WarningDuration), false);
 }
 
 void ABlackHoleGimmick::StartActive()
@@ -193,7 +185,7 @@ void ABlackHoleGimmick::EndCollapse()
 	ReleaseAllCaptured(/*bBurst*/ true);
 	SetState(EBlackHoleState::Idle);
 
-	ScheduleNext(GetConfig<UBlackHoleGimmickConfig>().Schedule.PickInterval());
+	NotifyEventFinished();
 }
 
 void ABlackHoleGimmick::SetState(const EBlackHoleState NewState)
@@ -625,9 +617,9 @@ void ABlackHoleGimmick::DebugDraw() const
 
 	if (!GEngine) return;
 
-	const FTimerHandle& Handle = (State == EBlackHoleState::Idle) ? ScheduleTimerHandle : PhaseTimerHandle;
-	const float Seconds = GetWorldTimerManager().GetTimerRemaining(Handle);
-	const FString Remaining = Seconds >= 0.f ? FString::Printf(TEXT("%.1fs"), Seconds) : TEXT("타이머 없음");
+	// Idle waits for its turn in the sequence, so only the phases have a time left
+	const float Seconds = GetWorldTimerManager().GetTimerRemaining(PhaseTimerHandle);
+	const FString Remaining = State == EBlackHoleState::Idle ? FString(TEXT("순서 대기")) : Seconds >= 0.f ? FString::Printf(TEXT("%.1fs"), Seconds) : FString(TEXT("타이머 없음"));
 
 	// 포획된 캐릭터의 골반에 점을 찍어 누가 잡혀 있는지 보여준다
 	for (const TPair<TWeakObjectPtr<ATromboneCharacterBase>, FBlackHoleRingSlot>& Pair : CapturedCharacters)

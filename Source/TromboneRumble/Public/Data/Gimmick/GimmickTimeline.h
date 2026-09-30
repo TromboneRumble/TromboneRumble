@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Math/RandomStream.h"
 
+class UWorld;
+
 /** What a gimmick does during one span of the timeline. The timeline widget picks the color from it. */
 enum class EGimmickTimelinePhase : uint8
 {
@@ -52,12 +54,16 @@ public:
 	/** A loop that advances by less than this would never end when a designer types 0 as an interval. */
 	static constexpr float MinStep = 0.5f;
 
-	FGimmickTimelineBuilder(const float InRoundLength, const float InFeverStart, const int32 Seed)
+	FGimmickTimelineBuilder(const float InRoundLength, const float InFeverStart, const int32 Seed, const UWorld* InWorld = nullptr)
 		: RoundLength(InRoundLength)
 		, FeverStart(InFeverStart)
 		, Random(Seed)
+		, World(InWorld)
 	{
 	}
+
+	/** @return The open level, for a config whose timing depends on actors placed there. Null when the panel has no level. */
+	const UWorld* GetWorld() const { return World; }
 
 	/** @return Whether Time is before the end of the round. Use it as the loop condition. */
 	bool IsInRound(const float Time) const { return Time < RoundLength; }
@@ -102,6 +108,8 @@ private:
 	float FeverStart;
 
 	FRandomStream Random;
+
+	const UWorld* World = nullptr;
 
 	TArray<FGimmickTimelineSpan> Spans;
 
