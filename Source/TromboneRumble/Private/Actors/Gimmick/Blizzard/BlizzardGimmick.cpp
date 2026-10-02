@@ -307,7 +307,7 @@ void ABlizzardGimmick::StartWarning()
 
 	SetState(EBlizzardState::Warning);
 
-	// 대피처를 알려주는 것이 전조의 역할이므로 문은 여기서 열린다.
+	// 대피처를 알려주는 것이 전조의 역할이므로 문은 여기서 열린다 (문 사용이 꺼져 있으면 안내선만 전부 켠다).
 	// 쉘터는 레벨 배치 액터라 Warning~Active 사이에 목록이 변하지 않는다 → 여기서 한 번만 수집.
 	GatherShelters();
 	OpenRandomShelterDoors();
@@ -367,6 +367,7 @@ void ABlizzardGimmick::EndBlizzard()
 	ExposureTimeMap.Empty();
 
 	// 순서 주의: 내보내기가 먼저다. 문을 닫고 나면 IsSheltering() 이 false 라 아무도 안 잡힌다.
+	// (문 사용 / 내보내기 플래그가 꺼져 있으면 각 함수가 알아서 건너뛴다)
 	EjectCharactersFromShelters();
 	CloseAllShelterDoors();
 
@@ -779,16 +780,22 @@ void ABlizzardGimmick::GatherShelters()
 	Shelters.Reset();
 	for (TActorIterator<ABlizzardShelter> It(World); It; ++It)
 	{
-		if (ABlizzardShelter* Shelter = *It)
+		ABlizzardShelter* Shelter = *It;
+		if (!Shelter) continue;
+
+		Shelters.Add(Shelter);
+
+		// 문 사용이 꺼져 있는데 문이 남아 있으면 레벨 정리를 빠뜨린 것. 그 문은 닫힌 채 통행을 막는다.
+		if (!bUseShelterDoors && Shelter->HasDoor())
 		{
-			Shelters.Add(Shelter);
+			LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("문 사용이 꺼져 있는데 쉘터 %s 에 문이 지정돼 있다. 문은 닫힌 채 남아 통행을 막는다"), *Shelter->GetName()));
 		}
 	}
 }
 
 void ABlizzardGimmick::OpenRandomShelterDoors()
 {
-	if (!HasAuthority()) return;
+	if (!HasAuthority() || !bUseShelterDoors) return;
 
 	// 문이 지정된 쉘터만 후보. 문 없는 쉘터를 뽑으면 그 자리가 그냥 날아간다.
 	TArray<ABlizzardShelter*> Candidates;
@@ -835,7 +842,8 @@ void ABlizzardGimmick::SetShelterGuides(const bool bOn)
 	{
 		if (ABlizzardShelter* Shelter = ShelterPtr.Get())
 		{
-			Shelter->SetGuiding(bOn && Shelter->IsDoorOpen());
+			// 문을 쓸 때만 열린 천막으로 좁힌다. 아니면 모든 천막이 대피처라 전부 켠다.
+			Shelter->SetGuiding(bOn && (!bUseShelterDoors || Shelter->IsDoorOpen()));
 		}
 	}
 }
@@ -859,7 +867,7 @@ void ABlizzardGimmick::GatherPlayerStarts()
 
 void ABlizzardGimmick::EjectCharactersFromShelters()
 {
-	if (!HasAuthority()) return;
+	if (!HasAuthority() || !bEjectFromSheltersOnEnd) return;
 
 	UWorld* World = GetWorld();
 	if (!World) return;
@@ -919,8 +927,12 @@ bool ABlizzardGimmick::IsCharacterInShelter(const ACharacter* Character) const
 	for (const TWeakObjectPtr<ABlizzardShelter>& ShelterPtr : Shelters)
 	{
 		const ABlizzardShelter* Shelter = ShelterPtr.Get();
-		// 문이 닫힌 천막은 안전지대가 아니다. 문이 없는 쉘터는 기존대로 항상 안전.
-		if (Shelter && Shelter->IsSheltering() && Shelter->IsLocationInsideShelter(Loc))
+		if (!Shelter) continue;
+
+		// 문을 쓸 때만 문 상태를 본다 (닫힌 천막은 안전지대가 아님).
+		// 문을 안 쓰면 레벨에 문 참조가 남아 있어도 모든 천막이 안전지대다.
+		const bool bSheltering = !bUseShelterDoors || Shelter->IsSheltering();
+		if (bSheltering && Shelter->IsLocationInsideShelter(Loc))
 		{
 			return true;
 		}
