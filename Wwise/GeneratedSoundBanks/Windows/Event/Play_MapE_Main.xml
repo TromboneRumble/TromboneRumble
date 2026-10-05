@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1101510959" Type="Event" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" Language="SFX" Hash="{B38F1175-AD7A-09E3-1C77-28868FEDA769}">
+		<SoundBank Id="1101510959" Type="Event" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" Language="SFX" Hash="{FF4C755D-7C6D-E137-8207-56A8E490AB77}">
 			<ObjectPath>Play_MapE_Main</ObjectPath>
 			<ShortName>Play_MapE_Main</ShortName>
 			<Path>Event/Play_MapE_Main.bnk</Path>
@@ -28,7 +28,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="1101510959" Name="Play_MapE_Main" ObjectPath="\Events\Default Work Unit\Music\Map_E_Rhythm\Play_MapE_Main" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" DurationType="OneShot" DurationMin="201.26668" DurationMax="201.26668">
+				<Event Id="1101510959" Name="Play_MapE_Main" ObjectPath="\Events\Default Work Unit\Music\Map_E_Rhythm\Play_MapE_Main" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" DurationType="OneShot" DurationMin="171.2127" DurationMax="171.2127">
 					<MediaRefs>
 						<MediaRef Id="402626751"/>
 						<MediaRef Id="495148092"/>
@@ -49,5 +49,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{23192526-9F5C-C79D-7321-C597C94CEF0F}</FileHash>
+	<FileHash>{B8090830-457A-95B7-FBEB-C90B9B3A7E07}</FileHash>
 </SoundBanksInfo>

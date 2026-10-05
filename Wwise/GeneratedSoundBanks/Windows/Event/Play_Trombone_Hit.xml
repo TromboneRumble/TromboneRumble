@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{74C25005-F4CB-BCE4-597B-6540C6665523}">
+		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{9435976D-BE9A-171F-1587-6A5A54F20FE3}">
 			<ObjectPath>Play_Trombone_Hit</ObjectPath>
 			<ShortName>Play_Trombone_Hit</ShortName>
 			<Path>Event/Play_Trombone_Hit.bnk</Path>
@@ -28,7 +28,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="3712471672" Name="Play_Trombone_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Trombone_Hit" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.38366434" DurationMax="0.5930834">
+				<Event Id="3712471672" Name="Play_Trombone_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Trombone_Hit" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.38366434" DurationMax="0.5930834">
 					<MediaRefs>
 						<MediaRef Id="23342616"/>
 						<MediaRef Id="272658517"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{79064DF1-2E02-0F4A-55AD-DD90EA458BD8}</FileHash>
+	<FileHash>{F361625B-82BC-397C-9BEE-F06C7629756B}</FileHash>
 </SoundBanksInfo>

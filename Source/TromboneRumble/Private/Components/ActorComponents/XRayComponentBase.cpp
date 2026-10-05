@@ -172,6 +172,9 @@ void UXRayComponentBase::UpdateTrace()
 		return;
 	}
 
+	TArray<AActor*> Targets;
+	GatherTraceTargets(Targets);
+
 	// SkeletalMeshActor는 PhysicsActor 프리셋(ObjectType=PhysicsBody)이 기본이다.
 	// 오브젝트 쿼리는 응답이 아니라 오브젝트 타입으로 거르므로, PhysicsBody를 빼면
 	// XRayBlocker 태그를 달아도 스켈레탈 가림물은 히트 자체가 안 돌아온다.
@@ -180,36 +183,73 @@ void UXRayComponentBase::UpdateTrace()
 	ObjectParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	ObjectParams.AddObjectTypesToQuery(ECC_PhysicsBody);
-	FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(XRayOcclusion), false, Owner);
 
-	TArray<FHitResult> Hits;
-	GetWorld()->SweepMultiByObjectType(
-		Hits,
-		Camera->GetComponentLocation(),
-		Owner->GetActorLocation(),
-		FQuat::Identity,
-		ObjectParams,
-		FCollisionShape::MakeSphere(TraceSphereRadius),
-		QueryParams);
+	const FVector CameraLocation = Camera->GetComponentLocation();
+	const FCollisionShape Shape = FCollisionShape::MakeSphere(TraceSphereRadius);
 
 	TArray<AActor*> Occluders;
-	Occluders.Reserve(Hits.Num());
-	for (const FHitResult& Hit : Hits)
+	TArray<FHitResult> Hits;
+	bAnyOccluding = false;
+
+	for (const AActor* Target : Targets)
 	{
-		AActor* HitActor = Hit.GetActor();
-		if (!HitActor)
+		if (!IsValid(Target))
 		{
 			continue;
 		}
-		if (bRequireOccluderTag && !HitActor->ActorHasTag(OccluderTag))
+
+		FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(XRayOcclusion), false, Owner);
+		QueryParams.AddIgnoredActor(Target);
+
+		Hits.Reset();
+		GetWorld()->SweepMultiByObjectType(
+			Hits,
+			CameraLocation,
+			GetTraceTargetLocation(Target),
+			FQuat::Identity,
+			ObjectParams,
+			Shape,
+			QueryParams);
+
+		bool bHitAny = false;
+		for (const FHitResult& Hit : Hits)
 		{
-			continue;
+			AActor* HitActor = Hit.GetActor();
+			if (!HitActor)
+			{
+				continue;
+			}
+			if (bRequireOccluderTag && !HitActor->ActorHasTag(OccluderTag))
+			{
+				continue;
+			}
+			Occluders.AddUnique(HitActor);
+			bHitAny = true;
 		}
-		Occluders.AddUnique(HitActor);
+
+		// 실루엣 PP weight와 윈도우 원 열림은 오너가 가려졌는지만 본다
+		if (Target == Owner && bHitAny)
+		{
+			bAnyOccluding = true;
+		}
 	}
 
-	bAnyOccluding = Occluders.Num() > 0;
 	OnTraceUpdated(Occluders);
+}
+
+void UXRayComponentBase::GatherTraceTargets(TArray<AActor*>& OutTargets) const
+{
+	OutTargets.Add(GetOwner());
+}
+
+FVector UXRayComponentBase::GetTraceTargetLocation(const AActor* Target)
+{
+	const ATromboneCharacterBase* Character = Cast<ATromboneCharacterBase>(Target);
+	if (Character && Character->IsRagdoll())
+	{
+		return Character->GetPelvisLocation();
+	}
+	return Target->GetActorLocation();
 }
 
 const APlayerController* UXRayComponentBase::GetOwningPlayerController() const

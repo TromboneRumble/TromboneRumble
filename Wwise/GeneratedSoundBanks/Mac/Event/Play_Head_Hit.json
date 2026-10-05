@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
     "Language": "SFX",
-    "Hash": "{02320643-8014-99ED-AAAD-903257E485CE}",
+    "Hash": "{76DF7159-2A07-D2EB-9D34-AB507711E83A}",
     "ObjectPath": "Play_Head_Hit",
     "ShortName": "Play_Head_Hit",
     "Path": "Event/Play_Head_Hit.bnk",
@@ -61,7 +61,7 @@
       "Name": "Play_Head_Hit",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Head_Hit",
       "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.42560226",
       "DurationMax": "0.46537563",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{5AC49847-41E7-09DE-789D-F591DB059104}"
+  "FileHash": "{DC26DCC5-7DB4-0A4C-39B5-EA630A8CCA02}"
  }
 }

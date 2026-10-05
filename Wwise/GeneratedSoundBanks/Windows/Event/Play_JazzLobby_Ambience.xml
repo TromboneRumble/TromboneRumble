@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1197678622" Type="Event" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" Language="SFX" Hash="{5C41E0E2-9883-E4DB-5814-875408B636BD}">
+		<SoundBank Id="1197678622" Type="Event" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" Language="SFX" Hash="{18B28499-725C-F8A6-5EF6-0BF7317C92C7}">
 			<ObjectPath>Play_JazzLobby_Ambience</ObjectPath>
 			<ShortName>Play_JazzLobby_Ambience</ShortName>
 			<Path>Event/Play_JazzLobby_Ambience.bnk</Path>
@@ -45,5 +45,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{3F62EA4C-31FA-BDC7-57FF-2A5E03EE9D3C}</FileHash>
+	<FileHash>{171301D3-8EE1-0EAC-9A6A-F298A68EC7BD}</FileHash>
 </SoundBanksInfo>

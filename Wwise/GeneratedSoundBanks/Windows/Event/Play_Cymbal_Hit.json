@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
     "Language": "SFX",
-    "Hash": "{B0842ABA-8FEA-E695-F626-B393E5920C44}",
+    "Hash": "{465EA756-3D13-3066-119E-2ECA5B1A4CD7}",
     "ObjectPath": "Play_Cymbal_Hit",
     "ShortName": "Play_Cymbal_Hit",
     "Path": "Event/Play_Cymbal_Hit.bnk",
@@ -61,7 +61,7 @@
       "Name": "Play_Cymbal_Hit",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Cymbal_Hit",
       "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "1.3441781",
       "DurationMax": "1.4350886",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{E81BD1DF-BE94-320F-64CA-305E3336444F}"
+  "FileHash": "{1F3D25B7-943C-5D21-4C11-EEB9C72B6441}"
  }
 }

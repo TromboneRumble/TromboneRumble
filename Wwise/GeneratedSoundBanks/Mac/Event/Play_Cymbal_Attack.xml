@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="69437967" Type="Event" GUID="{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}" Language="SFX" Hash="{A5BE196F-13CF-B228-27F4-936B715EBFDC}">
+		<SoundBank Id="69437967" Type="Event" GUID="{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}" Language="SFX" Hash="{8E9C5862-151A-49CD-FDA9-B14C10ADBD81}">
 			<ObjectPath>Play_Cymbal_Attack</ObjectPath>
 			<ShortName>Play_Cymbal_Attack</ShortName>
 			<Path>Event/Play_Cymbal_Attack.bnk</Path>
@@ -23,7 +23,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="69437967" Name="Play_Cymbal_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Cymbal_Attack" GUID="{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.35498422" DurationMax="0.4242494">
+				<Event Id="69437967" Name="Play_Cymbal_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Cymbal_Attack" GUID="{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.35498422" DurationMax="0.4242494">
 					<MediaRefs>
 						<MediaRef Id="400530107"/>
 						<MediaRef Id="828367315"/>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{915A0BE2-190B-4E4A-B805-A87912284E9D}</FileHash>
+	<FileHash>{B0E15922-C28C-A89E-54F9-19B58AB29BDC}</FileHash>
 </SoundBanksInfo>
