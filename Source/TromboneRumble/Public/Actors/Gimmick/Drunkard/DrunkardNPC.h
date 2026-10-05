@@ -41,6 +41,14 @@ public:
 	/** 포획 성공 연출 시작 — 이동을 멈추고 다이브 몽타주를 재생한다. StateComponent가 호출. Server Only. */
 	void BeginDive();
 
+	/**
+	 * Record when the chase started and when it ends, so every machine can show the time left on the target mark.
+	 * StateComponent calls this where it sets the chase timer, and must call it again if it ever changes that timer. Server only.
+	 *
+	 * @param Duration Seconds until the chase timer fires.
+	 */
+	void NotifyChaseStarted(float Duration);
+
 	/** Starts the entrance: walks from the spawn point to the stop point and breaks the door when crossing it. StateComponent calls this. Server only. */
 	void BeginDoorEntrance(const FDrunkardRoute& Route);
 
@@ -100,13 +108,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UXRaySilhouetteComponent> XRaySilhouetteComponent;
 
-	/** Portrait of the current target above the head. */
+	/** Mark above the head: color of the current target, chase time left, and the attack portrait for the target. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UWidgetComponent> TargetIndicatorComponent;
-
-	/** Attackable mark on the chest. Only the target sees it, and only within range. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
-	TObjectPtr<UWidgetComponent> AttackableIndicatorComponent;
 
 	/** Laugh played when the drunkard spawns. */
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
@@ -122,6 +126,14 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_Target)
 	TObjectPtr<ADefaultTromboneCharacter> ReplicatedTarget;
 
+	/** Server time the chase started. The fill of the target mark is full here. */
+	UPROPERTY(Replicated)
+	float ChaseStartServerTime = 0.f;
+
+	/** Server time the chase ends. The fill of the target mark is empty here. */
+	UPROPERTY(Replicated)
+	float ChaseEndServerTime = 0.f;
+
 	UFUNCTION()
 	void OnRep_TargetSkinColor();
 
@@ -132,9 +144,16 @@ private:
 	UFUNCTION()
 	void HandleTargetChanged(ADefaultTromboneCharacter* NewTarget);
 
-	/** Local. Shows the attackable mark while the local player is the target, close enough, and the drunkard can take a hit. */
-	void UpdateAttackableIndicator();
+	/**
+	 * Local. Updates the chase time left on the target mark, and which icon it shows.
+	 * The attack portrait shows only while the local player is the target, close enough, and the drunkard can take a hit.
+	 */
+	void UpdateTargetIndicator();
 
+	/** @return Part of the chase time that is left, 1 at the start and 0 at the end. */
+	float GetRemainingChaseRatio() const;
+
+	/** Does the local player see the attack portrait. Kept so the portrait hides a little farther out than it shows. */
 	bool bAttackableShown = false;
 
 	/** 상체(지정 본 이하) 한정 Physical Animation 적용 — "취함" 연출 레이어.

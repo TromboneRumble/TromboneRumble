@@ -129,8 +129,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Movement", meta = (DisplayName = "최대 가속도", ClampMin = "0.0"))
 	float MaxAcceleration = 800.f;
 
-	/** 공격 가능 UI가 나타나는 플레이어와의 거리 (cm) */
-	UPROPERTY(EditAnywhere, Category = "Indicator", meta = (DisplayName = "공격 가능 UI 표시 거리", ClampMin = "0.0", Units = "cm"))
+	/** 타겟 플레이어 화면에서 취객 머리 위 아이콘이 얼굴에서 공격 표시로 바뀌는 거리 (cm) */
+	UPROPERTY(EditAnywhere, Category = "Indicator", meta = (DisplayName = "공격 표시 전환 거리", ClampMin = "0.0", Units = "cm"))
 	float AttackableIndicatorRange = 500.f;
 
 	/** 경로 좌우 흔들림 폭 (cm) */

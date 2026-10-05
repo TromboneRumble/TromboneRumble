@@ -82,6 +82,12 @@ void UDrunkardStateComponent::BeginChasing()
 		ChaseDuration,
 		false
 	);
+
+	// The target mark shows this time, so it is told here, right where the timer is set
+	if (ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner()))
+	{
+		OwnerNPC->NotifyChaseStarted(ChaseDuration);
+	}
 }
 
 void UDrunkardStateComponent::BeginExiting()

@@ -21,9 +21,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interfaces/Breakable.h"
 #include "Net/UnrealNetwork.h"
-#include "UI/UserWidgets/Common/PopIndicatorWidget.h"
 #include "UI/UserWidgets/InGame/DrunkardTargetWidget.h"
 #include "Utilities/TromboneLogs.h"
+#include "Utilities/TromboneStatics.h"
 
 #if !UE_BUILD_SHIPPING
 TAutoConsoleVariable<int32> CVarDrunkardDebug(
@@ -51,22 +51,13 @@ ADrunkardNPC::ADrunkardNPC()
 	StateComponent = CreateDefaultSubobject<UDrunkardStateComponent>(TEXT("DrunkardStateComponent"));
 	XRaySilhouetteComponent = CreateDefaultSubobject<UXRaySilhouetteComponent>(TEXT("XRaySilhouetteComponent"));
 
-	// Screen space marks pinned to a bone. Widget classes and offsets are set on the components in the blueprint
-	const auto MakeIndicator = [this](const TCHAR* Name, const FName Socket) -> UWidgetComponent*
-	{
-		UWidgetComponent* Indicator = CreateDefaultSubobject<UWidgetComponent>(Name);
-		if (Indicator)
-		{
-			Indicator->SetupAttachment(GetMesh(), Socket);
-			Indicator->SetWidgetSpace(EWidgetSpace::Screen);
-			Indicator->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			Indicator->bReceivesDecals = 0;
-			Indicator->SetCastShadow(false);
-		}
-		return Indicator;
-	};
-	TargetIndicatorComponent = MakeIndicator(TEXT("TargetIndicatorComponent"), FName("head"));
-	AttackableIndicatorComponent = MakeIndicator(TEXT("AttackableIndicatorChestComponent"), FName("spine_03"));
+	// Screen space mark pinned to the head. The widget class and the offset are set on the component in the blueprint
+	TargetIndicatorComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetIndicatorComponent"));
+	TargetIndicatorComponent->SetupAttachment(GetMesh(), FName("head"));
+	TargetIndicatorComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	TargetIndicatorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TargetIndicatorComponent->bReceivesDecals = 0;
+	TargetIndicatorComponent->SetCastShadow(false);
 }
 
 void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -75,6 +66,8 @@ void ADrunkardNPC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME(ThisClass, TargetSkinColor);
 	DOREPLIFETIME(ThisClass, ReplicatedTarget);
+	DOREPLIFETIME(ThisClass, ChaseStartServerTime);
+	DOREPLIFETIME(ThisClass, ChaseEndServerTime);
 }
 
 void ADrunkardNPC::BeginPlay()
@@ -138,15 +131,28 @@ void ADrunkardNPC::HandleTargetChanged(ADefaultTromboneCharacter* NewTarget)
 	OnRep_Target();
 }
 
-void ADrunkardNPC::OnRep_Target()
+void ADrunkardNPC::NotifyChaseStarted(const float Duration)
 {
-	UpdateAttackableIndicator();
+	if (!HasAuthority()) return;
+
+	ChaseStartServerTime = UTromboneStatics::GetServerWorldTime(this);
+	ChaseEndServerTime = ChaseStartServerTime + Duration;
 }
 
-void ADrunkardNPC::UpdateAttackableIndicator()
+void ADrunkardNPC::OnRep_Target()
 {
+	UpdateTargetIndicator();
+}
+
+void ADrunkardNPC::UpdateTargetIndicator()
+{
+	// A dedicated server has no widget
+	UDrunkardTargetWidget* Widget = Cast<UDrunkardTargetWidget>(TargetIndicatorComponent ? TargetIndicatorComponent->GetUserWidgetObject() : nullptr);
+	if (!Widget) return;
+
 	constexpr float HideMargin = 50.f;
 
+	// Only the target sees the portrait. Everyone else keeps the face
 	bool bShow = false;
 	if (ReplicatedTarget && ReplicatedTarget->IsLocallyControlled() && CanReceiveHit())
 	{
@@ -154,17 +160,19 @@ void ADrunkardNPC::UpdateAttackableIndicator()
 		const float Limit = bAttackableShown ? Range + HideMargin : Range;
 		bShow = FVector::DistSquared(ReplicatedTarget->GetActorLocation(), GetActorLocation()) <= FMath::Square(Limit);
 	}
-
-	if (bShow == bAttackableShown)
-	{
-		return;
-	}
 	bAttackableShown = bShow;
 
-	if (UPopIndicatorWidget* Widget = Cast<UPopIndicatorWidget>(AttackableIndicatorComponent ? AttackableIndicatorComponent->GetUserWidgetObject() : nullptr))
-	{
-		Widget->SetShown(bShow);
-	}
+	// The time left changes every frame. The icon is sent along with it, and the widget ignores it while it is the same
+	Widget->SetAttackable(bShow);
+	Widget->SetRemainingRatio(GetRemainingChaseRatio());
+}
+
+float ADrunkardNPC::GetRemainingChaseRatio() const
+{
+	const float Duration = ChaseEndServerTime - ChaseStartServerTime;
+	if (Duration <= 0.f) return 1.f;
+
+	return FMath::Clamp((ChaseEndServerTime - UTromboneStatics::GetServerWorldTime(this)) / Duration, 0.f, 1.f);
 }
 
 void ADrunkardNPC::OnRep_TargetSkinColor()
@@ -408,7 +416,7 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	UpdateAttackableIndicator();
+	UpdateTargetIndicator();
 
 	// 퇴장 MoveTo는 정지 지점 액터 위치 자체에 닿아야 끝난다.
 	// 정지 지점이 벽에 붙어 있으면 캡슐이 그 앞에서 막혀 이동이 영원히 안 끝나므로, 충분히 가까워지면 여기서 문 밖 이동을 시작한다
