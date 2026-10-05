@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}",
     "Language": "SFX",
-    "Hash": "{5C41E0E2-9883-E4DB-5814-875408B636BD}",
+    "Hash": "{18B28499-725C-F8A6-5EF6-0BF7317C92C7}",
     "ObjectPath": "Play_JazzLobby_Ambience",
     "ShortName": "Play_JazzLobby_Ambience",
     "Path": "Event/Play_JazzLobby_Ambience.bnk",
@@ -91,6 +91,6 @@
     ]
    }
   ],
-  "FileHash": "{F5FBF10D-6568-9C81-5E12-241E88292EF9}"
+  "FileHash": "{36CF6946-E628-C25B-31E9-964373C2AE36}"
  }
 }

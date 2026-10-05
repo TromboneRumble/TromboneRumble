@@ -1,0 +1,118 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3672321512",
+    "Type": "Event",
+    "GUID": "{EA540656-0E52-4B7F-B457-778EBF0BA927}",
+    "Language": "SFX",
+    "Hash": "{FAB578F7-709F-04A6-EBA9-721F4BFB3BCD}",
+    "ObjectPath": "Play_MapH_Main",
+    "ShortName": "Play_MapH_Main",
+    "Path": "Event/Play_MapH_Main.bnk",
+    "Media": [
+     {
+      "Id": "70581329",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_H_main.wav",
+      "Path": "Media/70581329.wem",
+      "CachePath": "SFX/Map_H_main_FBC78EF0.wem"
+     },
+     {
+      "Id": "390631616",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_H_Violin.wav",
+      "Path": "Media/390631616.wem",
+      "CachePath": "SFX/Map_H_Violin_FBC78EF0.wem"
+     },
+     {
+      "Id": "678652448",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_H_Cymbal.wav",
+      "Path": "Media/678652448.wem",
+      "CachePath": "SFX/Map_H_Cymbal_FBC78EF0.wem"
+     },
+     {
+      "Id": "1062530676",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Map_H_Trombone.wav",
+      "Path": "Media/1062530676.wem",
+      "CachePath": "SFX/Map_H_Trombone_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3672321512",
+      "Name": "Play_MapH_Main",
+      "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_H_Rhythm\\Play_MapH_Main",
+      "GUID": "{EA540656-0E52-4B7F-B457-778EBF0BA927}",
+      "DurationType": "OneShot",
+      "DurationMin": "215.04817",
+      "DurationMax": "215.04817",
+      "MediaRefs": [
+       {
+        "Id": "70581329"
+       },
+       {
+        "Id": "390631616"
+       },
+       {
+        "Id": "678652448"
+       },
+       {
+        "Id": "1062530676"
+       }
+      ]
+     }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "1522944609",
+      "Name": "Inst",
+      "ObjectPath": "\\Switches\\Default Work Unit\\Inst",
+      "GUID": "{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}",
+      "Switches": [
+       {
+        "Id": "4279070465",
+        "Name": "SW_C",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_C",
+        "GUID": "{020477EC-CB00-409F-8904-420A04B4E3D8}"
+       },
+       {
+        "Id": "4279070476",
+        "Name": "SW_N",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_N",
+        "GUID": "{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"
+       },
+       {
+        "Id": "4279070484",
+        "Name": "SW_V",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_V",
+        "GUID": "{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"
+       },
+       {
+        "Id": "4279070486",
+        "Name": "SW_T",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Inst\\SW_T",
+        "GUID": "{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{ED338D00-B424-7A29-E853-A3F3137FBFBA}"
+ }
+}

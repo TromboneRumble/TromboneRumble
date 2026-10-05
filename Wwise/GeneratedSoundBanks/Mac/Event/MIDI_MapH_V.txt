@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1908418180	MIDI_MapH_V			\Default Work Unit\Music\Map_H_Rhythm\MIDI_MapH_V	
+
+Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
+	559532962	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence	
+

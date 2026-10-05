@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{8851F52A-4FF7-D3D8-051D-CBC106CC38A8}">
+			<ObjectPath>Play_MapG_Main</ObjectPath>
+			<ShortName>Play_MapG_Main</ShortName>
+			<Path>Event/Play_MapG_Main.bnk</Path>
+			<Media>
+				<File Id="193896826" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_G_Violin.wav</ShortName>
+					<Path>Media/193896826.wem</Path>
+					<CachePath>SFX/Map_G_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="507124488" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_G_Main.wav</ShortName>
+					<Path>Media/507124488.wem</Path>
+					<CachePath>SFX/Map_G_Main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="757618635" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_G_Trombone.wav</ShortName>
+					<Path>Media/757618635.wem</Path>
+					<CachePath>SFX/Map_G_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1073396544" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_G_Cymbal.wav</ShortName>
+					<Path>Media/1073396544.wem</Path>
+					<CachePath>SFX/Map_G_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3494894253" Name="Play_MapG_Main" ObjectPath="\Events\Default Work Unit\Music\Map_G_Rhythm\Play_MapG_Main" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" DurationType="OneShot" DurationMin="201.26668" DurationMax="201.26668">
+					<MediaRefs>
+						<MediaRef Id="193896826"/>
+						<MediaRef Id="507124488"/>
+						<MediaRef Id="757618635"/>
+						<MediaRef Id="1073396544"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<SwitchGroups>
+				<SwitchGroup Id="1522944609" Name="Inst" ObjectPath="\Switches\Default Work Unit\Inst" GUID="{21ECAF6D-00E5-4B60-9C61-C64FC0A86747}">
+					<Switches>
+						<Switch Id="4279070465" Name="SW_C" ObjectPath="\Switches\Default Work Unit\Inst\SW_C" GUID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<Switch Id="4279070476" Name="SW_N" ObjectPath="\Switches\Default Work Unit\Inst\SW_N" GUID="{ACC073F3-73FB-4F88-96F2-56477AF3A4CF}"/>
+						<Switch Id="4279070484" Name="SW_V" ObjectPath="\Switches\Default Work Unit\Inst\SW_V" GUID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<Switch Id="4279070486" Name="SW_T" ObjectPath="\Switches\Default Work Unit\Inst\SW_T" GUID="{95956CAE-C3E7-443E-B96F-D309BAFB61DD}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{AADC9FFA-7679-B063-CD4A-AF53152D91CE}</FileHash>
+</SoundBanksInfo>
