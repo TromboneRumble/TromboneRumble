@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0381A057-351A-4EF9-865E-5FEBD569955A}",
     "Language": "SFX",
-    "Hash": "{2D16F922-DCD8-BF51-3BF7-D53E77D12633}",
+    "Hash": "{692B4C8D-1F35-2522-2DDD-022E98959884}",
     "ObjectPath": "Play_Violin_Attack",
     "ShortName": "Play_Violin_Attack",
     "Path": "Event/Play_Violin_Attack.bnk",
@@ -61,7 +61,7 @@
       "Name": "Play_Violin_Attack",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Whoosh\\Play_Violin_Attack",
       "GUID": "{0381A057-351A-4EF9-865E-5FEBD569955A}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.20454884",
       "DurationMax": "0.2500041",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{0B0181E6-E570-5FE9-28F6-E2BD3EAB1F8C}"
+  "FileHash": "{37D6345A-8092-58D8-8DBC-BF049E054FE7}"
  }
 }

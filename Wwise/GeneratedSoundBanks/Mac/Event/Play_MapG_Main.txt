@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3494894253	Play_MapG_Main			\Default Work Unit\Music\Map_G_Rhythm\Play_MapG_Main	
+

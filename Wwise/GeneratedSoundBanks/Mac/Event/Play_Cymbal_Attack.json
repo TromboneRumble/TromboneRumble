@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}",
     "Language": "SFX",
-    "Hash": "{A5BE196F-13CF-B228-27F4-936B715EBFDC}",
+    "Hash": "{8E9C5862-151A-49CD-FDA9-B14C10ADBD81}",
     "ObjectPath": "Play_Cymbal_Attack",
     "ShortName": "Play_Cymbal_Attack",
     "Path": "Event/Play_Cymbal_Attack.bnk",
@@ -52,7 +52,7 @@
       "Name": "Play_Cymbal_Attack",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Attack\\Attack_Whoosh\\Play_Cymbal_Attack",
       "GUID": "{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.35498422",
       "DurationMax": "0.4242494",
@@ -75,6 +75,6 @@
     ]
    }
   ],
-  "FileHash": "{CDB6493F-F5B2-D478-38CF-CBB4168556CC}"
+  "FileHash": "{C4C5645E-1FB4-9862-CD4C-508FEE919809}"
  }
 }

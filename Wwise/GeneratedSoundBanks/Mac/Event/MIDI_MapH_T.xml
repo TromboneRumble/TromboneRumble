@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1908418182" Type="Event" GUID="{BDD48549-5D06-448F-B12B-9311463E9955}" Language="SFX" Hash="{1B56F63B-9BAC-5A1F-EEBD-2A9751A25DD4}">
+			<ObjectPath>MIDI_MapH_T</ObjectPath>
+			<ShortName>MIDI_MapH_T</ShortName>
+			<Path>Event/MIDI_MapH_T.bnk</Path>
+			<Media>
+				<File Id="70581329" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_H_main.wav</ShortName>
+					<Path>Media/70581329.wem</Path>
+					<CachePath>SFX/Map_H_main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="678652448" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_H_Cymbal.wav</ShortName>
+					<Path>Media/678652448.wem</Path>
+					<CachePath>SFX/Map_H_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1062530676" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_H_Trombone.wav</ShortName>
+					<Path>Media/1062530676.wem</Path>
+					<CachePath>SFX/Map_H_Trombone_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1908418182" Name="MIDI_MapH_T" ObjectPath="\Events\Default Work Unit\Music\Map_H_Rhythm\MIDI_MapH_T" GUID="{BDD48549-5D06-448F-B12B-9311463E9955}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="70581329"/>
+						<MediaRef Id="678652448"/>
+						<MediaRef Id="1062530676"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{B343BD7A-EF0D-34D4-393E-7AE63614120B}</FileHash>
+</SoundBanksInfo>
