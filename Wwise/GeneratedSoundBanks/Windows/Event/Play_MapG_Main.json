@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{2F5E6B7E-1F64-48E3-A954-94248F70CD72}",
     "Language": "SFX",
-    "Hash": "{8851F52A-4FF7-D3D8-051D-CBC106CC38A8}",
+    "Hash": "{0416D0E6-88A4-1830-A0E7-24D33B075399}",
     "ObjectPath": "Play_MapG_Main",
     "ShortName": "Play_MapG_Main",
     "Path": "Event/Play_MapG_Main.bnk",
@@ -59,8 +59,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_G_Rhythm\\Play_MapG_Main",
       "GUID": "{2F5E6B7E-1F64-48E3-A954-94248F70CD72}",
       "DurationType": "OneShot",
-      "DurationMin": "201.26668",
-      "DurationMax": "201.26668",
+      "DurationMin": "184.05887",
+      "DurationMax": "184.05887",
       "MediaRefs": [
        {
         "Id": "193896826"
@@ -113,6 +113,6 @@
     ]
    }
   ],
-  "FileHash": "{9EF0107F-7086-B3E5-AE4C-5FA051D5EE55}"
+  "FileHash": "{02259747-0E75-39CB-9FF9-0AE38613C8CF}"
  }
 }

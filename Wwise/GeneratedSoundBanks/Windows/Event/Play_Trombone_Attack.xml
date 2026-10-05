@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{28EB8601-5FF0-2534-6182-EE593E73C4A5}">
+		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{5A1038CE-9385-549B-89F8-4A9475B03D89}">
 			<ObjectPath>Play_Trombone_Attack</ObjectPath>
 			<ShortName>Play_Trombone_Attack</ShortName>
 			<Path>Event/Play_Trombone_Attack.bnk</Path>
@@ -38,7 +38,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.7835627" DurationMax="0.7835627">
+				<Event Id="2751601189" Name="Play_Trombone_Attack" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Attack\Attack_Whoosh\Play_Trombone_Attack" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.7835627" DurationMax="0.7835627">
 					<MediaRefs>
 						<MediaRef Id="108887632"/>
 						<MediaRef Id="354742721"/>
@@ -55,5 +55,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E9C2F037-27B2-000E-E40D-49F1C54B728F}</FileHash>
+	<FileHash>{32302092-2B8C-51F8-C848-B2EA767C51F9}</FileHash>
 </SoundBanksInfo>

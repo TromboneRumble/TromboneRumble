@@ -5,56 +5,12 @@
 			<ChildrenList>
 				<Folder Name="Test" ID="{6FA5FDA5-DD31-42CB-A64D-B886098F1DA4}" ShortID="137200675">
 					<ChildrenList>
-						<Event Name="Play_Click_Test" ID="{0FC8390B-5986-401E-A87F-7C9BD71357DB}">
-							<ChildrenList>
-								<Action Name="" ID="{0A835E10-3A98-427A-9761-ABFD34EADDE1}" ShortID="1072918217">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Test_Click_BPM" ID="{2E3C6B26-4877-4A17-920D-85F2223CD4A2}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
-						<Event Name="Play_Long_Short" ID="{C8064449-CDF0-4ECE-BC76-450128EC20F2}">
-							<ChildrenList>
-								<Action Name="" ID="{38DCF39B-6CD7-4067-AB47-1B97CDA8FAF1}" ShortID="512886752">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Test_Short_Long" ID="{1E72A2DD-6C3F-48CA-BAD7-A6FD1B403EFE}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
 						<Event Name="Play_MapA_BGM" ID="{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}">
 							<ChildrenList>
 								<Action Name="" ID="{3508F6D8-A2D6-463E-96FD-B4B0A02B02F4}" ShortID="433881866">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Test_Rhythm" ID="{A7252FE0-4A6F-4958-8053-A6591FAB49BE}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
-						<Event Name="Play_Note_Length" ID="{33F02563-A654-4D79-8340-8F01CF66D217}">
-							<ChildrenList>
-								<Action Name="" ID="{0A175ACC-2114-4217-805E-51FA72D7EE44}" ShortID="56345341">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Test_Note_Length" ID="{789004DA-5327-41E9-A05E-BCF899398AE4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
-						<Event Name="Play_User_Custom" ID="{A273AAA2-055F-49A7-9408-1319E08B5D90}">
-							<ChildrenList>
-								<Action Name="" ID="{73A32770-EED1-421E-BC4A-76B9B5E58F72}" ShortID="337739095">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Test_User_Custom" ID="{053D62E4-8344-4770-8A71-AE3F9F76434A}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -866,7 +822,6 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
-						<Folder Name="Test_Rhythm_Game" ID="{D525F741-43C9-44BD-9F8F-FBB1D88A49E6}" ShortID="109122385"/>
 						<Event Name="Play_Lobby_BGM" ID="{94227083-3159-4322-BF3A-0D7AB2913647}">
 							<ChildrenList>
 								<Action Name="" ID="{F68D86E7-2B4E-4D3E-B042-07DE80077C91}" ShortID="233662037">

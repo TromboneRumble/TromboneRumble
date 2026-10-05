@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{8851F52A-4FF7-D3D8-051D-CBC106CC38A8}">
+		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{0416D0E6-88A4-1830-A0E7-24D33B075399}">
 			<ObjectPath>Play_MapG_Main</ObjectPath>
 			<ShortName>Play_MapG_Main</ShortName>
 			<Path>Event/Play_MapG_Main.bnk</Path>
@@ -28,7 +28,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3494894253" Name="Play_MapG_Main" ObjectPath="\Events\Default Work Unit\Music\Map_G_Rhythm\Play_MapG_Main" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" DurationType="OneShot" DurationMin="201.26668" DurationMax="201.26668">
+				<Event Id="3494894253" Name="Play_MapG_Main" ObjectPath="\Events\Default Work Unit\Music\Map_G_Rhythm\Play_MapG_Main" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" DurationType="OneShot" DurationMin="184.05887" DurationMax="184.05887">
 					<MediaRefs>
 						<MediaRef Id="193896826"/>
 						<MediaRef Id="507124488"/>
@@ -49,5 +49,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{52825B44-9C80-03C1-B144-60991A827A2F}</FileHash>
+	<FileHash>{A5494F99-936D-45C7-66C6-64F645D1C4D2}</FileHash>
 </SoundBanksInfo>

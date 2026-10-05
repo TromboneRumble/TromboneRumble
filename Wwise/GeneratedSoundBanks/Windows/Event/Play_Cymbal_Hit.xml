@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1078935374" Type="Event" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" Language="SFX" Hash="{B0842ABA-8FEA-E695-F626-B393E5920C44}">
+		<SoundBank Id="1078935374" Type="Event" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" Language="SFX" Hash="{465EA756-3D13-3066-119E-2ECA5B1A4CD7}">
 			<ObjectPath>Play_Cymbal_Hit</ObjectPath>
 			<ShortName>Play_Cymbal_Hit</ShortName>
 			<Path>Event/Play_Cymbal_Hit.bnk</Path>
@@ -28,7 +28,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1078935374" Name="Play_Cymbal_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Cymbal_Hit" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.3441781" DurationMax="1.4350886">
+				<Event Id="1078935374" Name="Play_Cymbal_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Cymbal_Hit" GUID="{0409E54D-9756-4AC7-AB12-F07232CAEFC6}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="1.3441781" DurationMax="1.4350886">
 					<MediaRefs>
 						<MediaRef Id="140050142"/>
 						<MediaRef Id="734040310"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E9088EA0-4F9B-90FE-2F74-68964D12FE2C}</FileHash>
+	<FileHash>{14A875F4-6FC7-9A07-C1D4-1A7A5BF1B931}</FileHash>
 </SoundBanksInfo>
