@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B1E68E6A-B396-4520-A5DD-33CD5691FD01}",
     "Language": "SFX",
-    "Hash": "{BF3D20A2-200E-AD9E-9103-154E0B8F0AD2}",
+    "Hash": "{8FFF10B3-265F-1C46-5CD0-24BD0FDE7987}",
     "ObjectPath": "Play_Violin_Hit",
     "ShortName": "Play_Violin_Hit",
     "Path": "Event/Play_Violin_Hit.bnk",
@@ -61,7 +61,7 @@
       "Name": "Play_Violin_Hit",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Violin_Hit",
       "GUID": "{B1E68E6A-B396-4520-A5DD-33CD5691FD01}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.46104658",
       "DurationMax": "0.6071529",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{4F871A21-BC45-8327-10FF-FACAD5E44E38}"
+  "FileHash": "{553A7CD3-E9DC-33DC-D66F-27A18820808C}"
  }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2148039703" Type="Event" GUID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}" Language="SFX" Hash="{BF3D20A2-200E-AD9E-9103-154E0B8F0AD2}">
+		<SoundBank Id="2148039703" Type="Event" GUID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}" Language="SFX" Hash="{8FFF10B3-265F-1C46-5CD0-24BD0FDE7987}">
 			<ObjectPath>Play_Violin_Hit</ObjectPath>
 			<ShortName>Play_Violin_Hit</ShortName>
 			<Path>Event/Play_Violin_Hit.bnk</Path>
@@ -28,7 +28,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="2148039703" Name="Play_Violin_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Violin_Hit" GUID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.46104658" DurationMax="0.6071529">
+				<Event Id="2148039703" Name="Play_Violin_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Violin_Hit" GUID="{B1E68E6A-B396-4520-A5DD-33CD5691FD01}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.46104658" DurationMax="0.6071529">
 					<MediaRefs>
 						<MediaRef Id="175574624"/>
 						<MediaRef Id="221566478"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4CAEC638-17AC-ABD8-5734-C69861E781D7}</FileHash>
+	<FileHash>{DFB11FAD-9C79-3EB7-2733-6FADCA50D7DE}</FileHash>
 </SoundBanksInfo>

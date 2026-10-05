@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1908418180" Type="Event" GUID="{9D07D1EF-3569-42B9-B49E-392E71A34B44}" Language="SFX" Hash="{58EB3E3C-47D0-A6A7-5E8C-8169DA240B5A}">
+			<ObjectPath>MIDI_MapH_V</ObjectPath>
+			<ShortName>MIDI_MapH_V</ShortName>
+			<Path>Event/MIDI_MapH_V.bnk</Path>
+			<Media>
+				<File Id="70581329" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_H_main.wav</ShortName>
+					<Path>Media/70581329.wem</Path>
+					<CachePath>SFX/Map_H_main_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="390631616" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_H_Violin.wav</ShortName>
+					<Path>Media/390631616.wem</Path>
+					<CachePath>SFX/Map_H_Violin_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="678652448" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Map_H_Cymbal.wav</ShortName>
+					<Path>Media/678652448.wem</Path>
+					<CachePath>SFX/Map_H_Cymbal_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="559532962" Name="Silence" ObjectPath="\Actor-Mixer Hierarchy\Default Work Unit\silence\Silence" GUID="{F6B708C7-5DE5-49D0-854A-F3301FCF5190}" LibName="Wwise Silence" LibId="6619138"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="1908418180" Name="MIDI_MapH_V" ObjectPath="\Events\Default Work Unit\Music\Map_H_Rhythm\MIDI_MapH_V" GUID="{9D07D1EF-3569-42B9-B49E-392E71A34B44}" DurationType="OneShot" DurationMin="236.72504" DurationMax="236.72504">
+					<MediaRefs>
+						<MediaRef Id="70581329"/>
+						<MediaRef Id="390631616"/>
+						<MediaRef Id="678652448"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="559532962"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{0A5EA00B-8DE0-A1C7-0EA5-A7EBF7BF44B8}</FileHash>
+</SoundBanksInfo>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{02320643-8014-99ED-AAAD-903257E485CE}">
+		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{76DF7159-2A07-D2EB-9D34-AB507711E83A}">
 			<ObjectPath>Play_Head_Hit</ObjectPath>
 			<ShortName>Play_Head_Hit</ShortName>
 			<Path>Event/Play_Head_Hit.bnk</Path>
@@ -28,7 +28,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.42560226" DurationMax="0.46537563">
+				<Event Id="1494228982" Name="Play_Head_Hit" ObjectPath="\Events\Default Work Unit\Player_SFX\Player_Hit\Play_Head_Hit" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.42560226" DurationMax="0.46537563">
 					<MediaRefs>
 						<MediaRef Id="18254192"/>
 						<MediaRef Id="46542412"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{EE5B652C-7D0B-E8D2-F22D-725A27884AB0}</FileHash>
+	<FileHash>{1C86BEAC-6753-326B-6285-FFE1E463C871}</FileHash>
 </SoundBanksInfo>

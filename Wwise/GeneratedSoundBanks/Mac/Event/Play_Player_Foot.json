@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{0662CD31-10D3-1864-2180-53759AF53956}",
+    "Hash": "{160966EB-8A5C-EC83-7734-F6391EE93ED8}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -304,7 +304,7 @@
       "Name": "Play_Player_Foot",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Play_Player_Foot",
       "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.16467108",
       "DurationMax": "0.52699363",
@@ -518,6 +518,6 @@
     ]
    }
   ],
-  "FileHash": "{AE95A754-831A-62DF-6451-7561910B5D2C}"
+  "FileHash": "{BACC24ED-CA30-921D-3E40-84D2CD4A2060}"
  }
 }

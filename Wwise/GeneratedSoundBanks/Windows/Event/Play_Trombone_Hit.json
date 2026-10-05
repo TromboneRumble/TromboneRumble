@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}",
     "Language": "SFX",
-    "Hash": "{74C25005-F4CB-BCE4-597B-6540C6665523}",
+    "Hash": "{9435976D-BE9A-171F-1587-6A5A54F20FE3}",
     "ObjectPath": "Play_Trombone_Hit",
     "ShortName": "Play_Trombone_Hit",
     "Path": "Event/Play_Trombone_Hit.bnk",
@@ -61,7 +61,7 @@
       "Name": "Play_Trombone_Hit",
       "ObjectPath": "\\Events\\Default Work Unit\\Player_SFX\\Player_Hit\\Play_Trombone_Hit",
       "GUID": "{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.38366434",
       "DurationMax": "0.5930834",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{1F619F75-1F63-DCD4-2CAF-1A46EB65BB45}"
+  "FileHash": "{9766A0D6-97DA-7C4A-769B-73DEFCDE8435}"
  }
 }

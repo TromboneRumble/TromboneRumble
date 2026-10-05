@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{2FB91F45-367C-1246-1D82-37BA30D24671}">
+		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{A4264BDE-EF66-26ED-5465-38BF6548D61A}">
 			<ObjectPath>Play_MapF_Main</ObjectPath>
 			<ShortName>Play_MapF_Main</ShortName>
 			<Path>Event/Play_MapF_Main.bnk</Path>
@@ -28,7 +28,7 @@
 				</File>
 			</Media>
 			<Events>
-				<Event Id="739894178" Name="Play_MapF_Main" ObjectPath="\Events\Default Work Unit\Music\Map_F_Rhythm\Play_MapF_Main" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" DurationType="OneShot" DurationMin="201.26668" DurationMax="201.26668">
+				<Event Id="739894178" Name="Play_MapF_Main" ObjectPath="\Events\Default Work Unit\Music\Map_F_Rhythm\Play_MapF_Main" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" DurationType="OneShot" DurationMin="183.80862" DurationMax="183.80862">
 					<MediaRefs>
 						<MediaRef Id="51159561"/>
 						<MediaRef Id="70601174"/>
@@ -49,5 +49,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4936B029-583D-09F4-EB9E-86AB416FF587}</FileHash>
+	<FileHash>{2954AA2B-1A1A-1FC5-3781-05A347E2CA97}</FileHash>
 </SoundBanksInfo>
