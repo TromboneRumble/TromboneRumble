@@ -44,8 +44,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "이동 속도", ClampMin = "1.0", Units = "cm/s"))
 	float MoveSpeed = 700.f;
 
-	/** UFO가 나는 높이이자 광선 길이. 광선 끝이 항상 바닥에 닿는다 (cm) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "광선 길이", ClampMin = "10.0", Units = "cm"))
+	/** 바닥에서 UFO까지의 높이. 광선은 항상 여기서 바닥까지 닿는다. 벽 높이가 바뀌면 이 값을 바꾼다 (cm) */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "비행 높이", ClampMin = "10.0", Units = "cm"))
 	float BeamLength = 600.f;
 
 	/** 인게임에서 가장 낮은 바닥의 Z 값. 광선 끝이 여기에 닿는다. 레벨 바닥 높이가 바뀔 때만 수정 (cm) */
