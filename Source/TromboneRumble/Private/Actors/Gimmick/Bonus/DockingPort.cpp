@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Data/Gimmick/DockingPortGimmickConfig.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
 #include "Utilities/TromboneStatics.h"
 
 ADockingPort::ADockingPort()
@@ -15,6 +16,14 @@ ADockingPort::ADockingPort()
 	PortMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	OverlapSphere->SetupAttachment(PortMesh);
+
+	LandingVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LandingVFXComponent"));
+	LandingVFXComponent->SetupAttachment(PortMesh);
+	LandingVFXComponent->SetAutoActivate(false);
+
+	GlowVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("GlowVFXComponent"));
+	GlowVFXComponent->SetupAttachment(PortMesh);
+	GlowVFXComponent->SetAutoActivate(false);
 
 	ScoreType = EScoreType::DockingPort;
 }
@@ -46,7 +55,7 @@ void ADockingPort::BeginPlay()
 	FallStartServerTime = UTromboneStatics::GetServerWorldTime(this);
 }
 
-bool ADockingPort::EvaluateFall(const float Elapsed, FVector& OutLocation) const
+void ADockingPort::GetFallTimes(float& OutCruiseTime, float& OutBrakeTime) const
 {
 	const float Distance = FMath::Max(FallStart.Z - FallEnd.Z, 0.f);
 	const float Speed = FMath::Max(FallSpeed, 1.f);
@@ -54,9 +63,18 @@ bool ADockingPort::EvaluateFall(const float Elapsed, FVector& OutLocation) const
 	// The pod falls at a fixed speed, then slows down evenly over the brake height and stops on the floor.
 	// Slowing from Speed to 0 over BrakeDistance takes twice as long as crossing it at full speed
 	const float BrakeDistance = FMath::Min(BrakeHeight, Distance);
-	const float CruiseDistance = Distance - BrakeDistance;
-	const float CruiseTime = CruiseDistance / Speed;
-	const float BrakeTime = 2.f * BrakeDistance / Speed;
+	OutCruiseTime = (Distance - BrakeDistance) / Speed;
+	OutBrakeTime = 2.f * BrakeDistance / Speed;
+}
+
+bool ADockingPort::EvaluateFall(const float Elapsed, FVector& OutLocation) const
+{
+	const float Distance = FMath::Max(FallStart.Z - FallEnd.Z, 0.f);
+	const float Speed = FMath::Max(FallSpeed, 1.f);
+
+	float CruiseTime, BrakeTime;
+	GetFallTimes(CruiseTime, BrakeTime);
+	const float CruiseDistance = CruiseTime * Speed;
 
 	float Travelled;
 	if (Elapsed < CruiseTime)
@@ -91,6 +109,14 @@ void ADockingPort::TickFalling(const float DeltaTime)
 	const bool bReachedFloor = EvaluateFall(Elapsed, Location);
 	SetActorLocation(Location);
 
+	// The landing effect starts a little before the floor, so the dust is already there when the pod touches it
+	float CruiseTime, BrakeTime;
+	GetFallTimes(CruiseTime, BrakeTime);
+	if (!bLandingVFXPlayed && Elapsed >= CruiseTime + BrakeTime - LandingVFXOffset)
+	{
+		PlayLandingVFX();
+	}
+
 	// Clients wait at the floor until the server says the pod has landed
 	if (bReachedFloor && HasAuthority())
 	{
@@ -101,6 +127,38 @@ void ADockingPort::TickFalling(const float DeltaTime)
 void ADockingPort::OnLanded()
 {
 	SetActorLocation(LandedLocation);
+
+	if (GetNetMode() == NM_DedicatedServer) return;
+
+	PlayLandingVFX();
+
+	if (GlowVFXOffset <= 0.f)
+	{
+		StartGlowVFX();
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(GlowTimerHandle, this, &ThisClass::StartGlowVFX, GlowVFXOffset, false);
+	}
+}
+
+void ADockingPort::PlayLandingVFX()
+{
+	if (bLandingVFXPlayed || GetNetMode() == NM_DedicatedServer) return;
+	bLandingVFXPlayed = true;
+
+	if (LandingVFXComponent->GetAsset())
+	{
+		LandingVFXComponent->Activate();
+	}
+}
+
+void ADockingPort::StartGlowVFX()
+{
+	if (GlowVFXComponent->GetAsset())
+	{
+		GlowVFXComponent->Activate();
+	}
 }
 
 void ADockingPort::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
