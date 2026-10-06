@@ -7,8 +7,15 @@
 #include "Engine/StaticMesh.h"
 #include "Data/Gimmick/UfoGimmickConfig.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
 #include "Utilities/TromboneLogs.h"
 #include "Utilities/TromboneStatics.h"
+
+namespace
+{
+	/** Flight height the Blueprint tunes BeamVFXZScale at. */
+	constexpr float BeamVFXReferenceHeight = 600.f;
+}
 
 namespace UfoWarp
 {
@@ -42,13 +49,19 @@ AUfo::AUfo()
 	BodyPivot = CreateDefaultSubobject<USceneComponent>(TEXT("BodyPivot"));
 	BodyPivot->SetupAttachment(GetRootComponent());
 
-	// ApplyBeamState turns the overlap on, on the server only
+	// ApplyBeamState turns the overlap on, on the server only. The effect draws the beam, so the mesh only shows in the editor
 	BeamMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BeamMesh"));
 	BeamMesh->SetupAttachment(GetRootComponent());
 	BeamMesh->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 	BeamMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BeamMesh->SetGenerateOverlapEvents(true);
 	BeamMesh->SetCastShadow(false);
+	BeamMesh->SetHiddenInGame(true);
+
+	// Off until the beam spreads. UpdateMotion turns it on and off
+	BeamVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BeamVFXComponent"));
+	BeamVFXComponent->SetupAttachment(GetRootComponent());
+	BeamVFXComponent->SetAutoActivate(false);
 }
 
 const UUfoGimmickConfig& AUfo::GetConfig() const
@@ -188,11 +201,44 @@ void AUfo::UpdateMotion(const float Now)
 	SetActorLocation(Location);
 	FitBeamToLength(BeamFraction);
 
+	// The effect plays from the start of the spread to the start of the fold, and animates its own in and out
+	const bool bLeaving = LeaveStartServerTime >= 0.f && Now >= LeaveStartServerTime;
+	SetBeamVFXOn(!bLeaving && Elapsed >= Config.WarpDuration && Elapsed < LineEnd);
+
+	// Deactivate only stops the spawning, and a long lived particle would hang there until the UFO is gone.
+	// So once the fold is over, whatever is left of the beam is cut
+	if (!bBeamVFXOn && !bBeamVFXCut && Elapsed >= LineEnd + Config.BeamDeployDuration)
+	{
+		bBeamVFXCut = true;
+		BeamVFXComponent->DeactivateImmediate();
+	}
+
 	const FVector BodyScale(
 		1.f + UfoWarp::StretchLength * Stretch + UfoWarp::SquashAmount * Squash,
 		1.f - UfoWarp::StretchThin * Stretch + UfoWarp::SquashAmount * Squash,
 		1.f - UfoWarp::StretchThin * Stretch - UfoWarp::SquashAmount * Squash);
 	BodyPivot->SetRelativeScale3D(BodyScale * FMath::Max(Size, KINDA_SMALL_NUMBER));
+}
+
+void AUfo::SetBeamVFXOn(const bool bOn)
+{
+	if (bBeamVFXOn == bOn || GetNetMode() == NM_DedicatedServer) return;
+	bBeamVFXOn = bOn;
+
+	if (!bOn)
+	{
+		BeamVFXComponent->Deactivate();
+		return;
+	}
+
+	// The origin of the effect is the bottom of its beam, like the pivot of the mesh, so it stands on the floor and reaches up to the body.
+	// Only Z is scaled, so the beam keeps its width. The emitters simulate in local space, so the scale reaches the particles.
+	// The Blueprint tunes the scale at the reference height, and a taller flight stretches the beam by the same ratio
+	const float BeamLength = GetConfig().BeamLength;
+	const float ZScale = BeamVFXZScale * BeamLength / BeamVFXReferenceHeight;
+	BeamVFXComponent->SetRelativeLocation(FVector(0.f, 0.f, -BeamLength));
+	BeamVFXComponent->SetRelativeScale3D(FVector(1.f, 1.f, ZScale));
+	BeamVFXComponent->Activate();
 }
 
 void AUfo::UpdateServer(const float Now)

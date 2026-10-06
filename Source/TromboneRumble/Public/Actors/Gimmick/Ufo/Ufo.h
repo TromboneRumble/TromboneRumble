@@ -8,13 +8,14 @@
 #include "Ufo.generated.h"
 
 class ATromboneCharacterBase;
+class UNiagaraComponent;
 class UStaticMeshComponent;
 class UUfoGimmickConfig;
 
 /**
  * Ufo is the flying object AUfoGimmick spawns.
  * It moves along its path on every machine, and on the server its beam catches the players inside it.
- * The Blueprint adds the UFO mesh, picks the beam mesh, and adds the effects and the sounds.
+ * The Blueprint adds the UFO mesh, picks the beam collision mesh and the beam effect, and adds the sounds.
  *
  * It warps in from behind its line, spreads its beam down, then flies the line with the beam on.
  * At the end it drops every caught player and folds the beam up, then warps out ahead and destroys itself.
@@ -67,12 +68,20 @@ protected:
 	TObjectPtr<USceneComponent> BodyPivot;
 
 	/**
-	 * Beam mesh below the UFO, shown while the beam is on. The server catches the players that overlap its simple collision.
+	 * Catch volume of the beam, never drawn in game. The server catches the players that overlap its simple collision.
 	 * Its pivot must sit at the bottom of the mesh, and the mesh needs a convex simple collision.
-	 * The UFO puts it at the end of the beam and stretches it up to the root, so the Blueprint sets only the mesh, the material and the width.
+	 * The UFO puts it at the end of the beam and stretches it up to the root, so the Blueprint sets only the mesh and the width.
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ufo")
 	TObjectPtr<UStaticMeshComponent> BeamMesh;
+
+	/** 광선 이펙트. 광선이 펼쳐질 때 켜지고 접히기 시작하면 꺼진다. 이펙트 원점은 광선 아래쪽 끝이어야 한다 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ufo")
+	TObjectPtr<UNiagaraComponent> BeamVFXComponent;
+
+	/** 광선 이펙트를 세로로 늘리는 배율. 비행 높이가 600일 때 광선 위 끝이 본체 아랫면에 닿도록 맞춘다. 비행 높이가 바뀌면 그 비율만큼 자동으로 따라간다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|VFX", meta = (DisplayName = "광선 VFX Z 스케일", ClampMin = "0.01"))
+	float BeamVFXZScale = 1.f;
 
 private:
 
@@ -85,6 +94,12 @@ private:
 
 	/** Move the UFO, shape its body and its beam, and fire the warp events. Runs on every machine from the server time. */
 	void UpdateMotion(float Now);
+
+	/**
+	 * Turn the beam effect on or off, once per change. Not on a dedicated server.
+	 * The effect stands on the floor and is stretched along Z by BeamVFXZScale, scaled again by the flight height.
+	 */
+	void SetBeamVFXOn(bool bOn);
 
 	/** Turn the beam on and off, catch players, and start the leave once nobody hangs from the UFO. Server only. */
 	void UpdateServer(float Now);
@@ -128,6 +143,12 @@ private:
 
 	bool bWarpInFired = false;
 	bool bWarpOutFired = false;
+
+	/** Is the beam effect playing on this machine. */
+	bool bBeamVFXOn = false;
+
+	/** Have the last particles of the beam effect been removed, at the end of the fold. */
+	bool bBeamVFXCut = false;
 
 	/** Players the beam holds right now. Server only. */
 	TArray<TWeakObjectPtr<ATromboneCharacterBase>> LiftedCharacters;
