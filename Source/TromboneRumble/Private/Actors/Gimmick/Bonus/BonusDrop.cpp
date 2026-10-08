@@ -9,6 +9,12 @@
 #include "Data/Gimmick/BonusGimmickConfig.h"
 #include "Net/UnrealNetwork.h"
 
+namespace
+{
+	/** Seconds the drop stays after its exit is over. */
+	constexpr float ExitRemoveDelay = 0.2f;
+}
+
 ABonusDrop::ABonusDrop()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -54,7 +60,11 @@ void ABonusDrop::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bHasLanded)
+	if (bExiting)
+	{
+		TickExit(DeltaTime);
+	}
+	else if (bHasLanded)
 	{
 		TickLanded(DeltaTime);
 	}
@@ -74,7 +84,7 @@ void ABonusDrop::Land(const FVector& InLandedLocation)
 	// The lifetime counts from the landing, so a long fall does not eat into it
 	if (Lifetime > 0.f)
 	{
-		SetLifeSpan(Lifetime);
+		GetWorldTimerManager().SetTimer(LifetimeTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartExit, static_cast<ACharacter*>(nullptr)), Lifetime, false);
 	}
 
 	OnRep_HasLanded();
@@ -112,7 +122,7 @@ void ABonusDrop::HandleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 	// A client does not own this actor, so it asks the server through the relay component of its own character
 	if (HasAuthority())
 	{
-		Collect(Character);
+		StartExit(Character);
 	}
 	else if (UClientToServerRelayComponent* Relay = Character->GetClientToServerRelayComponent())
 	{
@@ -124,28 +134,41 @@ void ABonusDrop::HandleServerRPC(ACharacter* InstigatorCharacter)
 {
 	if (!HasAuthority() || !InstigatorCharacter) return;
 
-	Collect(InstigatorCharacter);
+	StartExit(InstigatorCharacter);
 }
 
-void ABonusDrop::Collect(ACharacter* Collector)
+void ABonusDrop::StartExit(ACharacter* Collector)
 {
-	if (bCollectedOnServer) return;
+	// The multicast runs here at once, so a second pickup or the lifetime sees the exit already started
+	if (bExiting) return;
 
-	bCollectedOnServer = true;
-	Multicast_Collected(Collector);
+	GetWorldTimerManager().ClearTimer(LifetimeTimerHandle);
+	Multicast_ExitStarted(Collector);
 
-	// A short delay lets the multicast leave before the actor channel closes
-	SetLifeSpan(0.2f);
+	// Removing the drop closes its actor channel.
+	// So it waits for the multicast to leave, and for a client that got the multicast late to finish the exit
+	SetLifeSpan(GetExitDuration() + ExitRemoveDelay);
 }
 
-void ABonusDrop::Multicast_Collected_Implementation(ACharacter* Collector)
+void ABonusDrop::Multicast_ExitStarted_Implementation(ACharacter* Collector)
 {
-	// Nobody else picks it up while it waits to be removed
+	// Nobody else picks it up while it leaves
+	bExiting = true;
 	bCollectedLocally = true;
-	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 
-	OnCollected(Collector);
+	// The lifetime ends without a collector
+	if (Collector)
+	{
+		OnCollected(Collector);
+	}
+
+	OnExitStarted();
+}
+
+void ABonusDrop::OnExitStarted()
+{
+	SetActorHiddenInGame(true);
 }
 
 void ABonusDrop::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

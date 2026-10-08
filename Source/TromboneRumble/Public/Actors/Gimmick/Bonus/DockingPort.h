@@ -14,6 +14,7 @@ class UNiagaraComponent;
  *
  * The server fixes the start, the end and the start time, and every machine computes the same position from the server time.
  * So the fall needs no replicated movement and looks the same everywhere.
+ * When it is picked up or its lifetime ends, it plays the fall backwards and launches back up to where it started.
  *
  * @see ABonusSpawner
  */
@@ -35,8 +36,12 @@ protected:
 	//~ Begin ABonusDrop Interface
 	virtual void TickFalling(float DeltaTime) override;
 	virtual void OnLanded() override;
+	virtual void OnExitStarted() override; // Keeps the pod visible and starts the launch.
+	virtual void TickExit(float DeltaTime) override;
+	virtual float GetExitDuration() const override;
 	//~ End ABonusDrop Interface
 
+	/** Body of the pod and root of the actor. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> PortMesh;
 
@@ -70,19 +75,39 @@ private:
 	 */
 	bool EvaluateFall(float Elapsed, FVector& OutLocation) const;
 
-	/**
-	 * Split the fall into its two parts.
-	 *
-	 * @param OutCruiseTime Seconds at full speed.
-	 * @param OutBrakeTime Seconds of slowing down to the floor.
-	 */
-	void GetFallTimes(float& OutCruiseTime, float& OutBrakeTime) const;
+	/** Shape of the fall, from the replicated start, end, speed and brake height. */
+	struct FFallProfile
+	{
+		/** Height of the fall in cm. */
+		float Distance = 0.f;
 
-	/** Turn the landing effect on once. Not on a dedicated server. */
+		/** Speed before the brake in cm per second. */
+		float Speed = 1.f;
+
+		/** Seconds at full speed. */
+		float CruiseTime = 0.f;
+
+		/** Seconds of slowing down to the floor. */
+		float BrakeTime = 0.f;
+
+		/** @return Seconds of the whole fall. */
+		float TotalTime() const { return CruiseTime + BrakeTime; }
+	};
+
+	/** @return The shape of the fall. */
+	FFallProfile GetFallProfile() const;
+
+	/** Turn the landing effect on once. */
 	void PlayLandingVFX();
 
 	/** Turn the glow on. Runs GlowVFXOffset seconds after the landing. */
 	void StartGlowVFX();
+
+	/**
+	 * Seconds of the fall the launch plays backwards.
+	 * The whole fall once the pod has landed, or only the part fallen so far when it is picked up on the way down.
+	 */
+	float GetFallTimeToReverse() const;
 
 	/** Location the pod starts to fall from. */
 	UPROPERTY(Replicated)
@@ -99,7 +124,17 @@ private:
 	/** Has the landing effect played on this machine. It plays before the landing, so the landing must not play it again. */
 	bool bLandingVFXPlayed = false;
 
+	/** Timer that turns the glow on after the landing. */
 	FTimerHandle GlowTimerHandle;
+
+	/** Seconds of the fall the launch plays backwards, fixed when the exit starts. */
+	float ExitFallTime = 0.f;
+
+	/**
+	 * World time of this machine the launch started at.
+	 * Not a server time like the fall. The pod is removed a few seconds later, so a client that joins in between has nothing to catch up on.
+	 */
+	float ExitStartTime = 0.f;
 
 	/** Speed before the brake, from UDockingPortGimmickConfig. Replicated so every machine computes the same fall. */
 	UPROPERTY(Replicated)

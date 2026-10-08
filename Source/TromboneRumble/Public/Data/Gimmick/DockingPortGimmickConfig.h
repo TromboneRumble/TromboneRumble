@@ -24,7 +24,7 @@ public:
 	{
 		GimmickType = EGimmickType::DockingPort;
 		MaxDropCount = 2;
-		WarningDuration = 3.f;
+		WarningDuration = 0.f;
 		Lifetime = 10.f;
 	}
 
