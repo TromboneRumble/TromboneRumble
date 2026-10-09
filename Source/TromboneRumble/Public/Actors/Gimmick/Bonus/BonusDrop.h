@@ -17,9 +17,11 @@ class USphereComponent;
  * BonusDrop falls from the sky and gives bonus score to the player who touches it.
  * ABonusSpawner drops it, and a subclass decides how it falls and how it looks once it lands.
  *
- * The player who touches it adds the score on its own machine, the same way every other score works, and tells the server through its relay component.
- * The server then removes the drop on every machine.
- * With a lifetime, it disappears that many seconds after it lands.
+ * The player who touches it adds the score on its own machine, the same way every other score works.
+ * Then it asks the server to start the exit through the relay component of its character.
+ * The server then starts the exit on every machine and removes the drop once the exit is over.
+ * With a lifetime, the exit starts that many seconds after it lands.
+ * The exit hides the drop at once, and a subclass can play a leaving motion instead.
  *
  * @see ABonusSpawner
  */
@@ -63,6 +65,18 @@ protected:
 	/** Runs on every machine every frame after the drop lands. */
 	virtual void TickLanded(float DeltaTime) {}
 
+	/**
+	 * Runs once on every machine when the drop is picked up or its lifetime ends.
+	 * Hides the drop, and a subclass with a leaving motion starts it here instead.
+	 */
+	virtual void OnExitStarted();
+
+	/** Runs on every machine every frame after the exit starts. */
+	virtual void TickExit(float DeltaTime) {}
+
+	/** Seconds the leaving motion of a subclass takes. The server removes the drop this long after the exit starts. */
+	virtual float GetExitDuration() const { return 0.f; }
+
 	/** Fix the landed location, start the lifetime and start the landed state on every machine. Server only. */
 	void Land(const FVector& InLandedLocation);
 
@@ -70,11 +84,14 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bonus", meta = (DisplayName = "On Landed", ScriptName = "OnLanded"))
 	void K2_OnLanded();
 
-	/** Called on every machine when a player picks the drop up, just before it disappears. */
+	/** Called on every machine when a player picks the drop up, just before its exit starts. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bonus")
 	void OnCollected(ACharacter* Collector);
 
-	/** Touch area of the pickup. Its scale is absolute, so a pop in of the mesh does not shrink it. The subclass attaches it to its root. */
+	/**
+	 * Touch area of the pickup. The subclass attaches it to its root.
+	 * Its scale is absolute, so a pop in of the mesh does not shrink it.
+	 */
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USphereComponent> OverlapSphere;
 
@@ -86,8 +103,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Bonus")
 	EScoreType ScoreType = EScoreType::Present;
 
+	/** Has the drop landed. The server sets it when the drop reaches the floor. */
 	UPROPERTY(ReplicatedUsing = OnRep_HasLanded)
 	bool bHasLanded = false;
+
+	/** Has the exit started on this machine. */
+	bool bExiting = false;
 
 	/** Location the server fixed when the drop landed. */
 	UPROPERTY(Replicated)
@@ -95,30 +116,37 @@ protected:
 
 private:
 
+	/** Give the score to the local player who touches the drop and ask the server to start the exit. */
 	UFUNCTION()
 	void HandleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	/** Start the landed state on this machine. */
 	UFUNCTION()
 	void OnRep_HasLanded();
 
-	/** Give the drop away and remove it on every machine. Server only. */
-	void Collect(ACharacter* Collector);
+	/**
+	 * Start the exit on every machine and remove the drop once it is over. Server only.
+	 *
+	 * @param Collector The player who picked the drop up, or null when its lifetime ended.
+	 */
+	void StartExit(ACharacter* Collector);
 
+	/** Start the exit on every machine. Collector is null when the lifetime ended. */
 	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_Collected(ACharacter* Collector);
+	void Multicast_ExitStarted(ACharacter* Collector);
 
 	/** Score for picking it up. Replicated, because the player who touches it adds the score on its own machine. */
 	UPROPERTY(Replicated)
 	int32 BonusScore = 300;
 
-	/** Seconds it stays after it lands. 0 keeps it. Server only. */
+	/** Seconds it stays after it lands before its exit starts. 0 keeps it until a player picks it up. Server only. */
 	float Lifetime = 0.f;
+
+	/** Timer that starts the exit when the lifetime ends. */
+	FTimerHandle LifetimeTimerHandle;
 
 	/** Has it been picked up on this machine. Stops a second award before the server answers. */
 	bool bCollectedLocally = false;
-
-	/** Has the server given it away. Server only. */
-	bool bCollectedOnServer = false;
 
 public:
 

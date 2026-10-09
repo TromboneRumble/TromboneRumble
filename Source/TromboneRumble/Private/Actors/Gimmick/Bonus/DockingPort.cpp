@@ -55,37 +55,34 @@ void ADockingPort::BeginPlay()
 	FallStartServerTime = UTromboneStatics::GetServerWorldTime(this);
 }
 
-void ADockingPort::GetFallTimes(float& OutCruiseTime, float& OutBrakeTime) const
+ADockingPort::FFallProfile ADockingPort::GetFallProfile() const
 {
-	const float Distance = FMath::Max(FallStart.Z - FallEnd.Z, 0.f);
-	const float Speed = FMath::Max(FallSpeed, 1.f);
+	FFallProfile Fall;
+	Fall.Distance = FMath::Max(FallStart.Z - FallEnd.Z, 0.f);
+	Fall.Speed = FMath::Max(FallSpeed, 1.f);
 
 	// The pod falls at a fixed speed, then slows down evenly over the brake height and stops on the floor.
 	// Slowing from Speed to 0 over BrakeDistance takes twice as long as crossing it at full speed
-	const float BrakeDistance = FMath::Min(BrakeHeight, Distance);
-	OutCruiseTime = (Distance - BrakeDistance) / Speed;
-	OutBrakeTime = 2.f * BrakeDistance / Speed;
+	const float BrakeDistance = FMath::Min(BrakeHeight, Fall.Distance);
+	Fall.CruiseTime = (Fall.Distance - BrakeDistance) / Fall.Speed;
+	Fall.BrakeTime = 2.f * BrakeDistance / Fall.Speed;
+	return Fall;
 }
 
 bool ADockingPort::EvaluateFall(const float Elapsed, FVector& OutLocation) const
 {
-	const float Distance = FMath::Max(FallStart.Z - FallEnd.Z, 0.f);
-	const float Speed = FMath::Max(FallSpeed, 1.f);
-
-	float CruiseTime, BrakeTime;
-	GetFallTimes(CruiseTime, BrakeTime);
-	const float CruiseDistance = CruiseTime * Speed;
+	const FFallProfile Fall = GetFallProfile();
 
 	float Travelled;
-	if (Elapsed < CruiseTime)
+	if (Elapsed < Fall.CruiseTime)
 	{
-		Travelled = Speed * Elapsed;
+		Travelled = Fall.Speed * Elapsed;
 	}
-	else if (Elapsed < CruiseTime + BrakeTime)
+	else if (Elapsed < Fall.TotalTime())
 	{
-		const float BrakeElapsed = Elapsed - CruiseTime;
-		const float Deceleration = Speed / BrakeTime;
-		Travelled = CruiseDistance + Speed * BrakeElapsed - 0.5f * Deceleration * BrakeElapsed * BrakeElapsed;
+		const float BrakeElapsed = Elapsed - Fall.CruiseTime;
+		const float Deceleration = Fall.Speed / Fall.BrakeTime;
+		Travelled = Fall.Speed * Fall.CruiseTime + Fall.Speed * BrakeElapsed - 0.5f * Deceleration * BrakeElapsed * BrakeElapsed;
 	}
 	else
 	{
@@ -93,7 +90,7 @@ bool ADockingPort::EvaluateFall(const float Elapsed, FVector& OutLocation) const
 		return true;
 	}
 
-	OutLocation = Distance > KINDA_SMALL_NUMBER ? FMath::Lerp(FallStart, FallEnd, Travelled / Distance) : FallEnd;
+	OutLocation = Fall.Distance > KINDA_SMALL_NUMBER ? FMath::Lerp(FallStart, FallEnd, Travelled / Fall.Distance) : FallEnd;
 	return false;
 }
 
@@ -110,9 +107,7 @@ void ADockingPort::TickFalling(const float DeltaTime)
 	SetActorLocation(Location);
 
 	// The landing effect starts a little before the floor, so the dust is already there when the pod touches it
-	float CruiseTime, BrakeTime;
-	GetFallTimes(CruiseTime, BrakeTime);
-	if (!bLandingVFXPlayed && Elapsed >= CruiseTime + BrakeTime - LandingVFXOffset)
+	if (!bLandingVFXPlayed && Elapsed >= GetFallProfile().TotalTime() - LandingVFXOffset)
 	{
 		PlayLandingVFX();
 	}
@@ -128,8 +123,6 @@ void ADockingPort::OnLanded()
 {
 	SetActorLocation(LandedLocation);
 
-	if (GetNetMode() == NM_DedicatedServer) return;
-
 	PlayLandingVFX();
 
 	if (GlowVFXOffset <= 0.f)
@@ -142,9 +135,49 @@ void ADockingPort::OnLanded()
 	}
 }
 
+void ADockingPort::OnExitStarted()
+{
+	ExitFallTime = GetFallTimeToReverse();
+	ExitStartTime = GetWorld()->GetTimeSeconds();
+
+	// The thrusters fire again for the launch, and the glow is cut at once so no particle stays behind on the way up
+	GetWorldTimerManager().ClearTimer(GlowTimerHandle);
+	GlowVFXComponent->DeactivateImmediate();
+	if (LandingVFXComponent->GetAsset())
+	{
+		LandingVFXComponent->Activate(true);
+	}
+}
+
+void ADockingPort::TickExit(const float DeltaTime)
+{
+	// The launch is the fall played backwards, so the fall time runs down from where the pod was and stops at the start
+	const float Elapsed = GetWorld()->GetTimeSeconds() - ExitStartTime;
+
+	FVector Location;
+	EvaluateFall(FMath::Max(ExitFallTime - Elapsed, 0.f), Location);
+	SetActorLocation(Location);
+}
+
+float ADockingPort::GetExitDuration() const
+{
+	return GetFallTimeToReverse();
+}
+
+float ADockingPort::GetFallTimeToReverse() const
+{
+	const float FallTime = GetFallProfile().TotalTime();
+
+	if (bHasLanded) return FallTime;
+
+	// Picked up on the way down, so the pod goes back up only as far as it has come
+	const float Elapsed = UTromboneStatics::GetServerWorldTime(this) - FallStartServerTime;
+	return FMath::Clamp(Elapsed, 0.f, FallTime);
+}
+
 void ADockingPort::PlayLandingVFX()
 {
-	if (bLandingVFXPlayed || GetNetMode() == NM_DedicatedServer) return;
+	if (bLandingVFXPlayed) return;
 	bLandingVFXPlayed = true;
 
 	if (LandingVFXComponent->GetAsset())
