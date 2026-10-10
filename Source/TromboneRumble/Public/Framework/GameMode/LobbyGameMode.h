@@ -43,6 +43,7 @@ public:
 
 	// ~ Begin AGameModeBase Interface
 	virtual void Logout(AController* ExitedPlayer) override;
+	virtual void SetPlayerDefaults(APawn* PlayerPawn) override;
 	// ~ End AGameModeBase Interface
 
 protected:

@@ -54,6 +54,9 @@ public:
 	/** Handle single player is ready */
 	void HandlePlayerReady(APlayerController* ReadyPlayer);
 
+	/** Hide the pawn and lock its movement and input until it falls. The game mode calls it when the pawn spawns. */
+	void HideUntilFall(APawn* Pawn) const;
+
 	/** Handle all players are ready */
 	void HandleAllPlayersReady();
 
@@ -72,9 +75,6 @@ private:
 	void SetLobbyState(const ELobbyState& InNewState);
 
 	// ~ Begin WaitingForPlayers
-	/** Hide the pawn and lock the input. If the pawn is not valid, retry on the next tick. */
-	void PrepareWaitingPlayer(APlayerController* PC, int32 RetryCount);
-	
 	void OnPreFallTimerFinished();
 	// ~ End WaitingForPlayers
 
