@@ -62,7 +62,7 @@ void UPopupBase::NativeOnActivated()
 
 	if (bPlaySound && OpenSound)
 	{
-		UAkGameplayStatics::PostEvent(OpenSound, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
+		UAkGameplayStatics::PostEvent(OpenSound, nullptr, 0, FOnAkPostEventCallback());
 	}
 }
 
@@ -70,7 +70,7 @@ void UPopupBase::NativeOnDeactivated()
 {
 	if (bPlaySound && CloseSound)
 	{
-		UAkGameplayStatics::PostEvent(CloseSound, GetOwningPlayerPawn(), 0, FOnAkPostEventCallback());
+		UAkGameplayStatics::PostEvent(CloseSound, nullptr, 0, FOnAkPostEventCallback());
 	}
 	
 	bIsClosing = false;

@@ -1,7 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
-#include "AkGameplayStatics.h"
+#include "AkComponent.h"
 #include "Actors/Gimmick/Breakable/BreakableDoor.h"
 #include "Actors/Gimmick/Drunkard/DrunkardAIController.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
@@ -74,9 +74,9 @@ void ADrunkardNPC::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (SpawnLaughEvent)
+	if (SpawnLaughEvent && AkSoundComponent)
 	{
-		UAkGameplayStatics::PostEvent(SpawnLaughEvent, this, 0, FOnAkPostEventCallback());
+		AkSoundComponent->PostAkEvent(SpawnLaughEvent, 0, FOnAkPostEventCallback());
 	}
 
 	const UDrunkardGimmickConfig& Config = GetDrunkardConfig();

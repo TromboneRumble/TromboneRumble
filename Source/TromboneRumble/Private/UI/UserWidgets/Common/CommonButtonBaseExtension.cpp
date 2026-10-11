@@ -96,7 +96,7 @@ void UCommonButtonBaseExtension::PlayHoveredSound() const
 {
 	if (const UCommonButtonStyleExtension* StyleExtension = GetStyleExtensionCDO())
 	{
-		StyleExtension->PostHoveredSound(GetOwningPlayerPawn());
+		StyleExtension->PostHoveredSound(nullptr);
 	}
 }
 
@@ -104,7 +104,7 @@ void UCommonButtonBaseExtension::PlayPressedSound() const
 {
 	if (const UCommonButtonStyleExtension* StyleExtension = GetStyleExtensionCDO())
 	{
-		StyleExtension->PostPressedSound(GetOwningPlayerPawn());
+		StyleExtension->PostPressedSound(nullptr);
 	}
 }
 

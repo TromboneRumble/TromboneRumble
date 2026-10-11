@@ -131,7 +131,8 @@ void ATromboneCharacterBase::BeginPlay()
 		FloatableComponent->SetFloatingAllowed(RagdollComponent && RagdollComponent->IsRagdoll());
 	}
 
-	if (IsLocallyControlled())
+	// 서버에선 AI도 IsLocallyControlled()가 true라 플레이어 컨트롤러인지도 본다
+	if (IsLocallyControlled() && Controller->IsPlayerController())
 	{
 		// Sound Listener의 기본 설정을 카메라->Player로 변경
 		if (AkSoundComponent)
