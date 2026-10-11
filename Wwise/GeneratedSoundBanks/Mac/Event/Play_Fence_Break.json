@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{11C1005F-D601-43A2-9164-83690C4969C5}",
     "Language": "SFX",
-    "Hash": "{0A860A53-CF00-A57E-411E-313E574A6251}",
+    "Hash": "{CF5D5070-7A99-053B-71F7-64A7AE13B62A}",
     "ObjectPath": "Play_Fence_Break",
     "ShortName": "Play_Fence_Break",
     "Path": "Event/Play_Fence_Break.bnk",
@@ -56,6 +56,6 @@
     ]
    }
   ],
-  "FileHash": "{BC618DB7-9ACA-3F8E-4D31-F1E271AFFF0B}"
+  "FileHash": "{AC09830E-ABA4-A286-B54F-23AA762E4B48}"
  }
 }

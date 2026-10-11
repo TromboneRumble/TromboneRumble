@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2022407976" Type="Event" GUID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}" Language="SFX" Hash="{16C0B4AA-F5D7-AD8B-7B2D-78204DEAE142}">
+			<ObjectPath>Play_Air_Escape</ObjectPath>
+			<ShortName>Play_Air_Escape</ShortName>
+			<Path>Event/Play_Air_Escape.bnk</Path>
+			<Media>
+				<File Id="151741016" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>SCIFI_DOOR_AIR.wav</ShortName>
+					<Path>Media/151741016.wem</Path>
+					<CachePath>SFX/SCIFI_DOOR_AIR_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2022407976" Name="Play_Air_Escape" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Air_Escape" GUID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="3.7578332" DurationMax="3.7578332">
+					<MediaRefs>
+						<MediaRef Id="151741016"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{2769B256-7FC0-5A0D-4EC9-2260A718518E}</FileHash>
+</SoundBanksInfo>

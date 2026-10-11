@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1296229240" Type="Event" GUID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}" Language="SFX" Hash="{45166D77-6F57-0BD5-EEE0-6230040F00B7}">
+		<SoundBank Id="1296229240" Type="Event" GUID="{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}" Language="SFX" Hash="{3BF26DED-F70C-190E-8D13-E04223F601E7}">
 			<ObjectPath>Play_Cymbal_Attack_Voice</ObjectPath>
 			<ShortName>Play_Cymbal_Attack_Voice</ShortName>
 			<Path>Event/Play_Cymbal_Attack_Voice.bnk</Path>
@@ -27,5 +27,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{882334AD-2344-DF8E-C2BF-2E6B0697B05F}</FileHash>
+	<FileHash>{5FBB09C0-A205-57C4-078F-C06AC2F1F4E0}</FileHash>
 </SoundBanksInfo>

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{75B7B990-67F3-4370-89EB-C5F7DA9EEA23}",
     "Language": "SFX",
-    "Hash": "{0A3CBE86-9F93-61B1-D365-DE48D3D69A9A}",
+    "Hash": "{8B1E74EA-0901-5432-ED25-97041E59AABE}",
     "ObjectPath": "Stop_Beer_Drop",
     "ShortName": "Stop_Beer_Drop",
     "Path": "Event/Stop_Beer_Drop.bnk",
@@ -28,6 +28,6 @@
     ]
    }
   ],
-  "FileHash": "{CBDF6CBA-BE69-A4CA-62E1-F8AABBD393CC}"
+  "FileHash": "{7DBFE4F7-2A90-BC4B-57DB-FD84D437FC64}"
  }
 }

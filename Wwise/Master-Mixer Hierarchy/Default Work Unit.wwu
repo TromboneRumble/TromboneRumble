@@ -213,29 +213,29 @@
 						<ObjectList Name="RTPC">
 							<Reference>
 								<Local>
-									<RTPC Name="" ID="{00713B21-75D1-4615-9410-1946C71ACF1B}" ShortID="466956580">
+									<RTPC Name="" ID="{61BAD2A6-05F5-48D3-A4F2-E2AA80434071}" ShortID="430809227">
 										<PropertyList>
-											<Property Name="PropertyName" Type="string" Value="BusVolume"/>
+											<Property Name="PropertyName" Type="string" Value="Lowpass"/>
 										</PropertyList>
 										<ReferenceList>
 											<Reference Name="ControlInput">
-												<ObjectRef Name="RTPC_MasterVolume" ID="{B27D731F-8A64-4DA0-B718-3CCB1E9C55E2}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+												<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
 											</Reference>
 											<Reference Name="Curve">
 												<Custom>
-													<Curve Name="" ID="{5FE19EF1-3A0A-40FC-A123-AE0431A7E93E}">
+													<Curve Name="" ID="{6A067A2B-F779-4BB0-8C64-9A788C7EB26B}">
 														<PropertyList>
-															<Property Name="Flags" Type="int32" Value="3"/>
+															<Property Name="Flags" Type="int32" Value="65537"/>
 														</PropertyList>
 														<PointList>
 															<Point>
 																<XPos>0</XPos>
-																<YPos>-200</YPos>
+																<YPos>0</YPos>
 																<Flags>5</Flags>
 															</Point>
 															<Point>
 																<XPos>100</XPos>
-																<YPos>0</YPos>
+																<YPos>63</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>

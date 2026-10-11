@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{160966EB-8A5C-EC83-7734-F6391EE93ED8}">
+		<SoundBank Id="1324798284" Type="Event" GUID="{802600D1-086F-4B89-A202-B18F89409828}" Language="SFX" Hash="{1C883FDB-F5A6-2303-8732-7AF25DF0AF80}">
 			<ObjectPath>Play_Player_Foot</ObjectPath>
 			<ShortName>Play_Player_Foot</ShortName>
 			<Path>Event/Play_Player_Foot.bnk</Path>
@@ -35,6 +35,11 @@
 					<ShortName>Wood2_Foot_2.wav</ShortName>
 					<Path>Media/167561171.wem</Path>
 					<CachePath>SFX/Wood2_Foot_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="197488015" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MetalFoot_2 .wav</ShortName>
+					<Path>Media/197488015.wem</Path>
+					<CachePath>SFX/MetalFoot_2 _818F3B66.wem</CachePath>
 				</File>
 				<File Id="198780667" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Rock_Foot_2.wav</ShortName>
@@ -76,10 +81,20 @@
 					<Path>Media/279374184.wem</Path>
 					<CachePath>SFX/Wood2_Foot_4_818F3B66.wem</CachePath>
 				</File>
+				<File Id="361319171" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MetalFoot_4.wav</ShortName>
+					<Path>Media/361319171.wem</Path>
+					<CachePath>SFX/MetalFoot_4_818F3B66.wem</CachePath>
+				</File>
 				<File Id="369342720" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Ice_Foot_5.wav</ShortName>
 					<Path>Media/369342720.wem</Path>
 					<CachePath>SFX/Ice_Foot_5_818F3B66.wem</CachePath>
+				</File>
+				<File Id="441436594" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MetalFoot_3.wav</ShortName>
+					<Path>Media/441436594.wem</Path>
+					<CachePath>SFX/MetalFoot_3_818F3B66.wem</CachePath>
 				</File>
 				<File Id="448296093" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Rock_Foot_5.wav</ShortName>
@@ -151,10 +166,20 @@
 					<Path>Media/953859740.wem</Path>
 					<CachePath>SFX/Water_Foot_3_818F3B66.wem</CachePath>
 				</File>
+				<File Id="1063087861" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MetalFoot_!.wav</ShortName>
+					<Path>Media/1063087861.wem</Path>
+					<CachePath>SFX/MetalFoot_!_818F3B66.wem</CachePath>
+				</File>
 				<File Id="1063219786" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>Snow_Foot_3.wav</ShortName>
 					<Path>Media/1063219786.wem</Path>
 					<CachePath>SFX/Snow_Foot_3_818F3B66.wem</CachePath>
+				</File>
+				<File Id="1065392048" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>MetalFoot_5 .wav</ShortName>
+					<Path>Media/1065392048.wem</Path>
+					<CachePath>SFX/MetalFoot_5 _818F3B66.wem</CachePath>
 				</File>
 			</Media>
 			<Plugins>
@@ -163,7 +188,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.16467108" DurationMax="0.52699363">
+				<Event Id="1324798284" Name="Play_Player_Foot" ObjectPath="\Events\Default Work Unit\Player_SFX\Play_Player_Foot" GUID="{802600D1-086F-4B89-A202-B18F89409828}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.16467108" DurationMax="1.0352334">
 					<SwitchContainers>
 						<SwitchContainer>
 							<SwitchValue GroupType="Switch" GroupId="3031504797" Id="2058049674" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}" Default="true"/>
@@ -173,6 +198,16 @@
 								<MediaRef Id="279374184"/>
 								<MediaRef Id="512909462"/>
 								<MediaRef Id="941571148"/>
+							</MediaRefs>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="Switch" GroupId="3031504797" Id="2473969246" GUID="{7F5D5027-D889-40A3-B23E-87D829941110}"/>
+							<MediaRefs>
+								<MediaRef Id="197488015"/>
+								<MediaRef Id="361319171"/>
+								<MediaRef Id="441436594"/>
+								<MediaRef Id="1063087861"/>
+								<MediaRef Id="1065392048"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
@@ -241,11 +276,12 @@
 						<Switch Id="1970351858" Name="Fabric" ObjectPath="\Switches\Default Work Unit\Foot\Fabric" GUID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
 						<Switch Id="2058049674" Name="Wood" ObjectPath="\Switches\Default Work Unit\Foot\Wood" GUID="{3D4CC723-6069-49C3-A3CB-F28DB3F2884C}"/>
 						<Switch Id="2144363834" Name="Rock" ObjectPath="\Switches\Default Work Unit\Foot\Rock" GUID="{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"/>
+						<Switch Id="2473969246" Name="Metal" ObjectPath="\Switches\Default Work Unit\Foot\Metal" GUID="{7F5D5027-D889-40A3-B23E-87D829941110}"/>
 						<Switch Id="2654748154" Name="Water" ObjectPath="\Switches\Default Work Unit\Foot\Water" GUID="{8EAD4B7E-CC54-4DAA-9D01-619C40C0651A}"/>
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{60FED737-B1A3-3A93-2806-4C33021B7D10}</FileHash>
+	<FileHash>{D826529B-D844-A598-5308-F874A5024527}</FileHash>
 </SoundBanksInfo>

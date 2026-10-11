@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{99578C13-E752-D6E1-D6C7-902BAAF57104}",
+    "Hash": "{23F326D1-77A5-34EE-6A46-A018355817D0}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -116,6 +116,12 @@
       "Name": "RTPC_Fail_Volume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Fail_Volume",
       "GUID": "{B4B823F8-631E-401E-8129-C408D3A19230}"
+     },
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
      },
      {
       "Id": "2378823330",
@@ -262,6 +268,12 @@
         "Name": "Rock",
         "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Rock",
         "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
+       },
+       {
+        "Id": "2473969246",
+        "Name": "Metal",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Metal",
+        "GUID": "{7F5D5027-D889-40A3-B23E-87D829941110}"
        },
        {
         "Id": "2654748154",
@@ -758,6 +770,6 @@
     ]
    }
   ],
-  "FileHash": "{F0163C77-428D-EEA8-2E4E-66697A5931A8}"
+  "FileHash": "{EF97B10B-FB42-1772-4725-F4E50AA3598D}"
  }
 }

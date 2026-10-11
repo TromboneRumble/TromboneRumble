@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{9435976D-BE9A-171F-1587-6A5A54F20FE3}">
+		<SoundBank Id="3712471672" Type="Event" GUID="{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}" Language="SFX" Hash="{40D0825D-DE85-929D-B188-8183BEABF0BF}">
 			<ObjectPath>Play_Trombone_Hit</ObjectPath>
 			<ShortName>Play_Trombone_Hit</ShortName>
 			<Path>Event/Play_Trombone_Hit.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F361625B-82BC-397C-9BEE-F06C7629756B}</FileHash>
+	<FileHash>{952993D4-DBE8-6342-7B21-6E1F920FED2A}</FileHash>
 </SoundBanksInfo>

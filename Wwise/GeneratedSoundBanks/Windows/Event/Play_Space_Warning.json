@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "2895000445",
+    "Type": "Event",
+    "GUID": "{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}",
+    "Language": "SFX",
+    "Hash": "{7CE77BAF-C7A8-3D72-DE5C-C9480F471382}",
+    "ObjectPath": "Play_Space_Warning",
+    "ShortName": "Play_Space_Warning",
+    "Path": "Event/Play_Space_Warning.bnk",
+    "Media": [
+     {
+      "Id": "174900202",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Warning.wav",
+      "Path": "Media/174900202.wem",
+      "CachePath": "SFX/Space_Warning_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2895000445",
+      "Name": "Play_Space_Warning",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Space_Warning",
+      "GUID": "{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "4.56825",
+      "DurationMax": "4.56825",
+      "MediaRefs": [
+       {
+        "Id": "174900202"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{4117E43D-B68D-61E5-7A19-509DD2E61566}"
+ }
+}

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{50BD4430-546A-4153-B84B-464466778173}",
     "Language": "SFX",
-    "Hash": "{7070993A-5433-AE04-9C8D-E47250D1DD29}",
+    "Hash": "{C94553EC-7171-F482-1B0A-69E1C9CB6AE9}",
     "ObjectPath": "Play_Light_Hover",
     "ShortName": "Play_Light_Hover",
     "Path": "Event/Play_Light_Hover.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{2CBA3965-A54D-3BDC-8522-6E86B6353908}"
+  "FileHash": "{88840B29-888E-F5A0-9540-C85D32FA15B6}"
  }
 }

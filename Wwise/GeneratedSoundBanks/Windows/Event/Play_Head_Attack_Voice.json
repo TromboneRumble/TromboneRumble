@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}",
     "Language": "SFX",
-    "Hash": "{50C1098A-D6EF-3D51-D2C9-5E64D41DEB41}",
+    "Hash": "{A347BEB3-57A8-0822-A42F-DB27C198FFED}",
     "ObjectPath": "Play_Head_Attack_Voice",
     "ShortName": "Play_Head_Attack_Voice",
     "Path": "Event/Play_Head_Attack_Voice.bnk",
@@ -56,6 +56,6 @@
     ]
    }
   ],
-  "FileHash": "{A185FD6D-3D27-2694-E38D-64726897CBD2}"
+  "FileHash": "{D659CF05-BC56-56FC-95F3-86FCDAB419D2}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}",
     "Language": "SFX",
-    "Hash": "{0EDD3CEF-922D-ECB4-2392-8701DC2B6518}",
+    "Hash": "{BC68E433-A9FD-4541-0FAB-10674D3F0638}",
     "ObjectPath": "Play_Beer_Drop",
     "ShortName": "Play_Beer_Drop",
     "Path": "Event/Play_Beer_Drop.bnk",
@@ -42,6 +42,6 @@
     ]
    }
   ],
-  "FileHash": "{B8A3FF29-73A7-D3CD-9E69-F99801946297}"
+  "FileHash": "{E4C35860-C9E5-2EC6-E713-482D0DD3D7A3}"
  }
 }

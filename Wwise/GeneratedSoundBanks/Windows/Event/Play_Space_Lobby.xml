@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="587203977" Type="Event" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" Language="SFX" Hash="{2F584217-9153-40D7-E4FF-9D0D1A97F258}">
+			<ObjectPath>Play_Space_Lobby</ObjectPath>
+			<ShortName>Play_Space_Lobby</ShortName>
+			<Path>Event/Play_Space_Lobby.bnk</Path>
+			<Media>
+				<File Id="63557452" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Space_Ambience_3.wav</ShortName>
+					<Path>Media/63557452.wem</Path>
+					<CachePath>SFX/Space_Ambience_3_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="534806234" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Space_Ambience_1.wav</ShortName>
+					<Path>Media/534806234.wem</Path>
+					<CachePath>SFX/Space_Ambience_1_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="552456950" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Space_Ambience_2.wav</ShortName>
+					<Path>Media/552456950.wem</Path>
+					<CachePath>SFX/Space_Ambience_2_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="707949782" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Space_Ambience_Voice.wav</ShortName>
+					<Path>Media/707949782.wem</Path>
+					<CachePath>SFX/Space_Ambience_Voice_FBC78EF0.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="587203977" Name="Play_Space_Lobby" ObjectPath="\Events\Default Work Unit\Ambience\Play_Space_Lobby" GUID="{DF985246-51D9-4DD1-9857-56FF4A036F78}" DurationType="OneShot" DurationMin="836.3435" DurationMax="836.3435">
+					<MediaRefs>
+						<MediaRef Id="63557452"/>
+						<MediaRef Id="534806234"/>
+						<MediaRef Id="552456950"/>
+						<MediaRef Id="707949782"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{B070BDCD-C002-187C-16B9-699942AAB9B6}</FileHash>
+</SoundBanksInfo>

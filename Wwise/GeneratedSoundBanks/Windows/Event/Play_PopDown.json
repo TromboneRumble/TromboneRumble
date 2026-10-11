@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D37B48A0-88ED-470F-9DFB-5153A43B6446}",
     "Language": "SFX",
-    "Hash": "{18EDC38F-A651-2920-7082-13B81BF738BD}",
+    "Hash": "{1969137E-940A-8FA2-58C0-46C52CBCFA11}",
     "ObjectPath": "Play_PopDown",
     "ShortName": "Play_PopDown",
     "Path": "Event/Play_PopDown.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{D308B87D-8348-FED4-FCF5-E42867120619}"
+  "FileHash": "{9C721DE9-FE77-B1CC-3058-5576B7DCB7E5}"
  }
 }

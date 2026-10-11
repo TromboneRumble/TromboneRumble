@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{A5981776-F3D0-4919-93FB-1E5275B10847}",
     "Language": "SFX",
-    "Hash": "{71B6C8A2-5E1E-F773-C4C8-A45683C2C892}",
+    "Hash": "{B6C25832-2B2F-D67F-339F-3AE7488E23B9}",
     "ObjectPath": "Play_Host_Speaking",
     "ShortName": "Play_Host_Speaking",
     "Path": "Event/Play_Host_Speaking.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{F72AB91F-B8AC-ACD6-1A03-5FFA12A8C1C8}"
+  "FileHash": "{F5ABB350-F732-2DF2-AD9B-1B48DB2044B6}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}",
     "Language": "SFX",
-    "Hash": "{45166D77-6F57-0BD5-EEE0-6230040F00B7}",
+    "Hash": "{3BF26DED-F70C-190E-8D13-E04223F601E7}",
     "ObjectPath": "Play_Cymbal_Attack_Voice",
     "ShortName": "Play_Cymbal_Attack_Voice",
     "Path": "Event/Play_Cymbal_Attack_Voice.bnk",
@@ -56,6 +56,6 @@
     ]
    }
   ],
-  "FileHash": "{351E4DAF-707D-B1CE-1B27-3E61272BC0FD}"
+  "FileHash": "{140EAF74-91E3-6D41-8898-B366EEC2A04A}"
  }
 }

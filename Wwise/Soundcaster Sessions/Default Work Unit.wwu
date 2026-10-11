@@ -14,12 +14,20 @@
 							<Position X="0" Y="1"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Map_G_Main" ID="{7422AA68-0ADC-4287-9DF9-FBA5E5D9E59E}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<Position X="0" Y="2"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="SnowField_Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="1" Y="0"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 							<Position X="1" Y="1"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Map_H_Main" ID="{A812D059-0E24-43EC-AEED-E4950BE62E14}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<Position X="1" Y="2"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="Map_C_Main" ID="{0CC37F78-CB2E-4890-9CAA-26477900D4C6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
@@ -30,12 +38,20 @@
 							<Position X="2" Y="1"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Play_Rhythm_Perfect" ID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<Position X="2" Y="2"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="Map_D_Main" ID="{4164615D-C0C0-4880-9EB1-230F406015BC}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="3" Y="0"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="Play_Player_Pain" ID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 							<Position X="3" Y="1"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Rhythm_Good" ID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<Position X="3" Y="2"/>
 						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
@@ -57,7 +73,7 @@
 						<CurrentSwitchRef Name="Level1" ID="{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"/>
 						<CurrentSwitchRef Name="Off" ID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
 						<CurrentSwitchRef Name="Fabric" ID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
-						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
+						<CurrentSwitchRef Name="SW_V" ID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
 						<CurrentSwitchRef Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>

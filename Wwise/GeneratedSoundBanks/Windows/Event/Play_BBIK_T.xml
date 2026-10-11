@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1436785871" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{593673B5-97B4-24FD-40CC-D3C700C47294}">
+		<SoundBank Id="1436785871" Type="Event" GUID="{065F46F0-9308-4999-B591-08B87BB59775}" Language="SFX" Hash="{E4092E8B-3B6F-47E3-EA95-86C4EB8945B6}">
 			<ObjectPath>Play_BBIK_T</ObjectPath>
 			<ShortName>Play_BBIK_T</ShortName>
 			<Path>Event/Play_BBIK_T.bnk</Path>
@@ -39,5 +39,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{FA49E838-CC6B-2CFF-C01E-3421ACE9F3CF}</FileHash>
+	<FileHash>{20AFAE0C-462D-EA0E-4C64-802F47028D7C}</FileHash>
 </SoundBanksInfo>

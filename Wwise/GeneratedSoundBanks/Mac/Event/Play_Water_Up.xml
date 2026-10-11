@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1572483357" Type="Event" GUID="{8E51867B-3166-426A-AE62-34E2910478A0}" Language="SFX" Hash="{AE50A758-68AF-A474-AEC3-A58AEB2DF1C1}">
+		<SoundBank Id="1572483357" Type="Event" GUID="{8E51867B-3166-426A-AE62-34E2910478A0}" Language="SFX" Hash="{27607CD3-93B0-BBFC-67F3-0803BA1671BE}">
 			<ObjectPath>Play_Water_Up</ObjectPath>
 			<ShortName>Play_Water_Up</ShortName>
 			<Path>Event/Play_Water_Up.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4EC00562-2A8B-6CC3-884F-26102398613F}</FileHash>
+	<FileHash>{96839D4E-40D2-000B-20FF-0A37813C431B}</FileHash>
 </SoundBanksInfo>

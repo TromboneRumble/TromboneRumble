@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1910095532" Type="Event" GUID="{9A60F66C-7C8D-4C72-8ECE-D29F9F83AC8E}" Language="SFX" Hash="{1DE99D4A-23F7-1AFF-4F84-464E88F35180}">
+		<SoundBank Id="1910095532" Type="Event" GUID="{9A60F66C-7C8D-4C72-8ECE-D29F9F83AC8E}" Language="SFX" Hash="{476AA0B9-ABF2-B392-E939-706736656F07}">
 			<ObjectPath>MIDI_MapF_T</ObjectPath>
 			<ShortName>MIDI_MapF_T</ShortName>
 			<Path>Event/MIDI_MapF_T.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{AAF30583-9EEA-86A7-724A-AA66C4F202E5}</FileHash>
+	<FileHash>{E72540CA-E21A-2CDF-EAF4-A117901C9FB4}</FileHash>
 </SoundBanksInfo>

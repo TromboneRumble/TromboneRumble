@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="4143360431" Type="Event" GUID="{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}" Language="SFX" Hash="{2CDAE844-12B0-5F42-5FA5-C3EC61CC29C8}">
+		<SoundBank Id="4143360431" Type="Event" GUID="{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}" Language="SFX" Hash="{F5540D50-A53B-6FFC-735C-F1FFC5A51AFA}">
 			<ObjectPath>Play_Violin_Attack_Voice</ObjectPath>
 			<ShortName>Play_Violin_Attack_Voice</ShortName>
 			<Path>Event/Play_Violin_Attack_Voice.bnk</Path>
@@ -27,5 +27,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{298126B0-AC40-F480-47C0-37DD310FA3A2}</FileHash>
+	<FileHash>{5C8D4AF6-349C-5D99-FDD5-FD6286FCB4BE}</FileHash>
 </SoundBanksInfo>

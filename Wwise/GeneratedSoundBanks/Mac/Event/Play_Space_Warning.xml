@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2895000445" Type="Event" GUID="{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}" Language="SFX" Hash="{7CE77BAF-C7A8-3D72-DE5C-C9480F471382}">
+			<ObjectPath>Play_Space_Warning</ObjectPath>
+			<ShortName>Play_Space_Warning</ShortName>
+			<Path>Event/Play_Space_Warning.bnk</Path>
+			<Media>
+				<File Id="174900202" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Space_Warning.wav</ShortName>
+					<Path>Media/174900202.wem</Path>
+					<CachePath>SFX/Space_Warning_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2895000445" Name="Play_Space_Warning" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Space_Warning" GUID="{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="4.56825" DurationMax="4.56825">
+					<MediaRefs>
+						<MediaRef Id="174900202"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{13F4C26B-DF6B-7C68-45B6-C2F136C3E165}</FileHash>
+</SoundBanksInfo>

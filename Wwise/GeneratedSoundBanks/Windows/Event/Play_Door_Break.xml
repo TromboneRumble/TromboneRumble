@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{0783C362-960E-3B69-F151-0DAC23BAFEF3}">
+		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{D97C8C43-F405-5AD2-19C8-05E0EBA2B5A8}">
 			<ObjectPath>Play_Door_Break</ObjectPath>
 			<ShortName>Play_Door_Break</ShortName>
 			<Path>Event/Play_Door_Break.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{5AC0BA20-6885-38CE-305E-60B248CB7A33}</FileHash>
+	<FileHash>{AEDAB88D-AECD-ED62-55D7-1C0F4AEBF445}</FileHash>
 </SoundBanksInfo>

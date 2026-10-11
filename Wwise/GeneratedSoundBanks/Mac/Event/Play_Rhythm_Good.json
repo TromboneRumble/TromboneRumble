@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
     "Language": "SFX",
-    "Hash": "{4D381A65-2D82-88C8-1F29-05E5052F7E68}",
+    "Hash": "{51DBA87B-3848-DEF6-2D28-AAE310328472}",
     "ObjectPath": "Play_Rhythm_Good",
     "ShortName": "Play_Rhythm_Good",
     "Path": "Event/Play_Rhythm_Good.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{AC5ACC81-2EB6-5253-710F-21475F1927DF}"
+  "FileHash": "{CF11433F-86E1-27C0-6301-A88A3B058F05}"
  }
 }

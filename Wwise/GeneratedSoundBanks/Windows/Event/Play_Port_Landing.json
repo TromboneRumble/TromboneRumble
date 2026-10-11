@@ -1,0 +1,80 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "915173079",
+    "Type": "Event",
+    "GUID": "{4512AF6F-537C-427D-B50F-4283DB66F59B}",
+    "Language": "SFX",
+    "Hash": "{61260862-EEB4-D6B3-F99A-3A74EDFE77CD}",
+    "ObjectPath": "Play_Port_Landing",
+    "ShortName": "Play_Port_Landing",
+    "Path": "Event/Play_Port_Landing.bnk",
+    "Media": [
+     {
+      "Id": "42152457",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Docking_1.wav",
+      "Path": "Media/42152457.wem",
+      "CachePath": "SFX/Space_Docking_1_818F3B66.wem"
+     },
+     {
+      "Id": "650737698",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Docking_2.wav",
+      "Path": "Media/650737698.wem",
+      "CachePath": "SFX/Space_Docking_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "915173079",
+      "Name": "Play_Port_Landing",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Landing",
+      "GUID": "{4512AF6F-537C-427D-B50F-4283DB66F59B}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "2.1247292",
+      "DurationMax": "2.2502916",
+      "MediaRefs": [
+       {
+        "Id": "42152457"
+       },
+       {
+        "Id": "650737698"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{98B8CBF3-B28C-1653-8FFC-A06CC83A02D5}"
+ }
+}

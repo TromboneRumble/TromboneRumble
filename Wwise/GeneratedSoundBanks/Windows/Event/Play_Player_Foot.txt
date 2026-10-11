@@ -10,6 +10,7 @@ Switch	ID	Name	Switch Group			Notes
 	1970351858	Fabric	Foot			
 	2058049674	Wood	Foot			
 	2144363834	Rock	Foot			
+	2473969246	Metal	Foot			
 	2654748154	Water	Foot			
 
 Effect plug-ins	ID	Name	Type				Notes

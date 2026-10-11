@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	587203977	Play_Space_Lobby			\Default Work Unit\Ambience\Play_Space_Lobby	
+

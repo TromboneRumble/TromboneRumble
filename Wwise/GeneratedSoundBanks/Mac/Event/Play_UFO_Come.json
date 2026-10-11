@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1280724765",
+    "Type": "Event",
+    "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+    "Language": "SFX",
+    "Hash": "{EAF78BB1-D268-1740-A8FE-69A47FBC3057}",
+    "ObjectPath": "Play_UFO_Come",
+    "ShortName": "Play_UFO_Come",
+    "Path": "Event/Play_UFO_Come.bnk",
+    "Media": [
+     {
+      "Id": "538017148",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UFO_Come .wav",
+      "Path": "Media/538017148.wem",
+      "CachePath": "SFX/UFO_Come _818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1280724765",
+      "Name": "Play_UFO_Come",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_Come",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "3.807104",
+      "DurationMax": "3.807104",
+      "MediaRefs": [
+       {
+        "Id": "538017148"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{30C504D2-DC21-2E0E-ECD0-9C40DD0C4FBF}"
+ }
+}

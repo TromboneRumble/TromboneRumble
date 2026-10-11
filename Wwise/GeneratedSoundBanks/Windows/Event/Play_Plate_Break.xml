@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2158942082" Type="Event" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" Language="SFX" Hash="{AE2693DB-1F1D-E0E1-68AE-17EE7913DCB4}">
+		<SoundBank Id="2158942082" Type="Event" GUID="{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}" Language="SFX" Hash="{79E84C3E-7032-42BF-C986-A682BA282258}">
 			<ObjectPath>Play_Plate_Break</ObjectPath>
 			<ShortName>Play_Plate_Break</ShortName>
 			<Path>Event/Play_Plate_Break.bnk</Path>
@@ -51,5 +51,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0892CBCC-481E-12DC-7B90-3E4B5EECFE96}</FileHash>
+	<FileHash>{8D232ED0-495D-066B-EBC8-418BBB03A31E}</FileHash>
 </SoundBanksInfo>

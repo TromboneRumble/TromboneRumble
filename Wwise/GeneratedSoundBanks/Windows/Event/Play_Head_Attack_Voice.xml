@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="581556496" Type="Event" GUID="{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}" Language="SFX" Hash="{50C1098A-D6EF-3D51-D2C9-5E64D41DEB41}">
+		<SoundBank Id="581556496" Type="Event" GUID="{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}" Language="SFX" Hash="{A347BEB3-57A8-0822-A42F-DB27C198FFED}">
 			<ObjectPath>Play_Head_Attack_Voice</ObjectPath>
 			<ShortName>Play_Head_Attack_Voice</ShortName>
 			<Path>Event/Play_Head_Attack_Voice.bnk</Path>
@@ -27,5 +27,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{175429AB-F0EF-AF25-F91F-F115F44F4EDA}</FileHash>
+	<FileHash>{EF8B6D12-3F11-6474-0590-8CB150CCB213}</FileHash>
 </SoundBanksInfo>

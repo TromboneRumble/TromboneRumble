@@ -1,0 +1,57 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "29922904",
+    "Type": "Event",
+    "GUID": "{C529324A-9070-4F94-B711-30FCD86AC5AF}",
+    "Language": "SFX",
+    "Hash": "{628DB0FD-CC0E-7A1E-A048-410E6AA5FF6A}",
+    "ObjectPath": "Play_UFO_Gone",
+    "ShortName": "Play_UFO_Gone",
+    "Path": "Event/Play_UFO_Gone.bnk",
+    "Media": [
+     {
+      "Id": "409091301",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UFO_Gone.wav",
+      "Path": "Media/409091301.wem",
+      "CachePath": "SFX/UFO_Gone_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "29922904",
+      "Name": "Play_UFO_Gone",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_Gone",
+      "GUID": "{C529324A-9070-4F94-B711-30FCD86AC5AF}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "4.511229",
+      "DurationMax": "4.511229",
+      "MediaRefs": [
+       {
+        "Id": "409091301"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{8B486F9C-1925-07F5-2741-608BADCE8A84}"
+ }
+}

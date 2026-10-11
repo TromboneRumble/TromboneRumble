@@ -1,0 +1,84 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "587203977",
+    "Type": "Event",
+    "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+    "Language": "SFX",
+    "Hash": "{2F584217-9153-40D7-E4FF-9D0D1A97F258}",
+    "ObjectPath": "Play_Space_Lobby",
+    "ShortName": "Play_Space_Lobby",
+    "Path": "Event/Play_Space_Lobby.bnk",
+    "Media": [
+     {
+      "Id": "63557452",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_3.wav",
+      "Path": "Media/63557452.wem",
+      "CachePath": "SFX/Space_Ambience_3_FBC78EF0.wem"
+     },
+     {
+      "Id": "534806234",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_1.wav",
+      "Path": "Media/534806234.wem",
+      "CachePath": "SFX/Space_Ambience_1_FBC78EF0.wem"
+     },
+     {
+      "Id": "552456950",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_2.wav",
+      "Path": "Media/552456950.wem",
+      "CachePath": "SFX/Space_Ambience_2_FBC78EF0.wem"
+     },
+     {
+      "Id": "707949782",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_Voice.wav",
+      "Path": "Media/707949782.wem",
+      "CachePath": "SFX/Space_Ambience_Voice_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "587203977",
+      "Name": "Play_Space_Lobby",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_Space_Lobby",
+      "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+      "DurationType": "OneShot",
+      "DurationMin": "836.3435",
+      "DurationMax": "836.3435",
+      "MediaRefs": [
+       {
+        "Id": "63557452"
+       },
+       {
+        "Id": "534806234"
+       },
+       {
+        "Id": "552456950"
+       },
+       {
+        "Id": "707949782"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{EB6DF7B3-623A-56E0-A68B-EB8237B869BE}"
+ }
+}

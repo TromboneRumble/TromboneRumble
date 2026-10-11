@@ -14,11 +14,57 @@
   "DialogueEvents": [],
   "SoundBanks": [
    {
+    "Id": "29922904",
+    "Type": "Event",
+    "GUID": "{C529324A-9070-4F94-B711-30FCD86AC5AF}",
+    "Language": "SFX",
+    "Hash": "{628DB0FD-CC0E-7A1E-A048-410E6AA5FF6A}",
+    "ObjectPath": "Play_UFO_Gone",
+    "ShortName": "Play_UFO_Gone",
+    "Path": "Event/Play_UFO_Gone.bnk",
+    "Media": [
+     {
+      "Id": "409091301",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UFO_Gone.wav",
+      "Path": "Media/409091301.wem",
+      "CachePath": "SFX/UFO_Gone_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "29922904",
+      "Name": "Play_UFO_Gone",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_Gone",
+      "GUID": "{C529324A-9070-4F94-B711-30FCD86AC5AF}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "4.511229",
+      "DurationMax": "4.511229",
+      "MediaRefs": [
+       {
+        "Id": "409091301"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
+     }
+    ]
+   },
+   {
     "Id": "69437967",
     "Type": "Event",
     "GUID": "{9E10718E-D5D4-4CC3-A3BD-099EE83F219E}",
     "Language": "SFX",
-    "Hash": "{8E9C5862-151A-49CD-FDA9-B14C10ADBD81}",
+    "Hash": "{967E616A-90B2-75B9-B7E5-2B31069BF6B2}",
     "ObjectPath": "Play_Cymbal_Attack",
     "ShortName": "Play_Cymbal_Attack",
     "Path": "Event/Play_Cymbal_Attack.bnk",
@@ -87,7 +133,7 @@
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
     "Language": "SFX",
-    "Hash": "{AB46AE09-BA5A-0A85-96CF-C7D28E83D1FE}",
+    "Hash": "{2AE1ABC4-AC76-BEC7-817C-813B9EACA3ED}",
     "ObjectPath": "Play_MapD_Main",
     "ShortName": "Play_MapD_Main",
     "Path": "Event/Play_MapD_Main.bnk",
@@ -190,51 +236,11 @@
     ]
    },
    {
-    "Id": "227036395",
-    "Type": "Event",
-    "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
-    "Language": "SFX",
-    "Hash": "{6F97BAB5-829F-53A3-FD5D-0DE6C1C35DA4}",
-    "ObjectPath": "Note_Long_Start",
-    "ShortName": "Note_Long_Start",
-    "Path": "Event/Note_Long_Start.bnk",
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "227036395",
-      "Name": "Note_Long_Start",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_Start",
-      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
-      "DurationType": "OneShot",
-      "DurationMin": "1",
-      "DurationMax": "1",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
     "Id": "258684309",
     "Type": "Event",
     "GUID": "{11C1005F-D601-43A2-9164-83690C4969C5}",
     "Language": "SFX",
-    "Hash": "{0A860A53-CF00-A57E-411E-313E574A6251}",
+    "Hash": "{CF5D5070-7A99-053B-71F7-64A7AE13B62A}",
     "ObjectPath": "Play_Fence_Break",
     "ShortName": "Play_Fence_Break",
     "Path": "Event/Play_Fence_Break.bnk",
@@ -284,7 +290,7 @@
     "Type": "Event",
     "GUID": "{5661925E-358B-4DB5-8CD9-19A7BC7F923F}",
     "Language": "SFX",
-    "Hash": "{1314CB89-6B68-36F0-9522-87C8C3B1A7D3}",
+    "Hash": "{8669B4C6-81C0-C48A-8997-38AF025E8497}",
     "ObjectPath": "Play_Click",
     "ShortName": "Play_Click",
     "Path": "Event/Play_Click.bnk",
@@ -321,7 +327,7 @@
     "Type": "Event",
     "GUID": "{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}",
     "Language": "SFX",
-    "Hash": "{4D381A65-2D82-88C8-1F29-05E5052F7E68}",
+    "Hash": "{51DBA87B-3848-DEF6-2D28-AAE310328472}",
     "ObjectPath": "Play_Rhythm_Good",
     "ShortName": "Play_Rhythm_Good",
     "Path": "Event/Play_Rhythm_Good.bnk",
@@ -358,7 +364,7 @@
     "Type": "Bus",
     "GUID": "{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}",
     "Language": "SFX",
-    "Hash": "{926578F3-01E2-6BC9-FFDC-683625E43774}",
+    "Hash": "{7C156554-8C72-5AE8-C025-B11A503F2CE2}",
     "ObjectPath": "Map_A_Reverb",
     "ShortName": "Map_A_Reverb",
     "Path": "Bus/Map_A_Reverb.bnk",
@@ -395,7 +401,7 @@
     "Type": "Event",
     "GUID": "{104CC78C-ED20-486F-A41E-73ABA09B5942}",
     "Language": "SFX",
-    "Hash": "{9C0CB278-DC78-A7ED-A7B8-13232B94AA30}",
+    "Hash": "{49A079BC-6783-B17E-7AB9-3AD60E9DC585}",
     "ObjectPath": "Play_Trash_Hit",
     "ShortName": "Play_Trash_Hit",
     "Path": "Event/Play_Trash_Hit.bnk",
@@ -480,7 +486,7 @@
     "Type": "Event",
     "GUID": "{B0057F0A-FEB6-42EF-8F3A-C773B972B195}",
     "Language": "SFX",
-    "Hash": "{1E98EA08-2910-79E8-DE76-93F95103AE86}",
+    "Hash": "{574BAE08-2958-4E0F-9461-B237499501B7}",
     "ObjectPath": "Play_Tutorial_BGM",
     "ShortName": "Play_Tutorial_BGM",
     "Path": "Event/Play_Tutorial_BGM.bnk",
@@ -537,7 +543,7 @@
     "Type": "Event",
     "GUID": "{172B9145-BD63-4904-825D-B9064756A02F}",
     "Language": "SFX",
-    "Hash": "{73812BF1-CAD3-B8FC-C995-A9D651BE109C}",
+    "Hash": "{8674E33A-F83F-D1B5-61C0-70499BEF2E20}",
     "ObjectPath": "Play_Snow_Ambience",
     "ShortName": "Play_Snow_Ambience",
     "Path": "Event/Play_Snow_Ambience.bnk",
@@ -626,7 +632,7 @@
     "Type": "User",
     "GUID": "{9D2FD6CF-C969-4F2B-836F-BF7714F5870F}",
     "Language": "SFX",
-    "Hash": "{D927259F-D3B9-AC22-D5EE-F68993A6E1C2}",
+    "Hash": "{E0FEB753-EFC9-1C10-5455-FB800952E44F}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\MainSoundBank",
     "ShortName": "MainSoundBank",
     "Path": "MainSoundBank.bnk",
@@ -670,7 +676,7 @@
     "Type": "Event",
     "GUID": "{9A720635-720F-4279-A256-D1A0C4C248B2}",
     "Language": "SFX",
-    "Hash": "{18D01572-1DDB-D917-5FCF-CE49BFF2CFEA}",
+    "Hash": "{CDBCA2FD-E094-7B6A-25CE-DE617A1379E0}",
     "ObjectPath": "Play_Player_Jump",
     "ShortName": "Play_Player_Jump",
     "Path": "Event/Play_Player_Jump.bnk",
@@ -720,7 +726,7 @@
     "Type": "Event",
     "GUID": "{EDE72A61-428E-44FC-ADC8-C6DC7A46C657}",
     "Language": "SFX",
-    "Hash": "{50C1098A-D6EF-3D51-D2C9-5E64D41DEB41}",
+    "Hash": "{A347BEB3-57A8-0822-A42F-DB27C198FFED}",
     "ObjectPath": "Play_Head_Attack_Voice",
     "ShortName": "Play_Head_Attack_Voice",
     "Path": "Event/Play_Head_Attack_Voice.bnk",
@@ -766,11 +772,84 @@
     ]
    },
    {
+    "Id": "587203977",
+    "Type": "Event",
+    "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+    "Language": "SFX",
+    "Hash": "{2F584217-9153-40D7-E4FF-9D0D1A97F258}",
+    "ObjectPath": "Play_Space_Lobby",
+    "ShortName": "Play_Space_Lobby",
+    "Path": "Event/Play_Space_Lobby.bnk",
+    "Media": [
+     {
+      "Id": "63557452",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_3.wav",
+      "Path": "Media/63557452.wem",
+      "CachePath": "SFX/Space_Ambience_3_FBC78EF0.wem"
+     },
+     {
+      "Id": "534806234",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_1.wav",
+      "Path": "Media/534806234.wem",
+      "CachePath": "SFX/Space_Ambience_1_FBC78EF0.wem"
+     },
+     {
+      "Id": "552456950",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_2.wav",
+      "Path": "Media/552456950.wem",
+      "CachePath": "SFX/Space_Ambience_2_FBC78EF0.wem"
+     },
+     {
+      "Id": "707949782",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Ambience_Voice.wav",
+      "Path": "Media/707949782.wem",
+      "CachePath": "SFX/Space_Ambience_Voice_FBC78EF0.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "587203977",
+      "Name": "Play_Space_Lobby",
+      "ObjectPath": "\\Events\\Default Work Unit\\Ambience\\Play_Space_Lobby",
+      "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
+      "DurationType": "OneShot",
+      "DurationMin": "836.3435",
+      "DurationMax": "836.3435",
+      "MediaRefs": [
+       {
+        "Id": "63557452"
+       },
+       {
+        "Id": "534806234"
+       },
+       {
+        "Id": "552456950"
+       },
+       {
+        "Id": "707949782"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "598895845",
     "Type": "Event",
     "GUID": "{50BD4430-546A-4153-B84B-464466778173}",
     "Language": "SFX",
-    "Hash": "{7070993A-5433-AE04-9C8D-E47250D1DD29}",
+    "Hash": "{C94553EC-7171-F482-1B0A-69E1C9CB6AE9}",
     "ObjectPath": "Play_Light_Hover",
     "ShortName": "Play_Light_Hover",
     "Path": "Event/Play_Light_Hover.bnk",
@@ -807,7 +886,7 @@
     "Type": "Event",
     "GUID": "{9B0C6089-856C-4594-BE83-AD833C97ACEF}",
     "Language": "SFX",
-    "Hash": "{8A616607-33C3-3EF4-F297-4AFA0777A86B}",
+    "Hash": "{55C407A5-90AA-42C2-0770-C9DF942CAF27}",
     "ObjectPath": "Stop_Host_Speaking",
     "ShortName": "Stop_Host_Speaking",
     "Path": "Event/Stop_Host_Speaking.bnk",
@@ -829,7 +908,7 @@
     "Type": "Event",
     "GUID": "{37CD142C-53D0-4802-A405-6601BBB804B1}",
     "Language": "SFX",
-    "Hash": "{A4264BDE-EF66-26ED-5465-38BF6548D61A}",
+    "Hash": "{E83C9953-7DDC-AF08-12D8-2C78CBC7EB8E}",
     "ObjectPath": "Play_MapF_Main",
     "ShortName": "Play_MapF_Main",
     "Path": "Event/Play_MapF_Main.bnk",
@@ -936,7 +1015,7 @@
     "Type": "Event",
     "GUID": "{CF76B634-FCD1-48D0-8700-EA68AE5402DC}",
     "Language": "SFX",
-    "Hash": "{71691381-9D53-C03F-251F-F8230E8E68D7}",
+    "Hash": "{EE024E0E-8460-8355-EF63-5DD2B121F842}",
     "ObjectPath": "Play_MapA_Easy_Main",
     "ShortName": "Play_MapA_Easy_Main",
     "Path": "Event/Play_MapA_Easy_Main.bnk",
@@ -1082,7 +1161,7 @@
     "Type": "Event",
     "GUID": "{D7D27667-5DC3-43A8-B98E-2B5375EF065F}",
     "Language": "SFX",
-    "Hash": "{3154E065-F27B-3F92-9B2C-A5244C14C599}",
+    "Hash": "{58FDE8FB-ECFE-77AE-210B-E0BFAA71BDE1}",
     "ObjectPath": "Play_Light_On",
     "ShortName": "Play_Light_On",
     "Path": "Event/Play_Light_On.bnk",
@@ -1156,7 +1235,7 @@
     "Type": "Event",
     "GUID": "{B8DE3E9C-94BE-45CF-B5D4-F1BF902D521D}",
     "Language": "SFX",
-    "Hash": "{77BFEB9D-CEB7-07C2-951B-B053DBA663F2}",
+    "Hash": "{9B5EB4B6-4AEB-6092-B737-862ADA5BA4B0}",
     "ObjectPath": "Play_SnowLobby_Ambience",
     "ShortName": "Play_SnowLobby_Ambience",
     "Path": "Event/Play_SnowLobby_Ambience.bnk",
@@ -1229,7 +1308,7 @@
     "Type": "Event",
     "GUID": "{59761350-8076-4CC8-AC2A-13D68D711760}",
     "Language": "SFX",
-    "Hash": "{4677516A-0664-F762-74E8-361133651FB8}",
+    "Hash": "{126B419F-6D11-9899-51B4-8935B3B1F3C3}",
     "ObjectPath": "Play_Trash_Throw",
     "ShortName": "Play_Trash_Throw",
     "Path": "Event/Play_Trash_Throw.bnk",
@@ -1267,7 +1346,7 @@
     "Type": "Event",
     "GUID": "{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}",
     "Language": "SFX",
-    "Hash": "{1B1A6DA7-BD99-03A9-BF68-8A6CADDC7D25}",
+    "Hash": "{7E07DD72-703D-7A3D-BFCE-B52C2CCAAF3D}",
     "ObjectPath": "Play_MapB_Main",
     "ShortName": "Play_MapB_Main",
     "Path": "Event/Play_MapB_Main.bnk",
@@ -1382,11 +1461,80 @@
     ]
    },
    {
+    "Id": "915173079",
+    "Type": "Event",
+    "GUID": "{4512AF6F-537C-427D-B50F-4283DB66F59B}",
+    "Language": "SFX",
+    "Hash": "{61260862-EEB4-D6B3-F99A-3A74EDFE77CD}",
+    "ObjectPath": "Play_Port_Landing",
+    "ShortName": "Play_Port_Landing",
+    "Path": "Event/Play_Port_Landing.bnk",
+    "Media": [
+     {
+      "Id": "42152457",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Docking_1.wav",
+      "Path": "Media/42152457.wem",
+      "CachePath": "SFX/Space_Docking_1_818F3B66.wem"
+     },
+     {
+      "Id": "650737698",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Docking_2.wav",
+      "Path": "Media/650737698.wem",
+      "CachePath": "SFX/Space_Docking_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "915173079",
+      "Name": "Play_Port_Landing",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Landing",
+      "GUID": "{4512AF6F-537C-427D-B50F-4283DB66F59B}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "2.1247292",
+      "DurationMax": "2.2502916",
+      "MediaRefs": [
+       {
+        "Id": "42152457"
+       },
+       {
+        "Id": "650737698"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "926619529",
     "Type": "Event",
     "GUID": "{B795F417-7989-498A-AC55-E3C9C3DEBAAF}",
     "Language": "SFX",
-    "Hash": "{D19C3ABC-4F3E-B26B-EEEC-DFECD357369B}",
+    "Hash": "{575C311F-9D45-B697-3750-8A0B295301CD}",
     "ObjectPath": "Play_Bonfire_On",
     "ShortName": "Play_Bonfire_On",
     "Path": "Event/Play_Bonfire_On.bnk",
@@ -1422,7 +1570,7 @@
     "Type": "Event",
     "GUID": "{B8B84262-D6E0-456A-87E1-6701AE1FEBE2}",
     "Language": "SFX",
-    "Hash": "{787F4946-44BC-DBC1-C658-8109B5DAAF06}",
+    "Hash": "{D4FD4692-19B1-AB2D-16C7-C312BD4E266A}",
     "ObjectPath": "Play_PopUp",
     "ShortName": "Play_PopUp",
     "Path": "Event/Play_PopUp.bnk",
@@ -1459,7 +1607,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{62C4B010-AE85-DD75-8AAC-17621F856101}",
+    "Hash": "{8BB27849-A78C-07FB-5B32-92C0D27D6AE2}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -1605,7 +1753,7 @@
     "Type": "Event",
     "GUID": "{0409E54D-9756-4AC7-AB12-F07232CAEFC6}",
     "Language": "SFX",
-    "Hash": "{465EA756-3D13-3066-119E-2ECA5B1A4CD7}",
+    "Hash": "{0B10B2D0-734D-7176-47C2-18D7BEE6A6A1}",
     "ObjectPath": "Play_Cymbal_Hit",
     "ShortName": "Play_Cymbal_Hit",
     "Path": "Event/Play_Cymbal_Hit.bnk",
@@ -1686,7 +1834,7 @@
     "Type": "Event",
     "GUID": "{D6AF3987-8B11-432C-895F-748662D075CA}",
     "Language": "SFX",
-    "Hash": "{FF4C755D-7C6D-E137-8207-56A8E490AB77}",
+    "Hash": "{39BF184A-0DF1-6237-C2A5-402240AEE5BD}",
     "ObjectPath": "Play_MapE_Main",
     "ShortName": "Play_MapE_Main",
     "Path": "Event/Play_MapE_Main.bnk",
@@ -1793,7 +1941,7 @@
     "Type": "Event",
     "GUID": "{633AB9B2-0A16-43DA-859D-940C15E7E727}",
     "Language": "SFX",
-    "Hash": "{9525B53E-F178-0D63-E522-721E50A2CD7A}",
+    "Hash": "{4A992544-0A59-BBBC-93C9-D87345824955}",
     "ObjectPath": "MIDI_MapA_Easy_C",
     "ShortName": "MIDI_MapA_Easy_C",
     "Path": "Event/MIDI_MapA_Easy_C.bnk",
@@ -1873,7 +2021,7 @@
     "Type": "Event",
     "GUID": "{7A85555C-0D56-41DF-AB4E-277C25F19F48}",
     "Language": "SFX",
-    "Hash": "{0189C506-52A0-DA1D-C0FA-FF4CD447DD58}",
+    "Hash": "{C681B0B8-F0AF-C01A-B50E-C393955D8886}",
     "ObjectPath": "MIDI_MapA_Easy_V",
     "ShortName": "MIDI_MapA_Easy_V",
     "Path": "Event/MIDI_MapA_Easy_V.bnk",
@@ -1953,7 +2101,7 @@
     "Type": "Event",
     "GUID": "{1F573AFF-7751-45DF-B9C6-F6687AD8033B}",
     "Language": "SFX",
-    "Hash": "{BCCF05BE-53F6-4C0B-26BD-7F77E32CE2C3}",
+    "Hash": "{7DA0FF4A-D11D-36A6-9752-66CD411DB76D}",
     "ObjectPath": "MIDI_MapA_Easy_T",
     "ShortName": "MIDI_MapA_Easy_T",
     "Path": "Event/MIDI_MapA_Easy_T.bnk",
@@ -2033,7 +2181,7 @@
     "Type": "Event",
     "GUID": "{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}",
     "Language": "SFX",
-    "Hash": "{18B28499-725C-F8A6-5EF6-0BF7317C92C7}",
+    "Hash": "{2E5892C4-F710-C0BA-3C2A-33CB8A656180}",
     "ObjectPath": "Play_JazzLobby_Ambience",
     "ShortName": "Play_JazzLobby_Ambience",
     "Path": "Event/Play_JazzLobby_Ambience.bnk",
@@ -2114,11 +2262,49 @@
     ]
    },
    {
+    "Id": "1280724765",
+    "Type": "Event",
+    "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+    "Language": "SFX",
+    "Hash": "{EAF78BB1-D268-1740-A8FE-69A47FBC3057}",
+    "ObjectPath": "Play_UFO_Come",
+    "ShortName": "Play_UFO_Come",
+    "Path": "Event/Play_UFO_Come.bnk",
+    "Media": [
+     {
+      "Id": "538017148",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UFO_Come .wav",
+      "Path": "Media/538017148.wem",
+      "CachePath": "SFX/UFO_Come _818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1280724765",
+      "Name": "Play_UFO_Come",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_Come",
+      "GUID": "{6732E650-3454-485A-A78F-562325A063B8}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "3.807104",
+      "DurationMax": "3.807104",
+      "MediaRefs": [
+       {
+        "Id": "538017148"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "1296229240",
     "Type": "Event",
     "GUID": "{EDD9A293-BF6B-4EB8-AD1B-6F03F5D140C8}",
     "Language": "SFX",
-    "Hash": "{45166D77-6F57-0BD5-EEE0-6230040F00B7}",
+    "Hash": "{3BF26DED-F70C-190E-8D13-E04223F601E7}",
     "ObjectPath": "Play_Cymbal_Attack_Voice",
     "ShortName": "Play_Cymbal_Attack_Voice",
     "Path": "Event/Play_Cymbal_Attack_Voice.bnk",
@@ -2168,7 +2354,7 @@
     "Type": "Event",
     "GUID": "{53F9899E-CC11-4622-84BA-C537EC0CB1EC}",
     "Language": "SFX",
-    "Hash": "{2686A3B4-7641-7FB6-12A7-0ACAB35984CB}",
+    "Hash": "{17A37040-9711-19D7-A131-3AC74F3F9537}",
     "ObjectPath": "Play_MapC_Main",
     "ShortName": "Play_MapC_Main",
     "Path": "Event/Play_MapC_Main.bnk",
@@ -2275,7 +2461,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{160966EB-8A5C-EC83-7734-F6391EE93ED8}",
+    "Hash": "{1C883FDB-F5A6-2303-8732-7AF25DF0AF80}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -2333,6 +2519,15 @@
       "ShortName": "Wood2_Foot_2.wav",
       "Path": "Media/167561171.wem",
       "CachePath": "SFX/Wood2_Foot_2_818F3B66.wem"
+     },
+     {
+      "Id": "197488015",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_2 .wav",
+      "Path": "Media/197488015.wem",
+      "CachePath": "SFX/MetalFoot_2 _818F3B66.wem"
      },
      {
       "Id": "198780667",
@@ -2407,6 +2602,15 @@
       "CachePath": "SFX/Wood2_Foot_4_818F3B66.wem"
      },
      {
+      "Id": "361319171",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_4.wav",
+      "Path": "Media/361319171.wem",
+      "CachePath": "SFX/MetalFoot_4_818F3B66.wem"
+     },
+     {
       "Id": "369342720",
       "Language": "SFX",
       "Streaming": "false",
@@ -2414,6 +2618,15 @@
       "ShortName": "Ice_Foot_5.wav",
       "Path": "Media/369342720.wem",
       "CachePath": "SFX/Ice_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "441436594",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_3.wav",
+      "Path": "Media/441436594.wem",
+      "CachePath": "SFX/MetalFoot_3_818F3B66.wem"
      },
      {
       "Id": "448296093",
@@ -2542,6 +2755,15 @@
       "CachePath": "SFX/Water_Foot_3_818F3B66.wem"
      },
      {
+      "Id": "1063087861",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_!.wav",
+      "Path": "Media/1063087861.wem",
+      "CachePath": "SFX/MetalFoot_!_818F3B66.wem"
+     },
+     {
       "Id": "1063219786",
       "Language": "SFX",
       "Streaming": "false",
@@ -2549,6 +2771,15 @@
       "ShortName": "Snow_Foot_3.wav",
       "Path": "Media/1063219786.wem",
       "CachePath": "SFX/Snow_Foot_3_818F3B66.wem"
+     },
+     {
+      "Id": "1065392048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_5 .wav",
+      "Path": "Media/1065392048.wem",
+      "CachePath": "SFX/MetalFoot_5 _818F3B66.wem"
      }
     ],
     "Plugins": {
@@ -2572,7 +2803,7 @@
       "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.16467108",
-      "DurationMax": "0.52699363",
+      "DurationMax": "1.0352334",
       "SwitchContainers": [
        {
         "SwitchValue": {
@@ -2597,6 +2828,31 @@
          },
          {
           "Id": "941571148"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "2473969246",
+         "GUID": "{7F5D5027-D889-40A3-B23E-87D829941110}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "197488015"
+         },
+         {
+          "Id": "361319171"
+         },
+         {
+          "Id": "441436594"
+         },
+         {
+          "Id": "1063087861"
+         },
+         {
+          "Id": "1065392048"
          }
         ]
        },
@@ -2773,6 +3029,12 @@
         "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
        },
        {
+        "Id": "2473969246",
+        "Name": "Metal",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Metal",
+        "GUID": "{7F5D5027-D889-40A3-B23E-87D829941110}"
+       },
+       {
         "Id": "2654748154",
         "Name": "Water",
         "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
@@ -2787,7 +3049,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{C0D6371E-7BAD-3F7E-085F-D15971D8C3B5}",
+    "Hash": "{0E6D2AEA-93CB-7A37-F2C0-2A5F204C621F}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -2893,6 +3155,12 @@
       "Name": "RTPC_Fail_Volume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Fail_Volume",
       "GUID": "{B4B823F8-631E-401E-8129-C408D3A19230}"
+     },
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
      },
      {
       "Id": "2378823330",
@@ -3039,6 +3307,12 @@
         "Name": "Rock",
         "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Rock",
         "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
+       },
+       {
+        "Id": "2473969246",
+        "Name": "Metal",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Metal",
+        "GUID": "{7F5D5027-D889-40A3-B23E-87D829941110}"
        },
        {
         "Id": "2654748154",
@@ -3539,7 +3813,7 @@
     "Type": "Event",
     "GUID": "{383CC094-19B9-4794-8497-472E2CAFCAEC}",
     "Language": "SFX",
-    "Hash": "{E2706516-504B-E555-880C-A46C5D831D80}",
+    "Hash": "{8D8806C9-6EBE-6E20-57B3-1CE6EEDFEF77}",
     "ObjectPath": "Play_Ranking_BGM",
     "ShortName": "Play_Ranking_BGM",
     "Path": "Event/Play_Ranking_BGM.bnk",
@@ -3576,7 +3850,7 @@
     "Type": "Event",
     "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
     "Language": "SFX",
-    "Hash": "{C7CC8253-DFCA-26B2-93EA-6A13F36B42CB}",
+    "Hash": "{1F830DFF-05D7-9696-B07A-2647103A41C4}",
     "ObjectPath": "Play_BBIK_V",
     "ShortName": "Play_BBIK_V",
     "Path": "Event/Play_BBIK_V.bnk",
@@ -3649,7 +3923,7 @@
     "Type": "Event",
     "GUID": "{065F46F0-9308-4999-B591-08B87BB59775}",
     "Language": "SFX",
-    "Hash": "{593673B5-97B4-24FD-40CC-D3C700C47294}",
+    "Hash": "{E4092E8B-3B6F-47E3-EA95-86C4EB8945B6}",
     "ObjectPath": "Play_BBIK_T",
     "ShortName": "Play_BBIK_T",
     "Path": "Event/Play_BBIK_T.bnk",
@@ -3722,7 +3996,7 @@
     "Type": "Event",
     "GUID": "{55281800-4A73-48F4-BDD0-BD28ECAE594F}",
     "Language": "SFX",
-    "Hash": "{B56876E8-406F-F173-7DB0-D60C6C4595DA}",
+    "Hash": "{0864B3E4-8DAF-5E56-1189-9288561C00FF}",
     "ObjectPath": "Play_BBIK_C",
     "ShortName": "Play_BBIK_C",
     "Path": "Event/Play_BBIK_C.bnk",
@@ -3791,11 +4065,80 @@
     ]
    },
    {
+    "Id": "1462886408",
+    "Type": "Event",
+    "GUID": "{C6123022-9C0A-417A-BFDF-23C6132E03B2}",
+    "Language": "SFX",
+    "Hash": "{271A8DDA-6D14-78BB-F803-EC066147B409}",
+    "ObjectPath": "Play_Blackhole_SQ",
+    "ShortName": "Play_Blackhole_SQ",
+    "Path": "Event/Play_Blackhole_SQ.bnk",
+    "Media": [
+     {
+      "Id": "205159956",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BlackHole_2.wav",
+      "Path": "Media/205159956.wem",
+      "CachePath": "SFX/BlackHole_2_818F3B66.wem"
+     },
+     {
+      "Id": "956675855",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BlackHole_1.wav",
+      "Path": "Media/956675855.wem",
+      "CachePath": "SFX/BlackHole_1_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1462886408",
+      "Name": "Play_Blackhole_SQ",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Blackhole_SQ",
+      "GUID": "{C6123022-9C0A-417A-BFDF-23C6132E03B2}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "4.067",
+      "DurationMax": "4.358667",
+      "MediaRefs": [
+       {
+        "Id": "205159956"
+       },
+       {
+        "Id": "956675855"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "1494228982",
     "Type": "Event",
     "GUID": "{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}",
     "Language": "SFX",
-    "Hash": "{76DF7159-2A07-D2EB-9D34-AB507711E83A}",
+    "Hash": "{E15E8393-C462-6633-D9A9-0BCC799B713C}",
     "ObjectPath": "Play_Head_Hit",
     "ShortName": "Play_Head_Hit",
     "Path": "Event/Play_Head_Hit.bnk",
@@ -3876,7 +4219,7 @@
     "Type": "Event",
     "GUID": "{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}",
     "Language": "SFX",
-    "Hash": "{116B8B6C-1C0B-2340-983F-8898AC805712}",
+    "Hash": "{C23E090F-07D9-0E28-9702-2226986A332F}",
     "ObjectPath": "Play_Splash_On",
     "ShortName": "Play_Splash_On",
     "Path": "Event/Play_Splash_On.bnk",
@@ -3969,7 +4312,7 @@
     "Type": "Event",
     "GUID": "{8E51867B-3166-426A-AE62-34E2910478A0}",
     "Language": "SFX",
-    "Hash": "{AE50A758-68AF-A474-AEC3-A58AEB2DF1C1}",
+    "Hash": "{27607CD3-93B0-BBFC-67F3-0803BA1671BE}",
     "ObjectPath": "Play_Water_Up",
     "ShortName": "Play_Water_Up",
     "Path": "Event/Play_Water_Up.bnk",
@@ -4006,7 +4349,7 @@
     "Type": "Event",
     "GUID": "{076B29FC-857E-4261-8AD6-C9F0D027F9FC}",
     "Language": "SFX",
-    "Hash": "{93C7FE82-6605-F75B-9CC5-C001D0625733}",
+    "Hash": "{4555FAB1-51F7-71A8-38D1-BBB44A0EC481}",
     "ObjectPath": "Play_Audience_Combo",
     "ShortName": "Play_Audience_Combo",
     "Path": "Event/Play_Audience_Combo.bnk",
@@ -4043,7 +4386,7 @@
     "Type": "Event",
     "GUID": "{3EA05F32-8881-4247-9EB3-C02DE9D775F8}",
     "Language": "SFX",
-    "Hash": "{0941F5CE-85A2-0D9D-E35A-497F43AF2C21}",
+    "Hash": "{C46ABE5C-751B-1BC9-6552-41E17A7DF878}",
     "ObjectPath": "Play_Snow_Hit",
     "ShortName": "Play_Snow_Hit",
     "Path": "Event/Play_Snow_Hit.bnk",
@@ -4104,7 +4447,7 @@
     "Type": "Event",
     "GUID": "{6F90073B-06FD-4C85-AA82-7D074D93B08A}",
     "Language": "SFX",
-    "Hash": "{3F257D33-EEF5-3462-E5A6-3AA52EA163B9}",
+    "Hash": "{5FF62C46-1802-8CC3-70C7-4AFD0434EE59}",
     "ObjectPath": "Play_Ice_Freeze",
     "ShortName": "Play_Ice_Freeze",
     "Path": "Event/Play_Ice_Freeze.bnk",
@@ -4138,137 +4481,11 @@
     ]
    },
    {
-    "Id": "1795670352",
-    "Type": "Event",
-    "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
-    "Language": "SFX",
-    "Hash": "{FF613A78-BCAA-B79D-6CC3-9D0247AFDF45}",
-    "ObjectPath": "Note_Long_End",
-    "ShortName": "Note_Long_End",
-    "Path": "Event/Note_Long_End.bnk",
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "1795670352",
-      "Name": "Note_Long_End",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Long_End",
-      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
-      "DurationType": "OneShot",
-      "DurationMin": "1",
-      "DurationMax": "1",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
-    "Id": "1884231791",
-    "Type": "Event",
-    "GUID": "{BA8C2B7E-7225-486F-93A5-89E87388A573}",
-    "Language": "SFX",
-    "Hash": "{DE4E09E0-5770-93DE-7C18-DC882667510B}",
-    "ObjectPath": "Play_Chair_Hit",
-    "ShortName": "Play_Chair_Hit",
-    "Path": "Event/Play_Chair_Hit.bnk",
-    "Media": [
-     {
-      "Id": "226435336",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Chair\\Chiar_Hit_4.wav",
-      "Path": "Media/226435336.wem",
-      "CachePath": "SFX/Chair/Chiar_Hit_4_818F3B66.wem"
-     },
-     {
-      "Id": "438869768",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Chair\\Chiar_Hit_2.wav",
-      "Path": "Media/438869768.wem",
-      "CachePath": "SFX/Chair/Chiar_Hit_2_818F3B66.wem"
-     },
-     {
-      "Id": "532306073",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Chair\\Chiar_Hit_3.wav",
-      "Path": "Media/532306073.wem",
-      "CachePath": "SFX/Chair/Chiar_Hit_3_818F3B66.wem"
-     },
-     {
-      "Id": "532844207",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Chair\\Chiar_Hit_5.wav",
-      "Path": "Media/532844207.wem",
-      "CachePath": "SFX/Chair/Chiar_Hit_5_818F3B66.wem"
-     },
-     {
-      "Id": "988510024",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "Chair\\Chiar_Hit_1.wav",
-      "Path": "Media/988510024.wem",
-      "CachePath": "SFX/Chair/Chiar_Hit_1_818F3B66.wem"
-     }
-    ],
-    "Events": [
-     {
-      "Id": "1884231791",
-      "Name": "Play_Chair_Hit",
-      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Chair_Hit",
-      "GUID": "{BA8C2B7E-7225-486F-93A5-89E87388A573}",
-      "MaxAttenuation": "10000",
-      "DurationType": "OneShot",
-      "DurationMin": "0.49546003",
-      "DurationMax": "0.98207986",
-      "MediaRefs": [
-       {
-        "Id": "226435336"
-       },
-       {
-        "Id": "438869768"
-       },
-       {
-        "Id": "532306073"
-       },
-       {
-        "Id": "532844207"
-       },
-       {
-        "Id": "988510024"
-       }
-      ]
-     }
-    ]
-   },
-   {
     "Id": "1908418180",
     "Type": "Event",
     "GUID": "{9D07D1EF-3569-42B9-B49E-392E71A34B44}",
     "Language": "SFX",
-    "Hash": "{58EB3E3C-47D0-A6A7-5E8C-8169DA240B5A}",
+    "Hash": "{39DF4421-91E3-5091-FB3B-637370337239}",
     "ObjectPath": "MIDI_MapH_V",
     "ShortName": "MIDI_MapH_V",
     "Path": "Event/MIDI_MapH_V.bnk",
@@ -4348,7 +4565,7 @@
     "Type": "Event",
     "GUID": "{BDD48549-5D06-448F-B12B-9311463E9955}",
     "Language": "SFX",
-    "Hash": "{1B56F63B-9BAC-5A1F-EEBD-2A9751A25DD4}",
+    "Hash": "{C40A2D03-F206-8EED-CAD5-5F0B17D5834B}",
     "ObjectPath": "MIDI_MapH_T",
     "ShortName": "MIDI_MapH_T",
     "Path": "Event/MIDI_MapH_T.bnk",
@@ -4428,7 +4645,7 @@
     "Type": "Event",
     "GUID": "{FDC0E931-5288-4676-BBE2-1744E4B17326}",
     "Language": "SFX",
-    "Hash": "{F0B3C074-C91E-4CF1-4379-61D51194BC29}",
+    "Hash": "{93FE12F3-D7DE-0F58-5E63-D955216779B9}",
     "ObjectPath": "MIDI_MapH_C",
     "ShortName": "MIDI_MapH_C",
     "Path": "Event/MIDI_MapH_C.bnk",
@@ -4496,7 +4713,7 @@
     "Type": "Event",
     "GUID": "{B9083602-D386-4F6A-830D-FFEBBFA50FA7}",
     "Language": "SFX",
-    "Hash": "{D00114F7-9B45-937E-7BD8-0AF261EFD367}",
+    "Hash": "{4ABDB948-626E-8BCA-387A-5B00718F048D}",
     "ObjectPath": "MIDI_MapB_T",
     "ShortName": "MIDI_MapB_T",
     "Path": "Event/MIDI_MapB_T.bnk",
@@ -4576,7 +4793,7 @@
     "Type": "Event",
     "GUID": "{5DAF9E57-AA44-4C8F-88A0-92F0D96030AB}",
     "Language": "SFX",
-    "Hash": "{D7D6A240-3F0E-2D89-EA84-F0C6C3F09226}",
+    "Hash": "{1D7D9D9F-026F-263D-62A5-8CC860FF8F50}",
     "ObjectPath": "MIDI_MapB_V",
     "ShortName": "MIDI_MapB_V",
     "Path": "Event/MIDI_MapB_V.bnk",
@@ -4656,7 +4873,7 @@
     "Type": "Event",
     "GUID": "{6118A959-933C-4BE5-B35D-980A18CAFC6A}",
     "Language": "SFX",
-    "Hash": "{96741C74-CEE3-F5E5-7D86-8875980737C1}",
+    "Hash": "{A1886BF5-ED77-7729-3D74-C8BC0F1A2A5B}",
     "ObjectPath": "MIDI_MapB_C",
     "ShortName": "MIDI_MapB_C",
     "Path": "Event/MIDI_MapB_C.bnk",
@@ -4736,7 +4953,7 @@
     "Type": "Event",
     "GUID": "{921BB1ED-742D-4B3E-82A8-5302B8A0F2E6}",
     "Language": "SFX",
-    "Hash": "{F49A87C9-976B-3613-1603-8938AE054DB9}",
+    "Hash": "{930D403B-B92C-8A62-E746-E9BF86F01605}",
     "ObjectPath": "MIDI_MapA_V",
     "ShortName": "MIDI_MapA_V",
     "Path": "Event/MIDI_MapA_V.bnk",
@@ -4816,7 +5033,7 @@
     "Type": "Event",
     "GUID": "{8276A4A2-5DB1-48BD-88DF-55AB751068C2}",
     "Language": "SFX",
-    "Hash": "{BB47BB56-320A-4571-E5BB-300AA5D0728C}",
+    "Hash": "{BAFD2062-3FC0-A34D-24AC-83A340D1B82C}",
     "ObjectPath": "MIDI_MapA_T",
     "ShortName": "MIDI_MapA_T",
     "Path": "Event/MIDI_MapA_T.bnk",
@@ -4896,7 +5113,7 @@
     "Type": "Event",
     "GUID": "{9DC98120-8FE4-4F27-804A-CBA302540B7B}",
     "Language": "SFX",
-    "Hash": "{7B15FE0A-0CFE-3C18-5676-5FB080D1DA45}",
+    "Hash": "{DFB51026-0766-FEBC-A48F-54D619BAE7B3}",
     "ObjectPath": "MIDI_MapA_C",
     "ShortName": "MIDI_MapA_C",
     "Path": "Event/MIDI_MapA_C.bnk",
@@ -4976,7 +5193,7 @@
     "Type": "Event",
     "GUID": "{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}",
     "Language": "SFX",
-    "Hash": "{DBF28CEB-C3AA-5313-2FEE-F6A3460CB51F}",
+    "Hash": "{4704E53C-7BAD-3BB1-5DFA-EB6E967AD2E2}",
     "ObjectPath": "Play_Gift_On",
     "ShortName": "Play_Gift_On",
     "Path": "Event/Play_Gift_On.bnk",
@@ -5014,7 +5231,7 @@
     "Type": "Event",
     "GUID": "{349DAC31-BD3A-4F77-AC17-CAB74BCF5672}",
     "Language": "SFX",
-    "Hash": "{9D6BE506-2A59-3436-8516-30BD2D45F997}",
+    "Hash": "{D064A79C-5DFA-DD37-FFAB-2346B82381C6}",
     "ObjectPath": "MIDI_MapG_C",
     "ShortName": "MIDI_MapG_C",
     "Path": "Event/MIDI_MapG_C.bnk",
@@ -5082,7 +5299,7 @@
     "Type": "Event",
     "GUID": "{348812F1-EF3A-4D86-B856-4A9228899125}",
     "Language": "SFX",
-    "Hash": "{35BC541F-B4BE-2E25-E415-F27B1335AF07}",
+    "Hash": "{E6002894-15F5-4FC0-8247-02889AFD7348}",
     "ObjectPath": "MIDI_MapG_T",
     "ShortName": "MIDI_MapG_T",
     "Path": "Event/MIDI_MapG_T.bnk",
@@ -5162,7 +5379,7 @@
     "Type": "Event",
     "GUID": "{BEE953F8-B36F-4EEB-9610-65D979BC4228}",
     "Language": "SFX",
-    "Hash": "{2AD57290-901E-57EF-8B7E-70010218B1E8}",
+    "Hash": "{8C54BCBB-A3FF-DA96-B0F3-36F8A45217EE}",
     "ObjectPath": "MIDI_MapG_V",
     "ShortName": "MIDI_MapG_V",
     "Path": "Event/MIDI_MapG_V.bnk",
@@ -5242,7 +5459,7 @@
     "Type": "Event",
     "GUID": "{9A60F66C-7C8D-4C72-8ECE-D29F9F83AC8E}",
     "Language": "SFX",
-    "Hash": "{1DE99D4A-23F7-1AFF-4F84-464E88F35180}",
+    "Hash": "{476AA0B9-ABF2-B392-E939-706736656F07}",
     "ObjectPath": "MIDI_MapF_T",
     "ShortName": "MIDI_MapF_T",
     "Path": "Event/MIDI_MapF_T.bnk",
@@ -5322,7 +5539,7 @@
     "Type": "Event",
     "GUID": "{685C4157-B4C4-409F-8A24-6243D79A68CB}",
     "Language": "SFX",
-    "Hash": "{F06803CA-D4B9-716C-2E8F-990E6F941338}",
+    "Hash": "{E5DE0D78-A04C-B1A6-048F-BD09ED9F8126}",
     "ObjectPath": "MIDI_MapF_V",
     "ShortName": "MIDI_MapF_V",
     "Path": "Event/MIDI_MapF_V.bnk",
@@ -5402,7 +5619,7 @@
     "Type": "Event",
     "GUID": "{31553C58-7D73-475F-A41B-F5585E76AE04}",
     "Language": "SFX",
-    "Hash": "{5266B5AA-4220-5EF9-910B-5D9CDDD2CE7E}",
+    "Hash": "{C9A59CB1-E2E8-C6D6-D790-750F9B6857C9}",
     "ObjectPath": "MIDI_MapF_C",
     "ShortName": "MIDI_MapF_C",
     "Path": "Event/MIDI_MapF_C.bnk",
@@ -5470,7 +5687,7 @@
     "Type": "Event",
     "GUID": "{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}",
     "Language": "SFX",
-    "Hash": "{C128F198-00BF-0985-AB36-34176687FC55}",
+    "Hash": "{ABE2A473-6E0C-FB5B-8DB4-9FD40D8EF7C2}",
     "ObjectPath": "MIDI_MapA_Object",
     "ShortName": "MIDI_MapA_Object",
     "Path": "Event/MIDI_MapA_Object.bnk",
@@ -5526,7 +5743,7 @@
     "Type": "Event",
     "GUID": "{0381A057-351A-4EF9-865E-5FEBD569955A}",
     "Language": "SFX",
-    "Hash": "{692B4C8D-1F35-2522-2DDD-022E98959884}",
+    "Hash": "{28EDB537-7336-7780-D44D-5543362B5C61}",
     "ObjectPath": "Play_Violin_Attack",
     "ShortName": "Play_Violin_Attack",
     "Path": "Event/Play_Violin_Attack.bnk",
@@ -5603,11 +5820,49 @@
     ]
    },
    {
+    "Id": "2022407976",
+    "Type": "Event",
+    "GUID": "{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}",
+    "Language": "SFX",
+    "Hash": "{16C0B4AA-F5D7-AD8B-7B2D-78204DEAE142}",
+    "ObjectPath": "Play_Air_Escape",
+    "ShortName": "Play_Air_Escape",
+    "Path": "Event/Play_Air_Escape.bnk",
+    "Media": [
+     {
+      "Id": "151741016",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SCIFI_DOOR_AIR.wav",
+      "Path": "Media/151741016.wem",
+      "CachePath": "SFX/SCIFI_DOOR_AIR_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2022407976",
+      "Name": "Play_Air_Escape",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Air_Escape",
+      "GUID": "{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "3.7578332",
+      "DurationMax": "3.7578332",
+      "MediaRefs": [
+       {
+        "Id": "151741016"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "2023964404",
     "Type": "Event",
     "GUID": "{9821A7D4-2790-4D81-8C43-8AC095163364}",
     "Language": "SFX",
-    "Hash": "{5947A296-30D0-9D5D-1A50-88CF7A50807E}",
+    "Hash": "{48136C11-BA69-C0B1-18B9-600A3D485309}",
     "ObjectPath": "Play_MapT_Main",
     "ShortName": "Play_MapT_Main",
     "Path": "Event/Play_MapT_Main.bnk",
@@ -5724,7 +5979,7 @@
     "Type": "Event",
     "GUID": "{AE6AEDF1-774F-48D0-965D-40F6B1F2A7C8}",
     "Language": "SFX",
-    "Hash": "{D72C2515-718E-1995-C914-157A559B97D5}",
+    "Hash": "{0A82DE4E-00F5-E293-1E3B-4618B9505C29}",
     "ObjectPath": "Play_MapA_BGM",
     "ShortName": "Play_MapA_BGM",
     "Path": "Event/Play_MapA_BGM.bnk",
@@ -5812,7 +6067,7 @@
     "Type": "Event",
     "GUID": "{B1E68E6A-B396-4520-A5DD-33CD5691FD01}",
     "Language": "SFX",
-    "Hash": "{8FFF10B3-265F-1C46-5CD0-24BD0FDE7987}",
+    "Hash": "{263BEDC2-9605-5CFD-DCCA-81AB2428E926}",
     "ObjectPath": "Play_Violin_Hit",
     "ShortName": "Play_Violin_Hit",
     "Path": "Event/Play_Violin_Hit.bnk",
@@ -5893,7 +6148,7 @@
     "Type": "Event",
     "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
     "Language": "SFX",
-    "Hash": "{AE2693DB-1F1D-E0E1-68AE-17EE7913DCB4}",
+    "Hash": "{79E84C3E-7032-42BF-C986-A682BA282258}",
     "ObjectPath": "Play_Plate_Break",
     "ShortName": "Play_Plate_Break",
     "Path": "Event/Play_Plate_Break.bnk",
@@ -5991,7 +6246,7 @@
     "Type": "Event",
     "GUID": "{75D1EC36-29B7-424E-99DA-A6351846C415}",
     "Language": "SFX",
-    "Hash": "{1FC8F7EF-0C6C-9E5A-7DC2-8C093886A0A6}",
+    "Hash": "{8208280E-BBF1-1356-738A-FEC34F3D1E8C}",
     "ObjectPath": "Play_Storm_Warning",
     "ShortName": "Play_Storm_Warning",
     "Path": "Event/Play_Storm_Warning.bnk",
@@ -6029,7 +6284,7 @@
     "Type": "Event",
     "GUID": "{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}",
     "Language": "SFX",
-    "Hash": "{1838E1C9-C19D-49A7-5B8C-594585BE4B70}",
+    "Hash": "{E8222F0C-8AAB-6853-3CC1-F59A90063504}",
     "ObjectPath": "Play_Player_Pain",
     "ShortName": "Play_Player_Pain",
     "Path": "Event/Play_Player_Pain.bnk",
@@ -6146,7 +6401,7 @@
     "Type": "Event",
     "GUID": "{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}",
     "Language": "SFX",
-    "Hash": "{E75E3B9A-2149-2BC8-853C-DC42318FCA4B}",
+    "Hash": "{B30ACF1F-F854-BCD7-EF2E-393CAB5AA5AA}",
     "ObjectPath": "Play_Drunk_Laugh",
     "ShortName": "Play_Drunk_Laugh",
     "Path": "Event/Play_Drunk_Laugh.bnk",
@@ -6184,7 +6439,7 @@
     "Type": "Event",
     "GUID": "{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}",
     "Language": "SFX",
-    "Hash": "{122084A2-6CC4-EF80-5818-CF3F0AA5D5EA}",
+    "Hash": "{2C8F51D1-484E-8AD8-5D24-510469B064CD}",
     "ObjectPath": "Play_Rhythm_Perfect",
     "ShortName": "Play_Rhythm_Perfect",
     "Path": "Event/Play_Rhythm_Perfect.bnk",
@@ -6221,7 +6476,7 @@
     "Type": "Event",
     "GUID": "{75B7B990-67F3-4370-89EB-C5F7DA9EEA23}",
     "Language": "SFX",
-    "Hash": "{0A3CBE86-9F93-61B1-D365-DE48D3D69A9A}",
+    "Hash": "{8B1E74EA-0901-5432-ED25-97041E59AABE}",
     "ObjectPath": "Stop_Beer_Drop",
     "ShortName": "Stop_Beer_Drop",
     "Path": "Event/Stop_Beer_Drop.bnk",
@@ -6243,7 +6498,7 @@
     "Type": "Event",
     "GUID": "{750353A4-404D-47D8-92EF-B12E466A3BCE}",
     "Language": "SFX",
-    "Hash": "{90F59E2A-A0F5-DFAA-99F6-6B4B095A9696}",
+    "Hash": "{530591D2-A415-B822-9EF4-E3AC33604837}",
     "ObjectPath": "MIDI_MapB_Object",
     "ShortName": "MIDI_MapB_Object",
     "Path": "Event/MIDI_MapB_Object.bnk",
@@ -6299,7 +6554,7 @@
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
     "Language": "SFX",
-    "Hash": "{5A1038CE-9385-549B-89F8-4A9475B03D89}",
+    "Hash": "{BC97E154-0ED6-294C-4E83-16B7B6DA8103}",
     "ObjectPath": "Play_Trombone_Attack",
     "ShortName": "Play_Trombone_Attack",
     "Path": "Event/Play_Trombone_Attack.bnk",
@@ -6404,7 +6659,7 @@
     "Type": "Event",
     "GUID": "{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}",
     "Language": "SFX",
-    "Hash": "{09C0175E-4B69-2CE8-2F53-8DC62ADF6ECE}",
+    "Hash": "{7D067531-6B30-D260-78A2-6AFE1740681C}",
     "ObjectPath": "Play_MapC_Easy_Main",
     "ShortName": "Play_MapC_Easy_Main",
     "Path": "Event/Play_MapC_Easy_Main.bnk",
@@ -6511,7 +6766,7 @@
     "Type": "Event",
     "GUID": "{8196F37A-0DB6-42AE-9826-3BC96A93FB02}",
     "Language": "SFX",
-    "Hash": "{951C5066-6418-077C-1CD7-C0AF2FE66717}",
+    "Hash": "{E2410983-4DDA-DC1A-45AF-2C2A3142D9C2}",
     "ObjectPath": "Play_MapB_Easy_Main",
     "ShortName": "Play_MapB_Easy_Main",
     "Path": "Event/Play_MapB_Easy_Main.bnk",
@@ -6626,11 +6881,49 @@
     ]
    },
    {
+    "Id": "2895000445",
+    "Type": "Event",
+    "GUID": "{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}",
+    "Language": "SFX",
+    "Hash": "{7CE77BAF-C7A8-3D72-DE5C-C9480F471382}",
+    "ObjectPath": "Play_Space_Warning",
+    "ShortName": "Play_Space_Warning",
+    "Path": "Event/Play_Space_Warning.bnk",
+    "Media": [
+     {
+      "Id": "174900202",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Space_Warning.wav",
+      "Path": "Media/174900202.wem",
+      "CachePath": "SFX/Space_Warning_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2895000445",
+      "Name": "Play_Space_Warning",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Space_Warning",
+      "GUID": "{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "4.56825",
+      "DurationMax": "4.56825",
+      "MediaRefs": [
+       {
+        "Id": "174900202"
+       }
+      ]
+     }
+    ]
+   },
+   {
     "Id": "2901149947",
     "Type": "Event",
     "GUID": "{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}",
     "Language": "SFX",
-    "Hash": "{410A35CB-2871-9FC7-78B2-4D221354A3DA}",
+    "Hash": "{501E28BF-23A6-FA76-8048-B032836528B8}",
     "ObjectPath": "Play_Player_Scream",
     "ShortName": "Play_Player_Scream",
     "Path": "Event/Play_Player_Scream.bnk",
@@ -6667,7 +6960,7 @@
     "Type": "Event",
     "GUID": "{D71C8D5E-B367-405A-9D1C-0E5CD7A1A9AA}",
     "Language": "SFX",
-    "Hash": "{808C1E59-0356-C4AC-A103-A7C093F0E36F}",
+    "Hash": "{8EC1852F-A5D5-99E2-56EC-E520F9FD4074}",
     "ObjectPath": "Play_Player_Drowning",
     "ShortName": "Play_Player_Drowning",
     "Path": "Event/Play_Player_Drowning.bnk",
@@ -6729,7 +7022,7 @@
     "Type": "Event",
     "GUID": "{BC1D7B76-D48E-4A6F-AC80-24A36425213E}",
     "Language": "SFX",
-    "Hash": "{3CD2038C-FBBB-BC3D-F2B6-6EEF5A4EA7A3}",
+    "Hash": "{FA696084-7E4F-45E3-D89E-33F651E9F894}",
     "ObjectPath": "MIDI_MapC_C",
     "ShortName": "MIDI_MapC_C",
     "Path": "Event/MIDI_MapC_C.bnk",
@@ -6809,7 +7102,7 @@
     "Type": "Event",
     "GUID": "{44719AFF-6180-42E7-86D2-E6F816D0C1B6}",
     "Language": "SFX",
-    "Hash": "{BD997242-CC18-217E-AAD8-0C3134B457A1}",
+    "Hash": "{6AC9D0A7-F190-E106-DB5F-5CDC582F3155}",
     "ObjectPath": "MIDI_MapC_T",
     "ShortName": "MIDI_MapC_T",
     "Path": "Event/MIDI_MapC_T.bnk",
@@ -6889,7 +7182,7 @@
     "Type": "Event",
     "GUID": "{DFB1246C-F909-4AF4-B2C2-C3272AFB6E60}",
     "Language": "SFX",
-    "Hash": "{F882787D-0F95-F90E-7AF2-13FF262B6D7A}",
+    "Hash": "{142E9615-5DD0-A47A-7FEE-1A43516E1139}",
     "ObjectPath": "MIDI_MapC_V",
     "ShortName": "MIDI_MapC_V",
     "Path": "Event/MIDI_MapC_V.bnk",
@@ -6969,7 +7262,7 @@
     "Type": "Event",
     "GUID": "{C8F96251-7CA9-48FD-A194-2EA9CBCFA9D2}",
     "Language": "SFX",
-    "Hash": "{06FBB8AA-BC34-1A0C-E6CD-251D73594E32}",
+    "Hash": "{6BF7791B-2F93-D99E-8700-A7152C89DF77}",
     "ObjectPath": "MIDI_MapE_C",
     "ShortName": "MIDI_MapE_C",
     "Path": "Event/MIDI_MapE_C.bnk",
@@ -7037,7 +7330,7 @@
     "Type": "Event",
     "GUID": "{EC16AED4-CA60-4504-BE4A-9CBEF8EC4D54}",
     "Language": "SFX",
-    "Hash": "{2E8DC082-55CF-A3A7-1904-A98D1B21B9CA}",
+    "Hash": "{97F08607-9618-51FC-C3C0-FEA12B20FC9E}",
     "ObjectPath": "MIDI_MapE_V",
     "ShortName": "MIDI_MapE_V",
     "Path": "Event/MIDI_MapE_V.bnk",
@@ -7105,7 +7398,7 @@
     "Type": "Event",
     "GUID": "{D064998F-DFE1-493D-892B-6837180AE409}",
     "Language": "SFX",
-    "Hash": "{FC6197B0-1868-F072-DB34-F57A0DD6F1E6}",
+    "Hash": "{98C5BD4C-FD1B-4F8F-D4A0-4BDC49F5B3F6}",
     "ObjectPath": "MIDI_MapE_T",
     "ShortName": "MIDI_MapE_T",
     "Path": "Event/MIDI_MapE_T.bnk",
@@ -7173,7 +7466,7 @@
     "Type": "Event",
     "GUID": "{2AC2E03A-20B8-483F-8C79-AFB207DC68F6}",
     "Language": "SFX",
-    "Hash": "{0901985C-BE41-803B-AD4B-B3849A9E20F8}",
+    "Hash": "{CB09727A-3DD2-71E6-0A92-BA8540C89BAD}",
     "ObjectPath": "MIDI_MapD_C",
     "ShortName": "MIDI_MapD_C",
     "Path": "Event/MIDI_MapD_C.bnk",
@@ -7253,7 +7546,7 @@
     "Type": "Event",
     "GUID": "{4BBBF6F8-9F59-4DD7-8033-CDD733496F4E}",
     "Language": "SFX",
-    "Hash": "{25F9B010-E168-59C0-2C18-13BC213E17EF}",
+    "Hash": "{BF8E42C2-D407-F475-52E7-197ECC964106}",
     "ObjectPath": "MIDI_MapD_V",
     "ShortName": "MIDI_MapD_V",
     "Path": "Event/MIDI_MapD_V.bnk",
@@ -7333,7 +7626,7 @@
     "Type": "Event",
     "GUID": "{FBE54346-1FA2-4AE0-B9CB-75CA62202513}",
     "Language": "SFX",
-    "Hash": "{AB7AEBE8-2349-A051-6423-9097142F5C1D}",
+    "Hash": "{FAE17CD0-8BF9-1B4D-83AD-7744C94DA405}",
     "ObjectPath": "MIDI_MapD_T",
     "ShortName": "MIDI_MapD_T",
     "Path": "Event/MIDI_MapD_T.bnk",
@@ -7413,7 +7706,7 @@
     "Type": "Event",
     "GUID": "{B494B516-A132-49D9-AE89-08E53A55920A}",
     "Language": "SFX",
-    "Hash": "{3B659B91-8696-73D4-5EBA-EED56B7FCD8B}",
+    "Hash": "{2C805355-3C5B-37A8-C117-87CC8F0B210D}",
     "ObjectPath": "Play_Trombone_Attack_Voice",
     "ShortName": "Play_Trombone_Attack_Voice",
     "Path": "Event/Play_Trombone_Attack_Voice.bnk",
@@ -7451,7 +7744,7 @@
     "Type": "Event",
     "GUID": "{E431E19C-F3A1-4DC9-BFCA-E95A9355E6F5}",
     "Language": "SFX",
-    "Hash": "{75F86F63-1B99-DEB1-CEE6-C5C95459F56D}",
+    "Hash": "{C8F4F739-3D5F-CE65-E7E5-614F3CC6B422}",
     "ObjectPath": "MIDI_MapT_V",
     "ShortName": "MIDI_MapT_V",
     "Path": "Event/MIDI_MapT_V.bnk",
@@ -7510,7 +7803,7 @@
     "Type": "Event",
     "GUID": "{C43A6F99-2486-442F-885F-E3718529C405}",
     "Language": "SFX",
-    "Hash": "{F11A8765-E65F-0FCB-3FE4-05366277BE66}",
+    "Hash": "{4B8223E8-7433-E022-1644-DC8B853BF024}",
     "ObjectPath": "MIDI_MapT_T",
     "ShortName": "MIDI_MapT_T",
     "Path": "Event/MIDI_MapT_T.bnk",
@@ -7569,7 +7862,7 @@
     "Type": "Event",
     "GUID": "{CD9EA2F2-C125-4806-BF11-A3EC001FFE2C}",
     "Language": "SFX",
-    "Hash": "{8E400922-25FF-C979-F044-450A8E4C8286}",
+    "Hash": "{488FDB46-B732-C48C-DAAA-96F93470BD9C}",
     "ObjectPath": "MIDI_MapT_C",
     "ShortName": "MIDI_MapT_C",
     "Path": "Event/MIDI_MapT_C.bnk",
@@ -7628,7 +7921,7 @@
     "Type": "Event",
     "GUID": "{15B274E4-CA5A-4B51-B7E2-219CDA599772}",
     "Language": "SFX",
-    "Hash": "{19B7CDF3-B4EE-CF21-8CB9-258C8D4137D5}",
+    "Hash": "{C6C4F925-4303-6891-75C2-8E0CA60A2FE0}",
     "ObjectPath": "Play_Player_Standup",
     "ShortName": "Play_Player_Standup",
     "Path": "Event/Play_Player_Standup.bnk",
@@ -7665,7 +7958,7 @@
     "Type": "Event",
     "GUID": "{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}",
     "Language": "SFX",
-    "Hash": "{805D5CED-045F-5F7B-40DC-685BDA6CC303}",
+    "Hash": "{51097DBF-A195-29EB-15C0-9DD7393FB5B8}",
     "ObjectPath": "Play_Player_Dizzy",
     "ShortName": "Play_Player_Dizzy",
     "Path": "Event/Play_Player_Dizzy.bnk",
@@ -7703,7 +7996,7 @@
     "Type": "Event",
     "GUID": "{56C67807-BCAE-4981-BF94-AD07097741CB}",
     "Language": "SFX",
-    "Hash": "{3FA89883-C2F7-99EC-FCE6-9612E425C6D5}",
+    "Hash": "{919B76E2-D2C8-C891-86F1-6E77633E5822}",
     "ObjectPath": "Stop_SnowLobby_Ambience",
     "ShortName": "Stop_SnowLobby_Ambience",
     "Path": "Event/Stop_SnowLobby_Ambience.bnk",
@@ -7721,51 +8014,11 @@
     ]
    },
    {
-    "Id": "3199326751",
-    "Type": "Event",
-    "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
-    "Language": "SFX",
-    "Hash": "{494D4A4C-128C-8A95-795F-04E2DEAF8D61}",
-    "ObjectPath": "Note_Short_Start",
-    "ShortName": "Note_Short_Start",
-    "Path": "Event/Note_Short_Start.bnk",
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "3199326751",
-      "Name": "Note_Short_Start",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Short_Start",
-      "GUID": "{DF985246-51D9-4DD1-9857-56FF4A036F78}",
-      "DurationType": "OneShot",
-      "DurationMin": "1",
-      "DurationMax": "1",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
     "Id": "3304145397",
     "Type": "Event",
     "GUID": "{A5981776-F3D0-4919-93FB-1E5275B10847}",
     "Language": "SFX",
-    "Hash": "{71B6C8A2-5E1E-F773-C4C8-A45683C2C892}",
+    "Hash": "{B6C25832-2B2F-D67F-339F-3AE7488E23B9}",
     "ObjectPath": "Play_Host_Speaking",
     "ShortName": "Play_Host_Speaking",
     "Path": "Event/Play_Host_Speaking.bnk",
@@ -7802,7 +8055,7 @@
     "Type": "Event",
     "GUID": "{0C7F92B1-50F9-4686-8377-53DE94455FBB}",
     "Language": "SFX",
-    "Hash": "{2B566D4E-ABD6-9AA3-58DC-D65E3D2E1C77}",
+    "Hash": "{0630E9FF-0D1D-5DD0-BAE9-D74E54C195A3}",
     "ObjectPath": "Play_Wine_Break",
     "ShortName": "Play_Wine_Break",
     "Path": "Event/Play_Wine_Break.bnk",
@@ -7900,7 +8153,7 @@
     "Type": "Event",
     "GUID": "{D231A180-52CB-4213-AA71-1DC58068E8C3}",
     "Language": "SFX",
-    "Hash": "{FA69AD07-6F50-222C-5FC7-6DBDAAD61CFF}",
+    "Hash": "{05167DEF-DE55-80B4-0863-50875E6B112E}",
     "ObjectPath": "Play_Snow_Throw",
     "ShortName": "Play_Snow_Throw",
     "Path": "Event/Play_Snow_Throw.bnk",
@@ -7934,11 +8187,57 @@
     ]
    },
    {
+    "Id": "3379914362",
+    "Type": "Event",
+    "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
+    "Language": "SFX",
+    "Hash": "{53DC8DE2-02F8-B9C2-3CF9-4296478EA468}",
+    "ObjectPath": "Play_UFO_Laser",
+    "ShortName": "Play_UFO_Laser",
+    "Path": "Event/Play_UFO_Laser.bnk",
+    "Media": [
+     {
+      "Id": "275310621",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UFO_Laser.wav",
+      "Path": "Media/275310621.wem",
+      "CachePath": "SFX/UFO_Laser_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3379914362",
+      "Name": "Play_UFO_Laser",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_Laser",
+      "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "6.0364375",
+      "DurationMax": "6.0364375",
+      "MediaRefs": [
+       {
+        "Id": "275310621"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
+     }
+    ]
+   },
+   {
     "Id": "3391962191",
     "Type": "Event",
     "GUID": "{7E3210EE-4E63-48F1-85F3-6C20F873A925}",
     "Language": "SFX",
-    "Hash": "{78185696-FE6E-B2CB-2ADE-BDF49A3D294D}",
+    "Hash": "{F3C70C8C-032E-373D-4696-8D7EE4CB6EF9}",
     "ObjectPath": "MIDI_MapC_Easy_C",
     "ShortName": "MIDI_MapC_Easy_C",
     "Path": "Event/MIDI_MapC_Easy_C.bnk",
@@ -8018,7 +8317,7 @@
     "Type": "Event",
     "GUID": "{05BF03DD-37F8-4C59-807C-4F0833112725}",
     "Language": "SFX",
-    "Hash": "{6AD3BF05-7E29-F694-80E4-7F2E9E958126}",
+    "Hash": "{0C0988B9-9CAC-AB4C-192B-CE9D347D25C6}",
     "ObjectPath": "MIDI_MapC_Easy_T",
     "ShortName": "MIDI_MapC_Easy_T",
     "Path": "Event/MIDI_MapC_Easy_T.bnk",
@@ -8098,7 +8397,7 @@
     "Type": "Event",
     "GUID": "{F89E643B-4B7D-417C-A48C-211C459CFAFA}",
     "Language": "SFX",
-    "Hash": "{ED3064FD-A154-2981-5772-2B2E197E0121}",
+    "Hash": "{B33840ED-E5E4-6351-0E8D-E90BCEC83F78}",
     "ObjectPath": "MIDI_MapC_Easy_V",
     "ShortName": "MIDI_MapC_Easy_V",
     "Path": "Event/MIDI_MapC_Easy_V.bnk",
@@ -8174,11 +8473,92 @@
     ]
    },
    {
+    "Id": "3448173426",
+    "Type": "Event",
+    "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+    "Language": "SFX",
+    "Hash": "{3B57617D-5F39-4EEF-A362-AFE9AFF9DEAF}",
+    "ObjectPath": "Play_Port_Get",
+    "ShortName": "Play_Port_Get",
+    "Path": "Event/Play_Port_Get.bnk",
+    "Media": [
+     {
+      "Id": "151029182",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Docking_Item_3.wav",
+      "Path": "Media/151029182.wem",
+      "CachePath": "SFX/Docking_Item_3_818F3B66.wem"
+     },
+     {
+      "Id": "308272466",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Docking_Item_1.wav",
+      "Path": "Media/308272466.wem",
+      "CachePath": "SFX/Docking_Item_1_818F3B66.wem"
+     },
+     {
+      "Id": "850221637",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Docking_Item_2.wav",
+      "Path": "Media/850221637.wem",
+      "CachePath": "SFX/Docking_Item_2_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3448173426",
+      "Name": "Play_Port_Get",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Get",
+      "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.7817917",
+      "DurationMax": "0.9663333",
+      "MediaRefs": [
+       {
+        "Id": "151029182"
+       },
+       {
+        "Id": "308272466"
+       },
+       {
+        "Id": "850221637"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "3494894253",
     "Type": "Event",
     "GUID": "{2F5E6B7E-1F64-48E3-A954-94248F70CD72}",
     "Language": "SFX",
-    "Hash": "{0416D0E6-88A4-1830-A0E7-24D33B075399}",
+    "Hash": "{4A4E2D32-9ED2-352F-9071-F6B329647B88}",
     "ObjectPath": "Play_MapG_Main",
     "ShortName": "Play_MapG_Main",
     "Path": "Event/Play_MapG_Main.bnk",
@@ -8285,7 +8665,7 @@
     "Type": "Event",
     "GUID": "{B0C36204-52E2-4794-8556-4F4C7B718AEC}",
     "Language": "SFX",
-    "Hash": "{26432B78-87D1-FD42-90C5-3F1EF996BFF6}",
+    "Hash": "{62B8215C-6C1A-CE85-F3AD-188243A68DFB}",
     "ObjectPath": "Play_Party_On",
     "ShortName": "Play_Party_On",
     "Path": "Event/Play_Party_On.bnk",
@@ -8323,7 +8703,7 @@
     "Type": "Event",
     "GUID": "{83857DAD-1B0E-4622-A7D8-BC452FC7303C}",
     "Language": "SFX",
-    "Hash": "{FAACDF04-1E45-C954-23E3-536C34ED82CB}",
+    "Hash": "{4996DCC2-B91F-7086-BFC9-3A1752C91B8A}",
     "ObjectPath": "MIDI_MapB_Easy_V",
     "ShortName": "MIDI_MapB_Easy_V",
     "Path": "Event/MIDI_MapB_Easy_V.bnk",
@@ -8403,7 +8783,7 @@
     "Type": "Event",
     "GUID": "{32AB15D1-3735-4CB1-B22B-C4372805B4C3}",
     "Language": "SFX",
-    "Hash": "{99E461CC-3B5E-514D-9E67-1F45B4E20367}",
+    "Hash": "{5BDC7809-3FF3-199B-40D3-90CEE51E26BA}",
     "ObjectPath": "MIDI_MapB_Easy_T",
     "ShortName": "MIDI_MapB_Easy_T",
     "Path": "Event/MIDI_MapB_Easy_T.bnk",
@@ -8483,7 +8863,7 @@
     "Type": "Event",
     "GUID": "{66CDB2D4-2EB1-4FBA-BEA8-56900D0B9BA5}",
     "Language": "SFX",
-    "Hash": "{061B9F22-2FA5-7071-524E-6B8C27E7A53E}",
+    "Hash": "{7C44D64C-8754-3239-69E9-5ECA172515C0}",
     "ObjectPath": "MIDI_MapB_Easy_C",
     "ShortName": "MIDI_MapB_Easy_C",
     "Path": "Event/MIDI_MapB_Easy_C.bnk",
@@ -8563,7 +8943,7 @@
     "Type": "Event",
     "GUID": "{EA540656-0E52-4B7F-B457-778EBF0BA927}",
     "Language": "SFX",
-    "Hash": "{C9D8082F-DF2A-B749-FA86-112E964AF407}",
+    "Hash": "{52957B45-AE42-504F-9781-167A79C4D950}",
     "ObjectPath": "Play_MapH_Main",
     "ShortName": "Play_MapH_Main",
     "Path": "Event/Play_MapH_Main.bnk",
@@ -8670,7 +9050,7 @@
     "Type": "Bus",
     "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
     "Language": "SFX",
-    "Hash": "{8E19AB4A-8ECD-025C-B8DB-0890214C16A2}",
+    "Hash": "{F746726F-AACF-3ED6-AFED-23BAC3AD830E}",
     "ObjectPath": "Map_C_Reverb",
     "ShortName": "Map_C_Reverb",
     "Path": "Bus/Map_C_Reverb.bnk",
@@ -8707,7 +9087,7 @@
     "Type": "Event",
     "GUID": "{C3AF1503-CB1F-459E-82B9-909AC87A4D1D}",
     "Language": "SFX",
-    "Hash": "{589FA45D-FFCD-3B07-EBEC-58BC6C783BAE}",
+    "Hash": "{45ACE54C-9062-5ED4-D126-A53B5713BA98}",
     "ObjectPath": "Play_Water_Down",
     "ShortName": "Play_Water_Down",
     "Path": "Event/Play_Water_Down.bnk",
@@ -8744,7 +9124,7 @@
     "Type": "Event",
     "GUID": "{A58CE6A1-1179-497B-AA13-84B9BDDAEEC9}",
     "Language": "SFX",
-    "Hash": "{9435976D-BE9A-171F-1587-6A5A54F20FE3}",
+    "Hash": "{40D0825D-DE85-929D-B188-8183BEABF0BF}",
     "ObjectPath": "Play_Trombone_Hit",
     "ShortName": "Play_Trombone_Hit",
     "Path": "Event/Play_Trombone_Hit.bnk",
@@ -8821,51 +9201,11 @@
     ]
    },
    {
-    "Id": "3781478780",
-    "Type": "Event",
-    "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
-    "Language": "SFX",
-    "Hash": "{65D40A5E-DEE3-0F2E-40B8-3888B95F41DE}",
-    "ObjectPath": "Note_Short_End",
-    "ShortName": "Note_Short_End",
-    "Path": "Event/Note_Short_End.bnk",
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "559532962",
-       "Name": "Silence",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\silence\\Silence",
-       "GUID": "{F6B708C7-5DE5-49D0-854A-F3301FCF5190}",
-       "LibName": "Wwise Silence",
-       "LibId": "6619138"
-      }
-     ]
-    },
-    "Events": [
-     {
-      "Id": "3781478780",
-      "Name": "Note_Short_End",
-      "ObjectPath": "\\Events\\Default Work Unit\\Test\\Note_Length\\Note_Short_End",
-      "GUID": "{09A96721-DA11-4DF2-9A0A-E504F8BB3044}",
-      "DurationType": "OneShot",
-      "DurationMin": "1",
-      "DurationMax": "1",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "559532962"
-        }
-       ]
-      }
-     }
-    ]
-   },
-   {
     "Id": "3795447587",
     "Type": "Event",
     "GUID": "{BECEEF13-B67B-4315-AD8F-8A747D65D444}",
     "Language": "SFX",
-    "Hash": "{0ABBFF61-1186-0BA3-53B3-FA5464E42635}",
+    "Hash": "{CD03773C-8956-B18B-2C1E-2C62968FC549}",
     "ObjectPath": "Play_Overlap",
     "ShortName": "Play_Overlap",
     "Path": "Event/Play_Overlap.bnk",
@@ -8902,7 +9242,7 @@
     "Type": "Event",
     "GUID": "{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}",
     "Language": "SFX",
-    "Hash": "{0EDD3CEF-922D-ECB4-2392-8701DC2B6518}",
+    "Hash": "{BC68E433-A9FD-4541-0FAB-10674D3F0638}",
     "ObjectPath": "Play_Beer_Drop",
     "ShortName": "Play_Beer_Drop",
     "Path": "Event/Play_Beer_Drop.bnk",
@@ -8938,7 +9278,7 @@
     "Type": "Event",
     "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
     "Language": "SFX",
-    "Hash": "{0783C362-960E-3B69-F151-0DAC23BAFEF3}",
+    "Hash": "{D97C8C43-F405-5AD2-19C8-05E0EBA2B5A8}",
     "ObjectPath": "Play_Door_Break",
     "ShortName": "Play_Door_Break",
     "Path": "Event/Play_Door_Break.bnk",
@@ -8976,7 +9316,7 @@
     "Type": "Event",
     "GUID": "{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}",
     "Language": "SFX",
-    "Hash": "{7369AFC3-98DC-1D8A-59BA-94074A50C446}",
+    "Hash": "{A7556A6C-D71D-8A0E-6838-2CF9474B367F}",
     "ObjectPath": "Play_Glass_Debris",
     "ShortName": "Play_Glass_Debris",
     "Path": "Event/Play_Glass_Debris.bnk",
@@ -9038,7 +9378,7 @@
     "Type": "Event",
     "GUID": "{D37B48A0-88ED-470F-9DFB-5153A43B6446}",
     "Language": "SFX",
-    "Hash": "{18EDC38F-A651-2920-7082-13B81BF738BD}",
+    "Hash": "{1969137E-940A-8FA2-58C0-46C52CBCFA11}",
     "ObjectPath": "Play_PopDown",
     "ShortName": "Play_PopDown",
     "Path": "Event/Play_PopDown.bnk",
@@ -9075,7 +9415,7 @@
     "Type": "Event",
     "GUID": "{B79257F2-0A0E-4166-ACF0-4F7D5674F4AD}",
     "Language": "SFX",
-    "Hash": "{2CDAE844-12B0-5F42-5FA5-C3EC61CC29C8}",
+    "Hash": "{F5540D50-A53B-6FFC-735C-F1FFC5A51AFA}",
     "ObjectPath": "Play_Violin_Attack_Voice",
     "ShortName": "Play_Violin_Attack_Voice",
     "Path": "Event/Play_Violin_Attack_Voice.bnk",
@@ -9125,7 +9465,7 @@
     "Type": "Event",
     "GUID": "{5AB7B217-5DB1-496B-9263-7CF1392B9B48}",
     "Language": "SFX",
-    "Hash": "{30031835-864C-B6A0-7C3D-FCAF99420E38}",
+    "Hash": "{8F4EE217-746B-98BD-3A6F-026300A7D5CB}",
     "ObjectPath": "Play_Audience_Boo",
     "ShortName": "Play_Audience_Boo",
     "Path": "Event/Play_Audience_Boo.bnk",
@@ -9182,6 +9522,6 @@
     ]
    }
   ],
-  "FileHash": "{430CF7E7-94D4-03FA-F164-6F6F3965CF17}"
+  "FileHash": "{5727F56E-EEEC-A109-7C04-7F7EA9FF7246}"
  }
 }

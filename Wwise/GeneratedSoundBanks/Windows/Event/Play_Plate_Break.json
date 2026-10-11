@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D45A96BE-EA4A-4854-9F9F-B15C38FC3B2A}",
     "Language": "SFX",
-    "Hash": "{AE2693DB-1F1D-E0E1-68AE-17EE7913DCB4}",
+    "Hash": "{79E84C3E-7032-42BF-C986-A682BA282258}",
     "ObjectPath": "Play_Plate_Break",
     "ShortName": "Play_Plate_Break",
     "Path": "Event/Play_Plate_Break.bnk",
@@ -104,6 +104,6 @@
     ]
    }
   ],
-  "FileHash": "{53490A48-27E0-4BC3-7011-82851C7BE83E}"
+  "FileHash": "{9DF9ABE7-E472-4BA3-D65B-062CDAFFBC61}"
  }
 }

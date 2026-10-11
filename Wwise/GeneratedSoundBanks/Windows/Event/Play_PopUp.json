@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B8B84262-D6E0-456A-87E1-6701AE1FEBE2}",
     "Language": "SFX",
-    "Hash": "{787F4946-44BC-DBC1-C658-8109B5DAAF06}",
+    "Hash": "{D4FD4692-19B1-AB2D-16C7-C312BD4E266A}",
     "ObjectPath": "Play_PopUp",
     "ShortName": "Play_PopUp",
     "Path": "Event/Play_PopUp.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{8C7F94AF-3231-7E28-A2E4-A2127D6736CF}"
+  "FileHash": "{4DE37A28-1CEB-B730-0E1C-19491FCD3D9B}"
  }
 }

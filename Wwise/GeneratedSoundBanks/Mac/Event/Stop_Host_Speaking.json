@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{9B0C6089-856C-4594-BE83-AD833C97ACEF}",
     "Language": "SFX",
-    "Hash": "{8A616607-33C3-3EF4-F297-4AFA0777A86B}",
+    "Hash": "{55C407A5-90AA-42C2-0770-C9DF942CAF27}",
     "ObjectPath": "Stop_Host_Speaking",
     "ShortName": "Stop_Host_Speaking",
     "Path": "Event/Stop_Host_Speaking.bnk",
@@ -28,6 +28,6 @@
     ]
    }
   ],
-  "FileHash": "{288DE6A9-B182-2425-63AE-E94316D502A4}"
+  "FileHash": "{7C2120C6-97F1-705A-074A-79BF73243D7A}"
  }
 }

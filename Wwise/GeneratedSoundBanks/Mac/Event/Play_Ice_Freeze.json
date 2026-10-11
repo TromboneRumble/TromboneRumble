@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6F90073B-06FD-4C85-AA82-7D074D93B08A}",
     "Language": "SFX",
-    "Hash": "{3F257D33-EEF5-3462-E5A6-3AA52EA163B9}",
+    "Hash": "{5FF62C46-1802-8CC3-70C7-4AFD0434EE59}",
     "ObjectPath": "Play_Ice_Freeze",
     "ShortName": "Play_Ice_Freeze",
     "Path": "Event/Play_Ice_Freeze.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{823032E9-AE28-D515-B981-9D2A0AB37FE5}"
+  "FileHash": "{0620E600-75DB-718F-9695-76855DAAEF49}"
  }
 }

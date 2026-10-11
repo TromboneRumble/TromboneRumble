@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{0164D119-8070-4FC1-94C9-8F678C679A79}",
     "Language": "SFX",
-    "Hash": "{0783C362-960E-3B69-F151-0DAC23BAFEF3}",
+    "Hash": "{D97C8C43-F405-5AD2-19C8-05E0EBA2B5A8}",
     "ObjectPath": "Play_Door_Break",
     "ShortName": "Play_Door_Break",
     "Path": "Event/Play_Door_Break.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{84E80BE1-24AD-EB06-1086-5DF55DAE011B}"
+  "FileHash": "{77B1EE5E-DB0C-2708-5E69-EE7192E0E089}"
  }
 }

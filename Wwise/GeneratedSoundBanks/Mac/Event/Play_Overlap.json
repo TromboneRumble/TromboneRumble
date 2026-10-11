@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{BECEEF13-B67B-4315-AD8F-8A747D65D444}",
     "Language": "SFX",
-    "Hash": "{0ABBFF61-1186-0BA3-53B3-FA5464E42635}",
+    "Hash": "{CD03773C-8956-B18B-2C1E-2C62968FC549}",
     "ObjectPath": "Play_Overlap",
     "ShortName": "Play_Overlap",
     "Path": "Event/Play_Overlap.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{55443E06-A453-395B-A0DF-00F41305CD23}"
+  "FileHash": "{F4E4E7B7-C37D-AF45-50D7-AE21731429DF}"
  }
 }

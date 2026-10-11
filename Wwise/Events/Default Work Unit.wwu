@@ -30,54 +30,6 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Folder Name="Note_Length" ID="{61CD63F1-2CCD-4287-93AC-5BC712883DE2}" ShortID="708662418">
-							<ChildrenList>
-								<Event Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}">
-									<ChildrenList>
-										<Action Name="" ID="{231E33F5-66DE-4563-9F57-1A2238257789}" ShortID="719840779">
-											<ReferenceList>
-												<Reference Name="Target">
-													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-												</Reference>
-											</ReferenceList>
-										</Action>
-									</ChildrenList>
-								</Event>
-								<Event Name="Note_Short_Start" ID="{DF985246-51D9-4DD1-9857-56FF4A036F78}">
-									<ChildrenList>
-										<Action Name="" ID="{0E737CF8-50FE-4DF9-B9C4-4AF2CA900BBD}" ShortID="578877203">
-											<ReferenceList>
-												<Reference Name="Target">
-													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-												</Reference>
-											</ReferenceList>
-										</Action>
-									</ChildrenList>
-								</Event>
-								<Event Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}">
-									<ChildrenList>
-										<Action Name="" ID="{E9C641B4-B445-403A-8AAA-7751185A75D7}" ShortID="742963467">
-											<ReferenceList>
-												<Reference Name="Target">
-													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-												</Reference>
-											</ReferenceList>
-										</Action>
-									</ChildrenList>
-								</Event>
-								<Event Name="Note_Short_End" ID="{09A96721-DA11-4DF2-9A0A-E504F8BB3044}">
-									<ChildrenList>
-										<Action Name="" ID="{7A91396B-7840-4CCD-85E4-7C347734B236}" ShortID="1070736405">
-											<ReferenceList>
-												<Reference Name="Target">
-													<ObjectRef Name="silence" ID="{4E448C9E-55EC-4E86-AB9D-BAC273817B87}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-												</Reference>
-											</ReferenceList>
-										</Action>
-									</ChildrenList>
-								</Event>
-							</ChildrenList>
-						</Folder>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Object_SFX" ID="{7F7E561E-7F1F-426D-8714-DAECD07C7418}" ShortID="876223329">
@@ -217,17 +169,6 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Event Name="Play_Chair_Hit" ID="{BA8C2B7E-7225-486F-93A5-89E87388A573}">
-							<ChildrenList>
-								<Action Name="" ID="{979750BD-25BB-4182-A007-87F12891CAA6}" ShortID="344406399">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Object_Chair_Hit" ID="{854EFB09-F060-4340-8EA0-9FA9F51B50F4}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
 						<Event Name="Play_Fence_Break" ID="{11C1005F-D601-43A2-9164-83690C4969C5}">
 							<ChildrenList>
 								<Action Name="" ID="{D0D26396-66C1-42FA-A513-CA7D471439C5}" ShortID="49323294">
@@ -356,6 +297,98 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Player_Laugh" ID="{23E26B0B-668C-496F-A928-186D272FF13E}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Folder Name="UFO" ID="{774D028B-0303-4CEB-968C-CB811277B559}" ShortID="221406450">
+							<ChildrenList>
+								<Event Name="Play_UFO_Gone" ID="{C529324A-9070-4F94-B711-30FCD86AC5AF}">
+									<ChildrenList>
+										<Action Name="" ID="{4B187AC8-B7D5-417B-BB02-BF4826F3C6FB}" ShortID="428799776">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="UFO_Gone" ID="{418A8780-773E-4940-BFCD-9147401D2F37}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}">
+									<ChildrenList>
+										<Action Name="" ID="{01EEDC40-2854-4CA3-913F-F1AE4850839E}" ShortID="479907265">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="UFO_Come" ID="{DFE67444-2CFB-4820-B4FF-38CC7481B028}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UFO_Laser" ID="{09A96721-DA11-4DF2-9A0A-E504F8BB3044}">
+									<ChildrenList>
+										<Action Name="" ID="{6E2D672F-F622-4807-8C00-6053D8C5ADA2}" ShortID="934079196">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="UFO_Laser" ID="{A121C52C-7976-441A-A47B-66E8D64875C3}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
+						<Event Name="Play_Air_Escape" ID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}">
+							<ChildrenList>
+								<Action Name="" ID="{49270FB4-F3F9-4603-A0ED-EF80217AC1DD}" ShortID="808882379">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Air_Escape" ID="{7F0C2143-3221-42B8-97D2-372DE03A4A8A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Space_Warning" ID="{A08DCF1F-308A-4CEB-BB63-089E5B5EEC46}">
+							<ChildrenList>
+								<Action Name="" ID="{C7CBFA7E-A1F7-4A23-A348-1DC604F4E059}" ShortID="211482198">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Space_Warning" ID="{C05B69EA-5095-4734-BBE8-177D0AF78A37}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Port_Landing" ID="{4512AF6F-537C-427D-B50F-4283DB66F59B}">
+							<ChildrenList>
+								<Action Name="" ID="{01060596-223C-4693-8143-F9F7B401DDAD}" ShortID="240551285">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Port_Landing" ID="{85EF5167-7BAF-4430-AD2B-752C7AD7C6CF}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Blackhole_SQ" ID="{C6123022-9C0A-417A-BFDF-23C6132E03B2}">
+							<ChildrenList>
+								<Action Name="" ID="{F7580142-4014-4D7A-B2C6-D2609F767753}" ShortID="858232277">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Object_BlackHole" ID="{5BC7CE99-9608-4E5C-80BE-636DDBC98C03}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}">
+							<ChildrenList>
+								<Action Name="" ID="{226485F8-D4A1-43D0-B759-64EA0349FEDE}" ShortID="92188564">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Get_Item_Port" ID="{0BD1F843-6B22-4D78-813D-259EB8A3BF2A}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -1443,6 +1476,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Jazzbar_Lobby_Ambience" ID="{33C2C1F7-68DF-4623-9DD0-3EA3A92B8EEB}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Space_Lobby" ID="{DF985246-51D9-4DD1-9857-56FF4A036F78}">
+							<ChildrenList>
+								<Action Name="" ID="{F9B02526-476E-4221-AD4B-A0C86AFBB8BC}" ShortID="651077355">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="SpaceShip_Space_Ambience" ID="{A2FF471C-CA6F-4575-97CE-3D7B1271CA8E}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

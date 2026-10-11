@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{EC16AED4-CA60-4504-BE4A-9CBEF8EC4D54}",
     "Language": "SFX",
-    "Hash": "{2E8DC082-55CF-A3A7-1904-A98D1B21B9CA}",
+    "Hash": "{97F08607-9618-51FC-C3C0-FEA12B20FC9E}",
     "ObjectPath": "MIDI_MapE_V",
     "ShortName": "MIDI_MapE_V",
     "Path": "Event/MIDI_MapE_V.bnk",
@@ -74,6 +74,6 @@
     ]
    }
   ],
-  "FileHash": "{133EF5CD-1815-4360-B897-95ABFB6CAEC9}"
+  "FileHash": "{39436CCB-DE12-8E9B-D151-34DC3E3818F3}"
  }
 }

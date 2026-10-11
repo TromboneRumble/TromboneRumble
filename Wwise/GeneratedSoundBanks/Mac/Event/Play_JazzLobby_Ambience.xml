@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1197678622" Type="Event" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" Language="SFX" Hash="{18B28499-725C-F8A6-5EF6-0BF7317C92C7}">
+		<SoundBank Id="1197678622" Type="Event" GUID="{CE15C31E-AB66-454D-95BB-55CF9AB29B2E}" Language="SFX" Hash="{2E5892C4-F710-C0BA-3C2A-33CB8A656180}">
 			<ObjectPath>Play_JazzLobby_Ambience</ObjectPath>
 			<ShortName>Play_JazzLobby_Ambience</ShortName>
 			<Path>Event/Play_JazzLobby_Ambience.bnk</Path>
@@ -45,5 +45,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4C42A586-90F0-3AB5-A0B4-BCFDC6685485}</FileHash>
+	<FileHash>{782A472F-D5E0-4990-3A80-F01032E71763}</FileHash>
 </SoundBanksInfo>

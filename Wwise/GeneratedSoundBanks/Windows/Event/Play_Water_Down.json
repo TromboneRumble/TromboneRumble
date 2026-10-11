@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{C3AF1503-CB1F-459E-82B9-909AC87A4D1D}",
     "Language": "SFX",
-    "Hash": "{589FA45D-FFCD-3B07-EBEC-58BC6C783BAE}",
+    "Hash": "{45ACE54C-9062-5ED4-D126-A53B5713BA98}",
     "ObjectPath": "Play_Water_Down",
     "ShortName": "Play_Water_Down",
     "Path": "Event/Play_Water_Down.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{19CCE7E8-E445-8E13-AF39-64CDD31A7248}"
+  "FileHash": "{9D50C9FD-8CE8-AFB1-1689-4B4848C1036A}"
  }
 }

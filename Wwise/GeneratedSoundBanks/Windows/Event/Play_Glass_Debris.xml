@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3888269736" Type="Event" GUID="{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}" Language="SFX" Hash="{7369AFC3-98DC-1D8A-59BA-94074A50C446}">
+		<SoundBank Id="3888269736" Type="Event" GUID="{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}" Language="SFX" Hash="{A7556A6C-D71D-8A0E-6838-2CF9474B367F}">
 			<ObjectPath>Play_Glass_Debris</ObjectPath>
 			<ShortName>Play_Glass_Debris</ShortName>
 			<Path>Event/Play_Glass_Debris.bnk</Path>
@@ -33,5 +33,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4FB2760B-93AD-C67D-0E27-1F257F7245DE}</FileHash>
+	<FileHash>{C770B769-50DF-08A6-1D15-F56D5C623CBC}</FileHash>
 </SoundBanksInfo>

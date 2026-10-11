@@ -1629,7 +1629,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1643,7 +1643,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1657,7 +1657,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1671,7 +1671,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1685,7 +1685,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1699,7 +1699,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1713,7 +1713,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1727,7 +1727,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1741,7 +1741,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1755,7 +1755,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1769,7 +1769,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1783,7 +1783,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1797,7 +1797,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1811,7 +1811,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1825,7 +1825,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1839,7 +1839,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1853,7 +1853,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1867,7 +1867,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1881,7 +1881,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1895,7 +1895,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1909,7 +1909,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1923,7 +1923,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1937,7 +1937,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1951,7 +1951,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_Start" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_UFO_Come" ID="{6732E650-3454-485A-A78F-562325A063B8}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1965,7 +1965,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1979,7 +1979,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -1993,7 +1993,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2007,7 +2007,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2021,7 +2021,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2035,7 +2035,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2049,7 +2049,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2063,7 +2063,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2077,7 +2077,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2091,7 +2091,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2105,7 +2105,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2119,7 +2119,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2133,7 +2133,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2147,7 +2147,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2161,7 +2161,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -2175,7 +2175,7 @@
 																					</PropertyList>
 																					<ReferenceList>
 																						<Reference Name="PostEventTarget">
-																							<ObjectRef Name="Note_Long_End" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+																							<ObjectRef Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
 																						</Reference>
 																					</ReferenceList>
 																				</MusicEventCue>
@@ -74404,6 +74404,503 @@
 												<PropertyList>
 													<Property Name="CueType" Type="int16" Value="1"/>
 													<Property Name="TimeMs" Type="Real64" Value="1000"/>
+												</PropertyList>
+											</MusicCue>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicSegment>
+						<MusicSegment Name="SpaceShip_Space_Ambience" ID="{A2FF471C-CA6F-4575-97CE-3D7B1271CA8E}" ShortID="57857331">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="854770.737536053"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-12</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="Amb_C_4 -cm" ID="{C920B16B-A18E-4C68-9AED-FB47E21FF9B1}" ShortID="540123392">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{65A88D05-D076-445B-8ED5-7BFC31C3202F}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Space_Ambience_1" ID="{D7CC6467-772C-4546-B85C-154CCCA1C561}">
+											<Language>SFX</Language>
+											<AudioFile>Space_Ambience_1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="534806234"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{468AD796-59F5-49E3-8596-0A76D200AB5B}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="Space_Ambience_1" ID="{A470CD63-9002-4728-BC31-55ACC24A9298}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="835003.108328141"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="Space_Ambience_1" ID="{D7CC6467-772C-4546-B85C-154CCCA1C561}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{8B885F7C-98CD-4C63-A3CA-AB5400E38C1C}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>835.00311</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{64010DD2-0FAD-4109-BBA5-C1724CF36A54}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>835.00311</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{A5557F5C-E177-4DD0-8B92-779C45EF0C74}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>835.00311</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+								<MusicTrack Name="Amb_C-cm_01" ID="{877BE265-0752-4707-B059-8B613DFF548D}" ShortID="358354005">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{8008B50B-E37B-4892-A495-5725AADA5BDD}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Space_Ambience_2" ID="{9845F7F0-E179-48DA-A26D-A0129D038048}">
+											<Language>SFX</Language>
+											<AudioFile>Space_Ambience_2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="552456950"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{A41485D5-E783-4084-ACBD-8AC1D963B42D}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="Space_Ambience_2" ID="{775A5BEE-A469-464A-8F2C-C4C974CAD0DA}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="829940.31738937"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="Space_Ambience_2" ID="{9845F7F0-E179-48DA-A26D-A0129D038048}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{3EB30693-157C-4707-A669-89BFE12E0B3F}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>829.94032</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{763D0C8D-9C89-4580-8148-03F83C43B66B}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>829.94032</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{6D8D709D-87E1-45B6-8856-17C9260A2B4D}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>829.94032</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+								<MusicTrack Name="Amb_C-cm_02" ID="{6F6C43AC-8395-4CEB-8D43-0E21F6266E10}" ShortID="189695791">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{263E9100-747A-4A49-953D-6F6F159481B3}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Space_Ambience_3" ID="{CB8ABFCA-57E5-4A49-8192-4E15373A5C9F}">
+											<Language>SFX</Language>
+											<AudioFile>Space_Ambience_3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="63557452"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{3827B298-9DB4-47F4-82BB-1F3B5A41F0C1}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="Space_Ambience_3" ID="{8FF4BBBF-3D96-4BFB-82F5-EA4AE7DEA2B7}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="836343.493980428"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="Space_Ambience_3" ID="{CB8ABFCA-57E5-4A49-8192-4E15373A5C9F}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{4D27B64F-BBEC-4BF3-A73C-FC4F98EBE558}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>836.34349</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{DDFDCCC1-96E5-4357-A03D-B78CCBBFB73C}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>836.34349</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{D9988920-6E2E-4C1A-BB5E-D2DC05FEDA2F}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>836.34349</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+								<MusicTrack Name="Amb_C-cm_03" ID="{391540C9-DF1D-4C7A-8ACB-AC556F648767}" ShortID="610597206">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>12</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{F6A88B7C-8321-4C53-94E5-A8F0F62D825C}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Space_Ambience_Voice" ID="{719BDB50-5A18-4DE5-B6BE-CFA29A9A9AF9}">
+											<Language>SFX</Language>
+											<AudioFile>Space_Ambience_Voice.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="707949782"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{F9E47A53-8691-4211-9DEC-460A84EE3828}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="Space_Ambience_Voice" ID="{90BCEC7D-C3D1-4C53-BAC7-4F31C4D6A83D}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="798548.220869387"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="Space_Ambience_Voice" ID="{719BDB50-5A18-4DE5-B6BE-CFA29A9A9AF9}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{FD080829-0B7E-4D6E-98A6-54DDA371C32B}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>798.54822</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{B6E519C7-11B3-46DF-BE51-F55FF71C2BFA}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>798.54822</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{CE5F47B5-BCF3-4F50-BF42-2F7B961FBD9E}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>798.54822</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Cues">
+									<Reference>
+										<Local>
+											<MusicCue Name="Entry Cue" ID="{21EA5E37-1AD4-4724-BE61-32F55A6653A5}"/>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<MusicCue Name="Exit Cue" ID="{6F97C684-219E-4050-9CB9-D5FB6552FB94}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="792242.232857326"/>
 												</PropertyList>
 											</MusicCue>
 										</Local>

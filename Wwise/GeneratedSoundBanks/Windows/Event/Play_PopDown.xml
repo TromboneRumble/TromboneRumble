@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3947379111" Type="Event" GUID="{D37B48A0-88ED-470F-9DFB-5153A43B6446}" Language="SFX" Hash="{18EDC38F-A651-2920-7082-13B81BF738BD}">
+		<SoundBank Id="3947379111" Type="Event" GUID="{D37B48A0-88ED-470F-9DFB-5153A43B6446}" Language="SFX" Hash="{1969137E-940A-8FA2-58C0-46C52CBCFA11}">
 			<ObjectPath>Play_PopDown</ObjectPath>
 			<ShortName>Play_PopDown</ShortName>
 			<Path>Event/Play_PopDown.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{8A4180DF-6F55-05C6-49E3-1E3110EF5B62}</FileHash>
+	<FileHash>{7DEE6253-714D-D394-44F7-D986B17A7DCF}</FileHash>
 </SoundBanksInfo>

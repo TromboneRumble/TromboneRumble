@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="674166051" Type="Event" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" Language="SFX" Hash="{8A616607-33C3-3EF4-F297-4AFA0777A86B}">
+		<SoundBank Id="674166051" Type="Event" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" Language="SFX" Hash="{55C407A5-90AA-42C2-0770-C9DF942CAF27}">
 			<ObjectPath>Stop_Host_Speaking</ObjectPath>
 			<ShortName>Stop_Host_Speaking</ShortName>
 			<Path>Event/Stop_Host_Speaking.bnk</Path>
@@ -10,5 +10,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F6439AA3-78FA-4A1D-90F0-CDFC661C8281}</FileHash>
+	<FileHash>{B4679C87-C7AA-4CBA-1707-FBA215CFFD58}</FileHash>
 </SoundBanksInfo>

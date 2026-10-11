@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{75D1EC36-29B7-424E-99DA-A6351846C415}",
     "Language": "SFX",
-    "Hash": "{1FC8F7EF-0C6C-9E5A-7DC2-8C093886A0A6}",
+    "Hash": "{8208280E-BBF1-1356-738A-FEC34F3D1E8C}",
     "ObjectPath": "Play_Storm_Warning",
     "ShortName": "Play_Storm_Warning",
     "Path": "Event/Play_Storm_Warning.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{CF57E18E-0CA2-ABD4-8B84-1D55F5820633}"
+  "FileHash": "{D2F9F9D8-157B-1879-7E2B-3CD6E8A6B7D3}"
  }
 }

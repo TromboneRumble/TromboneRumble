@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1988723284" Type="Event" GUID="{0381A057-351A-4EF9-865E-5FEBD569955A}" Language="SFX" Hash="{692B4C8D-1F35-2522-2DDD-022E98959884}">
+		<SoundBank Id="1988723284" Type="Event" GUID="{0381A057-351A-4EF9-865E-5FEBD569955A}" Language="SFX" Hash="{28EDB537-7336-7780-D44D-5543362B5C61}">
 			<ObjectPath>Play_Violin_Attack</ObjectPath>
 			<ShortName>Play_Violin_Attack</ShortName>
 			<Path>Event/Play_Violin_Attack.bnk</Path>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{AA7DFDD1-6210-A253-41B5-16CBC1CE3E39}</FileHash>
+	<FileHash>{E21DF8C8-C714-E211-464C-86C99D3D0D90}</FileHash>
 </SoundBanksInfo>

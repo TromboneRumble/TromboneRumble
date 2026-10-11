@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6F774DF0-065B-4E18-88C3-4330E80A9591}",
     "Language": "SFX",
-    "Hash": "{C7CC8253-DFCA-26B2-93EA-6A13F36B42CB}",
+    "Hash": "{1F830DFF-05D7-9696-B07A-2647103A41C4}",
     "ObjectPath": "Play_BBIK_V",
     "ShortName": "Play_BBIK_V",
     "Path": "Event/Play_BBIK_V.bnk",
@@ -79,6 +79,6 @@
     ]
    }
   ],
-  "FileHash": "{A0FC24E0-B7FD-E3B6-B951-A3E3E3B5733F}"
+  "FileHash": "{16F04E00-F0BF-F4D2-3721-2F574B845F33}"
  }
 }

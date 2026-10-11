@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="29922904" Type="Event" GUID="{C529324A-9070-4F94-B711-30FCD86AC5AF}" Language="SFX" Hash="{628DB0FD-CC0E-7A1E-A048-410E6AA5FF6A}">
+			<ObjectPath>Play_UFO_Gone</ObjectPath>
+			<ShortName>Play_UFO_Gone</ShortName>
+			<Path>Event/Play_UFO_Gone.bnk</Path>
+			<Media>
+				<File Id="409091301" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO_Gone.wav</ShortName>
+					<Path>Media/409091301.wem</Path>
+					<CachePath>SFX/UFO_Gone_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="29922904" Name="Play_UFO_Gone" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_Gone" GUID="{C529324A-9070-4F94-B711-30FCD86AC5AF}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="4.511229" DurationMax="4.511229">
+					<MediaRefs>
+						<MediaRef Id="409091301"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{5558D2F4-8E24-1DD1-1877-BB531393AD1F}</FileHash>
+</SoundBanksInfo>

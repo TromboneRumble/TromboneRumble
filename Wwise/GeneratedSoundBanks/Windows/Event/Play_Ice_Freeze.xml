@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1784315359" Type="Event" GUID="{6F90073B-06FD-4C85-AA82-7D074D93B08A}" Language="SFX" Hash="{3F257D33-EEF5-3462-E5A6-3AA52EA163B9}">
+		<SoundBank Id="1784315359" Type="Event" GUID="{6F90073B-06FD-4C85-AA82-7D074D93B08A}" Language="SFX" Hash="{5FF62C46-1802-8CC3-70C7-4AFD0434EE59}">
 			<ObjectPath>Play_Ice_Freeze</ObjectPath>
 			<ShortName>Play_Ice_Freeze</ShortName>
 			<Path>Event/Play_Ice_Freeze.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{4BF1CD2B-C5EF-E873-7493-421431655EA6}</FileHash>
+	<FileHash>{29A19BB6-2978-433D-6D3A-B52A5DBC0789}</FileHash>
 </SoundBanksInfo>

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{802600D1-086F-4B89-A202-B18F89409828}",
     "Language": "SFX",
-    "Hash": "{160966EB-8A5C-EC83-7734-F6391EE93ED8}",
+    "Hash": "{1C883FDB-F5A6-2303-8732-7AF25DF0AF80}",
     "ObjectPath": "Play_Player_Foot",
     "ShortName": "Play_Player_Foot",
     "Path": "Event/Play_Player_Foot.bnk",
@@ -68,6 +68,15 @@
       "ShortName": "Wood2_Foot_2.wav",
       "Path": "Media/167561171.wem",
       "CachePath": "SFX/Wood2_Foot_2_818F3B66.wem"
+     },
+     {
+      "Id": "197488015",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_2 .wav",
+      "Path": "Media/197488015.wem",
+      "CachePath": "SFX/MetalFoot_2 _818F3B66.wem"
      },
      {
       "Id": "198780667",
@@ -142,6 +151,15 @@
       "CachePath": "SFX/Wood2_Foot_4_818F3B66.wem"
      },
      {
+      "Id": "361319171",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_4.wav",
+      "Path": "Media/361319171.wem",
+      "CachePath": "SFX/MetalFoot_4_818F3B66.wem"
+     },
+     {
       "Id": "369342720",
       "Language": "SFX",
       "Streaming": "false",
@@ -149,6 +167,15 @@
       "ShortName": "Ice_Foot_5.wav",
       "Path": "Media/369342720.wem",
       "CachePath": "SFX/Ice_Foot_5_818F3B66.wem"
+     },
+     {
+      "Id": "441436594",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_3.wav",
+      "Path": "Media/441436594.wem",
+      "CachePath": "SFX/MetalFoot_3_818F3B66.wem"
      },
      {
       "Id": "448296093",
@@ -277,6 +304,15 @@
       "CachePath": "SFX/Water_Foot_3_818F3B66.wem"
      },
      {
+      "Id": "1063087861",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_!.wav",
+      "Path": "Media/1063087861.wem",
+      "CachePath": "SFX/MetalFoot_!_818F3B66.wem"
+     },
+     {
       "Id": "1063219786",
       "Language": "SFX",
       "Streaming": "false",
@@ -284,6 +320,15 @@
       "ShortName": "Snow_Foot_3.wav",
       "Path": "Media/1063219786.wem",
       "CachePath": "SFX/Snow_Foot_3_818F3B66.wem"
+     },
+     {
+      "Id": "1065392048",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "MetalFoot_5 .wav",
+      "Path": "Media/1065392048.wem",
+      "CachePath": "SFX/MetalFoot_5 _818F3B66.wem"
      }
     ],
     "Plugins": {
@@ -307,7 +352,7 @@
       "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.16467108",
-      "DurationMax": "0.52699363",
+      "DurationMax": "1.0352334",
       "SwitchContainers": [
        {
         "SwitchValue": {
@@ -332,6 +377,31 @@
          },
          {
           "Id": "941571148"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "3031504797",
+         "Id": "2473969246",
+         "GUID": "{7F5D5027-D889-40A3-B23E-87D829941110}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "197488015"
+         },
+         {
+          "Id": "361319171"
+         },
+         {
+          "Id": "441436594"
+         },
+         {
+          "Id": "1063087861"
+         },
+         {
+          "Id": "1065392048"
          }
         ]
        },
@@ -508,6 +578,12 @@
         "GUID": "{F0AA5939-4D27-476E-9441-D1ED4FFCB7E1}"
        },
        {
+        "Id": "2473969246",
+        "Name": "Metal",
+        "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Metal",
+        "GUID": "{7F5D5027-D889-40A3-B23E-87D829941110}"
+       },
+       {
         "Id": "2654748154",
         "Name": "Water",
         "ObjectPath": "\\Switches\\Default Work Unit\\Foot\\Water",
@@ -518,6 +594,6 @@
     ]
    }
   ],
-  "FileHash": "{6B2E7B34-1973-DFB2-80B6-B4851D063F03}"
+  "FileHash": "{48A72C4F-6318-7813-887D-DEF01C6686DC}"
  }
 }

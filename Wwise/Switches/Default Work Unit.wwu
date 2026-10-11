@@ -19,6 +19,7 @@
 						<Switch Name="Ice" ID="{25D079A8-2D7C-4171-8953-3A70CFE23C76}"/>
 						<Switch Name="Snow" ID="{1CFD41B2-7C25-4128-A266-79045502A715}"/>
 						<Switch Name="Fabric" ID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
+						<Switch Name="Metal" ID="{7F5D5027-D889-40A3-B23E-87D829941110}"/>
 					</ChildrenList>
 				</SwitchGroup>
 				<SwitchGroup Name="Audience" ID="{A184C972-5F24-4E33-B4B9-AB1EE9F26252}">

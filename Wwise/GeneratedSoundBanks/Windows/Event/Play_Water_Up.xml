@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1572483357" Type="Event" GUID="{8E51867B-3166-426A-AE62-34E2910478A0}" Language="SFX" Hash="{AE50A758-68AF-A474-AEC3-A58AEB2DF1C1}">
+		<SoundBank Id="1572483357" Type="Event" GUID="{8E51867B-3166-426A-AE62-34E2910478A0}" Language="SFX" Hash="{27607CD3-93B0-BBFC-67F3-0803BA1671BE}">
 			<ObjectPath>Play_Water_Up</ObjectPath>
 			<ShortName>Play_Water_Up</ShortName>
 			<Path>Event/Play_Water_Up.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{09646E08-45CC-5B33-4B4C-AAC5A8BD58BD}</FileHash>
+	<FileHash>{6D9A1C44-E664-C5C8-34EA-E5D3B7D2690A}</FileHash>
 </SoundBanksInfo>

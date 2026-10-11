@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="258684309" Type="Event" GUID="{11C1005F-D601-43A2-9164-83690C4969C5}" Language="SFX" Hash="{0A860A53-CF00-A57E-411E-313E574A6251}">
+		<SoundBank Id="258684309" Type="Event" GUID="{11C1005F-D601-43A2-9164-83690C4969C5}" Language="SFX" Hash="{CF5D5070-7A99-053B-71F7-64A7AE13B62A}">
 			<ObjectPath>Play_Fence_Break</ObjectPath>
 			<ShortName>Play_Fence_Break</ShortName>
 			<Path>Event/Play_Fence_Break.bnk</Path>
@@ -27,5 +27,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{030C8AB6-78F3-56DE-D5A9-CCA3D41EE5C3}</FileHash>
+	<FileHash>{923F3362-C8CC-E656-09F9-47D2ED7E111E}</FileHash>
 </SoundBanksInfo>

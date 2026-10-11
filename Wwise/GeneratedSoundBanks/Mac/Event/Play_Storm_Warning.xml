@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2320190772" Type="Event" GUID="{75D1EC36-29B7-424E-99DA-A6351846C415}" Language="SFX" Hash="{1FC8F7EF-0C6C-9E5A-7DC2-8C093886A0A6}">
+		<SoundBank Id="2320190772" Type="Event" GUID="{75D1EC36-29B7-424E-99DA-A6351846C415}" Language="SFX" Hash="{8208280E-BBF1-1356-738A-FEC34F3D1E8C}">
 			<ObjectPath>Play_Storm_Warning</ObjectPath>
 			<ShortName>Play_Storm_Warning</ShortName>
 			<Path>Event/Play_Storm_Warning.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{060219CD-B4F0-40D7-55E1-064A99A616EB}</FileHash>
+	<FileHash>{3039E4B8-75AA-AE8E-5A6E-098D0C32ACFF}</FileHash>
 </SoundBanksInfo>

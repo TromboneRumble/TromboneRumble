@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{E7DEC4C3-04FE-41E4-8F61-D9ADBCBCA532}",
     "Language": "SFX",
-    "Hash": "{DBF28CEB-C3AA-5313-2FEE-F6A3460CB51F}",
+    "Hash": "{4704E53C-7BAD-3BB1-5DFA-EB6E967AD2E2}",
     "ObjectPath": "Play_Gift_On",
     "ShortName": "Play_Gift_On",
     "Path": "Event/Play_Gift_On.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{AB975927-362A-5B32-9102-292A3929C296}"
+  "FileHash": "{1225E485-3E63-BDE9-79B4-0708681FD647}"
  }
 }

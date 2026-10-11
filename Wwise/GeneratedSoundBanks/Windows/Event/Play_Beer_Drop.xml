@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3858906340" Type="Event" GUID="{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}" Language="SFX" Hash="{0EDD3CEF-922D-ECB4-2392-8701DC2B6518}">
+		<SoundBank Id="3858906340" Type="Event" GUID="{EEDBC13A-D9DD-49A0-8C85-2711F4F28BDD}" Language="SFX" Hash="{BC68E433-A9FD-4541-0FAB-10674D3F0638}">
 			<ObjectPath>Play_Beer_Drop</ObjectPath>
 			<ShortName>Play_Beer_Drop</ShortName>
 			<Path>Event/Play_Beer_Drop.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{787F4187-4838-FDB3-0355-985E44F98302}</FileHash>
+	<FileHash>{2A094218-412E-2D47-424E-8A482DAAB30A}</FileHash>
 </SoundBanksInfo>

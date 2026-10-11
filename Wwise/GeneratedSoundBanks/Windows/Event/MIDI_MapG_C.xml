@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1909948450" Type="Event" GUID="{349DAC31-BD3A-4F77-AC17-CAB74BCF5672}" Language="SFX" Hash="{9D6BE506-2A59-3436-8516-30BD2D45F997}">
+		<SoundBank Id="1909948450" Type="Event" GUID="{349DAC31-BD3A-4F77-AC17-CAB74BCF5672}" Language="SFX" Hash="{D064A79C-5DFA-DD37-FFAB-2346B82381C6}">
 			<ObjectPath>MIDI_MapG_C</ObjectPath>
 			<ShortName>MIDI_MapG_C</ShortName>
 			<Path>Event/MIDI_MapG_C.bnk</Path>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{787D263C-B53B-1826-4501-EB04282FC952}</FileHash>
+	<FileHash>{5A9C032F-C616-5BC7-3F44-8EC6DE249372}</FileHash>
 </SoundBanksInfo>

@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3448173426	Play_Port_Get			\Default Work Unit\Object_SFX\Play_Port_Get	
+
+Effect plug-ins	ID	Name	Type				Notes
+	3604890626	High_Pass_60Hz	Wwise Parametric EQ			
+

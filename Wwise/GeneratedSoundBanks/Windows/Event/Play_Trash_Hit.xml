@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="418248778" Type="Event" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" Language="SFX" Hash="{9C0CB278-DC78-A7ED-A7B8-13232B94AA30}">
+		<SoundBank Id="418248778" Type="Event" GUID="{104CC78C-ED20-486F-A41E-73ABA09B5942}" Language="SFX" Hash="{49A079BC-6783-B17E-7AB9-3AD60E9DC585}">
 			<ObjectPath>Play_Trash_Hit</ObjectPath>
 			<ShortName>Play_Trash_Hit</ShortName>
 			<Path>Event/Play_Trash_Hit.bnk</Path>
@@ -45,5 +45,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{2D2F30F0-3AE2-7352-AF24-39FE0F04453A}</FileHash>
+	<FileHash>{8893CF4B-B77A-5F03-267F-5C21F6623A2D}</FileHash>
 </SoundBanksInfo>

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D231A180-52CB-4213-AA71-1DC58068E8C3}",
     "Language": "SFX",
-    "Hash": "{FA69AD07-6F50-222C-5FC7-6DBDAAD61CFF}",
+    "Hash": "{05167DEF-DE55-80B4-0863-50875E6B112E}",
     "ObjectPath": "Play_Snow_Throw",
     "ShortName": "Play_Snow_Throw",
     "Path": "Event/Play_Snow_Throw.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{7CDAD1D9-3290-E8CB-1EDD-74B7DBC599F3}"
+  "FileHash": "{608CD120-B2BB-B452-DB88-D1A46E6F5395}"
  }
 }

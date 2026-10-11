@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}",
     "Language": "SFX",
-    "Hash": "{E75E3B9A-2149-2BC8-853C-DC42318FCA4B}",
+    "Hash": "{B30ACF1F-F854-BCD7-EF2E-393CAB5AA5AA}",
     "ObjectPath": "Play_Drunk_Laugh",
     "ShortName": "Play_Drunk_Laugh",
     "Path": "Event/Play_Drunk_Laugh.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{A95AD476-C141-8E7F-8C7A-C2770B350C35}"
+  "FileHash": "{B214F964-3B63-9E8A-1973-FE54F281505F}"
  }
 }

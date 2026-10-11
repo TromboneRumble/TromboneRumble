@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{68AA85C5-92C7-47C8-97FA-F98FE1ABAF33}",
     "Language": "SFX",
-    "Hash": "{410A35CB-2871-9FC7-78B2-4D221354A3DA}",
+    "Hash": "{501E28BF-23A6-FA76-8048-B032836528B8}",
     "ObjectPath": "Play_Player_Scream",
     "ShortName": "Play_Player_Scream",
     "Path": "Event/Play_Player_Scream.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{87859BFC-2007-AB88-93E5-345D9E30D460}"
+  "FileHash": "{1358B252-D5BF-CAB5-7FEC-818660F45C02}"
  }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{805D5CED-045F-5F7B-40DC-685BDA6CC303}">
+		<SoundBank Id="3076746022" Type="Event" GUID="{DDE6437E-A638-41A5-BA0C-0D99A8AF94C1}" Language="SFX" Hash="{51097DBF-A195-29EB-15C0-9DD7393FB5B8}">
 			<ObjectPath>Play_Player_Dizzy</ObjectPath>
 			<ShortName>Play_Player_Dizzy</ShortName>
 			<Path>Event/Play_Player_Dizzy.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{81078BDF-E8D4-C611-2985-DA19601680B8}</FileHash>
+	<FileHash>{BDEB63CF-C810-865A-FEF7-DF92F013132E}</FileHash>
 </SoundBanksInfo>

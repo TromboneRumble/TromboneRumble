@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1280724765	Play_UFO_Come			\Default Work Unit\Object_SFX\UFO\Play_UFO_Come	
+

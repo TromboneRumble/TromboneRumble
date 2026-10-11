@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{E2C6EF65-DA3A-48FB-B92C-FCA9D4AD36CE}",
     "Language": "SFX",
-    "Hash": "{7369AFC3-98DC-1D8A-59BA-94074A50C446}",
+    "Hash": "{A7556A6C-D71D-8A0E-6838-2CF9474B367F}",
     "ObjectPath": "Play_Glass_Debris",
     "ShortName": "Play_Glass_Debris",
     "Path": "Event/Play_Glass_Debris.bnk",
@@ -68,6 +68,6 @@
     ]
    }
   ],
-  "FileHash": "{2A04200E-111C-D887-07A2-EEAF6B7E86A0}"
+  "FileHash": "{84BAA814-1EA7-B044-0757-7658E188F0C4}"
  }
 }

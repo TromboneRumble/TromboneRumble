@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{3EA05F32-8881-4247-9EB3-C02DE9D775F8}",
     "Language": "SFX",
-    "Hash": "{0941F5CE-85A2-0D9D-E35A-497F43AF2C21}",
+    "Hash": "{C46ABE5C-751B-1BC9-6552-41E17A7DF878}",
     "ObjectPath": "Play_Snow_Hit",
     "ShortName": "Play_Snow_Hit",
     "Path": "Event/Play_Snow_Hit.bnk",
@@ -67,6 +67,6 @@
     ]
    }
   ],
-  "FileHash": "{DCF54535-FE79-FB00-CCA5-36191BD66949}"
+  "FileHash": "{10E17E19-D708-BF33-3655-9003DE5A9D4E}"
  }
 }

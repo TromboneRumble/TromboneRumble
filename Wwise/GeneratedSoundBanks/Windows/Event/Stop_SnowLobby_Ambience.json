@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{56C67807-BCAE-4981-BF94-AD07097741CB}",
     "Language": "SFX",
-    "Hash": "{3FA89883-C2F7-99EC-FCE6-9612E425C6D5}",
+    "Hash": "{919B76E2-D2C8-C891-86F1-6E77633E5822}",
     "ObjectPath": "Stop_SnowLobby_Ambience",
     "ShortName": "Stop_SnowLobby_Ambience",
     "Path": "Event/Stop_SnowLobby_Ambience.bnk",
@@ -28,6 +28,6 @@
     ]
    }
   ],
-  "FileHash": "{AD15B8C5-1670-2781-122C-2E8B42148BB7}"
+  "FileHash": "{FEC28FE5-51E5-2AA3-D0BC-61D5470388FE}"
  }
 }

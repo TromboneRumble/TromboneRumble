@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="343370882" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{4D381A65-2D82-88C8-1F29-05E5052F7E68}">
+		<SoundBank Id="343370882" Type="Event" GUID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" Language="SFX" Hash="{51DBA87B-3848-DEF6-2D28-AAE310328472}">
 			<ObjectPath>Play_Rhythm_Good</ObjectPath>
 			<ShortName>Play_Rhythm_Good</ShortName>
 			<Path>Event/Play_Rhythm_Good.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{62CD0262-EE7E-E8BE-7ADF-83935E37169A}</FileHash>
+	<FileHash>{5C95717B-2ADA-B0B6-34A0-A730587F5ECF}</FileHash>
 </SoundBanksInfo>
