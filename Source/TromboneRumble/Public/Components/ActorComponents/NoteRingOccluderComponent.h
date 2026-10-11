@@ -15,6 +15,7 @@ class UMeshComponent;
  * 두 링 머티리얼은 깊이 테스트를 꺼서 지형을 뚫고, CustomStencil == 252인 픽셀에서만 숨는다.
  * 이 컴포넌트가 오너 + 붙어 있는 액터(악기/무기)의 메시에 252를 찍는다.
  * 로컬 조종 캐릭터 전용이며 늦게 오는 possession도 스스로 따라간다.
+ * 링이 보일 때만 켠다 (인게임은 RhythmActor 등록, 로비는 과녁 링 표시 여부).
  */
 UCLASS(ClassGroup=(Rhythm))
 class TROMBONERUMBLE_API UNoteRingOccluderComponent : public UActorComponent

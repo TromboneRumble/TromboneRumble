@@ -3,6 +3,7 @@
 #include "Components/ActorComponents/NoteRingOccluderComponent.h"
 #include "Components/SkinnedMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/StaticMeshComponents/RingHitBoxComponent.h"
 #include "Engine/GameInstance.h"
 #include "GameFramework/Pawn.h"
 #include "HAL/IConsoleManager.h"
@@ -82,9 +83,12 @@ void UNoteRingOccluderComponent::RefreshStencilTargets()
 	const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
 	const URhythmSubsystem* RhythmSubsystem = GameInstance ? GameInstance->GetSubsystem<URhythmSubsystem>() : nullptr;
 
-	// 링이 없는 레벨(로비 등)에서는 CustomDepth 비용을 내지 않는다
-	const bool bActive = Owner && CVarNoteRingOccluder.GetValueOnGameThread() != 0
-		&& RhythmSubsystem && RhythmSubsystem->GetRegisteredRhythmActor(World) != nullptr;
+	// 링이 안 보이면 CustomDepth 비용을 내지 않는다
+	// 인게임은 RhythmActor로, 로비는 과녁 링(악기를 들면 켜짐)이 보이는지로 판단한다
+	const URingHitBoxComponent* RingHitBox = Owner ? Owner->FindComponentByClass<URingHitBoxComponent>() : nullptr;
+	const bool bRingShown = (RhythmSubsystem && RhythmSubsystem->GetRegisteredRhythmActor(World) != nullptr)
+		|| (RingHitBox && RingHitBox->IsVisible());
+	const bool bActive = Owner && CVarNoteRingOccluder.GetValueOnGameThread() != 0 && bRingShown;
 	if (!bActive)
 	{
 		ClearAllStencils();
