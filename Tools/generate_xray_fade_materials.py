@@ -27,6 +27,7 @@
 # 사전 조건:
 #   1. Edit > Plugins > "Python Editor Script Plugin" 활성화 후 에디터 재시작
 #   2. C++ 클래스 UXRayFadeMaterialMap 이 컴파일돼 있을 것
+#      + TromboneRumbleEditor 모듈의 UXRayFadeMaterialEditorLibrary (Opacity 상수 모드 끄기용)
 #   3. Content/Arts/Environment/XRayFade/MF_OcclusionFade 머티리얼 함수가 있을 것
 #      (그래프: ScalarParameter "OcclusionFade"(기본 0), ScalarParameter "FadedOpacity"(기본 0.35)
 #       -> Lerp(A=1.0, B=FadedOpacity, Alpha=OcclusionFade)
@@ -47,6 +48,9 @@ import unreal
 
 MEL = unreal.MaterialEditingLibrary
 EAL = unreal.EditorAssetLibrary
+
+# 루트 핀의 상수 모드는 파이썬 API로 못 끈다. 에디터 모듈의 C++ 헬퍼를 쓴다.
+XRAY_EDITOR_LIB = getattr(unreal, 'XRayFadeMaterialEditorLibrary', None)
 
 MF_PATH = '/Game/Arts/Environment/XRayFade/MF_OcclusionFade'
 LEGACY_MF_PATH = '/Game/Arts/Environment/MF_OcclusionFade'   # 옮기기 전 경로
@@ -225,6 +229,10 @@ def make_base_variant(original, dst_path, mf, control_instructions):
     if not MEL.connect_material_property(node, '', unreal.MaterialProperty.MP_OPACITY):
         log('  [실패] Opacity 연결 실패: %s' % dst_path)
         return None
+
+    # 원본이 루트 핀에 상수를 직접 넣은 머티리얼이면 상수 모드가 복사돼 MF가 무시된다(불투명 1.0).
+    # connect_material_property는 이 모드를 안 끈다.
+    XRAY_EDITOR_LIB.set_opacity_use_constant(variant, False)
 
     MEL.recompile_material(variant)
 
@@ -427,6 +435,10 @@ def verify_variants(pairs, skinned_paths):
         if base.get_editor_property('blend_mode') != unreal.BlendMode.BLEND_TRANSLUCENT:
             problems.append('%s: 베이스 %s 의 blend mode 가 %s'
                             % (name, base.get_name(), base.get_editor_property('blend_mode')))
+
+        if XRAY_EDITOR_LIB.get_opacity_use_constant(base):
+            problems.append('%s: 베이스 %s 의 Opacity 가 상수 모드라 MF 가 무시됨 (항상 불투명)'
+                            % (name, base.get_name()))
 
         # 스켈레탈이 쓰는 머티리얼인데 플래그가 없으면 쿡 빌드에서 회색으로 렌더된다
         if original.get_path_name() in skinned_paths and get_usage(base, SKELETAL_USAGE_PROP) is False:
@@ -658,6 +670,10 @@ def main():
         mf_package = LEGACY_MF_PATH
     if not mf:
         raise RuntimeError('MF_OcclusionFade 를 찾을 수 없습니다: %s 또는 %s' % (MF_PATH, LEGACY_MF_PATH))
+
+    if not XRAY_EDITOR_LIB:
+        raise RuntimeError('unreal.XRayFadeMaterialEditorLibrary 가 없습니다. '
+                           'TromboneRumbleEditor 모듈을 컴파일한 뒤 다시 실행하세요.')
 
     log('=== X-Ray 페이드 사본 생성 시작 ===')
 
