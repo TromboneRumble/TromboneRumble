@@ -1,6 +1,8 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/BlackHole/BlackHoleGimmick.h"
+#include "AkAudioEvent.h"
+#include "AkComponent.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
@@ -15,6 +17,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "Interfaces/CombatReceiver.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
 #include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
@@ -39,6 +42,14 @@ ABlackHoleGimmick::ABlackHoleGimmick()
 	InnerSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	InnerSphere->SetGenerateOverlapEvents(false);
 	InnerSphere->SetCanEverAffectNavigation(false);
+
+	HoleVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("HoleVFXComponent"));
+	HoleVFXComponent->SetupAttachment(InnerSphere);
+	HoleVFXComponent->SetAutoActivate(false);
+
+	AkComponent = CreateDefaultSubobject<UAkComponent>(TEXT("AkComponent"));
+	AkComponent->SetupAttachment(InnerSphere);
+	AkComponent->OcclusionRefreshInterval = 0.f;
 }
 
 void ABlackHoleGimmick::BeginPlay()
@@ -192,18 +203,19 @@ void ABlackHoleGimmick::SetState(const EBlackHoleState NewState)
 {
 	if (!HasAuthority() || State == NewState) return;
 
+	const EBlackHoleState PreviousState = State;
 	State = NewState;
 
-	OnRep_State();  // 리슨 서버 호스트에서도 구독자 알림과 연출이 돌게 수동 호출
+	OnRep_State(PreviousState);  // 리슨 서버 호스트에서도 구독자 알림과 연출이 돌게 수동 호출
 	ForceNetUpdate();
 }
 
-void ABlackHoleGimmick::OnRep_State()
+void ABlackHoleGimmick::OnRep_State(const EBlackHoleState PreviousState)
 {
-	HandleStateChanged();
+	HandleStateChanged(PreviousState);
 }
 
-void ABlackHoleGimmick::HandleStateChanged()
+void ABlackHoleGimmick::HandleStateChanged(const EBlackHoleState PreviousState)
 {
 	// 구독자에게 먼저 알린다. "상태가 바뀌었다"는 사실이지 렌더링 단계가 아니라서 데디 서버에서도 나가야 한다
 	OnBlackHoleStateChangedDelegate.Broadcast(State);
@@ -216,7 +228,63 @@ void ABlackHoleGimmick::HandleStateChanged()
 
 	if (GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
 
+	PlayStateEffects(PreviousState);
 	OnBlackHoleStateChanged(State);
+}
+
+void ABlackHoleGimmick::PlayStateEffects(const EBlackHoleState PreviousState)
+{
+	auto PostSound = [this](UAkAudioEvent* Sound)
+	{
+		if (Sound && AkComponent)
+		{
+			AkComponent->PostAkEvent(Sound, 0, FOnAkPostEventCallback());
+		}
+	};
+
+	switch (State)
+	{
+	case EBlackHoleState::Warning:
+		PostSound(WarningSound);
+		break;
+
+	case EBlackHoleState::Active:
+		// 리셋으로 켜야 다시 발동했을 때 지난 회차의 남은 파티클이 섞이지 않는다
+		if (HoleVFXComponent && HoleVFXComponent->GetAsset())
+		{
+			HoleVFXComponent->Activate(true);
+		}
+		PostSound(ActiveSound);
+		break;
+
+	case EBlackHoleState::Collapse:
+		// 붕괴 중에 들어온 클라는 활성을 못 봤으므로 여기서 켠다
+		if (HoleVFXComponent && HoleVFXComponent->GetAsset() && !HoleVFXComponent->IsActive())
+		{
+			HoleVFXComponent->Activate(true);
+		}
+		break;
+
+	case EBlackHoleState::Idle:
+		// 스폰만 멈춘다. 이미 나온 파티클은 수명대로 사라진다
+		if (HoleVFXComponent)
+		{
+			HoleVFXComponent->Deactivate();
+		}
+
+		// 전조/등장음이 루프여도 남지 않게 끊고 나서 방출음을 낸다
+		if (AkComponent)
+		{
+			AkComponent->Stop();
+		}
+
+		// 붕괴에서 넘어온 경우만 방출이다. 라운드 종료로 꺼질 때는 소리 없이 사라진다
+		if (PreviousState == EBlackHoleState::Collapse)
+		{
+			PostSound(BurstSound);
+		}
+		break;
+	}
 }
 
 float ABlackHoleGimmick::GetGrowthAlpha() const

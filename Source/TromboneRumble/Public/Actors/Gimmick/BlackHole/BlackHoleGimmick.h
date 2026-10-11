@@ -8,7 +8,10 @@
 
 class ATromboneCharacterBase;
 class IConsoleVariable;
+class UAkAudioEvent;
+class UAkComponent;
 class UBlackHoleGimmickConfig;
+class UNiagaraComponent;
 class USphereComponent;
 
 /** Level materials read these numbers from the parameter collection. Do not change the values. */
@@ -144,7 +147,7 @@ public:
 
 protected:
 
-	/** Called on server and clients when the state changes. Put sound and particles here. */
+	/** Called on server and clients when the state changes. The hole effect and sounds already play in C++, so put only extra effects here. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "BlackHole")
 	void OnBlackHoleStateChanged(EBlackHoleState NewState);
 
@@ -157,6 +160,25 @@ protected:
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "BlackHole")
 	TObjectPtr<USphereComponent> InnerSphere;
+
+	/** Effect of the hole. Turns on when the hole starts to pull and stops spawning at the burst. Pick the asset, place and size in the Blueprint. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BlackHole|FX")
+	TObjectPtr<UNiagaraComponent> HoleVFXComponent;
+
+	/** Plays the sounds from the center of the hole. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BlackHole|Sound")
+	TObjectPtr<UAkComponent> AkComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "전조 사운드"))
+	TObjectPtr<UAkAudioEvent> WarningSound;
+
+	/** Starts together with the effect. */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "등장 사운드"))
+	TObjectPtr<UAkAudioEvent> ActiveSound;
+
+	/** The instant the collapse throws everything out. */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "방출 사운드"))
+	TObjectPtr<UAkAudioEvent> BurstSound;
 
 	/** Seconds between two capture checks. A player reaches the capture radius at most this late. */
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole", meta = (DisplayName = "포획 판정 주기", ClampMin = "0.02", Units = "s"))
@@ -201,11 +223,15 @@ private:
 	/** Server only. Sets the state and runs the local reaction at once for the listen host. */
 	void SetState(EBlackHoleState NewState);
 
+	/** @param PreviousState The engine passes the old value, so a client can tell the burst from the round ending. */
 	UFUNCTION()
-	void OnRep_State();
+	void OnRep_State(EBlackHoleState PreviousState);
 
 	/** Runs on every machine after the state changes. Tells the subscribers first, then plays the local reaction. */
-	void HandleStateChanged();
+	void HandleStateChanged(EBlackHoleState PreviousState);
+
+	/** Turn the hole effect on or off and play the sound of the new state. Not on a dedicated server. */
+	void PlayStateEffects(EBlackHoleState PreviousState);
 
 	/** Tick runs while the hole is on, and while Trombone.BlackHole.Debug is on. */
 	void UpdateTickEnabled();
