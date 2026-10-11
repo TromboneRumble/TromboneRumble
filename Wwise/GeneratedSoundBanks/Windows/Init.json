@@ -10,12 +10,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{23F326D1-77A5-34EE-6A46-A018355817D0}",
+    "Hash": "{CB06D522-B985-69E0-5F96-9C9C9851CF2A}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "1904434771",
+       "Name": "Medium_Room1",
+       "ObjectPath": "\\Effects\\Factory Effects\\Matrix Reverb\\Medium_Room1",
+       "GUID": "{71B802A7-03E2-4998-B241-B2B84FE9DDFF}",
+       "LibName": "Wwise Matrix Reverb",
+       "LibId": "7536643"
+      },
       {
        "Id": "3701691487",
        "Name": "Hall_Large_Bright",
@@ -77,6 +85,19 @@
      }
     ],
     "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D2D83381-F2DE-458B-B683-93B39B90A5CE}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "1904434771"
+        }
+       ]
+      }
+     },
      {
       "Id": "356551040",
       "Name": "Map_A_Reverb",
@@ -770,6 +791,6 @@
     ]
    }
   ],
-  "FileHash": "{EF97B10B-FB42-1772-4725-F4E50AA3598D}"
+  "FileHash": "{DDE58CBA-80F4-9241-FF00-59629F1EFAD5}"
  }
 }

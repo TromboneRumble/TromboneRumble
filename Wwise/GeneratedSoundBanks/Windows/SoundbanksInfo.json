@@ -129,6 +129,43 @@
     ]
    },
    {
+    "Id": "140992219",
+    "Type": "Bus",
+    "GUID": "{D2D83381-F2DE-458B-B683-93B39B90A5CE}",
+    "Language": "SFX",
+    "Hash": "{70764E5D-FDF0-1DB6-AD12-7148BE524572}",
+    "ObjectPath": "Map_D_Reverb",
+    "ShortName": "Map_D_Reverb",
+    "Path": "Bus/Map_D_Reverb.bnk",
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "1904434771",
+       "Name": "Medium_Room1",
+       "ObjectPath": "\\Effects\\Factory Effects\\Matrix Reverb\\Medium_Room1",
+       "GUID": "{71B802A7-03E2-4998-B241-B2B84FE9DDFF}",
+       "LibName": "Wwise Matrix Reverb",
+       "LibId": "7536643"
+      }
+     ]
+    },
+    "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D2D83381-F2DE-458B-B683-93B39B90A5CE}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "1904434771"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "198411524",
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
@@ -3049,12 +3086,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{23F326D1-77A5-34EE-6A46-A018355817D0}",
+    "Hash": "{CB06D522-B985-69E0-5F96-9C9C9851CF2A}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "1904434771",
+       "Name": "Medium_Room1",
+       "ObjectPath": "\\Effects\\Factory Effects\\Matrix Reverb\\Medium_Room1",
+       "GUID": "{71B802A7-03E2-4998-B241-B2B84FE9DDFF}",
+       "LibName": "Wwise Matrix Reverb",
+       "LibId": "7536643"
+      },
       {
        "Id": "3701691487",
        "Name": "Hall_Large_Bright",
@@ -3116,6 +3161,19 @@
      }
     ],
     "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D2D83381-F2DE-458B-B683-93B39B90A5CE}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "1904434771"
+        }
+       ]
+      }
+     },
      {
       "Id": "356551040",
       "Name": "Map_A_Reverb",
@@ -6550,6 +6608,75 @@
     ]
    },
    {
+    "Id": "2610180119",
+    "Type": "Event",
+    "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
+    "Language": "SFX",
+    "Hash": "{8F736F0A-77D8-0F8A-CD61-55CF1C6E2B26}",
+    "ObjectPath": "Play_Port_Flying",
+    "ShortName": "Play_Port_Flying",
+    "Path": "Event/Play_Port_Flying.bnk",
+    "Media": [
+     {
+      "Id": "10826828",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Port_Flying_2.wav",
+      "Path": "Media/10826828.wem",
+      "CachePath": "SFX/Port_Flying_2_818F3B66.wem"
+     },
+     {
+      "Id": "251471988",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "Port_Flying_1.wav",
+      "Path": "Media/251471988.wem",
+      "CachePath": "SFX/Port_Flying_1_818F3B66.wem"
+     }
+    ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3604890626",
+       "Name": "High_Pass_60Hz",
+       "ObjectPath": "\\Effects\\Factory Effects\\Parametric EQ\\High Pass Filters\\High_Pass_60Hz",
+       "GUID": "{F9627628-0B10-4272-BC30-D4C20423CB38}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2610180119",
+      "Name": "Play_Port_Flying",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Flying",
+      "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "3.0706666",
+      "DurationMax": "3.1829584",
+      "MediaRefs": [
+       {
+        "Id": "10826828"
+       },
+       {
+        "Id": "251471988"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3604890626"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "2751601189",
     "Type": "Event",
     "GUID": "{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}",
@@ -9522,6 +9649,6 @@
     ]
    }
   ],
-  "FileHash": "{3C074334-E426-066C-1B99-E4F2FDB6FC00}"
+  "FileHash": "{581F7233-B3BB-5AE0-DDDF-76161552EC62}"
  }
 }

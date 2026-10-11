@@ -66,6 +66,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="140992219" Type="Bus" GUID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}" Language="SFX" Hash="{70764E5D-FDF0-1DB6-AD12-7148BE524572}">
+			<ObjectPath>Map_D_Reverb</ObjectPath>
+			<ShortName>Map_D_Reverb</ShortName>
+			<Path>Bus/Map_D_Reverb.bnk</Path>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="1904434771" Name="Medium_Room1" ObjectPath="\Effects\Factory Effects\Matrix Reverb\Medium_Room1" GUID="{71B802A7-03E2-4998-B241-B2B84FE9DDFF}" LibName="Wwise Matrix Reverb" LibId="7536643"/>
+				</ShareSets>
+			</Plugins>
+			<AuxBusses>
+				<AuxBus Id="140992219" Name="Map_D_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_D_Reverb" GUID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="1904434771"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
+			</AuxBusses>
+		</SoundBank>
 		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{2AE1ABC4-AC76-BEC7-817C-813B9EACA3ED}">
 			<ObjectPath>Play_MapD_Main</ObjectPath>
 			<ShortName>Play_MapD_Main</ShortName>
@@ -1462,12 +1481,13 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{0E6D2AEA-93CB-7A37-F2C0-2A5F204C621F}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{182A40EB-C762-F0A7-45F5-0F1E0D71819F}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
 				<ShareSets>
+					<Plugin Id="1904434771" Name="Medium_Room1" ObjectPath="\Effects\Factory Effects\Matrix Reverb\Medium_Room1" GUID="{71B802A7-03E2-4998-B241-B2B84FE9DDFF}" LibName="Wwise Matrix Reverb" LibId="7536643"/>
 					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
 				</ShareSets>
 				<AudioDevices>
@@ -1483,6 +1503,13 @@
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
 			<AuxBusses>
+				<AuxBus Id="140992219" Name="Map_D_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_D_Reverb" GUID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="1904434771"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
 				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
 					<PluginRefs>
 						<ShareSets>
@@ -3063,6 +3090,41 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="2610180119" Type="Event" GUID="{669815C8-B2F6-46FE-BA58-2B2F94892743}" Language="SFX" Hash="{8F736F0A-77D8-0F8A-CD61-55CF1C6E2B26}">
+			<ObjectPath>Play_Port_Flying</ObjectPath>
+			<ShortName>Play_Port_Flying</ShortName>
+			<Path>Event/Play_Port_Flying.bnk</Path>
+			<Media>
+				<File Id="10826828" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Port_Flying_2.wav</ShortName>
+					<Path>Media/10826828.wem</Path>
+					<CachePath>SFX/Port_Flying_2_818F3B66.wem</CachePath>
+				</File>
+				<File Id="251471988" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Port_Flying_1.wav</ShortName>
+					<Path>Media/251471988.wem</Path>
+					<CachePath>SFX/Port_Flying_1_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<ShareSets>
+					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
+				</ShareSets>
+			</Plugins>
+			<Events>
+				<Event Id="2610180119" Name="Play_Port_Flying" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Port_Flying" GUID="{669815C8-B2F6-46FE-BA58-2B2F94892743}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="3.0706666" DurationMax="3.1829584">
+					<MediaRefs>
+						<MediaRef Id="10826828"/>
+						<MediaRef Id="251471988"/>
+					</MediaRefs>
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="3604890626"/>
+						</ShareSets>
+					</PluginRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="2751601189" Type="Event" GUID="{7D2A1F5E-5B75-4471-B029-FBE7DE57F098}" Language="SFX" Hash="{BC97E154-0ED6-294C-4E83-16B7B6DA8103}">
 			<ObjectPath>Play_Trombone_Attack</ObjectPath>
 			<ShortName>Play_Trombone_Attack</ShortName>
@@ -4546,5 +4608,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{02B2D207-51EB-5BA3-4BA9-A0221BDC4057}</FileHash>
+	<FileHash>{2A8BA626-5EB4-EB49-E62E-8359B78FBD26}</FileHash>
 </SoundBanksInfo>

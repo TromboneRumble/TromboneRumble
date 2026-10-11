@@ -1,0 +1,48 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "140992219",
+    "Type": "Bus",
+    "GUID": "{D2D83381-F2DE-458B-B683-93B39B90A5CE}",
+    "Language": "SFX",
+    "Hash": "{70764E5D-FDF0-1DB6-AD12-7148BE524572}",
+    "ObjectPath": "Map_D_Reverb",
+    "ShortName": "Map_D_Reverb",
+    "Path": "Bus/Map_D_Reverb.bnk",
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "1904434771",
+       "Name": "Medium_Room1",
+       "ObjectPath": "\\Effects\\Factory Effects\\Matrix Reverb\\Medium_Room1",
+       "GUID": "{71B802A7-03E2-4998-B241-B2B84FE9DDFF}",
+       "LibName": "Wwise Matrix Reverb",
+       "LibId": "7536643"
+      }
+     ]
+    },
+    "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D2D83381-F2DE-458B-B683-93B39B90A5CE}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "1904434771"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{5291701A-A1FC-5CAF-6A8B-697BFE6DC2EC}"
+ }
+}
