@@ -75,7 +75,9 @@ void ATutorialManager::ToggleTutorialBGM(bool bIsOn)
 	{
 		if (TutorialBGMEvent)
 		{
-			UAkGameplayStatics::PostEvent(TutorialBGMEvent, UGameplayStatics::GetPlayerPawn(this,0), 0, FOnAkPostEventCallback());
+			APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+			UAkGameplayStatics::SetOcclusionRefreshInterval(0.f, PlayerPawn);
+			UAkGameplayStatics::PostEvent(TutorialBGMEvent, PlayerPawn, 0, FOnAkPostEventCallback());
 		}
 	}
 	else
