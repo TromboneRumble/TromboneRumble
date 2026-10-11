@@ -15,7 +15,8 @@ class UCameraComponent;
  * 파생 컴포넌트를 액터에 붙이거나 떼는 것만으로 X-Ray 방식을 갈아끼울 수 있다.
  * 여러 개를 동시에 붙여도 서로 간섭하지 않지만(각자 자기 리소스만 관리) 효과는 겹쳐 보인다.
  *
- * 베이스가 담당하는 것: 자체 초기화 + 카메라→오너 스피어 스윕(TraceInterval 주기) + OccluderTag 필터.
+ * 베이스가 담당하는 것: 자체 초기화 + 카메라→대상 스피어 스윕(TraceInterval 주기) + OccluderTag 필터.
+ * 스윕 대상은 기본 오너 하나이고, 파생이 GatherTraceTargets로 늘릴 수 있다.
  * 파생이 담당하는 것: 실제 시각 효과 (InitializeEffect/UpdateEffect/OnTraceUpdated/TeardownEffect).
  *
  * 로컬 플레이어 전용(복제 없음). 오너가 로컬 조종 폰일 때만 스스로 켜지며, 캐릭터 쪽에서
@@ -37,7 +38,7 @@ public:
 
 	bool IsTrackingPaused() const { return bTrackingPaused; }
 
-	/** 이번 스윕에서 가리는 액터가 하나라도 있었는지 */
+	/** 이번 스윕에서 오너를 가리는 액터가 하나라도 있었는지. 추가 대상(다른 플레이어 등)은 세지 않는다 */
 	bool IsAnyOccluding() const { return bAnyOccluding; }
 
 	/** 효과 초기화까지 성공해 실제로 동작 중인지 */
@@ -63,6 +64,12 @@ protected:
 
 	/** 오너 캐릭터의 피부색이 바뀌었을 때. 색이 필요한 파생만 구현하면 된다 */
 	virtual void OnSkinColorChanged(const FLinearColor& NewSkinColor) {}
+
+	/** 이번 스윕에서 카메라→? 를 검사할 액터들. 기본은 오너 하나. 파생은 Super 호출 후 추가 */
+	virtual void GatherTraceTargets(TArray<AActor*>& OutTargets) const;
+
+	/** 스윕 끝점. 래그돌 중인 캐릭터는 캡슐이 쓰러진 자리에 남으므로 골반을 쓴다 */
+	static FVector GetTraceTargetLocation(const AActor* Target);
 
 	const UCameraComponent* GetCamera() const { return Camera.Get(); }
 	UCameraComponent* GetCamera() { return Camera.Get(); }

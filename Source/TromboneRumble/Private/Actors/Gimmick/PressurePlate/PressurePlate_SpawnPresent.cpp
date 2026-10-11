@@ -54,6 +54,6 @@ void APressurePlate_SpawnPresent::SpawnPresent()
 	const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation);
 	if (APresent* NewPresent = GetWorld()->SpawnActor<APresent>(PresentClass, SpawnTransform, SpawnParams))
 	{
-		NewPresent->BonusScore = PresentBonusScore;
+		NewPresent->SetBonusScore(PresentBonusScore);
 	}
 }

@@ -91,6 +91,18 @@ FGameplayTag UTromboneFunctionLibrary::PickRandomSongForMap(const FGameplayTag I
                                  : TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
     }
 
+    if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_JazzBar)
+    {
+        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapE
+                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapF;
+    }
+
+    if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_SpaceStation)
+    {
+        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapG
+                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapH;
+    }
+
     // OrchestraStage 및 그 외 폴백
     return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA
                              : TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;

@@ -7,6 +7,7 @@
 #include "Data/Gimmick/StageGimmickData.h"
 #include "Engine/Engine.h"
 #include "Subsystems/RhythmSubsystem.h"
+#include "TimerManager.h"
 #include "Utilities/EnumHelper.h"
 #include "Utilities/TromboneLogs.h"
 
@@ -67,6 +68,20 @@ namespace GimmickConsole
 		TEXT("Trombone.Gimmick.Restart"),
 		TEXT("기믹을 껐다 켜서 바뀐 설정을 바로 반영. 예: Trombone.Gimmick.Restart Gravity"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World) { Run(ECommand::Restart, Args, World); }));
+
+	static FAutoConsoleCommandWithWorld FeverCommand(
+		TEXT("Trombone.Gimmick.Fever"),
+		TEXT("곡의 피버 큐를 기다리지 않고 기믹의 피버 타임을 바로 시작. 스포트라이트와 압력판은 곡의 큐만 따른다"),
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+		{
+			AGimmickManager* Manager = AGimmickManager::Find(World);
+			if (!Manager || !Manager->HasAuthority())
+			{
+				UE_LOG(LogGimmick, Warning, TEXT("No gimmick manager with authority in this world. Run the command on the host"));
+				return;
+			}
+			Manager->BeginFeverTime();
+		}));
 }
 #endif
 
@@ -92,16 +107,24 @@ void AGimmickManager::ActivateAllGimmicks()
 
 	for (auto& Pair : ManagedGimmicks)
 	{
-		if (Pair.Value)
+		// A gimmick turned on earlier, for example by a forced trigger, keeps running
+		// Some gimmicks bind delegates and spawn in Activate without checking IsActive, so we never call it twice
+		if (Pair.Value && !Pair.Value->IsActive())
 		{
 			Pair.Value->Activate();
 		}
 	}
+
+	StartSequences();
 }
 
 void AGimmickManager::DeactivateAllGimmicks()
 {
 	UE_LOG(LogGimmick, Log, TEXT("Deactivating %d gimmicks"), ManagedGimmicks.Num());
+
+	// First, so the events the gimmicks end while turning off do not start another turn
+	StopSequences();
+	bIsFeverTime = false;
 
 	for (auto& Pair : ManagedGimmicks)
 	{
@@ -128,6 +151,114 @@ void AGimmickManager::ForceTriggerGimmick(const EGimmickType GimmickType)
 		Gimmick->Activate();
 	}
 	Gimmick->ForceTrigger();
+}
+
+AGimmickManager* AGimmickManager::Find(const UWorld* World)
+{
+	if (!World) return nullptr;
+
+	TActorIterator<AGimmickManager> It(World);
+	return It ? *It : nullptr;
+}
+
+void AGimmickManager::StartSequences()
+{
+	StopSequences();
+	if (!HasAuthority() || !StageData) return;
+
+	const TArray<FGimmickSequence>& Sequences = StageData->GetSequences();
+	for (int32 SequenceIndex = 0; SequenceIndex < Sequences.Num(); ++SequenceIndex)
+	{
+		if (Sequences[SequenceIndex].Order.IsEmpty()) continue;
+
+		const int32 RunIndex = SequenceRuns.AddDefaulted();
+		SequenceRuns[RunIndex].SequenceIndex = SequenceIndex;
+		ScheduleNextInSequence(RunIndex, Sequences[SequenceIndex].FirstDelay);
+	}
+}
+
+void AGimmickManager::StopSequences()
+{
+	for (FSequenceRun& Run : SequenceRuns)
+	{
+		GetWorldTimerManager().ClearTimer(Run.TimerHandle);
+	}
+	SequenceRuns.Reset();
+}
+
+void AGimmickManager::ScheduleNextInSequence(const int32 RunIndex, const float Delay)
+{
+	FSequenceRun& Run = SequenceRuns[RunIndex];
+	Run.Running = EGimmickType::None;
+	GetWorldTimerManager().SetTimer(Run.TimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartNextInSequence, RunIndex), Delay, false);
+}
+
+void AGimmickManager::StartNextInSequence(const int32 RunIndex)
+{
+	if (!SequenceRuns.IsValidIndex(RunIndex) || !StageData) return;
+
+	FSequenceRun& Run = SequenceRuns[RunIndex];
+	const FGimmickSequence& Sequence = StageData->GetSequences()[Run.SequenceIndex];
+
+	// An empty fever order stops the sequence until the round ends
+	const TArray<EGimmickType>& Order = Sequence.GetOrder(bIsFeverTime);
+	if (Order.IsEmpty())
+	{
+		Run.Running = EGimmickType::None;
+		return;
+	}
+
+	const EGimmickType Type = Order[Run.NextIndex % Order.Num()];
+	Run.NextIndex = (Run.NextIndex + 1) % Order.Num();
+
+	// A missing or stopped gimmick must not stall the others, so its turn passes to the next one
+	AGimmickBase* Gimmick = FindGimmick(Type);
+	if (!Gimmick || !Gimmick->IsActive())
+	{
+		UE_LOG(LogGimmick, Warning, TEXT("Sequence skips %s, the level has no such gimmick or it is off"), *EnumHelper::EnumToString(Type));
+		ScheduleNextInSequence(RunIndex, Sequence.GetGap(bIsFeverTime));
+		return;
+	}
+
+	UE_LOG(LogGimmick, Log, TEXT("Sequence starts %s"), *EnumHelper::EnumToString(Type));
+	Run.Running = Type;
+	Gimmick->ForceTrigger();
+}
+
+void AGimmickManager::HandleEventFinished(const AGimmickBase& Gimmick)
+{
+	if (!HasAuthority() || !StageData) return;
+
+	for (int32 RunIndex = 0; RunIndex < SequenceRuns.Num(); ++RunIndex)
+	{
+		// A forced event outside the turn also ends here. Only the gimmick whose turn it is moves the sequence on
+		if (SequenceRuns[RunIndex].Running != Gimmick.GetGimmickType()) continue;
+
+		ScheduleNextInSequence(RunIndex, StageData->GetSequences()[SequenceRuns[RunIndex].SequenceIndex].GetGap(bIsFeverTime));
+		return;
+	}
+}
+
+void AGimmickManager::BeginFeverTime()
+{
+	if (!HasAuthority() || bIsFeverTime) return;
+
+	UE_LOG(LogGimmick, Log, TEXT("Fever time starts"));
+	bIsFeverTime = true;
+
+	// Only the next turn changes. A running gimmick and a gap timer are left alone, so nothing is cut off
+	if (StageData)
+	{
+		for (FSequenceRun& Run : SequenceRuns)
+		{
+			if (StageData->GetSequences()[Run.SequenceIndex].bUseFeverOrder)
+			{
+				Run.NextIndex = 0;
+			}
+		}
+	}
+
+	OnFeverTimeStarted.Broadcast();
 }
 
 AGimmickBase* AGimmickManager::FindGimmick(const EGimmickType GimmickType) const
@@ -232,6 +363,21 @@ TArray<const UGimmickConfig*> AGimmickManager::FindUnusedConfigs() const
 	return Unused;
 }
 
+TArray<const UGimmickConfig*> AGimmickManager::FindConfigsWithoutSequence() const
+{
+	TArray<const UGimmickConfig*> Result;
+	if (!StageData) return Result;
+
+	for (const UGimmickConfig* Config : StageData->GetGimmicks())
+	{
+		if (Config && Config->RunsOnlyInSequence() && !StageData->FindSequence(Config->GetGimmickType()))
+		{
+			Result.Add(Config);
+		}
+	}
+	return Result;
+}
+
 void AGimmickManager::ValidateStageData() const
 {
 	// A client would repeat the message of the host
@@ -252,7 +398,7 @@ void AGimmickManager::ValidateStageData() const
 	// Garbage and presents have empty class lists there, so nothing spawns
 	if (!StageData && ManagedGimmicks.Num() > 0)
 	{
-		Warn(FString::Printf(TEXT("[기믹] %s 에 레벨 기믹 설정이 비어 있습니다. 기믹 %d개가 기본값으로 동작하고, 투척물과 선물은 나오지 않습니다"),
+		Warn(FString::Printf(TEXT("[기믹] %s 에 레벨 기믹 설정이 비어 있습니다. 기믹 %d개가 기본값으로 동작하고, 투척물과 선물, 순서 그룹이 필요한 기믹은 나오지 않습니다"),
 			*GetName(), ManagedGimmicks.Num()));
 		return;
 	}
@@ -261,6 +407,12 @@ void AGimmickManager::ValidateStageData() const
 	{
 		Warn(FString::Printf(TEXT("[기믹] %s 에 %s 항목이 있지만 레벨에 그 기믹이 없습니다. 기믹을 배치하거나 항목을 지우세요"),
 			*StageData->GetName(), *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString()));
+	}
+
+	for (const UGimmickConfig* Config : FindConfigsWithoutSequence())
+	{
+		Warn(FString::Printf(TEXT("[기믹] %s 은(는) 순서 그룹에서만 발동하는데 %s 의 어느 순서 그룹에도 없어 나오지 않습니다"),
+			*UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString(), *StageData->GetName()));
 	}
 }
 
@@ -273,8 +425,16 @@ void AGimmickManager::CheckForErrors()
 	{
 		FMessageLog("MapCheck").Warning()
 			->AddToken(FUObjectToken::Create(this))
-			->AddToken(FTextToken::Create(FText::FromString(TEXT("레벨 기믹 설정이 비어 있습니다. 이 레벨의 기믹은 기본값으로 동작하고, 투척물과 선물은 나오지 않습니다"))));
+			->AddToken(FTextToken::Create(FText::FromString(TEXT("레벨 기믹 설정이 비어 있습니다. 이 레벨의 기믹은 기본값으로 동작하고, 투척물과 선물, 순서 그룹이 필요한 기믹은 나오지 않습니다"))));
 		return;
+	}
+
+	for (const UGimmickConfig* Config : FindConfigsWithoutSequence())
+	{
+		FMessageLog("MapCheck").Warning()
+			->AddToken(FUObjectToken::Create(this))
+			->AddToken(FTextToken::Create(FText::FromString(FString::Printf(TEXT("%s 은(는) 순서 그룹에서만 발동하는데 %s 의 어느 순서 그룹에도 없습니다"),
+				*UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString(), *StageData->GetName()))));
 	}
 
 	for (const UGimmickConfig* Config : FindUnusedConfigs())
@@ -333,10 +493,14 @@ void AGimmickManager::HandleMusicCallback(EAkCallbackType CallbackType, UAkCallb
 		if (!CueString.IsEmpty())
 		{
 			const FName CueName(*CueString);
+			// Only turns on. A gimmick forced before the cue keeps running instead of being cut off
 			if (CueName == TEXT("Event_Spotlight_Start"))
 			{
-				DeactivateAllGimmicks();
 				ActivateAllGimmicks();
+			}
+			else if (CueName == TEXT("Event_Spotlight_Fever"))
+			{
+				BeginFeverTime();
 			}
 		}
 	}

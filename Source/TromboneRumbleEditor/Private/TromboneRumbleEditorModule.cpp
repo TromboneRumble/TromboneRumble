@@ -1,9 +1,12 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
+#include "Data/Gimmick/GimmickConfig.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Framework/Docking/TabManager.h"
+#include "GimmickSettings/GimmickConfigCustomization.h"
 #include "GimmickSettings/SGimmickSettingsPanel.h"
 #include "Modules/ModuleManager.h"
+#include "PropertyEditorModule.h"
 #include "Styling/AppStyle.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "WorkspaceMenuStructure.h"
@@ -27,7 +30,7 @@ namespace
 
 /**
  * Editor only module of the project. It holds tools for designers and no game code.
- * Right now it registers the gimmick settings tab under the Tools menu.
+ * It registers the gimmick settings tab under the Tools menu, and the layout that groups the settings of each gimmick.
  */
 class FTromboneRumbleEditorModule : public IModuleInterface
 {
@@ -41,6 +44,13 @@ public:
 			.SetTooltipText(LOCTEXT("GimmickSettingsTabTooltip", "레벨의 기믹 수치를 한 곳에서 고치고 PIE에서 바로 테스트합니다"))
 			.SetGroup(WorkspaceMenu::GetMenuStructure().GetToolsCategory())
 			.SetIcon(FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.Tabs.Details"));
+
+		// Registered on the base class, so every gimmick config finds it through its parent classes
+		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		GimmickConfigTypeName = UGimmickConfig::StaticClass()->GetFName();
+		PropertyModule.RegisterCustomPropertyTypeLayout(GimmickConfigTypeName,
+			FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FGimmickConfigCustomization::MakeInstance));
+		PropertyModule.NotifyCustomizationModuleChanged();
 	}
 
 	virtual void ShutdownModule() override
@@ -50,8 +60,18 @@ public:
 		{
 			FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(GimmickSettingsTabName);
 		}
+
+		if (FPropertyEditorModule* PropertyModule = FModuleManager::GetModulePtr<FPropertyEditorModule>("PropertyEditor"))
+		{
+			PropertyModule->UnregisterCustomPropertyTypeLayout(GimmickConfigTypeName);
+		}
 	}
 	//~ End IModuleInterface Interface
+
+private:
+
+	/** Kept from startup, so shutdown does not reach into the game module while it may be unloading. */
+	FName GimmickConfigTypeName;
 };
 
 #undef LOCTEXT_NAMESPACE

@@ -51,12 +51,12 @@ void ADrunkardAIController::HandleStateChanged(const EDrunkardState NewState)
 
 	BlackboardComp->SetValueAsEnum(BBKeyState, static_cast<uint8>(NewState));
 
-	// Leaves through the spot it spawned at
+	// Walks back to the stop point on the navmesh. The move through the door to the spawn point comes after that
 	if (NewState == EDrunkardState::Exiting)
 	{
 		if (const ADrunkardNPC* NPC = Cast<ADrunkardNPC>(GetPawn()))
 		{
-			BlackboardComp->SetValueAsObject(BBKeyExitDoor, NPC->GetExitPoint());
+			BlackboardComp->SetValueAsObject(BBKeyExitDoor, NPC->GetExitWalkGoal());
 		}
 	}
 }

@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/InteractionTriggerComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Utilities/PushablePhysics.h"
 
 AItemBase::AItemBase()
 {
@@ -18,6 +19,7 @@ AItemBase::AItemBase()
 	SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetRootComponent(SkeletalMeshComponent);
 	SetPhysicsEnabled(true);
+	PushablePhysics::ApplyDefaults(*SkeletalMeshComponent);
 	
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	CapsuleComponent->SetupAttachment(RootComponent);
@@ -31,6 +33,30 @@ AItemBase::AItemBase()
 	{
 		AkSoundComponent->SetupAttachment(RootComponent);
 		AkSoundComponent->OcclusionRefreshInterval = 0.f;
+	}
+}
+
+void AItemBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (SkeletalMeshComponent)
+	{
+		SkeletalMeshComponent->OnComponentPhysicsStateChanged.AddDynamic(this, &ThisClass::HandleMeshPhysicsStateChanged);
+
+		// The physics state was created when the component registered, before this binding
+		if (SkeletalMeshComponent->IsPhysicsStateCreated())
+		{
+			PushablePhysics::CopyCapsToBodies(*SkeletalMeshComponent);
+		}
+	}
+}
+
+void AItemBase::HandleMeshPhysicsStateChanged(UPrimitiveComponent* ChangedComponent, const EComponentPhysicsStateChange StateChange)
+{
+	if (StateChange == EComponentPhysicsStateChange::Created && SkeletalMeshComponent)
+	{
+		PushablePhysics::CopyCapsToBodies(*SkeletalMeshComponent);
 	}
 }
 

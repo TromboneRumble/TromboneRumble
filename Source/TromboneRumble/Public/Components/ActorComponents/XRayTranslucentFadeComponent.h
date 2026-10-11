@@ -12,7 +12,7 @@ class UMeshComponent;
 class UXRayFadeMaterialMap;
 
 /**
- * X-Ray 방식 ②: 카메라를 가리는 액터를 통째로 Translucent 반투명 처리 
+ * X-Ray 방식 ②: 카메라와 플레이어(본인 + 화면 안의 다른 플레이어) 사이를 가리는 액터를 통째로 Translucent 반투명 처리
  */
 UCLASS(ClassGroup=(XRay), meta=(BlueprintSpawnableComponent))
 class TROMBONERUMBLE_API UXRayTranslucentFadeComponent : public UXRayComponentBase
@@ -24,6 +24,7 @@ protected:
 	virtual void UpdateEffect(float DeltaTime) override;
 	virtual void OnTraceUpdated(const TArray<AActor*>& Occluders) override;
 	virtual void TeardownEffect() override;
+	virtual void GatherTraceTargets(TArray<AActor*>& OutTargets) const override;
 
 	// 완전히 페이드됐을 때 남는 불투명도 (사본 머티리얼의 FadedOpacity 파라미터로 주입)
 	UPROPERTY(EditAnywhere, Category = "XRay|Dither", meta = (ClampMin = "0.0", ClampMax = "1.0"))
@@ -31,6 +32,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "XRay|Dither")
 	float FadeInterpSpeed = 6.f;
+
+	// 다른 플레이어 캐릭터가 가림물 뒤에 있어도 페이드. 끄면 본인만
+	UPROPERTY(EditAnywhere, Category = "XRay|Dither")
+	bool bFadeForOtherPlayers = true;
+
+	// 화면 밖 플레이어는 제외. 뷰포트 크기 대비 여유 비율 (가장자리 깜빡임 완화)
+	UPROPERTY(EditAnywhere, Category = "XRay|Dither", meta = (ClampMin = "0.0", ClampMax = "0.5", EditCondition = "bFadeForOtherPlayers"))
+	float OtherPlayerScreenMargin = 0.1f;
 
 private:
 	/** 교체 대상 슬롯 하나. 원본을 기억해야 페이드가 끝났을 때 되돌릴 수 있다 */

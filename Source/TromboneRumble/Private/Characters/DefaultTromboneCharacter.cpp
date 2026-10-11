@@ -172,16 +172,7 @@ void ADefaultTromboneCharacter::StopSprint()
 
 void ADefaultTromboneCharacter::Rhythm(bool bIsPressed)
 {
-	const AItemBase* Instrument = EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon);
-	if (!Instrument) return;
-
-	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Instrument))
-	{
-		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
-		{
-			return;
-		}
-	}
+	if (!IsHoldingInstrument()) return;
 
 	if (!GetCachedRhythmActor()) return;
 
@@ -200,6 +191,11 @@ void ADefaultTromboneCharacter::Equip(AItemBase* WeaponToEquip)
 	{
 		EquipmentComponent->TryEquipItem(WeaponToEquip);
 	}
+}
+
+bool ADefaultTromboneCharacter::IsHoldingInstrument() const
+{
+	return EquipmentComponent && Cast<AInstrumentBase>(EquipmentComponent->GetItemInSlot(EEquipmentSlotType::Weapon));
 }
 
 void ADefaultTromboneCharacter::Unequip()

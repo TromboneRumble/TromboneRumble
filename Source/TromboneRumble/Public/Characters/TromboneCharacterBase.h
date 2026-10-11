@@ -8,6 +8,7 @@
 #include "Interfaces/CombatReceiver.h"
 #include "TromboneCharacterBase.generated.h"
 
+class AUfo;
 class UTromboneRagdollComponent;
 class UFloatableComponent;
 class UAkComponent;
@@ -27,6 +28,7 @@ enum class ECharacterBlockReason : uint8
 	Ragdoll    = 1 << 1,
 	Stun       = 1 << 2,
 	Tutorial   = 1 << 3,
+	BeamLift   = 1 << 4,
 };
 
 /** ATromboneCharacterBase
@@ -70,13 +72,30 @@ public:
 	FInvincibleSignature EndInvincibleDelegate;
 
 	/** 피격을 수용할 수 있는 상태인지. 파생에서 추가 조건(퇴장 중 판정 비활성 등)을 얹을 수 있다 */
-	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll()); }
+	virtual bool CanReceiveHit() const { return !(bIsInvincible || bIsStun || IsRagdoll() || IsBeamLifted()); }
+
+	/** @return Whether a UFO beam can catch this character now. */
+	virtual bool CanBeBeamLifted() const { return CanReceiveHit(); }
+
+	/**
+	 * Ragdoll the character and let the beam of this UFO pull the body up under it.
+	 * The body hangs there until the UFO folds its beam at the end of its line and calls EndBeamLift. Server only.
+	 */
+	void StartBeamLift(AUfo* Ufo);
+
+	/** Let go of the character, so the body falls. Server only. */
+	void EndBeamLift();
+
+	bool IsBeamLifted() const { return bBeamLifted; }
 
 	/** Called when the get-up montage finishes. The character can move again from here. */
 	virtual void HandleGetUpFinished() {}
 
+	/** @return Whether the character holds an instrument. The base holds none. */
+	virtual bool IsHoldingInstrument() const { return false; }
+
 	/** Called when the character falls into the beer. Server only. */
-	virtual void HandleDrowningStarted() {}
+	virtual void HandleDrowningStarted();
 
 	/** Called when the beer drains and the character is free. Server only. */
 	virtual void HandleDrowningEnded() {}
@@ -85,10 +104,18 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayFallScream();
 
+	/** Plays the drowning sound on every machine. Server only. */
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayDrowningSound();
+
 	/** Watches for the first hard landing and plays the landing sound. Only the lobby turns this on. Server only. */
 	void SetLandingSoundEnabled(bool bEnable);
 
 protected:
+
+	/** Called on every machine when a UFO beam catches or drops the character. Put the effect here. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "BeamLift")
+	void OnBeamLiftChanged(bool bLifted);
 
 	/** Called the moment the character becomes blocked or free. Only AddBlock and RemoveBlock call it.
 	 *  Empty here - each character stops whatever it moves by, input for players and speed for AI. */
@@ -125,6 +152,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "로비 낙하 연출 - 착지 비명 사운드"))
 	TObjectPtr<UAkAudioEvent> LandPainSound;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "술통 침수 - 빠짐 사운드"))
+	TObjectPtr<UAkAudioEvent> DrowningSound;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound", meta = (DisplayName = "착지 판정 충격량", ClampMin = "0.0"))
 	float LandingImpulseThreshold = 20000.f;
 
@@ -133,6 +163,10 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayLandPain();
+
+	/** Plays the ragdoll boo only for the player who controls this character. */
+	UFUNCTION(Client, Reliable)
+	void Client_PlayRagdollBoo();
 
 	/** 물리 애니메이션 (플레이어: 깃발, NPC: 상체 흐느적거림 등 파생 공용) */
 	UPROPERTY()
@@ -169,7 +203,25 @@ private:
 	void OnRep_IsStun();
 	UFUNCTION()
 	void OnRep_IsInvincible();
+	UFUNCTION()
+	void OnRep_BeamLifted();
 	// ~Replication Notifies
+
+	/** Block input and turn off gravity on the mesh. Runs on every machine. */
+	void ApplyBeamLift();
+
+	/** Free input and give gravity back. Runs on every machine. */
+	void UnapplyBeamLift();
+
+	/** Pull the ragdoll pelvis toward the point under the UFO and turn it. Server only. */
+	void UpdateBeamLift();
+
+	/** Whether a beam holds this character. Clients read it to block input and turn off gravity. */
+	UPROPERTY(ReplicatedUsing = OnRep_BeamLifted)
+	bool bBeamLifted = false;
+
+	/** UFO that holds this character. Server only. */
+	TWeakObjectPtr<AUfo> LiftingUfo;
 
 
 	FTimerHandle OnHitTimerHandle;
@@ -192,6 +244,7 @@ public:
 	// ~ Begin ACharacter Interface
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	// ~ End ACharacter Interface
 

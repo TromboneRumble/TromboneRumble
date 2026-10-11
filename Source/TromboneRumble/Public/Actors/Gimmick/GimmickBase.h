@@ -48,6 +48,9 @@ public:
 
 protected:
 
+	/** Tell the manager that one event is over, so a sequence can start the next gimmick. Server only. */
+	void NotifyEventFinished();
+
 	//~ Begin AActor Interface
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ End AActor Interface

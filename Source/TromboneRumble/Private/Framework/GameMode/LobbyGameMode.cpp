@@ -29,6 +29,14 @@ void ALobbyGameMode::BeginPlay()
 	PlayerReadyCheck->StartTracking();
 }
 
+void ALobbyGameMode::SetPlayerDefaults(APawn* PlayerPawn)
+{
+	Super::SetPlayerDefaults(PlayerPawn);
+
+	// Runs in the frame the pawn spawns, so the first replication already hides it and nobody sees it hang at the start in the air
+	LobbyDirector->HideUntilFall(PlayerPawn);
+}
+
 void ALobbyGameMode::HandleItemEquipped(APawn* EquippedPlayer, AItemBase* EquippedItem)
 {
 	LobbyDirector->NotifyItemEquipped(EquippedPlayer, EquippedItem);

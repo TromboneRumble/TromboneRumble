@@ -4,12 +4,10 @@
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Characters/DefaultTromboneCharacter.h"
-#include "Components/ActorComponents/EquipmentComponent.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/CombatReceiver.h"
-#include "Items/WeaponBase.h"
 #include "Utilities/TromboneLogs.h"
 
 
@@ -84,6 +82,12 @@ void UDrunkardStateComponent::BeginChasing()
 		ChaseDuration,
 		false
 	);
+
+	// The target mark shows this time, so it is told here, right where the timer is set
+	if (ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner()))
+	{
+		OwnerNPC->NotifyChaseStarted(ChaseDuration);
+	}
 }
 
 void UDrunkardStateComponent::BeginExiting()
@@ -104,6 +108,31 @@ void UDrunkardStateComponent::BeginExiting()
 		Config.ExitTimeout,
 		false
 	);
+}
+
+void UDrunkardStateComponent::BeginDoorExit()
+{
+	if (!HasAuthority() || State != EDrunkardState::Exiting) return;
+
+	ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner());
+	if (!OwnerNPC)
+	{
+		DespawnOwner();
+		return;
+	}
+
+	// 제한 시간을 문 밖 이동 시간 기준으로 다시 건다.
+	// 이동이 도중에 끊겨도(침수 등) 소멸은 보장된다
+	const UDrunkardGimmickConfig& Config = GetConfig();
+	GetWorld()->GetTimerManager().SetTimer(
+		ExitTimerHandle,
+		this,
+		&ThisClass::HandleExitTimeout,
+		Config.EnterBurstDuration + 2.f,
+		false
+	);
+
+	OwnerNPC->BeginDoorExit();
 }
 
 void UDrunkardStateComponent::HandleExitTimeout()
@@ -153,33 +182,22 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 	ADefaultTromboneCharacter* TargetCharacter = Target.Get();
 	if (!TargetCharacter || OtherActor != TargetCharacter) return;
 
-	bool bHasInstrument = false;
-	if (const UEquipmentComponent* Equipment = TargetCharacter->GetEquipmentComponent())
+	if (!TargetCharacter->CanReceiveHit())
 	{
-		if (const AWeaponBase* Weapon = Cast<AWeaponBase>(Equipment->GetItemInSlot(EEquipmentSlotType::Weapon)))
-		{
-			bHasInstrument = Weapon->GetWeaponType() != EWeaponType::Headbutt;
-		}
+		RequestTargetChange();
+		return;
 	}
 
-	const UDrunkardGimmickConfig& Config = GetConfig();
+	const bool bHasInstrument = TargetCharacter->IsHoldingInstrument();
 
 	FHitData HitData;
 	HitData.HitDirection = (TargetCharacter->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal2D();
 	HitData.HitInstigator = EHitInstigatorType::Drunkard;
 	HitData.HitInstigatorActor = GetOwner();
-	HitData.HitReaction = bHasInstrument ? EHitReactionType::Ragdoll : EHitReactionType::KnockbackOnly;
+	HitData.HitReaction = bHasInstrument ? EHitReactionType::Ragdoll : EHitReactionType::Stun;
 
-	if (bHasInstrument)
-	{
-		HitData.KnockbackForce = Config.CaptureKnockbackForce;
-		HitData.KnockbackUpForce = Config.CaptureKnockbackUpForce;
-	}
-	else
-	{
-		HitData.KnockbackForce = Config.CaptureKnockbackForceNoInstrument;
-		HitData.KnockbackUpForce = Config.CaptureKnockbackUpForceNoInstrument;
-	}
+	const bool bFever = OwnerNPC && OwnerNPC->IsFeverTime();
+	GetConfig().GetCaptureKnockback(bFever, bHasInstrument, HitData.KnockbackForce, HitData.KnockbackUpForce);
 
 	const bool bApplied = ICombatReceiver::Execute_OnHitReceived(TargetCharacter, HitData);
 	if (!bApplied)
@@ -188,14 +206,15 @@ void UDrunkardStateComponent::HandleCaptureContact(AActor* OtherActor)
 		return;
 	}
 
+	OnCaptureSucceeded.Broadcast(TargetCharacter);
+
 	if (bHasInstrument)
 	{
-		OnCaptureSucceeded.Broadcast(TargetCharacter);
 		BeginDiving();
 	}
 	else
 	{
-		RequestTargetChange();
+		BeginExiting();
 	}
 }
 

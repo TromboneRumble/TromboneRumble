@@ -46,6 +46,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "TromboneStatics|Game")
 	static bool HasEnoughPlayersToStart(int32 PlayerCount);
 
+	/** Server world time. It falls back to the local world time when the game state has not arrived yet. */
+	UFUNCTION(BlueprintPure, Category = "TromboneStatics|Game", meta = (WorldContext = "WorldContextObject"))
+	static float GetServerWorldTime(const UObject* WorldContextObject);
+
 public:
 
 	/**

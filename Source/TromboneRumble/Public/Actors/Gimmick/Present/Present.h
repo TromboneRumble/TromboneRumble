@@ -1,33 +1,48 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actors/Gimmick/Bonus/BonusDrop.h"
 #include "Present.generated.h"
 
-class UAkAudioEvent;
-class USphereComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class URotatingMovementComponent;
 
+/**
+ * Present is the gift of the snow field that hangs from a balloon.
+ * It swings down like a pendulum, and once it lands it pops in, floats on a wave and spins until a player picks it up.
+ * ABonusSpawner drops it on a timer, and APressurePlate_SpawnPresent drops one when a player steps on the plate.
+ *
+ * @see ABonusSpawner
+ * @see APressurePlate_SpawnPresent
+ */
 UCLASS()
-class TROMBONERUMBLE_API APresent : public AActor
+class TROMBONERUMBLE_API APresent : public ABonusDrop
 {
 	GENERATED_BODY()
 
 public:
+
 	APresent();
 
-	/** 획득 점수. 스포너가 스폰 직후 UPresentGimmickConfig 의 값을 넣는다. */
-	int32 BonusScore = 300;
+	//~ Begin AActor Interface
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//~ End AActor Interface
 
 protected:
+
+	//~ Begin AActor Interface
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//~ End AActor Interface
+
+	//~ Begin ABonusDrop Interface
+	virtual void TickFalling(float DeltaTime) override;
+	virtual void OnLanded() override;
+	virtual void TickLanded(float DeltaTime) override;
+	//~ End ABonusDrop Interface
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> GiftMesh;
@@ -38,9 +53,6 @@ protected:
 	/** 진자 회전 중심 (풍선과 선물을 연결하는 축) */
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USceneComponent> PendulumPivot;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	TObjectPtr<USphereComponent> OverlapSphere;
 
 	/** 착지 후 선물 주변에서 계속 재생되는 반짝임 (에셋 미지정이면 아무 일도 하지 않음) */
 	UPROPERTY(EditAnywhere, Category = "Components")
@@ -129,35 +141,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Present|VFX", meta = (DisplayName = "반짝임 반복 간격 (초)", ClampMin = "0.0"))
 	float SparkleRepeatInterval = 0.f;
 
-	/** 플레이어 충돌 시 재생되는 단발성 사운드 */
-	UPROPERTY(EditDefaultsOnly, Category = "Present|Audio")
-	TObjectPtr<UAkAudioEvent> PresentHitSoundEvent;
-
 private:
-	UFUNCTION()
-	void HandleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION(Server, Reliable)
-	void Server_OnPlayerTouched();
-
-	/** 서버/클라이언트 공통 착지 연출 진입점. 위치 확정 + 팝인 시작 + VFX 재생 */
-	void EnterLandedState();
-
-	/** 착지 후 매 프레임 팝인 스케일과 스핀 회전을 갱신 */
-	void TickLandedVisual(float DeltaTime);
-
 	void PlayLandingVFX();
 
 	UFUNCTION()
 	void RestartSparkleVFX();
-
-	UPROPERTY(ReplicatedUsing = OnRep_HasLanded)
-	bool bHasLanded = false;
-
-	/** 서버가 확정한, 접지 위치에서 HoverHeight만큼 띄운 최종 위치 */
-	UPROPERTY(Replicated)
-	FVector HoverLocation;
 
 	UPROPERTY(Replicated)
 	FVector AnchorSpawnLocation;
@@ -168,12 +156,8 @@ private:
 	UPROPERTY(Replicated)
 	float ReplicatedSwayPhaseOffset;
 
-	UFUNCTION()
-	void OnRep_HasLanded();
-
 	FTimerHandle SparkleRepeatTimerHandle;
 
-	bool bBonusAwarded = false;
 	float SwayTime = 0.f;
 
 	/** 착지 후 경과 시간. 팝인 진행도와 출렁임 위상에 함께 쓰인다 (복제하지 않는 순수 로컬 연출값) */

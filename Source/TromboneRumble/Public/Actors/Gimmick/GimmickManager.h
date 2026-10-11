@@ -6,12 +6,12 @@
 #include "AkGameplayTypes.h"
 #include "Framework/InGameState.h"
 #include "GameFramework/Actor.h"
+#include "Utilities/Defines.h"
 #include "GimmickManager.generated.h"
 
 class AGimmickBase;
 class UGimmickConfig;
 class UStageGimmickData;
-enum class EGimmickType : uint8;
 
 UCLASS()
 class TROMBONERUMBLE_API AGimmickManager : public AActor
@@ -26,7 +26,7 @@ public:
 	/** Turn off the gimmick of this type, if the level has one. */
 	void DeactivateGimmick(EGimmickType GimmickType);
 	
-	/** Turn on every gimmick in the level. */
+	/** Turn on every gimmick in the level that is still off. */
 	void ActivateAllGimmicks();
 	
 	/** Turn off every gimmick in the level. */
@@ -37,6 +37,28 @@ public:
 
 	/** @return Gimmick settings of this level, or null when none is set. */
 	const UStageGimmickData* GetStageData() const { return StageData; }
+
+	/**
+	 * Start the next gimmick of the sequence after the gap, when Gimmick is the one whose turn it is. Server only.
+	 * A gimmick calls it through AGimmickBase::NotifyEventFinished when one event is over.
+	 */
+	void HandleEventFinished(const AGimmickBase& Gimmick);
+
+	/** @return Whether the song has sent the Event_Spotlight_Fever cue in this round. Server only. */
+	bool IsFeverTime() const { return bIsFeverTime; }
+
+	/**
+	 * Start fever time. The Event_Spotlight_Fever cue calls it, and so does the Trombone.Gimmick.Fever command. Server only.
+	 * A gimmick that is running goes on until it ends.
+	 * Each sequence with a fever order uses it from the next turn.
+	 */
+	void BeginFeverTime();
+
+	/** Called on the server when fever time starts. */
+	FSimpleMulticastDelegate OnFeverTimeStarted;
+
+	/** @return The gimmick manager of this world, or null. */
+	static AGimmickManager* Find(const UWorld* World);
 
 	/**
 	 * Find the config of a gimmick type in the stage data of the manager in this world.
@@ -66,11 +88,26 @@ private:
 	/** @return Configs that have neither a gimmick of their type in the level nor a Blueprint to spawn. */
 	TArray<const UGimmickConfig*> FindUnusedConfigs() const;
 
+	/** @return Configs of gimmicks that start only in a sequence but are in none, so they never start. */
+	TArray<const UGimmickConfig*> FindConfigsWithoutSequence() const;
+
 	/** @return The registered gimmick of this type, or null when the level has none. */
 	AGimmickBase* FindGimmick(EGimmickType GimmickType) const;
 
 	/** @return Type of every gimmick actor in the world, registered or not. */
 	TSet<EGimmickType> FindGimmickTypesInLevel() const;
+
+	/** Start the timer of the first turn of every sequence. Server only. */
+	void StartSequences();
+
+	/** Clear every sequence timer and forget where each sequence was. */
+	void StopSequences();
+
+	/** Start the gimmick whose turn it is in this run, then move the run to the next turn. */
+	void StartNextInSequence(int32 RunIndex);
+
+	/** Wait the gap of this run, then start its next turn. */
+	void ScheduleNextInSequence(int32 RunIndex, float Delay);
 	
 	/** Bind to the game state when it is set after BeginPlay. */
 	void HandleGameStateSet(AGameStateBase* NewGameState);
@@ -79,7 +116,10 @@ private:
 	UFUNCTION()
 	void HandleInGameStateChanged(EInGameState InGameState);
 	
-	/** Restart every gimmick when the song sends the Event_Spotlight_Start cue. */
+	/**
+	 * Turn on every gimmick on the Event_Spotlight_Start cue, and start fever time on the Event_Spotlight_Fever cue.
+	 * The song sends each cue once.
+	 */
 	UFUNCTION()
 	void HandleMusicCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	
@@ -93,6 +133,27 @@ private:
 	/** Gimmicks of the level by type, filled by RegisterLevelGimmicks. */
 	UPROPERTY(VisibleAnywhere, Category = "Config")
 	TMap<EGimmickType, TObjectPtr<AGimmickBase>> ManagedGimmicks;
+
+	/** Where one sequence of the stage data is right now. Server only. */
+	struct FSequenceRun
+	{
+		/** Index in UStageGimmickData::GetSequences. */
+		int32 SequenceIndex = INDEX_NONE;
+
+		/** Index in Order of the gimmick that starts next. */
+		int32 NextIndex = 0;
+
+		/** Gimmick whose turn it is. None while the run waits for the gap. */
+		EGimmickType Running = EGimmickType::None;
+
+		FTimerHandle TimerHandle;
+	};
+
+	/** One run per sequence of the stage data, filled by StartSequences. */
+	TArray<FSequenceRun> SequenceRuns;
+
+	/** Has fever time started in this round. */
+	bool bIsFeverTime = false;
 
 protected:
 	

@@ -126,9 +126,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (DisplayName = "지속 시간"))
 	float ActiveDuration = 15.f;
 
+	/** 전조 때 천막 문을 열고 닫을지. 끄면 문은 건드리지 않고, 모든 천막이 항상 안전지대이며 안내선도 전부 켜진다. */
+	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (DisplayName = "천막 문 사용"))
+	bool bUseShelterDoors = false;
+
 	/** 전조 때 문이 열릴 천막 수. 문이 지정된 쉘터가 이보다 적으면 전부 열린다. */
-	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (ClampMin = "0", DisplayName = "문 열릴 천막 수"))
+	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (ClampMin = "0", DisplayName = "문 열릴 천막 수", EditCondition = "bUseShelterDoors"))
 	int32 OpenShelterCount = 2;
+
+	/** 눈보라 종료 시 천막 안 플레이어를 PlayerStart 로 내보낼지. 문이 닫혀 갇히는 걸 막는 용도라 문을 안 쓰면 보통 끈다. */
+	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (DisplayName = "종료 시 천막 안 플레이어 내보내기"))
+	bool bEjectFromSheltersOnEnd = false;
 
 	/** 노출 판정 주기 (초) */
 	UPROPERTY(EditAnywhere, Category = "Blizzard|Config", meta = (DisplayName = "노출 판정 주기"))
@@ -386,17 +394,17 @@ private:
 
 	//~ Server-only effect helpers
 	void GatherShelters();
-	/** 전조 진입 시 문 달린 쉘터 중 OpenShelterCount 개를 랜덤으로 열고 나머지는 닫는다. */
+	/** 전조 진입 시 문 달린 쉘터 중 OpenShelterCount 개를 랜덤으로 열고 나머지는 닫는다. 문 사용이 꺼져 있으면 아무것도 안 한다. */
 	void OpenRandomShelterDoors();
 	/** 모든 쉘터의 문을 닫는다 (눈보라 종료 / 기믹 비활성화). */
 	void CloseAllShelterDoors();
-	/** 안내선을 켜고 끈다. 켤 때는 문이 열린 쉘터만 켠다. */
+	/** 안내선을 켜고 끈다. 문 사용 중엔 문이 열린 쉘터만, 아니면 모든 쉘터를 켠다. */
 	void SetShelterGuides(bool bOn);
 	bool IsCharacterInShelter(const ACharacter* Character) const;
 
 	/** BeginPlay 1회. 팅겨낼 목적지 후보를 모은다. */
 	void GatherPlayerStarts();
-	/** 눈보라 종료 시 쉘터 안에 있던 플레이어를 전부 밖(PlayerStart)으로 내보낸다. */
+	/** 눈보라 종료 시 쉘터 안에 있던 플레이어를 전부 밖(PlayerStart)으로 내보낸다. 내보내기가 꺼져 있으면 아무것도 안 한다. */
 	void EjectCharactersFromShelters();
 	void TeleportToRandomPlayerStart(ADefaultTromboneCharacter* Character);
 	void ApplySlow(ADefaultTromboneCharacter* Character);

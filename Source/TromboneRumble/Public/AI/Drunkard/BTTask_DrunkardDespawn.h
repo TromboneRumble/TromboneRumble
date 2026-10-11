@@ -8,8 +8,9 @@
 
 /** UBTTask_DrunkardDespawn
  *
- * 퇴장 완료 지점(문 도착 후)에서 NPC를 제거한다. Server Only.
- * 스포너가 OnDestroyed를 구독하고 있어 반복 스폰 주기가 여기서부터 시작된다.
+ * 퇴장 중 정지 지점에 도착하면 문 밖 이동을 시작한다. Server Only.
+ * NPC가 생성 지점까지 콜리전 없이 이동한 뒤 소멸하고, BT는 그동안 멈춘다.
+ * 에셋이 이 클래스를 참조하고 있어 이름은 그대로 둔다.
  */
 UCLASS()
 class TROMBONERUMBLE_API UBTTask_DrunkardDespawn : public UBTTaskNode

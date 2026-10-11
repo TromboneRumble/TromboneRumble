@@ -11,6 +11,7 @@
 #include "Framework/TromboneGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameModeBase.h"
+#include "Items/InstrumentBase.h"
 #include "Items/WeaponBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameDataSubsystem.h"
@@ -72,8 +73,19 @@ void ULobbyDirectorComponent::HandlePlayerReady(APlayerController* ReadyPlayer)
 	}
 
 	WaitingPlayers.AddUnique(ReadyPlayer);
-	
-	PrepareWaitingPlayer(ReadyPlayer, 0);
+}
+
+void ULobbyDirectorComponent::HideUntilFall(APawn* Pawn) const
+{
+	ATromboneCharacterBase* Character = Cast<ATromboneCharacterBase>(Pawn);
+	if (!Character)
+	{
+		return;
+	}
+
+	Character->GetCharacterMovement()->DisableMovement();
+	Character->SetActorHiddenInGame(true);
+	Character->Server_SetInputEnabled(false);
 }
 
 void ULobbyDirectorComponent::HandleAllPlayersReady()
@@ -103,13 +115,7 @@ void ULobbyDirectorComponent::NotifyItemEquipped(APawn* EquippedPlayer, AItemBas
 		return;
 	}
 
-	if (const AWeaponBase* Weapon = Cast<AWeaponBase>(EquippedItem))
-	{
-		if (Weapon->GetWeaponType() == EWeaponType::Headbutt)
-		{
-			return;
-		}
-	}
+	if (!EquippedItem->IsA<AInstrumentBase>()) return;
 
 	if (++EquippedInstrumentCount >= SpawnedInstrumentCount)
 	{
@@ -168,37 +174,6 @@ void ULobbyDirectorComponent::SetLobbyState(const ELobbyState& InNewState)
 		default:
 			break;
 	}
-}
-
-void ULobbyDirectorComponent::PrepareWaitingPlayer(APlayerController* PC, const int32 RetryCount)
-{
-	if (!IsValid(PC))
-	{
-		return;
-	}
-
-	ATromboneCharacterBase* Character = Cast<ATromboneCharacterBase>(PC->GetPawn());
-	if (!Character)
-	{
-		// Seamless Travel/RestartPlayer 타이밍에 따라 폰이 아직 없을 수 있으므로 유한 재시도
-		if (RetryCount < MaxPawnRetryCount)
-		{
-			GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this,
-				[this, WeakPC = TWeakObjectPtr(PC), RetryCount]()
-				{
-					if (WeakPC.IsValid()) { PrepareWaitingPlayer(WeakPC.Get(), RetryCount + 1); }
-				}));
-		}
-		else
-		{
-			LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("Failed to prepare %s for falling: no pawn after %d retries"), *PC->GetName(), MaxPawnRetryCount));
-		}
-		return;
-	}
-
-	Character->GetCharacterMovement()->DisableMovement();
-	Character->SetActorHiddenInGame(true);
-	Character->Server_SetInputEnabled(false);
 }
 
 void ULobbyDirectorComponent::OnPreFallTimerFinished()

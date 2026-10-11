@@ -1,7 +1,9 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Characters/TromboneCharacterBase.h"
+#include "Actors/Gimmick/Ufo/Ufo.h"
 #include "AkComponent.h"
+#include "Data/Gimmick/UfoGimmickConfig.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ActorComponents/FloatableComponent.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
@@ -153,6 +155,15 @@ void ATromboneCharacterBase::ApplyCharacterDataToMovement() const
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
+	// A light prop spins under the feet, and its edge speed would fling the character on jump or fall
+	GetCharacterMovement()->bImpartBaseVelocityX = false;
+	GetCharacterMovement()->bImpartBaseVelocityY = false;
+	GetCharacterMovement()->bImpartBaseVelocityZ = false;
+	GetCharacterMovement()->bImpartBaseAngularVelocity = false;
+
+	// The full push sinks a light prop into the floor, and it pops back up with the character on it
+	GetCharacterMovement()->StandingDownwardForceScale = 0.1f;
+
 	if (CharacterData)
 	{
 		// Ground
@@ -178,6 +189,12 @@ void ATromboneCharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 	}
 
+	// Let the UFO forget this character, for example when a player leaves while caught
+	if (AUfo* Ufo = LiftingUfo.Get())
+	{
+		Ufo->NotifyBeamLiftEnded(this);
+	}
+
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -188,6 +205,101 @@ void ATromboneCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME(ThisClass, bInputEnabled);
 	DOREPLIFETIME(ThisClass, bIsStun);
 	DOREPLIFETIME(ThisClass, bIsInvincible);
+	DOREPLIFETIME(ThisClass, bBeamLifted);
+}
+
+void ATromboneCharacterBase::Tick(const float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bBeamLifted)
+	{
+		UpdateBeamLift();
+	}
+}
+
+void ATromboneCharacterBase::StartBeamLift(AUfo* Ufo)
+{
+	if (!HasAuthority() || !Ufo || bBeamLifted || !RagdollComponent) return;
+
+	bBeamLifted = true;
+	LiftingUfo = Ufo;
+
+	// The ragdoll component owns the movement mode and movement replication from here. Auto get up waits until the drop
+	RagdollComponent->StartRagdoll();
+	RagdollComponent->SetAutoGetUpEnabled(false);
+	ApplyBeamLift();
+}
+
+void ATromboneCharacterBase::EndBeamLift()
+{
+	if (!HasAuthority() || !bBeamLifted) return;
+
+	if (AUfo* Ufo = LiftingUfo.Get())
+	{
+		Ufo->NotifyBeamLiftEnded(this);
+	}
+	LiftingUfo = nullptr;
+
+	bBeamLifted = false;
+	UnapplyBeamLift();
+
+	// The body is still a ragdoll and falls on its own. Get up is allowed again once it lands
+	if (RagdollComponent)
+	{
+		RagdollComponent->SetAutoGetUpEnabled(true);
+	}
+}
+
+void ATromboneCharacterBase::OnRep_BeamLifted()
+{
+	if (bBeamLifted)
+	{
+		ApplyBeamLift();
+	}
+	else
+	{
+		UnapplyBeamLift();
+	}
+}
+
+void ATromboneCharacterBase::ApplyBeamLift()
+{
+	AddBlock(ECharacterBlockReason::BeamLift);
+
+	// No gravity, so the body hangs instead of sagging while the beam holds the pelvis
+	// Clients do the same, or the pelvis sync would fight gravity
+	GetMesh()->SetEnableGravity(false);
+
+	OnBeamLiftChanged(true);
+}
+
+void ATromboneCharacterBase::UnapplyBeamLift()
+{
+	RemoveBlock(ECharacterBlockReason::BeamLift);
+	GetMesh()->SetEnableGravity(true);
+
+	OnBeamLiftChanged(false);
+}
+
+void ATromboneCharacterBase::UpdateBeamLift()
+{
+	// Only the server drives the body. The ragdoll pelvis sync carries it to the clients
+	const AUfo* Ufo = LiftingUfo.Get();
+	if (!HasAuthority() || !IsRagdoll() || !Ufo) return;
+
+	const UUfoGimmickConfig& Config = Ufo->GetConfig();
+	USkeletalMeshComponent* MeshComp = GetMesh();
+
+	// One spring from the catch to the drop. Far away it rises at MaxLiftSpeed, close by it slows down and settles under the UFO
+	const FVector HangLocation = Ufo->GetActorLocation() - FVector(0.f, 0.f, Config.GetHangDistance());
+	const FVector ToHang = HangLocation - GetPelvisLocation();
+	const FVector Velocity = (ToHang * Config.LiftStrength).GetClampedToMaxSize(Config.MaxLiftSpeed);
+	MeshComp->SetPhysicsLinearVelocity(Velocity, false, TromboneBones::Pelvis);
+
+	// A slow turn around the up axis reads as being pulled by the beam
+	const FVector Spin(0.f, 0.f, FMath::DegreesToRadians(Config.LiftedSpinSpeed));
+	MeshComp->SetPhysicsAngularVelocityInRadians(Spin, false, TromboneBones::Pelvis);
 }
 
 bool ATromboneCharacterBase::OnHitReceived_Implementation(const FHitData& HitData)
@@ -350,6 +462,12 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 		FloatableComponent->SetFloatingAllowed(true);
 	}
 
+	// The ragdoll start turns gravity on, and on a client it can arrive after the beam lift state
+	if (bBeamLifted)
+	{
+		GetMesh()->SetEnableGravity(false);
+	}
+
 	if (HasAuthority() && bIsStun)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(OnHitTimerHandle);
@@ -369,7 +487,15 @@ void ATromboneCharacterBase::HandleRagdollStarted()
 		}
 	}
 	
-	if (!bIsLobby && AkSoundComponent && RagdollBooSound)
+	if (HasAuthority() && IsPlayerControlled() && !bIsLobby && IsHoldingInstrument())
+	{
+		Client_PlayRagdollBoo();
+	}
+}
+
+void ATromboneCharacterBase::Client_PlayRagdollBoo_Implementation()
+{
+	if (AkSoundComponent && RagdollBooSound)
 	{
 		AkSoundComponent->PostAkEvent(RagdollBooSound, 0, FOnAkPostEventCallback());
 	}
@@ -380,6 +506,19 @@ void ATromboneCharacterBase::Multicast_PlayFallScream_Implementation()
 	if (AkSoundComponent && FallScreamSound)
 	{
 		AkSoundComponent->PostAkEvent(FallScreamSound, 0, FOnAkPostEventCallback());
+	}
+}
+
+void ATromboneCharacterBase::HandleDrowningStarted()
+{
+	Multicast_PlayDrowningSound();
+}
+
+void ATromboneCharacterBase::Multicast_PlayDrowningSound_Implementation()
+{
+	if (AkSoundComponent && DrowningSound)
+	{
+		AkSoundComponent->PostAkEvent(DrowningSound, 0, FOnAkPostEventCallback());
 	}
 }
 

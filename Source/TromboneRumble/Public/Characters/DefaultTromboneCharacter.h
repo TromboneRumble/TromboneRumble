@@ -288,6 +288,10 @@ public:
 	FORCEINLINE TObjectPtr<AWeaponBase> GetCurrentWeapon() const { return AttackComponent ? AttackComponent->GetCurrentWeapon() : nullptr; }
 	FORCEINLINE UWidgetComponent* GetComboWidgetComponent() { return ComboWidgetComponent; }
 	FORCEINLINE UEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
+
+	//~ Begin ATromboneCharacterBase Interface
+	virtual bool IsHoldingInstrument() const override;
+	//~ End ATromboneCharacterBase Interface
 	FORCEINLINE bool IsSprinting() const { return bIsSprinting; }
 	EInstrumentType GetCurrentEquippedInstrumentType() const;
 

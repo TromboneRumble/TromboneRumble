@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Components/ActorComponents/FloatingRotatingComponent.h"
 
@@ -8,43 +7,35 @@ UFloatingRotatingComponent::UFloatingRotatingComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 void UFloatingRotatingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 	ResetBaseLocation();
 }
 
-
-void UFloatingRotatingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UFloatingRotatingComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	AActor* Owner = GetOwner();
 	if (!Owner || !bIsBaseLocationSet) return;
 
-	// Floating (위아래 이동)
-	float Time = GetWorld()->GetTimeSeconds();
-	float ZOffset = FMath::Sin(Time * FloatSpeed) * FloatHeight;
-
-	// 현재 기준 위치에서 Z축만 변경
+	// The world time drives the bob, so a pause or a hitch never throws the wave off
 	FVector NewLocation = BaseRelativeLocation;
-	NewLocation.Z += ZOffset;
-
+	NewLocation.Z += FMath::Sin(GetWorld()->GetTimeSeconds() * FloatSpeed) * FloatHeight;
 	Owner->SetActorRelativeLocation(NewLocation);
 
-	// Rotation (회전)
-	FRotator DeltaRotation = FRotator(0.0f, RotationSpeed * DeltaTime, 0.0f);
-	Owner->AddActorLocalRotation(DeltaRotation);
-	
+	Owner->AddActorLocalRotation(FRotator(0.0f, RotationSpeed * DeltaTime, 0.0f));
 }
 
 void UFloatingRotatingComponent::ResetBaseLocation()
 {
-	if (AActor* Owner = GetOwner())
-	{
-		BaseRelativeLocation = Owner->GetRootComponent()->GetRelativeLocation();
-		bIsBaseLocationSet = true;
-	}
+	const AActor* Owner = GetOwner();
+	const USceneComponent* Root = Owner ? Owner->GetRootComponent() : nullptr;
+	if (!Root) return;
+
+	ResetBaseLocation(Root->GetRelativeLocation());
 }
 
 void UFloatingRotatingComponent::ResetBaseLocation(const FVector& InLocation)
@@ -52,4 +43,3 @@ void UFloatingRotatingComponent::ResetBaseLocation(const FVector& InLocation)
 	BaseRelativeLocation = InLocation;
 	bIsBaseLocationSet = true;
 }
-

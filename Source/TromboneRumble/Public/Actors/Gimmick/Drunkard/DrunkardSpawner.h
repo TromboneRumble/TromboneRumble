@@ -54,7 +54,7 @@ public:
 	/** Called when the drunkard is being destroyed. Do not hold on to the NPC. Server only. */
 	FOnSpawnerDrunkardDespawned OnDrunkardDespawned;
 
-	/** Called when the drunkard has captured a target holding an instrument. Server only. */
+	/** Called when the drunkard has captured a target, by ragdoll or by stun. Server only. */
 	FOnSpawnerDrunkardCaptureSucceeded OnDrunkardCaptureSucceeded;
 
 protected:
@@ -76,8 +76,6 @@ private:
 	void HandleNPCCaptureSucceeded(ADefaultTromboneCharacter* Target);
 
 	TWeakObjectPtr<ADrunkardNPC> ActiveNPC;
-
-	FTimerHandle SpawnTimerHandle;
 
 public:
 	

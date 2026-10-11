@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
 #include "ItemBase.generated.h"
@@ -38,6 +39,10 @@ protected:
 	
 	UFUNCTION()
 	virtual void OnRep_CurrentOwner(AActor* OldActor);
+
+	/** Puts the pushable caps on the new bodies each time the mesh creates its physics state, as when it is dropped. */
+	UFUNCTION()
+	void HandleMeshPhysicsStateChanged(UPrimitiveComponent* ChangedComponent, EComponentPhysicsStateChange StateChange);
 	
 protected:
 	
@@ -71,6 +76,12 @@ public:
 	
 	// ~ Begin AActor Interfaces
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	// ~ End AActor Interfaces
+
+protected:
+
+	// ~ Begin AActor Interfaces
+	virtual void BeginPlay() override;
 	// ~ End AActor Interfaces
 	
 };

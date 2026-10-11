@@ -2,8 +2,11 @@
 
 #include "Components/ActorComponents/XRayTranslucentFadeComponent.h"
 #include "Actors/XRayFadeMaterialProvider.h"
+#include "Characters/DefaultTromboneCharacter.h"
 #include "Components/MeshComponent.h"
 #include "Data/XRayFadeMaterialMap.h"
+#include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
 #include "LocalVertexFactory.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "PSOPrecache.h"
@@ -33,6 +36,55 @@ bool UXRayTranslucentFadeComponent::InitializeEffect()
 	}
 
 	return true;
+}
+
+void UXRayTranslucentFadeComponent::GatherTraceTargets(TArray<AActor*>& OutTargets) const
+{
+	Super::GatherTraceTargets(OutTargets);
+
+	if (!bFadeForOtherPlayers)
+	{
+		return;
+	}
+
+	const APlayerController* PC = GetOwningPlayerController();
+	if (!PC)
+	{
+		return;
+	}
+
+	int32 ViewX = 0, ViewY = 0;
+	PC->GetViewportSize(ViewX, ViewY);
+	if (ViewX <= 0 || ViewY <= 0)
+	{
+		return;
+	}
+
+	const float MarginX = ViewX * OtherPlayerScreenMargin;
+	const float MarginY = ViewY * OtherPlayerScreenMargin;
+
+	for (TActorIterator<ADefaultTromboneCharacter> It(GetWorld()); It; ++It)
+	{
+		ADefaultTromboneCharacter* Other = *It;
+		if (Other == GetOwner() || !IsValid(Other) || Other->IsHidden())
+		{
+			continue;
+		}
+
+		// 카메라 뒤면 투영이 실패한다. 화면 밖 플레이어 때문에 눈앞의 벽이 이유 없이 투명해지면 안 된다
+		FVector2D ScreenPos;
+		if (!PC->ProjectWorldLocationToScreen(GetTraceTargetLocation(Other), ScreenPos, /*bPlayerViewportRelative=*/true))
+		{
+			continue;
+		}
+		if (ScreenPos.X < -MarginX || ScreenPos.X > ViewX + MarginX ||
+			ScreenPos.Y < -MarginY || ScreenPos.Y > ViewY + MarginY)
+		{
+			continue;
+		}
+
+		OutTargets.Add(Other);
+	}
 }
 
 void UXRayTranslucentFadeComponent::OnTraceUpdated(const TArray<AActor*>& InOccluders)
