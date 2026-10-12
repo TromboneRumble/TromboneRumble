@@ -6,6 +6,7 @@
 #include "Actors/Gimmick/Bonus/BonusDrop.h"
 #include "DockingPort.generated.h"
 
+class UAkAudioEvent;
 class UNiagaraComponent;
 
 /**
@@ -61,6 +62,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "DockingPort|VFX", meta = (DisplayName = "반복 VFX 오프셋", ClampMin = "0.0", Units = "s"))
 	float GlowVFXOffset = 2.f;
 
+	/** 착지할 때 포드 위치에서 1회 재생되는 사운드. 모든 플레이어가 듣는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "DockingPort|Audio", meta = (DisplayName = "착지 사운드"))
+	TObjectPtr<UAkAudioEvent> LandingSound;
+
+	/** 착지 시점 기준 착지 사운드가 시작되는 간격. 착지보다 이만큼 먼저 재생된다 (초) */
+	UPROPERTY(EditDefaultsOnly, Category = "DockingPort|Audio", meta = (DisplayName = "착지 사운드 오프셋", ClampMin = "0.0", Units = "s"))
+	float LandingSoundOffset = 0.f;
+
+	/** 획득하거나 유지 시간이 끝나 위로 발사될 때 포드에 붙어 재생되는 사운드. 모든 플레이어가 듣는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "DockingPort|Audio", meta = (DisplayName = "발사 사운드"))
+	TObjectPtr<UAkAudioEvent> LaunchSound;
+
 	/** 바닥에서 메시 피벗까지의 높이. 피벗이 바닥면에 있으면 0 (cm) */
 	UPROPERTY(EditDefaultsOnly, Category = "DockingPort", meta = (DisplayName = "착지 높이 보정", Units = "cm"))
 	float LandOffsetZ = 0.f;
@@ -100,6 +113,9 @@ private:
 	/** Turn the landing effect on once. */
 	void PlayLandingVFX();
 
+	/** Play the landing sound once, attached to the pod. */
+	void PlayLandingSound();
+
 	/** Turn the glow on. Runs GlowVFXOffset seconds after the landing. */
 	void StartGlowVFX();
 
@@ -123,6 +139,9 @@ private:
 
 	/** Has the landing effect played on this machine. It plays before the landing, so the landing must not play it again. */
 	bool bLandingVFXPlayed = false;
+
+	/** Has the landing sound played on this machine. It can play before the landing, so the landing must not play it again. */
+	bool bLandingSoundPlayed = false;
 
 	/** Timer that turns the glow on after the landing. */
 	FTimerHandle GlowTimerHandle;

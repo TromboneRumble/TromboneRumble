@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/Bonus/DockingPort.h"
+#include "AkGameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Data/Gimmick/DockingPortGimmickConfig.h"
@@ -106,10 +107,16 @@ void ADockingPort::TickFalling(const float DeltaTime)
 	const bool bReachedFloor = EvaluateFall(Elapsed, Location);
 	SetActorLocation(Location);
 
-	// The landing effect starts a little before the floor, so the dust is already there when the pod touches it
-	if (!bLandingVFXPlayed && Elapsed >= GetFallProfile().TotalTime() - LandingVFXOffset)
+	// The landing effect and sound can start a little before the floor, so they are already there when the pod touches it.
+	// Every machine computes the same fall from the server time, so they start together without a message
+	const float FallTime = GetFallProfile().TotalTime();
+	if (!bLandingVFXPlayed && Elapsed >= FallTime - LandingVFXOffset)
 	{
 		PlayLandingVFX();
+	}
+	if (!bLandingSoundPlayed && Elapsed >= FallTime - LandingSoundOffset)
+	{
+		PlayLandingSound();
 	}
 
 	// Clients wait at the floor until the server says the pod has landed
@@ -123,7 +130,9 @@ void ADockingPort::OnLanded()
 {
 	SetActorLocation(LandedLocation);
 
+	// A client that joined during the fall never reached the start times above
 	PlayLandingVFX();
+	PlayLandingSound();
 
 	if (GlowVFXOffset <= 0.f)
 	{
@@ -146,6 +155,12 @@ void ADockingPort::OnExitStarted()
 	if (LandingVFXComponent->GetAsset())
 	{
 		LandingVFXComponent->Activate(true);
+	}
+
+	// The sound is longer than the launch. Wwise lets it finish after the pod is removed, so the tail fades out above
+	if (LaunchSound)
+	{
+		UAkGameplayStatics::PostEvent(LaunchSound, this, 0, FOnAkPostEventCallback());
 	}
 }
 
@@ -183,6 +198,17 @@ void ADockingPort::PlayLandingVFX()
 	if (LandingVFXComponent->GetAsset())
 	{
 		LandingVFXComponent->Activate();
+	}
+}
+
+void ADockingPort::PlayLandingSound()
+{
+	if (bLandingSoundPlayed) return;
+	bLandingSoundPlayed = true;
+
+	if (LandingSound)
+	{
+		UAkGameplayStatics::PostEvent(LandingSound, this, 0, FOnAkPostEventCallback());
 	}
 }
 
