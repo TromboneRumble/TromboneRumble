@@ -512,10 +512,14 @@ void ATromboneCharacterBase::Multicast_PlayFallScream_Implementation()
 
 void ATromboneCharacterBase::HandleDrowningStarted()
 {
-	Multicast_PlayDrowningSound();
+	// Only a player has someone to hear it. A client RPC on a pawn the server owns would play on the host
+	if (IsPlayerControlled())
+	{
+		Client_PlayDrowningSound();
+	}
 }
 
-void ATromboneCharacterBase::Multicast_PlayDrowningSound_Implementation()
+void ATromboneCharacterBase::Client_PlayDrowningSound_Implementation()
 {
 	if (AkSoundComponent && DrowningSound)
 	{

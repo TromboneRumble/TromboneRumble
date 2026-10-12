@@ -104,9 +104,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayFallScream();
 
-	/** Plays the drowning sound on every machine. Server only. */
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_PlayDrowningSound();
+	/** Plays the drowning sound on the machine of the player who fell in. Nobody else hears it. Server only. */
+	UFUNCTION(Client, Reliable)
+	void Client_PlayDrowningSound();
 
 	/** Watches for the first hard landing and plays the landing sound. Only the lobby turns this on. Server only. */
 	void SetLandingSoundEnabled(bool bEnable);
