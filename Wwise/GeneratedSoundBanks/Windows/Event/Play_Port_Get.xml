@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3448173426" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{3B57617D-5F39-4EEF-A362-AFE9AFF9DEAF}">
+		<SoundBank Id="3448173426" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{03006236-44B1-00A4-8796-EF6E0665DE54}">
 			<ObjectPath>Play_Port_Get</ObjectPath>
 			<ShortName>Play_Port_Get</ShortName>
 			<Path>Event/Play_Port_Get.bnk</Path>
@@ -28,7 +28,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="3448173426" Name="Play_Port_Get" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Port_Get" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="0.7817917" DurationMax="0.9663333">
+				<Event Id="3448173426" Name="Play_Port_Get" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Port_Get" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="0.7817917" DurationMax="0.9663333">
 					<MediaRefs>
 						<MediaRef Id="151029182"/>
 						<MediaRef Id="308272466"/>
@@ -43,5 +43,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{C0DD4CC5-3977-0C15-F91C-3E54A512B19D}</FileHash>
+	<FileHash>{AF4E73BA-77B6-B5F4-5C3C-A5E3F4D5112D}</FileHash>
 </SoundBanksInfo>
