@@ -9,6 +9,7 @@
 
 class ACharacter;
 class IConsoleVariable;
+class UAkAudioEvent;
 class UGameplayEffect;
 class ULightComponent;
 class UMaterialParameterCollection;
@@ -71,6 +72,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
 	FName WarningLightTag = TEXT("GravityWarning");
 
+	/** 예고가 시작될 때 모든 플레이어 화면에서 재생되는 경보 사운드 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "예고 사운드"))
+	TObjectPtr<UAkAudioEvent> WarningSound;
+
+	/** 중력이 바뀌는 순간 모든 플레이어 화면에서 재생되는 사운드 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "발동 사운드"))
+	TObjectPtr<UAkAudioEvent> ActiveSound;
+
+	/** Wwise game parameter that muffles the whole mix while the gravity is changed. 0 is clear and 100 is fully muffled. */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio")
+	FName MuffleParameterName = TEXT("RTPC_Space");
+
 private:
 
 	/** A level light found by WarningLightTag, with the intensity it was placed with. */
@@ -102,6 +115,17 @@ private:
 
 	/** Turn the warning lights on when the warning starts, and start their fade out when it ends. */
 	void RefreshWarningLights();
+
+	/** Play the sound of the state that just started, and muffle the mix while the gravity is changed. */
+	void UpdateAudio();
+
+	/**
+	 * Move the muffle parameter in a straight line to a value.
+	 *
+	 * @param Value 0 for clear, 100 for fully muffled.
+	 * @param Duration Seconds the move takes. 0 sets it at once.
+	 */
+	void SetMuffle(float Value, float Duration) const;
 
 	/** Move the intensity of the warning lights along the sine wave. Runs every frame during the warning. */
 	void UpdateWarningLightFlicker();

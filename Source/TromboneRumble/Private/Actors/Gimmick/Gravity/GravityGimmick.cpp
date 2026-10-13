@@ -3,6 +3,7 @@
 #include "Actors/Gimmick/Gravity/GravityGimmick.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
+#include "AkGameplayStatics.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/LightComponent.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
@@ -49,6 +50,9 @@ void AGravityGimmick::BeginPlay()
 
 void AGravityGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	// The parameter is global and outlives the level, so the next map would start muffled
+	SetMuffle(0.f, 0.f);
+
 #if !UE_BUILD_SHIPPING
 	CVarGravityDebug.AsVariable()->OnChangedDelegate().RemoveAll(this);
 #endif
@@ -204,8 +208,45 @@ void AGravityGimmick::HandleStateChanged()
 	}
 
 	RefreshWarningLights();
+	UpdateAudio();
 
 	OnGravityStateChanged(State, GravityMultiplier);
+}
+
+void AGravityGimmick::UpdateAudio()
+{
+	// Both sounds fill the whole station, so they play without a position and every player hears them the same
+	const UGravityGimmickConfig& Config = GetConfig<UGravityGimmickConfig>();
+	switch (State)
+	{
+	case EGravityState::Warning:
+		if (WarningSound)
+		{
+			UAkGameplayStatics::PostEvent(WarningSound, nullptr, 0, FOnAkPostEventCallback());
+		}
+		break;
+
+	case EGravityState::Active:
+		if (ActiveSound)
+		{
+			UAkGameplayStatics::PostEvent(ActiveSound, nullptr, 0, FOnAkPostEventCallback());
+		}
+		SetMuffle(100.f, Config.MuffleInDuration);
+		break;
+
+	case EGravityState::Idle:
+		SetMuffle(0.f, Config.MuffleOutDuration);
+		break;
+	}
+}
+
+void AGravityGimmick::SetMuffle(const float Value, const float Duration) const
+{
+	if (MuffleParameterName.IsNone()) return;
+
+	// Wwise moves the value in a straight line over the given time, so nothing needs to run every frame
+	const int32 DurationMs = FMath::RoundToInt(FMath::Max(Duration, 0.f) * 1000.f);
+	UAkGameplayStatics::SetRTPCValue(nullptr, Value, DurationMs, nullptr, MuffleParameterName);
 }
 
 void AGravityGimmick::CollectWarningLights()
