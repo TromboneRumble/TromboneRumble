@@ -208,6 +208,23 @@
 								</ObjectList>
 							</ObjectLists>
 						</AuxBus>
+						<AuxBus Name="Map_D_Reverb" ID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}">
+							<ObjectLists>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{0F860CB9-53D9-41D6-9CAD-B35E4D1929C7}" ShortID="364280887">
+												<ReferenceList>
+													<Reference Name="Effect" PluginName="Wwise Matrix Reverb" CompanyID="0" PluginID="115" PluginType="3">
+														<ObjectRef Name="Medium_Room1" ID="{71B802A7-03E2-4998-B241-B2B84FE9DDFF}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</AuxBus>
 					</ChildrenList>
 					<ObjectLists>
 						<ObjectList Name="RTPC">
