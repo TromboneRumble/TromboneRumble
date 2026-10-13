@@ -11,7 +11,6 @@ class ACharacter;
 class IConsoleVariable;
 class UAkAudioEvent;
 class UGameplayEffect;
-class ULightComponent;
 class UMaterialParameterCollection;
 
 /** Level materials read these numbers from the parameter collection. Do not change the values. */
@@ -40,7 +39,7 @@ public:
 
 protected:
 
-	/** Called on server and clients when the state changes. Put sound and particles here. Warning lights use the collection values instead. */
+	/** Called on server and clients when the state changes. Put extra effects here. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gimmick")
 	void OnGravityStateChanged(EGravityState NewState, float Multiplier);
 
@@ -60,38 +59,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
 	FName MultiplierParameterName = TEXT("GravityMultiplier");
 
-	/** Collection value that follows the warning lights from 0 to 1, for effects such as the red flash of the screen. */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
-	FName WarningPulseParameterName = TEXT("GravityWarningPulse");
-
-	/**
-	 * Actor tag of the level lights that flicker during the warning.
-	 * The intensity a light is placed with is its brightest point, and the light stays off outside the warning.
-	 * Keep in mind that a light must be Movable or Stationary, because a Static light is baked and cannot change.
-	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
-	FName WarningLightTag = TEXT("GravityWarning");
-
-	/** 예고가 시작될 때 모든 플레이어 화면에서 재생되는 경보 사운드 */
+	/** 예고가 시작될 때 모든 플레이어 화면에서 재생되는 사운드. 공기가 빠져나가는 소리처럼 예고 시간에 맞춘 소리를 지정한다 */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "예고 사운드"))
 	TObjectPtr<UAkAudioEvent> WarningSound;
 
-	/** 중력이 바뀌는 순간 모든 플레이어 화면에서 재생되는 사운드 */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "발동 사운드"))
-	TObjectPtr<UAkAudioEvent> ActiveSound;
-
-	/** Wwise game parameter that muffles the whole mix while the gravity is changed. 0 is clear and 100 is fully muffled. */
+	/**
+	 * Wwise game parameter that muffles the whole mix. 0 is clear and 100 is fully muffled.
+	 * It rises over the warning, stays up while the gravity is changed, and falls when it ends.
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio")
 	FName MuffleParameterName = TEXT("RTPC_Space");
 
 private:
-
-	/** A level light found by WarningLightTag, with the intensity it was placed with. */
-	struct FWarningLight
-	{
-		TWeakObjectPtr<ULightComponent> Light;
-		float BaseIntensity = 0.f;
-	};
 
 	/** Start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
 	void StartWarning();
@@ -110,13 +89,7 @@ private:
 	void ApplyEffectToAllPlayers();
 	void RemoveAllEffects();
 
-	/** Find the lights with WarningLightTag in the level. Runs on every machine except a dedicated server. */
-	void CollectWarningLights();
-
-	/** Turn the warning lights on when the warning starts, and start their fade out when it ends. */
-	void RefreshWarningLights();
-
-	/** Play the sound of the state that just started, and muffle the mix while the gravity is changed. */
+	/** Play the sound of the state that just started, and move the muffle of the mix. */
 	void UpdateAudio();
 
 	/**
@@ -127,25 +100,7 @@ private:
 	 */
 	void SetMuffle(float Value, float Duration) const;
 
-	/** Move the intensity of the warning lights along the sine wave. Runs every frame during the warning. */
-	void UpdateWarningLightFlicker();
-
-	/** Dim the warning lights toward 0, and turn them off at the end. Runs every frame after the warning. */
-	void UpdateWarningLightFadeOut();
-
-	/** Set every warning light to this part of the intensity it was placed with, and write the same value as the warning pulse. */
-	void SetWarningLightRatio(float Ratio);
-
-	/** Turn the warning lights off at once, give them back the intensity they were placed with, and set the warning pulse to 0. */
-	void TurnOffWarningLights();
-
-	/** Write the warning pulse to the collection. */
-	void SetWarningPulse(float Pulse);
-
-	/** @return Whether the warning shows anything: a warning light, or the warning pulse of the collection. */
-	bool HasWarningVisuals() const;
-
-	/** Tick runs only while the warning visuals are on or Trombone.Gravity.Debug is on. */
+	/** Tick runs only while Trombone.Gravity.Debug is on. */
 	void UpdateTickEnabled();
 
 	/** Read Trombone.Gravity.Debug again when it changes. */
@@ -161,24 +116,6 @@ private:
 	TMap<TWeakObjectPtr<ACharacter>, FActiveGameplayEffectHandle> ActiveEffects;
 
 	FTimerHandle PhaseTimerHandle;
-
-	/** Lights that flicker during the warning. Empty on a dedicated server. */
-	TArray<FWarningLight> WarningLights;
-
-	/** Local world time the current warning started. The sine wave of the lights starts here. */
-	float WarningStartTime = 0.f;
-
-	/** Local world time the fade out started. Negative while the lights do not fade. */
-	float FadeOutStartTime = -1.f;
-
-	/** Ratio the fade out starts from, so it continues from wherever the flicker was. */
-	float FadeOutStartRatio = 1.f;
-
-	/** Ratio last applied to the warning lights. */
-	float CurrentWarningLightRatio = 1.f;
-
-	/** Are the warning visuals on, flickering or fading out. */
-	bool bWarningLightsOn = false;
 
 	/** Is Trombone.Gravity.Debug on. */
 	bool bDebugDraw = false;

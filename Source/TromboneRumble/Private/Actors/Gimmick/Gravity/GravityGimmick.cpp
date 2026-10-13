@@ -5,10 +5,8 @@
 #include "AbilitySystemInterface.h"
 #include "AkGameplayStatics.h"
 #include "Characters/DefaultTromboneCharacter.h"
-#include "Components/LightComponent.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
 #include "Engine/Engine.h"
-#include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
@@ -16,7 +14,6 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "TromboneGamePlayTags.h"
-#include "Utilities/TromboneLogs.h"
 
 #if !UE_BUILD_SHIPPING
 TAutoConsoleVariable<int32> CVarGravityDebug(
@@ -36,10 +33,6 @@ AGravityGimmick::AGravityGimmick()
 void AGravityGimmick::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// The state can arrive before BeginPlay on a client that joins during a warning, so the lights follow it right away
-	CollectWarningLights();
-	RefreshWarningLights();
 
 #if !UE_BUILD_SHIPPING
 	IConsoleVariable* DebugVariable = CVarGravityDebug.AsVariable();
@@ -68,26 +61,12 @@ void AGravityGimmick::HandleDebugCVarChanged(IConsoleVariable* Variable)
 
 void AGravityGimmick::UpdateTickEnabled()
 {
-	SetActorTickEnabled(bDebugDraw || (bWarningLightsOn && HasWarningVisuals()));
-}
-
-bool AGravityGimmick::HasWarningVisuals() const
-{
-	return !WarningLights.IsEmpty() || (GimmickParameterCollection && !WarningPulseParameterName.IsNone());
+	SetActorTickEnabled(bDebugDraw);
 }
 
 void AGravityGimmick::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	if (State == EGravityState::Warning)
-	{
-		UpdateWarningLightFlicker();
-	}
-	else if (FadeOutStartTime >= 0.f)
-	{
-		UpdateWarningLightFadeOut();
-	}
 
 	if (bDebugDraw)
 	{
@@ -207,7 +186,6 @@ void AGravityGimmick::HandleStateChanged()
 		}
 	}
 
-	RefreshWarningLights();
 	UpdateAudio();
 
 	OnGravityStateChanged(State, GravityMultiplier);
@@ -215,23 +193,22 @@ void AGravityGimmick::HandleStateChanged()
 
 void AGravityGimmick::UpdateAudio()
 {
-	// Both sounds fill the whole station, so they play without a position and every player hears them the same
 	const UGravityGimmickConfig& Config = GetConfig<UGravityGimmickConfig>();
 	switch (State)
 	{
 	case EGravityState::Warning:
+		// The air escapes over the whole warning, so the mix is fully muffled by the time the gravity changes.
+		// The sound fills the whole station, so it plays without a position and every player hears it the same
 		if (WarningSound)
 		{
 			UAkGameplayStatics::PostEvent(WarningSound, nullptr, 0, FOnAkPostEventCallback());
 		}
+		SetMuffle(100.f, Config.WarningDuration);
 		break;
 
 	case EGravityState::Active:
-		if (ActiveSound)
-		{
-			UAkGameplayStatics::PostEvent(ActiveSound, nullptr, 0, FOnAkPostEventCallback());
-		}
-		SetMuffle(100.f, Config.MuffleInDuration);
+		// Already there after a warning. Needed when there was no warning, or for a client that joined after it
+		SetMuffle(100.f, 0.f);
 		break;
 
 	case EGravityState::Idle:
@@ -247,144 +224,6 @@ void AGravityGimmick::SetMuffle(const float Value, const float Duration) const
 	// Wwise moves the value in a straight line over the given time, so nothing needs to run every frame
 	const int32 DurationMs = FMath::RoundToInt(FMath::Max(Duration, 0.f) * 1000.f);
 	UAkGameplayStatics::SetRTPCValue(nullptr, Value, DurationMs, nullptr, MuffleParameterName);
-}
-
-void AGravityGimmick::CollectWarningLights()
-{
-	// Lights only change what players see, so a dedicated server skips them
-	if (GetNetMode() == NM_DedicatedServer || WarningLightTag.IsNone()) return;
-
-	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
-	{
-		if (!It->ActorHasTag(WarningLightTag)) continue;
-
-		TInlineComponentArray<ULightComponent*> Lights(*It);
-		for (ULightComponent* Light : Lights)
-		{
-			if (Light->Mobility == EComponentMobility::Static)
-			{
-				UE_LOG(LogGimmick, Warning, TEXT("[AGravityGimmick] %s is a static light and cannot flicker. Set its Mobility to Movable."), *It->GetName());
-				continue;
-			}
-
-			WarningLights.Add({ Light, Light->Intensity });
-		}
-	}
-
-	if (WarningLights.IsEmpty())
-	{
-		UE_LOG(LogGimmick, Log, TEXT("[AGravityGimmick] No light has the tag %s, so the warning shows no lights."), *WarningLightTag.ToString());
-	}
-}
-
-void AGravityGimmick::RefreshWarningLights()
-{
-	const float Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.f;
-
-	if (State == EGravityState::Warning)
-	{
-		WarningStartTime = Now;
-		FadeOutStartTime = -1.f;
-		bWarningLightsOn = true;
-
-		for (const FWarningLight& Entry : WarningLights)
-		{
-			if (ULightComponent* Light = Entry.Light.Get())
-			{
-				Light->SetVisibility(true);
-			}
-		}
-		SetWarningLightRatio(0.f);
-	}
-	else if (!bWarningLightsOn)
-	{
-		// Nothing to fade, as when the gimmick starts in Idle
-		TurnOffWarningLights();
-	}
-	else if (FadeOutStartTime < 0.f)
-	{
-		// Active and then Idle both come after the warning, so only the first one starts the fade
-		FadeOutStartTime = Now;
-		FadeOutStartRatio = CurrentWarningLightRatio;
-	}
-
-	UpdateTickEnabled();
-}
-
-void AGravityGimmick::UpdateWarningLightFlicker()
-{
-	const UGravityGimmickConfig& Config = GetConfig<UGravityGimmickConfig>();
-	const float Elapsed = GetWorld()->GetTimeSeconds() - WarningStartTime;
-
-	const float Frequency = FMath::Max(Config.WarningLightFrequency, KINDA_SMALL_NUMBER);
-
-	// The wave starts dark, so the lights turn on smoothly
-	const float Wave = 0.5f - 0.5f * FMath::Cos(2.f * PI * Frequency * Elapsed);
-
-	// The first rise goes from 0 and every later swing from the minimum. Both meet at full brightness, so there is no jump
-	const float HalfPeriod = 0.5f / Frequency;
-	const float MinRatio = Elapsed < HalfPeriod ? 0.f : Config.WarningLightMinRatio;
-	SetWarningLightRatio(FMath::Lerp(MinRatio, 1.f, Wave));
-}
-
-void AGravityGimmick::UpdateWarningLightFadeOut()
-{
-	// The fade takes half a flicker, the time the flicker takes to go from bright to dark, so it moves at the same pace
-	const float Duration = 0.5f / FMath::Max(GetConfig<UGravityGimmickConfig>().WarningLightFrequency, KINDA_SMALL_NUMBER);
-	const float Alpha = (GetWorld()->GetTimeSeconds() - FadeOutStartTime) / Duration;
-
-	if (Alpha >= 1.f)
-	{
-		TurnOffWarningLights();
-		UpdateTickEnabled();
-		return;
-	}
-
-	// The same sine shape as the flicker, so the last dimming looks like one more swing of it
-	SetWarningLightRatio(FMath::InterpSinInOut(FadeOutStartRatio, 0.f, Alpha));
-}
-
-void AGravityGimmick::SetWarningLightRatio(const float Ratio)
-{
-	CurrentWarningLightRatio = Ratio;
-
-	for (const FWarningLight& Entry : WarningLights)
-	{
-		if (ULightComponent* Light = Entry.Light.Get())
-		{
-			Light->SetIntensity(Entry.BaseIntensity * Ratio);
-		}
-	}
-
-	SetWarningPulse(Ratio);
-}
-
-void AGravityGimmick::TurnOffWarningLights()
-{
-	bWarningLightsOn = false;
-	FadeOutStartTime = -1.f;
-
-	// The intensity goes back to the placed value, so the next warning starts from it
-	for (const FWarningLight& Entry : WarningLights)
-	{
-		if (ULightComponent* Light = Entry.Light.Get())
-		{
-			Light->SetVisibility(false);
-			Light->SetIntensity(Entry.BaseIntensity);
-		}
-	}
-	CurrentWarningLightRatio = 1.f;
-
-	SetWarningPulse(0.f);
-}
-
-void AGravityGimmick::SetWarningPulse(const float Pulse)
-{
-	// A dedicated server draws nothing, and the world is gone while it is destroyed
-	if (!GimmickParameterCollection || WarningPulseParameterName.IsNone()) return;
-	if (GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
-
-	UKismetMaterialLibrary::SetScalarParameterValue(this, GimmickParameterCollection, WarningPulseParameterName, Pulse);
 }
 
 void AGravityGimmick::ApplyEffectToAllPlayers()

@@ -39,18 +39,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "중력 배율", ClampMin = "0.05", ClampMax = "20.0"))
 	float GravityMultiplier = 0.3f;
 
-	/** 예고 중 경고등이 1초에 밝아졌다 어두워지는 횟수. 클수록 빠르게 깜빡인다 (Hz) */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "경고등 깜빡임 속도", ClampMin = "0.1", Units = "Hz"))
-	float WarningLightFrequency = 2.f;
-
-	/** 경고등이 가장 어두울 때의 밝기. 레벨에 배치한 밝기를 1로 본 비율이며, 0이면 완전히 꺼졌다 켜진다 */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "경고등 최소 밝기", ClampMin = "0.0", ClampMax = "1.0"))
-	float WarningLightMinRatio = 0.2f;
-
-	/** 발동할 때 소리가 완전히 먹먹해지기까지 걸리는 시간. 일정한 속도로 먹먹해진다 (초) */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "먹먹해지는 시간", ClampMin = "0.0", Units = "s"))
-	float MuffleInDuration = 1.f;
-
 	/** 끝날 때 먹먹한 소리가 원래대로 돌아오기까지 걸리는 시간. 일정한 속도로 돌아온다 (초) */
 	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "먹먹함이 풀리는 시간", ClampMin = "0.0", Units = "s"))
 	float MuffleOutDuration = 1.f;
