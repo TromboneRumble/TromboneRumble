@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
     "Language": "SFX",
-    "Hash": "{3B57617D-5F39-4EEF-A362-AFE9AFF9DEAF}",
+    "Hash": "{03006236-44B1-00A4-8796-EF6E0665DE54}",
     "ObjectPath": "Play_Port_Get",
     "ShortName": "Play_Port_Get",
     "Path": "Event/Play_Port_Get.bnk",
@@ -61,7 +61,7 @@
       "Name": "Play_Port_Get",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Get",
       "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.7817917",
       "DurationMax": "0.9663333",
@@ -87,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{CCF3975F-BE03-0430-8579-7CC40AF249F7}"
+  "FileHash": "{B10950C4-9367-BF2E-9122-615305760BCB}"
  }
 }

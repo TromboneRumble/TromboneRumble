@@ -394,6 +394,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Port_Flying" ID="{669815C8-B2F6-46FE-BA58-2B2F94892743}">
+							<ChildrenList>
+								<Action Name="" ID="{1E009BAF-AB29-470B-92DE-F3BB0444345C}" ShortID="505156111">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Port_Flying" ID="{DD7C3254-CEF7-4F5C-A45B-0CA3BB8A7B0F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
@@ -1294,7 +1305,7 @@
 										<Action Name="" ID="{7222A4BA-CBBF-449D-BEAA-5DD5962B2999}" ShortID="1057882567">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapH_Violin_MIDI" ID="{34F1E3AE-A3F7-45AA-A0A6-F389DDC160D4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapH_Violin_MIDI" ID="{21689C15-4360-4FC8-B0FB-90FA5F9F1BAD}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>

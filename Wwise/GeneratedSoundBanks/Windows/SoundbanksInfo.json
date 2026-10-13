@@ -3086,7 +3086,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{CB06D522-B985-69E0-5F96-9C9C9851CF2A}",
+    "Hash": "{0453C888-CD0F-00BD-AAF2-1868192EA189}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -4543,7 +4543,7 @@
     "Type": "Event",
     "GUID": "{9D07D1EF-3569-42B9-B49E-392E71A34B44}",
     "Language": "SFX",
-    "Hash": "{39DF4421-91E3-5091-FB3B-637370337239}",
+    "Hash": "{E8E7BFA1-A195-8A43-485B-BAB47378FC82}",
     "ObjectPath": "MIDI_MapH_V",
     "ShortName": "MIDI_MapH_V",
     "Path": "Event/MIDI_MapH_V.bnk",
@@ -4703,7 +4703,7 @@
     "Type": "Event",
     "GUID": "{FDC0E931-5288-4676-BBE2-1744E4B17326}",
     "Language": "SFX",
-    "Hash": "{93FE12F3-D7DE-0F58-5E63-D955216779B9}",
+    "Hash": "{01C57AC5-EA6D-4000-D8E8-D57C797060B2}",
     "ObjectPath": "MIDI_MapH_C",
     "ShortName": "MIDI_MapH_C",
     "Path": "Event/MIDI_MapH_C.bnk",
@@ -8604,7 +8604,7 @@
     "Type": "Event",
     "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
     "Language": "SFX",
-    "Hash": "{3B57617D-5F39-4EEF-A362-AFE9AFF9DEAF}",
+    "Hash": "{03006236-44B1-00A4-8796-EF6E0665DE54}",
     "ObjectPath": "Play_Port_Get",
     "ShortName": "Play_Port_Get",
     "Path": "Event/Play_Port_Get.bnk",
@@ -8655,7 +8655,7 @@
       "Name": "Play_Port_Get",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Get",
       "GUID": "{5EFA05BE-7028-4265-B05C-C8C361919B4B}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "0.7817917",
       "DurationMax": "0.9663333",
@@ -9649,6 +9649,6 @@
     ]
    }
   ],
-  "FileHash": "{581F7233-B3BB-5AE0-DDDF-76161552EC62}"
+  "FileHash": "{E05AD100-B6F4-BBCB-BFA7-A55CC3F6AB8B}"
  }
 }
