@@ -1481,7 +1481,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{CB06D522-B985-69E0-5F96-9C9C9851CF2A}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{0453C888-CD0F-00BD-AAF2-1868192EA189}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -4608,5 +4608,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{96F87470-D5DB-4AA9-B1BB-DE837B270345}</FileHash>
+	<FileHash>{A9D5597C-B71E-A35C-0231-41C99D7858F9}</FileHash>
 </SoundBanksInfo>
