@@ -2,6 +2,7 @@
 
 #include "Actors/Gimmick/Ufo/Ufo.h"
 #include "Actors/Gimmick/Ufo/UfoGimmick.h"
+#include "AkGameplayStatics.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -10,6 +11,7 @@
 #include "NiagaraComponent.h"
 #include "Utilities/TromboneLogs.h"
 #include "Utilities/TromboneStatics.h"
+#include "Wwise/API/WwiseSoundEngineAPI.h"
 
 namespace
 {
@@ -145,6 +147,17 @@ void AUfo::UpdateMotion(const float Now)
 		const float Since = Now - LeaveStartServerTime;
 		Location = Path.End;
 
+		// Starts with the crouch, so its build up plays while the UFO is still there.
+		// The dash leaves hearing range in a second, so the sound stays where the UFO left from instead of following it
+		if (!bGoneSoundPlayed)
+		{
+			bGoneSoundPlayed = true;
+			if (GoneSound)
+			{
+				UAkGameplayStatics::PostEventAtLocation(GoneSound, Path.End, GetActorRotation(), this);
+			}
+		}
+
 		if (Since < UfoWarp::WindupDuration)
 		{
 			// Crouch before the dash
@@ -167,6 +180,16 @@ void AUfo::UpdateMotion(const float Now)
 	}
 	else if (Elapsed < Config.WarpDuration)
 	{
+		// Only a machine that sees the warp in hears it. A client that gets the UFO later starts in silence
+		if (!bComeSoundPlayed)
+		{
+			bComeSoundPlayed = true;
+			if (ComeSound)
+			{
+				UAkGameplayStatics::PostEvent(ComeSound, this, 0, FOnAkPostEventCallback());
+			}
+		}
+
 		// Comes in fast from behind the line and brakes hard at its start
 		const float Alpha = FMath::Clamp(Elapsed / Config.WarpDuration, 0.f, 1.f);
 		const float Remaining = 1.f - Alpha;
@@ -211,6 +234,9 @@ void AUfo::UpdateMotion(const float Now)
 	{
 		bBeamVFXCut = true;
 		BeamVFXComponent->DeactivateImmediate();
+
+		// The sound runs longer than any beam, so it fades out with the end of the fold
+		StopLaserSound(LaserFadeOutDuration);
 	}
 
 	const FVector BodyScale(
@@ -239,6 +265,23 @@ void AUfo::SetBeamVFXOn(const bool bOn)
 	BeamVFXComponent->SetRelativeLocation(FVector(0.f, 0.f, -BeamLength));
 	BeamVFXComponent->SetRelativeScale3D(FVector(1.f, 1.f, ZScale));
 	BeamVFXComponent->Activate();
+
+	if (LaserSound)
+	{
+		LaserPlayingID = UAkGameplayStatics::PostEvent(LaserSound, this, 0, FOnAkPostEventCallback());
+	}
+}
+
+void AUfo::StopLaserSound(const float FadeOutDuration)
+{
+	if (LaserPlayingID == AK_INVALID_PLAYING_ID) return;
+
+	if (IWwiseSoundEngineAPI* SoundEngine = IWwiseSoundEngineAPI::Get())
+	{
+		const AkTimeMs FadeOutMs = FMath::RoundToInt(FadeOutDuration * 1000.f);
+		SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, LaserPlayingID, FadeOutMs);
+	}
+	LaserPlayingID = AK_INVALID_PLAYING_ID;
 }
 
 void AUfo::UpdateServer(const float Now)
@@ -311,6 +354,9 @@ void AUfo::Tick(const float DeltaSeconds)
 
 void AUfo::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	// Removed before the fold ended, for example when the round ends. Wwise would keep playing the beam sound after the UFO is gone
+	StopLaserSound(0.f);
+
 	// Destroyed early, for example when the round ends. Let go of everyone
 	if (HasAuthority())
 	{

@@ -8,6 +8,7 @@
 #include "Ufo.generated.h"
 
 class ATromboneCharacterBase;
+class UAkAudioEvent;
 class UNiagaraComponent;
 class UStaticMeshComponent;
 class UUfoGimmickConfig;
@@ -15,7 +16,7 @@ class UUfoGimmickConfig;
 /**
  * Ufo is the flying object AUfoGimmick spawns.
  * It moves along its path on every machine, and on the server its beam catches the players inside it.
- * The Blueprint adds the UFO mesh, picks the beam collision mesh and the beam effect, and adds the sounds.
+ * The Blueprint adds the UFO mesh, and picks the beam collision mesh, the beam effect and the sounds.
  *
  * It warps in from behind its line, spreads its beam down, then flies the line with the beam on.
  * At the end it drops every caught player and folds the beam up, then warps out ahead and destroys itself.
@@ -83,6 +84,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ufo|VFX", meta = (DisplayName = "광선 VFX Z 스케일", ClampMin = "0.01"))
 	float BeamVFXZScale = 1.f;
 
+	/** 라인 뒤에서 워프해 들어올 때 UFO에 붙어 재생되는 사운드 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "다가오는 사운드"))
+	TObjectPtr<UAkAudioEvent> ComeSound;
+
+	/** 떠나기 직전 웅크릴 때 그 자리에서 재생되는 사운드. UFO는 날아가도 소리는 떠난 자리에 남는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "멀어지는 사운드"))
+	TObjectPtr<UAkAudioEvent> GoneSound;
+
+	/** 광선이 펼쳐질 때 켜지고, 광선이 다 접히면 줄어들며 꺼지는 사운드 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 사운드"))
+	TObjectPtr<UAkAudioEvent> LaserSound;
+
+	/** 광선이 다 접힌 뒤 광선 사운드가 줄어들며 꺼지는 시간 (초) */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 사운드 페이드아웃 시간", ClampMin = "0.0", Units = "s"))
+	float LaserFadeOutDuration = 0.3f;
+
 private:
 
 	/**
@@ -103,6 +120,13 @@ private:
 
 	/** Turn the beam on and off, catch players, and start the leave once nobody hangs from the UFO. Server only. */
 	void UpdateServer(float Now);
+
+	/**
+	 * Stop the beam sound if it is playing.
+	 *
+	 * @param FadeOutDuration Seconds the sound takes to fade out.
+	 */
+	void StopLaserSound(float FadeOutDuration);
 
 	/** @return Direction along the line, flat on the ground. */
 	FVector GetTravelDirection() const;
@@ -149,6 +173,15 @@ private:
 
 	/** Have the last particles of the beam effect been removed, at the end of the fold. */
 	bool bBeamVFXCut = false;
+
+	/** Has the arrival sound played on this machine. */
+	bool bComeSoundPlayed = false;
+
+	/** Has the departure sound played on this machine. */
+	bool bGoneSoundPlayed = false;
+
+	/** Playing ID of the beam sound on this machine. 0 when it is not playing. */
+	int32 LaserPlayingID = 0;
 
 	/** Players the beam holds right now. Server only. */
 	TArray<TWeakObjectPtr<ATromboneCharacterBase>> LiftedCharacters;
