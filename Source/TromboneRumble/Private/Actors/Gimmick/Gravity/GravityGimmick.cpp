@@ -5,14 +5,20 @@
 #include "AbilitySystemInterface.h"
 #include "AkGameplayStatics.h"
 #include "Characters/DefaultTromboneCharacter.h"
+#include "Components/MeshComponent.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
 #include "Engine/Engine.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerState.h"
 #include "GameplayEffect.h"
 #include "Kismet/KismetMaterialLibrary.h"
+#include "Materials/MaterialInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "TromboneGamePlayTags.h"
 
 #if !UE_BUILD_SHIPPING
@@ -21,6 +27,11 @@ TAutoConsoleVariable<int32> CVarGravityDebug(
 	0,
 	TEXT("1이면 중력 기믹의 상태와 남은 시간을 화면에 표시"));
 #endif
+
+namespace
+{
+	constexpr float PlayerEffectRefreshInterval = 0.5f;
+}
 
 AGravityGimmick::AGravityGimmick()
 {
@@ -187,6 +198,7 @@ void AGravityGimmick::HandleStateChanged()
 	}
 
 	UpdateAudio();
+	UpdatePlayerEffects();
 
 	OnGravityStateChanged(State, GravityMultiplier);
 }
@@ -224,6 +236,93 @@ void AGravityGimmick::SetMuffle(const float Value, const float Duration) const
 	// Wwise moves the value in a straight line over the given time, so nothing needs to run every frame
 	const int32 DurationMs = FMath::RoundToInt(FMath::Max(Duration, 0.f) * 1000.f);
 	UAkGameplayStatics::SetRTPCValue(nullptr, Value, DurationMs, nullptr, MuffleParameterName);
+}
+
+void AGravityGimmick::UpdatePlayerEffects()
+{
+	if (State == EGravityState::Active && (OutlineMaterial || PlayerVFX))
+	{
+		RefreshPlayerEffects();
+		GetWorldTimerManager().SetTimer(PlayerEffectRefreshTimerHandle, this, &ThisClass::RefreshPlayerEffects, PlayerEffectRefreshInterval, true);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(PlayerEffectRefreshTimerHandle);
+		ClearPlayerEffects();
+	}
+}
+
+void AGravityGimmick::RefreshPlayerEffects()
+{
+	const AGameStateBase* GameState = GetWorld()->GetGameState();
+	if (!GameState) return;
+
+	TSet<TWeakObjectPtr<UMeshComponent>> Current;
+	for (const APlayerState* PlayerState : GameState->PlayerArray)
+	{
+		APawn* Pawn = PlayerState ? PlayerState->GetPawn() : nullptr;
+		if (!Pawn) continue;
+
+		const ACharacter* Character = Cast<ACharacter>(Pawn);
+		if (PlayerVFX && Character && !PlayerVFXComponents.Contains(Pawn))
+		{
+			// Attached to the body mesh, so the emitter samples the body and not a customization part
+			UNiagaraComponent* VFX = UNiagaraFunctionLibrary::SpawnSystemAttached(PlayerVFX, Character->GetMesh(), NAME_None, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, false);
+			PlayerVFXComponents.Add(Pawn, VFX);
+		}
+
+		if (!OutlineMaterial) continue;
+
+		// Customization parts are components of the pawn, and the held instrument and weapon are attached actors
+		TArray<AActor*> Actors = { Pawn };
+		Pawn->GetAttachedActors(Actors, false, true);
+
+		for (const AActor* Actor : Actors)
+		{
+			TInlineComponentArray<UMeshComponent*> Meshes(Actor);
+			for (UMeshComponent* Mesh : Meshes)
+			{
+				// Another effect uses this overlay, so we leave it alone
+				UMaterialInterface* Overlay = Mesh->GetOverlayMaterial();
+				if (Overlay && Overlay != OutlineMaterial) continue;
+
+				Mesh->SetOverlayMaterial(OutlineMaterial);
+				Current.Add(Mesh);
+			}
+		}
+	}
+
+	// A dropped instrument loses the outline
+	for (const TWeakObjectPtr<UMeshComponent>& Mesh : OutlinedMeshes)
+	{
+		if (Mesh.IsValid() && !Current.Contains(Mesh) && Mesh->GetOverlayMaterial() == OutlineMaterial)
+		{
+			Mesh->SetOverlayMaterial(nullptr);
+		}
+	}
+	OutlinedMeshes = MoveTemp(Current);
+}
+
+void AGravityGimmick::ClearPlayerEffects()
+{
+	for (const TWeakObjectPtr<UMeshComponent>& Mesh : OutlinedMeshes)
+	{
+		if (Mesh.IsValid() && Mesh->GetOverlayMaterial() == OutlineMaterial)
+		{
+			Mesh->SetOverlayMaterial(nullptr);
+		}
+	}
+	OutlinedMeshes.Empty();
+
+	for (const TPair<TWeakObjectPtr<APawn>, TWeakObjectPtr<UNiagaraComponent>>& Pair : PlayerVFXComponents)
+	{
+		// Removed at once, so it disappears together with the outline
+		if (UNiagaraComponent* VFX = Pair.Value.Get())
+		{
+			VFX->DestroyComponent();
+		}
+	}
+	PlayerVFXComponents.Empty();
 }
 
 void AGravityGimmick::ApplyEffectToAllPlayers()

@@ -8,10 +8,15 @@
 #include "GravityGimmick.generated.h"
 
 class ACharacter;
+class APawn;
 class IConsoleVariable;
 class UAkAudioEvent;
 class UGameplayEffect;
+class UMaterialInterface;
 class UMaterialParameterCollection;
+class UMeshComponent;
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 /** Level materials read these numbers from the parameter collection. Do not change the values. */
 UENUM(BlueprintType)
@@ -59,6 +64,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
 	FName MultiplierParameterName = TEXT("GravityMultiplier");
 
+	/** 저중력 동안 모든 플레이어와 들고 있는 물건의 메시에 덧씌우는 테두리 머티리얼. 비워 두면 테두리가 나오지 않는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual", meta = (DisplayName = "테두리 머티리얼"))
+	TObjectPtr<UMaterialInterface> OutlineMaterial;
+
+	/** 저중력 동안 모든 플레이어의 몸에 붙는 이펙트. 몸통 메시에 붙으므로 메시 표면을 샘플링하는 이펙트를 쓴다. 비워 두면 나오지 않는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual", meta = (DisplayName = "캐릭터 이펙트"))
+	TObjectPtr<UNiagaraSystem> PlayerVFX;
+
 	/** 예고가 시작될 때 모든 플레이어 화면에서 재생되는 사운드. 공기가 빠져나가는 소리처럼 예고 시간에 맞춘 소리를 지정한다 */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "예고 사운드"))
 	TObjectPtr<UAkAudioEvent> WarningSound;
@@ -92,6 +105,18 @@ private:
 	/** Play the sound of the state that just started, and move the muffle of the mix. */
 	void UpdateAudio();
 
+	/** Put the outline and the VFX on the players while the gravity is changed, and take them off after. */
+	void UpdatePlayerEffects();
+
+	/**
+	 * Put the outline on every mesh of every player and of what they hold, and take it off the meshes they let go of.
+	 * Attach the VFX to the body of a player who has none yet.
+	 */
+	void RefreshPlayerEffects();
+
+	/** Take the outline off every mesh it was put on, and remove every VFX at once. */
+	void ClearPlayerEffects();
+
 	/**
 	 * Move the muffle parameter in a straight line to a value.
 	 *
@@ -116,6 +141,15 @@ private:
 	TMap<TWeakObjectPtr<ACharacter>, FActiveGameplayEffectHandle> ActiveEffects;
 
 	FTimerHandle PhaseTimerHandle;
+
+	/** Collects the meshes again while the gravity is changed, so an instrument picked up or dropped follows. */
+	FTimerHandle PlayerEffectRefreshTimerHandle;
+
+	/** Meshes that have the outline now. */
+	TSet<TWeakObjectPtr<UMeshComponent>> OutlinedMeshes;
+
+	/** VFX attached to each player. One per pawn. */
+	TMap<TWeakObjectPtr<APawn>, TWeakObjectPtr<UNiagaraComponent>> PlayerVFXComponents;
 
 	/** Is Trombone.Gravity.Debug on. */
 	bool bDebugDraw = false;
