@@ -1,8 +1,10 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Actors/Gimmick/BlackHole/BlackHoleGimmick.h"
+#include "Actors/Props/WarningLight.h"
 #include "AkAudioEvent.h"
 #include "AkComponent.h"
+#include "AkGameplayStatics.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
@@ -60,6 +62,15 @@ void ABlackHoleGimmick::BeginPlay()
 	{
 		InnerSphere->SetSphereRadius(GetInnerRadius(), false);
 	}
+
+	// Every level actor is initialized before any BeginPlay, so the lights are all here and ready
+	for (TActorIterator<AWarningLight> It(GetWorld()); It; ++It)
+	{
+		WarningLights.Add(*It);
+	}
+
+	// The state can arrive before BeginPlay on a client that joins during a warning, and the lights were not found then
+	RefreshWarningLights();
 
 #if !UE_BUILD_SHIPPING
 	IConsoleVariable* DebugVariable = CVarBlackHoleDebug.AsVariable();
@@ -228,6 +239,7 @@ void ABlackHoleGimmick::HandleStateChanged(const EBlackHoleState PreviousState)
 
 	if (GetNetMode() == NM_DedicatedServer || !GetWorld() || GetWorld()->bIsTearingDown) return;
 
+	RefreshWarningLights();
 	PlayStateEffects(PreviousState);
 	OnBlackHoleStateChanged(State);
 }
@@ -246,6 +258,12 @@ void ABlackHoleGimmick::PlayStateEffects(const EBlackHoleState PreviousState)
 	{
 	case EBlackHoleState::Warning:
 		PostSound(WarningSound);
+
+		// The alarm fills the whole station, so it plays without a position and every player hears it the same
+		if (AlarmSound)
+		{
+			UAkGameplayStatics::PostEvent(AlarmSound, nullptr, 0, FOnAkPostEventCallback());
+		}
 		break;
 
 	case EBlackHoleState::Active:
@@ -659,6 +677,24 @@ void ABlackHoleGimmick::UpdateTickEnabled()
 #endif
 
 	SetActorTickEnabled(IsPulling() || bDebug);
+}
+
+void ABlackHoleGimmick::RefreshWarningLights()
+{
+	const bool bWarning = State == EBlackHoleState::Warning;
+	for (const TWeakObjectPtr<AWarningLight>& Light : WarningLights)
+	{
+		if (!Light.IsValid()) continue;
+
+		if (bWarning)
+		{
+			Light->StartWarning();
+		}
+		else
+		{
+			Light->StopWarning();
+		}
+	}
 }
 
 void ABlackHoleGimmick::HandleDebugCVarChanged(IConsoleVariable* Variable)
