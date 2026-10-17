@@ -123,7 +123,7 @@ struct FGimmickSpawnRule
  * Spotlight, garbage, the bonus drops and the water drops use it, and AGimmickSpawnerBase runs the timer for all of them.
  *
  * Keep in mind that a subclass sets its default rule in its constructor, so a level without an entry still spawns the way the gimmick was designed.
- * A gimmick is turned off by taking its entry out of the stage data, not by a special value.
+ * To turn a spawner off, remove its actor from the level. No value of the config means off.
  *
  * @see AGimmickSpawnerBase
  */
