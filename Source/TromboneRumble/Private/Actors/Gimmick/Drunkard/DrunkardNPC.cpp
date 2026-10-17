@@ -20,6 +20,9 @@
 #include "Engine/TargetPoint.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interfaces/Breakable.h"
+#if WITH_EDITOR
+#include "Misc/DataValidation.h"
+#endif
 #include "Net/UnrealNetwork.h"
 #include "UI/UserWidgets/InGame/DrunkardTargetWidget.h"
 #include "Utilities/TromboneLogs.h"
@@ -47,6 +50,13 @@ ADrunkardNPC::ADrunkardNPC()
 	{
 		MeshComp->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	}
+
+	// 상체 물리 시작값: 세기(Strength)를 낮출수록 흐물거림이 커진다
+	UpperBodyPhysicsProfile.bIsLocalSimulation = false;
+	UpperBodyPhysicsProfile.OrientationStrength = 20.f;
+	UpperBodyPhysicsProfile.AngularVelocityStrength = 2.f;
+	UpperBodyPhysicsProfile.PositionStrength = 20.f;
+	UpperBodyPhysicsProfile.VelocityStrength = 2.f;
 
 	StateComponent = CreateDefaultSubobject<UDrunkardStateComponent>(TEXT("DrunkardStateComponent"));
 	XRaySilhouetteComponent = CreateDefaultSubobject<UXRaySilhouetteComponent>(TEXT("XRaySilhouetteComponent"));
@@ -96,7 +106,7 @@ void ADrunkardNPC::BeginPlay()
 	}
 
 	// X-Ray 토글이 꺼져 있으면 컴포넌트 제거 (안 쓰는 CustomDepth 비용 방지)
-	if (XRaySilhouetteComponent && !Config.bEnableXRaySilhouette)
+	if (XRaySilhouetteComponent && !bEnableXRaySilhouette)
 	{
 		XRaySilhouetteComponent->DestroyComponent();
 		XRaySilhouetteComponent = nullptr;
@@ -289,14 +299,26 @@ void ADrunkardNPC::BeginDive()
 
 void ADrunkardNPC::Multicast_PlayDiveMontage_Implementation()
 {
-	if (!GetDrunkardConfig().DiveMontage) return;
+	if (!DiveMontage) return;
 
 	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
 	if (AnimInstance)
 	{
-		AnimInstance->Montage_Play(GetDrunkardConfig().DiveMontage);
+		AnimInstance->Montage_Play(DiveMontage);
 	}
 }
+
+#if WITH_EDITOR
+EDataValidationResult ADrunkardNPC::IsDataValid(FDataValidationContext& Context) const
+{
+	// The drunkard still works without it, so this is a warning and not an error
+	if (!DiveMontage)
+	{
+		Context.AddWarning(FText::FromString(TEXT("취객: 다이브 몽타주가 비어 있어 포획 후 몸을 날리는 연출이 나오지 않습니다")));
+	}
+	return Super::IsDataValid(Context);
+}
+#endif
 
 void ADrunkardNPC::HandleDiveRagdollStart()
 {
@@ -342,12 +364,12 @@ void ADrunkardNPC::ClearUpperBodyPhysics()
 
 	// 세기 0짜리 빈 프로파일을 같은 본 이하에 적용하면 제약 드라이브가 전부 0이 되어 모터가 꺼진다
 	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(
-		GetDrunkardConfig().UpperBodyPhysicsRootBone, FPhysicalAnimationData(), true);
+		UpperBodyPhysicsRootBone, FPhysicalAnimationData(), true);
 }
 
 void ADrunkardNPC::ApplyUpperBodyPhysics()
 {
-	if (!GetDrunkardConfig().bEnableUpperBodyPhysics) return;
+	if (!bEnableUpperBodyPhysics) return;
 
 	USkeletalMeshComponent* MeshComp = GetMesh();
 	if (!MeshComp || !PhysicalAnimationComp) return;
@@ -383,10 +405,10 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 		return;
 	}
 	UpperBodyPhysicsRetryCount = 0;
-	if (MeshComp->GetBoneIndex(GetDrunkardConfig().UpperBodyPhysicsRootBone) == INDEX_NONE)
+	if (MeshComp->GetBoneIndex(UpperBodyPhysicsRootBone) == INDEX_NONE)
 	{
 		UE_LOG(LogDrunkard, Warning, TEXT("%s: 상체 물리 시작 본 '%s' 이 스켈레톤에 없음 — 상체 물리 미적용"),
-			*GetName(), *GetDrunkardConfig().UpperBodyPhysicsRootBone.ToString());
+			*GetName(), *UpperBodyPhysicsRootBone.ToString());
 		return;
 	}
 
@@ -400,12 +422,12 @@ void ADrunkardNPC::ApplyUpperBodyPhysics()
 	}
 
 	// 하반신(지정 본 위쪽 계층)은 애니메이션 유지 — 전신에 걸면 메시가 캡슐에서 이탈해 포획 판정이 거짓말을 하게 된다
-	MeshComp->SetAllBodiesBelowSimulatePhysics(GetDrunkardConfig().UpperBodyPhysicsRootBone, true, true);
-	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(GetDrunkardConfig().UpperBodyPhysicsRootBone, GetDrunkardConfig().UpperBodyPhysicsProfile, true);
+	MeshComp->SetAllBodiesBelowSimulatePhysics(UpperBodyPhysicsRootBone, true, true);
+	PhysicalAnimationComp->ApplyPhysicalAnimationSettingsBelow(UpperBodyPhysicsRootBone, UpperBodyPhysicsProfile, true);
 
 	// 피직스 에셋 바디가 자체 콜리전 프로파일(Ragdoll 등, Pawn을 Block)을 쓰면 위의 컴포넌트 레벨
 	// 응답 설정이 무시된다. 시뮬 상체가 자기/타 캐릭터의 캡슐 이동을 막지 않도록 바디 단위로 강제
-	MeshComp->ForEachBodyBelow(GetDrunkardConfig().UpperBodyPhysicsRootBone, true, false,
+	MeshComp->ForEachBodyBelow(UpperBodyPhysicsRootBone, true, false,
 		[](FBodyInstance* Body)
 		{
 			Body->SetResponseToChannel(ECC_Pawn, ECR_Ignore);

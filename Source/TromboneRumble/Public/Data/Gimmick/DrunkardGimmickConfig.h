@@ -4,10 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/Gimmick/GimmickConfig.h"
-#include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "DrunkardGimmickConfig.generated.h"
-
-class UAnimMontage;
 
 /** Drunkard values that differ between the normal part and the fever part of the song. */
 USTRUCT(BlueprintType)
@@ -40,6 +37,7 @@ struct FDrunkardRule
  * Settings of the drunkard gimmick. The spawner, the NPC, its state component and its behavior tree nodes all read this one object.
  * It replaced DA_Drunkard, and the defaults are the values that asset held.
  * Stun and invincibility times are shared by every character, so they stay in UCharacterDataAsset.
+ * The dive montage, the upper body physics and the X-Ray silhouette depend on the mesh, so they stay on ADrunkardNPC.
  *
  * @see ADrunkardSpawner
  * @see ADrunkardNPC
@@ -58,18 +56,10 @@ public:
 
 		// The drunkard breaks in without a warning. Its entrance plays the part of one
 		bHasWarning = false;
-
-		// 상체 물리 시작값: 세기(Strength)를 낮출수록 흐물거림이 커진다.
-		UpperBodyPhysicsProfile.bIsLocalSimulation = false;
-		UpperBodyPhysicsProfile.OrientationStrength = 20.f;
-		UpperBodyPhysicsProfile.AngularVelocityStrength = 2.f;
-		UpperBodyPhysicsProfile.PositionStrength = 20.f;
-		UpperBodyPhysicsProfile.VelocityStrength = 2.f;
 	}
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
-	virtual void ValidateConfig(FDataValidationContext& Context) const override;
 	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	//~ End UGimmickConfig Interface
 #endif
@@ -163,10 +153,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "게임플레이|규칙", meta = (DisplayName = "순위별 타겟 가중치"))
 	TArray<float> TargetRankWeights = { 4.f, 3.f, 2.f, 1.f };
 
-	/** 포획에 성공한 뒤 대상 자리로 몸을 날리는 몽타주. 비우면 도약만 하고 애니메이션은 바뀌지 않는다 */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "다이브 몽타주"))
-	TObjectPtr<UAnimMontage> DiveMontage;
-
 	/** 정점에서 래그돌로 바뀔 때 앞으로 엎어지는 회전 속도. 부호를 뒤집으면 반대로 돈다 (rad/s) */
 	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "다이브 회전 속도", ForceUnits = "rad/s"))
 	float DiveSpinSpeed = 3.f;
@@ -174,20 +160,4 @@ public:
 	/** 다이브가 이 시간 안에 끝나지 않으면 강제로 퇴장한다. 몽타주나 노티파이가 빠져 기믹이 멈추는 것을 막는다 (초) */
 	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "다이브 제한 시간", ClampMin = "1.0", Units = "s"))
 	float DiveTimeout = 10.f;
-
-	/** 켜면 지정한 본부터 위만 물리로 흔들린다. 하체는 애니메이션을 유지해 캡슐을 벗어나지 않는다 */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "상체 물리 사용"))
-	bool bEnableUpperBodyPhysics = true;
-
-	/** 상체 물리를 적용할 가장 위쪽 본 */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "상체 물리 시작 본", EditCondition = "bEnableUpperBodyPhysics"))
-	FName UpperBodyPhysicsRootBone = FName("spine_01");
-
-	/** 상체 물리의 세기. 세기를 낮출수록 흐물거린다 */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "상체 물리 프로파일", EditCondition = "bEnableUpperBodyPhysics"))
-	FPhysicalAnimationData UpperBodyPhysicsProfile;
-
-	/** 켜면 벽 뒤에 있을 때 실루엣이 보인다 */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "X-Ray 실루엣 사용"))
-	bool bEnableXRaySilhouette = true;
 };

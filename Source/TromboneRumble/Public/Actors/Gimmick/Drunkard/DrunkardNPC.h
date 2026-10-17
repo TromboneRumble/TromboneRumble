@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/TromboneCharacterBase.h"
+#include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "DrunkardNPC.generated.h"
 
 class ADefaultTromboneCharacter;
@@ -15,6 +16,7 @@ class UDrunkardStateComponent;
 class UWidgetComponent;
 class UXRaySilhouetteComponent;
 class UAkAudioEvent;
+class UAnimMontage;
 
 /** ADrunkardNPC
  *
@@ -94,6 +96,12 @@ public:
 	virtual void HandleDrowningEnded() override {}
 	//~ End ATromboneCharacterBase Interface
 
+#if WITH_EDITOR
+	//~ Begin UObject Interface
+	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
+	//~ End UObject Interface
+#endif
+
 protected:
 
 	//~ Begin ATromboneCharacterBase Interface
@@ -104,7 +112,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UDrunkardStateComponent> StateComponent;
 
-	/** 벽 뒤 실루엣. UDrunkardGimmickConfig의 토글이 꺼져 있으면 BeginPlay에서 제거된다 */
+	/** 벽 뒤 실루엣. bEnableXRaySilhouette가 꺼져 있으면 BeginPlay에서 제거된다 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config|Components")
 	TObjectPtr<UXRaySilhouetteComponent> XRaySilhouetteComponent;
 
@@ -115,6 +123,26 @@ protected:
 	/** Laugh played when the drunkard spawns. */
 	UPROPERTY(EditDefaultsOnly, Category = "Config|Sound")
 	TObjectPtr<UAkAudioEvent> SpawnLaughEvent;
+
+	/** 포획에 성공한 뒤 대상 자리로 몸을 날리는 몽타주. 비우면 도약만 하고 애니메이션은 바뀌지 않는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Animation")
+	TObjectPtr<UAnimMontage> DiveMontage;
+
+	/** 켜면 지정한 본부터 위만 물리로 흔들린다. 하체는 애니메이션을 유지해 캡슐을 벗어나지 않는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Physics")
+	bool bEnableUpperBodyPhysics = true;
+
+	/** 상체 물리를 적용할 가장 위쪽 본 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Physics", meta = (EditCondition = "bEnableUpperBodyPhysics"))
+	FName UpperBodyPhysicsRootBone = FName("spine_01");
+
+	/** 상체 물리의 세기. 세기를 낮출수록 흐물거린다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Physics", meta = (EditCondition = "bEnableUpperBodyPhysics"))
+	FPhysicalAnimationData UpperBodyPhysicsProfile;
+
+	/** 켜면 벽 뒤에 있을 때 실루엣이 보인다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Config|Render")
+	bool bEnableXRaySilhouette = true;
 
 private:
 

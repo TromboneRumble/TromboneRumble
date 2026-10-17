@@ -2,7 +2,6 @@
 
 #include "Data/Gimmick/BlackHoleGimmickConfig.h"
 #include "Data/Gimmick/BonusGimmickConfig.h"
-#include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GarbageGimmickConfig.h"
 
 #if WITH_EDITOR
@@ -48,15 +47,6 @@ void UGarbageGimmickConfig::ValidateConfig(FDataValidationContext& Context) cons
 	if (GarbageClasses.Contains(nullptr))
 	{
 		Context.AddError(FText::FromString(TEXT("관중 투척: 투척물 종류에 빈 칸이 있습니다")));
-	}
-}
-
-void UDrunkardGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
-{
-	// The gimmick still runs without it, so this is a warning and not an error
-	if (!DiveMontage)
-	{
-		Context.AddWarning(FText::FromString(TEXT("취객: 다이브 몽타주가 비어 있어 포획 후 몸을 날리는 연출이 나오지 않습니다")));
 	}
 }
 
