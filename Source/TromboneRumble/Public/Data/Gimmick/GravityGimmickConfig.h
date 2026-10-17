@@ -25,14 +25,12 @@ public:
 		bSpawnableByManager = true;
 	}
 
-#if WITH_EDITOR	
-	//~ Begin UGimmickConfig Interface
-	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
-	//~ End UGimmickConfig Interface
-#endif
+	//~ Begin UEventGimmickConfig Interface
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	//~ End UEventGimmickConfig Interface
 
 	/** 발동 후 중력이 바뀐 채로 유지되는 시간. 끝나면 원래 중력으로 돌아온다 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "발동 시간", ClampMin = "0.1", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "발동 시간", ClampMin = "0.0", Units = "s"))
 	float ActiveDuration = 10.f;
 
 	/** 발동 중 플레이어 중력에 곱하는 값. 1보다 작으면 둥둥 뜨고, 1보다 크면 무거워진다 */

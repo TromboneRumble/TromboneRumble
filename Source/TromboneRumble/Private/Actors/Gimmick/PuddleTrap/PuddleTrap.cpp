@@ -2,6 +2,7 @@
 
 
 #include "Actors/Gimmick/PuddleTrap/PuddleTrap.h"
+#include "Actors/Gimmick/GimmickBase.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Data/Gimmick/WaterDropGimmickConfig.h"
 #include "Net/UnrealNetwork.h"
@@ -87,7 +88,8 @@ void APuddleTrap::BeginPlay()
 	FadeDelay = Config->HoldDuration;
 	FadeDuration = Config->FadeDuration;
 
-	SetActorScale3D(FVector::ZeroVector);
+	// Without a grow time the puddle is full size at once. Tick only scales it while it grows
+	SetActorScale3D(GrowDuration > 0.f ? FVector::ZeroVector : FVector::OneVector);
 
 	if (DecalComponent)
 	{
@@ -119,15 +121,7 @@ void APuddleTrap::BeginPlay()
 	if (HasAuthority())
 	{
 		const float Lifetime = FadeDelay + FadeDuration + GrowDuration;
-		GetWorldTimerManager().SetTimer(
-			LifetimeTimerHandle,
-			FTimerDelegate::CreateLambda([this]()
-				{
-					Destroy();
-				}),
-			Lifetime,
-			false
-		);
+		AGimmickBase::StartPhaseTimer(GetWorldTimerManager(), LifetimeTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]() { Destroy(); }), Lifetime);
 	}
 }
 

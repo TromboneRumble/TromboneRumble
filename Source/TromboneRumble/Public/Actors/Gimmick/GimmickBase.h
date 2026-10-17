@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TimerManager.h"
 #include "Data/Gimmick/GimmickConfig.h"
 #include "Utilities/Defines.h"
 #include "GimmickBase.generated.h"
@@ -31,6 +32,18 @@ public:
 	 * An event gimmick starts from its warning, and a spawner spawns one object.
 	 */
 	virtual void ForceTrigger() {}
+
+	/**
+	 * Start the timer that moves a gimmick to its next phase.
+	 * A duration of 0 or less still moves on, on the next tick. A timer with no time would never fire, and the gimmick would stop there.
+	 * Objects that are not gimmicks, such as a spotlight zone or the drunkard state, use it too.
+	 *
+	 * @param TimerManager Timer manager of the world.
+	 * @param Handle Handle of the phase. A running timer on it is replaced.
+	 * @param Callback Function that starts the next phase.
+	 * @param Duration Seconds the current phase lasts.
+	 */
+	static void StartPhaseTimer(FTimerManager& TimerManager, FTimerHandle& Handle, const FTimerDelegate& Callback, float Duration);
 
 #if WITH_EDITOR
 	/**

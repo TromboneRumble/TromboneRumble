@@ -18,35 +18,35 @@ struct FGimmickSequence
 {
 	GENERATED_BODY()
 
-	/** 기믹이 발동하는 순서. 마지막 기믹이 끝나면 처음부터 반복 */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "순서"))
+	/** 기믹이 차례로 발동하는 순서. 마지막 기믹이 끝나면 처음부터 반복한다 */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "시퀀스 순서"))
 	TArray<EGimmickType> Order;
 
 	/** 기믹이 켜진 뒤 첫 번째 기믹이 발동하기까지의 시간 (초) */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 발동 시간", ClampMin = "0.1", Units = "s"))
-	float FirstDelay = 20.f;
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "첫 시작 시간", ClampMin = "0.1", Units = "s"))
+	float FirstStartTime = 20.f;
 
 	/** 앞 기믹이 끝나고 다음 기믹이 발동하기까지의 시간 (초) */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "사이 간격", ClampMin = "0.1", Units = "s"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "기믹 간 발동 간격", ClampMin = "0.1", Units = "s"))
 	float Gap = 5.f;
 
-	/** 켜면 피버 타임부터 피버 순서와 피버 사이 간격을 사용 */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 순서 사용"))
-	bool bUseFeverOrder = false;
+	/** 켜면 피버 타임부터 피버 타임 시 시퀀스 순서와 피버 타임 시 기믹 간 발동 간격을 쓴다 */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 타임 시 순서 변경"))
+	bool bChangeOrderInFever = false;
 
-	/** 피버 타임부터 쓰는 순서. 진행 중인 기믹은 끝까지 진행하고, 비우면 피버 동안 발동하지 않음 */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 순서", EditCondition = "bUseFeverOrder"))
+	/** 피버 타임부터 쓰는 순서. 진행 중인 기믹은 끝까지 진행하고, 비우면 피버 동안 발동하지 않는다 */
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 타임 시 시퀀스 순서", EditCondition = "bChangeOrderInFever"))
 	TArray<EGimmickType> FeverOrder;
 
 	/** 피버 타임에 앞 기믹이 끝나고 다음 기믹이 발동하기까지의 시간 (초) */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 사이 간격", ClampMin = "0.1", Units = "s", EditCondition = "bUseFeverOrder"))
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "피버 타임 시 기믹 간 발동 간격", ClampMin = "0.1", Units = "s", EditCondition = "bChangeOrderInFever"))
 	float FeverGap = 5.f;
 
 	/** @return The order in use, which is FeverOrder in fever time when the sequence has one. */
-	const TArray<EGimmickType>& GetOrder(const bool bFever) const { return bFever && bUseFeverOrder ? FeverOrder : Order; }
+	const TArray<EGimmickType>& GetOrder(const bool bFever) const { return bFever && bChangeOrderInFever ? FeverOrder : Order; }
 
 	/** @return The gap in use, which is FeverGap in fever time when the sequence has a fever order. */
-	float GetGap(const bool bFever) const { return bFever && bUseFeverOrder ? FeverGap : Gap; }
+	float GetGap(const bool bFever) const { return bFever && bChangeOrderInFever ? FeverGap : Gap; }
 };
 
 /**
@@ -77,12 +77,12 @@ public:
 
 private:
 
-	/** One entry per gimmick used in the level. Keep one entry per type. */
+	/** 이 레벨에서 쓰는 기믹의 설정. 종류마다 하나씩 넣는다. 레벨에 있는데 여기 없는 기믹은 기본값으로 동작한다 */
 	UPROPERTY(EditAnywhere, Instanced, Category = "Gimmick", meta = (DisplayName = "기믹 목록"))
 	TArray<TObjectPtr<UGimmickConfig>> Gimmicks;
 
-	/** Gimmicks listed here take turns instead of running on their own timers. */
-	UPROPERTY(EditAnywhere, Category = "Gimmick", meta = (DisplayName = "순서 그룹"))
+	/** 여기 넣은 기믹은 자기 타이머 없이 차례로 돌아가며 발동한다. 자기 타이머가 없는 기믹(중력, 취객 등)은 여기에 있어야 발동한다 */
+	UPROPERTY(EditAnywhere, Category = "Gimmick", meta = (DisplayName = "기믹 시퀀스"))
 	TArray<FGimmickSequence> Sequences;
 
 #if WITH_EDITOR

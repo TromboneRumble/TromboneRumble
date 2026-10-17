@@ -150,8 +150,7 @@ void AGravityGimmick::StartActive()
 	ApplyEffectToAllPlayers();
 	SetState(EGravityState::Active);
 
-	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndActive, GetConfig<UGravityGimmickConfig>().ActiveDuration, false);
+	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::EndActive), GetConfig<UGravityGimmickConfig>().ActiveDuration);
 }
 
 void AGravityGimmick::EndActive()

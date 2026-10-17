@@ -16,17 +16,28 @@ class ABonusDrop;
  * @see ABonusDrop
  */
 UCLASS(Abstract)
-class TROMBONERUMBLE_API UBonusGimmickConfig : public UGimmickConfig
+class TROMBONERUMBLE_API UBonusGimmickConfig : public USpawnerGimmickConfig
 {
 	GENERATED_BODY()
 
 public:
 
+	/** Default constructor. The first drop waits one interval, as the bonus gimmicks always did. */
+	UBonusGimmickConfig()
+	{
+		FirstSpawnDelay = 10.f;
+		Normal.Interval.Min = 10.f;
+		Normal.Interval.Max = 10.f;
+	}
+
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
 	virtual void ValidateConfig(FDataValidationContext& Context) const override;
-	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
 	//~ End UGimmickConfig Interface
+
+	//~ Begin USpawnerGimmickConfig Interface
+	virtual float BuildSpawnTimeline(FGimmickTimelineBuilder& Builder, float SpawnTime) const override;
+	//~ End USpawnerGimmickConfig Interface
 #endif
 
 	//~ No category, so it stays outside the groups of the gimmick settings panel
@@ -34,24 +45,12 @@ public:
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "떨어뜨릴 클래스"))
 	TSubclassOf<ABonusDrop> DropClass;
 
-	/** 한 번 떨어뜨린 뒤 다음 번까지의 간격. 0이면 떨어뜨리지 않는다 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "생성 간격", ClampMin = "0.0", Units = "s"))
-	float SpawnInterval = 10.f;
-
-	/** 한 번에 떨어뜨릴 최소 개수 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "최소 개수", ClampMin = "1"))
-	int32 MinSpawnCount = 1;
-
-	/** 한 번에 떨어뜨릴 최대 개수. 빈 지점이 모자라면 있는 만큼만 떨어진다 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "최대 개수", ClampMin = "1"))
-	int32 MaxSpawnCount = 1;
-
 	/** 착지한 뒤 사라지기까지의 시간. 0이면 누가 주울 때까지 남는다 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "유지 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|물체", meta = (DisplayName = "유지 시간", ClampMin = "0.0", Units = "s"))
 	float Lifetime = 0.f;
 
 	/** 하나를 주웠을 때 얻는 점수 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "획득 점수", ClampMin = "0"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|물체", meta = (DisplayName = "획득 점수", ClampMin = "0"))
 	int32 BonusScore = 300;
 
 	/** 착지 지점에 예고를 띄운 뒤 떨어뜨리기까지의 시간. 0이면 예고 없이 바로 떨어진다 (초) */

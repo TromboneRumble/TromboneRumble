@@ -12,65 +12,48 @@ AWaterDropSpawner::AWaterDropSpawner()
 	bReplicates = true;
 }
 
-void AWaterDropSpawner::Activate()
+const USpawnerGimmickConfig& AWaterDropSpawner::GetSpawnerConfig() const
 {
-	Super::Activate();
-	
 	// The WaterDrop and the IceDrop spawner share this class. GetConfig finds the entry by gimmick type, so both get their own settings
-	const float SpawnInterval = GetConfig<UWaterDropGimmickConfig>().SpawnInterval;
-	if (HasAuthority() && SpawnInterval > 0.f)
-	{
-		GetWorldTimerManager().SetTimer(
-			SpawnTimerHandle,
-			this,
-			&ThisClass::SpawnOneDrop,
-			SpawnInterval,
-			true);
-	}
+	return GetConfig<UWaterDropGimmickConfig>();
 }
 
-void AWaterDropSpawner::ForceTrigger()
-{
-	SpawnOneDrop();
-}
-
-void AWaterDropSpawner::Deactivate()
-{
-	Super::Deactivate();
-
-	if (GetWorld())
-	{
-		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-		SpawnTimerHandle.Invalidate();
-	}
-}
-
-void AWaterDropSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-	Super::EndPlay(EndPlayReason);
-}
-
-void AWaterDropSpawner::SpawnOneDrop()
+void AWaterDropSpawner::SpawnBatch(const int32 Count)
 {
 	if (!HasAuthority()) return;
-	if (!WaterDropClass || SpawnPoints.IsEmpty()) return;
+	if (!WaterDropClass) return;
 
-	const int32 RandIndex = FMath::RandRange(0, SpawnPoints.Num() - 1);
-	TObjectPtr<ATargetPoint> ChosenPoint = SpawnPoints[RandIndex];
+	TArray<const ATargetPoint*> FreePoints;
+	for (const ATargetPoint* Point : SpawnPoints)
+	{
+		if (Point)
+		{
+			FreePoints.Add(Point);
+		}
+	}
 
+	// Each drop of one batch takes a different point. Too few points means fewer drops
+	for (int32 Picked = 0; Picked < Count && !FreePoints.IsEmpty(); ++Picked)
+	{
+		const int32 Slot = FMath::RandRange(0, FreePoints.Num() - 1);
+		SpawnOneDrop(*FreePoints[Slot]);
+		FreePoints.RemoveAtSwap(Slot);
+	}
+}
+
+void AWaterDropSpawner::SpawnOneDrop(const ATargetPoint& Point)
+{
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	if (AWaterDrop* Drop = GetWorld()->SpawnActor<AWaterDrop>(
 		WaterDropClass,
-		ChosenPoint->GetActorLocation(),
-		ChosenPoint->GetActorRotation(),
+		Point.GetActorLocation(),
+		Point.GetActorRotation(),
 		Params))
 	{
 		// This class serves both the WaterDrop and the IceDrop gimmick. The puddle needs to know which one made it
 		Drop->SetGimmickType(GetGimmickType());
 	}
 }
-

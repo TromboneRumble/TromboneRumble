@@ -3,41 +3,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
-#include "GameFramework/Actor.h"
+#include "Actors/Gimmick/GimmickSpawnerBase.h"
 #include "GarbageSpawner.generated.h"
 
 class AGarbageBase;
 
 UCLASS()
-class TROMBONERUMBLE_API AGarbageSpawner : public AGimmickBase
+class TROMBONERUMBLE_API AGarbageSpawner : public AGimmickSpawnerBase
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	AGarbageSpawner();
 	
-	virtual void Activate() override;
-	virtual void ForceTrigger() override;
 #if WITH_EDITOR
 	virtual void GetSettingsObjects(TArray<UObject*>& OutObjects) const override;
 #endif
 
-protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-public:
+	/** Throw one garbage at one player. Server only. */
 	void Server_SpawnGarbageOnce();
-	void Server_StartAutoSpawn();
-	void Server_StopAutoSpawn();
-
-	UFUNCTION()
-	void StartAutoSpawnFromMusicCue(FName CueName);
 
 protected:
-	void ScheduleNextSpawn();
-	void SpawnAndReschedule();
+	//~ Begin AGimmickSpawnerBase Interface
+	virtual const USpawnerGimmickConfig& GetSpawnerConfig() const override;
+	virtual void SpawnBatch(int32 Count) override;
+	//~ End AGimmickSpawnerBase Interface
 
 	TSubclassOf<AGarbageBase> PickRandomGarbageClass() const;
 	bool PickRandomSpawnTransform(FTransform& OutTransform) const;
@@ -48,14 +38,11 @@ protected:
 	void SpawnAndThrow_Server(const FTransform& SpawnTransform, AActor* TargetPawn);
 
 protected:
-	// 기획 수치(쓰레기 종류, 투척 간격, 오차 반경, 타겟팅 방식)는 UGarbageGimmickConfig 에 있다
+	// 기획 수치(투척 규칙, 쓰레기 종류, 오차 반경, 타겟팅 방식)는 UGarbageGimmickConfig 에 있다
 
 	UPROPERTY(EditAnywhere, Category = "Gimmick|Spawn")
 	TArray<TObjectPtr<AActor>> SpawnPointActors;
 
-private:
-	FTimerHandle AutoSpawnTimer;
-	
 	// For Debugging & Cheat
 public:
 	UFUNCTION(Server, Reliable)

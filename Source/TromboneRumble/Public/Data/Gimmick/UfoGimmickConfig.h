@@ -34,11 +34,18 @@ public:
 	/** @return Seconds from the spawn until the UFO starts along its line: the warp in, then the beam spreading down. */
 	float GetIntroDuration() const { return WarpDuration + BeamDeployDuration; }
 
+	/** Seconds the UFO squashes before it dashes away. Not a setting, but it is part of the event, so the event length counts it. */
+	static constexpr float WarpWindupDuration = 0.2f;
+
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
 	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	//~ End UGimmickConfig Interface
 #endif
+
+	//~ Begin UEventGimmickConfig Interface
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	//~ End UEventGimmickConfig Interface
 
 	/** UFO가 라인을 따라 이동하는 속도. 느릴수록 광선이 오래 켜져 붙잡힌 플레이어도 오래 매달린다 (cm/s) */
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "이동 속도", ClampMin = "1.0", Units = "cm/s"))
@@ -73,7 +80,7 @@ public:
 	float BeamDeployDuration = 0.3f;
 
 	/** 워프로 날아와 라인 시작점에 멈추는 시간. 떠날 때도 같은 시간 동안 날아가 사라진다 (초) */
-	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "워프 시간", ClampMin = "0.05", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "연출", meta = (DisplayName = "워프 시간", ClampMin = "0.0", Units = "s"))
 	float WarpDuration = 1.f;
 
 	/** 라인 뒤쪽 이만큼 멀리서 날아오고, 라인 앞쪽으로 이만큼 날아가 사라진다 (cm) */

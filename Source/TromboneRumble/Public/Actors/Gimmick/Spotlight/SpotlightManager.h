@@ -3,37 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AkGameplayTypes.h"
-#include "Actors/Gimmick/GimmickBase.h"
-#include "GameFramework/Actor.h"
+#include "Actors/Gimmick/GimmickSpawnerBase.h"
 #include "SpotlightManager.generated.h"
 
-class AInGameState;
 class ATargetPoint;
 class ASpotlightZone;
 
 UCLASS(Abstract)
-class TROMBONERUMBLE_API ASpotlightManager : public AGimmickBase
+class TROMBONERUMBLE_API ASpotlightManager : public AGimmickSpawnerBase
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	ASpotlightManager();
-	
-	virtual void Activate() override;
-	virtual	void Deactivate() override;
-	virtual void ForceTrigger() override;
 
 protected:
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	//~ Begin AGimmickSpawnerBase Interface
+	virtual const USpawnerGimmickConfig& GetSpawnerConfig() const override;
+	virtual void SpawnBatch(int32 Count) override;
+	//~ End AGimmickSpawnerBase Interface
 
 private:
-    UFUNCTION()
-    void OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	UFUNCTION()
 	void OnSpotlightZoneDestroyed(AActor* DestroyedActor);
 	
-	void TriggerSpotlightSpawn();
 	bool IsSpawnPointOccupied(const FVector& Location) const;
 	
     UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Config")
@@ -43,13 +36,11 @@ private:
     UPROPERTY(EditAnywhere, Category = "Gimmick|Config", meta = (DisplayName = "스폰 가능 지점 목록"))
     TArray<TObjectPtr<ATargetPoint>> SpawnPoints;
 
-    // 기획 수치(일반/피버 스폰 간격과 개수, 존의 경고/활성/소멸 시간, 성공 보너스 점수)는 USpotlightGimmickConfig 에 있다
+    // 기획 수치(일반/피버 스폰 규칙, 존의 예고/발동/사라지는 시간, 성공 보너스 점수)는 USpotlightGimmickConfig 에 있다
 	
 	UPROPERTY()
 	TSet<TObjectPtr<ASpotlightZone>> ActiveSpotlightZones;
 	
-	FTimerHandle SpawnTimerHandle;
-	bool bIsFeverTime = false;
 	// For Debugging & Cheat
 	
 public:

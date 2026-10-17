@@ -38,10 +38,13 @@ public:
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
-	virtual float BuildEventTimeline(FGimmickTimelineBuilder& Builder, float Start) const override;
 	virtual void ValidateConfig(FDataValidationContext& Context) const override;
 	//~ End UGimmickConfig Interface
 #endif
+
+	//~ Begin UEventGimmickConfig Interface
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	//~ End UEventGimmickConfig Interface
 
 	/** @return Pull ratio at DistanceAlpha, 0 at the center and 1 at the edge. */
 	float EvalPull(const float DistanceAlpha) const { return PullCurve.GetRichCurveConst()->Eval(DistanceAlpha); }
@@ -53,11 +56,11 @@ public:
 	bool HasEmptyCurve() const { return PullCurve.GetRichCurveConst()->IsEmpty() || OrbitCurve.GetRichCurveConst()->IsEmpty(); }
 
 	/** 블랙홀이 시작 반경에서 최대 반경까지 자라는 시간. 이 동안 계속 끌어당긴다 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "성장 시간", ClampMin = "0.5", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "성장 시간", ClampMin = "0.0", Units = "s"))
 	float GrowDuration = 12.f;
 
 	/** 다 자란 뒤 터지기까지의 시간. 이 동안에도 계속 끌어당긴다 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "붕괴 시간", ClampMin = "0.05", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "붕괴 시간", ClampMin = "0.0", Units = "s"))
 	float CollapseDuration = 0.5f;
 
 	/** 블랙홀이 처음 열릴 때 끌어당기는 범위. 성장 시간 동안 최대까지 커진다 (cm) */

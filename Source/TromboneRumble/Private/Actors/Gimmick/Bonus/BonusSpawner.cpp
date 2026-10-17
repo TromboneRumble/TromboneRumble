@@ -24,19 +24,12 @@ void ABonusSpawner::Activate()
 	Super::Activate();
 
 	SyncOccupancy();
-
-	const float SpawnInterval = GetConfig<UBonusGimmickConfig>().SpawnInterval;
-	if (HasAuthority() && SpawnInterval > 0.f)
-	{
-		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ThisClass::StartDrop, SpawnInterval, true);
-	}
 }
 
 void ABonusSpawner::Deactivate()
 {
 	Super::Deactivate();
 
-	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 	GetWorldTimerManager().ClearTimer(WarningTimerHandle);
 
 	// A warning that never drops would leave its markers up
@@ -47,14 +40,13 @@ void ABonusSpawner::Deactivate()
 	}
 }
 
-void ABonusSpawner::ForceTrigger()
+const USpawnerGimmickConfig& ABonusSpawner::GetSpawnerConfig() const
 {
-	StartDrop();
+	return GetConfig<UBonusGimmickConfig>();
 }
 
 void ABonusSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 	GetWorldTimerManager().ClearTimer(WarningTimerHandle);
 	ClearWarningMarkers();
 
@@ -71,11 +63,11 @@ void ABonusSpawner::SyncOccupancy()
 	}
 }
 
-void ABonusSpawner::StartDrop()
+void ABonusSpawner::SpawnBatch(const int32 WantedCount)
 {
 	if (!HasAuthority()) return;
 
-	// The last warning is still up, so this round is skipped
+	// The last warning is still up, so this batch is skipped
 	if (!PendingIndices.IsEmpty()) return;
 
 	const UBonusGimmickConfig& Config = GetConfig<UBonusGimmickConfig>();
@@ -93,8 +85,7 @@ void ABonusSpawner::StartDrop()
 		}
 	}
 
-	// Too few free points means fewer drops this round
-	const int32 WantedCount = FMath::RandRange(Config.MinSpawnCount, FMath::Max(Config.MinSpawnCount, Config.MaxSpawnCount));
+	// Too few free points means fewer drops this batch
 	const int32 Count = FMath::Min(WantedCount, FreeIndices.Num());
 	for (int32 Picked = 0; Picked < Count; ++Picked)
 	{

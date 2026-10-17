@@ -56,7 +56,7 @@ namespace GimmickConsole
 
 	static FAutoConsoleCommandWithWorldAndArgs TriggerCommand(
 		TEXT("Trombone.Gimmick.Trigger"),
-		TEXT("기믹을 타이머를 기다리지 않고 바로 발동. 예: Trombone.Gimmick.Trigger Gravity"),
+		TEXT("기믹을 타이머나 기믹 시퀀스의 차례를 기다리지 않고 바로 발동. 예: Trombone.Gimmick.Trigger Gravity"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World) { Run(ECommand::Trigger, Args, World); }));
 
 	static FAutoConsoleCommandWithWorldAndArgs StopCommand(
@@ -71,7 +71,7 @@ namespace GimmickConsole
 
 	static FAutoConsoleCommandWithWorld FeverCommand(
 		TEXT("Trombone.Gimmick.Fever"),
-		TEXT("곡의 피버 큐를 기다리지 않고 기믹의 피버 타임을 바로 시작. 스포트라이트와 압력판은 곡의 큐만 따른다"),
+		TEXT("곡의 피버 큐를 기다리지 않고 기믹의 피버 타임을 바로 시작. 압력판은 곡의 큐만 따른다"),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
 		{
 			AGimmickManager* Manager = AGimmickManager::Find(World);
@@ -173,7 +173,7 @@ void AGimmickManager::StartSequences()
 
 		const int32 RunIndex = SequenceRuns.AddDefaulted();
 		SequenceRuns[RunIndex].SequenceIndex = SequenceIndex;
-		ScheduleNextInSequence(RunIndex, Sequences[SequenceIndex].FirstDelay);
+		ScheduleNextInSequence(RunIndex, Sequences[SequenceIndex].FirstStartTime);
 	}
 }
 
@@ -251,7 +251,7 @@ void AGimmickManager::BeginFeverTime()
 	{
 		for (FSequenceRun& Run : SequenceRuns)
 		{
-			if (StageData->GetSequences()[Run.SequenceIndex].bUseFeverOrder)
+			if (StageData->GetSequences()[Run.SequenceIndex].bChangeOrderInFever)
 			{
 				Run.NextIndex = 0;
 			}
@@ -398,7 +398,7 @@ void AGimmickManager::ValidateStageData() const
 	// Garbage and presents have empty class lists there, so nothing spawns
 	if (!StageData && ManagedGimmicks.Num() > 0)
 	{
-		Warn(FString::Printf(TEXT("[기믹] %s 에 레벨 기믹 설정이 비어 있습니다. 기믹 %d개가 기본값으로 동작하고, 투척물과 선물, 순서 그룹이 필요한 기믹은 나오지 않습니다"),
+		Warn(FString::Printf(TEXT("[기믹] %s 에 레벨 기믹 설정이 비어 있습니다. 기믹 %d개가 기본값으로 동작하고, 투척물과 선물, 기믹 시퀀스가 필요한 기믹은 나오지 않습니다"),
 			*GetName(), ManagedGimmicks.Num()));
 		return;
 	}
@@ -411,7 +411,7 @@ void AGimmickManager::ValidateStageData() const
 
 	for (const UGimmickConfig* Config : FindConfigsWithoutSequence())
 	{
-		Warn(FString::Printf(TEXT("[기믹] %s 은(는) 순서 그룹에서만 발동하는데 %s 의 어느 순서 그룹에도 없어 나오지 않습니다"),
+		Warn(FString::Printf(TEXT("[기믹] %s 은(는) 기믹 시퀀스에서만 발동하는데 %s 의 어느 기믹 시퀀스에도 없어 나오지 않습니다"),
 			*UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString(), *StageData->GetName()));
 	}
 }
@@ -425,7 +425,7 @@ void AGimmickManager::CheckForErrors()
 	{
 		FMessageLog("MapCheck").Warning()
 			->AddToken(FUObjectToken::Create(this))
-			->AddToken(FTextToken::Create(FText::FromString(TEXT("레벨 기믹 설정이 비어 있습니다. 이 레벨의 기믹은 기본값으로 동작하고, 투척물과 선물, 순서 그룹이 필요한 기믹은 나오지 않습니다"))));
+			->AddToken(FTextToken::Create(FText::FromString(TEXT("레벨 기믹 설정이 비어 있습니다. 이 레벨의 기믹은 기본값으로 동작하고, 투척물과 선물, 기믹 시퀀스가 필요한 기믹은 나오지 않습니다"))));
 		return;
 	}
 
@@ -433,7 +433,7 @@ void AGimmickManager::CheckForErrors()
 	{
 		FMessageLog("MapCheck").Warning()
 			->AddToken(FUObjectToken::Create(this))
-			->AddToken(FTextToken::Create(FText::FromString(FString::Printf(TEXT("%s 은(는) 순서 그룹에서만 발동하는데 %s 의 어느 순서 그룹에도 없습니다"),
+			->AddToken(FTextToken::Create(FText::FromString(FString::Printf(TEXT("%s 은(는) 기믹 시퀀스에서만 발동하는데 %s 의 어느 기믹 시퀀스에도 없습니다"),
 				*UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString(), *StageData->GetName()))));
 	}
 

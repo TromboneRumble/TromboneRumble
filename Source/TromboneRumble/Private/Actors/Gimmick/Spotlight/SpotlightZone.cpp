@@ -1,4 +1,5 @@
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
+#include "Actors/Gimmick/GimmickBase.h"
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Data/Gimmick/SpotlightGimmickConfig.h"
 #include "Components/SphereComponent.h"
@@ -291,9 +292,7 @@ bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* InCharacter)
 
 void ASpotlightZone::StartLifecycleTimer(const float InDuration, void(ASpotlightZone::* InTimerMethod)())
 {
-	FTimerDelegate TimerDel;
-	TimerDel.BindUObject(this, InTimerMethod);
-	GetWorldTimerManager().SetTimer(LifecycleTimerHandle, TimerDel, InDuration, false);
+	AGimmickBase::StartPhaseTimer(GetWorldTimerManager(), LifecycleTimerHandle, FTimerDelegate::CreateUObject(this, InTimerMethod), InDuration);
 }
 
 void ASpotlightZone::OnWarningFinished()

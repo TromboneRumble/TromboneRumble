@@ -123,10 +123,7 @@ private:
 	UFUNCTION()
 	void HandleMusicCallback(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo);
 	
-	/**
-	 * Gimmick settings of this level.
-	 * A gimmick without a config here runs with its class defaults.
-	 */
+	/** 이 레벨이 쓰는 레벨 기믹 설정 에셋. 비우면 기믹이 기본값으로 동작하고, 투척물과 선물, 기믹 시퀀스가 필요한 기믹은 나오지 않는다 */
 	UPROPERTY(EditInstanceOnly, Category = "Config", meta = (DisplayName = "레벨 기믹 설정"))
 	TObjectPtr<UStageGimmickData> StageData;
 

@@ -45,7 +45,7 @@ struct FDrunkardRule
  * @see ADrunkardNPC
  */
 UCLASS(meta = (DisplayName = "취객"))
-class TROMBONERUMBLE_API UDrunkardGimmickConfig : public UGimmickConfig
+class TROMBONERUMBLE_API UDrunkardGimmickConfig : public UEventGimmickConfig
 {
 	GENERATED_BODY()
 
@@ -55,6 +55,9 @@ public:
 	UDrunkardGimmickConfig()
 	{
 		GimmickType = EGimmickType::Drunkard;
+
+		// The drunkard breaks in without a warning. Its entrance plays the part of one
+		bHasWarning = false;
 
 		// 상체 물리 시작값: 세기(Strength)를 낮출수록 흐물거림이 커진다.
 		UpperBodyPhysicsProfile.bIsLocalSimulation = false;
@@ -71,12 +74,12 @@ public:
 	//~ End UGimmickConfig Interface
 #endif
 
-	//~ Begin UGimmickConfig Interface
-	virtual bool RunsOnlyInSequence() const override { return true; }
-	//~ End UGimmickConfig Interface
+	//~ Begin UEventGimmickConfig Interface
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	//~ End UEventGimmickConfig Interface
 
-	/** @return The rule for the current part of the song. */
-	const FDrunkardRule& GetRule(const bool bIsFeverTime) const { return bIsFeverTime ? Fever : Normal; }
+	/** @return The rule for the current part of the song. The fever rule counts only while bUseFeverRule is on. */
+	const FDrunkardRule& GetRule(const bool bIsFeverTime) const { return bIsFeverTime && bUseFeverRule ? Fever : Normal; }
 
 	/** @return Walk speed for the current part of the song. */
 	float GetWalkSpeed(const bool bIsFeverTime) const { return GetRule(bIsFeverTime).WalkSpeed; }
@@ -96,20 +99,24 @@ public:
 		OutUpForce = bHasInstrument ? Rule.CaptureKnockbackUpForce : Rule.CaptureKnockbackUpForceNoInstrument;
 	}
 
-	/** 곡의 피버 큐 전에 쓰는 값 */
+	/** 평소에 쓰는 값. 피버 타임 시 강화를 끄면 피버 타임에도 이 값을 쓴다 */
 	UPROPERTY(EditAnywhere, Category = "게임플레이|규칙", meta = (DisplayName = "일반"))
 	FDrunkardRule Normal;
 
-	/** 곡의 피버 큐부터 쓰는 값. 이미 나와 있는 취객도 바로 바뀐다 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이|규칙", meta = (DisplayName = "피버"))
+	/** 켜면 피버 타임부터 피버 값을 쓰고, 이미 나와 있는 취객도 바로 바뀐다. 끄면 곡 내내 일반 값을 쓴다 */
+	UPROPERTY(EditAnywhere, Category = "게임플레이|규칙", meta = (DisplayName = "피버 타임 시 강화"))
+	bool bUseFeverRule = true;
+
+	/** 피버 타임 시 강화를 켰을 때 피버 타임부터 쓰는 값 */
+	UPROPERTY(EditAnywhere, Category = "게임플레이|규칙", meta = (DisplayName = "피버", EditCondition = "bUseFeverRule"))
 	FDrunkardRule Fever;
 
 	/** 문을 통과한 뒤 추격을 시작하기 전까지 멈춰 있는 시간 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.1", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "등장 후 정지 시간", ClampMin = "0.0", Units = "s"))
 	float EnterPauseDuration = 1.f;
 
 	/** 생성 지점에서 정지 지점까지 문을 뚫고 들어오는 시간 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "문 통과 시간", ClampMin = "0.05", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "문 통과 시간", ClampMin = "0.0", Units = "s"))
 	float DoorPassDuration = 0.5f;
 
 	/** 취객이 문을 부술 때 문 조각이 튀어 나가는 속도 (cm/s) */
@@ -117,7 +124,7 @@ public:
 	float DoorBreakStrength = 600.f;
 
 	/** 플레이어를 쫓는 시간. 다 쓰면 들어온 문으로 퇴장한다 (초) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "추격 시간", ClampMin = "0.1", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|시간", meta = (DisplayName = "추격 시간", ClampMin = "0.0", Units = "s"))
 	float ChaseDuration = 30.f;
 
 	/** 이 시간 안에 퇴장 지점에 닿지 못하면(경로 막힘 등) 강제로 사라진다. 끼인 취객이 다음 등장을 막지 않게 한다 (초) */

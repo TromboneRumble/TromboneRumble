@@ -30,6 +30,20 @@ void AGimmickBase::Deactivate()
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
+void AGimmickBase::StartPhaseTimer(FTimerManager& TimerManager, FTimerHandle& Handle, const FTimerDelegate& Callback, const float Duration)
+{
+	TimerManager.ClearTimer(Handle);
+
+	if (Duration > 0.f)
+	{
+		TimerManager.SetTimer(Handle, Callback, Duration, false);
+		return;
+	}
+
+	// Next tick and not at once, so the phase still starts and replicates before it ends
+	Handle = TimerManager.SetTimerForNextTick(Callback);
+}
+
 void AGimmickBase::NotifyEventFinished()
 {
 	if (AGimmickManager* Manager = AGimmickManager::Find(GetWorld()))

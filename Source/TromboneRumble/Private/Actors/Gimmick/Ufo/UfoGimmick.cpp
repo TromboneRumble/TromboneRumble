@@ -184,7 +184,6 @@ void AUfoGimmick::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	DOREPLIFETIME(ThisClass, PlannedPath);
 }
 
-#if WITH_EDITOR
 float AUfoGimmick::GetAverageLineLength() const
 {
 	float Total = 0.f;
@@ -199,6 +198,7 @@ float AUfoGimmick::GetAverageLineLength() const
 	return Count > 0 ? Total / Count : 0.f;
 }
 
+#if WITH_EDITOR
 void AUfoGimmick::CheckForErrors()
 {
 	Super::CheckForErrors();

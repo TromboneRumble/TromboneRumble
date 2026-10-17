@@ -66,10 +66,8 @@ public:
 	/** @return Settings of this gimmick. AUfo reads them through its owner. */
 	const UUfoGimmickConfig& GetUfoConfig() const { return GetConfig<UUfoGimmickConfig>(); }
 
-#if WITH_EDITOR
-	/** @return Average ground length of the valid lines in cm, or 0 when there is none. The timeline of the settings panel uses it. */
+	/** @return Average ground length of the valid lines in cm, or 0 when there is none. UUfoGimmickConfig counts it in the event length. */
 	float GetAverageLineLength() const;
-#endif
 
 	/** @return Where the next or the current UFO flies. Only meaningful while the state is not Idle. */
 	UFUNCTION(BlueprintPure, Category = "Gimmick")

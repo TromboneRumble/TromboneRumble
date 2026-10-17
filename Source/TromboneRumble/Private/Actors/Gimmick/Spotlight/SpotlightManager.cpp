@@ -3,7 +3,6 @@
 #include "Actors/Gimmick/Spotlight/SpotlightZone.h"
 #include "Data/QuestData.h"
 #include "Engine/TargetPoint.h"
-#include "Subsystems/RhythmSubsystem.h"
 #include "Subsystems/WorldSubsystem/TutorialWorldSubsystem.h"
 
 ASpotlightManager::ASpotlightManager()
@@ -11,75 +10,17 @@ ASpotlightManager::ASpotlightManager()
 	SetReplicates(false);
 }
 
-void ASpotlightManager::Activate()
+const USpawnerGimmickConfig& ASpotlightManager::GetSpawnerConfig() const
 {
-    Super::Activate();
-    
-    if (HasAuthority())
-    {
-        if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-        {
-            RS->OnMusicCallback.AddDynamic(this, &ThisClass::OnMusicCallbackReceived);
-        }
-        TriggerSpotlightSpawn();
-    }
+	return GetConfig<USpotlightGimmickConfig>();
 }
 
-void ASpotlightManager::Deactivate()
-{
-    Super::Deactivate();
-    
-    if (HasAuthority())
-    {
-        if (GetWorld())
-        {
-            GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-            SpawnTimerHandle.Invalidate();
-        }
-
-        if (URhythmSubsystem* RS = GetGameInstance()->GetSubsystem<URhythmSubsystem>())
-        {
-            RS->OnMusicCallback.RemoveDynamic(this, &ThisClass::OnMusicCallbackReceived);
-        }
-    }
-}
-
-void ASpotlightManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-    Deactivate();
-	
-	Super::EndPlay(EndPlayReason);
-}
-
-void ASpotlightManager::OnMusicCallbackReceived(EAkCallbackType CallbackType, UAkCallbackInfo* CallbackInfo)
-{
-    if (const UAkMusicSyncCallbackInfo* MusicInfo = Cast<UAkMusicSyncCallbackInfo>(CallbackInfo))
-    {
-        const FString& CueString = MusicInfo->UserCueName;
-        if (!CueString.IsEmpty())
-        {
-            const FName CueName(*CueString);
-            if (CueName == TEXT("Event_Spotlight_Fever"))
-            {
-                bIsFeverTime = true;
-            }
-        }
-    }
-}
-
-void ASpotlightManager::ForceTrigger()
-{
-	TriggerSpotlightSpawn();
-}
-
-void ASpotlightManager::TriggerSpotlightSpawn()
+void ASpotlightManager::SpawnBatch(const int32 SpawnCount)
 {
 	if (!HasAuthority()) return;
 
     const USpotlightGimmickConfig& Config = GetConfig<USpotlightGimmickConfig>();
-    const FSpotlightSpawnRule& Rule = Config.GetRule(bIsFeverTime);
-
-    const int32 SpawnCount = FMath::RandRange(Rule.MinSpawnCount, FMath::Max(Rule.MinSpawnCount, Rule.MaxSpawnCount));
+    const bool bIsFeverTime = IsFeverTime();
     
     TArray<TObjectPtr<ATargetPoint>> AvailableSpawnPoints;
     for (auto Point : SpawnPoints)
@@ -129,18 +70,6 @@ void ASpotlightManager::TriggerSpotlightSpawn()
             }
         }
     }
-
-    const float NextSpawnInterval = Rule.Interval.Pick();
-
-    GetWorldTimerManager().ClearTimer(SpawnTimerHandle); 
-    
-    GetWorldTimerManager().SetTimer(
-        SpawnTimerHandle,
-        this,
-        &ASpotlightManager::TriggerSpotlightSpawn,
-        NextSpawnInterval,
-        false
-    );
 }
 
 bool ASpotlightManager::IsSpawnPointOccupied(const FVector& Location) const
@@ -190,7 +119,7 @@ void ASpotlightManager::Server_TriggerAllSpotlightSpawn_Implementation()
 
         if (NewZone)
         {
-            NewZone->InitializeZone(bIsFeverTime, GetConfig<USpotlightGimmickConfig>().BonusScore);
+            NewZone->InitializeZone(IsFeverTime(), GetConfig<USpotlightGimmickConfig>().BonusScore);
             ActiveSpotlightZones.Add(NewZone);
             NewZone->OnDestroyed.AddDynamic(this, &ASpotlightManager::OnSpotlightZoneDestroyed);
         }

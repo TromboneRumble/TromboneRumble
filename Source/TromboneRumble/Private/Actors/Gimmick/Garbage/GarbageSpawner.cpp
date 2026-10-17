@@ -16,21 +16,6 @@ AGarbageSpawner::AGarbageSpawner()
 	AActor::SetReplicateMovement(false);
 }
 
-void AGarbageSpawner::Activate()
-{
-	Super::Activate();
-	
-	if (HasAuthority())
-	{
-		Server_StartAutoSpawn();
-	}
-}
-
-void AGarbageSpawner::ForceTrigger()
-{
-	Server_SpawnGarbageOnce();
-}
-
 #if WITH_EDITOR
 void AGarbageSpawner::GetSettingsObjects(TArray<UObject*>& OutObjects) const
 {
@@ -44,19 +29,18 @@ void AGarbageSpawner::GetSettingsObjects(TArray<UObject*>& OutObjects) const
 }
 #endif
 
-void AGarbageSpawner::BeginPlay()
+const USpawnerGimmickConfig& AGarbageSpawner::GetSpawnerConfig() const
 {
-	Super::BeginPlay();
-
+	return GetConfig<UGarbageGimmickConfig>();
 }
 
-void AGarbageSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AGarbageSpawner::SpawnBatch(const int32 Count)
 {
-	if (HasAuthority())
+	// Each throw picks its own target and spawn point
+	for (int32 Index = 0; Index < Count; ++Index)
 	{
-		Server_StopAutoSpawn();
+		Server_SpawnGarbageOnce();
 	}
-	Super::EndPlay(EndPlayReason);
 }
 
 void AGarbageSpawner::Server_SpawnGarbageOnce()
@@ -91,64 +75,6 @@ void AGarbageSpawner::Server_SpawnGarbageOnce()
 	}
 
 	SpawnAndThrow_Server(SpawnTransform, TargetPawn);
-}
-
-void AGarbageSpawner::Server_StartAutoSpawn()
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (AutoSpawnTimer.IsValid())
-	{
-		return;
-	}
-	
-	ScheduleNextSpawn();
-}
-
-void AGarbageSpawner::Server_StopAutoSpawn()
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (AutoSpawnTimer.IsValid())
-	{
-		GetWorldTimerManager().ClearTimer(AutoSpawnTimer);
-	}
-}
-
-void AGarbageSpawner::StartAutoSpawnFromMusicCue(FName CueName)
-{
-	if (CueName == TEXT("Event_Spotlight_Start"))
-	{
-		Server_StartAutoSpawn();
-	}
-}
-
-void AGarbageSpawner::ScheduleNextSpawn()
-{
-	if (!HasAuthority()) return;
-
-	const float NextInterval = GetConfig<UGarbageGimmickConfig>().SpawnInterval.Pick();
-
-	GetWorldTimerManager().SetTimer(
-		AutoSpawnTimer,
-		this,
-		&ThisClass::SpawnAndReschedule,
-		NextInterval,
-		false
-	);
-}
-
-void AGarbageSpawner::SpawnAndReschedule()
-{
-	Server_SpawnGarbageOnce();
-	AutoSpawnTimer.Invalidate();
-	ScheduleNextSpawn();
 }
 
 TSubclassOf<AGarbageBase> AGarbageSpawner::PickRandomGarbageClass() const

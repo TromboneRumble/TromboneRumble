@@ -155,11 +155,16 @@ void ABlackHoleGimmick::StartWarning()
 {
 	if (!HasAuthority()) return;
 
-	SetState(EBlackHoleState::Warning);
+	// No warning time means no warning, the same as the other event gimmicks
+	const float WarningDuration = GetConfig<UBlackHoleGimmickConfig>().WarningDuration;
+	if (WarningDuration <= 0.f)
+	{
+		StartActive();
+		return;
+	}
 
-	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive,
-		FMath::Max(0.01f, GetConfig<UBlackHoleGimmickConfig>().WarningDuration), false);
+	SetState(EBlackHoleState::Warning);
+	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartActive), WarningDuration);
 }
 
 void ABlackHoleGimmick::StartActive()
@@ -174,9 +179,7 @@ void ABlackHoleGimmick::StartActive()
 
 	SetState(EBlackHoleState::Active);
 
-	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartCollapse,
-		GetConfig<UBlackHoleGimmickConfig>().GrowDuration, false);
+	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartCollapse), GetConfig<UBlackHoleGimmickConfig>().GrowDuration);
 
 	GetWorldTimerManager().ClearTimer(CaptureTimerHandle);
 	GetWorldTimerManager().SetTimer(CaptureTimerHandle, this, &ThisClass::CheckCaptures,
@@ -192,9 +195,7 @@ void ABlackHoleGimmick::StartCollapse()
 
 	SetState(EBlackHoleState::Collapse);
 
-	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::EndCollapse,
-		FMath::Max(0.05f, GetConfig<UBlackHoleGimmickConfig>().CollapseDuration), false);
+	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::EndCollapse), GetConfig<UBlackHoleGimmickConfig>().CollapseDuration);
 }
 
 void ABlackHoleGimmick::EndCollapse()

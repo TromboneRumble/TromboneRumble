@@ -3,25 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
+#include "Actors/Gimmick/GimmickSpawnerBase.h"
 #include "BonusSpawner.generated.h"
 
 class ABonusDrop;
 class ATargetPoint;
 
 /**
- * BonusSpawner drops ABonusDrop actors on some of its spawn points at a fixed interval.
+ * BonusSpawner drops ABonusDrop actors on some of its spawn points, on the spawn rule of its config.
  * The present of the snow field and the docking port supply of the space station both use it, and the Blueprint picks the gimmick type.
  * Every number comes from UBonusGimmickConfig.
  *
- * Each round picks free points, shows a warning marker on the floor below them, then drops one actor on each.
+ * Each batch picks free points, shows a warning marker on the floor below them, then drops one actor on each.
  * A point is free while no drop from an earlier round sits on it.
  *
  * @see ABonusDrop
  * @see UBonusGimmickConfig
  */
 UCLASS()
-class TROMBONERUMBLE_API ABonusSpawner : public AGimmickBase
+class TROMBONERUMBLE_API ABonusSpawner : public AGimmickSpawnerBase
 {
 	GENERATED_BODY()
 
@@ -32,10 +32,14 @@ public:
 	//~ Begin AGimmickBase Interface
 	virtual void Activate() override;
 	virtual void Deactivate() override;
-	virtual void ForceTrigger() override;
 	//~ End AGimmickBase Interface
 
 protected:
+
+	//~ Begin AGimmickSpawnerBase Interface
+	virtual const USpawnerGimmickConfig& GetSpawnerConfig() const override;
+	virtual void SpawnBatch(int32 Count) override;
+	//~ End AGimmickSpawnerBase Interface
 
 	/** Places a drop falls from. Put them in the air above the floor. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus|Config", meta = (DisplayName = "스폰 가능 지점 목록"))
@@ -43,10 +47,7 @@ protected:
 
 private:
 
-	/** Pick the points of this round, then warn or drop at once. Server only. */
-	void StartDrop();
-
-	/** Drop one actor on each point this round picked. Server only. */
+	/** Drop one actor on each point this batch picked. Server only. */
 	void DropAtPendingPoints();
 
 	/** Match the length of ActiveDrops to SpawnPoints, and keep what it already holds. */
@@ -67,7 +68,7 @@ private:
 	UPROPERTY(Transient)
 	TArray<TWeakObjectPtr<ABonusDrop>> ActiveDrops;
 
-	/** Points this round picked and not dropped on yet. Server only. */
+	/** Points this batch picked and not dropped on yet. Server only. */
 	TArray<int32> PendingIndices;
 
 	/** Floor places under the picked points while the warning is up. Empty otherwise. */
@@ -78,7 +79,6 @@ private:
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<AActor>> WarningMarkers;
 
-	FTimerHandle SpawnTimerHandle;
 	FTimerHandle WarningTimerHandle;
 
 public:

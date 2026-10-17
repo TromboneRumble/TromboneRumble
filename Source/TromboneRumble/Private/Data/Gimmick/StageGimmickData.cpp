@@ -70,7 +70,7 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 		const FGimmickSequence& Sequence = Sequences[Index];
 		if (Sequence.Order.IsEmpty())
 		{
-			AddError(FString::Printf(TEXT("순서 그룹 %d: 순서가 비어 있습니다"), Index));
+			AddError(FString::Printf(TEXT("기믹 시퀀스 %d: 시퀀스 순서가 비어 있습니다"), Index));
 			continue;
 		}
 
@@ -82,12 +82,12 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 			const UGimmickConfig* Config = FindConfig(Type);
 			if (!Config)
 			{
-				AddError(FString::Printf(TEXT("순서 그룹 %d: %s 이(가) 순서에 있지만 기믹 목록에 없습니다"), Index, *TypeName));
+				AddError(FString::Printf(TEXT("기믹 시퀀스 %d: %s 이(가) 시퀀스 순서에 있지만 기믹 목록에 없습니다"), Index, *TypeName));
 				continue;
 			}
 			if (!Config->RunsOnlyInSequence())
 			{
-				AddError(FString::Printf(TEXT("순서 그룹 %d: %s 은(는) 자기 타이머로 도는 기믹이라 순서 그룹에 넣을 수 없습니다"), Index, *TypeName));
+				AddError(FString::Printf(TEXT("기믹 시퀀스 %d: %s 은(는) 자기 타이머로 도는 기믹이라 기믹 시퀀스에 넣을 수 없습니다"), Index, *TypeName));
 			}
 
 			// The same gimmick twice in one order is fine, but one gimmick cannot follow two orders
@@ -95,19 +95,19 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 			TypesInThis.Add(Type, &bInThisAlready);
 			if (!bInThisAlready && SequencedTypes.Contains(Type))
 			{
-				AddError(FString::Printf(TEXT("순서 그룹 %d: %s 이(가) 다른 순서 그룹에도 들어 있습니다"), Index, *TypeName));
+				AddError(FString::Printf(TEXT("기믹 시퀀스 %d: %s 이(가) 다른 기믹 시퀀스에도 들어 있습니다"), Index, *TypeName));
 			}
 		}
 		SequencedTypes.Append(TypesInThis);
 
 		// FindSequence only looks at Order, so a gimmick only in FeverOrder would still start on its own
-		if (Sequence.bUseFeverOrder)
+		if (Sequence.bChangeOrderInFever)
 		{
 			for (const EGimmickType Type : Sequence.FeverOrder)
 			{
 				if (!TypesInThis.Contains(Type))
 				{
-					AddError(FString::Printf(TEXT("순서 그룹 %d: %s 이(가) 피버 순서에 있지만 기본 순서에는 없습니다"), Index, *UEnum::GetDisplayValueAsText(Type).ToString()));
+					AddError(FString::Printf(TEXT("기믹 시퀀스 %d: %s 이(가) 피버 타임 시 시퀀스 순서에 있지만 시퀀스 순서에는 없습니다"), Index, *UEnum::GetDisplayValueAsText(Type).ToString()));
 				}
 			}
 		}
@@ -117,7 +117,7 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 	{
 		if (Config && Config->RunsOnlyInSequence() && !SequencedTypes.Contains(Config->GetGimmickType()))
 		{
-			AddError(FString::Printf(TEXT("%s 은(는) 순서 그룹에서만 발동하는데, 어느 순서 그룹에도 없습니다"), *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString()));
+			AddError(FString::Printf(TEXT("%s 은(는) 기믹 시퀀스에서만 발동하는데, 어느 기믹 시퀀스에도 없습니다"), *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString()));
 		}
 	}
 

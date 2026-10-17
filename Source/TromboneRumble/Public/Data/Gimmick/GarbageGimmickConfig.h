@@ -22,7 +22,7 @@ enum class EGarbageTargetingMode : uint8
  * @see AGarbageSpawner
  */
 UCLASS(meta = (DisplayName = "관중 투척"))
-class TROMBONERUMBLE_API UGarbageGimmickConfig : public UGimmickConfig
+class TROMBONERUMBLE_API UGarbageGimmickConfig : public USpawnerGimmickConfig
 {
 	GENERATED_BODY()
 
@@ -32,30 +32,30 @@ public:
 	UGarbageGimmickConfig()
 	{
 		GimmickType = EGimmickType::Garbage;
-		SpawnInterval.Min = 8.f;
-		SpawnInterval.Max = 15.f;
+		FirstSpawnDelay = 8.f;
+		Normal.Interval.Min = 8.f;
+		Normal.Interval.Max = 15.f;
 	}
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
 	virtual void ValidateConfig(FDataValidationContext& Context) const override;
-	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const override;
 	//~ End UGimmickConfig Interface
+
+	//~ Begin USpawnerGimmickConfig Interface
+	virtual float BuildSpawnTimeline(FGimmickTimelineBuilder& Builder, float SpawnTime) const override;
+	//~ End USpawnerGimmickConfig Interface
 #endif
 
 	/** 이 레벨에서 관중이 던지는 투척물 종류. 던질 때마다 하나를 무작위로 고른다 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "투척물 종류"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|물체", meta = (DisplayName = "투척물 종류"))
 	TArray<TSubclassOf<AGarbageBase>> GarbageClasses;
 
-	/** 한 번 던진 뒤 다음 투척까지 기다리는 시간 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "투척 간격"))
-	FGimmickInterval SpawnInterval;
-
 	/** 착지 지점이 타겟 플레이어에게서 최대 이만큼 벗어난다 (cm) */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "타겟팅 오차 반경", ClampMin = "0.0", Units = "cm"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|물체", meta = (DisplayName = "타겟팅 오차 반경", ClampMin = "0.0", Units = "cm"))
 	float TargetRandomRadius = 80.f;
 
 	/** 누구를 노릴지 정한다. 순위 가중은 순위가 높은 플레이어를 더 자주 노린다 */
-	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "대상 타겟팅 방식"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이|물체", meta = (DisplayName = "대상 타겟팅 방식"))
 	EGarbageTargetingMode TargetingMode = EGarbageTargetingMode::ScoreWeighted;
 };

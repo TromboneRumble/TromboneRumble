@@ -15,6 +15,7 @@
 #include "PropertyCustomizationHelpers.h"
 #include "PropertyEditorModule.h"
 #include "Styling/AppStyle.h"
+#include "UObject/UObjectHash.h"
 #include "Utilities/EnumHelper.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SSegmentedControl.h"
@@ -41,6 +42,25 @@ namespace
 	bool IsPlayingInEditor()
 	{
 		return GEditor && GEditor->PlayWorld != nullptr;
+	}
+
+	/** How a gimmick type runs, which decides what its Trigger, Stop and Restart buttons do. */
+	enum class EGimmickKind : uint8 { Event, Spawner, Other };
+
+	/** Kind of the gimmick type, read from the config class that carries it. A type without a config class, such as the blizzard, is Other. */
+	EGimmickKind GetGimmickKind(const EGimmickType GimmickType)
+	{
+		TArray<UClass*> ConfigClasses;
+		GetDerivedClasses(UGimmickConfig::StaticClass(), ConfigClasses);
+		for (const UClass* Class : ConfigClasses)
+		{
+			if (Class->HasAnyClassFlags(CLASS_Abstract | CLASS_Deprecated | CLASS_NewerVersionExists)) continue;
+			if (Class->GetDefaultObject<UGimmickConfig>()->GetGimmickType() != GimmickType) continue;
+
+			if (Class->IsChildOf<UEventGimmickConfig>()) return EGimmickKind::Event;
+			if (Class->IsChildOf<USpawnerGimmickConfig>()) return EGimmickKind::Spawner;
+		}
+		return EGimmickKind::Other;
 	}
 
 	/** Korean name of the gimmick type first, then the actor label so the designer can find it in the outliner. */
@@ -211,7 +231,7 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 
 			+ SSegmentedControl<int32>::Slot(0)
 			.Text(LOCTEXT("LevelTab", "레벨 설정"))
-			.ToolTip(LOCTEXT("LevelTabTip", "기믹마다 하나씩 있는 수치입니다. 발동 간격, 지속 시간, 점수, 이 레벨에서 관중이 던질 투척물 종류 등. 위에서 고른 레벨 기믹 설정 에셋에 저장됩니다"))
+			.ToolTip(LOCTEXT("LevelTabTip", "이 레벨에서 쓰는 기믹과 기믹 시퀀스의 수치입니다. 스폰 규칙, 단계별 시간, 점수, 이 레벨에서 관중이 던질 투척물 종류 등. 위에서 고른 레벨 기믹 설정 에셋에 저장됩니다"))
 
 			+ SSegmentedControl<int32>::Slot(1)
 			.Text(LOCTEXT("SharedTab", "투척물 종류별 수치"))
@@ -428,7 +448,7 @@ void SGimmickSettingsPanel::RebuildTimeline()
 
 			if (Config->RunsOnlyInSequence())
 			{
-				Builders.Last().SetNote(FText::FromString(TEXT("순서 그룹에 없어 발동하지 않습니다. 레벨 설정 탭의 순서 그룹에 넣어 주세요")));
+				Builders.Last().SetNote(FText::FromString(TEXT("기믹 시퀀스에 없어 발동하지 않습니다. 레벨 설정 탭의 기믹 시퀀스에 넣어 주세요")));
 				continue;
 			}
 			Config->BuildTimeline(Builders.Last());
@@ -442,12 +462,12 @@ void SGimmickSettingsPanel::RebuildTimeline()
 		{
 			if (Sequence.Order.IsEmpty()) continue;
 
-			float Time = Sequence.FirstDelay;
+			float Time = Sequence.FirstStartTime;
 			bool bFeverOrderStarted = false;
 			for (int32 Turn = 0; Time < TimelineRoundLength; ++Turn)
 			{
 				const bool bFever = Time >= TimelineFeverStart;
-				if (bFever && Sequence.bUseFeverOrder && !bFeverOrderStarted)
+				if (bFever && Sequence.bChangeOrderInFever && !bFeverOrderStarted)
 				{
 					bFeverOrderStarted = true;
 					Turn = 0;
@@ -471,12 +491,12 @@ void SGimmickSettingsPanel::RebuildTimeline()
 				return Text;
 			};
 
-			FString NoteText = FString::Printf(TEXT("순서 그룹: %s 순서로 이어집니다"), *JoinOrder(Sequence.Order));
-			if (Sequence.bUseFeverOrder)
+			FString NoteText = FString::Printf(TEXT("기믹 시퀀스: %s 순서로 이어집니다"), *JoinOrder(Sequence.Order));
+			if (Sequence.bChangeOrderInFever)
 			{
 				NoteText += Sequence.FeverOrder.IsEmpty()
 					? FString(TEXT("\n피버부터는 진행 중인 기믹만 끝내고 더 발동하지 않습니다"))
-					: FString::Printf(TEXT("\n피버부터는 진행 중인 기믹을 끝낸 뒤 %s 순서로 이어집니다 (사이 간격 %.1f초)"), *JoinOrder(Sequence.FeverOrder), Sequence.FeverGap);
+					: FString::Printf(TEXT("\n피버부터는 진행 중인 기믹을 끝낸 뒤 %s 순서로 이어집니다 (기믹 간 발동 간격 %.1f초)"), *JoinOrder(Sequence.FeverOrder), Sequence.FeverGap);
 			}
 
 			for (const EGimmickType Type : Sequence.Order)
@@ -485,7 +505,7 @@ void SGimmickSettingsPanel::RebuildTimeline()
 				if (!Builders.IsValidIndex(Index)) continue;
 
 				// Shows where fever time starts on the rows the fever order changes
-				if (Sequence.bUseFeverOrder)
+				if (Sequence.bChangeOrderInFever)
 				{
 					Builders[Index].IsFever(0.f);
 				}
@@ -568,7 +588,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
 					.MinValue(0.f)
 					.MaxValue(600.f)
 					.Delta(1.f)
-					.ToolTipText(LOCTEXT("FeverStartTip", "곡의 피버 큐(Event_Spotlight_Fever)가 오는 시점(초)입니다. 스포트라이트는 이 시점부터 피버 간격을 쓰고, 피버 순서가 있는 순서 그룹은 이 시점 이후 차례부터 피버 순서를 씁니다. 이 창에서만 쓰고 저장되지 않습니다"))
+					.ToolTipText(LOCTEXT("FeverStartTip", "곡의 피버 큐(Event_Spotlight_Fever)가 오는 시점(초)입니다. 피버 타임 시 강화를 켠 스포너는 이 시점부터 피버 스폰 규칙을 쓰고, 피버 타임 시 순서 변경을 켠 기믹 시퀀스는 이 시점 이후 차례부터 피버 타임 시 시퀀스 순서를 씁니다. 이 창에서만 쓰고 저장되지 않습니다"))
 					.Value_Lambda([this]() { return TimelineFeverStart; })
 					.OnValueChanged_Lambda([this](const float NewValue) { TimelineFeverStart = NewValue; RebuildTimeline(); })
 				]
@@ -578,7 +598,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
 			[
 				SNew(SButton)
 				.Text(LOCTEXT("Reroll", "다시 뽑기"))
-				.ToolTipText(LOCTEXT("RerollTip", "간격이 최소~최대인 기믹(관중 투척, 스포트라이트, 중력)은 실제 게임에서 매번 다르게 나옵니다. 타임라인은 그중 한 가지 경우를 보여주며, 이 버튼으로 다른 경우를 봅니다. 간격이 고정인 기믹은 바뀌지 않습니다"))
+				.ToolTipText(LOCTEXT("RerollTip", "스폰 간격이 최소~최대인 기믹은 실제 게임에서 매번 다르게 나옵니다. 타임라인은 그중 한 가지 경우를 보여주며, 이 버튼으로 다른 경우를 봅니다. 간격이 고정이거나 기믹 시퀀스로 도는 기믹은 바뀌지 않습니다"))
 				.OnClicked_Lambda([this]() { ++TimelineSeed; RebuildTimeline(); return FReply::Handled(); })
 			]
 		]
@@ -663,6 +683,27 @@ bool SGimmickSettingsPanel::IsSettingCategory(const FName RowName, const FName P
 
 TSharedRef<SWidget> SGimmickSettingsPanel::MakeGimmickRow(const FText& Label, const EGimmickType GimmickType)
 {
+	FText TriggerTip;
+	FText StopTip;
+	FText RestartTip;
+	switch (GetGimmickKind(GimmickType))
+	{
+	case EGimmickKind::Event:
+		TriggerTip = LOCTEXT("TriggerEventTip", "기믹 시퀀스의 차례를 기다리지 않고 지금 발동합니다. 꺼져 있으면 켠 뒤에 발동합니다. 예고부터 시작하고, 예고가 없거나 예고 시간이 0이면 바로 발동합니다. 이미 진행 중이면 아무 일도 없고, 기믹 시퀀스의 차례는 바뀌지 않습니다");
+		StopTip = LOCTEXT("StopEventTip", "기믹을 끕니다. 진행 중이면 바로 끝나고, 꺼져 있는 동안 기믹 시퀀스는 이 기믹의 차례를 건너뜁니다. 강제 발동이나 재시작을 누를 때까지 다시 켜지지 않습니다. 음악 큐가 모든 기믹을 다시 켜는 시점에는 함께 켜집니다");
+		RestartTip = LOCTEXT("RestartEventTip", "껐다 켜서 고친 값을 바로 반영합니다. 진행 중이면 바로 끝나고, 기믹 시퀀스에서 이 기믹의 다음 차례에 고친 값으로 발동합니다");
+		break;
+	case EGimmickKind::Spawner:
+		TriggerTip = LOCTEXT("TriggerSpawnerTip", "스폰 타이머를 기다리지 않고 지금 한 번 스폰합니다. 꺼져 있으면 켠 뒤에 스폰합니다. 개수는 지금 쓰는 스폰 규칙(일반 또는 피버)대로 뽑고, 스폰 타이머는 그대로 흘러갑니다");
+		StopTip = LOCTEXT("StopSpawnerTip", "기믹을 끕니다. 예고 중인 스폰과 다음 스폰은 취소되고, 이미 스폰된 물체는 남습니다. 강제 발동이나 재시작을 누를 때까지 다시 켜지지 않습니다. 음악 큐가 모든 기믹을 다시 켜는 시점에는 함께 켜집니다");
+		RestartTip = LOCTEXT("RestartSpawnerTip", "껐다 켜서 고친 값을 바로 반영합니다. 첫 스폰 지연부터 다시 셉니다");
+		break;
+	default:
+		TriggerTip = LOCTEXT("TriggerOtherTip", "이 기믹은 강제 발동이 없어, 꺼져 있으면 켜기만 합니다");
+		StopTip = LOCTEXT("StopOtherTip", "기믹을 끕니다. 강제 발동이나 재시작을 누를 때까지 다시 켜지지 않습니다. 음악 큐가 모든 기믹을 다시 켜는 시점에는 함께 켜집니다");
+		RestartTip = LOCTEXT("RestartOtherTip", "껐다 켜서 고친 값을 바로 반영합니다");
+		break;
+	}
 
 	const auto MakeCommandButton = [GimmickType](const FText& Label, const FText& ToolTip, const TCHAR* Command)
 	{
@@ -682,17 +723,17 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeGimmickRow(const FText& Label, co
 
 		+ SHorizontalBox::Slot().AutoWidth().Padding(4.f, 0.f)
 		[
-			MakeCommandButton(LOCTEXT("Trigger", "강제 발동"), LOCTEXT("TriggerTip", "타이머를 기다리지 않고 지금 발동합니다. 꺼져 있으면 켠 뒤에 발동합니다. 중력, 술통 침수, 미니 UFO는 예고 단계부터 시작하고, 취객은 예고 없이 바로 등장합니다. 이 넷은 이미 진행 중이면 아무 일도 없습니다. 관중 투척, 선물, 스포트라이트, 누수 물자국, 빙판은 누를 때마다 한 번 더 스폰합니다. 눈보라는 강제 발동이 없어 켜지기만 합니다"), TEXT("Trombone.Gimmick.Trigger"))
+			MakeCommandButton(LOCTEXT("Trigger", "강제 발동"), TriggerTip, TEXT("Trombone.Gimmick.Trigger"))
 		]
 
 		+ SHorizontalBox::Slot().AutoWidth().Padding(4.f, 0.f)
 		[
-			MakeCommandButton(LOCTEXT("Stop", "강제 종료"), LOCTEXT("StopTip", "기믹을 끕니다. 진행 중인 중력, 침수, 취객은 바로 끝납니다. 이미 스폰된 투척물, 선물, 웅덩이는 남습니다. 강제 발동이나 재시작을 누를 때까지 다시 발동하지 않습니다. 음악 큐가 모든 기믹을 다시 켜는 시점에는 함께 켜집니다"), TEXT("Trombone.Gimmick.Stop"))
+			MakeCommandButton(LOCTEXT("Stop", "강제 종료"), StopTip, TEXT("Trombone.Gimmick.Stop"))
 		]
 
 		+ SHorizontalBox::Slot().AutoWidth().Padding(4.f, 0.f)
 		[
-			MakeCommandButton(LOCTEXT("Restart", "재시작"), LOCTEXT("RestartTip", "껐다 켜서 고친 값을 바로 반영합니다. 첫 발동까지의 대기 시간부터 다시 셉니다"), TEXT("Trombone.Gimmick.Restart"))
+			MakeCommandButton(LOCTEXT("Restart", "재시작"), RestartTip, TEXT("Trombone.Gimmick.Restart"))
 		];
 }
 
@@ -743,7 +784,7 @@ FText SGimmickSettingsPanel::GetStatusText() const
 			FText::FromString(LevelName), FText::FromString(LevelData->GetName()));
 	}
 
-	return FText::Format(LOCTEXT("StatusSameData", "현재 레벨 {0}이 이 설정을 씁니다. 플레이 중에 고친 값은 대부분 그 기믹의 다음 발동부터 쓰입니다. 바로 보려면 아래의 재시작을 누르세요. 저장을 눌러야 에셋에 남습니다."),
+	return FText::Format(LOCTEXT("StatusSameData", "현재 레벨 {0}이 이 설정을 씁니다. 플레이 중에 고친 값은 대부분 그 기믹의 다음 발동이나 다음 스폰부터 쓰입니다. 바로 보려면 아래의 재시작을 누르세요. 저장을 눌러야 에셋에 남습니다."),
 		FText::FromString(LevelName));
 }
 

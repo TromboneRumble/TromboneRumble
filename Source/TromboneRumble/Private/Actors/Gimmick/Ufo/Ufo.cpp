@@ -24,9 +24,6 @@ namespace UfoWarp
 	/** Seconds the body bounces after the UFO stops. */
 	constexpr float SettleDuration = 0.3f;
 
-	/** Seconds the body squashes before the UFO dashes away. */
-	constexpr float WindupDuration = 0.2f;
-
 	/** Extra length along the flight at full warp speed. */
 	constexpr float StretchLength = 0.6f;
 
@@ -158,10 +155,10 @@ void AUfo::UpdateMotion(const float Now)
 			}
 		}
 
-		if (Since < UfoWarp::WindupDuration)
+		if (Since < UUfoGimmickConfig::WarpWindupDuration)
 		{
 			// Crouch before the dash
-			Squash = FMath::Sin(PI * Since / UfoWarp::WindupDuration);
+			Squash = FMath::Sin(PI * Since / UUfoGimmickConfig::WarpWindupDuration);
 		}
 		else
 		{
@@ -172,7 +169,7 @@ void AUfo::UpdateMotion(const float Now)
 			}
 
 			// Speeds up away from the line, the reverse of the arrival
-			const float Alpha = FMath::Clamp((Since - UfoWarp::WindupDuration) / Config.WarpDuration, 0.f, 1.f);
+			const float Alpha = FMath::Clamp((Since - UUfoGimmickConfig::WarpWindupDuration) / FMath::Max(Config.WarpDuration, UE_KINDA_SMALL_NUMBER), 0.f, 1.f);
 			Location += Direction * Config.WarpDistance * Alpha * Alpha * Alpha;
 			Stretch = Alpha * Alpha;
 			Size = FMath::Clamp((1.f - Alpha) / UfoWarp::GrowPart, 0.f, 1.f);
@@ -191,7 +188,7 @@ void AUfo::UpdateMotion(const float Now)
 		}
 
 		// Comes in fast from behind the line and brakes hard at its start
-		const float Alpha = FMath::Clamp(Elapsed / Config.WarpDuration, 0.f, 1.f);
+		const float Alpha = FMath::Clamp(Elapsed / FMath::Max(Config.WarpDuration, UE_KINDA_SMALL_NUMBER), 0.f, 1.f);
 		const float Remaining = 1.f - Alpha;
 		Location -= Direction * Config.WarpDistance * Remaining * Remaining * Remaining;
 		Stretch = Remaining * Remaining;
@@ -320,7 +317,7 @@ void AUfo::UpdateServer(const float Now)
 
 	// Every client finishes the dash on its own copy and removes it, so a slow connection never sees the UFO vanish mid dash
 	TearOff();
-	SetLifeSpan(UfoWarp::WindupDuration + Config.WarpDuration);
+	SetLifeSpan(UUfoGimmickConfig::WarpWindupDuration + Config.WarpDuration);
 }
 
 void AUfo::TornOff()
@@ -334,7 +331,7 @@ void AUfo::TornOff()
 		LeaveStartServerTime = Now;
 	}
 
-	const float LeaveEnd = LeaveStartServerTime + UfoWarp::WindupDuration + GetConfig().WarpDuration;
+	const float LeaveEnd = LeaveStartServerTime + UUfoGimmickConfig::WarpWindupDuration + GetConfig().WarpDuration;
 	SetLifeSpan(FMath::Max(LeaveEnd - Now, 0.1f));
 }
 

@@ -23,7 +23,7 @@ public:
 	UDockingPortGimmickConfig()
 	{
 		GimmickType = EGimmickType::DockingPort;
-		MaxSpawnCount = 2;
+		Normal.MaxSpawnCount = 2;
 		WarningDuration = 0.f;
 		Lifetime = 10.f;
 	}

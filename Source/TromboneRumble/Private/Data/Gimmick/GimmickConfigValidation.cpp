@@ -10,8 +10,35 @@
 #include "Actors/Gimmick/Garbage/GarbageBase.h"
 #include "Misc/DataValidation.h"
 
+void USpawnerGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
+{
+	// Every spawner shares this, so the message takes the name from the config class
+	const FText Name = GetClass()->GetDisplayNameText();
+
+	// The spawner still works and uses the minimum, so these are warnings and not errors
+	const auto CheckRule = [&Context, &Name](const FGimmickSpawnRule& Rule, const FText& RuleName)
+	{
+		if (Rule.Interval.Min > Rule.Interval.Max)
+		{
+			Context.AddWarning(FText::Format(FText::FromString(TEXT("{0}: {1} 스폰 간격의 최소가 최대보다 커서 항상 최소 간격으로 스폰합니다")), Name, RuleName));
+		}
+		if (Rule.MinSpawnCount > Rule.MaxSpawnCount)
+		{
+			Context.AddWarning(FText::Format(FText::FromString(TEXT("{0}: {1} 최소 스폰 개수가 최대보다 커서 항상 최소 개수만큼 스폰합니다")), Name, RuleName));
+		}
+	};
+
+	CheckRule(Normal, FText::FromString(TEXT("일반")));
+	if (bUseFeverRule)
+	{
+		CheckRule(Fever, FText::FromString(TEXT("피버")));
+	}
+}
+
 void UGarbageGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
 {
+	Super::ValidateConfig(Context);
+
 	if (GarbageClasses.IsEmpty())
 	{
 		Context.AddError(FText::FromString(TEXT("관중 투척: 투척물 종류가 비어 있어 아무것도 던지지 않습니다")));
@@ -35,18 +62,14 @@ void UDrunkardGimmickConfig::ValidateConfig(FDataValidationContext& Context) con
 
 void UBonusGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
 {
+	Super::ValidateConfig(Context);
+
 	// The present and the docking port share this function, so the message takes the name from the config class
 	const FText Name = GetClass()->GetDisplayNameText();
 
 	if (!DropClass)
 	{
 		Context.AddError(FText::Format(FText::FromString(TEXT("{0}: 떨어뜨릴 클래스가 비어 있어 아무것도 떨어지지 않습니다")), Name));
-	}
-
-	// The spawner still works and always drops the minimum, so this is a warning and not an error
-	if (MinSpawnCount > MaxSpawnCount)
-	{
-		Context.AddWarning(FText::Format(FText::FromString(TEXT("{0}: 최소 개수가 최대 개수보다 커서 항상 최소 개수만큼 떨어집니다")), Name));
 	}
 
 	if (WarningDuration > 0.f && !WarningMarkerClass)

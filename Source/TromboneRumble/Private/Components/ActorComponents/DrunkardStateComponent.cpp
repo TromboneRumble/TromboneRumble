@@ -2,6 +2,7 @@
 
 #include "Components/ActorComponents/DrunkardStateComponent.h"
 #include "Actors/Gimmick/Drunkard/DrunkardNPC.h"
+#include "Actors/Gimmick/GimmickBase.h"
 #include "Actors/Gimmick/Drunkard/DrunkardSpawner.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
@@ -56,13 +57,7 @@ void UDrunkardStateComponent::HandleDoorEntranceFinished()
 
 	// 등장 후 정지: 잠깐 멈췄다가 추격 시작
 	const UDrunkardGimmickConfig& Config = GetConfig();
-	GetWorld()->GetTimerManager().SetTimer(
-		EnterTimerHandle,
-		this,
-		&ThisClass::BeginChasing,
-		Config.EnterPauseDuration,
-		false
-	);
+	AGimmickBase::StartPhaseTimer(GetWorld()->GetTimerManager(), EnterTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::BeginChasing), Config.EnterPauseDuration);
 }
 
 void UDrunkardStateComponent::BeginChasing()
@@ -75,13 +70,7 @@ void UDrunkardStateComponent::BeginChasing()
 	// 지속시간 계산 시작 시점 = 문을 완전히 나온 시점
 	const UDrunkardGimmickConfig& Config = GetConfig();
 	const float ChaseDuration = Config.ChaseDuration;
-	GetWorld()->GetTimerManager().SetTimer(
-		ChaseTimerHandle,
-		this,
-		&ThisClass::BeginExiting,
-		ChaseDuration,
-		false
-	);
+	AGimmickBase::StartPhaseTimer(GetWorld()->GetTimerManager(), ChaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::BeginExiting), ChaseDuration);
 
 	// The target mark shows this time, so it is told here, right where the timer is set
 	if (ADrunkardNPC* OwnerNPC = Cast<ADrunkardNPC>(GetOwner()))
