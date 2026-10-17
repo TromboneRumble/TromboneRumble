@@ -15,7 +15,7 @@ class ABonusDrop;
  * @see ABonusSpawner
  * @see ABonusDrop
  */
-UCLASS(Abstract, meta = (GroupSettingsByCategory))
+UCLASS(Abstract)
 class TROMBONERUMBLE_API UBonusGimmickConfig : public UGimmickConfig
 {
 	GENERATED_BODY()
@@ -40,11 +40,11 @@ public:
 
 	/** 한 번에 떨어뜨릴 최소 개수 */
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "최소 개수", ClampMin = "1"))
-	int32 MinDropCount = 1;
+	int32 MinSpawnCount = 1;
 
 	/** 한 번에 떨어뜨릴 최대 개수. 빈 지점이 모자라면 있는 만큼만 떨어진다 */
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "최대 개수", ClampMin = "1"))
-	int32 MaxDropCount = 1;
+	int32 MaxSpawnCount = 1;
 
 	/** 착지한 뒤 사라지기까지의 시간. 0이면 누가 주울 때까지 남는다 (초) */
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "유지 시간", ClampMin = "0.0", Units = "s"))

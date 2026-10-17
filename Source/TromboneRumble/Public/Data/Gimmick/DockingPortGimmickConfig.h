@@ -12,7 +12,7 @@
  * @see ABonusSpawner
  * @see ADockingPort
  */
-UCLASS(meta = (DisplayName = "도킹 포트 보급", GroupSettingsByCategory))
+UCLASS(meta = (DisplayName = "도킹 포트 보급"))
 class TROMBONERUMBLE_API UDockingPortGimmickConfig : public UBonusGimmickConfig
 {
 	GENERATED_BODY()
@@ -23,7 +23,7 @@ public:
 	UDockingPortGimmickConfig()
 	{
 		GimmickType = EGimmickType::DockingPort;
-		MaxDropCount = 2;
+		MaxSpawnCount = 2;
 		WarningDuration = 0.f;
 		Lifetime = 10.f;
 	}

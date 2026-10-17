@@ -10,8 +10,8 @@
  * The details view drops the categories of an object shown inline, so the settings of a gimmick would come as one flat list.
  * This groups them again by their Category meta, and "A|B" becomes the group B inside the group A.
  *
- * Keep in mind that only the properties of a class with the GroupSettingsByCategory class meta are grouped.
- * Every other property stays flat as before, so configs that have not opted in look the same.
+ * Keep in mind that a property without a category of its own stays flat, above the groups.
+ * The top level category "고급" starts collapsed, for the settings a designer rarely touches.
  *
  * @see UGimmickConfig
  */

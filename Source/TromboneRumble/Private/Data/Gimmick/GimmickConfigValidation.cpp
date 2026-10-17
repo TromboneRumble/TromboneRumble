@@ -44,7 +44,7 @@ void UBonusGimmickConfig::ValidateConfig(FDataValidationContext& Context) const
 	}
 
 	// The spawner still works and always drops the minimum, so this is a warning and not an error
-	if (MinDropCount > MaxDropCount)
+	if (MinSpawnCount > MaxSpawnCount)
 	{
 		Context.AddWarning(FText::Format(FText::FromString(TEXT("{0}: 최소 개수가 최대 개수보다 커서 항상 최소 개수만큼 떨어집니다")), Name));
 	}
@@ -63,20 +63,20 @@ void UBlackHoleGimmickConfig::ValidateConfig(FDataValidationContext& Context) co
 	}
 
 	// A capture radius as wide as the influence radius leaves nothing to orbit
-	if (InnerRadiusStart >= InfluenceRadiusStart)
+	if (CaptureRadiusStart >= InfluenceRadiusStart)
 	{
 		Context.AddError(FText::FromString(TEXT("블랙홀: 포획 반경 시작이 영향 반경 시작보다 커서 공전 구간이 없습니다")));
 	}
 
 	if (HasEmptyCurve())
 	{
-		Context.AddError(FText::FromString(TEXT("블랙홀: 거리별 끌림/공전 커브에 키가 없어 아무것도 끌려가지 않습니다")));
+		Context.AddError(FText::FromString(TEXT("블랙홀: 접근 끌림 비율이나 접근 선회 비율 커브에 키가 없어 아무것도 끌려가지 않습니다")));
 	}
 
 	// The gimmick still runs, but nobody can walk out of it
 	if (EvalPull(1.f) >= 1.f)
 	{
-		Context.AddWarning(FText::FromString(TEXT("블랙홀: 가장자리 끌림 비율이 1 이상이라 걸어서 탈출할 수 없습니다")));
+		Context.AddWarning(FText::FromString(TEXT("블랙홀: 접근 끌림 비율의 가장자리 값이 1 이상이라 걸어서 탈출할 수 없습니다")));
 	}
 
 	if (BurstSpeed <= 0.f)

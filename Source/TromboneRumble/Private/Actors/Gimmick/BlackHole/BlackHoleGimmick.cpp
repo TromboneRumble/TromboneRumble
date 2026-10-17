@@ -176,7 +176,7 @@ void ABlackHoleGimmick::StartActive()
 
 	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
 	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartCollapse,
-		GetConfig<UBlackHoleGimmickConfig>().ActiveDuration, false);
+		GetConfig<UBlackHoleGimmickConfig>().GrowDuration, false);
 
 	GetWorldTimerManager().ClearTimer(CaptureTimerHandle);
 	GetWorldTimerManager().SetTimer(CaptureTimerHandle, this, &ThisClass::CheckCaptures,
@@ -313,7 +313,7 @@ float ABlackHoleGimmick::GetGrowthAlpha() const
 	const AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr;
 	if (!GameState) return 0.f;
 
-	const float Duration = FMath::Max(0.01f, GetConfig<UBlackHoleGimmickConfig>().ActiveDuration);
+	const float Duration = FMath::Max(0.01f, GetConfig<UBlackHoleGimmickConfig>().GrowDuration);
 	return FMath::Clamp((GameState->GetServerWorldTimeSeconds() - ActiveStartServerTime) / Duration, 0.f, 1.f);
 }
 
@@ -326,7 +326,7 @@ float ABlackHoleGimmick::GetInfluenceRadius() const
 float ABlackHoleGimmick::GetInnerRadius() const
 {
 	const UBlackHoleGimmickConfig& Config = GetConfig<UBlackHoleGimmickConfig>();
-	return FMath::Lerp(Config.InnerRadiusStart, Config.InnerRadiusEnd, GetGrowthAlpha());
+	return FMath::Lerp(Config.CaptureRadiusStart, Config.CaptureRadiusEnd, GetGrowthAlpha());
 }
 
 bool ABlackHoleGimmick::IsInsideInfluence(const FVector& Location) const

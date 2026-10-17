@@ -7,7 +7,7 @@
 #include "WaterDropGimmickConfig.generated.h"
 
 /**
- * Settings of AWaterDropSpawner with the Puddle type (BP_WaterDropSpawner).
+ * Settings of AWaterDropSpawner with the WaterDrop type (BP_WaterDropSpawner).
  *
  * @see AWaterDropSpawner
  */
@@ -19,7 +19,7 @@ class TROMBONERUMBLE_API UWaterDropGimmickConfig : public UGimmickConfig
 public:
 
 	/** Default constructor. */
-	UWaterDropGimmickConfig() { GimmickType = EGimmickType::Puddle; }
+	UWaterDropGimmickConfig() { GimmickType = EGimmickType::WaterDrop; }
 
 #if WITH_EDITOR
 	//~ Begin UGimmickConfig Interface
@@ -27,25 +27,25 @@ public:
 	//~ End UGimmickConfig Interface
 #endif
 
-	/** Seconds between two drops. 0 stops the drops. */
-	UPROPERTY(EditAnywhere, Category = "WaterDrop", meta = (DisplayName = "생성 간격", ClampMin = "0.0", Units = "s"))
+	/** 물방울 하나가 떨어진 뒤 다음 물방울까지의 시간. 0이면 떨어지지 않는다 (초) */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "생성 간격", ClampMin = "0.0", Units = "s"))
 	float SpawnInterval = 15.f;
 
-	/** Seconds the puddle takes to grow from nothing to its full size after the drop lands. */
-	UPROPERTY(EditAnywhere, Category = "Puddle", meta = (DisplayName = "웅덩이 확장 시간", ClampMin = "0.0", Units = "s"))
-	float PuddleGrowDuration = 0.5f;
+	/** 물방울이 떨어진 뒤 바닥 자국(누수는 물, 빙판은 얼음)이 다 커지기까지의 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "커지는 시간", ClampMin = "0.0", Units = "s"))
+	float GrowDuration = 0.5f;
 
-	/** Seconds the puddle stays at full size before it starts to fade. */
-	UPROPERTY(EditAnywhere, Category = "Puddle", meta = (DisplayName = "웅덩이 유지 시간", ClampMin = "0.1", Units = "s"))
-	float PuddleFadeDelay = 10.f;
+	/** 자국이 다 커진 뒤 사라지기 시작할 때까지 그대로 남는 시간 (초) */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "유지 시간", ClampMin = "0.1", Units = "s"))
+	float HoldDuration = 10.f;
 
-	/** Seconds the puddle takes to fade out. It is removed when this ends. */
-	UPROPERTY(EditAnywhere, Category = "Puddle", meta = (DisplayName = "웅덩이 소멸 시간", ClampMin = "0.0", Units = "s"))
-	float PuddleFadeDuration = 1.f;
+	/** 자국이 서서히 사라지는 시간. 끝나면 제거된다 (초) */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "사라지는 시간", ClampMin = "0.0", Units = "s"))
+	float FadeDuration = 1.f;
 };
 
 /**
- * Same settings for the Ice type (BP_SnowDropSpawner). The spawner class is shared, only the gimmick type differs.
+ * Same settings for the IceDrop type (BP_SnowDropSpawner). The spawner class is shared, only the gimmick type differs.
  */
 UCLASS(meta = (DisplayName = "빙판"))
 class TROMBONERUMBLE_API UIceDropGimmickConfig : public UWaterDropGimmickConfig
@@ -55,5 +55,5 @@ class TROMBONERUMBLE_API UIceDropGimmickConfig : public UWaterDropGimmickConfig
 public:
 
 	/** Default constructor. */
-	UIceDropGimmickConfig() { GimmickType = EGimmickType::Ice; }
+	UIceDropGimmickConfig() { GimmickType = EGimmickType::IceDrop; }
 };

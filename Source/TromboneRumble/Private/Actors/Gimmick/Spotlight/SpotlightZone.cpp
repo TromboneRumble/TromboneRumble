@@ -263,7 +263,7 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 		case ESpotlightState::Fading:
 		{
 			TurnOffLight();
-			StartLifecycleTimer(GetConfig().FadingDuration, &ASpotlightZone::OnFadingFinished);
+			StartLifecycleTimer(GetConfig().FadeDuration, &ASpotlightZone::OnFadingFinished);
 		}
 			
 			break;

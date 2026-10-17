@@ -11,8 +11,8 @@ class AGarbageBase;
 UENUM(BlueprintType)
 enum class EGarbageTargetingMode : uint8
 {
-	Random UMETA(DisplayName = "Random Player"),
-	ScoreWeighted UMETA(DisplayName = "Score Weighted (Higher Rank = Higher Chance)")
+	Random UMETA(DisplayName = "무작위 플레이어"),
+	ScoreWeighted UMETA(DisplayName = "순위 가중 (순위가 높을수록 자주)")
 };
 
 /**
@@ -31,7 +31,7 @@ public:
 	/** Default constructor. */
 	UGarbageGimmickConfig()
 	{
-		GimmickType = EGimmickType::Trash;
+		GimmickType = EGimmickType::Garbage;
 		SpawnInterval.Min = 8.f;
 		SpawnInterval.Max = 15.f;
 	}
@@ -43,19 +43,19 @@ public:
 	//~ End UGimmickConfig Interface
 #endif
 
-	/** Garbage thrown in this level. One is picked at random per throw. */
-	UPROPERTY(EditAnywhere, Category = "Garbage", meta = (DisplayName = "투척물 종류"))
+	/** 이 레벨에서 관중이 던지는 투척물 종류. 던질 때마다 하나를 무작위로 고른다 */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "투척물 종류"))
 	TArray<TSubclassOf<AGarbageBase>> GarbageClasses;
 
-	/** Wait between two throws. */
-	UPROPERTY(EditAnywhere, Category = "Garbage", meta = (DisplayName = "투척 간격"))
+	/** 한 번 던진 뒤 다음 투척까지 기다리는 시간 */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "투척 간격"))
 	FGimmickInterval SpawnInterval;
 
-	/** The landing point is moved by up to this many cm from the target player. */
-	UPROPERTY(EditAnywhere, Category = "Garbage", meta = (DisplayName = "타겟팅 오차 반경", ClampMin = "0.0", Units = "cm"))
+	/** 착지 지점이 타겟 플레이어에게서 최대 이만큼 벗어난다 (cm) */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "타겟팅 오차 반경", ClampMin = "0.0", Units = "cm"))
 	float TargetRandomRadius = 80.f;
 
-	/** Who gets targeted. Score weighted picks higher ranked players more often. */
-	UPROPERTY(EditAnywhere, Category = "Garbage", meta = (DisplayName = "대상 타겟팅 방식"))
+	/** 누구를 노릴지 정한다. 순위 가중은 순위가 높은 플레이어를 더 자주 노린다 */
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "대상 타겟팅 방식"))
 	EGarbageTargetingMode TargetingMode = EGarbageTargetingMode::ScoreWeighted;
 };

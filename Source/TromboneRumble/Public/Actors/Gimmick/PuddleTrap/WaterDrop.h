@@ -42,7 +42,7 @@ protected:
 
 	bool bHasSpawnedPuddle = false;
 
-	/** Puddle or Ice. Only the server needs it, so it is not replicated. */
-	EGimmickType GimmickType = EGimmickType::Puddle;
+	/** WaterDrop or IceDrop. Only the server needs it, so it is not replicated. */
+	EGimmickType GimmickType = EGimmickType::WaterDrop;
 
 };

@@ -39,8 +39,8 @@ void UDrunkardStateComponent::BeginEntering(const FDrunkardRoute& Route)
 
 	// 통과 완료 통지가 안 오는 사고 대비 안전망. 정상 흐름에선 HandleDoorEntranceFinished가 타이머를 다시 감는다
 	const UDrunkardGimmickConfig& Config = GetConfig();
-	const float SafetyTime = Config.EnterBurstDuration
-		+ Config.EnterDuration + 2.f;
+	const float SafetyTime = Config.DoorPassDuration
+		+ Config.EnterPauseDuration + 2.f;
 	GetWorld()->GetTimerManager().SetTimer(
 		EnterTimerHandle,
 		this,
@@ -60,7 +60,7 @@ void UDrunkardStateComponent::HandleDoorEntranceFinished()
 		EnterTimerHandle,
 		this,
 		&ThisClass::BeginChasing,
-		Config.EnterDuration,
+		Config.EnterPauseDuration,
 		false
 	);
 }
@@ -128,7 +128,7 @@ void UDrunkardStateComponent::BeginDoorExit()
 		ExitTimerHandle,
 		this,
 		&ThisClass::HandleExitTimeout,
-		Config.EnterBurstDuration + 2.f,
+		Config.DoorPassDuration + 2.f,
 		false
 	);
 

@@ -94,7 +94,7 @@ void ABonusSpawner::StartDrop()
 	}
 
 	// Too few free points means fewer drops this round
-	const int32 WantedCount = FMath::RandRange(Config.MinDropCount, FMath::Max(Config.MinDropCount, Config.MaxDropCount));
+	const int32 WantedCount = FMath::RandRange(Config.MinSpawnCount, FMath::Max(Config.MinSpawnCount, Config.MaxSpawnCount));
 	const int32 Count = FMath::Min(WantedCount, FreeIndices.Num());
 	for (int32 Picked = 0; Picked < Count; ++Picked)
 	{

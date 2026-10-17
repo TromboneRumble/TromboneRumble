@@ -16,7 +16,7 @@ void AWaterDropSpawner::Activate()
 {
 	Super::Activate();
 	
-	// The Puddle and the Ice spawner share this class. GetConfig finds the entry by gimmick type, so both get their own settings
+	// The WaterDrop and the IceDrop spawner share this class. GetConfig finds the entry by gimmick type, so both get their own settings
 	const float SpawnInterval = GetConfig<UWaterDropGimmickConfig>().SpawnInterval;
 	if (HasAuthority() && SpawnInterval > 0.f)
 	{
@@ -69,7 +69,7 @@ void AWaterDropSpawner::SpawnOneDrop()
 		ChosenPoint->GetActorRotation(),
 		Params))
 	{
-		// This class serves both the Puddle and the Ice gimmick. The puddle needs to know which one made it
+		// This class serves both the WaterDrop and the IceDrop gimmick. The puddle needs to know which one made it
 		Drop->SetGimmickType(GetGimmickType());
 	}
 }

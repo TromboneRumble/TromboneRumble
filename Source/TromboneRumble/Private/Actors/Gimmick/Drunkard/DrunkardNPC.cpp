@@ -434,7 +434,7 @@ void ADrunkardNPC::Tick(const float DeltaSeconds)
 
 	if (bDoorWalkActive && HasAuthority())
 	{
-		const float Duration = FMath::Max(0.05f, GetDrunkardConfig().EnterBurstDuration);
+		const float Duration = FMath::Max(0.05f, GetDrunkardConfig().DoorPassDuration);
 		DoorWalkElapsed += DeltaSeconds;
 		const float Alpha = FMath::Clamp(DoorWalkElapsed / Duration, 0.f, 1.f);
 

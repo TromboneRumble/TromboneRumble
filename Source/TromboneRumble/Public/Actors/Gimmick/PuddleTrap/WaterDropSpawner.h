@@ -31,7 +31,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gimmick|Config", meta = (DisplayName = "스폰 가능 지점 목록"))
 	TArray<TObjectPtr<ATargetPoint>> SpawnPoints;
 
-	// 기획 수치(생성 간격, 웅덩이 확장/유지/소멸 시간)는 UWaterDropGimmickConfig 에 있다. 빙판(Ice)은 UIceDropGimmickConfig
+	// 기획 수치(생성 간격, 자국이 커지는/유지/사라지는 시간)는 UWaterDropGimmickConfig 에 있다. 빙판(IceDrop)은 UIceDropGimmickConfig
 
 	FTimerHandle SpawnTimerHandle;
 

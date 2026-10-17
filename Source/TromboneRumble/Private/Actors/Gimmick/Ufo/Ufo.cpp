@@ -98,7 +98,7 @@ void AUfo::BeginPlay()
 
 void AUfo::FitBeamToLength(const float Fraction)
 {
-	const float Length = GetConfig().BeamLength * FMath::Clamp(Fraction, 0.f, 1.f);
+	const float Length = GetConfig().FlightHeight * FMath::Clamp(Fraction, 0.f, 1.f);
 	const UStaticMesh* Mesh = BeamMesh->GetStaticMesh();
 	const float MeshHeight = Mesh ? Mesh->GetBoundingBox().Max.Z : 0.f;
 
@@ -260,7 +260,7 @@ void AUfo::SetBeamVFXOn(const bool bOn)
 	// The origin of the effect is the bottom of its beam, like the pivot of the mesh, so it stands on the floor and reaches up to the body.
 	// Only Z is scaled, so the beam keeps its width. The emitters simulate in local space, so the scale reaches the particles.
 	// The Blueprint tunes the scale at the reference height, and a taller flight stretches the beam by the same ratio
-	const float BeamLength = GetConfig().BeamLength;
+	const float BeamLength = GetConfig().FlightHeight;
 	const float ZScale = BeamVFXZScale * BeamLength / BeamVFXReferenceHeight;
 	BeamVFXComponent->SetRelativeLocation(FVector(0.f, 0.f, -BeamLength));
 	BeamVFXComponent->SetRelativeScale3D(FVector(1.f, 1.f, ZScale));

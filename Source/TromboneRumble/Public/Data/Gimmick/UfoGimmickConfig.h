@@ -11,7 +11,7 @@
  *
  * @see AUfoGimmick
  */
-UCLASS(meta = (DisplayName = "미니 UFO", GroupSettingsByCategory))
+UCLASS(meta = (DisplayName = "미니 UFO"))
 class TROMBONERUMBLE_API UUfoGimmickConfig : public UEventGimmickConfig
 {
 	GENERATED_BODY()
@@ -26,10 +26,10 @@ public:
 	}
 
 	/** @return Height the UFO flies at, so its beam ends right on the floor. */
-	float GetFlightZ() const { return FloorZ + BeamLength; }
+	float GetFlightZ() const { return FloorZ + FlightHeight; }
 
 	/** @return HangDistance, kept inside the beam so a player never hangs below the floor. */
-	float GetHangDistance() const { return FMath::Min(HangDistance, BeamLength); }
+	float GetHangDistance() const { return FMath::Min(HangDistance, FlightHeight); }
 
 	/** @return Seconds from the spawn until the UFO starts along its line: the warp in, then the beam spreading down. */
 	float GetIntroDuration() const { return WarpDuration + BeamDeployDuration; }
@@ -46,7 +46,7 @@ public:
 
 	/** 바닥에서 UFO까지의 높이. 광선은 항상 여기서 바닥까지 닿는다. 벽 높이가 바뀌면 이 값을 바꾼다 (cm) */
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "비행 높이", ClampMin = "10.0", Units = "cm"))
-	float BeamLength = 600.f;
+	float FlightHeight = 600.f;
 
 	/** 인게임에서 가장 낮은 바닥의 Z 값. 광선 끝이 여기에 닿는다. 레벨 바닥 높이가 바뀔 때만 수정 (cm) */
 	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "바닥 높이", Units = "cm"))

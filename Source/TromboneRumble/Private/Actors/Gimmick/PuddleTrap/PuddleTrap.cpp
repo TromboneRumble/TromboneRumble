@@ -83,9 +83,9 @@ void APuddleTrap::BeginPlay()
 	{
 		Config = GetDefault<UWaterDropGimmickConfig>();
 	}
-	GrowDuration = Config->PuddleGrowDuration;
-	FadeDelay = Config->PuddleFadeDelay;
-	FadeDuration = Config->PuddleFadeDuration;
+	GrowDuration = Config->GrowDuration;
+	FadeDelay = Config->HoldDuration;
+	FadeDuration = Config->FadeDuration;
 
 	SetActorScale3D(FVector::ZeroVector);
 

@@ -79,7 +79,7 @@ void ASpotlightManager::TriggerSpotlightSpawn()
     const USpotlightGimmickConfig& Config = GetConfig<USpotlightGimmickConfig>();
     const FSpotlightSpawnRule& Rule = Config.GetRule(bIsFeverTime);
 
-    const int32 SpawnCount = FMath::RandRange(Rule.MinCount, FMath::Max(Rule.MinCount, Rule.MaxCount));
+    const int32 SpawnCount = FMath::RandRange(Rule.MinSpawnCount, FMath::Max(Rule.MinSpawnCount, Rule.MaxSpawnCount));
     
     TArray<TObjectPtr<ATargetPoint>> AvailableSpawnPoints;
     for (auto Point : SpawnPoints)

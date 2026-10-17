@@ -29,11 +29,11 @@ UENUM()
 enum class EGimmickType : uint8
 {
 	Spotlight		UMETA(DisplayName = "스포트라이트"),
-	Puddle			UMETA(DisplayName = "누수 물자국"),
-	Trash			UMETA(DisplayName = "관중 투척"),
+	WaterDrop			UMETA(DisplayName = "누수 물자국"),
+	Garbage			UMETA(DisplayName = "관중 투척"),
 	Present			UMETA(DisplayName = "선물"),
 	PressurePlate	UMETA(DisplayName = "발판"),
-	Ice				UMETA(DisplayName = "빙판"),
+	IceDrop				UMETA(DisplayName = "빙판"),
 	Blizzard		UMETA(DisplayName = "눈보라"),
 	Drunkard		UMETA(DisplayName = "취객"),
 	BeerFlood		UMETA(DisplayName = "술통 침수"),

@@ -79,11 +79,11 @@ protected:
 
 private:
 	/**
-	 * Puddle or Ice. The water drop spawner and the snow drop spawner share these classes, so the type is passed down from the spawner.
+	 * WaterDrop or IceDrop. The water drop spawner and the snow drop spawner share these classes, so the type is passed down from the spawner.
 	 * Replicated, because clients read the puddle times in BeginPlay too.
 	 */
 	UPROPERTY(Replicated)
-	EGimmickType GimmickType = EGimmickType::Puddle;
+	EGimmickType GimmickType = EGimmickType::WaterDrop;
 
 	float GrowElapsed = 0.f;
 	bool bGrowing = false;

@@ -61,15 +61,13 @@ public:
 
 protected:
 
-	/**
-	 * When the level has no gimmick of this type, the manager spawns this Blueprint at its own location.
-	 * Shown only on configs that set bSpawnableByManager.
-	 */
-	UPROPERTY(EditAnywhere, Category = "Spawn", meta = (DisplayName = "매니저가 스폰할 기믹 BP", EditCondition = "bSpawnableByManager", EditConditionHides))
+	/** 레벨에 이 기믹이 없을 때 매니저가 자기 위치에 스폰하는 기믹 블루프린트 */
+	UPROPERTY(EditAnywhere, Category = "스폰", meta = (DisplayName = "매니저가 스폰할 기믹 BP", EditCondition = "bSpawnableByManager", EditConditionHides, HideEditConditionToggle))
 	TSubclassOf<AGimmickBase> GimmickClass;
 
 	/**
 	 * Can the manager spawn this gimmick. Set it in the constructor of a config whose gimmick needs no place in the level, such as gravity.
+	 * GimmickClass hides the checkbox the details view would add for it, because a designer must not turn it off.
 	 * A gimmick that holds spawn points or other level references must be placed by hand, so it leaves this false and GimmickClass stays hidden.
 	 */
 	UPROPERTY(Transient)
@@ -115,6 +113,6 @@ public:
 	//~ End UGimmickConfig Interface
 
 	/** 차례가 오면 예고를 시작하고 이 시간 뒤 발동한다. 0이면 예고 없이 바로 발동한다 (초) */
-	UPROPERTY(EditAnywhere, Category = "Schedule", meta = (DisplayName = "예고 시간", ClampMin = "0.0", Units = "s"))
+	UPROPERTY(EditAnywhere, Category = "게임플레이", meta = (DisplayName = "예고 시간", ClampMin = "0.0", Units = "s"))
 	float WarningDuration = 4.f;
 };
