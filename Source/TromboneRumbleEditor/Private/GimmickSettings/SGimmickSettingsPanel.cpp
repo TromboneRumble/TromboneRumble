@@ -18,6 +18,7 @@
 #include "UObject/UObjectHash.h"
 #include "Utilities/EnumHelper.h"
 #include "Widgets/Input/SButton.h"
+#include "Widgets/Input/SComboBox.h"
 #include "Widgets/Input/SSegmentedControl.h"
 #include "Widgets/Input/SSpinBox.h"
 #include "Widgets/Layout/SBox.h"
@@ -61,6 +62,21 @@ namespace
 			if (Class->IsChildOf<USpawnerGimmickConfig>()) return EGimmickKind::Spawner;
 		}
 		return EGimmickKind::Other;
+	}
+
+	/** @return Whether the entry of the song list is a song, and not the entry for typing by hand. */
+	bool IsSong(const TSharedPtr<FGimmickSongTiming>& Entry)
+	{
+		return Entry.IsValid() && Entry->SongTag.IsValid();
+	}
+
+	/** Seconds with one decimal, as the song list shows them. */
+	FText FormatSeconds(const float Seconds)
+	{
+		FNumberFormattingOptions Options;
+		Options.MinimumFractionalDigits = 1;
+		Options.MaximumFractionalDigits = 1;
+		return FText::AsNumber(Seconds, &Options);
 	}
 
 	/** Korean name of the gimmick type first, then the actor label so the designer can find it in the outliner. */
@@ -317,6 +333,7 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 
 	MapOpenedHandle = FEditorDelegates::OnMapOpened.AddSP(this, &SGimmickSettingsPanel::HandleMapOpened);
 
+	RefreshSongs();
 	UseStageDataOfOpenLevel();
 }
 
@@ -558,12 +575,60 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
 
 			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0.f, 0.f, 6.f, 0.f)
 			[
-				SNew(STextBlock).Text(LOCTEXT("RoundLength", "라운드 길이"))
+				SNew(STextBlock).Text(LOCTEXT("Song", "곡"))
+			]
+
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+			[
+				SAssignNew(SongComboBox, SComboBox<TSharedPtr<FGimmickSongTiming>>)
+				.OptionsSource(&SongOptions)
+				.ToolTipText_Lambda([this]()
+				{
+					FString Text = TEXT("곡을 고르면 Wwise 프로젝트에서 그 곡의 피버 큐와 길이를 읽어 타임라인에 씁니다. 이 레벨에서 나오는 곡이 먼저 나옵니다. 직접 입력을 고르면 두 값을 손으로 넣습니다");
+					if (!SkippedSongs.IsEmpty())
+					{
+						Text += TEXT("\n\n목록에 없는 곡:\n") + SkippedSongs;
+					}
+					return FText::FromString(Text);
+				})
+				.OnGenerateWidget_Lambda([this](const TSharedPtr<FGimmickSongTiming> Song) -> TSharedRef<SWidget> { return SNew(STextBlock).Text(GetSongLabel(Song)); })
+				.OnSelectionChanged_Lambda([this](const TSharedPtr<FGimmickSongTiming> Song, const ESelectInfo::Type SelectInfo)
+				{
+					// RefreshSongs sets the starting song itself, and that is not a choice of the designer
+					if (SelectInfo == ESelectInfo::Direct) return;
+
+					SongPerLevel.Add(GetOpenLevelKey(), Song.IsValid() ? Song->SongTag : FGameplayTag());
+					SelectSong(Song);
+				})
+				[
+					SNew(STextBlock).Text_Lambda([this]() { return GetSongLabel(SelectedSong); })
+				]
+			]
+
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8.f, 0.f, 0.f, 0.f)
+			[
+				SNew(STextBlock)
+				.Visibility_Lambda([this]() { return IsSong(SelectedSong) ? EVisibility::Visible : EVisibility::Collapsed; })
+				.Text_Lambda([this]()
+				{
+					return IsSong(SelectedSong)
+						? FText::Format(LOCTEXT("SongTiming", "피버 {0}초 · 길이 {1}초"), FormatSeconds(SelectedSong->FeverStart), FormatSeconds(SelectedSong->RoundLength))
+						: FText::GetEmpty();
+				})
+				.ColorAndOpacity(FSlateColor::UseSubduedForeground())
+			]
+
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(16.f, 0.f, 6.f, 0.f)
+			[
+				SNew(STextBlock)
+				.Visibility(this, &SGimmickSettingsPanel::GetManualTimingVisibility)
+				.Text(LOCTEXT("RoundLength", "라운드 길이"))
 			]
 
 			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 			[
 				SNew(SBox).WidthOverride(80.f)
+				.Visibility(this, &SGimmickSettingsPanel::GetManualTimingVisibility)
 				[
 					SNew(SSpinBox<float>)
 					.MinValue(10.f)
@@ -577,12 +642,15 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
 
 			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(16.f, 0.f, 6.f, 0.f)
 			[
-				SNew(STextBlock).Text(LOCTEXT("FeverStart", "피버 시작"))
+				SNew(STextBlock)
+				.Visibility(this, &SGimmickSettingsPanel::GetManualTimingVisibility)
+				.Text(LOCTEXT("FeverStart", "피버 시작"))
 			]
 
 			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 			[
 				SNew(SBox).WidthOverride(80.f)
+				.Visibility(this, &SGimmickSettingsPanel::GetManualTimingVisibility)
 				[
 					SNew(SSpinBox<float>)
 					.MinValue(0.f)
@@ -645,6 +713,80 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
 				SAssignNew(Timeline, SGimmickTimeline)
 			]
 		];
+}
+
+void SGimmickSettingsPanel::RefreshSongs()
+{
+	TArray<FString> Skipped;
+	TArray<FGimmickSongTiming> Songs = GimmickSongTiming::CollectSongTimings(Skipped);
+	SkippedSongs = FString::Join(Skipped, TEXT("\n"));
+	LevelSongs = GimmickSongTiming::FindSongsOfLevel(GetOpenLevelWorld());
+
+	// The songs of the open level first, each group in the order of the song table
+	Songs.StableSort([this](const FGimmickSongTiming& A, const FGimmickSongTiming& B) { return LevelSongs.Contains(A.SongTag) && !LevelSongs.Contains(B.SongTag); });
+
+	SongOptions.Reset();
+	for (FGimmickSongTiming& Song : Songs)
+	{
+		SongOptions.Add(MakeShared<FGimmickSongTiming>(MoveTemp(Song)));
+	}
+	SongOptions.Add(MakeShared<FGimmickSongTiming>());
+
+	// The first song is the first song of the level. Without any song it is the entry for typing by hand
+	TSharedPtr<FGimmickSongTiming> Initial = SongOptions[0];
+	if (const FGameplayTag* Remembered = SongPerLevel.Find(GetOpenLevelKey()))
+	{
+		const TSharedPtr<FGimmickSongTiming>* Found = SongOptions.FindByPredicate([Remembered](const TSharedPtr<FGimmickSongTiming>& Song)
+		{
+			return Song->SongTag == *Remembered;
+		});
+		if (Found)
+		{
+			Initial = *Found;
+		}
+	}
+
+	if (SongComboBox.IsValid())
+	{
+		SongComboBox->RefreshOptions();
+		SongComboBox->SetSelectedItem(Initial);
+	}
+	SelectSong(Initial);
+}
+
+void SGimmickSettingsPanel::SelectSong(const TSharedPtr<FGimmickSongTiming> Song)
+{
+	SelectedSong = Song;
+
+	// Typing by hand starts from the values of the song picked before
+	if (IsSong(Song))
+	{
+		TimelineRoundLength = Song->RoundLength;
+		TimelineFeverStart = Song->FeverStart;
+	}
+	RebuildTimeline();
+}
+
+FText SGimmickSettingsPanel::GetSongLabel(const TSharedPtr<FGimmickSongTiming>& Song) const
+{
+	if (!IsSong(Song))
+	{
+		return LOCTEXT("ManualSong", "직접 입력");
+	}
+
+	const FText Name = FText::FromString(Song->SongName);
+	return LevelSongs.Contains(Song->SongTag) ? FText::Format(LOCTEXT("LevelSong", "{0}  (이 레벨)"), Name) : Name;
+}
+
+FString SGimmickSettingsPanel::GetOpenLevelKey()
+{
+	const UWorld* World = GetOpenLevelWorld();
+	return World ? World->GetPackage()->GetName() : FString();
+}
+
+EVisibility SGimmickSettingsPanel::GetManualTimingVisibility() const
+{
+	return IsSong(SelectedSong) ? EVisibility::Collapsed : EVisibility::Visible;
 }
 
 void SGimmickSettingsPanel::CollectSettingCategories(const UClass& Class)
@@ -827,6 +969,7 @@ void SGimmickSettingsPanel::HandleAssetPicked(const FAssetData& AssetData)
 
 void SGimmickSettingsPanel::HandleMapOpened(const FString& Filename, const bool bAsTemplate)
 {
+	RefreshSongs();
 	UseStageDataOfOpenLevel();
 }
 

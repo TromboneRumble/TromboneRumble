@@ -85,27 +85,29 @@ FGameplayTag UTromboneFunctionLibrary::LobbyToInGameTag(const FGameplayTag Lobby
 
 FGameplayTag UTromboneFunctionLibrary::PickRandomSongForMap(const FGameplayTag InGameMapTag)
 {
+    const TArray<FGameplayTag> Songs = GetSongsForMap(InGameMapTag);
+    return Songs[FMath::RandRange(0, Songs.Num() - 1)];
+}
+
+TArray<FGameplayTag> UTromboneFunctionLibrary::GetSongsForMap(const FGameplayTag InGameMapTag)
+{
     if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_SnowField)
     {
-        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapC
-                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapD;
+        return { TromboneGamePlayTags::Trombone_Rhythm_Song_MapC, TromboneGamePlayTags::Trombone_Rhythm_Song_MapD };
     }
 
     if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_JazzBar)
     {
-        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapE
-                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapF;
+        return { TromboneGamePlayTags::Trombone_Rhythm_Song_MapE, TromboneGamePlayTags::Trombone_Rhythm_Song_MapF };
     }
 
     if (InGameMapTag == TromboneGamePlayTags::Trombone_Maps_InGame_SpaceStation)
     {
-        return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_MapG
-                                 : TromboneGamePlayTags::Trombone_Rhythm_Song_MapH;
+        return { TromboneGamePlayTags::Trombone_Rhythm_Song_MapG, TromboneGamePlayTags::Trombone_Rhythm_Song_MapH };
     }
 
     // OrchestraStage 및 그 외 폴백
-    return FMath::RandBool() ? TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA
-                             : TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB;
+    return { TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapA, TromboneGamePlayTags::Trombone_Rhythm_Song_EasyMapB };
 }
 
 void UTromboneFunctionLibrary::PrintDebug(const FString& Msg, const int32 InKey, const FLinearColor Color, const float Duration,

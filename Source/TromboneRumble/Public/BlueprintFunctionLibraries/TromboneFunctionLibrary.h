@@ -44,6 +44,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Rhythm")
 	static FGameplayTag PickRandomSongForMap(UPARAM(meta = (Categories = "Trombone.Maps.InGame")) FGameplayTag InGameMapTag);
 
+	/** @return Songs the given in-game map can get. PickRandomSongForMap picks one of them, and the gimmick settings panel lists them. */
+	static TArray<FGameplayTag> GetSongsForMap(FGameplayTag InGameMapTag);
+
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Debug",

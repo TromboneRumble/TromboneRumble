@@ -14,6 +14,16 @@ enum class EInstrumentType : uint8;
 class UAkCallbackInfo;
 class UAkMusicSyncCallbackInfo;
 
+/** Names of the user cues the songs send. They are set on the music segments in the Wwise project. */
+namespace TromboneMusicCues
+{
+	/** Every gimmick turns on at this cue. */
+	inline const TCHAR* const SpotlightStart = TEXT("Event_Spotlight_Start");
+
+	/** Fever time starts at this cue. */
+	inline const TCHAR* const SpotlightFever = TEXT("Event_Spotlight_Fever");
+}
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMusicCallbackDelegate, EAkCallbackType, CallbackType, UAkCallbackInfo*, CallbackInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInstrumentPickedDelegate, EInstrumentType, PrevType, EInstrumentType, NewType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNoteDetectedDelegate, ENoteResult, InNoteResult);

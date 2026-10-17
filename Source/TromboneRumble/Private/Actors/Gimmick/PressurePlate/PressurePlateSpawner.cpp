@@ -49,7 +49,7 @@ void APressurePlateSpawner::OnMusicCallbackReceived(EAkCallbackType CallbackType
 		if (!CueString.IsEmpty())
 		{
 			const FName CueName(*CueString);
-			if (CueName == TEXT("Event_Spotlight_Fever"))
+			if (CueName == TromboneMusicCues::SpotlightFever)
 			{
 				bIsFeverTime = true;
 			}

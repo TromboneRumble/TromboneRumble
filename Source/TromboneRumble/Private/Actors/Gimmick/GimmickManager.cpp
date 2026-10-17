@@ -494,11 +494,11 @@ void AGimmickManager::HandleMusicCallback(EAkCallbackType CallbackType, UAkCallb
 		{
 			const FName CueName(*CueString);
 			// Only turns on. A gimmick forced before the cue keeps running instead of being cut off
-			if (CueName == TEXT("Event_Spotlight_Start"))
+			if (CueName == TromboneMusicCues::SpotlightStart)
 			{
 				ActivateAllGimmicks();
 			}
-			else if (CueName == TEXT("Event_Spotlight_Fever"))
+			else if (CueName == TromboneMusicCues::SpotlightFever)
 			{
 				BeginFeverTime();
 			}

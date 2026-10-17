@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/Gimmick/StageGimmickData.h"
+#include "GimmickSettings/GimmickSongTiming.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Utilities/Defines.h"
 #include "Widgets/SCompoundWidget.h"
@@ -15,6 +16,7 @@ class SVerticalBox;
 class UGimmickConfig;
 struct FAssetData;
 struct FPropertyChangedEvent;
+template <typename OptionType> class SComboBox;
 
 /**
  * SGimmickSettingsPanel is the one place a designer edits gimmick settings.
@@ -58,8 +60,20 @@ private:
 	/** Ask every config of the asset for its spans and give them to the timeline. */
 	void RebuildTimeline();
 
-	/** Round length, fever start, the button that picks new random waits, the legend and the timeline. */
+	/** Song list, round length, fever start, the button that picks new random waits, the legend and the timeline. */
 	TSharedRef<SWidget> MakeTimelineTab();
+
+	/** Read the songs again and pick the one remembered for the open level, or else the first song in the list. */
+	void RefreshSongs();
+
+	/** Use the timing of this song on the timeline. The entry without a song tag switches to typing the values by hand. */
+	void SelectSong(TSharedPtr<FGimmickSongTiming> Song);
+
+	/** @return Label of an entry of the song list. */
+	FText GetSongLabel(const TSharedPtr<FGimmickSongTiming>& Song) const;
+
+	/** @return Key of the open level in SongPerLevel. */
+	static FString GetOpenLevelKey();
 
 	/** A label and the Trigger, Stop and Restart buttons for one gimmick type. */
 	TSharedRef<SWidget> MakeGimmickRow(const FText& Label, EGimmickType GimmickType);
@@ -78,6 +92,9 @@ private:
 
 	/** Collapsed while no stage data asset is selected. Bound to the tab bar, its separator and the two details views. */
 	EVisibility GetStageDataAreaVisibility() const;
+
+	/** Visible only while the timeline values are typed by hand. Bound to the round length and fever start boxes. */
+	EVisibility GetManualTimingVisibility() const;
 
 	/** @return Packages of the stage data and of every shared object. */
 	TArray<UPackage*> GetEditedPackages() const;
@@ -123,11 +140,28 @@ private:
 	/** Filled by RebuildTimeline. */
 	TSharedPtr<SGimmickTimeline> Timeline;
 
-	/** Seconds the timeline covers. The gimmicks do not know the length of the song, so the designer types it. */
+	/** Seconds the timeline covers. The picked song fills it, or the designer types it. */
 	float TimelineRoundLength = 210.f;
 
-	/** Second of the timeline the fever cue of the song comes at. Only the spotlight reads it. */
+	/** Second of the timeline the fever cue of the song comes at. The picked song fills it, or the designer types it. */
 	float TimelineFeverStart = 168.f;
+
+	/** Entries of the song list. The songs of the open level come first, and the entry without a song tag at the end is for typing by hand. */
+	TArray<TSharedPtr<FGimmickSongTiming>> SongOptions;
+
+	/** Entry of the song list the timeline uses. */
+	TSharedPtr<FGimmickSongTiming> SelectedSong;
+
+	/** Songs the open level can get. Their labels say so. */
+	TArray<FGameplayTag> LevelSongs;
+
+	/** Why songs are missing from the list, one line each. Shown in the tooltip of the song list. */
+	FString SkippedSongs;
+
+	/** Song picked last in each level, by level package. An invalid tag means typing by hand. Kept while the editor runs. */
+	TMap<FString, FGameplayTag> SongPerLevel;
+
+	TSharedPtr<SComboBox<TSharedPtr<FGimmickSongTiming>>> SongComboBox;
 
 	/** Seed of the random waits on the timeline. The same seed draws the same timeline, so an edit does not shuffle it. */
 	int32 TimelineSeed = 1;

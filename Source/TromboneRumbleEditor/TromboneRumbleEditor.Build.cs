@@ -19,6 +19,11 @@ public class TromboneRumbleEditor : ModuleRules
 			"UnrealEd",
 			"PropertyEditor",
 			"WorkspaceMenuStructure",
+			"GameplayTags",
+			"EngineSettings",
+			"Json",
+			"XmlParser",
+			"WwiseUtils",
 			"TromboneRumble"
 		});
 	}
