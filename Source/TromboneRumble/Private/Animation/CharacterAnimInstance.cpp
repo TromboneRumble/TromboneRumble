@@ -120,6 +120,9 @@ void UCharacterAnimInstance::AnimNotify_FootStep()
     case SurfaceType6:
         SwitchValue = WoodFootStepSwitch ? WoodFootStepSwitch : NormalFootstepSwitch;
         break;
+    case SurfaceType7:
+        SwitchValue = MetalFootStepSwitch ? MetalFootStepSwitch : NormalFootstepSwitch;
+        break;
     default:
         SwitchValue = NormalFootstepSwitch;
         break;
