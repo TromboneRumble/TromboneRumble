@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actors/Gimmick/GimmickBase.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 #include "DrunkardNPC.generated.h"
@@ -208,11 +209,8 @@ private:
 	TWeakObjectPtr<AActor> EntranceDoor;
 	bool bEntranceDoorBreakPending = false;
 
-	/** Drunkard entry of the stage data. Filled by GetDrunkardConfig on first use. The manager keeps the asset loaded. */
-	mutable TWeakObjectPtr<const UDrunkardGimmickConfig> CachedConfig;
-
-	/** Has GetDrunkardConfig searched already. A search that found nothing is not repeated. */
-	mutable bool bConfigSearched = false;
+	/** Drunkard entry of the stage data. GetDrunkardConfig runs every frame, so the entry is searched once. */
+	FGimmickConfigCache ConfigCache;
 
 	/** Gimmick manager of the world. Filled by IsFeverTime on first use. */
 	mutable TWeakObjectPtr<AGimmickManager> CachedManager;

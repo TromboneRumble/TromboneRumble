@@ -681,14 +681,5 @@ void ADrunkardNPC::HandleFeverTimeStarted()
 
 const UDrunkardGimmickConfig& ADrunkardNPC::GetDrunkardConfig() const
 {
-	const UWorld* World = GetWorld();
-	if (!bConfigSearched && World)
-	{
-		// The editor world can get another stage data asset at any time, so only a game world caches the result
-		bConfigSearched = World->IsGameWorld();
-		CachedConfig = Cast<UDrunkardGimmickConfig>(AGimmickManager::FindConfigInWorld(World, EGimmickType::Drunkard));
-	}
-
-	const UDrunkardGimmickConfig* Config = CachedConfig.Get();
-	return Config ? *Config : *GetDefault<UDrunkardGimmickConfig>();
+	return ConfigCache.GetOrDefault<UDrunkardGimmickConfig>(GetWorld(), EGimmickType::Drunkard);
 }

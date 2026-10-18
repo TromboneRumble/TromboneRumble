@@ -79,14 +79,10 @@ void APuddleTrap::BeginPlay()
 	Super::BeginPlay();
 
 	// A puddle lives for a few seconds, so the times are copied once here instead of being read every tick
-	const UWaterDropGimmickConfig* Config = Cast<UWaterDropGimmickConfig>(AGimmickManager::FindConfigInWorld(GetWorld(), GimmickType));
-	if (!Config)
-	{
-		Config = GetDefault<UWaterDropGimmickConfig>();
-	}
-	GrowDuration = Config->GrowDuration;
-	FadeDelay = Config->HoldDuration;
-	FadeDuration = Config->FadeDuration;
+	const UWaterDropGimmickConfig& Config = AGimmickManager::FindConfigInWorldOrDefault<UWaterDropGimmickConfig>(GetWorld(), GimmickType);
+	GrowDuration = Config.GrowDuration;
+	FadeDelay = Config.HoldDuration;
+	FadeDuration = Config.FadeDuration;
 
 	// Without a grow time the puddle is full size at once. Tick only scales it while it grows
 	SetActorScale3D(GrowDuration > 0.f ? FVector::ZeroVector : FVector::OneVector);

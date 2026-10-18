@@ -52,19 +52,14 @@ void AGimmickBase::NotifyEventFinished()
 	}
 }
 
-const UGimmickConfig* AGimmickBase::FindConfig() const
+const UGimmickConfig* FGimmickConfigCache::Get(const UWorld* World, const EGimmickType GimmickType) const
 {
-	if (bConfigSearched) return CachedConfig.Get();
-
-	const UWorld* World = GetWorld();
+	if (bSearched) return Config.Get();
 	if (!World) return nullptr;
 
 	// The editor world is never cached, because the manager there can get another asset at any time
-	bConfigSearched = World->IsGameWorld();
+	bSearched = World->IsGameWorld();
+	Config = AGimmickManager::FindConfigInWorld(World, GimmickType);
 
-	// We ask the manager instead of waiting for it to set the config
-	// A gimmick can need its config before the manager reaches BeginPlay, for example in an OnRep on a client
-	CachedConfig = AGimmickManager::FindConfigInWorld(World, GimmickType);
-
-	return CachedConfig.Get();
+	return Config.Get();
 }

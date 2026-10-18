@@ -329,6 +329,5 @@ void ASpotlightZone::OnRep_CurrentState()
 const USpotlightGimmickConfig& ASpotlightZone::GetConfig() const
 {
 	// The zone is not a gimmick itself, so it looks the entry up in the world. This works on clients too
-	const USpotlightGimmickConfig* Config = Cast<USpotlightGimmickConfig>(AGimmickManager::FindConfigInWorld(GetWorld(), EGimmickType::Spotlight));
-	return Config ? *Config : *GetDefault<USpotlightGimmickConfig>();
+	return AGimmickManager::FindConfigInWorldOrDefault<USpotlightGimmickConfig>(GetWorld(), EGimmickType::Spotlight);
 }

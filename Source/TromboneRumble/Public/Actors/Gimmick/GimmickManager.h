@@ -71,11 +71,20 @@ public:
 
 	/**
 	 * Find the config of a gimmick type in the stage data of the manager in this world.
-	 * Gimmicks use AGimmickBase::GetConfig, and this is for other actors such as the drunkard NPC.
+	 * Gimmicks use AGimmickBase::GetConfig. An object that reads its config often keeps an FGimmickConfigCache,
+	 * and one that reads it now and then, or once when it spawns, uses FindConfigInWorldOrDefault.
 	 *
 	 * @return The config, or null when the world has no manager, no stage data or no config of this type.
 	 */
 	static const UGimmickConfig* FindConfigInWorld(const UWorld* World, EGimmickType GimmickType);
+
+	/** @return Config of this type in the stage data of the world, or the defaults of TConfig when the level has none. Never null. */
+	template <typename TConfig>
+	static const TConfig& FindConfigInWorldOrDefault(const UWorld* World, const EGimmickType GimmickType)
+	{
+		const TConfig* Config = Cast<TConfig>(FindConfigInWorld(World, GimmickType));
+		return Config ? *Config : *GetDefault<TConfig>();
+	}
 
 #if WITH_EDITOR
 	//~ Begin AActor Interface

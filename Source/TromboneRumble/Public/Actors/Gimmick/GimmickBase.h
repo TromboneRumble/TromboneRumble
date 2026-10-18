@@ -9,6 +9,32 @@
 #include "Utilities/Defines.h"
 #include "GimmickBase.generated.h"
 
+/**
+ * Remembers the gimmick config an object found in its world, for an object that reads it often.
+ * Only a game world is remembered. The manager of the editor world can get another stage data asset at any time.
+ */
+struct FGimmickConfigCache
+{
+	/** @return Config of this type in the world, searched once per game world. Null when the level has none. */
+	const UGimmickConfig* Get(const UWorld* World, EGimmickType GimmickType) const;
+
+	/** @return Config of this type in the world, or the defaults of TConfig when the level has none. Never null. */
+	template <typename TConfig>
+	const TConfig& GetOrDefault(const UWorld* World, const EGimmickType GimmickType) const
+	{
+		const TConfig* Typed = Cast<TConfig>(Get(World, GimmickType));
+		return Typed ? *Typed : *GetDefault<TConfig>();
+	}
+
+private:
+
+	/** Config found by Get, or null when the level has none. */
+	mutable TWeakObjectPtr<const UGimmickConfig> Config;
+
+	/** Has Get searched already, even when it found nothing. */
+	mutable bool bSearched = false;
+};
+
 UCLASS()
 class TROMBONERUMBLE_API AGimmickBase : public AActor
 {
@@ -75,11 +101,7 @@ protected:
 	 * @return Config of this gimmick, or the class defaults when the level has none.
 	 */
 	template <typename TConfig>
-	const TConfig& GetConfig() const
-	{
-		const TConfig* Typed = Cast<TConfig>(FindConfig());
-		return Typed ? *Typed : *GetDefault<TConfig>();
-	}
+	const TConfig& GetConfig() const { return ConfigCache.GetOrDefault<TConfig>(GetWorld(), GimmickType); }
 
 	/** Type that links this gimmick to its config. */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Config")
@@ -92,14 +114,9 @@ protected:
 private:
 
 	/**
-	 * Find the config of GimmickType in the stage data of the level.
-	 * The result is cached in a game world only.
+	 * Config of GimmickType in the stage data of the level.
+	 * It asks the manager directly instead of waiting for the manager to hand it over,
+	 * because a gimmick can need its config before the manager reaches BeginPlay, for example in an OnRep on a client.
 	 */
-	const UGimmickConfig* FindConfig() const;
-
-	/** Config found by FindConfig, or null when the level has none. */
-	mutable TWeakObjectPtr<const UGimmickConfig> CachedConfig;
-
-	/** Has FindConfig searched already, even when it found nothing. */
-	mutable bool bConfigSearched = false;
+	FGimmickConfigCache ConfigCache;
 };
