@@ -49,12 +49,13 @@ public:
 
 	/**
 	 * Add the spans this gimmick is expected to show during one round, for the timeline of the gimmick settings panel.
-	 * Repeat the timer rule of the gimmick actor with the values of this config.
+	 * UStageGimmickData::BuildTimeline calls it for a gimmick that is not in a sequence.
+	 * USpawnerGimmickConfig runs the spawn loop here, and each spawner adds the spans of one spawn in BuildSpawnTimeline.
 	 */
 	virtual void BuildTimeline(FGimmickTimelineBuilder& Builder) const {}
 
 	/**
-	 * Add the spans of one event that starts at Start. The panel calls it for gimmicks in a sequence.
+	 * Add the spans of one event that starts at Start. UStageGimmickData::BuildTimeline calls it on each turn a sequence gives the gimmick.
 	 *
 	 * @return Time the event ends.
 	 */
@@ -74,7 +75,6 @@ protected:
 	 */
 	UPROPERTY(Transient)
 	bool bSpawnableByManager = false;
-
 
 	/** Set in the constructor of each subclass. */
 	EGimmickType GimmickType = EGimmickType::None;

@@ -7,7 +7,7 @@
 #include "GimmickSpawnerBase.generated.h"
 
 /**
- * GimmickSpawnerBase runs the spawn timer of every gimmick that spawns objects again and again.
+ * AGimmickSpawnerBase runs the spawn timer of every gimmick that spawns objects again and again.
  * After the first spawn delay it spawns a batch, then waits a random interval and spawns again, until the gimmick is turned off.
  * Each spawn reads the rule of that moment from USpawnerGimmickConfig, so fever time and an edit made during play take effect from the next spawn.
  *

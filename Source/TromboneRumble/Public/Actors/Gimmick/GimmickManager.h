@@ -13,6 +13,19 @@ class AGimmickBase;
 class UGimmickConfig;
 class UStageGimmickData;
 
+/**
+ * AGimmickManager runs the gimmicks of one level. Place one in every level that has gimmicks.
+ * It points at the UStageGimmickData of the level, spawns the gimmicks the level lacks, and registers every gimmick by type.
+ * It turns every gimmick on at the Event_Spotlight_Start cue of the song, and turns them off when the round ends.
+ * It starts fever time at the Event_Spotlight_Fever cue.
+ * It gives the event gimmicks their turns, following the sequences of the stage data.
+ *
+ * Keep in mind that it runs the gimmicks on the server only. Clients read the settings through it, for example with FindConfigInWorld.
+ * A world uses its first manager only.
+ *
+ * @see UStageGimmickData
+ * @see AGimmickBase
+ */
 UCLASS()
 class TROMBONERUMBLE_API AGimmickManager : public AActor
 {

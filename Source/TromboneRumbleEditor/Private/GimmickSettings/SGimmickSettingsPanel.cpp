@@ -321,7 +321,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTabContent()
 
 EVisibility SGimmickSettingsPanel::GetStageDataAreaVisibility() const
 {
-	// Both tabs edit the selected asset or what it lists, so without one they would be two empty panes
+	// Both tabs show the selected asset, so without one they would be two empty panes
 	return StageData.IsValid() ? EVisibility::Visible : EVisibility::Collapsed;
 }
 

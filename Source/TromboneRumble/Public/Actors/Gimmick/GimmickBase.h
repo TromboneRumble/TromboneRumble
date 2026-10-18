@@ -35,6 +35,20 @@ private:
 	mutable bool bSearched = false;
 };
 
+/**
+ * AGimmickBase is the base of every gimmick actor of a level, such as the gravity or the garbage spawner.
+ * It is turned on and off as a whole, can be forced to start, and reads its settings from the config of its GimmickType.
+ * It is placed in the level by hand, or spawned by AGimmickManager from the config, and the manager registers it by type.
+ *
+ * Keep in mind that a level holds one gimmick per type, because the manager and the console commands find a gimmick by its type.
+ * A gimmick that runs one event per turn derives from AEventGimmickBase, and one that spawns objects again and again from AGimmickSpawnerBase.
+ * Deactivate clears every timer of the actor.
+ *
+ * @see AGimmickManager
+ * @see UGimmickConfig
+ * @see AEventGimmickBase
+ * @see AGimmickSpawnerBase
+ */
 UCLASS()
 class TROMBONERUMBLE_API AGimmickBase : public AActor
 {

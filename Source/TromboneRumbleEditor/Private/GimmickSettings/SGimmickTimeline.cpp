@@ -23,13 +23,6 @@ namespace
 		return AxisHeight + RowIndex * (RowHeight + RowGap);
 	}
 
-	/** 95 seconds becomes "1:35". */
-	FText FormatTime(const float Seconds)
-	{
-		const int32 Total = FMath::RoundToInt32(Seconds);
-		return FText::FromString(FString::Printf(TEXT("%d:%02d"), Total / 60, Total % 60));
-	}
-
 	void DrawBox(FSlateWindowElementList& OutDrawElements, const int32 LayerId, const FGeometry& Geometry, const FVector2f& Position, const FVector2f& Size, const FLinearColor& Color)
 	{
 		FSlateDrawElement::MakeBox(
@@ -80,6 +73,12 @@ FLinearColor SGimmickTimeline::GetPhaseColor(const EGimmickTimelinePhase Phase)
 	case EGimmickTimelinePhase::Spawn:   return FLinearColor(0.85f, 0.85f, 0.85f);
 	default:                             return FLinearColor::White;
 	}
+}
+
+FText SGimmickTimeline::FormatTime(const float Seconds)
+{
+	const int32 Total = FMath::RoundToInt32(Seconds);
+	return FText::FromString(FString::Printf(TEXT("%d:%02d"), Total / 60, Total % 60));
 }
 
 FVector2D SGimmickTimeline::ComputeDesiredSize(const float LayoutScaleMultiplier) const
@@ -183,8 +182,10 @@ FText SGimmickTimeline::FindHoverText(const FVector2f& LocalPosition, const floa
 	for (int32 SpanIndex = Row.Spans.Num() - 1; SpanIndex >= 0; --SpanIndex)
 	{
 		const FGimmickTimelineSpan& Span = Row.Spans[SpanIndex];
+		// The same width OnPaint draws, cut at the end of the round
+		const float End = FMath::Min(Span.Start + Span.Duration, RoundLength);
 		const float X = LabelWidth + Span.Start * PixelsPerSecond;
-		const float BlockWidth = FMath::Max(MinBlockWidth, Span.Duration * PixelsPerSecond);
+		const float BlockWidth = FMath::Max(MinBlockWidth, (End - Span.Start) * PixelsPerSecond);
 
 		if (LocalPosition.X < X || LocalPosition.X > X + BlockWidth) continue;
 

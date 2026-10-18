@@ -26,15 +26,6 @@ namespace
 	{
 		return Entry.IsValid() && Entry->SongTag.IsValid();
 	}
-
-	/** Seconds with one decimal, as the song list shows them. */
-	FText FormatSeconds(const float Seconds)
-	{
-		FNumberFormattingOptions Options;
-		Options.MinimumFractionalDigits = 1;
-		Options.MaximumFractionalDigits = 1;
-		return FText::AsNumber(Seconds, &Options);
-	}
 }
 
 void SGimmickTimelineTab::Construct(const FArguments& InArgs)
@@ -106,7 +97,7 @@ void SGimmickTimelineTab::Construct(const FArguments& InArgs)
 				.Text_Lambda([this]()
 				{
 					return IsSong(SelectedSong)
-						? FText::Format(LOCTEXT("SongTiming", "피버 {0}초 · 길이 {1}초"), FormatSeconds(SelectedSong->FeverStart), FormatSeconds(SelectedSong->RoundLength))
+						? FText::Format(LOCTEXT("SongTiming", "피버 {0} · 길이 {1}"), SGimmickTimeline::FormatTime(SelectedSong->FeverStart), SGimmickTimeline::FormatTime(SelectedSong->RoundLength))
 						: FText::GetEmpty();
 				})
 				.ColorAndOpacity(FSlateColor::UseSubduedForeground())
@@ -193,7 +184,7 @@ void SGimmickTimelineTab::Construct(const FArguments& InArgs)
 		+ SVerticalBox::Slot().AutoHeight().Padding(8.f, 0.f, 8.f, 8.f)
 		[
 			SNew(STextBlock)
-			.Text(LOCTEXT("TimelineNote", "0:00은 라운드 시작이 아니라 곡의 Event_Spotlight_Start 큐에서 기믹이 켜지는 시점입니다. 블록에 마우스를 올리면 단계와 시간이 보이고, 기믹 이름에 올리면 그 줄을 읽을 때 주의할 점이 보입니다. 눈보라는 이 창에서 관리하지 않아 나오지 않습니다"))
+			.Text(LOCTEXT("TimelineNote", "0:00은 라운드 시작이 아니라 곡의 Event_Spotlight_Start 큐에서 기믹이 켜지는 시점입니다. 블록에 마우스를 올리면 단계와 시간이 보이고, 기믹 이름에 올리면 그 줄을 읽을 때 주의할 점이 보입니다."))
 			.ColorAndOpacity(FSlateColor::UseSubduedForeground())
 			.AutoWrapText(true)
 		]
