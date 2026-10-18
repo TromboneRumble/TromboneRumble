@@ -43,7 +43,7 @@ public:
 #endif
 
 	//~ Begin UEventGimmickConfig Interface
-	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const override;
 	//~ End UEventGimmickConfig Interface
 
 	/** @return Pull ratio at DistanceAlpha, 0 at the center and 1 at the edge. */

@@ -26,7 +26,7 @@ public:
 	}
 
 	//~ Begin UEventGimmickConfig Interface
-	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const override;
 	//~ End UEventGimmickConfig Interface
 
 	/** 맥주가 최고 수위까지 차오르는 시간 (초) */

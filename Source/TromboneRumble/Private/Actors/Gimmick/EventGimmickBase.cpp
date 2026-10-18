@@ -63,7 +63,7 @@ void AEventGimmickBase::StartPhase(const int32 PhaseIndex)
 	}
 
 	// Read again for each phase, so a value edited during play counts from the next phase
-	TArray<FGimmickEventPhase> Phases;
+	TArray<FGimmickPhase> Phases;
 	GetEventConfig().GetEventPhases(GetWorld(), Phases);
 	if (!Phases.IsValidIndex(PhaseIndex))
 	{

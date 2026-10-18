@@ -58,14 +58,8 @@ void ASpotlightZone::InitializeZone(const bool bIsFeverTime, const int32 InSpotl
 {
 	if (!HasAuthority()) return;
 	SpotlightBonusScore = InSpotlightBonusScore;
-	if (bIsFeverTime)
-	{
-		SetState(ESpotlightState::Active);
-	}
-	else
-	{
-		SetState(ESpotlightState::Warning);
-	}
+	bSpawnedInFever = bIsFeverTime;
+	StartPhase(0);
 }
 
 void ASpotlightZone::HandleServerRPC(ACharacter* InstigatorCharacter)
@@ -76,7 +70,11 @@ void ASpotlightZone::HandleServerRPC(ACharacter* InstigatorCharacter)
 	if (ADefaultTromboneCharacter* TromboneCharacter = Cast<ADefaultTromboneCharacter>(InstigatorCharacter))
 	{
 		TryAwardBonus(TromboneCharacter);
-		SetState(ESpotlightState::Fading);
+
+		// A success turns the light off early, so the zone jumps to its fading phase. Without one it goes at once
+		TArray<FGimmickPhase> Phases;
+		GetConfig().GetZonePhases(bSpawnedInFever, Phases);
+		StartPhase(Phases.IndexOfByPredicate([](const FGimmickPhase& Phase) { return Phase.Phase == EGimmickTimelinePhase::Ending; }));
 	}
 }
 
@@ -238,6 +236,35 @@ void ASpotlightZone::Multicast_PlaySpotlightSuccessEffect_Implementation(ADefaul
 
 
 
+void ASpotlightZone::StartPhase(const int32 PhaseIndex)
+{
+	if (!HasAuthority()) return;
+
+	// Read again for each phase, so a value edited during play counts from the next phase
+	TArray<FGimmickPhase> Phases;
+	GetConfig().GetZonePhases(bSpawnedInFever, Phases);
+	if (!Phases.IsValidIndex(PhaseIndex))
+	{
+		Destroy();
+		return;
+	}
+
+	switch (Phases[PhaseIndex].Phase)
+	{
+	case EGimmickTimelinePhase::Warning:
+		SetState(ESpotlightState::Warning);
+		break;
+	case EGimmickTimelinePhase::Active:
+		SetState(ESpotlightState::Active);
+		break;
+	default:
+		SetState(ESpotlightState::Fading);
+		break;
+	}
+
+	AGimmickBase::StartPhaseTimer(GetWorldTimerManager(), LifecycleTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartPhase, PhaseIndex + 1), Phases[PhaseIndex].Duration);
+}
+
 void ASpotlightZone::SetState(ESpotlightState NewState)
 {
 	if (!HasAuthority()) return;
@@ -246,30 +273,16 @@ void ASpotlightZone::SetState(ESpotlightState NewState)
 	CurrentState = NewState;
 	OnRep_CurrentState();
 
-	GetWorldTimerManager().ClearTimer(LifecycleTimerHandle);
-
 	switch (CurrentState)
 	{
-		case ESpotlightState::Warning:
-			StartLifecycleTimer(GetConfig().WarningDuration, &ASpotlightZone::OnWarningFinished);
-			break;
-
 		case ESpotlightState::Active:
-		{
 			Multicast_PlaySpotlightTurnOnSFX();
-			StartLifecycleTimer(GetConfig().ActiveDuration, &ASpotlightZone::OnActiveFinished);
-		}
 			break;
 
 		case ESpotlightState::Fading:
-		{
 			TurnOffLight();
-			StartLifecycleTimer(GetConfig().FadeDuration, &ASpotlightZone::OnFadingFinished);
-		}
-			
 			break;
 
-		case ESpotlightState::None:
 		default:
 			break;
 	}
@@ -288,29 +301,6 @@ bool ASpotlightZone::TryAwardBonus(ADefaultTromboneCharacter* InCharacter)
 	}
 
 	return false;
-}
-
-void ASpotlightZone::StartLifecycleTimer(const float InDuration, void(ASpotlightZone::* InTimerMethod)())
-{
-	AGimmickBase::StartPhaseTimer(GetWorldTimerManager(), LifecycleTimerHandle, FTimerDelegate::CreateUObject(this, InTimerMethod), InDuration);
-}
-
-void ASpotlightZone::OnWarningFinished()
-{
-	SetState(ESpotlightState::Active);
-}
-
-void ASpotlightZone::OnActiveFinished()
-{
-	SetState(ESpotlightState::Fading);
-}
-
-void ASpotlightZone::OnFadingFinished()
-{
-	if (HasAuthority())
-	{
-		Destroy();
-	}
 }
 
 void ASpotlightZone::OnRep_CurrentState()

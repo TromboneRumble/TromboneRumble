@@ -168,8 +168,8 @@ public:
 	FGimmickSpawnRule Fever;
 };
 
-/** One phase of an event after its warning, such as the rise of the beer. */
-struct FGimmickEventPhase
+/** One phase of an event after its warning, such as the rise of the beer, or of an object a spawner made, such as a spotlight zone. */
+struct FGimmickPhase
 {
 	/** Kind of the phase. It also decides the color on the timeline. */
 	EGimmickTimelinePhase Phase = EGimmickTimelinePhase::Active;
@@ -212,7 +212,7 @@ public:
 	 * @param World Level the event runs in. Null when there is none, and a phase that depends on the level uses a guess then.
 	 * @param OutPhases The phases are added here.
 	 */
-	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const {}
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const {}
 
 	/** @return Whether the event warns before it starts. */
 	bool HasWarning() const { return bHasWarning; }

@@ -78,16 +78,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UAkComponent> AkComponent;
 private:
-	/** Settings of the spotlight gimmick for this level. Never null. The warning, active and fading times come from here. */
+	/** Settings of the spotlight gimmick for this level. Never null. The phases of the zone come from here. */
 	const USpotlightGimmickConfig& GetConfig() const;
 
+	/**
+	 * Start a phase of USpotlightGimmickConfig::GetZonePhases, or destroy the zone after the last one. Server only.
+	 * The kind of the phase picks the state, so a skipped warning does not shift the others.
+	 *
+	 * @param PhaseIndex Index in the phases of this zone. An invalid index destroys the zone.
+	 */
+	void StartPhase(int32 PhaseIndex);
+
+	/** Server only. Sets the state and plays what the new state plays. The phase timer is StartPhase's. */
 	void SetState(ESpotlightState NewState);
 	bool TryAwardBonus(ADefaultTromboneCharacter* InCharacter);
-	void StartLifecycleTimer(float InDuration, void (ASpotlightZone::*InTimerMethod)());
-
-	void OnWarningFinished();
-	void OnActiveFinished();
-	void OnFadingFinished();
 	
 	UFUNCTION()
 	void OnRep_CurrentState();
@@ -108,6 +112,9 @@ private:
 	FLinearColor SpotlightActiveColor = FLinearColor(1, 0.98f, 0.64f);
 	
 	FTimerHandle LifecycleTimerHandle;
+
+	/** Was the zone made in fever time. The phases of the zone depend on it. Server only. */
+	bool bSpawnedInFever = false;
 
 	UPROPERTY(Replicated)
 	int32 SpotlightBonusScore = 300;

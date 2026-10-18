@@ -5,6 +5,7 @@
 #include "Data/Gimmick/BlackHoleGimmickConfig.h"
 #include "Data/Gimmick/DrunkardGimmickConfig.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
+#include "Data/Gimmick/SpotlightGimmickConfig.h"
 #include "Data/Gimmick/UfoGimmickConfig.h"
 #include "EngineUtils.h"
 
@@ -12,20 +13,20 @@
 // The UFO and the drunkard end on their own, so their phases only follow how long the actor runs
 
 // AGravityGimmick
-void UGravityGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const
+void UGravityGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const
 {
 	OutPhases.Add({ EGimmickTimelinePhase::Active, FText::FromString(TEXT("중력 변경")), ActiveDuration });
 }
 
 // ABlackHoleGimmick. The hole grows, then collapses, and both count as the event
-void UBlackHoleGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const
+void UBlackHoleGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const
 {
 	OutPhases.Add({ EGimmickTimelinePhase::Active, FText::FromString(TEXT("성장")), GrowDuration });
 	OutPhases.Add({ EGimmickTimelinePhase::Ending, FText::FromString(TEXT("붕괴")), CollapseDuration });
 }
 
 // ABeerFloodGimmick
-void UBeerFloodGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const
+void UBeerFloodGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const
 {
 	OutPhases.Add({ EGimmickTimelinePhase::Active, FText::FromString(TEXT("수위 상승")), RisingDuration });
 	OutPhases.Add({ EGimmickTimelinePhase::Active, FText::FromString(TEXT("침수 유지")), SustainDuration });
@@ -33,7 +34,7 @@ void UBeerFloodGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmic
 }
 
 // AUfoGimmick and AUfo
-void UUfoGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const
+void UUfoGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const
 {
 	// The beam stays on as long as the line is, and only the gimmick actor in the level knows the lines
 	float LineLength = 0.f;
@@ -55,9 +56,20 @@ void UUfoGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEvent
 }
 
 // ADrunkardSpawner and UDrunkardStateComponent. The chase and the exit are their longest, as the drunkard can end them early
-void UDrunkardGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const
+void UDrunkardGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const
 {
 	OutPhases.Add({ EGimmickTimelinePhase::Warning, FText::FromString(TEXT("등장")), DoorPassDuration + EnterPauseDuration });
 	OutPhases.Add({ EGimmickTimelinePhase::Active, FText::FromString(TEXT("추격 (최대)")), ChaseDuration });
 	OutPhases.Add({ EGimmickTimelinePhase::Ending, FText::FromString(TEXT("퇴장 (최대)")), ExitTimeout });
+}
+
+// ASpotlightZone. A zone made in fever time can skip its warning
+void USpotlightGimmickConfig::GetZonePhases(const bool bFever, TArray<FGimmickPhase>& OutPhases) const
+{
+	if (!bFever || !bSkipWarningInFever)
+	{
+		OutPhases.Add({ EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")), WarningDuration });
+	}
+	OutPhases.Add({ EGimmickTimelinePhase::Active, FText::FromString(TEXT("발동")), ActiveDuration });
+	OutPhases.Add({ EGimmickTimelinePhase::Ending, FText::FromString(TEXT("사라짐")), FadeDuration });
 }

@@ -26,7 +26,7 @@ public:
 	}
 
 	//~ Begin UEventGimmickConfig Interface
-	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const override;
 	//~ End UEventGimmickConfig Interface
 
 	/** 발동 후 중력이 바뀐 채로 유지되는 시간. 끝나면 원래 중력으로 돌아온다 (초) */

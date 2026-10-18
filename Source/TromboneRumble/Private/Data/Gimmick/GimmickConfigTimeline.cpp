@@ -25,9 +25,9 @@ float UEventGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, 
 		Time = Builder.AddSpan(Time, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
 	}
 
-	TArray<FGimmickEventPhase> Phases;
+	TArray<FGimmickPhase> Phases;
 	GetEventPhases(Builder.GetWorld(), Phases);
-	for (const FGimmickEventPhase& Phase : Phases)
+	for (const FGimmickPhase& Phase : Phases)
 	{
 		Time = Builder.AddSpan(Time, Phase.Duration, Phase.Phase, Phase.Label);
 	}
@@ -71,14 +71,24 @@ float USpawnerGimmickConfig::BuildSpawnTimeline(FGimmickTimelineBuilder& Builder
 	return SpawnTime;
 }
 
-// ASpotlightZone
+// ASpotlightZone runs the same phases in the game, so this repeats no rule
 float USpotlightGimmickConfig::BuildSpawnTimeline(FGimmickTimelineBuilder& Builder, const float SpawnTime) const
 {
-	Builder.SetNote(FText::FromString(TEXT("한 번의 스폰을 한 묶음으로 그립니다. 한 번에 여러 곳에 생기는 개수는 표시하지 않습니다")));
+	FString Note = TEXT("한 번의 스폰을 한 묶음으로 그립니다. 한 번에 여러 곳에 생기는 개수는 표시하지 않습니다");
+	if (bSkipWarningInFever)
+	{
+		Note += TEXT("\n피버 타임에 생긴 스포트라이트는 예고 없이 바로 켜집니다");
+	}
+	Builder.SetNote(FText::FromString(Note));
 
-	float Time = Builder.AddSpan(SpawnTime, WarningDuration, EGimmickTimelinePhase::Warning, FText::FromString(TEXT("예고")));
-	Time = Builder.AddSpan(Time, ActiveDuration, EGimmickTimelinePhase::Active, FText::FromString(TEXT("발동")));
-	Builder.AddSpan(Time, FadeDuration, EGimmickTimelinePhase::Ending, FText::FromString(TEXT("사라짐")));
+	TArray<FGimmickPhase> Phases;
+	GetZonePhases(Builder.IsFever(SpawnTime), Phases);
+
+	float Time = SpawnTime;
+	for (const FGimmickPhase& Phase : Phases)
+	{
+		Time = Builder.AddSpan(Time, Phase.Duration, Phase.Phase, Phase.Label);
+	}
 	return SpawnTime;
 }
 

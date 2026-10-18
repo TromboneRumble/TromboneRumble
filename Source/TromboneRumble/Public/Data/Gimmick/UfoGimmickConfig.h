@@ -44,7 +44,7 @@ public:
 #endif
 
 	//~ Begin UEventGimmickConfig Interface
-	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const override;
 	//~ End UEventGimmickConfig Interface
 
 	/** UFO가 라인을 따라 이동하는 속도. 느릴수록 광선이 오래 켜져 붙잡힌 플레이어도 오래 매달린다 (cm/s) */

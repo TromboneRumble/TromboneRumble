@@ -65,7 +65,7 @@ public:
 #endif
 
 	//~ Begin UEventGimmickConfig Interface
-	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const override;
+	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickPhase>& OutPhases) const override;
 	//~ End UEventGimmickConfig Interface
 
 	/** @return The rule for the current part of the song. The fever rule counts only while bUseFeverRule is on. */
