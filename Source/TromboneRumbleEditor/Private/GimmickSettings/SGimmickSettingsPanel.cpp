@@ -190,9 +190,6 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 	SharedDetailsView->SetIsCustomRowVisibleDelegate(FIsCustomRowVisible::CreateSP(this, &SGimmickSettingsPanel::IsSettingCategory));
 	SharedDetailsView->SetRootObjectCustomizationInstance(MakeShared<FSharedDataHeaderCustomization>());
 
-	// An entry added or removed in the details view changes the rows below
-	StageDetailsView->OnFinishedChangingProperties().AddSP(this, &SGimmickSettingsPanel::HandlePropertiesChanged);
-
 	ChildSlot
 	[
 		SNew(SVerticalBox)
@@ -361,6 +358,12 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 	];
 
 	MapOpenedHandle = FEditorDelegates::OnMapOpened.AddSP(this, &SGimmickSettingsPanel::HandleMapOpened);
+	ObjectPropertyChangedHandle = FCoreUObjectDelegates::OnObjectPropertyChanged.AddSP(this, &SGimmickSettingsPanel::HandleObjectPropertyChanged);
+	if (GEngine)
+	{
+		ActorAddedHandle = GEngine->OnLevelActorAdded().AddSP(this, &SGimmickSettingsPanel::HandleLevelActorChanged);
+		ActorDeletedHandle = GEngine->OnLevelActorDeleted().AddSP(this, &SGimmickSettingsPanel::HandleLevelActorChanged);
+	}
 
 	RefreshSongs();
 	UseStageDataOfOpenLevel();
@@ -369,6 +372,77 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 SGimmickSettingsPanel::~SGimmickSettingsPanel()
 {
 	FEditorDelegates::OnMapOpened.Remove(MapOpenedHandle);
+	FCoreUObjectDelegates::OnObjectPropertyChanged.Remove(ObjectPropertyChangedHandle);
+	if (GEngine)
+	{
+		GEngine->OnLevelActorAdded().Remove(ActorAddedHandle);
+		GEngine->OnLevelActorDeleted().Remove(ActorDeletedHandle);
+	}
+}
+
+void SGimmickSettingsPanel::PostUndo(const bool bSuccess)
+{
+	RequestRefresh();
+}
+
+void SGimmickSettingsPanel::PostRedo(const bool bSuccess)
+{
+	RequestRefresh();
+}
+
+void SGimmickSettingsPanel::RequestRefresh()
+{
+	if (bRefreshPending) return;
+
+	bRefreshPending = true;
+	RegisterActiveTimer(0.f, FWidgetActiveTimerDelegate::CreateSP(this, &SGimmickSettingsPanel::HandleRefreshTimer));
+}
+
+EActiveTimerReturnType SGimmickSettingsPanel::HandleRefreshTimer(double InCurrentTime, float InDeltaTime)
+{
+	bRefreshPending = false;
+	Refresh();
+	return EActiveTimerReturnType::Stop;
+}
+
+void SGimmickSettingsPanel::Refresh()
+{
+	UStageGimmickData* LevelData = FindStageDataOfOpenLevel();
+	const bool bShowedLevelData = StageData.Get() == OpenLevelStageData.Get();
+	OpenLevelStageData = LevelData;
+
+	if (bShowedLevelData && StageData.Get() != LevelData)
+	{
+		SetStageData(LevelData);
+		return;
+	}
+
+	RebuildLists();
+	RebuildTimeline();
+	RebuildIssues();
+	UpdateStatusText();
+}
+
+void SGimmickSettingsPanel::HandleLevelActorChanged(AActor* Actor)
+{
+	// PIE spawns actors too, and the panel shows the editor level
+	if (Actor && Actor->GetWorld() == GetOpenLevelWorld() && (Actor->IsA<AGimmickBase>() || Actor->IsA<AGimmickManager>()))
+	{
+		RequestRefresh();
+	}
+}
+
+void SGimmickSettingsPanel::HandleObjectPropertyChanged(UObject* Object, FPropertyChangedEvent& Event)
+{
+	// A dragged slider sends a change every frame, and the drag ends with one more change that is not interactive
+	if (!Object || Event.ChangeType == EPropertyChangeType::Interactive) return;
+
+	// The configs are subobjects of the asset, and the garbage class list of an entry decides what the shared data tab shows
+	const bool bIsAsset = StageData.IsValid() && (Object == StageData.Get() || Object->IsIn(StageData.Get()));
+	if (bIsAsset || Object->IsA<AGimmickManager>() || Object->IsA<AGimmickBase>())
+	{
+		RequestRefresh();
+	}
 }
 
 EVisibility SGimmickSettingsPanel::GetStageDataAreaVisibility() const
@@ -384,11 +458,13 @@ void SGimmickSettingsPanel::SetStageData(UStageGimmickData* NewStageData)
 	RebuildLists();
 	RebuildTimeline();
 	RebuildIssues();
+	UpdateStatusText();
 }
 
 void SGimmickSettingsPanel::UseStageDataOfOpenLevel()
 {
-	SetStageData(FindStageDataOfOpenLevel());
+	OpenLevelStageData = FindStageDataOfOpenLevel();
+	SetStageData(OpenLevelStageData.Get());
 }
 
 UStageGimmickData* SGimmickSettingsPanel::FindStageDataOfOpenLevel()
@@ -903,26 +979,27 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeUnmanagedRow(AGimmickBase& Gimmic
 		];
 }
 
-FText SGimmickSettingsPanel::GetStatusText() const
+void SGimmickSettingsPanel::UpdateStatusText()
 {
 	const UWorld* World = GetOpenLevelWorld();
 	const FString LevelName = World ? World->GetMapName() : TEXT("-");
-	const UStageGimmickData* LevelData = FindStageDataOfOpenLevel();
+	const UStageGimmickData* LevelData = OpenLevelStageData.Get();
 
 	if (!LevelData)
 	{
-		return FText::Format(LOCTEXT("StatusNoData", "현재 레벨 {0}: 기믹 매니저가 없거나 기믹 매니저의 레벨 기믹 설정이 비어 있습니다."),
+		StatusText = FText::Format(LOCTEXT("StatusNoData", "현재 레벨 {0}: 기믹 매니저가 없거나 기믹 매니저의 레벨 기믹 설정이 비어 있습니다."),
 			FText::FromString(LevelName));
 	}
-
-	if (LevelData != StageData.Get())
+	else if (LevelData != StageData.Get())
 	{
-		return FText::Format(LOCTEXT("StatusOtherData", "현재 레벨 {0}의 기믹 매니저는 {1}을 씁니다. 지금 보고 있는 설정은 이 레벨이 쓰는 것이 아니라서, 고쳐도 이 레벨의 플레이에는 반영되지 않습니다. 현재 레벨의 설정 버튼을 누르면 돌아갑니다."),
+		StatusText = FText::Format(LOCTEXT("StatusOtherData", "현재 레벨 {0}의 기믹 매니저는 {1}을 씁니다. 지금 보고 있는 설정은 이 레벨이 쓰는 것이 아니라서, 고쳐도 이 레벨의 플레이에는 반영되지 않습니다. 현재 레벨의 설정 버튼을 누르면 돌아갑니다."),
 			FText::FromString(LevelName), FText::FromString(LevelData->GetName()));
 	}
-
-	return FText::Format(LOCTEXT("StatusSameData", "현재 레벨 {0}이 이 설정을 씁니다. 플레이 중에 고친 값은 대부분 그 기믹의 다음 발동이나 다음 스폰부터 쓰입니다. 바로 보려면 아래의 재시작을 누르세요. 저장을 눌러야 에셋에 남습니다."),
-		FText::FromString(LevelName));
+	else
+	{
+		StatusText = FText::Format(LOCTEXT("StatusSameData", "현재 레벨 {0}이 이 설정을 씁니다. 플레이 중에 고친 값은 대부분 그 기믹의 다음 발동이나 다음 스폰부터 쓰입니다. 바로 보려면 아래의 재시작을 누르세요. 저장을 눌러야 에셋에 남습니다."),
+			FText::FromString(LevelName));
+	}
 }
 
 TArray<UPackage*> SGimmickSettingsPanel::GetEditedPackages() const
@@ -966,14 +1043,6 @@ void SGimmickSettingsPanel::HandleMapOpened(const FString& Filename, const bool 
 {
 	RefreshSongs();
 	UseStageDataOfOpenLevel();
-}
-
-void SGimmickSettingsPanel::HandlePropertiesChanged(const FPropertyChangedEvent& Event)
-{
-	// The garbage class list lives in the level entry and decides what the shared data tab shows
-	RebuildLists();
-	RebuildTimeline();
-	RebuildIssues();
 }
 
 void SGimmickSettingsPanel::RunGimmickCommand(const TCHAR* Command, const EGimmickType GimmickType)

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/Gimmick/StageGimmickData.h"
+#include "EditorUndoClient.h"
 #include "GimmickSettings/GimmickSongTiming.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Utilities/Defines.h"
@@ -30,10 +31,13 @@ template <typename OptionType> class SComboBox;
  * Bottom: one row per gimmick of the open level with buttons that run the gimmick console commands in PIE,
  * then the gimmicks of the open level that this panel cannot edit at all.
  *
+ * Keep in mind that it refreshes itself when a gimmick actor is placed or removed, when the manager gets another asset,
+ * when the asset changes in any editor, and on undo and redo. Moving an actor does not refresh it.
+ *
  * @see UStageGimmickData
  * @see AGimmickBase
  */
-class SGimmickSettingsPanel : public SCompoundWidget
+class SGimmickSettingsPanel : public SCompoundWidget, public FSelfRegisteringEditorUndoClient
 {
 public:
 
@@ -46,7 +50,33 @@ public:
 	/** Unbind from the editor delegates. */
 	virtual ~SGimmickSettingsPanel() override;
 
+	//~ Begin FEditorUndoClient Interface
+	virtual void PostUndo(bool bSuccess) override;
+	virtual void PostRedo(bool bSuccess) override;
+	//~ End FEditorUndoClient Interface
+
 private:
+
+	/** Refresh once on the next frame, however many changes ask for it before then. */
+	void RequestRefresh();
+
+	/** Run the refresh RequestRefresh asked for. */
+	EActiveTimerReturnType HandleRefreshTimer(double InCurrentTime, float InDeltaTime);
+
+	/**
+	 * Follow a new asset of the manager of the open level, then rebuild the lists, the timeline, the problems and the status line.
+	 * The panel follows only while it shows the asset of the open level, so an asset the designer picked by hand stays.
+	 */
+	void Refresh();
+
+	/** A gimmick actor or the manager was placed in or removed from the open level. */
+	void HandleLevelActorChanged(AActor* Actor);
+
+	/** Any object changed in any editor. Only the asset, the manager and the gimmick actors matter. */
+	void HandleObjectPropertyChanged(UObject* Object, FPropertyChangedEvent& Event);
+
+	/** Make the status line again. It changes only with the asset or the manager, so it is not made every frame. */
+	void UpdateStatusText();
 
 	/** Show this asset in the details view and rebuild the lists. */
 	void SetStageData(UStageGimmickData* NewStageData);
@@ -94,7 +124,7 @@ private:
 	bool IsSettingCategory(FName RowName, FName ParentCategory) const;
 
 	/** One line that says which level is open and which asset its manager uses. */
-	FText GetStatusText() const;
+	FText GetStatusText() const { return StatusText; }
 
 	/** Collapsed while no stage data asset is selected. Bound to the tab bar, its separator and the two details views. */
 	EVisibility GetStageDataAreaVisibility() const;
@@ -113,9 +143,6 @@ private:
 
 	void HandleMapOpened(const FString& Filename, bool bAsTemplate);
 
-	/** An entry was added, removed or edited in the details view. */
-	void HandlePropertiesChanged(const FPropertyChangedEvent& Event);
-
 	/** Run a gimmick console command in every PIE world that is not a client. */
 	static void RunGimmickCommand(const TCHAR* Command, EGimmickType GimmickType);
 
@@ -124,6 +151,15 @@ private:
 
 	/** Asset being edited. Strong, because nothing else may reference an asset picked by hand. */
 	TStrongObjectPtr<UStageGimmickData> StageData;
+
+	/** Asset the manager of the open level pointed at when the panel last looked. */
+	TWeakObjectPtr<UStageGimmickData> OpenLevelStageData;
+
+	/** Made by UpdateStatusText. */
+	FText StatusText;
+
+	/** Has a refresh been asked for and not run yet. */
+	bool bRefreshPending = false;
 
 	/** Details view of StageData. */
 	TSharedPtr<IDetailsView> StageDetailsView;
@@ -184,4 +220,10 @@ private:
 	int32 ActiveTabIndex = 0;
 
 	FDelegateHandle MapOpenedHandle;
+
+	FDelegateHandle ActorAddedHandle;
+
+	FDelegateHandle ActorDeletedHandle;
+
+	FDelegateHandle ObjectPropertyChangedHandle;
 };
