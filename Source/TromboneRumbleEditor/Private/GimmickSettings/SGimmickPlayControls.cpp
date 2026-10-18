@@ -132,11 +132,8 @@ void SGimmickPlayControls::Rebuild(const UWorld* World, const UStageGimmickData*
 		GimmickRows->AddSlot().AutoHeight().Padding(0.f, 2.f)[MakeGimmickRow(MakeGimmickLabel(**It), It->GetGimmickType())];
 		TypesWithRow.Add(It->GetGimmickType());
 
-		// A gimmick with neither a level entry nor shared data has nothing the panel can show
-		TArray<UObject*> SettingsObjects;
-		It->GetSettingsObjects(SettingsObjects);
-		const bool bHasEntry = StageData && StageData->FindConfig(It->GetGimmickType()) != nullptr;
-		if (!bHasEntry && SettingsObjects.IsEmpty())
+		// A gimmick without a level entry has nothing the panel can show
+		if (!StageData || !StageData->FindConfig(It->GetGimmickType()))
 		{
 			UnmanagedRows->AddSlot().AutoHeight().Padding(0.f, 2.f)[MakeUnmanagedRow(**It)];
 		}

@@ -71,14 +71,6 @@ public:
 	 */
 	static void StartPhaseTimer(FTimerManager& TimerManager, FTimerHandle& Handle, const FTimerDelegate& Callback, float Duration);
 
-#if WITH_EDITOR
-	/**
-	 * Collect objects whose settings differ per kind of spawned object, such as the class default object of each garbage Blueprint.
-	 * The gimmick settings panel shows them in its second tab.
-	 */
-	virtual void GetSettingsObjects(TArray<UObject*>& OutObjects) const {}
-#endif
-
 	/** @return Whether the gimmick is on. */
 	bool IsActive() const { return bIsActive; }
 

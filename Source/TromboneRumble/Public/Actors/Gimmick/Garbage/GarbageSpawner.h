@@ -16,10 +16,6 @@ class TROMBONERUMBLE_API AGarbageSpawner : public AGimmickSpawnerBase
 public:
 	AGarbageSpawner();
 	
-#if WITH_EDITOR
-	virtual void GetSettingsObjects(TArray<UObject*>& OutObjects) const override;
-#endif
-
 	/** Throw one garbage at one player. Server only. */
 	void Server_SpawnGarbageOnce();
 

@@ -16,19 +16,6 @@ AGarbageSpawner::AGarbageSpawner()
 	AActor::SetReplicateMovement(false);
 }
 
-#if WITH_EDITOR
-void AGarbageSpawner::GetSettingsObjects(TArray<UObject*>& OutObjects) const
-{
-	for (const TSubclassOf<AGarbageBase>& GarbageClass : GetConfig<UGarbageGimmickConfig>().GarbageClasses)
-	{
-		if (GarbageClass)
-		{
-			OutObjects.AddUnique(GarbageClass->GetDefaultObject());
-		}
-	}
-}
-#endif
-
 const USpawnerGimmickConfig& AGarbageSpawner::GetSpawnerConfig() const
 {
 	return GetConfig<UGarbageGimmickConfig>();

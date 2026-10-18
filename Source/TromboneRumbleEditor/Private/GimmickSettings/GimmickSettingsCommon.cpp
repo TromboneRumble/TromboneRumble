@@ -16,10 +16,9 @@ bool GimmickSettings::IsPlayingInEditor()
 	return GEditor && GEditor->PlayWorld != nullptr;
 }
 
-TSharedRef<IDetailsView> GimmickSettings::CreateDetailsView(const bool bManyObjects)
+TSharedRef<IDetailsView> GimmickSettings::CreateDetailsView()
 {
 	FDetailsViewArgs DetailsArgs;
-	DetailsArgs.bAllowMultipleTopLevelObjects = bManyObjects;
 	DetailsArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
 	DetailsArgs.bAllowSearch = false;
 	DetailsArgs.bHideSelectionTip = true;

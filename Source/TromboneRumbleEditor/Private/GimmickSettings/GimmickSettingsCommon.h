@@ -19,10 +19,6 @@ namespace GimmickSettings
 	/** @return Whether a PIE session runs. */
 	bool IsPlayingInEditor();
 
-	/**
-	 * Make a details view for the panel, without the name area, the search box and the selection lock.
-	 *
-	 * @param bManyObjects Shows each object as its own section instead of merging them.
-	 */
-	TSharedRef<IDetailsView> CreateDetailsView(bool bManyObjects);
+	/** Make a details view for the panel, without the name area, the search box and the selection lock. */
+	TSharedRef<IDetailsView> CreateDetailsView();
 }

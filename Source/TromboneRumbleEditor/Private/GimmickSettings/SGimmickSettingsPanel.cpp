@@ -4,7 +4,6 @@
 #include "GimmickSettings/GimmickSettingsCommon.h"
 #include "GimmickSettings/SGimmickIssueList.h"
 #include "GimmickSettings/SGimmickPlayControls.h"
-#include "GimmickSettings/SGimmickSharedSettingsTab.h"
 #include "GimmickSettings/SGimmickTimelineTab.h"
 #include "Actors/Gimmick/GimmickBase.h"
 #include "Actors/Gimmick/GimmickManager.h"
@@ -26,7 +25,7 @@ using GimmickSettings::GetOpenLevelWorld;
 
 void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 {
-	StageDetailsView = GimmickSettings::CreateDetailsView(false);
+	StageDetailsView = GimmickSettings::CreateDetailsView();
 
 	ChildSlot
 	[
@@ -144,7 +143,6 @@ void SGimmickSettingsPanel::RebuildSections()
 	}
 
 	IssueList->Rebuild(StageData.Get(), LevelManager);
-	SharedSettingsTab->Rebuild(World);
 	TimelineTab->Rebuild(StageData.Get());
 	PlayControls->Rebuild(World, StageData.Get());
 }
@@ -186,7 +184,7 @@ void SGimmickSettingsPanel::HandleObjectPropertyChanged(UObject* Object, FProper
 	// A dragged slider sends a change every frame, and the drag ends with one more change that is not interactive
 	if (!Object || Event.ChangeType == EPropertyChangeType::Interactive) return;
 
-	// The configs are subobjects of the asset, and the garbage class list of an entry decides what the shared data tab shows
+	// The configs are subobjects of the asset
 	const bool bIsAsset = StageData.IsValid() && (Object == StageData.Get() || Object->IsIn(StageData.Get()));
 	if (bIsAsset || Object->IsA<AGimmickManager>() || Object->IsA<AGimmickBase>())
 	{
@@ -219,29 +217,17 @@ void SGimmickSettingsPanel::HandleAssetPicked(const FAssetData& AssetData)
 	SetStageData(Cast<UStageGimmickData>(AssetData.GetAsset()));
 }
 
-TArray<UPackage*> SGimmickSettingsPanel::GetEditedPackages() const
-{
-	TArray<UPackage*> Packages;
-	if (StageData.IsValid())
-	{
-		Packages.AddUnique(StageData->GetPackage());
-	}
-	SharedSettingsTab->GetEditedPackages(Packages);
-	return Packages;
-}
-
 bool SGimmickSettingsPanel::HasUnsavedChanges() const
 {
-	for (const UPackage* Package : GetEditedPackages())
-	{
-		if (Package && Package->IsDirty()) return true;
-	}
-	return false;
+	return StageData.IsValid() && StageData->GetPackage()->IsDirty();
 }
 
 FReply SGimmickSettingsPanel::HandleSaveClicked()
 {
-	UEditorLoadingAndSavingUtils::SavePackages(GetEditedPackages(), true);
+	if (StageData.IsValid())
+	{
+		UEditorLoadingAndSavingUtils::SavePackages({ StageData->GetPackage() }, true);
+	}
 	return FReply::Handled();
 }
 
@@ -276,7 +262,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTopBar()
 		[
 			SNew(SButton)
 			.Text(LOCTEXT("Save", "저장"))
-			.ToolTipText(LOCTEXT("SaveTip", "두 탭에서 바뀐 것을 모두 저장합니다. 레벨 기믹 설정 에셋과, 고친 투척물 블루프린트가 저장됩니다"))
+			.ToolTipText(LOCTEXT("SaveTip", "레벨 기믹 설정 에셋에서 바뀐 것을 저장합니다"))
 			.IsEnabled(this, &SGimmickSettingsPanel::HasUnsavedChanges)
 			.OnClicked(this, &SGimmickSettingsPanel::HandleSaveClicked)
 		];
@@ -312,10 +298,6 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTabBar()
 		.ToolTip(LOCTEXT("LevelTabTip", "이 레벨에서 쓰는 기믹과 기믹 시퀀스의 수치입니다. 스폰 규칙, 단계별 시간, 점수, 이 레벨에서 관중이 던질 투척물 종류 등. 위에서 고른 레벨 기믹 설정 에셋에 저장됩니다"))
 
 		+ SSegmentedControl<int32>::Slot(1)
-		.Text(LOCTEXT("SharedTab", "투척물 종류별 수치"))
-		.ToolTip(LOCTEXT("SharedTabTip", "관중이 던지는 투척물 하나하나가 따로 갖는 수치입니다. 넉백, 피해 유형, 포물선 높이, 제거 지연. 현재 레벨의 관중 투척 항목에서 투척물 종류에 넣은 블루프린트만 보이고, 그 블루프린트에 저장됩니다. 위에서 다른 레벨의 설정을 골라도 이 탭은 현재 레벨의 투척물을 보여줍니다. 같은 투척물을 다른 레벨에서도 쓰면 그 레벨에도 적용됩니다"))
-
-		+ SSegmentedControl<int32>::Slot(2)
 		.Text(LOCTEXT("TimelineTab", "타임라인"))
 		.ToolTip(LOCTEXT("TimelineTabTip", "레벨 설정의 수치대로라면 한 라운드 동안 기믹이 언제 발동하는지 보여줍니다. 보기만 하는 탭이고, 수치는 레벨 설정 탭에서 고칩니다"));
 }
@@ -329,11 +311,6 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTabContent()
 		+ SWidgetSwitcher::Slot()
 		[
 			StageDetailsView.ToSharedRef()
-		]
-
-		+ SWidgetSwitcher::Slot()
-		[
-			SAssignNew(SharedSettingsTab, SGimmickSharedSettingsTab)
 		]
 
 		+ SWidgetSwitcher::Slot()

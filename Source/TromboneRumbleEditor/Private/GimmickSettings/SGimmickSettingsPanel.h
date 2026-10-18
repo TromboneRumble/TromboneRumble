@@ -12,7 +12,6 @@ class AGimmickManager;
 class IDetailsView;
 class SGimmickIssueList;
 class SGimmickPlayControls;
-class SGimmickSharedSettingsTab;
 class SGimmickTimelineTab;
 struct FAssetData;
 struct FPropertyChangedEvent;
@@ -23,7 +22,6 @@ struct FPropertyChangedEvent;
  *
  * Top: pick a UStageGimmickData asset and save everything that changed, then the status line and SGimmickIssueList.
  * "레벨 설정" tab: the asset in a details view. Entries are added, removed and edited here. These settings belong to one level.
- * "투척물 종류별 수치" tab: SGimmickSharedSettingsTab.
  * "타임라인" tab: SGimmickTimelineTab.
  * Bottom: SGimmickPlayControls.
  *
@@ -68,7 +66,7 @@ private:
 	 */
 	void Refresh();
 
-	/** Rebuild the problem list, the shared data tab, the timeline tab and the PIE rows from the asset and the open level. */
+	/** Rebuild the problem list, the timeline tab and the PIE rows from the asset and the open level. */
 	void RebuildSections();
 
 	/** Make the status line again. It changes only with the asset or the manager, so it is not made every frame. */
@@ -91,9 +89,7 @@ private:
 
 	void HandleAssetPicked(const FAssetData& AssetData);
 
-	/** @return Packages of the stage data and of every object of the shared data tab. */
-	TArray<UPackage*> GetEditedPackages() const;
-
+	/** @return Whether the asset has changes that are not saved. */
 	bool HasUnsavedChanges() const;
 
 	FReply HandleSaveClicked();
@@ -104,10 +100,10 @@ private:
 	/** Status line and the problem list. */
 	TSharedRef<SWidget> MakeStatusArea();
 
-	/** Buttons that switch between the three tabs. */
+	/** Buttons that switch between the two tabs. */
 	TSharedRef<SWidget> MakeTabBar();
 
-	/** The three tabs. Only the one picked in the tab bar shows. */
+	/** The two tabs. Only the one picked in the tab bar shows. */
 	TSharedRef<SWidget> MakeTabContent();
 
 	/** One line that says which level is open and which asset its manager uses. */
@@ -134,15 +130,13 @@ private:
 	/** Has a refresh been asked for and not run yet. */
 	bool bRefreshPending = false;
 
-	/** 0 is the level tab, 1 is the shared data tab, 2 is the timeline tab. */
+	/** 0 is the level tab, 1 is the timeline tab. */
 	int32 ActiveTabIndex = 0;
 
 	/** Details view of StageData, the content of the level tab. */
 	TSharedPtr<IDetailsView> StageDetailsView;
 
 	TSharedPtr<SGimmickIssueList> IssueList;
-
-	TSharedPtr<SGimmickSharedSettingsTab> SharedSettingsTab;
 
 	TSharedPtr<SGimmickTimelineTab> TimelineTab;
 
