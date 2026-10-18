@@ -170,7 +170,7 @@
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
     "Language": "SFX",
-    "Hash": "{2AE1ABC4-AC76-BEC7-817C-813B9EACA3ED}",
+    "Hash": "{417A28A6-381E-02FD-36CE-02410F869B51}",
     "ObjectPath": "Play_MapD_Main",
     "ShortName": "Play_MapD_Main",
     "Path": "Event/Play_MapD_Main.bnk",
@@ -219,8 +219,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_D_Rhythm\\Play_MapD_Main",
       "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
       "DurationType": "OneShot",
-      "DurationMin": "166.94118",
-      "DurationMax": "166.94118",
+      "DurationMin": "166.91667",
+      "DurationMax": "166.91667",
       "MediaRefs": [
        {
         "Id": "408233001"
@@ -945,7 +945,7 @@
     "Type": "Event",
     "GUID": "{37CD142C-53D0-4802-A405-6601BBB804B1}",
     "Language": "SFX",
-    "Hash": "{E83C9953-7DDC-AF08-12D8-2C78CBC7EB8E}",
+    "Hash": "{066F099C-05BE-6CB1-E0B9-09C5C565896F}",
     "ObjectPath": "Play_MapF_Main",
     "ShortName": "Play_MapF_Main",
     "Path": "Event/Play_MapF_Main.bnk",
@@ -994,8 +994,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_F_Rhythm\\Play_MapF_Main",
       "GUID": "{37CD142C-53D0-4802-A405-6601BBB804B1}",
       "DurationType": "OneShot",
-      "DurationMin": "183.80862",
-      "DurationMax": "183.80862",
+      "DurationMin": "177.08919",
+      "DurationMax": "177.08919",
       "MediaRefs": [
        {
         "Id": "51159561"
@@ -1052,7 +1052,7 @@
     "Type": "Event",
     "GUID": "{CF76B634-FCD1-48D0-8700-EA68AE5402DC}",
     "Language": "SFX",
-    "Hash": "{EE024E0E-8460-8355-EF63-5DD2B121F842}",
+    "Hash": "{566B18BA-3538-B50C-2BF2-A43AE6B1FCB5}",
     "ObjectPath": "Play_MapA_Easy_Main",
     "ShortName": "Play_MapA_Easy_Main",
     "Path": "Event/Play_MapA_Easy_Main.bnk",
@@ -1122,8 +1122,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Easy\\Map_A_Easy_Rhythm\\Play_MapA_Easy_Main",
       "GUID": "{CF76B634-FCD1-48D0-8700-EA68AE5402DC}",
       "DurationType": "OneShot",
-      "DurationMin": "176.13333",
-      "DurationMax": "176.13333",
+      "DurationMin": "175.81395",
+      "DurationMax": "175.81395",
       "MediaRefs": [
        {
         "Id": "292465416"
@@ -1383,7 +1383,7 @@
     "Type": "Event",
     "GUID": "{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}",
     "Language": "SFX",
-    "Hash": "{7E07DD72-703D-7A3D-BFCE-B52C2CCAAF3D}",
+    "Hash": "{7F6E3B10-D85D-A08F-DF3B-6F7272B612FA}",
     "ObjectPath": "Play_MapB_Main",
     "ShortName": "Play_MapB_Main",
     "Path": "Event/Play_MapB_Main.bnk",
@@ -1644,7 +1644,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{8BB27849-A78C-07FB-5B32-92C0D27D6AE2}",
+    "Hash": "{22DF5FFC-57DE-32F7-103C-73F3554E4919}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -1714,8 +1714,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_A_Rhythm\\Play_MapA_Main",
       "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
       "DurationType": "OneShot",
-      "DurationMin": "176.13333",
-      "DurationMax": "176.13333",
+      "DurationMin": "175.81395",
+      "DurationMax": "175.81395",
       "MediaRefs": [
        {
         "Id": "292465416"
@@ -1871,7 +1871,7 @@
     "Type": "Event",
     "GUID": "{D6AF3987-8B11-432C-895F-748662D075CA}",
     "Language": "SFX",
-    "Hash": "{39BF184A-0DF1-6237-C2A5-402240AEE5BD}",
+    "Hash": "{C6EE7A2F-E3CB-92EE-E50B-97BEC7438274}",
     "ObjectPath": "Play_MapE_Main",
     "ShortName": "Play_MapE_Main",
     "Path": "Event/Play_MapE_Main.bnk",
@@ -1920,8 +1920,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_E_Rhythm\\Play_MapE_Main",
       "GUID": "{D6AF3987-8B11-432C-895F-748662D075CA}",
       "DurationType": "OneShot",
-      "DurationMin": "171.2127",
-      "DurationMax": "171.2127",
+      "DurationMin": "170.4706",
+      "DurationMax": "170.4706",
       "MediaRefs": [
        {
         "Id": "402626751"
@@ -2391,7 +2391,7 @@
     "Type": "Event",
     "GUID": "{53F9899E-CC11-4622-84BA-C537EC0CB1EC}",
     "Language": "SFX",
-    "Hash": "{17A37040-9711-19D7-A131-3AC74F3F9537}",
+    "Hash": "{25B2040F-BD89-11F4-767A-C4997273DF22}",
     "ObjectPath": "Play_MapC_Main",
     "ShortName": "Play_MapC_Main",
     "Path": "Event/Play_MapC_Main.bnk",
@@ -2440,8 +2440,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_C_Rhythm\\Play_MapC_Main",
       "GUID": "{53F9899E-CC11-4622-84BA-C537EC0CB1EC}",
       "DurationType": "OneShot",
-      "DurationMin": "205.48332",
-      "DurationMax": "205.48332",
+      "DurationMin": "201.26668",
+      "DurationMax": "201.26668",
       "MediaRefs": [
        {
         "Id": "94648847"
@@ -6786,7 +6786,7 @@
     "Type": "Event",
     "GUID": "{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}",
     "Language": "SFX",
-    "Hash": "{7D067531-6B30-D260-78A2-6AFE1740681C}",
+    "Hash": "{77C7C005-2D74-BBEB-237C-483F00C1E85E}",
     "ObjectPath": "Play_MapC_Easy_Main",
     "ShortName": "Play_MapC_Easy_Main",
     "Path": "Event/Play_MapC_Easy_Main.bnk",
@@ -6835,8 +6835,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Easy\\Map_C_Easy_Rhythm\\Play_MapC_Easy_Main",
       "GUID": "{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}",
       "DurationType": "OneShot",
-      "DurationMin": "205.48332",
-      "DurationMax": "205.48332",
+      "DurationMin": "201.26668",
+      "DurationMax": "201.26668",
       "MediaRefs": [
        {
         "Id": "94648847"
@@ -6893,7 +6893,7 @@
     "Type": "Event",
     "GUID": "{8196F37A-0DB6-42AE-9826-3BC96A93FB02}",
     "Language": "SFX",
-    "Hash": "{E2410983-4DDA-DC1A-45AF-2C2A3142D9C2}",
+    "Hash": "{F82BD6B0-3E4D-6407-8810-A46C3CD5E14E}",
     "ObjectPath": "Play_MapB_Easy_Main",
     "ShortName": "Play_MapB_Easy_Main",
     "Path": "Event/Play_MapB_Easy_Main.bnk",
@@ -8685,7 +8685,7 @@
     "Type": "Event",
     "GUID": "{2F5E6B7E-1F64-48E3-A954-94248F70CD72}",
     "Language": "SFX",
-    "Hash": "{4A4E2D32-9ED2-352F-9071-F6B329647B88}",
+    "Hash": "{CAE68393-2608-1CFA-5996-C53F9E763E1F}",
     "ObjectPath": "Play_MapG_Main",
     "ShortName": "Play_MapG_Main",
     "Path": "Event/Play_MapG_Main.bnk",
@@ -9070,7 +9070,7 @@
     "Type": "Event",
     "GUID": "{EA540656-0E52-4B7F-B457-778EBF0BA927}",
     "Language": "SFX",
-    "Hash": "{52957B45-AE42-504F-9781-167A79C4D950}",
+    "Hash": "{C61C36C6-9BFF-C288-1D01-87F5574E152D}",
     "ObjectPath": "Play_MapH_Main",
     "ShortName": "Play_MapH_Main",
     "Path": "Event/Play_MapH_Main.bnk",
@@ -9119,8 +9119,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_H_Rhythm\\Play_MapH_Main",
       "GUID": "{EA540656-0E52-4B7F-B457-778EBF0BA927}",
       "DurationType": "OneShot",
-      "DurationMin": "215.04817",
-      "DurationMax": "215.04817",
+      "DurationMin": "187.48753",
+      "DurationMax": "187.48753",
       "MediaRefs": [
        {
         "Id": "70581329"
@@ -9649,6 +9649,6 @@
     ]
    }
   ],
-  "FileHash": "{7FFFBC69-1E19-9758-3C6C-71AE6F45E2D7}"
+  "FileHash": "{1BDC4B0C-4693-C2A9-0BD5-DBB678E82D18}"
  }
 }
