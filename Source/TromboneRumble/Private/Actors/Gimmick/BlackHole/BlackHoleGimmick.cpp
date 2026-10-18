@@ -118,59 +118,51 @@ void ABlackHoleGimmick::Tick(const float DeltaSeconds)
 	DebugDraw();
 }
 
-void ABlackHoleGimmick::Activate()
+const UEventGimmickConfig& ABlackHoleGimmick::GetEventConfig() const
 {
-	// The black hole has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
-	Super::Activate();
+	return GetConfig<UBlackHoleGimmickConfig>();
 }
 
-void ABlackHoleGimmick::Deactivate()
+void ABlackHoleGimmick::OnWarningStarted()
 {
-	if (HasAuthority())
-	{
-		const bool bWasRunning = State != EBlackHoleState::Idle;
-
-		ReleaseAllCaptured(/*bBurst*/ false);
-		SetState(EBlackHoleState::Idle);
-
-		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
-		if (bWasRunning)
-		{
-			NotifyEventFinished();
-		}
-	}
-
-	// Super clears the timers
-	Super::Deactivate();
-}
-
-void ABlackHoleGimmick::ForceTrigger()
-{
-	if (!HasAuthority() || State != EBlackHoleState::Idle) return;
-
-	StartWarning();
-}
-
-void ABlackHoleGimmick::StartWarning()
-{
-	if (!HasAuthority()) return;
-
-	// No warning time means no warning, the same as the other event gimmicks
-	const float WarningDuration = GetConfig<UBlackHoleGimmickConfig>().WarningDuration;
-	if (WarningDuration <= 0.f)
-	{
-		StartActive();
-		return;
-	}
-
 	SetState(EBlackHoleState::Warning);
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartActive), WarningDuration);
 }
 
-void ABlackHoleGimmick::StartActive()
+void ABlackHoleGimmick::OnEventPhaseStarted(const int32 PhaseIndex)
 {
-	if (!HasAuthority()) return;
+	// UBlackHoleGimmickConfig::GetEventPhases lists the growth, then the collapse
+	switch (PhaseIndex)
+	{
+	case 0:
+		StartGrow();
+		break;
+	case 1:
+		StartCollapse();
+		break;
+	default:
+		ensureMsgf(false, TEXT("%s has no phase %d"), *GetName(), PhaseIndex);
+		break;
+	}
+}
 
+void ABlackHoleGimmick::OnEventEnded()
+{
+	// 소품 컴포넌트가 여기서 방출을 받는다. Idle 전이보다 먼저 쏴야 구독자가 아직 포획 상태를 들고 있다
+	OnBlackHoleBurstDelegate.Broadcast(GetActorLocation());
+
+	ReleaseAllCaptured(/*bBurst*/ true);
+	SetState(EBlackHoleState::Idle);
+}
+
+void ABlackHoleGimmick::OnEventStopped()
+{
+	// Turned off half way, so nothing bursts
+	ReleaseAllCaptured(/*bBurst*/ false);
+	SetState(EBlackHoleState::Idle);
+}
+
+void ABlackHoleGimmick::StartGrow()
+{
 	// 반경 계산의 기준 시각. 상태와 같은 번치로 가도록 SetState 보다 먼저 대입한다
 	if (const AGameStateBase* GameState = GetWorld() ? GetWorld()->GetGameState() : nullptr)
 	{
@@ -179,8 +171,6 @@ void ABlackHoleGimmick::StartActive()
 
 	SetState(EBlackHoleState::Active);
 
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartCollapse), GetConfig<UBlackHoleGimmickConfig>().GrowDuration);
-
 	GetWorldTimerManager().ClearTimer(CaptureTimerHandle);
 	GetWorldTimerManager().SetTimer(CaptureTimerHandle, this, &ThisClass::CheckCaptures,
 		FMath::Max(0.02f, CaptureCheckInterval), true);
@@ -188,27 +178,10 @@ void ABlackHoleGimmick::StartActive()
 
 void ABlackHoleGimmick::StartCollapse()
 {
-	if (!HasAuthority()) return;
-
 	// 붕괴가 시작되면 더 이상 새로 잡지 않는다. 끌림은 그대로 이어진다
 	GetWorldTimerManager().ClearTimer(CaptureTimerHandle);
 
 	SetState(EBlackHoleState::Collapse);
-
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::EndCollapse), GetConfig<UBlackHoleGimmickConfig>().CollapseDuration);
-}
-
-void ABlackHoleGimmick::EndCollapse()
-{
-	if (!HasAuthority()) return;
-
-	// 소품 컴포넌트가 여기서 방출을 받는다. Idle 전이보다 먼저 쏴야 구독자가 아직 포획 상태를 들고 있다
-	OnBlackHoleBurstDelegate.Broadcast(GetActorLocation());
-
-	ReleaseAllCaptured(/*bBurst*/ true);
-	SetState(EBlackHoleState::Idle);
-
-	NotifyEventFinished();
 }
 
 void ABlackHoleGimmick::SetState(const EBlackHoleState NewState)

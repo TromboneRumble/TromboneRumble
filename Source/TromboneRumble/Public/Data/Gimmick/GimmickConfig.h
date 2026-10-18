@@ -188,7 +188,8 @@ struct FGimmickEventPhase
  *
  * Keep in mind that these gimmicks have no timer of their own.
  * A sequence of the stage data must list them, or they never start.
- * GetEventPhases must follow the timer rule of the gimmick actor, because the timeline and GetEventDuration read it.
+ * AEventGimmickBase runs the phases of GetEventPhases on the gimmick actor, and the timeline draws the same list.
+ * The UFO and the drunkard end on their own, so their phases must stay close to how long the actor really runs.
  */
 UCLASS(Abstract)
 class TROMBONERUMBLE_API UEventGimmickConfig : public UGimmickConfig
@@ -206,28 +207,12 @@ public:
 
 	/**
 	 * Add the phases of one event after its warning, in order.
+	 * AEventGimmickBase starts them in this order in the game, and each phase lasts its Duration.
 	 *
 	 * @param World Level the event runs in. Null when there is none, and a phase that depends on the level uses a guess then.
 	 * @param OutPhases The phases are added here.
 	 */
 	virtual void GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const {}
-
-	/**
-	 * @return Seconds one event lasts from the start of its warning, when nothing ends it early.
-	 *         A phase of 0 seconds adds nothing, the same as the gimmick skips it.
-	 */
-	float GetEventDuration(const UWorld* World = nullptr) const
-	{
-		TArray<FGimmickEventPhase> Phases;
-		GetEventPhases(World, Phases);
-
-		float Duration = bHasWarning ? FMath::Max(WarningDuration, 0.f) : 0.f;
-		for (const FGimmickEventPhase& Phase : Phases)
-		{
-			Duration += FMath::Max(Phase.Duration, 0.f);
-		}
-		return Duration;
-	}
 
 	/** @return Whether the event warns before it starts. */
 	bool HasWarning() const { return bHasWarning; }

@@ -32,29 +32,27 @@ void ADrunkardSpawner::Activate()
 	}
 }
 
-void ADrunkardSpawner::ForceTrigger()
+const UEventGimmickConfig& ADrunkardSpawner::GetEventConfig() const
 {
-	if (!HasAuthority()) return;
+	return GetConfig<UDrunkardGimmickConfig>();
+}
 
+void ADrunkardSpawner::OnEventPhaseStarted(const int32 PhaseIndex)
+{
+	// The drunkard ends the event itself when it is gone, so there is only phase 0
 	TrySpawnNPC();
 }
 
-void ADrunkardSpawner::Deactivate()
+void ADrunkardSpawner::OnEventStopped()
 {
-	if (HasAuthority())
+	if (ADrunkardNPC* NPC = ActiveNPC.Get())
 	{
-		if (ADrunkardNPC* NPC = ActiveNPC.Get())
+		if (UDrunkardStateComponent* State = NPC->GetStateComponent())
 		{
-			if (UDrunkardStateComponent* State = NPC->GetStateComponent())
-			{
-				State->DespawnOwner();
-			}
+			State->DespawnOwner();
 		}
-		ActiveNPC = nullptr;
 	}
-
-	// Super clears the timers
-	Super::Deactivate();
+	ActiveNPC = nullptr;
 }
 
 void ADrunkardSpawner::Tick(const float DeltaSeconds)
@@ -84,7 +82,7 @@ void ADrunkardSpawner::TrySpawnNPC()
 	// Nothing spawns without a class, and a sequence would wait forever for the end of this turn
 	if (!NPCClass)
 	{
-		NotifyEventFinished();
+		FinishEvent();
 		return;
 	}
 
@@ -140,8 +138,8 @@ void ADrunkardSpawner::HandleNPCDestroyed(AActor* DestroyedActor)
 
 	ActiveNPC = nullptr;
 
-	// Also when the spawner is turned off, so a sequence waiting for this turn does not stall
-	NotifyEventFinished();
+	// Does nothing when the spawner was turned off, because AEventGimmickBase has told the manager already
+	FinishEvent();
 }
 
 void ADrunkardSpawner::HandleNPCCaptureSucceeded(ADefaultTromboneCharacter* Target)

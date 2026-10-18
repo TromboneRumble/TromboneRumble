@@ -92,75 +92,29 @@ void AGravityGimmick::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(ThisClass, State);
 }
 
-void AGravityGimmick::Activate()
+const UEventGimmickConfig& AGravityGimmick::GetEventConfig() const
 {
-	// The gravity has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
-	Super::Activate();
+	return GetConfig<UGravityGimmickConfig>();
 }
 
-void AGravityGimmick::Deactivate()
+void AGravityGimmick::OnWarningStarted()
 {
-	if (HasAuthority())
-	{
-		const bool bWasRunning = State != EGravityState::Idle;
-
-		RemoveAllEffects();
-		SetState(EGravityState::Idle);
-
-		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
-		if (bWasRunning)
-		{
-			NotifyEventFinished();
-		}
-	}
-
-	// Super clears the timers
-	Super::Deactivate();
-}
-
-void AGravityGimmick::ForceTrigger()
-{
-	if (!HasAuthority() || State != EGravityState::Idle) return;
-
-	StartWarning();
-}
-
-void AGravityGimmick::StartWarning()
-{
-	if (!HasAuthority()) return;
-
-	// No warning time means no warning. A zero timer would never fire, and the gravity would never change
-	const float WarningDuration = GetConfig<UGravityGimmickConfig>().WarningDuration;
-	if (WarningDuration <= 0.f)
-	{
-		StartActive();
-		return;
-	}
-
 	SetState(EGravityState::Warning);
-
-	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, WarningDuration, false);
 }
 
-void AGravityGimmick::StartActive()
+void AGravityGimmick::OnEventPhaseStarted(const int32 PhaseIndex)
 {
-	if (!HasAuthority()) return;
+	// UGravityGimmickConfig::GetEventPhases lists one phase, the changed gravity
+	ensureMsgf(PhaseIndex == 0, TEXT("%s has no phase %d"), *GetName(), PhaseIndex);
 
 	ApplyEffectToAllPlayers();
 	SetState(EGravityState::Active);
-
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::EndActive), GetConfig<UGravityGimmickConfig>().ActiveDuration);
 }
 
-void AGravityGimmick::EndActive()
+void AGravityGimmick::OnEventEnded()
 {
-	if (!HasAuthority()) return;
-
 	RemoveAllEffects();
 	SetState(EGravityState::Idle);
-
-	NotifyEventFinished();
 }
 
 void AGravityGimmick::SetState(const EGravityState NewState)

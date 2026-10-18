@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
+#include "Actors/Gimmick/EventGimmickBase.h"
 #include "GameFramework/Actor.h"
 #include "DrunkardSpawner.generated.h"
 
@@ -33,15 +33,19 @@ struct FDrunkardRoute
 	TObjectPtr<AActor> Door = nullptr;
 };
 
-/** ADrunkardSpawner
+/**
+ * ADrunkardSpawner brings the drunkard NPC into the jazz bar. Server only.
+ * It has no timer of its own. A sequence of the stage data gives it a turn, and it spawns one drunkard on a random route.
+ * The drunkard leaves through the spawn point of the route it came in by, and the turn ends when the drunkard is gone.
  *
- * 재즈바 레벨에 배치하는 취객 NPC 스포너. Server Only.
- * - 최초 스폰 시간 / 반복 스폰 주기 관리 (수치는 UDrunkardGimmickConfig)
- * - 동시 1명 제한 (NPC 존재/퇴장 중 추가 스폰 없음)
- * - 동선 목록 보유: 스폰은 랜덤 동선, 퇴장은 들어온 동선의 생성 지점
+ * Keep in mind that only one drunkard is out at a time, so a forced trigger while one is still out does nothing.
+ * The numbers a designer tunes are in UDrunkardGimmickConfig.
+ *
+ * @see ADrunkardNPC
+ * @see UDrunkardGimmickConfig
  */
 UCLASS()
-class TROMBONERUMBLE_API ADrunkardSpawner : public AGimmickBase
+class TROMBONERUMBLE_API ADrunkardSpawner : public AEventGimmickBase
 {
 	GENERATED_BODY()
 
@@ -65,6 +69,13 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category = "Config", meta = (DisplayName = "동선 목록"))
 	TArray<FDrunkardRoute> Routes;
 
+	//~ Begin AEventGimmickBase Interface
+	virtual const UEventGimmickConfig& GetEventConfig() const override;
+	virtual void OnEventPhaseStarted(int32 PhaseIndex) override;
+	virtual void OnEventStopped() override;
+	virtual bool RunsPhaseTimers() const override { return false; }
+	//~ End AEventGimmickBase Interface
+
 private:
 	void TrySpawnNPC();
 
@@ -81,8 +92,6 @@ public:
 	
 	//~ Begin AGimmickBase Interface
 	virtual void Activate() override;
-	virtual void Deactivate() override;
-	virtual void ForceTrigger() override;
 	//~ End AGimmickBase Interface
 	
 	//~ Begin AActor Interface

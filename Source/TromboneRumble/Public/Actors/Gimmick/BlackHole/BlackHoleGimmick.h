@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
+#include "Actors/Gimmick/EventGimmickBase.h"
 #include "BlackHoleGimmick.generated.h"
 
 class ATromboneCharacterBase;
@@ -59,19 +59,13 @@ struct FBlackHoleRingSlot
  * @see UBlackHoleGimmickConfig
  */
 UCLASS()
-class TROMBONERUMBLE_API ABlackHoleGimmick : public AGimmickBase
+class TROMBONERUMBLE_API ABlackHoleGimmick : public AEventGimmickBase
 {
 	GENERATED_BODY()
 
 public:
 
 	ABlackHoleGimmick();
-
-	//~ Begin AGimmickBase Interface
-	virtual void Activate() override;
-	virtual void Deactivate() override;
-	virtual void ForceTrigger() override;
-	//~ End AGimmickBase Interface
 
 	/** State changes on every machine. Props and effects subscribe here instead of being collected. */
 	UPROPERTY(BlueprintAssignable, Category = "BlackHole")
@@ -148,6 +142,14 @@ public:
 
 protected:
 
+	//~ Begin AEventGimmickBase Interface
+	virtual const UEventGimmickConfig& GetEventConfig() const override;
+	virtual void OnWarningStarted() override;
+	virtual void OnEventPhaseStarted(int32 PhaseIndex) override;
+	virtual void OnEventEnded() override;
+	virtual void OnEventStopped() override;
+	//~ End AEventGimmickBase Interface
+
 	/** Called on server and clients when the state changes. The hole effect and sounds already play in C++, so put only extra effects here. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "BlackHole")
 	void OnBlackHoleStateChanged(EBlackHoleState NewState);
@@ -219,11 +221,11 @@ private:
 	/** One arrow showing where the hole wants this object to go. Debug only. LifeTime -1 draws it for this frame alone. */
 	void DebugDrawVelocity(const FVector& From, const FVector& Velocity, float LifeTime = -1.f) const;
 
-	/** Start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
-	void StartWarning();
-	void StartActive();
+	/** Phase 0 of the event. The hole opens and grows, and it starts to catch. Server only. */
+	void StartGrow();
+
+	/** Phase 1 of the event. The hole stops catching and keeps pulling until it bursts. Server only. */
 	void StartCollapse();
-	void EndCollapse();
 
 	/** Server only. Sets the state and runs the local reaction at once for the listen host. */
 	void SetState(EBlackHoleState NewState);
@@ -264,7 +266,6 @@ private:
 	/** How many characters the last server tick pulled. Debug only, stays 0 on clients. */
 	int32 PulledCount = 0;
 
-	FTimerHandle PhaseTimerHandle;
 	FTimerHandle CaptureTimerHandle;
 
 	/** Warning lights of the level, found once in BeginPlay. */

@@ -57,8 +57,9 @@ struct FGimmickTimelineRow
  * FGimmickTimelineBuilder collects the spans one gimmick config predicts for a round.
  * UStageGimmickData::BuildTimeline creates one per config and passes it to UGimmickConfig::BuildTimeline.
  *
- * Keep in mind that a config must repeat the timer rule of its gimmick actor here.
- * When the rule of the actor changes, change BuildTimeline of its config too.
+ * Keep in mind that a spawner config repeats the timer rule of its objects here.
+ * When the rule of the object changes, change BuildSpawnTimeline of its config too.
+ * An event config does not repeat anything, because AEventGimmickBase runs the same phases the timeline draws.
  *
  * @see UGimmickConfig
  */

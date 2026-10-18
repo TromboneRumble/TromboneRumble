@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
+#include "Actors/Gimmick/EventGimmickBase.h"
 #include "GameplayEffectTypes.h"
 #include "GravityGimmick.generated.h"
 
@@ -28,7 +28,7 @@ enum class EGravityState : uint8
 };
 
 UCLASS()
-class TROMBONERUMBLE_API AGravityGimmick : public AGimmickBase
+class TROMBONERUMBLE_API AGravityGimmick : public AEventGimmickBase
 {
 	GENERATED_BODY()
 
@@ -36,13 +36,14 @@ public:
 
 	AGravityGimmick();
 
-	//~ Begin AGimmickBase Interface
-	virtual void Activate() override;
-	virtual void Deactivate() override;
-	virtual void ForceTrigger() override;
-	//~ End AGimmickBase Interface
-
 protected:
+
+	//~ Begin AEventGimmickBase Interface
+	virtual const UEventGimmickConfig& GetEventConfig() const override;
+	virtual void OnWarningStarted() override;
+	virtual void OnEventPhaseStarted(int32 PhaseIndex) override;
+	virtual void OnEventEnded() override;
+	//~ End AEventGimmickBase Interface
 
 	/** Called on server and clients when the state changes. Put extra effects here. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gimmick")
@@ -84,11 +85,6 @@ protected:
 	FName MuffleParameterName = TEXT("RTPC_Space");
 
 private:
-
-	/** Start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
-	void StartWarning();
-	void StartActive();
-	void EndActive();
 
 	/** Server only. Sets the state and runs the local reaction at once for the listen host. */
 	void SetState(EGravityState NewState);
@@ -139,8 +135,6 @@ private:
 
 	/** One effect handle per player. Removing by handle leaves other effects on the same attribute alone. */
 	TMap<TWeakObjectPtr<ACharacter>, FActiveGameplayEffectHandle> ActiveEffects;
-
-	FTimerHandle PhaseTimerHandle;
 
 	/** Collects the meshes again while the gravity is changed, so an instrument picked up or dropped follows. */
 	FTimerHandle PlayerEffectRefreshTimerHandle;

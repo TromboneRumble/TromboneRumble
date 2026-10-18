@@ -14,9 +14,9 @@
 #if WITH_EDITOR
 #include "Data/Gimmick/GimmickTimeline.h"
 
-// Each function repeats the timer rule of its gimmick actor. The actor is named above the function
+// Each spawner function repeats the timer rule of its objects. The actor is named above the function
 
-// AGimmickManager runs the event, and each gimmick lists its phases in GetEventPhases
+// AEventGimmickBase runs the same phases in the game, so the event rows need no rule of their own
 float UEventGimmickConfig::BuildEventTimeline(FGimmickTimelineBuilder& Builder, const float Start) const
 {
 	float Time = Start;

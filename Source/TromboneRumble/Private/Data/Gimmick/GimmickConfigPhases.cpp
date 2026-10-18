@@ -8,7 +8,8 @@
 #include "Data/Gimmick/UfoGimmickConfig.h"
 #include "EngineUtils.h"
 
-// Each function follows the timer rule of its gimmick actor. The actor is named above the function
+// AEventGimmickBase runs these phases on the actor named above each function
+// The UFO and the drunkard end on their own, so their phases only follow how long the actor runs
 
 // AGravityGimmick
 void UGravityGimmickConfig::GetEventPhases(const UWorld* World, TArray<FGimmickEventPhase>& OutPhases) const

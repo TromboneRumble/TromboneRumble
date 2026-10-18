@@ -59,28 +59,6 @@ void ABeerFloodGimmick::Activate()
 	}
 }
 
-void ABeerFloodGimmick::Deactivate()
-{
-	if (HasAuthority())
-	{
-		const bool bWasFlooding = BeerFloodState != EBeerFloodState::Idle;
-
-		ReleaseAllDrowning();
-		SetActorTickEnabled(false);
-		CurrentBeerZ = GetBaseBeerZ();
-		SetBeerFloodState(EBeerFloodState::Idle);
-
-		// A flood stopped half way still ends its turn, so a sequence waiting for it does not stall
-		if (bWasFlooding)
-		{
-			NotifyEventFinished();
-		}
-	}
-
-	// Super clears the timers
-	Super::Deactivate();
-}
-
 void ABeerFloodGimmick::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (HasAuthority())
@@ -150,72 +128,64 @@ void ABeerFloodGimmick::OnRep_BeerFloodState()
 	OnBeerFloodStateChanged(BeerFloodState);
 }
 
-void ABeerFloodGimmick::BeginWarning()
+const UEventGimmickConfig& ABeerFloodGimmick::GetEventConfig() const
 {
-	if (!HasAuthority()) return;
+	return GetConfig<UBeerFloodGimmickConfig>();
+}
 
-	// No warning time means no warning. A zero timer would never fire, and the beer would never rise
-	const float WarningDuration = GetConfig<UBeerFloodGimmickConfig>().WarningDuration;
-	if (WarningDuration <= 0.f)
-	{
-		BeginRising();
-		return;
-	}
-
+void ABeerFloodGimmick::OnWarningStarted()
+{
 	SetBeerFloodState(EBeerFloodState::Warning);
-
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::BeginRising, WarningDuration, false);
 }
 
-void ABeerFloodGimmick::BeginRising()
+void ABeerFloodGimmick::OnEventPhaseStarted(const int32 PhaseIndex)
 {
-	if (!HasAuthority()) return;
-
-	SetBeerFloodState(EBeerFloodState::Rising);
-
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::BeginSustain), GetConfig<UBeerFloodGimmickConfig>().RisingDuration);
+	// UBeerFloodGimmickConfig::GetEventPhases lists the rise, the sustain and the drain
+	switch (PhaseIndex)
+	{
+	case 0:
+		BeginRising();
+		break;
+	case 1:
+		BeginSustain();
+		break;
+	case 2:
+		BeginDraining();
+		break;
+	default:
+		ensureMsgf(false, TEXT("%s has no phase %d"), *GetName(), PhaseIndex);
+		break;
+	}
 }
 
-void ABeerFloodGimmick::BeginSustain()
+void ABeerFloodGimmick::OnEventEnded()
 {
-	if (!HasAuthority()) return;
-
-	CurrentBeerZ = GetPeakBeerZ();
-	SetBeerFloodState(EBeerFloodState::Sustain);
-
-	UpdateDrowning();
-	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::BeginDraining), GetConfig<UBeerFloodGimmickConfig>().SustainDuration);
-}
-
-void ABeerFloodGimmick::BeginDraining()
-{
-	if (!HasAuthority()) return;
-
-	SetBeerFloodState(EBeerFloodState::Draining);
-
-	GetWorldTimerManager().ClearTimer(DrowningTimerHandle);
-	StartPhaseTimer(GetWorldTimerManager(), PhaseTimerHandle, FTimerDelegate::CreateUObject(this, &ThisClass::EndBeerFlood), GetConfig<UBeerFloodGimmickConfig>().DrainingDuration);
-}
-
-void ABeerFloodGimmick::EndBeerFlood()
-{
-	if (!HasAuthority()) return;
-
 	GetWorldTimerManager().ClearTimer(DrowningTimerHandle);
 
 	CurrentBeerZ = GetBaseBeerZ();
 	ReleaseAllDrowning();
 	SetBeerFloodState(EBeerFloodState::Idle);
-
-	NotifyEventFinished();
 }
 
-void ABeerFloodGimmick::ForceTrigger()
+void ABeerFloodGimmick::BeginRising()
 {
-	if (!HasAuthority() || BeerFloodState != EBeerFloodState::Idle) return;
+	SetBeerFloodState(EBeerFloodState::Rising);
+}
 
-	BeginWarning();
+void ABeerFloodGimmick::BeginSustain()
+{
+	CurrentBeerZ = GetPeakBeerZ();
+	SetBeerFloodState(EBeerFloodState::Sustain);
+
+	UpdateDrowning();
+	GetWorldTimerManager().SetTimer(DrowningTimerHandle, this, &ThisClass::UpdateDrowning, DrowningCheckInterval, true);
+}
+
+void ABeerFloodGimmick::BeginDraining()
+{
+	SetBeerFloodState(EBeerFloodState::Draining);
+
+	GetWorldTimerManager().ClearTimer(DrowningTimerHandle);
 }
 
 void ABeerFloodGimmick::Tick(const float DeltaSeconds)

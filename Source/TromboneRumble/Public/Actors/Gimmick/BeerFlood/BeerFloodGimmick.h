@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
+#include "Actors/Gimmick/EventGimmickBase.h"
 #include "BeerFloodGimmick.generated.h"
 
 class ATromboneCharacterBase;
@@ -23,7 +23,7 @@ enum class EBeerFloodState : uint8
 };
 
 UCLASS()
-class TROMBONERUMBLE_API ABeerFloodGimmick : public AGimmickBase
+class TROMBONERUMBLE_API ABeerFloodGimmick : public AEventGimmickBase
 {
 	GENERATED_BODY()
 
@@ -99,12 +99,10 @@ private:
 	UFUNCTION()
 	void OnRep_BeerFloodState();
 	
-	/** One per phase. Each timer starts the next phase. */
-	void BeginWarning();
+	/** One per phase of UBeerFloodGimmickConfig::GetEventPhases. AEventGimmickBase starts them in order. Server only. */
 	void BeginRising();
 	void BeginSustain();
 	void BeginDraining();
-	void EndBeerFlood();
 	
 	/** Knocks down anyone standing below the surface. Skips the ones already down. */
 	void UpdateDrowning();
@@ -154,15 +152,12 @@ private:
 	
 	TArray<TWeakObjectPtr<ATromboneCharacterBase>> DrowningCharacters;
 	
-	FTimerHandle PhaseTimerHandle;
 	FTimerHandle DrowningTimerHandle;
 	
 public:
 	
 	//~ Begin AGimmickBase Interface
 	virtual void Activate() override;
-	virtual void Deactivate() override;
-	virtual void ForceTrigger() override;
 	//~ End AGimmickBase Interface
 	
 	//~ Begin AActor Interface
@@ -175,5 +170,12 @@ protected:
 	//~ Begin AActor Interface
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ End AActor Interface
+
+	//~ Begin AEventGimmickBase Interface
+	virtual const UEventGimmickConfig& GetEventConfig() const override;
+	virtual void OnWarningStarted() override;
+	virtual void OnEventPhaseStarted(int32 PhaseIndex) override;
+	virtual void OnEventEnded() override;
+	//~ End AEventGimmickBase Interface
 	
 };

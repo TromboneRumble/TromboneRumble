@@ -19,76 +19,34 @@ AUfoGimmick::AUfoGimmick()
 	bReplicates = true;
 }
 
-void AUfoGimmick::Activate()
+const UEventGimmickConfig& AUfoGimmick::GetEventConfig() const
 {
-	// The UFO has no timer. A sequence of the stage data calls ForceTrigger when it is its turn
-	Super::Activate();
+	return GetUfoConfig();
 }
 
-void AUfoGimmick::Deactivate()
+bool AUfoGimmick::PrepareEvent()
 {
-	if (HasAuthority())
-	{
-		const bool bWasRunning = State != EUfoState::Idle;
-
-		if (ActiveUfo)
-		{
-			ActiveUfo->OnDestroyed.RemoveDynamic(this, &ThisClass::HandleUfoDestroyed);
-			ActiveUfo->Destroy();
-			ActiveUfo = nullptr;
-		}
-		SetState(EUfoState::Idle);
-
-		// An event stopped half way still ends its turn, so a sequence waiting for it does not stall
-		if (bWasRunning)
-		{
-			NotifyEventFinished();
-		}
-	}
-
-	// Super clears the timers
-	Super::Deactivate();
-}
-
-void AUfoGimmick::ForceTrigger()
-{
-	if (!HasAuthority() || State != EUfoState::Idle) return;
-
-	StartWarning();
-}
-
-void AUfoGimmick::StartWarning()
-{
-	if (!HasAuthority()) return;
-
 	// The place is picked now so the warning can show it
 	if (!PickPath(PlannedPath))
 	{
 		UE_LOG(LogGimmick, Warning, TEXT("[UFO] %s has no line. Set the line list on it"), *GetName());
-		ReturnToIdle();
-		return;
+		return false;
 	}
-
-	// No warning time means no warning. A zero timer would never fire, and the UFO would never come
-	const float WarningDuration = GetConfig<UUfoGimmickConfig>().WarningDuration;
-	if (WarningDuration <= 0.f)
-	{
-		StartActive();
-		return;
-	}
-
-	SetState(EUfoState::Warning);
-	GetWorldTimerManager().SetTimer(PhaseTimerHandle, this, &ThisClass::StartActive, WarningDuration, false);
+	return true;
 }
 
-void AUfoGimmick::StartActive()
+void AUfoGimmick::OnWarningStarted()
 {
-	if (!HasAuthority()) return;
+	SetState(EUfoState::Warning);
+}
 
+void AUfoGimmick::OnEventPhaseStarted(const int32 PhaseIndex)
+{
+	// The UFO ends the event itself when it is gone, so there is only phase 0
 	if (!UfoClass)
 	{
 		UE_LOG(LogGimmick, Warning, TEXT("[UFO] %s has no UfoClass"), *GetName());
-		ReturnToIdle();
+		FinishEvent();
 		return;
 	}
 
@@ -97,7 +55,7 @@ void AUfoGimmick::StartActive()
 	AUfo* Ufo = GetWorld()->SpawnActorDeferred<AUfo>(UfoClass, FTransform(PlannedPath.Start), this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	if (!Ufo)
 	{
-		ReturnToIdle();
+		FinishEvent();
 		return;
 	}
 
@@ -115,15 +73,23 @@ void AUfoGimmick::HandleUfoDestroyed(AActor* DestroyedActor)
 
 	if (!IsActive()) return;
 
-	ReturnToIdle();
+	FinishEvent();
 }
 
-void AUfoGimmick::ReturnToIdle()
+void AUfoGimmick::OnEventEnded()
 {
 	SetState(EUfoState::Idle);
+}
 
-	// A turn that failed to start ends here too, so the sequence moves on instead of waiting forever
-	NotifyEventFinished();
+void AUfoGimmick::OnEventStopped()
+{
+	if (ActiveUfo)
+	{
+		ActiveUfo->OnDestroyed.RemoveDynamic(this, &ThisClass::HandleUfoDestroyed);
+		ActiveUfo->Destroy();
+		ActiveUfo = nullptr;
+	}
+	SetState(EUfoState::Idle);
 }
 
 bool AUfoGimmick::PickPath(FUfoPath& OutPath) const

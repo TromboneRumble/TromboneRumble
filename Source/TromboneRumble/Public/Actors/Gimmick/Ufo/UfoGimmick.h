@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Gimmick/GimmickBase.h"
+#include "Actors/Gimmick/EventGimmickBase.h"
 #include "Actors/Gimmick/Ufo/UfoPath.h"
 #include "Data/Gimmick/UfoGimmickConfig.h"
 #include "UfoGimmick.generated.h"
@@ -49,19 +49,13 @@ struct FUfoLine
  * @see UUfoGimmickConfig
  */
 UCLASS()
-class TROMBONERUMBLE_API AUfoGimmick : public AGimmickBase
+class TROMBONERUMBLE_API AUfoGimmick : public AEventGimmickBase
 {
 	GENERATED_BODY()
 
 public:
 
 	AUfoGimmick();
-
-	//~ Begin AGimmickBase Interface
-	virtual void Activate() override;
-	virtual void Deactivate() override;
-	virtual void ForceTrigger() override;
-	//~ End AGimmickBase Interface
 
 	/** @return Settings of this gimmick. AUfo reads them through its owner. */
 	const UUfoGimmickConfig& GetUfoConfig() const { return GetConfig<UUfoGimmickConfig>(); }
@@ -74,6 +68,16 @@ public:
 	FUfoPath GetPlannedPath() const { return PlannedPath; }
 
 protected:
+
+	//~ Begin AEventGimmickBase Interface
+	virtual const UEventGimmickConfig& GetEventConfig() const override;
+	virtual bool PrepareEvent() override;
+	virtual void OnWarningStarted() override;
+	virtual void OnEventPhaseStarted(int32 PhaseIndex) override;
+	virtual void OnEventEnded() override;
+	virtual void OnEventStopped() override;
+	virtual bool RunsPhaseTimers() const override { return false; }
+	//~ End AEventGimmickBase Interface
 
 	/** Called on every machine when the state changes. Show the warning at PlannedPath here. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gimmick")
@@ -90,13 +94,6 @@ protected:
 	TArray<FUfoLine> Lines;
 
 private:
-
-	/** Pick a line and start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
-	void StartWarning();
-	void StartActive();
-
-	/** Go back to Idle and tell the manager the turn is over. Server only. */
-	void ReturnToIdle();
 
 	UFUNCTION()
 	void HandleUfoDestroyed(AActor* DestroyedActor);
@@ -123,8 +120,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AUfo> ActiveUfo;
-
-	FTimerHandle PhaseTimerHandle;
 
 public:
 
