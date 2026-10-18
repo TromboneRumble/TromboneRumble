@@ -8,11 +8,15 @@
 #include "GravityGimmick.generated.h"
 
 class ACharacter;
+class APawn;
 class IConsoleVariable;
 class UAkAudioEvent;
 class UGameplayEffect;
-class ULightComponent;
+class UMaterialInterface;
 class UMaterialParameterCollection;
+class UMeshComponent;
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 /** Level materials read these numbers from the parameter collection. Do not change the values. */
 UENUM(BlueprintType)
@@ -40,7 +44,7 @@ public:
 
 protected:
 
-	/** Called on server and clients when the state changes. Put sound and particles here. Warning lights use the collection values instead. */
+	/** Called on server and clients when the state changes. Put extra effects here. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gimmick")
 	void OnGravityStateChanged(EGravityState NewState, float Multiplier);
 
@@ -60,38 +64,26 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
 	FName MultiplierParameterName = TEXT("GravityMultiplier");
 
-	/** Collection value that follows the warning lights from 0 to 1, for effects such as the red flash of the screen. */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
-	FName WarningPulseParameterName = TEXT("GravityWarningPulse");
+	/** 저중력 동안 모든 플레이어와 들고 있는 물건의 메시에 덧씌우는 테두리 머티리얼. 비워 두면 테두리가 나오지 않는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual", meta = (DisplayName = "테두리 머티리얼"))
+	TObjectPtr<UMaterialInterface> OutlineMaterial;
 
-	/**
-	 * Actor tag of the level lights that flicker during the warning.
-	 * The intensity a light is placed with is its brightest point, and the light stays off outside the warning.
-	 * Keep in mind that a light must be Movable or Stationary, because a Static light is baked and cannot change.
-	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual")
-	FName WarningLightTag = TEXT("GravityWarning");
+	/** 저중력 동안 모든 플레이어의 몸에 붙는 이펙트. 몸통 메시에 붙으므로 메시 표면을 샘플링하는 이펙트를 쓴다. 비워 두면 나오지 않는다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Visual", meta = (DisplayName = "캐릭터 이펙트"))
+	TObjectPtr<UNiagaraSystem> PlayerVFX;
 
-	/** 예고가 시작될 때 모든 플레이어 화면에서 재생되는 경보 사운드 */
+	/** 예고가 시작될 때 모든 플레이어 화면에서 재생되는 사운드. 공기가 빠져나가는 소리처럼 예고 시간에 맞춘 소리를 지정한다 */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "예고 사운드"))
 	TObjectPtr<UAkAudioEvent> WarningSound;
 
-	/** 중력이 바뀌는 순간 모든 플레이어 화면에서 재생되는 사운드 */
-	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio", meta = (DisplayName = "발동 사운드"))
-	TObjectPtr<UAkAudioEvent> ActiveSound;
-
-	/** Wwise game parameter that muffles the whole mix while the gravity is changed. 0 is clear and 100 is fully muffled. */
+	/**
+	 * Wwise game parameter that muffles the whole mix. 0 is clear and 100 is fully muffled.
+	 * It rises over the warning, stays up while the gravity is changed, and falls when it ends.
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Gimmick|Audio")
 	FName MuffleParameterName = TEXT("RTPC_Space");
 
 private:
-
-	/** A level light found by WarningLightTag, with the intensity it was placed with. */
-	struct FWarningLight
-	{
-		TWeakObjectPtr<ULightComponent> Light;
-		float BaseIntensity = 0.f;
-	};
 
 	/** Start the warning, then the event. The sequence of the stage data calls it through ForceTrigger. Server only. */
 	void StartWarning();
@@ -110,14 +102,20 @@ private:
 	void ApplyEffectToAllPlayers();
 	void RemoveAllEffects();
 
-	/** Find the lights with WarningLightTag in the level. Runs on every machine except a dedicated server. */
-	void CollectWarningLights();
-
-	/** Turn the warning lights on when the warning starts, and start their fade out when it ends. */
-	void RefreshWarningLights();
-
-	/** Play the sound of the state that just started, and muffle the mix while the gravity is changed. */
+	/** Play the sound of the state that just started, and move the muffle of the mix. */
 	void UpdateAudio();
+
+	/** Put the outline and the VFX on the players while the gravity is changed, and take them off after. */
+	void UpdatePlayerEffects();
+
+	/**
+	 * Put the outline on every mesh of every player and of what they hold, and take it off the meshes they let go of.
+	 * Attach the VFX to the body of a player who has none yet.
+	 */
+	void RefreshPlayerEffects();
+
+	/** Take the outline off every mesh it was put on, and remove every VFX at once. */
+	void ClearPlayerEffects();
 
 	/**
 	 * Move the muffle parameter in a straight line to a value.
@@ -127,25 +125,7 @@ private:
 	 */
 	void SetMuffle(float Value, float Duration) const;
 
-	/** Move the intensity of the warning lights along the sine wave. Runs every frame during the warning. */
-	void UpdateWarningLightFlicker();
-
-	/** Dim the warning lights toward 0, and turn them off at the end. Runs every frame after the warning. */
-	void UpdateWarningLightFadeOut();
-
-	/** Set every warning light to this part of the intensity it was placed with, and write the same value as the warning pulse. */
-	void SetWarningLightRatio(float Ratio);
-
-	/** Turn the warning lights off at once, give them back the intensity they were placed with, and set the warning pulse to 0. */
-	void TurnOffWarningLights();
-
-	/** Write the warning pulse to the collection. */
-	void SetWarningPulse(float Pulse);
-
-	/** @return Whether the warning shows anything: a warning light, or the warning pulse of the collection. */
-	bool HasWarningVisuals() const;
-
-	/** Tick runs only while the warning visuals are on or Trombone.Gravity.Debug is on. */
+	/** Tick runs only while Trombone.Gravity.Debug is on. */
 	void UpdateTickEnabled();
 
 	/** Read Trombone.Gravity.Debug again when it changes. */
@@ -162,23 +142,14 @@ private:
 
 	FTimerHandle PhaseTimerHandle;
 
-	/** Lights that flicker during the warning. Empty on a dedicated server. */
-	TArray<FWarningLight> WarningLights;
+	/** Collects the meshes again while the gravity is changed, so an instrument picked up or dropped follows. */
+	FTimerHandle PlayerEffectRefreshTimerHandle;
 
-	/** Local world time the current warning started. The sine wave of the lights starts here. */
-	float WarningStartTime = 0.f;
+	/** Meshes that have the outline now. */
+	TSet<TWeakObjectPtr<UMeshComponent>> OutlinedMeshes;
 
-	/** Local world time the fade out started. Negative while the lights do not fade. */
-	float FadeOutStartTime = -1.f;
-
-	/** Ratio the fade out starts from, so it continues from wherever the flicker was. */
-	float FadeOutStartRatio = 1.f;
-
-	/** Ratio last applied to the warning lights. */
-	float CurrentWarningLightRatio = 1.f;
-
-	/** Are the warning visuals on, flickering or fading out. */
-	bool bWarningLightsOn = false;
+	/** VFX attached to each player. One per pawn. */
+	TMap<TWeakObjectPtr<APawn>, TWeakObjectPtr<UNiagaraComponent>> PlayerVFXComponents;
 
 	/** Is Trombone.Gravity.Debug on. */
 	bool bDebugDraw = false;

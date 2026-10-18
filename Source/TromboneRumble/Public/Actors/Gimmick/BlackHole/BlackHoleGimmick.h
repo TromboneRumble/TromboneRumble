@@ -12,6 +12,7 @@ class UAkAudioEvent;
 class UAkComponent;
 class UBlackHoleGimmickConfig;
 class UNiagaraComponent;
+class AWarningLight;
 class USphereComponent;
 
 /** Level materials read these numbers from the parameter collection. Do not change the values. */
@@ -180,6 +181,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "방출 사운드"))
 	TObjectPtr<UAkAudioEvent> BurstSound;
 
+	/** 예고가 시작될 때 위치 없이 모든 플레이어 화면에서 똑같이 재생되는 경보 사운드. 블랙홀 위치에서 나는 전조 사운드와 따로 재생된다 */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "경보 사운드"))
+	TObjectPtr<UAkAudioEvent> AlarmSound;
+
 	/** Seconds between two capture checks. A player reaches the capture radius at most this late. */
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole", meta = (DisplayName = "포획 판정 주기", ClampMin = "0.02", Units = "s"))
 	float CaptureCheckInterval = 0.1f;
@@ -233,6 +238,9 @@ private:
 	/** Turn the hole effect on or off and play the sound of the new state. Not on a dedicated server. */
 	void PlayStateEffects(EBlackHoleState PreviousState);
 
+	/** Start every warning light of the level while the hole warns, and fade them out after. Not on a dedicated server. */
+	void RefreshWarningLights();
+
 	/** Tick runs while the hole is on, and while Trombone.BlackHole.Debug is on. */
 	void UpdateTickEnabled();
 	void HandleDebugCVarChanged(IConsoleVariable* Variable);
@@ -258,6 +266,9 @@ private:
 
 	FTimerHandle PhaseTimerHandle;
 	FTimerHandle CaptureTimerHandle;
+
+	/** Warning lights of the level, found once in BeginPlay. */
+	TArray<TWeakObjectPtr<AWarningLight>> WarningLights;
 
 public:
 

@@ -7,10 +7,12 @@
 #include "OSI_InstrumentWidget.generated.h"
 
 class AItemBase;
+enum class EInstrumentType : uint8;
 
 /**
  * 바닥에 떨어진 아이템을 가리키는 인디케이터.
- * 누구든 아이템을 집으면 스스로 숨고, 놓으면 다시 나타난다.
+ * 로컬 플레이어가 지금 집을 수 있을 때만 보인다.
+ * 누가 들고 있거나, 내가 이미 악기를 들고 있으면 숨는다.
  */
 UCLASS(Abstract, meta = (DisableNativeTick))
 class TROMBONERUMBLE_API UOSI_InstrumentWidget : public UOSI_WidgetBase
@@ -28,9 +30,14 @@ protected:
 	UFUNCTION()
 	void HandleOwnerChanged(AActor* NewOwner, AActor* OldOwner);
 
+	// 로컬 플레이어의 악기가 바뀌면 줍기 가능 여부도 바뀐다
+	UFUNCTION()
+	void HandleInstrumentPicked(EInstrumentType PrevType, EInstrumentType NewType);
+
 private:
 	void BindTrackedItem();
 	void UnbindTrackedItem();
+	void RefreshIndicator();
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<AItemBase> TrackedItem = nullptr;

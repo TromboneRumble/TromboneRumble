@@ -102,6 +102,8 @@ private:
 	TObjectPtr<UAkSwitchValue> FabricFootStepSwitch = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAkSwitchValue> WoodFootStepSwitch = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAkSwitchValue> MetalFootStepSwitch = nullptr;
 
 public:
 	//~ Begin Setters
