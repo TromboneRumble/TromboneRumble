@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3884066977" Type="Event" GUID="{4D462B68-6993-44A0-A146-62532AFCC4CB}" Language="SFX" Hash="{7D339566-A78A-20E8-4A2C-6D7EEF65AC70}">
+			<ObjectPath>Play_BlackHole_StaticOff</ObjectPath>
+			<ShortName>Play_BlackHole_StaticOff</ShortName>
+			<Path>Event/Play_BlackHole_StaticOff.bnk</Path>
+			<Events>
+				<Event Id="3884066977" Name="Play_BlackHole_StaticOff" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOff" GUID="{4D462B68-6993-44A0-A146-62532AFCC4CB}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{A82E0E96-8C07-8C7C-E0BE-5A9ABCFB65AD}</FileHash>
+</SoundBanksInfo>

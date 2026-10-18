@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D6AF3987-8B11-432C-895F-748662D075CA}",
     "Language": "SFX",
-    "Hash": "{39BF184A-0DF1-6237-C2A5-402240AEE5BD}",
+    "Hash": "{C4D566BC-C9F2-7A50-C1CB-7FAE6E54600A}",
     "ObjectPath": "Play_MapE_Main",
     "ShortName": "Play_MapE_Main",
     "Path": "Event/Play_MapE_Main.bnk",
@@ -59,8 +59,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_E_Rhythm\\Play_MapE_Main",
       "GUID": "{D6AF3987-8B11-432C-895F-748662D075CA}",
       "DurationType": "OneShot",
-      "DurationMin": "171.2127",
-      "DurationMax": "171.2127",
+      "DurationMin": "170.4706",
+      "DurationMax": "170.4706",
       "MediaRefs": [
        {
         "Id": "402626751"
@@ -113,6 +113,6 @@
     ]
    }
   ],
-  "FileHash": "{13C59169-68CC-C454-7EE6-99D12C7B2CDB}"
+  "FileHash": "{71C1DD38-10FC-AA0C-490D-0C6A1982955A}"
  }
 }

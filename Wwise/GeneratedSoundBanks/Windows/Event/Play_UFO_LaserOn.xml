@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="3488722653" Type="Event" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" Language="SFX" Hash="{24E65511-D0CE-F13A-115A-3832642C022F}">
+			<ObjectPath>Play_UFO_LaserOn</ObjectPath>
+			<ShortName>Play_UFO_LaserOn</ShortName>
+			<Path>Event/Play_UFO_LaserOn.bnk</Path>
+			<Media>
+				<File Id="503514366" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO LOOP.wav</ShortName>
+					<Path>Media/503514366.wem</Path>
+					<CachePath>SFX/UFO LOOP_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3488722653" Name="Play_UFO_LaserOn" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOn" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="4.4966664" DurationMax="4.4966664">
+					<MediaRefs>
+						<MediaRef Id="503514366"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{3B423F83-F716-387B-DC36-D7BBF0E554F9}</FileHash>
+</SoundBanksInfo>

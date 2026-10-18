@@ -1,0 +1,57 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3488722653",
+    "Type": "Event",
+    "GUID": "{8C5F9346-129D-401D-9506-D41F75340669}",
+    "Language": "SFX",
+    "Hash": "{24E65511-D0CE-F13A-115A-3832642C022F}",
+    "ObjectPath": "Play_UFO_LaserOn",
+    "ShortName": "Play_UFO_LaserOn",
+    "Path": "Event/Play_UFO_LaserOn.bnk",
+    "Media": [
+     {
+      "Id": "503514366",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "UFO LOOP.wav",
+      "Path": "Media/503514366.wem",
+      "CachePath": "SFX/UFO LOOP_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3488722653",
+      "Name": "Play_UFO_LaserOn",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_LaserOn",
+      "GUID": "{8C5F9346-129D-401D-9506-D41F75340669}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "4.4966664",
+      "DurationMax": "4.4966664",
+      "MediaRefs": [
+       {
+        "Id": "503514366"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{75BBCB5B-1F1E-2C11-8FC1-0A079C8DABC2}"
+ }
+}

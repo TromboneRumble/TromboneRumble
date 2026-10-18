@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="915173079" Type="Event" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" Language="SFX" Hash="{61260862-EEB4-D6B3-F99A-3A74EDFE77CD}">
+		<SoundBank Id="915173079" Type="Event" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" Language="SFX" Hash="{C4AECF57-71EE-148A-E3E2-CA76B659DFAD}">
 			<ObjectPath>Play_Port_Landing</ObjectPath>
 			<ShortName>Play_Port_Landing</ShortName>
 			<Path>Event/Play_Port_Landing.bnk</Path>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{360C76D8-5A56-6C7F-D011-9574E1BC1236}</FileHash>
+	<FileHash>{3CB1A60E-BD30-05D4-5544-99817FEACA4E}</FileHash>
 </SoundBanksInfo>

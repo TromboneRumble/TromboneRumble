@@ -2080,7 +2080,7 @@
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>2</Value>
+												<Value>10</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -2298,26 +2298,26 @@
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-9</Value>
+												<Value>3</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
-											<Custom CreatedFrom="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}">
-												<Attenuation Name="Light (Custom)" ID="{059560CA-767F-4B47-9E71-6582082EE007}" ShortID="172766969">
+											<Custom CreatedFrom="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}">
+												<Attenuation Name="Foot (Custom)" ID="{483AD8F1-78F2-400D-95BC-E5FE6E044D0D}" ShortID="209190893">
 													<PropertyList>
 														<Property Name="ConeUse" Type="bool">
 															<ValueList>
 																<Value>True</Value>
 															</ValueList>
 														</Property>
-														<Property Name="RadiusMax" Type="Real64" Value="1000"/>
+														<Property Name="RadiusMax" Type="Real64" Value="3000"/>
 													</PropertyList>
 													<CurveUsageInfoList>
 														<VolumeDryUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
-																<Curve Name="VolumeDry" ID="{6B20DD25-8FD8-4637-B040-7C0AE9E363F8}">
+																<Curve Name="VolumeDry" ID="{F3A890EE-44AB-455D-AD1A-54AEA80781EC}">
 																	<PropertyList>
 																		<Property Name="Flags" Type="int32" Value="3"/>
 																	</PropertyList>
@@ -2326,21 +2326,14 @@
 																			<XPos>0</XPos>
 																			<YPos>0</YPos>
 																			<Flags>5</Flags>
-																			<SegmentShape>Exp2</SegmentShape>
 																		</Point>
 																		<Point>
-																			<XPos>314.77447</XPos>
-																			<YPos>0</YPos>
-																			<Flags>0</Flags>
-																			<SegmentShape>Log2</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>999.999</XPos>
-																			<YPos>-200</YPos>
+																			<XPos>2679.82852</XPos>
+																			<YPos>-3.26406</YPos>
 																			<Flags>0</Flags>
 																		</Point>
 																		<Point>
-																			<XPos>1000</XPos>
+																			<XPos>3000</XPos>
 																			<YPos>-200</YPos>
 																			<Flags>37</Flags>
 																		</Point>
@@ -2355,37 +2348,7 @@
 															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
 														</VolumeWetUserUsage>
 														<LowPassFilterUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="None">
-																<Curve Name="LowPassFilter" ID="{19E7BE37-7EC2-4A44-B81D-A490FB7A9E97}">
-																	<PropertyList>
-																		<Property Name="Flags" Type="int32" Value="65537"/>
-																	</PropertyList>
-																	<PointList>
-																		<Point>
-																			<XPos>0</XPos>
-																			<YPos>0</YPos>
-																			<Flags>5</Flags>
-																			<SegmentShape>Exp1</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>731.49492</XPos>
-																			<YPos>36</YPos>
-																			<Flags>0</Flags>
-																			<SegmentShape>Log1</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>999.999</XPos>
-																			<YPos>100</YPos>
-																			<Flags>0</Flags>
-																		</Point>
-																		<Point>
-																			<XPos>1000</XPos>
-																			<YPos>100</YPos>
-																			<Flags>37</Flags>
-																		</Point>
-																	</PointList>
-																</Curve>
-															</CurveUsageInfo>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
 														</LowPassFilterUsage>
 														<HighPassFilterUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
@@ -2530,436 +2493,13 @@
 										</ObjectList>
 									</ObjectLists>
 								</RandomSequenceContainer>
-								<RandomSequenceContainer Name="Object_BlackHole" ID="{5BC7CE99-9608-4E5C-80BE-636DDBC98C03}" ShortID="489527266">
-									<PropertyList>
-										<Property Name="3DSpatialization" Type="int16" Value="2"/>
-										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
-										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
-										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-2</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Attenuation">
-											<Custom CreatedFrom="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}">
-												<Attenuation Name="Light (Custom)" ID="{5EF18C1D-E4D2-4854-B74D-CBA557255822}" ShortID="204652573">
-													<PropertyList>
-														<Property Name="ConeUse" Type="bool">
-															<ValueList>
-																<Value>True</Value>
-															</ValueList>
-														</Property>
-														<Property Name="RadiusMax" Type="Real64" Value="1000"/>
-													</PropertyList>
-													<CurveUsageInfoList>
-														<VolumeDryUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
-																<Curve Name="VolumeDry" ID="{A89BFFFD-7527-4CC7-A340-64BF7D361FCC}">
-																	<PropertyList>
-																		<Property Name="Flags" Type="int32" Value="3"/>
-																	</PropertyList>
-																	<PointList>
-																		<Point>
-																			<XPos>0</XPos>
-																			<YPos>0</YPos>
-																			<Flags>5</Flags>
-																			<SegmentShape>Exp2</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>314.77447</XPos>
-																			<YPos>0</YPos>
-																			<Flags>0</Flags>
-																			<SegmentShape>Log2</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>999.999</XPos>
-																			<YPos>-200</YPos>
-																			<Flags>0</Flags>
-																		</Point>
-																		<Point>
-																			<XPos>1000</XPos>
-																			<YPos>-200</YPos>
-																			<Flags>37</Flags>
-																		</Point>
-																	</PointList>
-																</Curve>
-															</CurveUsageInfo>
-														</VolumeDryUsage>
-														<VolumeWetGameUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
-														</VolumeWetGameUsage>
-														<VolumeWetUserUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
-														</VolumeWetUserUsage>
-														<LowPassFilterUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="None">
-																<Curve Name="LowPassFilter" ID="{87FCB7FD-CFE8-41AE-8AD6-4E75D7F95B0D}">
-																	<PropertyList>
-																		<Property Name="Flags" Type="int32" Value="65537"/>
-																	</PropertyList>
-																	<PointList>
-																		<Point>
-																			<XPos>0</XPos>
-																			<YPos>0</YPos>
-																			<Flags>5</Flags>
-																			<SegmentShape>Exp1</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>731.49492</XPos>
-																			<YPos>36</YPos>
-																			<Flags>0</Flags>
-																			<SegmentShape>Log1</SegmentShape>
-																		</Point>
-																		<Point>
-																			<XPos>999.999</XPos>
-																			<YPos>100</YPos>
-																			<Flags>0</Flags>
-																		</Point>
-																		<Point>
-																			<XPos>1000</XPos>
-																			<YPos>100</YPos>
-																			<Flags>37</Flags>
-																		</Point>
-																	</PointList>
-																</Curve>
-															</CurveUsageInfo>
-														</LowPassFilterUsage>
-														<HighPassFilterUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
-														</HighPassFilterUsage>
-														<SpreadUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
-														</SpreadUsage>
-														<FocusUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
-														</FocusUsage>
-														<ObstructionVolumeUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</ObstructionVolumeUsage>
-														<ObstructionLPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</ObstructionLPFUsage>
-														<ObstructionHPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</ObstructionHPFUsage>
-														<OcclusionVolumeUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</OcclusionVolumeUsage>
-														<OcclusionLPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</OcclusionLPFUsage>
-														<OcclusionHPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</OcclusionHPFUsage>
-														<DiffractionVolumeUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</DiffractionVolumeUsage>
-														<DiffractionLPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</DiffractionLPFUsage>
-														<DiffractionHPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</DiffractionHPFUsage>
-														<TransmissionVolumeUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</TransmissionVolumeUsage>
-														<TransmissionLPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</TransmissionLPFUsage>
-														<TransmissionHPFUsage>
-															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
-														</TransmissionHPFUsage>
-													</CurveUsageInfoList>
-												</Attenuation>
-											</Custom>
-										</Reference>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<Sound Name="BlackHole_1" ID="{C1F91A6B-878F-408C-BB51-CF12AC9DFBB6}" ShortID="95640406">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="BlackHole_1" ID="{9ECB600D-A452-4730-9B5F-C9A51BAC36F5}">
-													<Language>SFX</Language>
-													<AudioFile>BlackHole_1.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="956675855"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="BlackHole_1" ID="{9ECB600D-A452-4730-9B5F-C9A51BAC36F5}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="BlackHole_2" ID="{DA422E1D-F7EA-458D-A884-63E77D8B7617}" ShortID="978769878">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="BlackHole_2" ID="{48E94903-AA37-4C56-8FC8-D7A717142997}">
-													<Language>SFX</Language>
-													<AudioFile>BlackHole_2.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="205159956"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="BlackHole_2" ID="{48E94903-AA37-4C56-8FC8-D7A717142997}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-									</ChildrenList>
-									<PositioningInfo>
-										<Panner Name="" ID="{CF9E9C66-0BC5-47C6-98C8-D65E3B28972F}"/>
-									</PositioningInfo>
-									<ObjectLists>
-										<ObjectList Name="Effects">
-											<Reference>
-												<Local>
-													<EffectSlot Name="" ID="{1C0015D7-766F-4542-836B-B347D7673751}" ShortID="27395793">
-														<ReferenceList>
-															<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
-																<ObjectRef Name="High_Pass_60Hz" ID="{F9627628-0B10-4272-BC30-D4C20423CB38}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
-															</Reference>
-														</ReferenceList>
-													</EffectSlot>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-								</RandomSequenceContainer>
-								<Sound Name="UFO_Come" ID="{DFE67444-2CFB-4820-B4FF-38CC7481B028}" ShortID="639147842">
-									<PropertyList>
-										<Property Name="3DSpatialization" Type="int16" Value="2"/>
-										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Attenuation">
-											<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
-										</Reference>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="Player_Dizzy" ID="{E56EB042-0C16-447B-9109-C3DFE3A69F9C}">
-											<Language>SFX</Language>
-											<AudioFile>Player_Dizzy.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="657118636"/>
-											</MediaIDList>
-										</AudioFileSource>
-										<AudioFileSource Name="UFO_Come" ID="{12924033-0C69-4E3D-B2B6-E68ED3BC30DE}">
-											<Language>SFX</Language>
-											<AudioFile>UFO_Come .wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="538017148"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<PositioningInfo>
-										<Panner Name="" ID="{647D0A08-23E8-4B06-A93C-ED4FC1F6906A}"/>
-									</PositioningInfo>
-									<ActiveSourceList>
-										<ActiveSource Name="UFO_Come" ID="{12924033-0C69-4E3D-B2B6-E68ED3BC30DE}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="UFO_Gone" ID="{418A8780-773E-4940-BFCD-9147401D2F37}" ShortID="807414506">
-									<PropertyList>
-										<Property Name="3DSpatialization" Type="int16" Value="2"/>
-										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-2</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Attenuation">
-											<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
-										</Reference>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="Player_Dizzy" ID="{7AD4C403-702D-475C-94EC-4631B74E07DA}">
-											<Language>SFX</Language>
-											<AudioFile>Player_Dizzy.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="657118636"/>
-											</MediaIDList>
-										</AudioFileSource>
-										<AudioFileSource Name="UFO_Gone" ID="{AAE31F39-F887-45A1-B891-C99835721772}">
-											<Language>SFX</Language>
-											<AudioFile>UFO_Gone.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="409091301"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<PositioningInfo>
-										<Panner Name="" ID="{CA5682CF-90B0-49C9-9508-F37F35D6EE2B}"/>
-									</PositioningInfo>
-									<ObjectLists>
-										<ObjectList Name="RTPC">
-											<Reference>
-												<Local>
-													<RTPC Name="" ID="{89191343-B1D3-4F5B-AFA4-B08D4CF53E75}" ShortID="563495767">
-														<PropertyList>
-															<Property Name="PropertyName" Type="string" Value="Lowpass"/>
-														</PropertyList>
-														<ReferenceList>
-															<Reference Name="ControlInput">
-																<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
-															</Reference>
-															<Reference Name="Curve">
-																<Custom>
-																	<Curve Name="" ID="{AF616E4C-D406-4515-91FE-6EBE3DD1BF9A}">
-																		<PropertyList>
-																			<Property Name="Flags" Type="int32" Value="65537"/>
-																		</PropertyList>
-																		<PointList>
-																			<Point>
-																				<XPos>0</XPos>
-																				<YPos>0</YPos>
-																				<Flags>5</Flags>
-																			</Point>
-																			<Point>
-																				<XPos>100</XPos>
-																				<YPos>67</YPos>
-																				<Flags>37</Flags>
-																			</Point>
-																		</PointList>
-																	</Curve>
-																</Custom>
-															</Reference>
-														</ReferenceList>
-													</RTPC>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-									<ActiveSourceList>
-										<ActiveSource Name="UFO_Gone" ID="{AAE31F39-F887-45A1-B891-C99835721772}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="UFO_Laser" ID="{A121C52C-7976-441A-A47B-66E8D64875C3}" ShortID="240654305">
-									<PropertyList>
-										<Property Name="3DSpatialization" Type="int16" Value="2"/>
-										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>3</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Attenuation">
-											<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
-										</Reference>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="Player_Dizzy" ID="{A07E056F-6D10-4CF1-8535-062E52FAE854}">
-											<Language>SFX</Language>
-											<AudioFile>Player_Dizzy.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="657118636"/>
-											</MediaIDList>
-										</AudioFileSource>
-										<AudioFileSource Name="UFO_Laser" ID="{FF190384-3115-4C3C-BFDC-E541EE3FC27B}">
-											<Language>SFX</Language>
-											<AudioFile>UFO_Laser.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="275310621"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<PositioningInfo>
-										<Panner Name="" ID="{E89A7748-3470-4981-B73C-5407403CE7D9}"/>
-									</PositioningInfo>
-									<ObjectLists>
-										<ObjectList Name="RTPC">
-											<Reference>
-												<Local>
-													<RTPC Name="" ID="{A32D4FBA-AED1-418A-96B7-1F487B339F60}" ShortID="480617061">
-														<PropertyList>
-															<Property Name="PropertyName" Type="string" Value="OutputBusLowpass"/>
-														</PropertyList>
-														<ReferenceList>
-															<Reference Name="ControlInput">
-																<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
-															</Reference>
-															<Reference Name="Curve">
-																<Custom>
-																	<Curve Name="" ID="{191BAFA0-841D-452A-A190-3A9C45B41F63}">
-																		<PropertyList>
-																			<Property Name="Flags" Type="int32" Value="65537"/>
-																		</PropertyList>
-																		<PointList>
-																			<Point>
-																				<XPos>0</XPos>
-																				<YPos>-100</YPos>
-																				<Flags>5</Flags>
-																			</Point>
-																			<Point>
-																				<XPos>100</XPos>
-																				<YPos>0</YPos>
-																				<Flags>37</Flags>
-																			</Point>
-																		</PointList>
-																	</Curve>
-																</Custom>
-															</Reference>
-														</ReferenceList>
-													</RTPC>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-									<ActiveSourceList>
-										<ActiveSource Name="UFO_Laser" ID="{FF190384-3115-4C3C-BFDC-E541EE3FC27B}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
 								<Sound Name="Air_Escape" ID="{7F0C2143-3221-42B8-97D2-372DE03A4A8A}" ShortID="655942812">
 									<PropertyList>
 										<Property Name="3DSpatialization" Type="int16" Value="2"/>
 										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>4</Value>
+												<Value>7</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -3048,6 +2588,918 @@
 										<ActiveSource Name="Space_Warning" ID="{EC398760-0684-4EE0-950B-E08F129EFC5D}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
+								<RandomSequenceContainer Name="Port_Flying" ID="{DD7C3254-CEF7-4F5C-A45B-0CA3BB8A7B0F}" ShortID="119949534">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="2"/>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+										<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>6</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<Custom CreatedFrom="{075254EE-79C4-4CFC-9DCA-CD46E81F6B29}">
+												<Attenuation Name="Light (Custom)" ID="{C8F70012-9067-4554-A31C-D437304913D6}" ShortID="803101506">
+													<PropertyList>
+														<Property Name="ConeUse" Type="bool">
+															<ValueList>
+																<Value>True</Value>
+															</ValueList>
+														</Property>
+														<Property Name="RadiusMax" Type="Real64" Value="1000"/>
+													</PropertyList>
+													<CurveUsageInfoList>
+														<VolumeDryUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																<Curve Name="VolumeDry" ID="{31106F6A-D3D5-4D28-A78C-5D4605FAE756}">
+																	<PropertyList>
+																		<Property Name="Flags" Type="int32" Value="3"/>
+																	</PropertyList>
+																	<PointList>
+																		<Point>
+																			<XPos>0</XPos>
+																			<YPos>0</YPos>
+																			<Flags>5</Flags>
+																			<SegmentShape>Exp2</SegmentShape>
+																		</Point>
+																		<Point>
+																			<XPos>314.77447</XPos>
+																			<YPos>0</YPos>
+																			<Flags>0</Flags>
+																			<SegmentShape>Log2</SegmentShape>
+																		</Point>
+																		<Point>
+																			<XPos>999.999</XPos>
+																			<YPos>-200</YPos>
+																			<Flags>0</Flags>
+																		</Point>
+																		<Point>
+																			<XPos>1000</XPos>
+																			<YPos>-200</YPos>
+																			<Flags>37</Flags>
+																		</Point>
+																	</PointList>
+																</Curve>
+															</CurveUsageInfo>
+														</VolumeDryUsage>
+														<VolumeWetGameUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+														</VolumeWetGameUsage>
+														<VolumeWetUserUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+														</VolumeWetUserUsage>
+														<LowPassFilterUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None">
+																<Curve Name="LowPassFilter" ID="{8FE3A06B-88F5-4CE4-AC72-25BFCDB6C92D}">
+																	<PropertyList>
+																		<Property Name="Flags" Type="int32" Value="65537"/>
+																	</PropertyList>
+																	<PointList>
+																		<Point>
+																			<XPos>0</XPos>
+																			<YPos>0</YPos>
+																			<Flags>5</Flags>
+																			<SegmentShape>Exp1</SegmentShape>
+																		</Point>
+																		<Point>
+																			<XPos>731.49492</XPos>
+																			<YPos>36</YPos>
+																			<Flags>0</Flags>
+																			<SegmentShape>Log1</SegmentShape>
+																		</Point>
+																		<Point>
+																			<XPos>999.999</XPos>
+																			<YPos>100</YPos>
+																			<Flags>0</Flags>
+																		</Point>
+																		<Point>
+																			<XPos>1000</XPos>
+																			<YPos>100</YPos>
+																			<Flags>37</Flags>
+																		</Point>
+																	</PointList>
+																</Curve>
+															</CurveUsageInfo>
+														</LowPassFilterUsage>
+														<HighPassFilterUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</HighPassFilterUsage>
+														<SpreadUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</SpreadUsage>
+														<FocusUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+														</FocusUsage>
+														<ObstructionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionVolumeUsage>
+														<ObstructionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionLPFUsage>
+														<ObstructionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</ObstructionHPFUsage>
+														<OcclusionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionVolumeUsage>
+														<OcclusionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionLPFUsage>
+														<OcclusionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</OcclusionHPFUsage>
+														<DiffractionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionVolumeUsage>
+														<DiffractionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionLPFUsage>
+														<DiffractionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</DiffractionHPFUsage>
+														<TransmissionVolumeUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionVolumeUsage>
+														<TransmissionLPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionLPFUsage>
+														<TransmissionHPFUsage>
+															<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+														</TransmissionHPFUsage>
+													</CurveUsageInfoList>
+												</Attenuation>
+											</Custom>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Port_Flying_1" ID="{EEDE76E0-2D9C-434A-AC65-ACDFB9701FCC}" ShortID="720901726">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Port_Flying_1" ID="{5329A4D6-F6C6-45DB-957C-3EA1F592525A}">
+													<Language>SFX</Language>
+													<AudioFile>Port_Flying_1.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="251471988"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Port_Flying_1" ID="{5329A4D6-F6C6-45DB-957C-3EA1F592525A}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Port_Flying_2" ID="{39316E2B-F905-463D-B47E-BA7B4ED51FB9}" ShortID="550718024">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Port_Flying_2" ID="{5F46C951-F908-4CC8-A4F2-7BA82C27E836}">
+													<Language>SFX</Language>
+													<AudioFile>Port_Flying_2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="10826828"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Port_Flying_2" ID="{5F46C951-F908-4CC8-A4F2-7BA82C27E836}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+									<PositioningInfo>
+										<Panner Name="" ID="{2545CBD5-D82F-4C36-9191-CFFC14434C65}"/>
+									</PositioningInfo>
+									<ObjectLists>
+										<ObjectList Name="Effects">
+											<Reference>
+												<Local>
+													<EffectSlot Name="" ID="{2B2FB592-F8AE-48C5-B9E1-E3D151A9A3C9}" ShortID="879594176">
+														<ReferenceList>
+															<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+																<ObjectRef Name="High_Pass_60Hz" ID="{F9627628-0B10-4272-BC30-D4C20423CB38}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+															</Reference>
+														</ReferenceList>
+													</EffectSlot>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</RandomSequenceContainer>
+								<Folder Name="UFO" ID="{8C720814-6CC7-456C-BF00-D4E64E8BAEA4}" ShortID="542981265">
+									<ChildrenList>
+										<Sound Name="UFO_Come" ID="{DFE67444-2CFB-4820-B4FF-38CC7481B028}" ShortID="639147842">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Player_Dizzy" ID="{E56EB042-0C16-447B-9109-C3DFE3A69F9C}">
+													<Language>SFX</Language>
+													<AudioFile>Player_Dizzy.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="657118636"/>
+													</MediaIDList>
+												</AudioFileSource>
+												<AudioFileSource Name="UFO_Come" ID="{12924033-0C69-4E3D-B2B6-E68ED3BC30DE}">
+													<Language>SFX</Language>
+													<AudioFile>UFO_Come .wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="538017148"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{647D0A08-23E8-4B06-A93C-ED4FC1F6906A}"/>
+											</PositioningInfo>
+											<ActiveSourceList>
+												<ActiveSource Name="UFO_Come" ID="{12924033-0C69-4E3D-B2B6-E68ED3BC30DE}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="UFO_Gone" ID="{418A8780-773E-4940-BFCD-9147401D2F37}" ShortID="807414506">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-2</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Player_Dizzy" ID="{7AD4C403-702D-475C-94EC-4631B74E07DA}">
+													<Language>SFX</Language>
+													<AudioFile>Player_Dizzy.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="657118636"/>
+													</MediaIDList>
+												</AudioFileSource>
+												<AudioFileSource Name="UFO_Gone" ID="{AAE31F39-F887-45A1-B891-C99835721772}">
+													<Language>SFX</Language>
+													<AudioFile>UFO_Gone.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="409091301"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{CA5682CF-90B0-49C9-9508-F37F35D6EE2B}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{89191343-B1D3-4F5B-AFA4-B08D4CF53E75}" ShortID="563495767">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{AF616E4C-D406-4515-91FE-6EBE3DD1BF9A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="UFO_Gone" ID="{AAE31F39-F887-45A1-B891-C99835721772}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="UFO_ON" ID="{B192A156-C13A-4B86-9610-BCE06AF81AE6}" ShortID="927776192">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-6</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="UFO ON" ID="{9D7504FD-C3BF-4852-B209-7BF9E59BB26C}">
+													<Language>SFX</Language>
+													<AudioFile>UFO ON .wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="34980439"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{5147E214-EF9C-4B36-B624-068E30DA2366}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{F9820DC8-849F-4203-AE3E-2112166086BE}" ShortID="204795391">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{7532EF1E-46ED-4144-86EF-9A84930BA332}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="UFO ON" ID="{9D7504FD-C3BF-4852-B209-7BF9E59BB26C}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="UFO_OFF" ID="{2359AF16-C541-436D-A21C-68F464E58BF8}" ShortID="367821549">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="UFO OFF" ID="{3E78D6CE-D443-4572-9C6B-D5A9F8FCF5BA}">
+													<Language>SFX</Language>
+													<AudioFile>UFO OFF .wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="974506231"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{35750BF6-3ADA-4AF3-95F2-ECFEB5135DF7}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{5B7CE9A6-92B7-4539-89E4-6D0CDC0052F5}" ShortID="1006517432">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{46F7D4A8-1241-4849-9C79-73B365331ED4}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="UFO OFF" ID="{3E78D6CE-D443-4572-9C6B-D5A9F8FCF5BA}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="UFO_Laser_On" ID="{AFE67802-04AF-48F2-BEC7-D9931A496B06}" ShortID="728592612">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-2</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="UFO LOOP" ID="{FF2A1482-22D6-4315-9F7D-386AAF63B81B}">
+													<Language>SFX</Language>
+													<AudioFile>UFO LOOP.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="503514366"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{055AF407-FF5A-4D03-84D8-059539F10B16}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{F8AE7A0C-8317-4F4E-9BCC-80B227D39480}" ShortID="1011304544">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{1955061D-749B-454A-96B5-62BD9F61AB44}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="UFO LOOP" ID="{FF2A1482-22D6-4315-9F7D-386AAF63B81B}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="UFO_Laser_Off" ID="{5727193E-8B17-4B8C-A0B1-B23939B950C6}" ShortID="457522830">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-2</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="UFO LOOP" ID="{6346698C-F86C-4A26-8DD9-A1BA5676F416}">
+													<Language>SFX</Language>
+													<AudioFile>UFO LOOP.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="503514366"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{4DB83EE9-0F48-4A63-B2BD-84E46F528C7A}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{4D901B83-1E69-4EF4-835F-5A5288B7072E}" ShortID="228158840">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{6C2367B7-3274-484F-9B14-5DFF2DA2B4B0}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="UFO LOOP" ID="{6346698C-F86C-4A26-8DD9-A1BA5676F416}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</Folder>
+								<Folder Name="BlackHole" ID="{99A92593-2C8B-4F1B-8832-33E3AC5799C5}" ShortID="1033382991">
+									<ChildrenList>
+										<Sound Name="BlackHole_ON" ID="{E862C0A8-5866-41B4-99CF-77FF2B481FBC}" ShortID="5560331">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="BlackHole On" ID="{4025F6D2-1937-4507-AA57-911F818BCB68}">
+													<Language>SFX</Language>
+													<AudioFile>BlackHole On.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="331048780"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{DB2C56C6-EAC4-453F-9F07-163F45719B2E}"/>
+											</PositioningInfo>
+											<ActiveSourceList>
+												<ActiveSource Name="BlackHole On" ID="{4025F6D2-1937-4507-AA57-911F818BCB68}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="BlackHole_OFF" ID="{9C8549DC-C6F8-492B-B297-B61C1836B955}" ShortID="789660973">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-2</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Black Hole OFF" ID="{79D5ED8B-7AF4-4B17-8315-C4F21EA17CA2}">
+													<Language>SFX</Language>
+													<AudioFile>Black Hole OFF.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="579698692"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{4651AD5C-79D3-442C-B096-157B0FDE6356}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{756E73E9-4A9A-4C62-B514-5CFF67CF488A}" ShortID="773366423">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{11766932-65E8-4B3A-88A6-7389DCE5C490}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="Black Hole OFF" ID="{79D5ED8B-7AF4-4B17-8315-C4F21EA17CA2}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="BlackHole_Static_On" ID="{CBCEC4C8-4EAE-4593-B292-E39CC030D9E1}" ShortID="294563656">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-13</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="BlackHole Loop" ID="{6392BD8D-1E01-4D32-ABEA-F6C66368F339}">
+													<Language>SFX</Language>
+													<AudioFile>BlackHole Loop.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="1042388455"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{6A2E8DB9-9FA6-4B7D-AB11-4D73250F7191}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{985AFB3C-6A2C-4DB2-A317-B87285B4F4EC}" ShortID="262850354">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{7897A126-1D04-474E-8BE7-2F3DC774872F}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="BlackHole Loop" ID="{6392BD8D-1E01-4D32-ABEA-F6C66368F339}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="BlackHole_Static_Off" ID="{907A2918-ADAE-4C56-B921-4920C84716E1}" ShortID="683051832">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="SpeakerPanning" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-13</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Foot" ID="{FDE8450E-5E8E-40F9-BFF4-0368F2579089}" WorkUnitID="{3DE9C78D-9A0A-4096-9769-3A4BE00077FD}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{FC8685F5-F147-4D35-A63D-4DDED09C34F6}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master_SFX" ID="{EF172D25-9499-4866-B0C2-ABB29CF17711}" WorkUnitID="{43DD5CB7-E727-4E5B-83F1-04F5F78F5E06}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="BlackHole Loop" ID="{9E00B282-9D9E-4248-9EF9-35BFEC20CB36}">
+													<Language>SFX</Language>
+													<AudioFile>BlackHole Loop.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="1042388455"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<PositioningInfo>
+												<Panner Name="" ID="{44516055-75D8-4AE6-864D-F1BBF9B3E27D}"/>
+											</PositioningInfo>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{6459E5F2-DF2E-45B6-B978-9548F4302A8B}" ShortID="327346476">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="RTPC_Space" ID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{20F25A53-2755-4294-B4E3-DB027B9E6711}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>67</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="BlackHole Loop" ID="{9E00B282-9D9E-4248-9EF9-35BFEC20CB36}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</Folder>
 							</ChildrenList>
 						</Folder>
 					</ChildrenList>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1120556439" Type="Event" GUID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}" Language="SFX" Hash="{9C429522-54C2-81B3-6C39-D5CDCCC971E6}">
+			<ObjectPath>Play_BlackHole_OFF</ObjectPath>
+			<ShortName>Play_BlackHole_OFF</ShortName>
+			<Path>Event/Play_BlackHole_OFF.bnk</Path>
+			<Media>
+				<File Id="579698692" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Black Hole OFF.wav</ShortName>
+					<Path>Media/579698692.wem</Path>
+					<CachePath>SFX/Black Hole OFF_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1120556439" Name="Play_BlackHole_OFF" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_OFF" GUID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.0433333" DurationMax="2.0433333">
+					<MediaRefs>
+						<MediaRef Id="579698692"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{28275536-C14C-3C55-1B66-EEA20587DE27}</FileHash>
+</SoundBanksInfo>

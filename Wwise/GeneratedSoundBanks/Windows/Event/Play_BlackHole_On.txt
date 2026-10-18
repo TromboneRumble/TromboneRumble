@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1932659939	Play_BlackHole_On			\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_On	
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="2440277416" Type="Event" GUID="{A33D3B98-DE2F-441E-B6A6-C3B6426F1D1E}" Language="SFX" Hash="{3C7D71B9-9E82-E9AE-4D93-F2F85449A593}">
+			<ObjectPath>Play_UFO_OFF</ObjectPath>
+			<ShortName>Play_UFO_OFF</ShortName>
+			<Path>Event/Play_UFO_OFF.bnk</Path>
+			<Media>
+				<File Id="974506231" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO OFF .wav</ShortName>
+					<Path>Media/974506231.wem</Path>
+					<CachePath>SFX/UFO OFF _818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2440277416" Name="Play_UFO_OFF" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_OFF" GUID="{A33D3B98-DE2F-441E-B6A6-C3B6426F1D1E}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.5333333" DurationMax="2.5333333">
+					<MediaRefs>
+						<MediaRef Id="974506231"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{81EC3326-F68E-586B-AB78-83217D5103D8}</FileHash>
+</SoundBanksInfo>

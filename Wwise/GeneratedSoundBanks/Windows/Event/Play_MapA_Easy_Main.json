@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{CF76B634-FCD1-48D0-8700-EA68AE5402DC}",
     "Language": "SFX",
-    "Hash": "{EE024E0E-8460-8355-EF63-5DD2B121F842}",
+    "Hash": "{566B18BA-3538-B50C-2BF2-A43AE6B1FCB5}",
     "ObjectPath": "Play_MapA_Easy_Main",
     "ShortName": "Play_MapA_Easy_Main",
     "Path": "Event/Play_MapA_Easy_Main.bnk",
@@ -80,8 +80,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Easy\\Map_A_Easy_Rhythm\\Play_MapA_Easy_Main",
       "GUID": "{CF76B634-FCD1-48D0-8700-EA68AE5402DC}",
       "DurationType": "OneShot",
-      "DurationMin": "176.13333",
-      "DurationMax": "176.13333",
+      "DurationMin": "175.81395",
+      "DurationMax": "175.81395",
       "MediaRefs": [
        {
         "Id": "292465416"
@@ -152,6 +152,6 @@
     ]
    }
   ],
-  "FileHash": "{5A708438-9605-FF0E-AA09-3761B1D0FAC2}"
+  "FileHash": "{714E652C-1A2D-228E-B678-C4572389A1DF}"
  }
 }

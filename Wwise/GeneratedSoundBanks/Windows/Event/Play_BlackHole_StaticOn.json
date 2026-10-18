@@ -1,0 +1,57 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3404172405",
+    "Type": "Event",
+    "GUID": "{6E7447D6-A8B8-48DB-A31E-D50EA5061442}",
+    "Language": "SFX",
+    "Hash": "{F3BBF275-AD6F-3836-7E34-7B327E282071}",
+    "ObjectPath": "Play_BlackHole_StaticOn",
+    "ShortName": "Play_BlackHole_StaticOn",
+    "Path": "Event/Play_BlackHole_StaticOn.bnk",
+    "Media": [
+     {
+      "Id": "1042388455",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BlackHole Loop.wav",
+      "Path": "Media/1042388455.wem",
+      "CachePath": "SFX/BlackHole Loop_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3404172405",
+      "Name": "Play_BlackHole_StaticOn",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\BlackHole\\Play_BlackHole_StaticOn",
+      "GUID": "{6E7447D6-A8B8-48DB-A31E-D50EA5061442}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "6.565292",
+      "DurationMax": "6.565292",
+      "MediaRefs": [
+       {
+        "Id": "1042388455"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1751273511",
+      "Name": "RTPC_Space",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RTPC_Space",
+      "GUID": "{F8682A97-82BF-4329-A9D5-AB0A62D24823}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{A1972311-7E66-0CBA-BF39-18D8BD0CE72C}"
+ }
+}

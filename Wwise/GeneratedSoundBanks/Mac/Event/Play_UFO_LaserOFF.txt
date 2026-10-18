@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	779499817	Play_UFO_LaserOFF			\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOFF	
+

@@ -21,6 +21,7 @@ enum class ECameraEase : uint8
 	Quintic     UMETA(DisplayName = "Quintic InOut")
 };
 
+// Start/Target은 SpringArm TargetOffset과 같은 월드 좌표다
 USTRUCT(BlueprintType)
 struct FCameraOffsetLerpState
 {
@@ -85,7 +86,7 @@ public:
 	/// <param name="DesiredRotation">목표 CameraBoom Rotation (Absolute)</param>
 	/// <param name="InOutState">줌 보간 상태(이상값 보존용)</param>
 	/// <param name="InterpSpeed">FInterpTo/RInterpTo 속도</param>
-	/// <param name="CollisionMargin">벽 여유 거리(cm)</param>
+	/// <param name="CollisionMargin">벽 여유 거리(cm), 카메라 검사 구 반지름</param>
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
 	static void UpdateTopDownCameraZoomEase(
 		const UObject* WorldContextObject,

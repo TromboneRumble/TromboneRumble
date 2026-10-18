@@ -326,12 +326,48 @@
 										</Action>
 									</ChildrenList>
 								</Event>
-								<Event Name="Play_UFO_Laser" ID="{09A96721-DA11-4DF2-9A0A-E504F8BB3044}">
+								<Event Name="Play_UFO_ON" ID="{8AF152B8-A8F9-45D6-9191-C3F2E67A4B2E}">
 									<ChildrenList>
-										<Action Name="" ID="{6E2D672F-F622-4807-8C00-6053D8C5ADA2}" ShortID="934079196">
+										<Action Name="" ID="{6E86B388-45B4-4AD0-9C7C-DCC80E446A60}" ShortID="743829868">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="UFO_Laser" ID="{A121C52C-7976-441A-A47B-66E8D64875C3}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+													<ObjectRef Name="UFO_ON" ID="{B192A156-C13A-4B86-9610-BCE06AF81AE6}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UFO_OFF" ID="{A33D3B98-DE2F-441E-B6A6-C3B6426F1D1E}">
+									<ChildrenList>
+										<Action Name="" ID="{10B65A1C-6D3A-4034-B77E-D747C4D4708E}" ShortID="570005591">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="UFO_OFF" ID="{2359AF16-C541-436D-A21C-68F464E58BF8}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UFO_LaserOn" ID="{8C5F9346-129D-401D-9506-D41F75340669}">
+									<ChildrenList>
+										<Action Name="" ID="{20A96D65-7BEC-4BEF-982E-A1BB3320C11D}" ShortID="434370765">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="UFO_Laser_On" ID="{AFE67802-04AF-48F2-BEC7-D9931A496B06}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UFO_LaserOFF" ID="{213E2CCB-A216-4BD8-9872-C18D7B69E679}">
+									<ChildrenList>
+										<Action Name="" ID="{156BA2C9-B5ED-461B-837D-6A0ED9AA19FC}" ShortID="886324877">
+											<PropertyList>
+												<Property Name="ActionType" Type="int16" Value="2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="UFO_Laser_On" ID="{AFE67802-04AF-48F2-BEC7-D9931A496B06}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>
@@ -372,17 +408,6 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Event Name="Play_Blackhole_SQ" ID="{C6123022-9C0A-417A-BFDF-23C6132E03B2}">
-							<ChildrenList>
-								<Action Name="" ID="{F7580142-4014-4D7A-B2C6-D2609F767753}" ShortID="858232277">
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="Object_BlackHole" ID="{5BC7CE99-9608-4E5C-80BE-636DDBC98C03}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
-							</ChildrenList>
-						</Event>
 						<Event Name="Play_Port_Get" ID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}">
 							<ChildrenList>
 								<Action Name="" ID="{226485F8-D4A1-43D0-B759-64EA0349FEDE}" ShortID="92188564">
@@ -394,6 +419,68 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="Play_Port_Flying" ID="{669815C8-B2F6-46FE-BA58-2B2F94892743}">
+							<ChildrenList>
+								<Action Name="" ID="{1E009BAF-AB29-470B-92DE-F3BB0444345C}" ShortID="505156111">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Port_Flying" ID="{DD7C3254-CEF7-4F5C-A45B-0CA3BB8A7B0F}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Folder Name="BlackHole" ID="{D919B1C9-171D-4DB4-9C52-8D0DD8794183}" ShortID="847179849">
+							<ChildrenList>
+								<Event Name="Play_BlackHole_On" ID="{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}">
+									<ChildrenList>
+										<Action Name="" ID="{6A9A16E6-B759-464E-B356-B5BC0998300C}" ShortID="23432108">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="BlackHole_ON" ID="{E862C0A8-5866-41B4-99CF-77FF2B481FBC}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BlackHole_OFF" ID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}">
+									<ChildrenList>
+										<Action Name="" ID="{C0DB91EE-423B-42B6-A245-9ED42F98F8BC}" ShortID="919465872">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="BlackHole_OFF" ID="{9C8549DC-C6F8-492B-B297-B61C1836B955}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BlackHole_StaticOn" ID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}">
+									<ChildrenList>
+										<Action Name="" ID="{051CC5F1-EE0D-49B5-97EC-96B4C24495D3}" ShortID="285008468">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="BlackHole_Static_On" ID="{CBCEC4C8-4EAE-4593-B292-E39CC030D9E1}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BlackHole_StaticOff" ID="{4D462B68-6993-44A0-A146-62532AFCC4CB}">
+									<ChildrenList>
+										<Action Name="" ID="{45FD12D4-FCD9-49F1-A3B3-C57C123BE068}" ShortID="968907410">
+											<PropertyList>
+												<Property Name="ActionType" Type="int16" Value="2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="BlackHole_Static_On" ID="{CBCEC4C8-4EAE-4593-B292-E39CC030D9E1}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Player_SFX" ID="{3F1C06CE-B53E-4F0D-8EAE-BB88B2E5B7CA}" ShortID="35676988">
@@ -1294,7 +1381,7 @@
 										<Action Name="" ID="{7222A4BA-CBBF-449D-BEAA-5DD5962B2999}" ShortID="1057882567">
 											<ReferenceList>
 												<Reference Name="Target">
-													<ObjectRef Name="MapH_Violin_MIDI" ID="{34F1E3AE-A3F7-45AA-A0A6-F389DDC160D4}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+													<ObjectRef Name="MapH_Violin_MIDI" ID="{21689C15-4360-4FC8-B0FB-90FA5F9F1BAD}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>

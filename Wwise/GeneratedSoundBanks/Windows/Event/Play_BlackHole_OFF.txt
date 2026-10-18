@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1120556439	Play_BlackHole_OFF			\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_OFF	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	1751273511	RTPC_Space			\Default Work Unit\RTPC_Space	
+

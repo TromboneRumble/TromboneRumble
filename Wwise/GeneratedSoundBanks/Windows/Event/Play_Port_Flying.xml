@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2610180119" Type="Event" GUID="{669815C8-B2F6-46FE-BA58-2B2F94892743}" Language="SFX" Hash="{8F736F0A-77D8-0F8A-CD61-55CF1C6E2B26}">
+		<SoundBank Id="2610180119" Type="Event" GUID="{669815C8-B2F6-46FE-BA58-2B2F94892743}" Language="SFX" Hash="{31CDB14A-C33C-7B01-D6C6-314877D72424}">
 			<ObjectPath>Play_Port_Flying</ObjectPath>
 			<ShortName>Play_Port_Flying</ShortName>
 			<Path>Event/Play_Port_Flying.bnk</Path>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{0468AB19-11DC-DA4F-07CE-94FEB564A34F}</FileHash>
+	<FileHash>{E012956A-7BC8-A9D5-7EFF-7830BB22F5E6}</FileHash>
 </SoundBanksInfo>

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
     "Language": "SFX",
-    "Hash": "{8BB27849-A78C-07FB-5B32-92C0D27D6AE2}",
+    "Hash": "{70F0A2EA-BFEB-15F0-28B4-5E5F257C114F}",
     "ObjectPath": "Play_MapA_Main",
     "ShortName": "Play_MapA_Main",
     "Path": "Event/Play_MapA_Main.bnk",
@@ -80,8 +80,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Music\\Map_A_Rhythm\\Play_MapA_Main",
       "GUID": "{7699882F-9ACF-4571-872E-794BC91CB66C}",
       "DurationType": "OneShot",
-      "DurationMin": "176.13333",
-      "DurationMax": "176.13333",
+      "DurationMin": "175.81395",
+      "DurationMax": "175.81395",
       "MediaRefs": [
        {
         "Id": "292465416"
@@ -152,6 +152,6 @@
     ]
    }
   ],
-  "FileHash": "{38AE84D3-2448-C271-53C7-84FD9C27ACA0}"
+  "FileHash": "{464010DF-EFAD-B9B6-72FE-182E3A499274}"
  }
 }

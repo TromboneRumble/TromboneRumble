@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}",
     "Language": "SFX",
-    "Hash": "{16C0B4AA-F5D7-AD8B-7B2D-78204DEAE142}",
+    "Hash": "{688DDBBE-000A-BF3F-014E-3B9410F03B0C}",
     "ObjectPath": "Play_Air_Escape",
     "ShortName": "Play_Air_Escape",
     "Path": "Event/Play_Air_Escape.bnk",
@@ -44,6 +44,6 @@
     ]
    }
   ],
-  "FileHash": "{CD2D0F67-4A46-D6DA-6C2B-E94A54F9A2CF}"
+  "FileHash": "{FD769E44-BECD-31DF-B440-096407D09534}"
  }
 }

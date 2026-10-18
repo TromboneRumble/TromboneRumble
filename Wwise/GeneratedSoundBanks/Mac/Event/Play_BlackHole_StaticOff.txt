@@ -1,0 +1,3 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3884066977	Play_BlackHole_StaticOff			\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOff	
+
