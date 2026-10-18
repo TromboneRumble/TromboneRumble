@@ -1,11 +1,15 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "GimmickSettings/GimmickConfigCustomization.h"
+#include "DetailLayoutBuilder.h"
 #include "DetailWidgetRow.h"
 #include "IDetailChildrenBuilder.h"
 #include "IDetailGroup.h"
 #include "PropertyHandle.h"
 #include "UObject/UnrealType.h"
+#include "Widgets/Text/STextBlock.h"
+
+#define LOCTEXT_NAMESPACE "GimmickConfigCustomization"
 
 namespace
 {
@@ -68,10 +72,22 @@ TSharedRef<IPropertyTypeCustomization> FGimmickConfigCustomization::MakeInstance
 void FGimmickConfigCustomization::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils)
 {
 	// The default value widget keeps the class picker and the array element buttons
+	// The name says which gimmick the entry is, instead of its index in the list
 	HeaderRow
 		.NameContent()
 		[
-			PropertyHandle->CreatePropertyNameWidget()
+			SNew(STextBlock)
+			.Font(IDetailLayoutBuilder::GetDetailFont())
+			.Text_Lambda([PropertyHandle]()
+			{
+				UObject* Config = nullptr;
+				const FPropertyAccess::Result Access = PropertyHandle->GetValue(Config);
+				if (Access == FPropertyAccess::MultipleValues)
+				{
+					return LOCTEXT("MultipleEntries", "여러 값");
+				}
+				return Access == FPropertyAccess::Success && Config ? Config->GetClass()->GetDisplayNameText() : LOCTEXT("NewEntry", "새 항목 (기믹 종류를 고르세요)");
+			})
 		]
 		.ValueContent()
 		.MinDesiredWidth(250.f)
@@ -139,3 +155,5 @@ void FGimmickConfigCustomization::CustomizeChildren(TSharedRef<IPropertyHandle> 
 		Group->AddPropertyRow(Handle);
 	}
 }
+
+#undef LOCTEXT_NAMESPACE

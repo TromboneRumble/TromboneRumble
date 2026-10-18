@@ -2,10 +2,10 @@
 
 #include "Data/Gimmick/StageGimmickData.h"
 #include "Data/Gimmick/GimmickConfig.h"
-#include "Utilities/EnumHelper.h"
 
 #if WITH_EDITOR
 #include "Misc/DataValidation.h"
+#include "UObject/UObjectHash.h"
 #endif
 
 const UGimmickConfig* UStageGimmickData::FindConfig(const EGimmickType GimmickType) const
@@ -36,7 +36,7 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 		const UGimmickConfig* Config = Gimmicks[Index];
 		if (!Config)
 		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Gimmicks[%d] is empty"), Index)));
+			Context.AddError(FText::FromString(FString::Printf(TEXT("기믹 목록 %d번: 기믹 종류가 비어 있습니다. 종류를 고르거나 항목을 지우세요"), Index + 1)));
 			Result = EDataValidationResult::Invalid;
 			continue;
 		}
@@ -46,7 +46,7 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 		SeenTypes.Add(Config->GetGimmickType(), &bAlreadySeen);
 		if (bAlreadySeen)
 		{
-			Context.AddError(FText::FromString(FString::Printf(TEXT("Gimmicks[%d] repeats the type %s"), Index, *EnumHelper::EnumToString(Config->GetGimmickType()))));
+			Context.AddError(FText::FromString(FString::Printf(TEXT("기믹 목록 %d번: %s 이(가) 이미 목록에 있습니다. 같은 종류는 첫 항목만 쓰입니다"), Index + 1, *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString())));
 			Result = EDataValidationResult::Invalid;
 		}
 
@@ -122,5 +122,55 @@ EDataValidationResult UStageGimmickData::IsDataValid(FDataValidationContext& Con
 	}
 
 	return Result;
+}
+
+TArray<FString> UStageGimmickData::GetNonSequenceGimmickTypes() const
+{
+	TSet<EGimmickType> Allowed;
+	for (const UGimmickConfig* Config : Gimmicks)
+	{
+		if (Config && Config->RunsOnlyInSequence())
+		{
+			Allowed.Add(Config->GetGimmickType());
+		}
+	}
+
+	TArray<FString> Names;
+	const UEnum* Enum = StaticEnum<EGimmickType>();
+	for (int32 Index = 0; Index < Enum->NumEnums() - 1; ++Index)
+	{
+		if (!Allowed.Contains(static_cast<EGimmickType>(Enum->GetValueByIndex(Index))))
+		{
+			Names.Add(Enum->GetNameStringByIndex(Index));
+		}
+	}
+	return Names;
+}
+
+TArray<UClass*> UStageGimmickData::GetAddableGimmickClasses() const
+{
+	TSet<EGimmickType> UsedTypes;
+	for (const UGimmickConfig* Config : Gimmicks)
+	{
+		if (Config)
+		{
+			UsedTypes.Add(Config->GetGimmickType());
+		}
+	}
+
+	TArray<UClass*> ConfigClasses;
+	GetDerivedClasses(UGimmickConfig::StaticClass(), ConfigClasses);
+
+	// The picker also lets the children of an allowed class through, so the ice can come back when only the water drop is free
+	TArray<UClass*> Addable;
+	for (UClass* Class : ConfigClasses)
+	{
+		if (Class->HasAnyClassFlags(CLASS_Abstract | CLASS_Deprecated | CLASS_NewerVersionExists)) continue;
+		if (!UsedTypes.Contains(Class->GetDefaultObject<UGimmickConfig>()->GetGimmickType()))
+		{
+			Addable.Add(Class);
+		}
+	}
+	return Addable;
 }
 #endif

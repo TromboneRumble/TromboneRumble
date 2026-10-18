@@ -41,7 +41,7 @@ enum class EGimmickType : uint8
 	BlackHole		UMETA(DisplayName = "블랙홀"),
 	Ufo				UMETA(DisplayName = "미니 UFO"),
 	DockingPort		UMETA(DisplayName = "도킹 포트 보급"),
-	MAX,
+	MAX				UMETA(Hidden),
 	None = 255,
 };
 

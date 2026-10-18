@@ -6,7 +6,7 @@
 #include "IPropertyTypeCustomization.h"
 
 /**
- * Draws a gimmick config inside the stage data list with its category groups.
+ * Draws a gimmick config inside the stage data list with its category groups, under a header named after the gimmick.
  * The details view drops the categories of an object shown inline, so the settings of a gimmick would come as one flat list.
  * This groups them again by their Category meta, and "A|B" becomes the group B inside the group A.
  *
