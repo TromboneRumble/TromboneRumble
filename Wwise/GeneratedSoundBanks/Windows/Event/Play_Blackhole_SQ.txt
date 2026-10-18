@@ -1,6 +1,0 @@
-Event	ID	Name			Wwise Object Path	Notes
-	1462886408	Play_Blackhole_SQ			\Default Work Unit\Object_SFX\Play_Blackhole_SQ	
-
-Effect plug-ins	ID	Name	Type				Notes
-	3604890626	High_Pass_60Hz	Wwise Parametric EQ			
-

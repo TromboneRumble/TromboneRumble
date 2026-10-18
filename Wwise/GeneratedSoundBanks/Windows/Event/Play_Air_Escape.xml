@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="2022407976" Type="Event" GUID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}" Language="SFX" Hash="{16C0B4AA-F5D7-AD8B-7B2D-78204DEAE142}">
+		<SoundBank Id="2022407976" Type="Event" GUID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}" Language="SFX" Hash="{688DDBBE-000A-BF3F-014E-3B9410F03B0C}">
 			<ObjectPath>Play_Air_Escape</ObjectPath>
 			<ShortName>Play_Air_Escape</ShortName>
 			<Path>Event/Play_Air_Escape.bnk</Path>
@@ -21,5 +21,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{2769B256-7FC0-5A0D-4EC9-2260A718518E}</FileHash>
+	<FileHash>{BD1186C8-1F01-CC69-6228-EDC41B72B081}</FileHash>
 </SoundBanksInfo>

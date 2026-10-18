@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1932659939" Type="Event" GUID="{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}" Language="SFX" Hash="{EDC63B66-B81C-F0FB-E529-ED5601EC34CB}">
+			<ObjectPath>Play_BlackHole_On</ObjectPath>
+			<ShortName>Play_BlackHole_On</ShortName>
+			<Path>Event/Play_BlackHole_On.bnk</Path>
+			<Media>
+				<File Id="331048780" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BlackHole On.wav</ShortName>
+					<Path>Media/331048780.wem</Path>
+					<CachePath>SFX/BlackHole On_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1932659939" Name="Play_BlackHole_On" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_On" GUID="{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.0208333" DurationMax="2.0208333">
+					<MediaRefs>
+						<MediaRef Id="331048780"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{0D77001B-59EB-4090-9C4A-069B3E64AB50}</FileHash>
+</SoundBanksInfo>

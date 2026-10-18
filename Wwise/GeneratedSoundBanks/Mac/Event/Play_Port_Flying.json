@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
     "Language": "SFX",
-    "Hash": "{8F736F0A-77D8-0F8A-CD61-55CF1C6E2B26}",
+    "Hash": "{31CDB14A-C33C-7B01-D6C6-314877D72424}",
     "ObjectPath": "Play_Port_Flying",
     "ShortName": "Play_Port_Flying",
     "Path": "Event/Play_Port_Flying.bnk",
@@ -75,6 +75,6 @@
     ]
    }
   ],
-  "FileHash": "{DDAED728-E14C-96D8-F911-A6BA866A2516}"
+  "FileHash": "{446511B5-9620-58C9-12B0-1787BFF4D975}"
  }
 }

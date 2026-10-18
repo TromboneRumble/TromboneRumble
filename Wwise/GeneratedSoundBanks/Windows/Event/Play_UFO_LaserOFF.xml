@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="779499817" Type="Event" GUID="{213E2CCB-A216-4BD8-9872-C18D7B69E679}" Language="SFX" Hash="{1A88DE88-F136-1CB7-CF67-F42675BCC062}">
+			<ObjectPath>Play_UFO_LaserOFF</ObjectPath>
+			<ShortName>Play_UFO_LaserOFF</ShortName>
+			<Path>Event/Play_UFO_LaserOFF.bnk</Path>
+			<Events>
+				<Event Id="779499817" Name="Play_UFO_LaserOFF" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOFF" GUID="{213E2CCB-A216-4BD8-9872-C18D7B69E679}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{2EF0A9DD-F899-234A-2E43-6AC59B448072}</FileHash>
+</SoundBanksInfo>

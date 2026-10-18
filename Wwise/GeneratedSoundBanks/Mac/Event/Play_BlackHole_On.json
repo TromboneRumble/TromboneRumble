@@ -1,0 +1,49 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "1932659939",
+    "Type": "Event",
+    "GUID": "{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}",
+    "Language": "SFX",
+    "Hash": "{EDC63B66-B81C-F0FB-E529-ED5601EC34CB}",
+    "ObjectPath": "Play_BlackHole_On",
+    "ShortName": "Play_BlackHole_On",
+    "Path": "Event/Play_BlackHole_On.bnk",
+    "Media": [
+     {
+      "Id": "331048780",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "BlackHole On.wav",
+      "Path": "Media/331048780.wem",
+      "CachePath": "SFX/BlackHole On_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1932659939",
+      "Name": "Play_BlackHole_On",
+      "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\BlackHole\\Play_BlackHole_On",
+      "GUID": "{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}",
+      "MaxAttenuation": "3000",
+      "DurationType": "OneShot",
+      "DurationMin": "2.0208333",
+      "DurationMax": "2.0208333",
+      "MediaRefs": [
+       {
+        "Id": "331048780"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{0AC3A41E-D9F0-EF9B-F2BD-E7DDD0E169F7}"
+ }
+}

@@ -66,26 +66,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="140992219" Type="Bus" GUID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}" Language="SFX" Hash="{70764E5D-FDF0-1DB6-AD12-7148BE524572}">
-			<ObjectPath>Map_D_Reverb</ObjectPath>
-			<ShortName>Map_D_Reverb</ShortName>
-			<Path>Bus/Map_D_Reverb.bnk</Path>
-			<Plugins>
-				<ShareSets>
-					<Plugin Id="1904434771" Name="Medium_Room1" ObjectPath="\Effects\Factory Effects\Matrix Reverb\Medium_Room1" GUID="{71B802A7-03E2-4998-B241-B2B84FE9DDFF}" LibName="Wwise Matrix Reverb" LibId="7536643"/>
-				</ShareSets>
-			</Plugins>
-			<AuxBusses>
-				<AuxBus Id="140992219" Name="Map_D_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_D_Reverb" GUID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}">
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="1904434771"/>
-						</ShareSets>
-					</PluginRefs>
-				</AuxBus>
-			</AuxBusses>
-		</SoundBank>
-		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{417A28A6-381E-02FD-36CE-02410F869B51}">
+		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{DFE685E7-F9DC-0EF8-6A4B-6E5918F90A63}">
 			<ObjectPath>Play_MapD_Main</ObjectPath>
 			<ShortName>Play_MapD_Main</ShortName>
 			<Path>Event/Play_MapD_Main.bnk</Path>
@@ -457,7 +438,7 @@
 				<Event Id="674166051" Name="Stop_Host_Speaking" ObjectPath="\Events\Default Work Unit\Ambience\Stop_Host_Speaking" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{066F099C-05BE-6CB1-E0B9-09C5C565896F}">
+		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{C3CE2364-374E-47B5-CF5C-E9A821115548}">
 			<ObjectPath>Play_MapF_Main</ObjectPath>
 			<ShortName>Play_MapF_Main</ShortName>
 			<Path>Event/Play_MapF_Main.bnk</Path>
@@ -570,6 +551,14 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
+		<SoundBank Id="779499817" Type="Event" GUID="{213E2CCB-A216-4BD8-9872-C18D7B69E679}" Language="SFX" Hash="{1A88DE88-F136-1CB7-CF67-F42675BCC062}">
+			<ObjectPath>Play_UFO_LaserOFF</ObjectPath>
+			<ShortName>Play_UFO_LaserOFF</ShortName>
+			<Path>Event/Play_UFO_LaserOFF.bnk</Path>
+			<Events>
+				<Event Id="779499817" Name="Play_UFO_LaserOFF" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOFF" GUID="{213E2CCB-A216-4BD8-9872-C18D7B69E679}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="816711006" Type="Event" GUID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" Language="SFX" Hash="{58FDE8FB-ECFE-77AE-210B-E0BFAA71BDE1}">
 			<ObjectPath>Play_Light_On</ObjectPath>
 			<ShortName>Play_Light_On</ShortName>
@@ -663,7 +652,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{7F6E3B10-D85D-A08F-DF3B-6F7272B612FA}">
+		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{1B6B8EE1-3128-68A9-2027-97EBF94CD739}">
 			<ObjectPath>Play_MapB_Main</ObjectPath>
 			<ShortName>Play_MapB_Main</ShortName>
 			<Path>Event/Play_MapB_Main.bnk</Path>
@@ -716,7 +705,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="915173079" Type="Event" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" Language="SFX" Hash="{61260862-EEB4-D6B3-F99A-3A74EDFE77CD}">
+		<SoundBank Id="915173079" Type="Event" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" Language="SFX" Hash="{C4AECF57-71EE-148A-E3E2-CA76B659DFAD}">
 			<ObjectPath>Play_Port_Landing</ObjectPath>
 			<ShortName>Play_Port_Landing</ShortName>
 			<Path>Event/Play_Port_Landing.bnk</Path>
@@ -789,7 +778,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{22DF5FFC-57DE-32F7-103C-73F3554E4919}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{70F0A2EA-BFEB-15F0-28B4-5E5F257C114F}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -896,7 +885,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1101510959" Type="Event" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" Language="SFX" Hash="{C6EE7A2F-E3CB-92EE-E50B-97BEC7438274}">
+		<SoundBank Id="1101510959" Type="Event" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" Language="SFX" Hash="{C4D566BC-C9F2-7A50-C1CB-7FAE6E54600A}">
 			<ObjectPath>Play_MapE_Main</ObjectPath>
 			<ShortName>Play_MapE_Main</ShortName>
 			<Path>Event/Play_MapE_Main.bnk</Path>
@@ -942,6 +931,28 @@
 					</Switches>
 				</SwitchGroup>
 			</SwitchGroups>
+		</SoundBank>
+		<SoundBank Id="1120556439" Type="Event" GUID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}" Language="SFX" Hash="{9C429522-54C2-81B3-6C39-D5CDCCC971E6}">
+			<ObjectPath>Play_BlackHole_OFF</ObjectPath>
+			<ShortName>Play_BlackHole_OFF</ShortName>
+			<Path>Event/Play_BlackHole_OFF.bnk</Path>
+			<Media>
+				<File Id="579698692" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>Black Hole OFF.wav</ShortName>
+					<Path>Media/579698692.wem</Path>
+					<CachePath>SFX/Black Hole OFF_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1120556439" Name="Play_BlackHole_OFF" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_OFF" GUID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.0433333" DurationMax="2.0433333">
+					<MediaRefs>
+						<MediaRef Id="579698692"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
 		</SoundBank>
 		<SoundBank Id="1171122989" Type="Event" GUID="{633AB9B2-0A16-43DA-859D-940C15E7E727}" Language="SFX" Hash="{4A992544-0A59-BBBC-93C9-D87345824955}">
 			<ObjectPath>MIDI_MapA_Easy_C</ObjectPath>
@@ -1153,7 +1164,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{25B2040F-BD89-11F4-767A-C4997273DF22}">
+		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{A5A179EA-F54E-4A19-4B5B-5B73120ED431}">
 			<ObjectPath>Play_MapC_Main</ObjectPath>
 			<ShortName>Play_MapC_Main</ShortName>
 			<Path>Event/Play_MapC_Main.bnk</Path>
@@ -1481,13 +1492,12 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{0453C888-CD0F-00BD-AAF2-1868192EA189}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{23F326D1-77A5-34EE-6A46-A018355817D0}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
 				<ShareSets>
-					<Plugin Id="1904434771" Name="Medium_Room1" ObjectPath="\Effects\Factory Effects\Matrix Reverb\Medium_Room1" GUID="{71B802A7-03E2-4998-B241-B2B84FE9DDFF}" LibName="Wwise Matrix Reverb" LibId="7536643"/>
 					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
 				</ShareSets>
 				<AudioDevices>
@@ -1503,13 +1513,6 @@
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
 			<AuxBusses>
-				<AuxBus Id="140992219" Name="Map_D_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_D_Reverb" GUID="{D2D83381-F2DE-458B-B683-93B39B90A5CE}">
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="1904434771"/>
-						</ShareSets>
-					</PluginRefs>
-				</AuxBus>
 				<AuxBus Id="356551040" Name="Map_A_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_A_Reverb" GUID="{1B6CCF1C-18E0-4005-BF44-6DEAD131F492}">
 					<PluginRefs>
 						<ShareSets>
@@ -1834,41 +1837,6 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1462886408" Type="Event" GUID="{C6123022-9C0A-417A-BFDF-23C6132E03B2}" Language="SFX" Hash="{271A8DDA-6D14-78BB-F803-EC066147B409}">
-			<ObjectPath>Play_Blackhole_SQ</ObjectPath>
-			<ShortName>Play_Blackhole_SQ</ShortName>
-			<Path>Event/Play_Blackhole_SQ.bnk</Path>
-			<Media>
-				<File Id="205159956" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>BlackHole_2.wav</ShortName>
-					<Path>Media/205159956.wem</Path>
-					<CachePath>SFX/BlackHole_2_818F3B66.wem</CachePath>
-				</File>
-				<File Id="956675855" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>BlackHole_1.wav</ShortName>
-					<Path>Media/956675855.wem</Path>
-					<CachePath>SFX/BlackHole_1_818F3B66.wem</CachePath>
-				</File>
-			</Media>
-			<Plugins>
-				<ShareSets>
-					<Plugin Id="3604890626" Name="High_Pass_60Hz" ObjectPath="\Effects\Factory Effects\Parametric EQ\High Pass Filters\High_Pass_60Hz" GUID="{F9627628-0B10-4272-BC30-D4C20423CB38}" LibName="Wwise Parametric EQ" LibId="6881283"/>
-				</ShareSets>
-			</Plugins>
-			<Events>
-				<Event Id="1462886408" Name="Play_Blackhole_SQ" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Blackhole_SQ" GUID="{C6123022-9C0A-417A-BFDF-23C6132E03B2}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="4.067" DurationMax="4.358667">
-					<MediaRefs>
-						<MediaRef Id="205159956"/>
-						<MediaRef Id="956675855"/>
-					</MediaRefs>
-					<PluginRefs>
-						<ShareSets>
-							<PluginRef Id="3604890626"/>
-						</ShareSets>
-					</PluginRefs>
-				</Event>
-			</Events>
-		</SoundBank>
 		<SoundBank Id="1494228982" Type="Event" GUID="{B48F8603-B84E-4ABF-A6D7-EEC8E703376C}" Language="SFX" Hash="{E15E8393-C462-6633-D9A9-0BCC799B713C}">
 			<ObjectPath>Play_Head_Hit</ObjectPath>
 			<ShortName>Play_Head_Hit</ShortName>
@@ -1909,6 +1877,28 @@
 					</PluginRefs>
 				</Event>
 			</Events>
+		</SoundBank>
+		<SoundBank Id="1522332594" Type="Event" GUID="{8AF152B8-A8F9-45D6-9191-C3F2E67A4B2E}" Language="SFX" Hash="{5A72FACF-C63B-F9E4-F108-7642C5BA57B5}">
+			<ObjectPath>Play_UFO_ON</ObjectPath>
+			<ShortName>Play_UFO_ON</ShortName>
+			<Path>Event/Play_UFO_ON.bnk</Path>
+			<Media>
+				<File Id="34980439" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO ON .wav</ShortName>
+					<Path>Media/34980439.wem</Path>
+					<CachePath>SFX/UFO ON _818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1522332594" Name="Play_UFO_ON" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_ON" GUID="{8AF152B8-A8F9-45D6-9191-C3F2E67A4B2E}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="1.0867916" DurationMax="1.0867916">
+					<MediaRefs>
+						<MediaRef Id="34980439"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
 		</SoundBank>
 		<SoundBank Id="1556462077" Type="Event" GUID="{ACF31EE3-BF6D-46B6-9AF9-C29C6F32BCCB}" Language="SFX" Hash="{C23E090F-07D9-0E28-9702-2226986A332F}">
 			<ObjectPath>Play_Splash_On</ObjectPath>
@@ -2045,7 +2035,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1908418180" Type="Event" GUID="{9D07D1EF-3569-42B9-B49E-392E71A34B44}" Language="SFX" Hash="{E8E7BFA1-A195-8A43-485B-BAB47378FC82}">
+		<SoundBank Id="1908418180" Type="Event" GUID="{9D07D1EF-3569-42B9-B49E-392E71A34B44}" Language="SFX" Hash="{096ACCB7-DB7B-21E0-5D1B-BF73EAC9231A}">
 			<ObjectPath>MIDI_MapH_V</ObjectPath>
 			<ShortName>MIDI_MapH_V</ShortName>
 			<Path>Event/MIDI_MapH_V.bnk</Path>
@@ -2086,7 +2076,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1908418182" Type="Event" GUID="{BDD48549-5D06-448F-B12B-9311463E9955}" Language="SFX" Hash="{C40A2D03-F206-8EED-CAD5-5F0B17D5834B}">
+		<SoundBank Id="1908418182" Type="Event" GUID="{BDD48549-5D06-448F-B12B-9311463E9955}" Language="SFX" Hash="{CF023E4B-C01E-AC14-4C29-0178859C1961}">
 			<ObjectPath>MIDI_MapH_T</ObjectPath>
 			<ShortName>MIDI_MapH_T</ShortName>
 			<Path>Event/MIDI_MapH_T.bnk</Path>
@@ -2127,7 +2117,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1908418193" Type="Event" GUID="{FDC0E931-5288-4676-BBE2-1744E4B17326}" Language="SFX" Hash="{01C57AC5-EA6D-4000-D8E8-D57C797060B2}">
+		<SoundBank Id="1908418193" Type="Event" GUID="{FDC0E931-5288-4676-BBE2-1744E4B17326}" Language="SFX" Hash="{9C3D0DEC-12E3-C6CE-F00B-741950065DC1}">
 			<ObjectPath>MIDI_MapH_C</ObjectPath>
 			<ShortName>MIDI_MapH_C</ShortName>
 			<Path>Event/MIDI_MapH_C.bnk</Path>
@@ -2462,7 +2452,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1909948469" Type="Event" GUID="{348812F1-EF3A-4D86-B856-4A9228899125}" Language="SFX" Hash="{E6002894-15F5-4FC0-8247-02889AFD7348}">
+		<SoundBank Id="1909948469" Type="Event" GUID="{348812F1-EF3A-4D86-B856-4A9228899125}" Language="SFX" Hash="{2F27C68A-0B8D-F391-C807-4C666BBE356F}">
 			<ObjectPath>MIDI_MapG_T</ObjectPath>
 			<ShortName>MIDI_MapG_T</ShortName>
 			<Path>Event/MIDI_MapG_T.bnk</Path>
@@ -2661,6 +2651,25 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="1932659939" Type="Event" GUID="{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}" Language="SFX" Hash="{EDC63B66-B81C-F0FB-E529-ED5601EC34CB}">
+			<ObjectPath>Play_BlackHole_On</ObjectPath>
+			<ShortName>Play_BlackHole_On</ShortName>
+			<Path>Event/Play_BlackHole_On.bnk</Path>
+			<Media>
+				<File Id="331048780" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BlackHole On.wav</ShortName>
+					<Path>Media/331048780.wem</Path>
+					<CachePath>SFX/BlackHole On_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1932659939" Name="Play_BlackHole_On" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_On" GUID="{E7841205-7FBD-4492-BAAF-BF09DBCF5B04}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.0208333" DurationMax="2.0208333">
+					<MediaRefs>
+						<MediaRef Id="331048780"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="1985904344" Type="Event" GUID="{05E6C9BF-6C4B-4542-B960-6CB6FE32A836}" Language="SFX" Hash="{ABE2A473-6E0C-FB5B-8DB4-9FD40D8EF7C2}">
 			<ObjectPath>MIDI_MapA_Object</ObjectPath>
 			<ShortName>MIDI_MapA_Object</ShortName>
@@ -2731,7 +2740,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2022407976" Type="Event" GUID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}" Language="SFX" Hash="{16C0B4AA-F5D7-AD8B-7B2D-78204DEAE142}">
+		<SoundBank Id="2022407976" Type="Event" GUID="{B3FE6008-8C07-4E23-B2E4-3D7483C2B473}" Language="SFX" Hash="{688DDBBE-000A-BF3F-014E-3B9410F03B0C}">
 			<ObjectPath>Play_Air_Escape</ObjectPath>
 			<ShortName>Play_Air_Escape</ShortName>
 			<Path>Event/Play_Air_Escape.bnk</Path>
@@ -3015,6 +3024,28 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="2440277416" Type="Event" GUID="{A33D3B98-DE2F-441E-B6A6-C3B6426F1D1E}" Language="SFX" Hash="{3C7D71B9-9E82-E9AE-4D93-F2F85449A593}">
+			<ObjectPath>Play_UFO_OFF</ObjectPath>
+			<ShortName>Play_UFO_OFF</ShortName>
+			<Path>Event/Play_UFO_OFF.bnk</Path>
+			<Media>
+				<File Id="974506231" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO OFF .wav</ShortName>
+					<Path>Media/974506231.wem</Path>
+					<CachePath>SFX/UFO OFF _818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="2440277416" Name="Play_UFO_OFF" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_OFF" GUID="{A33D3B98-DE2F-441E-B6A6-C3B6426F1D1E}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.5333333" DurationMax="2.5333333">
+					<MediaRefs>
+						<MediaRef Id="974506231"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
 		<SoundBank Id="2523270790" Type="Event" GUID="{A3581ADC-E240-444E-A8A1-6F2D4AC01AF8}" Language="SFX" Hash="{B30ACF1F-F854-BCD7-EF2E-393CAB5AA5AA}">
 			<ObjectPath>Play_Drunk_Laugh</ObjectPath>
 			<ShortName>Play_Drunk_Laugh</ShortName>
@@ -3090,7 +3121,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2610180119" Type="Event" GUID="{669815C8-B2F6-46FE-BA58-2B2F94892743}" Language="SFX" Hash="{8F736F0A-77D8-0F8A-CD61-55CF1C6E2B26}">
+		<SoundBank Id="2610180119" Type="Event" GUID="{669815C8-B2F6-46FE-BA58-2B2F94892743}" Language="SFX" Hash="{31CDB14A-C33C-7B01-D6C6-314877D72424}">
 			<ObjectPath>Play_Port_Flying</ObjectPath>
 			<ShortName>Play_Port_Flying</ShortName>
 			<Path>Event/Play_Port_Flying.bnk</Path>
@@ -3178,7 +3209,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2848021508" Type="Event" GUID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}" Language="SFX" Hash="{77C7C005-2D74-BBEB-237C-483F00C1E85E}">
+		<SoundBank Id="2848021508" Type="Event" GUID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}" Language="SFX" Hash="{E7CC695E-1C83-B6A9-63CE-97383962712D}">
 			<ObjectPath>Play_MapC_Easy_Main</ObjectPath>
 			<ShortName>Play_MapC_Easy_Main</ShortName>
 			<Path>Event/Play_MapC_Easy_Main.bnk</Path>
@@ -3943,28 +3974,6 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3379914362" Type="Event" GUID="{09A96721-DA11-4DF2-9A0A-E504F8BB3044}" Language="SFX" Hash="{53DC8DE2-02F8-B9C2-3CF9-4296478EA468}">
-			<ObjectPath>Play_UFO_Laser</ObjectPath>
-			<ShortName>Play_UFO_Laser</ShortName>
-			<Path>Event/Play_UFO_Laser.bnk</Path>
-			<Media>
-				<File Id="275310621" Language="SFX" Streaming="false" Location="Loose">
-					<ShortName>UFO_Laser.wav</ShortName>
-					<Path>Media/275310621.wem</Path>
-					<CachePath>SFX/UFO_Laser_818F3B66.wem</CachePath>
-				</File>
-			</Media>
-			<Events>
-				<Event Id="3379914362" Name="Play_UFO_Laser" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_Laser" GUID="{09A96721-DA11-4DF2-9A0A-E504F8BB3044}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="6.0364375" DurationMax="6.0364375">
-					<MediaRefs>
-						<MediaRef Id="275310621"/>
-					</MediaRefs>
-				</Event>
-			</Events>
-			<GameParameters>
-				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
-			</GameParameters>
-		</SoundBank>
 		<SoundBank Id="3391962191" Type="Event" GUID="{7E3210EE-4E63-48F1-85F3-6C20F873A925}" Language="SFX" Hash="{F3C70C8C-032E-373D-4696-8D7EE4CB6EF9}">
 			<ObjectPath>MIDI_MapC_Easy_C</ObjectPath>
 			<ShortName>MIDI_MapC_Easy_C</ShortName>
@@ -4088,7 +4097,29 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3448173426" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{03006236-44B1-00A4-8796-EF6E0665DE54}">
+		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{F3BBF275-AD6F-3836-7E34-7B327E282071}">
+			<ObjectPath>Play_BlackHole_StaticOn</ObjectPath>
+			<ShortName>Play_BlackHole_StaticOn</ShortName>
+			<Path>Event/Play_BlackHole_StaticOn.bnk</Path>
+			<Media>
+				<File Id="1042388455" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>BlackHole Loop.wav</ShortName>
+					<Path>Media/1042388455.wem</Path>
+					<CachePath>SFX/BlackHole Loop_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3404172405" Name="Play_BlackHole_StaticOn" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOn" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="6.565292" DurationMax="6.565292">
+					<MediaRefs>
+						<MediaRef Id="1042388455"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+		<SoundBank Id="3448173426" Type="Event" GUID="{5EFA05BE-7028-4265-B05C-C8C361919B4B}" Language="SFX" Hash="{A1DF863E-30C6-31DA-EF05-A853D884FB28}">
 			<ObjectPath>Play_Port_Get</ObjectPath>
 			<ShortName>Play_Port_Get</ShortName>
 			<Path>Event/Play_Port_Get.bnk</Path>
@@ -4129,7 +4160,29 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{CAE68393-2608-1CFA-5996-C53F9E763E1F}">
+		<SoundBank Id="3488722653" Type="Event" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" Language="SFX" Hash="{24E65511-D0CE-F13A-115A-3832642C022F}">
+			<ObjectPath>Play_UFO_LaserOn</ObjectPath>
+			<ShortName>Play_UFO_LaserOn</ShortName>
+			<Path>Event/Play_UFO_LaserOn.bnk</Path>
+			<Media>
+				<File Id="503514366" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO LOOP.wav</ShortName>
+					<Path>Media/503514366.wem</Path>
+					<CachePath>SFX/UFO LOOP_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="3488722653" Name="Play_UFO_LaserOn" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOn" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="4.4966664" DurationMax="4.4966664">
+					<MediaRefs>
+						<MediaRef Id="503514366"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{471C06B7-5E75-2C09-569F-B3776E611864}">
 			<ObjectPath>Play_MapG_Main</ObjectPath>
 			<ShortName>Play_MapG_Main</ShortName>
 			<Path>Event/Play_MapG_Main.bnk</Path>
@@ -4318,7 +4371,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3672321512" Type="Event" GUID="{EA540656-0E52-4B7F-B457-778EBF0BA927}" Language="SFX" Hash="{C61C36C6-9BFF-C288-1D01-87F5574E152D}">
+		<SoundBank Id="3672321512" Type="Event" GUID="{EA540656-0E52-4B7F-B457-778EBF0BA927}" Language="SFX" Hash="{DD0A609E-6B79-ECDA-885D-37BEE6DB81F2}">
 			<ObjectPath>Play_MapH_Main</ObjectPath>
 			<ShortName>Play_MapH_Main</ShortName>
 			<Path>Event/Play_MapH_Main.bnk</Path>
@@ -4482,6 +4535,14 @@
 				</Event>
 			</Events>
 		</SoundBank>
+		<SoundBank Id="3884066977" Type="Event" GUID="{4D462B68-6993-44A0-A146-62532AFCC4CB}" Language="SFX" Hash="{7D339566-A78A-20E8-4A2C-6D7EEF65AC70}">
+			<ObjectPath>Play_BlackHole_StaticOff</ObjectPath>
+			<ShortName>Play_BlackHole_StaticOff</ShortName>
+			<Path>Event/Play_BlackHole_StaticOff.bnk</Path>
+			<Events>
+				<Event Id="3884066977" Name="Play_BlackHole_StaticOff" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOff" GUID="{4D462B68-6993-44A0-A146-62532AFCC4CB}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
+			</Events>
+		</SoundBank>
 		<SoundBank Id="3887461750" Type="Event" GUID="{0164D119-8070-4FC1-94C9-8F678C679A79}" Language="SFX" Hash="{D97C8C43-F405-5AD2-19C8-05E0EBA2B5A8}">
 			<ObjectPath>Play_Door_Break</ObjectPath>
 			<ShortName>Play_Door_Break</ShortName>
@@ -4608,5 +4669,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{D116CA88-B455-225F-E2BF-73B0E42B6BE7}</FileHash>
+	<FileHash>{83460073-D29B-F296-5C3A-6EAB20784E8D}</FileHash>
 </SoundBanksInfo>

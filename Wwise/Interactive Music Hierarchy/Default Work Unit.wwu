@@ -104076,7 +104076,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-6</Value>
+												<Value>-2</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -104155,7 +104155,7 @@
 												<Property Name="OverridePriority" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>5</Value>
+														<Value>4</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
@@ -104284,12 +104284,12 @@
 																								<PointList>
 																									<Point>
 																										<XPos>0</XPos>
-																										<YPos>-6.41746</YPos>
+																										<YPos>-2.62905</YPos>
 																										<Flags>5</Flags>
 																									</Point>
 																									<Point>
 																										<XPos>184.058875</XPos>
-																										<YPos>-6.41746</YPos>
+																										<YPos>-2.62905</YPos>
 																										<Flags>37</Flags>
 																									</Point>
 																								</PointList>
@@ -104332,12 +104332,12 @@
 																								<PointList>
 																									<Point>
 																										<XPos>0</XPos>
-																										<YPos>0</YPos>
+																										<YPos>-0.48594</YPos>
 																										<Flags>5</Flags>
 																									</Point>
 																									<Point>
 																										<XPos>184.058875</XPos>
-																										<YPos>-0.28829</YPos>
+																										<YPos>-0.58648</YPos>
 																										<Flags>37</Flags>
 																									</Point>
 																								</PointList>
@@ -111313,7 +111313,7 @@
 												<Property Name="OverridePriority" Type="bool" Value="True"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>-7</Value>
+														<Value>5</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>

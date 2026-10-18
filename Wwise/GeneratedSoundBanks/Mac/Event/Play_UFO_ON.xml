@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1522332594" Type="Event" GUID="{8AF152B8-A8F9-45D6-9191-C3F2E67A4B2E}" Language="SFX" Hash="{5A72FACF-C63B-F9E4-F108-7642C5BA57B5}">
+			<ObjectPath>Play_UFO_ON</ObjectPath>
+			<ShortName>Play_UFO_ON</ShortName>
+			<Path>Event/Play_UFO_ON.bnk</Path>
+			<Media>
+				<File Id="34980439" Language="SFX" Streaming="false" Location="Loose">
+					<ShortName>UFO ON .wav</ShortName>
+					<Path>Media/34980439.wem</Path>
+					<CachePath>SFX/UFO ON _818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="1522332594" Name="Play_UFO_ON" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_ON" GUID="{8AF152B8-A8F9-45D6-9191-C3F2E67A4B2E}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="1.0867916" DurationMax="1.0867916">
+					<MediaRefs>
+						<MediaRef Id="34980439"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{CBBA9101-0AC1-CE87-B829-E460652740C2}</FileHash>
+</SoundBanksInfo>
