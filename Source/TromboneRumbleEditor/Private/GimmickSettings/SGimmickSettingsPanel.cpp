@@ -21,7 +21,7 @@
 
 #define LOCTEXT_NAMESPACE "GimmickSettings"
 
-using GimmickSettings::GetOpenLevelWorld;
+using GimmickSettings::GetCurrentLevelWorld;
 
 void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 {
@@ -69,6 +69,9 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 	];
 
 	MapOpenedHandle = FEditorDelegates::OnMapOpened.AddSP(this, &SGimmickSettingsPanel::HandleMapOpened);
+	LevelLoadedHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddSP(this, &SGimmickSettingsPanel::HandleLevelLoaded);
+	PlayStartedHandle = FEditorDelegates::PostPIEStarted.AddSP(this, &SGimmickSettingsPanel::HandlePlayStartedOrEnded);
+	PlayEndedHandle = FEditorDelegates::EndPIE.AddSP(this, &SGimmickSettingsPanel::HandlePlayStartedOrEnded);
 	ObjectPropertyChangedHandle = FCoreUObjectDelegates::OnObjectPropertyChanged.AddSP(this, &SGimmickSettingsPanel::HandleObjectPropertyChanged);
 	if (GEngine)
 	{
@@ -76,12 +79,15 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 		ActorDeletedHandle = GEngine->OnLevelActorDeleted().AddSP(this, &SGimmickSettingsPanel::HandleLevelActorChanged);
 	}
 
-	UseStageDataOfOpenLevel();
+	UseStageDataOfCurrentLevel();
 }
 
 SGimmickSettingsPanel::~SGimmickSettingsPanel()
 {
 	FEditorDelegates::OnMapOpened.Remove(MapOpenedHandle);
+	FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(LevelLoadedHandle);
+	FEditorDelegates::PostPIEStarted.Remove(PlayStartedHandle);
+	FEditorDelegates::EndPIE.Remove(PlayEndedHandle);
 	FCoreUObjectDelegates::OnObjectPropertyChanged.Remove(ObjectPropertyChangedHandle);
 	if (GEngine)
 	{
@@ -100,8 +106,9 @@ void SGimmickSettingsPanel::PostRedo(const bool bSuccess)
 	RequestRefresh();
 }
 
-void SGimmickSettingsPanel::RequestRefresh()
+void SGimmickSettingsPanel::RequestRefresh(const bool bLevelChanged)
 {
+	bLevelChangePending |= bLevelChanged;
 	if (bRefreshPending) return;
 
 	bRefreshPending = true;
@@ -111,15 +118,23 @@ void SGimmickSettingsPanel::RequestRefresh()
 EActiveTimerReturnType SGimmickSettingsPanel::HandleRefreshTimer(double InCurrentTime, float InDeltaTime)
 {
 	bRefreshPending = false;
+
+	// The songs of the timeline depend on the level
+	if (bLevelChangePending)
+	{
+		bLevelChangePending = false;
+		TimelineTab->RefreshSongs();
+	}
+
 	Refresh();
 	return EActiveTimerReturnType::Stop;
 }
 
 void SGimmickSettingsPanel::Refresh()
 {
-	UStageGimmickData* LevelData = FindStageDataOfOpenLevel();
-	const bool bShowedLevelData = StageData.Get() == OpenLevelStageData.Get();
-	OpenLevelStageData = LevelData;
+	UStageGimmickData* LevelData = FindStageDataOfCurrentLevel();
+	const bool bShowedLevelData = StageData.Get() == CurrentLevelStageData.Get();
+	CurrentLevelStageData = LevelData;
 
 	if (bShowedLevelData && StageData.Get() != LevelData)
 	{
@@ -133,10 +148,10 @@ void SGimmickSettingsPanel::Refresh()
 
 void SGimmickSettingsPanel::RebuildSections()
 {
-	const UWorld* World = GetOpenLevelWorld();
+	const UWorld* World = GetCurrentLevelWorld();
 
-	// The level checks fit only the asset the open level uses
-	const AGimmickManager* LevelManager = FindManagerOfOpenLevel();
+	// The level checks fit only the asset the current level uses
+	const AGimmickManager* LevelManager = FindManagerOfCurrentLevel();
 	if (!StageData.IsValid() || !LevelManager || LevelManager->GetStageData() != StageData.Get())
 	{
 		LevelManager = nullptr;
@@ -149,9 +164,9 @@ void SGimmickSettingsPanel::RebuildSections()
 
 void SGimmickSettingsPanel::UpdateStatusText()
 {
-	const UWorld* World = GetOpenLevelWorld();
+	const UWorld* World = GetCurrentLevelWorld();
 	const FString LevelName = World ? World->GetMapName() : TEXT("-");
-	const UStageGimmickData* LevelData = OpenLevelStageData.Get();
+	const UStageGimmickData* LevelData = CurrentLevelStageData.Get();
 
 	if (!LevelData)
 	{
@@ -172,8 +187,8 @@ void SGimmickSettingsPanel::UpdateStatusText()
 
 void SGimmickSettingsPanel::HandleLevelActorChanged(AActor* Actor)
 {
-	// PIE spawns actors too, and the panel shows the editor level
-	if (Actor && Actor->GetWorld() == GetOpenLevelWorld() && (Actor->IsA<AGimmickBase>() || Actor->IsA<AGimmickManager>()))
+	// Only the current level matters. The editor world during PIE and the client worlds of PIE have their own actors
+	if (Actor && Actor->GetWorld() == GetCurrentLevelWorld() && (Actor->IsA<AGimmickBase>() || Actor->IsA<AGimmickManager>()))
 	{
 		RequestRefresh();
 	}
@@ -194,8 +209,22 @@ void SGimmickSettingsPanel::HandleObjectPropertyChanged(UObject* Object, FProper
 
 void SGimmickSettingsPanel::HandleMapOpened(const FString& Filename, const bool bAsTemplate)
 {
-	TimelineTab->RefreshSongs();
-	UseStageDataOfOpenLevel();
+	RequestRefresh(true);
+}
+
+void SGimmickSettingsPanel::HandleLevelLoaded(UWorld* LoadedWorld)
+{
+	// The editor opens its maps through HandleMapOpened. A seamless travel in PIE ends here too
+	if (LoadedWorld && LoadedWorld->WorldType == EWorldType::PIE)
+	{
+		RequestRefresh(true);
+	}
+}
+
+void SGimmickSettingsPanel::HandlePlayStartedOrEnded(const bool bIsSimulating)
+{
+	// When PIE ends its world is still there. The refresh runs on the next frame, after PIE has let go of it
+	RequestRefresh(true);
 }
 
 void SGimmickSettingsPanel::SetStageData(UStageGimmickData* NewStageData)
@@ -206,10 +235,10 @@ void SGimmickSettingsPanel::SetStageData(UStageGimmickData* NewStageData)
 	UpdateStatusText();
 }
 
-void SGimmickSettingsPanel::UseStageDataOfOpenLevel()
+void SGimmickSettingsPanel::UseStageDataOfCurrentLevel()
 {
-	OpenLevelStageData = FindStageDataOfOpenLevel();
-	SetStageData(OpenLevelStageData.Get());
+	CurrentLevelStageData = FindStageDataOfCurrentLevel();
+	SetStageData(CurrentLevelStageData.Get());
 }
 
 void SGimmickSettingsPanel::HandleAssetPicked(const FAssetData& AssetData)
@@ -255,7 +284,7 @@ TSharedRef<SWidget> SGimmickSettingsPanel::MakeTopBar()
 			SNew(SButton)
 			.Text(LOCTEXT("UseOpenLevel", "현재 레벨의 설정"))
 			.ToolTipText(LOCTEXT("UseOpenLevelTip", "현재 레벨의 기믹 매니저가 가리키는 레벨 기믹 설정으로 바꿉니다"))
-			.OnClicked_Lambda([this]() { UseStageDataOfOpenLevel(); return FReply::Handled(); })
+			.OnClicked_Lambda([this]() { UseStageDataOfCurrentLevel(); return FReply::Handled(); })
 		]
 
 		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8.f, 0.f, 0.f, 0.f)
@@ -325,9 +354,9 @@ EVisibility SGimmickSettingsPanel::GetStageDataAreaVisibility() const
 	return StageData.IsValid() ? EVisibility::Visible : EVisibility::Collapsed;
 }
 
-AGimmickManager* SGimmickSettingsPanel::FindManagerOfOpenLevel()
+AGimmickManager* SGimmickSettingsPanel::FindManagerOfCurrentLevel()
 {
-	const UWorld* World = GetOpenLevelWorld();
+	const UWorld* World = GetCurrentLevelWorld();
 	if (!World) return nullptr;
 
 	for (TActorIterator<AGimmickManager> It(World); It; ++It)
@@ -340,9 +369,9 @@ AGimmickManager* SGimmickSettingsPanel::FindManagerOfOpenLevel()
 	return nullptr;
 }
 
-UStageGimmickData* SGimmickSettingsPanel::FindStageDataOfOpenLevel()
+UStageGimmickData* SGimmickSettingsPanel::FindStageDataOfCurrentLevel()
 {
-	const AGimmickManager* Manager = FindManagerOfOpenLevel();
+	const AGimmickManager* Manager = FindManagerOfCurrentLevel();
 
 	// The game only reads the asset. This panel is the one place that writes it
 	return Manager ? const_cast<UStageGimmickData*>(Manager->GetStageData()) : nullptr;

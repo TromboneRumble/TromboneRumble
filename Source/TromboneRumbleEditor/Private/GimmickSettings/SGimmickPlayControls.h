@@ -13,7 +13,7 @@ class UStageGimmickData;
 /**
  * SGimmickPlayControls is the bottom of the gimmick settings panel.
  * First comes one row per gimmick with buttons that run the gimmick console commands in PIE.
- * Then come the gimmicks of the open level that the panel cannot edit, each with a button that selects it in the level.
+ * Then come the gimmicks of the current level that the panel cannot edit, each with a button that selects it in the level.
  * A section with no row is hidden.
  *
  * Keep in mind that it does not watch anything. SGimmickSettingsPanel calls Rebuild when the asset or the level changes.

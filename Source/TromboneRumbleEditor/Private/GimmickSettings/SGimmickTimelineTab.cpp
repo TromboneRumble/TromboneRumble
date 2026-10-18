@@ -17,7 +17,7 @@
 
 #define LOCTEXT_NAMESPACE "GimmickSettings"
 
-using GimmickSettings::GetOpenLevelWorld;
+using GimmickSettings::GetCurrentLevelWorld;
 
 namespace
 {
@@ -82,7 +82,7 @@ void SGimmickTimelineTab::Construct(const FArguments& InArgs)
 					// RefreshSongs sets the starting song itself, and that is not a choice of the designer
 					if (SelectInfo == ESelectInfo::Direct) return;
 
-					SongPerLevel.Add(GetOpenLevelKey(), Song.IsValid() ? Song->SongTag : FGameplayTag());
+					SongPerLevel.Add(GetCurrentLevelKey(), Song.IsValid() ? Song->SongTag : FGameplayTag());
 					SelectSong(Song);
 				})
 				[
@@ -216,7 +216,7 @@ void SGimmickTimelineTab::RebuildRows()
 	TArray<FGimmickTimelineRow> Rows;
 	if (StageData.IsValid())
 	{
-		Rows = StageData->BuildTimeline(TimelineRoundLength, TimelineFeverStart, TimelineSeed, GetOpenLevelWorld());
+		Rows = StageData->BuildTimeline(TimelineRoundLength, TimelineFeverStart, TimelineSeed, GetCurrentLevelWorld());
 	}
 	Timeline->SetRows(MoveTemp(Rows), TimelineRoundLength, TimelineFeverStart);
 }
@@ -226,9 +226,9 @@ void SGimmickTimelineTab::RefreshSongs()
 	TArray<FString> Skipped;
 	TArray<FGimmickSongTiming> Songs = GimmickSongTiming::CollectSongTimings(Skipped);
 	SkippedSongs = FString::Join(Skipped, TEXT("\n"));
-	LevelSongs = GimmickSongTiming::FindSongsOfLevel(GetOpenLevelWorld());
+	LevelSongs = GimmickSongTiming::FindSongsOfLevel(GetCurrentLevelWorld());
 
-	// The songs of the open level first, each group in the order of the song table
+	// The songs of the current level first, each group in the order of the song table
 	Songs.StableSort([this](const FGimmickSongTiming& A, const FGimmickSongTiming& B) { return LevelSongs.Contains(A.SongTag) && !LevelSongs.Contains(B.SongTag); });
 
 	SongOptions.Reset();
@@ -240,7 +240,7 @@ void SGimmickTimelineTab::RefreshSongs()
 
 	// The first song is the first song of the level. Without any song it is the entry for typing by hand
 	TSharedPtr<FGimmickSongTiming> Initial = SongOptions[0];
-	if (const FGameplayTag* Remembered = SongPerLevel.Find(GetOpenLevelKey()))
+	if (const FGameplayTag* Remembered = SongPerLevel.Find(GetCurrentLevelKey()))
 	{
 		const TSharedPtr<FGimmickSongTiming>* Found = SongOptions.FindByPredicate([Remembered](const TSharedPtr<FGimmickSongTiming>& Song)
 		{
@@ -284,10 +284,10 @@ FText SGimmickTimelineTab::GetSongLabel(const TSharedPtr<FGimmickSongTiming>& So
 	return LevelSongs.Contains(Song->SongTag) ? FText::Format(LOCTEXT("LevelSong", "{0}  (이 레벨)"), Name) : Name;
 }
 
-FString SGimmickTimelineTab::GetOpenLevelKey()
+FString SGimmickTimelineTab::GetCurrentLevelKey()
 {
-	const UWorld* World = GetOpenLevelWorld();
-	return World ? World->GetPackage()->GetName() : FString();
+	const UWorld* World = GetCurrentLevelWorld();
+	return World ? GimmickSettings::GetLevelPackageName(*World) : FString();
 }
 
 EVisibility SGimmickTimelineTab::GetManualTimingVisibility() const

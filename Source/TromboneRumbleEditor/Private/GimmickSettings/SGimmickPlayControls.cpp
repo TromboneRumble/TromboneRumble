@@ -139,7 +139,7 @@ void SGimmickPlayControls::Rebuild(const UWorld* World, const UStageGimmickData*
 		}
 	}
 
-	// A gimmick the manager spawns at runtime is not in the editor world, but it exists in PIE and takes the same commands
+	// A gimmick the manager spawns is not in the editor world, but it exists in PIE and takes the same commands. In PIE the loop above gave it its row already
 	if (StageData)
 	{
 		for (const UGimmickConfig* Config : StageData->GetGimmicks())

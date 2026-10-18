@@ -6,9 +6,28 @@
 #include "Modules/ModuleManager.h"
 #include "PropertyEditorModule.h"
 
-UWorld* GimmickSettings::GetOpenLevelWorld()
+UWorld* GimmickSettings::GetCurrentLevelWorld()
 {
-	return GEditor ? GEditor->GetEditorWorldContext().World() : nullptr;
+	if (!GEditor) return nullptr;
+
+	// The gimmicks run on the server, so a client world of PIE is never the one to show
+	if (GEditor->PlayWorld)
+	{
+		for (const FWorldContext& Context : GEditor->GetWorldContexts())
+		{
+			UWorld* World = Context.World();
+			if (Context.WorldType == EWorldType::PIE && World && World->GetNetMode() != NM_Client)
+			{
+				return World;
+			}
+		}
+	}
+	return GEditor->GetEditorWorldContext().World();
+}
+
+FString GimmickSettings::GetLevelPackageName(const UWorld& World)
+{
+	return UWorld::RemovePIEPrefix(World.GetPackage()->GetName());
 }
 
 bool GimmickSettings::IsPlayingInEditor()

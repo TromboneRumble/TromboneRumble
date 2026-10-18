@@ -1,6 +1,7 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "GimmickSettings/GimmickSongTiming.h"
+#include "GimmickSettings/GimmickSettingsCommon.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Data/RhythmSongDataRow.h"
 #include "DeveloperSettings/GameMapDeveloperSettings.h"
@@ -169,7 +170,7 @@ TArray<FGameplayTag> GimmickSongTiming::FindSongsOfLevel(const UWorld* World)
 {
 	if (!World) return {};
 
-	const FString LevelPackage = World->GetPackage()->GetName();
+	const FString LevelPackage = GimmickSettings::GetLevelPackageName(*World);
 	const FGameplayTag InGameCategory = FGameplayTag::RequestGameplayTag(FName(*TromboneGamePlayTags::InGamePath), false);
 
 	for (const TPair<FGameplayTag, FSoftObjectPath>& Pair : GetDefault<UGameMapDeveloperSettings>()->GamePlayMap)

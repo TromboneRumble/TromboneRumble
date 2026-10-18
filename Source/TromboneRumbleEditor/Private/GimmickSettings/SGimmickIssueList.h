@@ -31,7 +31,7 @@ public:
 	 * List the problems again.
 	 *
 	 * @param StageData Asset to check. Null clears the list.
-	 * @param LevelManager Manager of the open level, only when the open level uses this asset. Its level checks are added then.
+	 * @param LevelManager Manager of the current level, only when the current level uses this asset. Its level checks are added then.
 	 */
 	void Rebuild(const UStageGimmickData* StageData, const AGimmickManager* LevelManager);
 

@@ -28,8 +28,10 @@ struct FPropertyChangedEvent;
  * The panel owns the asset and decides when the sections rebuild. The sections do not watch the editor themselves.
  * Every change ends in RebuildSections, so that one function shows what the panel draws again.
  *
- * Keep in mind that it refreshes itself when a gimmick actor is placed or removed, when the manager gets another asset,
- * when the asset changes in any editor, and on undo and redo. Moving an actor does not refresh it.
+ * The current level is the level PIE plays while PIE runs, so a level change inside PIE moves the panel along.
+ *
+ * Keep in mind that it refreshes itself when the current level changes, when a gimmick actor is placed or removed,
+ * when the manager gets another asset, when the asset changes in any editor, and on undo and redo. Moving an actor does not refresh it.
  *
  * @see UStageGimmickData
  * @see AGimmickBase
@@ -41,7 +43,7 @@ public:
 	SLATE_BEGIN_ARGS(SGimmickSettingsPanel) {}
 	SLATE_END_ARGS()
 
-	/** Build the widget. Starts on the stage data of the open level. */
+	/** Build the widget. Starts on the stage data of the current level. */
 	void Construct(const FArguments& InArgs);
 
 	/** Unbind from the editor delegates. */
@@ -54,38 +56,48 @@ public:
 
 private:
 
-	/** Refresh once on the next frame, however many changes ask for it before then. */
-	void RequestRefresh();
+	/**
+	 * Refresh once on the next frame, however many changes ask for it before then.
+	 *
+	 * @param bLevelChanged The current level changed, so the songs of the timeline are read again too.
+	 */
+	void RequestRefresh(bool bLevelChanged = false);
 
 	/** Run the refresh RequestRefresh asked for. */
 	EActiveTimerReturnType HandleRefreshTimer(double InCurrentTime, float InDeltaTime);
 
 	/**
-	 * Follow a new asset of the manager of the open level, then rebuild the sections and the status line.
-	 * The panel follows only while it shows the asset of the open level, so an asset the designer picked by hand stays.
+	 * Follow a new asset of the manager of the current level, then rebuild the sections and the status line.
+	 * The panel follows only while it shows the asset of the current level, so an asset the designer picked by hand stays.
 	 */
 	void Refresh();
 
-	/** Rebuild the problem list, the timeline tab and the PIE rows from the asset and the open level. */
+	/** Rebuild the problem list, the timeline tab and the PIE rows from the asset and the current level. */
 	void RebuildSections();
 
 	/** Make the status line again. It changes only with the asset or the manager, so it is not made every frame. */
 	void UpdateStatusText();
 
-	/** A gimmick actor or the manager was placed in or removed from the open level. */
+	/** A gimmick actor or the manager was placed in or removed from the current level. */
 	void HandleLevelActorChanged(AActor* Actor);
 
 	/** Any object changed in any editor. Only the asset, the manager and the gimmick actors matter. */
 	void HandleObjectPropertyChanged(UObject* Object, FPropertyChangedEvent& Event);
 
-	/** A map was opened. The songs of the timeline depend on the level, so they are read again too. */
+	/** A map was opened in the editor. */
 	void HandleMapOpened(const FString& Filename, bool bAsTemplate);
+
+	/** A level was loaded, by a level change inside PIE among others. Only a PIE world matters. */
+	void HandleLevelLoaded(UWorld* LoadedWorld);
+
+	/** PIE started or ended, so the current level moved between the editor world and the PIE world. */
+	void HandlePlayStartedOrEnded(bool bIsSimulating);
 
 	/** Show this asset in the details view, then rebuild the sections and the status line. */
 	void SetStageData(UStageGimmickData* NewStageData);
 
-	/** Switch to the asset the gimmick manager of the open level points at. */
-	void UseStageDataOfOpenLevel();
+	/** Switch to the asset the gimmick manager of the current level points at. */
+	void UseStageDataOfCurrentLevel();
 
 	void HandleAssetPicked(const FAssetData& AssetData);
 
@@ -94,7 +106,7 @@ private:
 
 	FReply HandleSaveClicked();
 
-	/** Asset picker, the button that goes back to the asset of the open level, and the save button. */
+	/** Asset picker, the button that goes back to the asset of the current level, and the save button. */
 	TSharedRef<SWidget> MakeTopBar();
 
 	/** Status line and the problem list. */
@@ -112,23 +124,26 @@ private:
 	/** Collapsed while no stage data asset is selected. Bound to everything that shows the asset or what it lists. */
 	EVisibility GetStageDataAreaVisibility() const;
 
-	/** @return The first gimmick manager of the open level that has stage data, or null. */
-	static AGimmickManager* FindManagerOfOpenLevel();
+	/** @return The first gimmick manager of the current level that has stage data, or null. */
+	static AGimmickManager* FindManagerOfCurrentLevel();
 
-	/** @return Asset the manager of the open level points at, or null. */
-	static UStageGimmickData* FindStageDataOfOpenLevel();
+	/** @return Asset the manager of the current level points at, or null. */
+	static UStageGimmickData* FindStageDataOfCurrentLevel();
 
 	/** Asset being edited. Strong, because nothing else may reference an asset picked by hand. */
 	TStrongObjectPtr<UStageGimmickData> StageData;
 
-	/** Asset the manager of the open level pointed at when the panel last looked. */
-	TWeakObjectPtr<UStageGimmickData> OpenLevelStageData;
+	/** Asset the manager of the current level pointed at when the panel last looked. */
+	TWeakObjectPtr<UStageGimmickData> CurrentLevelStageData;
 
 	/** Made by UpdateStatusText. */
 	FText StatusText;
 
 	/** Has a refresh been asked for and not run yet. */
 	bool bRefreshPending = false;
+
+	/** Did the current level change since the last refresh. */
+	bool bLevelChangePending = false;
 
 	/** 0 is the level tab, 1 is the timeline tab. */
 	int32 ActiveTabIndex = 0;
@@ -143,6 +158,12 @@ private:
 	TSharedPtr<SGimmickPlayControls> PlayControls;
 
 	FDelegateHandle MapOpenedHandle;
+
+	FDelegateHandle LevelLoadedHandle;
+
+	FDelegateHandle PlayStartedHandle;
+
+	FDelegateHandle PlayEndedHandle;
 
 	FDelegateHandle ActorAddedHandle;
 

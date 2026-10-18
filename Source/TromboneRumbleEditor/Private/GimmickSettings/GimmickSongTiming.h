@@ -36,6 +36,6 @@ namespace GimmickSongTiming
 	 */
 	TArray<FGimmickSongTiming> CollectSongTimings(TArray<FString>& OutSkipped);
 
-	/** @return Songs the open level can get, or none when the open level is not an in-game map. */
+	/** @return Songs the current level can get, or none when the current level is not an in-game map. */
 	TArray<FGameplayTag> FindSongsOfLevel(const UWorld* World);
 }

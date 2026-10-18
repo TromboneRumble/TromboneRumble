@@ -37,7 +37,7 @@ public:
 	 */
 	void Rebuild(const UStageGimmickData* InStageData);
 
-	/** Read the songs again and pick the one remembered for the open level, or else the first song in the list. */
+	/** Read the songs again and pick the one remembered for the current level, or else the first song in the list. */
 	void RefreshSongs();
 
 private:
@@ -51,8 +51,8 @@ private:
 	/** @return Label of an entry of the song list. */
 	FText GetSongLabel(const TSharedPtr<FGimmickSongTiming>& Song) const;
 
-	/** @return Key of the open level in SongPerLevel. */
-	static FString GetOpenLevelKey();
+	/** @return Key of the current level in SongPerLevel. */
+	static FString GetCurrentLevelKey();
 
 	/** Visible only while the timeline values are typed by hand. Bound to the round length and fever start boxes. */
 	EVisibility GetManualTimingVisibility() const;
@@ -72,13 +72,13 @@ private:
 	/** Second of the timeline the fever cue of the song comes at. The picked song fills it, or the designer types it. */
 	float TimelineFeverStart = 168.f;
 
-	/** Entries of the song list. The songs of the open level come first, and the entry without a song tag at the end is for typing by hand. */
+	/** Entries of the song list. The songs of the current level come first, and the entry without a song tag at the end is for typing by hand. */
 	TArray<TSharedPtr<FGimmickSongTiming>> SongOptions;
 
 	/** Entry of the song list the timeline uses. */
 	TSharedPtr<FGimmickSongTiming> SelectedSong;
 
-	/** Songs the open level can get. Their labels say so. */
+	/** Songs the current level can get. Their labels say so. */
 	TArray<FGameplayTag> LevelSongs;
 
 	/** Why songs are missing from the list, one line each. Shown in the tooltip of the song list. */
