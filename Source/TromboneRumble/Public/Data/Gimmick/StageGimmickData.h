@@ -8,6 +8,8 @@
 #include "StageGimmickData.generated.h"
 
 class UGimmickConfig;
+class UWorld;
+struct FGimmickTimelineRow;
 
 /**
  * Gimmicks that take turns. Each one starts only after the one before it has finished.
@@ -91,6 +93,18 @@ public:
 	//~ Begin UObject Interface
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 	//~ End UObject Interface
+
+	/**
+	 * Predict one round of every gimmick of the list, one row per entry in the order of the list.
+	 * Gimmicks on their own timer follow their config, and gimmicks in a sequence follow the turn rule of AGimmickManager.
+	 *
+	 * @param RoundLength Seconds the rows cover, counted from the Event_Spotlight_Start cue.
+	 * @param FeverStart Second fever time starts at.
+	 * @param Seed Seed of the random waits. Each row mixes in its gimmick type, so editing one gimmick does not move the others.
+	 * @param World Open level, for a gimmick whose timing depends on actors placed there. Can be null.
+	 * @return One row per entry of the gimmick list.
+	 */
+	TArray<FGimmickTimelineRow> BuildTimeline(float RoundLength, float FeverStart, int32 Seed, const UWorld* World) const;
 
 private:
 

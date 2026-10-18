@@ -11,6 +11,7 @@
 #include "FileHelpers.h"
 #include "IDetailRootObjectCustomization.h"
 #include "IDetailsView.h"
+#include "Misc/DataValidation.h"
 #include "Modules/ModuleManager.h"
 #include "PropertyCustomizationHelpers.h"
 #include "PropertyEditorModule.h"
@@ -22,7 +23,9 @@
 #include "Widgets/Input/SSegmentedControl.h"
 #include "Widgets/Input/SSpinBox.h"
 #include "Widgets/Layout/SBox.h"
+#include "Widgets/Images/SImage.h"
 #include "Widgets/Layout/SBorder.h"
+#include "Widgets/Layout/SExpandableArea.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Layout/SSeparator.h"
 #include "Widgets/Layout/SWidgetSwitcher.h"
@@ -240,6 +243,32 @@ void SGimmickSettingsPanel::Construct(const FArguments& InArgs)
 
 		+ SVerticalBox::Slot().AutoHeight().Padding(8.f, 0.f, 8.f, 8.f)
 		[
+			SNew(SVerticalBox)
+			.Visibility(this, &SGimmickSettingsPanel::GetStageDataAreaVisibility)
+
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(STextBlock)
+				.Text(LOCTEXT("NoIssues", "문제 없음"))
+				.ColorAndOpacity(FSlateColor::UseSubduedForeground())
+				.Visibility_Lambda([this]() { return NumIssueErrors + NumIssueWarnings == 0 ? EVisibility::Visible : EVisibility::Collapsed; })
+			]
+
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(SExpandableArea)
+				.Visibility_Lambda([this]() { return NumIssueErrors + NumIssueWarnings > 0 ? EVisibility::Visible : EVisibility::Collapsed; })
+				.AreaTitle(this, &SGimmickSettingsPanel::GetIssuesTitle)
+				.InitiallyCollapsed(false)
+				.BodyContent()
+				[
+					SAssignNew(IssueRows, SVerticalBox)
+				]
+			]
+		]
+
+		+ SVerticalBox::Slot().AutoHeight().Padding(8.f, 0.f, 8.f, 8.f)
+		[
 			SNew(SSegmentedControl<int32>)
 			.Visibility(this, &SGimmickSettingsPanel::GetStageDataAreaVisibility)
 			.Value_Lambda([this]() { return ActiveTabIndex; })
@@ -354,6 +383,7 @@ void SGimmickSettingsPanel::SetStageData(UStageGimmickData* NewStageData)
 	StageDetailsView->SetObject(NewStageData);
 	RebuildLists();
 	RebuildTimeline();
+	RebuildIssues();
 }
 
 void SGimmickSettingsPanel::UseStageDataOfOpenLevel()
@@ -449,100 +479,65 @@ void SGimmickSettingsPanel::RebuildTimeline()
 	TArray<FGimmickTimelineRow> Rows;
 	if (StageData.IsValid())
 	{
-		// One builder per config, in the order of the list. Sequences fill theirs below
-		TArray<const UGimmickConfig*> Configs;
-		TArray<FGimmickTimelineBuilder> Builders;
-		for (const UGimmickConfig* Config : StageData->GetGimmicks())
+		Rows = StageData->BuildTimeline(TimelineRoundLength, TimelineFeverStart, TimelineSeed, GetOpenLevelWorld());
+	}
+	Timeline->SetRows(MoveTemp(Rows), TimelineRoundLength, TimelineFeverStart);
+}
+
+void SGimmickSettingsPanel::RebuildIssues()
+{
+	IssueRows->ClearChildren();
+	NumIssueErrors = 0;
+	NumIssueWarnings = 0;
+	if (!StageData.IsValid()) return;
+
+	TArray<FDataValidationContext::FIssue> Issues;
+	{
+		FDataValidationContext Context;
+		StageData->IsDataValid(Context);
+		Issues = Context.GetIssues();
+	}
+
+	// The level checks fit only the asset the open level uses
+	if (const UWorld* World = GetOpenLevelWorld(); World && FindStageDataOfOpenLevel() == StageData.Get())
+	{
+		for (TActorIterator<AGimmickManager> It(World); It; ++It)
 		{
-			if (!Config) continue;
-
-			// Each row gets its own stream, so adding or editing one gimmick does not move the random waits of the others
-			const int32 RowSeed = HashCombine(GetTypeHash(TimelineSeed), GetTypeHash(Config->GetGimmickType()));
-			Configs.Add(Config);
-			Builders.Emplace(TimelineRoundLength, TimelineFeverStart, RowSeed, GetOpenLevelWorld());
-
-			if (StageData->FindSequence(Config->GetGimmickType())) continue;
-
-			if (Config->RunsOnlyInSequence())
+			TArray<FText> LevelIssues;
+			It->CollectLevelIssues(LevelIssues);
+			for (const FText& Issue : LevelIssues)
 			{
-				Builders.Last().SetNote(FText::FromString(TEXT("기믹 시퀀스에 없어 발동하지 않습니다. 레벨 설정 탭의 기믹 시퀀스에 넣어 주세요")));
-				continue;
+				Issues.Emplace(Issue, EMessageSeverity::Warning);
 			}
-			Config->BuildTimeline(Builders.Last());
-		}
-
-		const auto FindIndex = [&Configs](const EGimmickType Type) { return Configs.IndexOfByPredicate([Type](const UGimmickConfig* Config) { return Config->GetGimmickType() == Type; }); };
-
-		// Repeat the rule of AGimmickManager: each gimmick starts a gap after the one before it ends
-		// From fever time on, the next turn starts from the first gimmick of the fever order and uses the fever gap
-		for (const FGimmickSequence& Sequence : StageData->GetSequences())
-		{
-			if (Sequence.Order.IsEmpty()) continue;
-
-			float Time = Sequence.FirstStartTime;
-			bool bFeverOrderStarted = false;
-			for (int32 Turn = 0; Time < TimelineRoundLength; ++Turn)
-			{
-				const bool bFever = Time >= TimelineFeverStart;
-				if (bFever && Sequence.bChangeOrderInFever && !bFeverOrderStarted)
-				{
-					bFeverOrderStarted = true;
-					Turn = 0;
-				}
-
-				const TArray<EGimmickType>& Order = Sequence.GetOrder(bFever);
-				if (Order.IsEmpty()) break;
-
-				const int32 Index = FindIndex(Order[Turn % Order.Num()]);
-				const float EventEnd = Configs.IsValidIndex(Index) ? Configs[Index]->BuildEventTimeline(Builders[Index], Time) : Time;
-				Time = FMath::Max(EventEnd + Sequence.GetGap(EventEnd >= TimelineFeverStart), Time + FGimmickTimelineBuilder::MinStep);
-			}
-
-			const auto JoinOrder = [](const TArray<EGimmickType>& Order)
-			{
-				FString Text;
-				for (const EGimmickType Type : Order)
-				{
-					Text += (Text.IsEmpty() ? TEXT("") : TEXT(" → ")) + UEnum::GetDisplayValueAsText(Type).ToString();
-				}
-				return Text;
-			};
-
-			FString NoteText = FString::Printf(TEXT("기믹 시퀀스: %s 순서로 이어집니다"), *JoinOrder(Sequence.Order));
-			if (Sequence.bChangeOrderInFever)
-			{
-				NoteText += Sequence.FeverOrder.IsEmpty()
-					? FString(TEXT("\n피버부터는 진행 중인 기믹만 끝내고 더 발동하지 않습니다"))
-					: FString::Printf(TEXT("\n피버부터는 진행 중인 기믹을 끝낸 뒤 %s 순서로 이어집니다 (기믹 간 발동 간격 %.1f초)"), *JoinOrder(Sequence.FeverOrder), Sequence.FeverGap);
-			}
-
-			for (const EGimmickType Type : Sequence.Order)
-			{
-				const int32 Index = FindIndex(Type);
-				if (!Builders.IsValidIndex(Index)) continue;
-
-				// Shows where fever time starts on the rows the fever order changes
-				if (Sequence.bChangeOrderInFever)
-				{
-					Builders[Index].IsFever(0.f);
-				}
-
-				const FText SequenceNote = FText::FromString(NoteText);
-				Builders[Index].SetNote(Builders[Index].GetNote().IsEmpty() ? SequenceNote : FText::Format(INVTEXT("{0}\n{1}"), SequenceNote, Builders[Index].GetNote()));
-			}
-		}
-
-		for (int32 Index = 0; Index < Configs.Num(); ++Index)
-		{
-			FGimmickTimelineRow& Row = Rows.AddDefaulted_GetRef();
-			Row.Label = UEnum::GetDisplayValueAsText(Configs[Index]->GetGimmickType());
-			Row.Note = Builders[Index].GetNote();
-			Row.Spans = Builders[Index].GetSpans();
-			Row.bUsesFever = Builders[Index].UsesFever();
+			break;
 		}
 	}
 
-	Timeline->SetRows(MoveTemp(Rows), TimelineRoundLength, TimelineFeverStart);
+	for (const FDataValidationContext::FIssue& Issue : Issues)
+	{
+		const bool bError = Issue.Severity == EMessageSeverity::Error;
+		++(bError ? NumIssueErrors : NumIssueWarnings);
+
+		IssueRows->AddSlot().AutoHeight().Padding(SectionRowIndent, 2.f, 0.f, 2.f)
+		[
+			SNew(SHorizontalBox)
+
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Top).Padding(0.f, 1.f, 6.f, 0.f)
+			[
+				SNew(SImage).Image(FAppStyle::GetBrush(bError ? "Icons.ErrorWithColor" : "Icons.WarningWithColor"))
+			]
+
+			+ SHorizontalBox::Slot().FillWidth(1.f)
+			[
+				SNew(STextBlock).Text(Issue.Message).AutoWrapText(true)
+			]
+		];
+	}
+}
+
+FText SGimmickSettingsPanel::GetIssuesTitle() const
+{
+	return FText::Format(LOCTEXT("IssuesTitle", "문제 {0}개 (오류 {1}, 경고 {2})"), NumIssueErrors + NumIssueWarnings, NumIssueErrors, NumIssueWarnings);
 }
 
 TSharedRef<SWidget> SGimmickSettingsPanel::MakeTimelineTab()
@@ -978,6 +973,7 @@ void SGimmickSettingsPanel::HandlePropertiesChanged(const FPropertyChangedEvent&
 	// The garbage class list lives in the level entry and decides what the shared data tab shows
 	RebuildLists();
 	RebuildTimeline();
+	RebuildIssues();
 }
 
 void SGimmickSettingsPanel::RunGimmickCommand(const TCHAR* Command, const EGimmickType GimmickType)

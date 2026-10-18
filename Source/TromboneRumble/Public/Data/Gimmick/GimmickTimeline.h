@@ -38,9 +38,24 @@ struct FGimmickTimelineSpan
 	FText Label;
 };
 
+/** One row of the timeline, which is one gimmick of the stage data. */
+struct FGimmickTimelineRow
+{
+	/** Name of the gimmick, drawn left of the row. */
+	FText Label;
+
+	/** Limit of the prediction, shown when the mouse is over the label. Can be empty. */
+	FText Note;
+
+	TArray<FGimmickTimelineSpan> Spans;
+
+	/** Does fever time change this gimmick. The row then shows where fever time starts. */
+	bool bUsesFever = false;
+};
+
 /**
  * FGimmickTimelineBuilder collects the spans one gimmick config predicts for a round.
- * The gimmick settings panel creates one per config and passes it to UGimmickConfig::BuildTimeline.
+ * UStageGimmickData::BuildTimeline creates one per config and passes it to UGimmickConfig::BuildTimeline.
  *
  * Keep in mind that a config must repeat the timer rule of its gimmick actor here.
  * When the rule of the actor changes, change BuildTimeline of its config too.

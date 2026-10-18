@@ -6,25 +6,10 @@
 #include "Data/Gimmick/GimmickTimeline.h"
 #include "Widgets/SLeafWidget.h"
 
-/** One row of SGimmickTimeline. */
-struct FGimmickTimelineRow
-{
-	/** Name of the gimmick, drawn left of the row. */
-	FText Label;
-
-	/** Limit of the prediction, shown when the mouse is over the label. Can be empty. */
-	FText Note;
-
-	TArray<FGimmickTimelineSpan> Spans;
-
-	/** Does fever time change this gimmick. The row then shows where fever time starts. */
-	bool bUsesFever = false;
-};
-
 /**
  * SGimmickTimeline draws when each gimmick of a level is expected to run during one round.
  * One row per gimmick, time from left to right, one colored block per phase.
- * SGimmickSettingsPanel owns it and fills it from UGimmickConfig::BuildTimeline.
+ * SGimmickSettingsPanel owns it and fills it from UStageGimmickData::BuildTimeline.
  *
  * Keep in mind that it only draws the rows it is given. It reads no config by itself.
  *

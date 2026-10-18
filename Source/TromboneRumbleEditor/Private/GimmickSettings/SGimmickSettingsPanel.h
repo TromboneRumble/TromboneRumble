@@ -57,8 +57,14 @@ private:
 	/** Rebuild the shared data tab, the PIE rows and the list of gimmicks this panel cannot edit. */
 	void RebuildLists();
 
-	/** Ask every config of the asset for its spans and give them to the timeline. */
+	/** Ask the asset for its timeline rows and give them to the timeline. */
 	void RebuildTimeline();
+
+	/** Check the asset, and the level too when the open level uses it, and list the problems above the tabs. */
+	void RebuildIssues();
+
+	/** @return Title of the problem list, with the count of errors and warnings. */
+	FText GetIssuesTitle() const;
 
 	/** Song list, round length, fever start, the button that picks new random waits, the legend and the timeline. */
 	TSharedRef<SWidget> MakeTimelineTab();
@@ -139,6 +145,14 @@ private:
 
 	/** Filled by RebuildTimeline. */
 	TSharedPtr<SGimmickTimeline> Timeline;
+
+	/** One row per problem. Filled by RebuildIssues. */
+	TSharedPtr<SVerticalBox> IssueRows;
+
+	/** Counted by RebuildIssues for the title of the list. */
+	int32 NumIssueErrors = 0;
+
+	int32 NumIssueWarnings = 0;
 
 	/** Seconds the timeline covers. The picked song fills it, or the designer types it. */
 	float TimelineRoundLength = 210.f;

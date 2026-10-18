@@ -7,6 +7,7 @@
 #include "Data/Gimmick/GarbageGimmickConfig.h"
 #include "Data/Gimmick/GravityGimmickConfig.h"
 #include "Data/Gimmick/SpotlightGimmickConfig.h"
+#include "Data/Gimmick/StageGimmickData.h"
 #include "Data/Gimmick/UfoGimmickConfig.h"
 #include "Data/Gimmick/WaterDropGimmickConfig.h"
 
@@ -125,5 +126,105 @@ float UWaterDropGimmickConfig::BuildSpawnTimeline(FGimmickTimelineBuilder& Build
 	const float FadeStart = Builder.AddSpan(SpawnTime, GrowDuration + HoldDuration, EGimmickTimelinePhase::Active, MarkLabel);
 	Builder.AddSpan(FadeStart, FadeDuration, EGimmickTimelinePhase::Ending, FadeLabel);
 	return SpawnTime;
+}
+
+// UStageGimmickData, with the turn rule of AGimmickManager for the sequences
+TArray<FGimmickTimelineRow> UStageGimmickData::BuildTimeline(const float RoundLength, const float FeverStart, const int32 Seed, const UWorld* World) const
+{
+	TArray<FGimmickTimelineRow> Rows;
+
+	// One builder per config, in the order of the list. Sequences fill theirs below
+	TArray<const UGimmickConfig*> Configs;
+	TArray<FGimmickTimelineBuilder> Builders;
+	for (const UGimmickConfig* Config : GetGimmicks())
+	{
+		if (!Config) continue;
+
+		// Each row gets its own stream, so adding or editing one gimmick does not move the random waits of the others
+		const int32 RowSeed = HashCombine(GetTypeHash(Seed), GetTypeHash(Config->GetGimmickType()));
+		Configs.Add(Config);
+		Builders.Emplace(RoundLength, FeverStart, RowSeed, World);
+
+		if (FindSequence(Config->GetGimmickType())) continue;
+
+		if (Config->RunsOnlyInSequence())
+		{
+			Builders.Last().SetNote(FText::FromString(TEXT("기믹 시퀀스에 없어 발동하지 않습니다. 레벨 설정 탭의 기믹 시퀀스에 넣어 주세요")));
+			continue;
+		}
+		Config->BuildTimeline(Builders.Last());
+	}
+
+	const auto FindIndex = [&Configs](const EGimmickType Type) { return Configs.IndexOfByPredicate([Type](const UGimmickConfig* Config) { return Config->GetGimmickType() == Type; }); };
+
+	// Repeat the rule of AGimmickManager: each gimmick starts a gap after the one before it ends
+	// From fever time on, the next turn starts from the first gimmick of the fever order and uses the fever gap
+	for (const FGimmickSequence& Sequence : GetSequences())
+	{
+		if (Sequence.Order.IsEmpty()) continue;
+
+		float Time = Sequence.FirstStartTime;
+		bool bFeverOrderStarted = false;
+		for (int32 Turn = 0; Time < RoundLength; ++Turn)
+		{
+			const bool bFever = Time >= FeverStart;
+			if (bFever && Sequence.bChangeOrderInFever && !bFeverOrderStarted)
+			{
+				bFeverOrderStarted = true;
+				Turn = 0;
+			}
+
+			const TArray<EGimmickType>& Order = Sequence.GetOrder(bFever);
+			if (Order.IsEmpty()) break;
+
+			const int32 Index = FindIndex(Order[Turn % Order.Num()]);
+			const float EventEnd = Configs.IsValidIndex(Index) ? Configs[Index]->BuildEventTimeline(Builders[Index], Time) : Time;
+			Time = FMath::Max(EventEnd + Sequence.GetGap(EventEnd >= FeverStart), Time + FGimmickTimelineBuilder::MinStep);
+		}
+
+		const auto JoinOrder = [](const TArray<EGimmickType>& Order)
+		{
+			FString Text;
+			for (const EGimmickType Type : Order)
+			{
+				Text += (Text.IsEmpty() ? TEXT("") : TEXT(" → ")) + UEnum::GetDisplayValueAsText(Type).ToString();
+			}
+			return Text;
+		};
+
+		FString NoteText = FString::Printf(TEXT("기믹 시퀀스: %s 순서로 이어집니다"), *JoinOrder(Sequence.Order));
+		if (Sequence.bChangeOrderInFever)
+		{
+			NoteText += Sequence.FeverOrder.IsEmpty()
+				? FString(TEXT("\n피버부터는 진행 중인 기믹만 끝내고 더 발동하지 않습니다"))
+				: FString::Printf(TEXT("\n피버부터는 진행 중인 기믹을 끝낸 뒤 %s 순서로 이어집니다 (기믹 간 발동 간격 %.1f초)"), *JoinOrder(Sequence.FeverOrder), Sequence.FeverGap);
+		}
+
+		for (const EGimmickType Type : Sequence.Order)
+		{
+			const int32 Index = FindIndex(Type);
+			if (!Builders.IsValidIndex(Index)) continue;
+
+			// Shows where fever time starts on the rows the fever order changes
+			if (Sequence.bChangeOrderInFever)
+			{
+				Builders[Index].IsFever(0.f);
+			}
+
+			const FText SequenceNote = FText::FromString(NoteText);
+			Builders[Index].SetNote(Builders[Index].GetNote().IsEmpty() ? SequenceNote : FText::Format(INVTEXT("{0}\n{1}"), SequenceNote, Builders[Index].GetNote()));
+		}
+	}
+
+	for (int32 Index = 0; Index < Configs.Num(); ++Index)
+	{
+		FGimmickTimelineRow& Row = Rows.AddDefaulted_GetRef();
+		Row.Label = UEnum::GetDisplayValueAsText(Configs[Index]->GetGimmickType());
+		Row.Note = Builders[Index].GetNote();
+		Row.Spans = Builders[Index].GetSpans();
+		Row.bUsesFever = Builders[Index].UsesFever();
+	}
+
+	return Rows;
 }
 #endif

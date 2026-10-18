@@ -39,6 +39,15 @@ public:
 	const UStageGimmickData* GetStageData() const { return StageData; }
 
 	/**
+	 * Collect the problems of the stage data that only the level shows: a level with gimmicks but no stage data, and entries no gimmick of the level reads.
+	 * UStageGimmickData::IsDataValid checks the rest, which the asset alone shows.
+	 * The map check, the warnings at the start of play and the gimmick settings panel all read this.
+	 *
+	 * @param OutIssues One warning per problem, in the words a designer reads.
+	 */
+	void CollectLevelIssues(TArray<FText>& OutIssues) const;
+
+	/**
 	 * Start the next gimmick of the sequence after the gap, when Gimmick is the one whose turn it is. Server only.
 	 * A gimmick calls it through AGimmickBase::NotifyEventFinished when one event is over.
 	 */
@@ -82,14 +91,8 @@ private:
 	/** Collect every gimmick of the level by type, where the last one wins when two share a type. */
 	void RegisterLevelGimmicks();
 
-	/** Warn on screen and in the log about missing stage data and about each config no gimmick reads. */
+	/** Warn on screen and in the log about the level problems, and in the editor about the errors of the stage data too. */
 	void ValidateStageData() const;
-
-	/** @return Configs that have neither a gimmick of their type in the level nor a Blueprint to spawn. */
-	TArray<const UGimmickConfig*> FindUnusedConfigs() const;
-
-	/** @return Configs of gimmicks that start only in a sequence but are in none, so they never start. */
-	TArray<const UGimmickConfig*> FindConfigsWithoutSequence() const;
 
 	/** @return The registered gimmick of this type, or null when the level has none. */
 	AGimmickBase* FindGimmick(EGimmickType GimmickType) const;

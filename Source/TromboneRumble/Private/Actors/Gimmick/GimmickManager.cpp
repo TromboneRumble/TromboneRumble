@@ -13,6 +13,7 @@
 
 #if WITH_EDITOR
 #include "Logging/MessageLog.h"
+#include "Misc/DataValidation.h"
 #include "Misc/UObjectToken.h"
 #endif
 
@@ -200,6 +201,7 @@ void AGimmickManager::StartNextInSequence(const int32 RunIndex)
 	FSequenceRun& Run = SequenceRuns[RunIndex];
 	const FGimmickSequence& Sequence = StageData->GetSequences()[Run.SequenceIndex];
 
+	// UStageGimmickData::BuildTimeline repeats this turn rule for the timeline. Change both together
 	// An empty fever order stops the sequence until the round ends
 	const TArray<EGimmickType>& Order = Sequence.GetOrder(bIsFeverTime);
 	if (Order.IsEmpty())
@@ -247,6 +249,7 @@ void AGimmickManager::BeginFeverTime()
 	bIsFeverTime = true;
 
 	// Only the next turn changes. A running gimmick and a gap timer are left alone, so nothing is cut off
+	// UStageGimmickData::BuildTimeline repeats this restart of the order for the timeline
 	if (StageData)
 	{
 		for (FSequenceRun& Run : SequenceRuns)
@@ -346,36 +349,30 @@ void AGimmickManager::SpawnMissingGimmicks()
 	}
 }
 
-TArray<const UGimmickConfig*> AGimmickManager::FindUnusedConfigs() const
+void AGimmickManager::CollectLevelIssues(TArray<FText>& OutIssues) const
 {
-	TArray<const UGimmickConfig*> Unused;
-	if (!GetWorld() || !StageData) return Unused;
-
 	const TSet<EGimmickType> TypesInLevel = FindGimmickTypesInLevel();
 
+	// Without stage data the gimmicks run on class defaults
+	// Garbage and presents have empty class lists there, so nothing spawns
+	if (!StageData)
+	{
+		if (!TypesInLevel.IsEmpty())
+		{
+			OutIssues.Add(FText::FromString(TEXT("레벨 기믹 설정이 비어 있습니다. 이 레벨의 기믹은 기본값으로 동작하고, 투척물과 선물, 기믹 시퀀스가 필요한 기믹은 나오지 않습니다")));
+		}
+		return;
+	}
+
+	// A config with a Blueprint to spawn makes its own gimmick, so it is never unused
 	for (const UGimmickConfig* Config : StageData->GetGimmicks())
 	{
 		if (Config && !Config->GetGimmickClass() && !TypesInLevel.Contains(Config->GetGimmickType()))
 		{
-			Unused.Add(Config);
+			OutIssues.Add(FText::FromString(FString::Printf(TEXT("%s 에 %s 항목이 있지만 레벨에 그 기믹이 없습니다. 기믹을 배치하거나 항목을 지우세요"),
+				*StageData->GetName(), *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString())));
 		}
 	}
-	return Unused;
-}
-
-TArray<const UGimmickConfig*> AGimmickManager::FindConfigsWithoutSequence() const
-{
-	TArray<const UGimmickConfig*> Result;
-	if (!StageData) return Result;
-
-	for (const UGimmickConfig* Config : StageData->GetGimmicks())
-	{
-		if (Config && Config->RunsOnlyInSequence() && !StageData->FindSequence(Config->GetGimmickType()))
-		{
-			Result.Add(Config);
-		}
-	}
-	return Result;
 }
 
 void AGimmickManager::ValidateStageData() const
@@ -383,8 +380,28 @@ void AGimmickManager::ValidateStageData() const
 	// A client would repeat the message of the host
 	if (!HasAuthority()) return;
 
-	const auto Warn = [](const FString& Message)
+	TArray<FText> Issues;
+	CollectLevelIssues(Issues);
+
+#if WITH_EDITOR
+	// A packaged build reads data that was checked when it was saved, so only the editor checks the asset again here
+	if (StageData)
 	{
+		FDataValidationContext Context;
+		StageData->IsDataValid(Context);
+		for (const FDataValidationContext::FIssue& Issue : Context.GetIssues())
+		{
+			if (Issue.Severity == EMessageSeverity::Error)
+			{
+				Issues.Add(Issue.Message);
+			}
+		}
+	}
+#endif
+
+	for (const FText& Issue : Issues)
+	{
+		const FString Message = TEXT("[기믹] ") + Issue.ToString();
 		UE_LOG(LogGimmick, Warning, TEXT("%s"), *Message);
 #if !UE_BUILD_SHIPPING
 		if (GEngine)
@@ -392,27 +409,6 @@ void AGimmickManager::ValidateStageData() const
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Yellow, Message);
 		}
 #endif
-	};
-
-	// Without stage data the gimmicks run on class defaults
-	// Garbage and presents have empty class lists there, so nothing spawns
-	if (!StageData && ManagedGimmicks.Num() > 0)
-	{
-		Warn(FString::Printf(TEXT("[기믹] %s 에 레벨 기믹 설정이 비어 있습니다. 기믹 %d개가 기본값으로 동작하고, 투척물과 선물, 기믹 시퀀스가 필요한 기믹은 나오지 않습니다"),
-			*GetName(), ManagedGimmicks.Num()));
-		return;
-	}
-
-	for (const UGimmickConfig* Config : FindUnusedConfigs())
-	{
-		Warn(FString::Printf(TEXT("[기믹] %s 에 %s 항목이 있지만 레벨에 그 기믹이 없습니다. 기믹을 배치하거나 항목을 지우세요"),
-			*StageData->GetName(), *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString()));
-	}
-
-	for (const UGimmickConfig* Config : FindConfigsWithoutSequence())
-	{
-		Warn(FString::Printf(TEXT("[기믹] %s 은(는) 기믹 시퀀스에서만 발동하는데 %s 의 어느 기믹 시퀀스에도 없어 나오지 않습니다"),
-			*UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString(), *StageData->GetName()));
 	}
 }
 
@@ -421,28 +417,22 @@ void AGimmickManager::CheckForErrors()
 {
 	Super::CheckForErrors();
 
-	if (!StageData)
+	TArray<FText> LevelIssues;
+	CollectLevelIssues(LevelIssues);
+	for (const FText& Issue : LevelIssues)
 	{
-		FMessageLog("MapCheck").Warning()
-			->AddToken(FUObjectToken::Create(this))
-			->AddToken(FTextToken::Create(FText::FromString(TEXT("레벨 기믹 설정이 비어 있습니다. 이 레벨의 기믹은 기본값으로 동작하고, 투척물과 선물, 기믹 시퀀스가 필요한 기믹은 나오지 않습니다"))));
-		return;
+		FMessageLog("MapCheck").Warning()->AddToken(FUObjectToken::Create(this))->AddToken(FTextToken::Create(Issue));
 	}
 
-	for (const UGimmickConfig* Config : FindConfigsWithoutSequence())
+	// The asset problems too, so the map check alone tells why a gimmick of this level never starts
+	if (StageData)
 	{
-		FMessageLog("MapCheck").Warning()
-			->AddToken(FUObjectToken::Create(this))
-			->AddToken(FTextToken::Create(FText::FromString(FString::Printf(TEXT("%s 은(는) 기믹 시퀀스에서만 발동하는데 %s 의 어느 기믹 시퀀스에도 없습니다"),
-				*UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString(), *StageData->GetName()))));
-	}
-
-	for (const UGimmickConfig* Config : FindUnusedConfigs())
-	{
-		FMessageLog("MapCheck").Warning()
-			->AddToken(FUObjectToken::Create(this))
-			->AddToken(FTextToken::Create(FText::FromString(FString::Printf(TEXT("%s 에 %s 항목이 있지만 레벨에 그 기믹이 없습니다"),
-				*StageData->GetName(), *UEnum::GetDisplayValueAsText(Config->GetGimmickType()).ToString()))));
+		FDataValidationContext Context;
+		StageData->IsDataValid(Context);
+		for (const FDataValidationContext::FIssue& Issue : Context.GetIssues())
+		{
+			FMessageLog("MapCheck").Message(Issue.Severity)->AddToken(FUObjectToken::Create(this))->AddToken(FTextToken::Create(Issue.Message));
+		}
 	}
 }
 #endif
