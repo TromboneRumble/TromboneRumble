@@ -9,11 +9,11 @@
 /**
  * SGimmickTimeline draws when each gimmick of a level is expected to run during one round.
  * One row per gimmick, time from left to right, one colored block per phase.
- * SGimmickSettingsPanel owns it and fills it from UStageGimmickData::BuildTimeline.
+ * SGimmickTimelineTab owns it and fills it from UStageGimmickData::BuildTimeline.
  *
  * Keep in mind that it only draws the rows it is given. It reads no config by itself.
  *
- * @see SGimmickSettingsPanel
+ * @see SGimmickTimelineTab
  * @see FGimmickTimelineBuilder
  */
 class SGimmickTimeline : public SLeafWidget

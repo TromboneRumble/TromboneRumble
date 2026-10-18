@@ -5,31 +5,30 @@
 #include "CoreMinimal.h"
 #include "Data/Gimmick/StageGimmickData.h"
 #include "EditorUndoClient.h"
-#include "GimmickSettings/GimmickSongTiming.h"
 #include "UObject/StrongObjectPtr.h"
-#include "Utilities/Defines.h"
 #include "Widgets/SCompoundWidget.h"
 
-class AGimmickBase;
+class AGimmickManager;
 class IDetailsView;
-class SGimmickTimeline;
-class SVerticalBox;
-class UGimmickConfig;
+class SGimmickIssueList;
+class SGimmickPlayControls;
+class SGimmickSharedSettingsTab;
+class SGimmickTimelineTab;
 struct FAssetData;
 struct FPropertyChangedEvent;
-template <typename OptionType> class SComboBox;
 
 /**
  * SGimmickSettingsPanel is the one place a designer edits gimmick settings.
  * It is the content of the "기믹 설정" tab, created by FTromboneRumbleEditorModule.
  *
- * Top: pick a UStageGimmickData asset and save everything that changed.
+ * Top: pick a UStageGimmickData asset and save everything that changed, then the status line and SGimmickIssueList.
  * "레벨 설정" tab: the asset in a details view. Entries are added, removed and edited here. These settings belong to one level.
- * "투척물 종류별 수치" tab: objects the gimmicks of the open level report through AGimmickBase::GetSettingsObjects.
- * Right now these are the garbage Blueprints, whose knockback and hit type differ per kind of garbage.
- * "타임라인" tab: when each gimmick of the asset is expected to run during one round. Read only.
- * Bottom: one row per gimmick of the open level with buttons that run the gimmick console commands in PIE,
- * then the gimmicks of the open level that this panel cannot edit at all.
+ * "투척물 종류별 수치" tab: SGimmickSharedSettingsTab.
+ * "타임라인" tab: SGimmickTimelineTab.
+ * Bottom: SGimmickPlayControls.
+ *
+ * The panel owns the asset and decides when the sections rebuild. The sections do not watch the editor themselves.
+ * Every change ends in RebuildSections, so that one function shows what the panel draws again.
  *
  * Keep in mind that it refreshes itself when a gimmick actor is placed or removed, when the manager gets another asset,
  * when the asset changes in any editor, and on undo and redo. Moving an actor does not refresh it.
@@ -64,10 +63,16 @@ private:
 	EActiveTimerReturnType HandleRefreshTimer(double InCurrentTime, float InDeltaTime);
 
 	/**
-	 * Follow a new asset of the manager of the open level, then rebuild the lists, the timeline, the problems and the status line.
+	 * Follow a new asset of the manager of the open level, then rebuild the sections and the status line.
 	 * The panel follows only while it shows the asset of the open level, so an asset the designer picked by hand stays.
 	 */
 	void Refresh();
+
+	/** Rebuild the problem list, the shared data tab, the timeline tab and the PIE rows from the asset and the open level. */
+	void RebuildSections();
+
+	/** Make the status line again. It changes only with the asset or the manager, so it is not made every frame. */
+	void UpdateStatusText();
 
 	/** A gimmick actor or the manager was placed in or removed from the open level. */
 	void HandleLevelActorChanged(AActor* Actor);
@@ -75,76 +80,44 @@ private:
 	/** Any object changed in any editor. Only the asset, the manager and the gimmick actors matter. */
 	void HandleObjectPropertyChanged(UObject* Object, FPropertyChangedEvent& Event);
 
-	/** Make the status line again. It changes only with the asset or the manager, so it is not made every frame. */
-	void UpdateStatusText();
+	/** A map was opened. The songs of the timeline depend on the level, so they are read again too. */
+	void HandleMapOpened(const FString& Filename, bool bAsTemplate);
 
-	/** Show this asset in the details view and rebuild the lists. */
+	/** Show this asset in the details view, then rebuild the sections and the status line. */
 	void SetStageData(UStageGimmickData* NewStageData);
 
 	/** Switch to the asset the gimmick manager of the open level points at. */
 	void UseStageDataOfOpenLevel();
 
-	/** Rebuild the shared data tab, the PIE rows and the list of gimmicks this panel cannot edit. */
-	void RebuildLists();
+	void HandleAssetPicked(const FAssetData& AssetData);
 
-	/** Ask the asset for its timeline rows and give them to the timeline. */
-	void RebuildTimeline();
-
-	/** Check the asset, and the level too when the open level uses it, and list the problems above the tabs. */
-	void RebuildIssues();
-
-	/** @return Title of the problem list, with the count of errors and warnings. */
-	FText GetIssuesTitle() const;
-
-	/** Song list, round length, fever start, the button that picks new random waits, the legend and the timeline. */
-	TSharedRef<SWidget> MakeTimelineTab();
-
-	/** Read the songs again and pick the one remembered for the open level, or else the first song in the list. */
-	void RefreshSongs();
-
-	/** Use the timing of this song on the timeline. The entry without a song tag switches to typing the values by hand. */
-	void SelectSong(TSharedPtr<FGimmickSongTiming> Song);
-
-	/** @return Label of an entry of the song list. */
-	FText GetSongLabel(const TSharedPtr<FGimmickSongTiming>& Song) const;
-
-	/** @return Key of the open level in SongPerLevel. */
-	static FString GetOpenLevelKey();
-
-	/** A label and the Trigger, Stop and Restart buttons for one gimmick type. */
-	TSharedRef<SWidget> MakeGimmickRow(const FText& Label, EGimmickType GimmickType);
-
-	/** Label of a level gimmick this panel cannot edit and a button that selects it in the level. */
-	TSharedRef<SWidget> MakeUnmanagedRow(AGimmickBase& Gimmick);
-
-	/** Add the category path of every GimmickSetting property of this class, and each shorter path above it. */
-	void CollectSettingCategories(const UClass& Class);
-
-	/** Bound to the second tab. True when a custom row or a subcategory sits in a category that holds gimmick settings. */
-	bool IsSettingCategory(FName RowName, FName ParentCategory) const;
-
-	/** One line that says which level is open and which asset its manager uses. */
-	FText GetStatusText() const { return StatusText; }
-
-	/** Collapsed while no stage data asset is selected. Bound to the tab bar, its separator and the two details views. */
-	EVisibility GetStageDataAreaVisibility() const;
-
-	/** Visible only while the timeline values are typed by hand. Bound to the round length and fever start boxes. */
-	EVisibility GetManualTimingVisibility() const;
-
-	/** @return Packages of the stage data and of every shared object. */
+	/** @return Packages of the stage data and of every object of the shared data tab. */
 	TArray<UPackage*> GetEditedPackages() const;
 
 	bool HasUnsavedChanges() const;
 
 	FReply HandleSaveClicked();
 
-	void HandleAssetPicked(const FAssetData& AssetData);
+	/** Asset picker, the button that goes back to the asset of the open level, and the save button. */
+	TSharedRef<SWidget> MakeTopBar();
 
-	void HandleMapOpened(const FString& Filename, bool bAsTemplate);
+	/** Status line and the problem list. */
+	TSharedRef<SWidget> MakeStatusArea();
 
-	/** Run a gimmick console command in every PIE world that is not a client. */
-	static void RunGimmickCommand(const TCHAR* Command, EGimmickType GimmickType);
+	/** Buttons that switch between the three tabs. */
+	TSharedRef<SWidget> MakeTabBar();
+
+	/** The three tabs. Only the one picked in the tab bar shows. */
+	TSharedRef<SWidget> MakeTabContent();
+
+	/** One line that says which level is open and which asset its manager uses. */
+	FText GetStatusText() const { return StatusText; }
+
+	/** Collapsed while no stage data asset is selected. Bound to everything that shows the asset or what it lists. */
+	EVisibility GetStageDataAreaVisibility() const;
+
+	/** @return The first gimmick manager of the open level that has stage data, or null. */
+	static AGimmickManager* FindManagerOfOpenLevel();
 
 	/** @return Asset the manager of the open level points at, or null. */
 	static UStageGimmickData* FindStageDataOfOpenLevel();
@@ -161,63 +134,19 @@ private:
 	/** Has a refresh been asked for and not run yet. */
 	bool bRefreshPending = false;
 
-	/** Details view of StageData. */
-	TSharedPtr<IDetailsView> StageDetailsView;
-
-	/** Objects shown in the shared data tab. Filled by RebuildLists. */
-	TArray<TWeakObjectPtr<UObject>> SharedObjects;
-
-	/** Details view of SharedObjects. Each object is one section with its own header. */
-	TSharedPtr<IDetailsView> SharedDetailsView;
-
-	/** Categories that hold GimmickSetting properties of the shown objects. Filled by RebuildLists before the layout is built. */
-	TSet<FName> SettingCategories;
-
-	/** Filled by RebuildLists. */
-	TSharedPtr<SVerticalBox> GimmickRows;
-
-	/** Filled by RebuildLists. */
-	TSharedPtr<SVerticalBox> UnmanagedRows;
-
-	/** Filled by RebuildTimeline. */
-	TSharedPtr<SGimmickTimeline> Timeline;
-
-	/** One row per problem. Filled by RebuildIssues. */
-	TSharedPtr<SVerticalBox> IssueRows;
-
-	/** Counted by RebuildIssues for the title of the list. */
-	int32 NumIssueErrors = 0;
-
-	int32 NumIssueWarnings = 0;
-
-	/** Seconds the timeline covers. The picked song fills it, or the designer types it. */
-	float TimelineRoundLength = 210.f;
-
-	/** Second of the timeline the fever cue of the song comes at. The picked song fills it, or the designer types it. */
-	float TimelineFeverStart = 168.f;
-
-	/** Entries of the song list. The songs of the open level come first, and the entry without a song tag at the end is for typing by hand. */
-	TArray<TSharedPtr<FGimmickSongTiming>> SongOptions;
-
-	/** Entry of the song list the timeline uses. */
-	TSharedPtr<FGimmickSongTiming> SelectedSong;
-
-	/** Songs the open level can get. Their labels say so. */
-	TArray<FGameplayTag> LevelSongs;
-
-	/** Why songs are missing from the list, one line each. Shown in the tooltip of the song list. */
-	FString SkippedSongs;
-
-	/** Song picked last in each level, by level package. An invalid tag means typing by hand. Kept while the editor runs. */
-	TMap<FString, FGameplayTag> SongPerLevel;
-
-	TSharedPtr<SComboBox<TSharedPtr<FGimmickSongTiming>>> SongComboBox;
-
-	/** Seed of the random waits on the timeline. The same seed draws the same timeline, so an edit does not shuffle it. */
-	int32 TimelineSeed = 1;
-
 	/** 0 is the level tab, 1 is the shared data tab, 2 is the timeline tab. */
 	int32 ActiveTabIndex = 0;
+
+	/** Details view of StageData, the content of the level tab. */
+	TSharedPtr<IDetailsView> StageDetailsView;
+
+	TSharedPtr<SGimmickIssueList> IssueList;
+
+	TSharedPtr<SGimmickSharedSettingsTab> SharedSettingsTab;
+
+	TSharedPtr<SGimmickTimelineTab> TimelineTab;
+
+	TSharedPtr<SGimmickPlayControls> PlayControls;
 
 	FDelegateHandle MapOpenedHandle;
 
