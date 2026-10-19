@@ -5,16 +5,15 @@
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
 #include "CommonTextBlock.h"
-#include "EasyMatchmakingManager.h"
-#include "EasyMatchmakingPolicy.h"
-#include "EasySessions.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
 #include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Framework/TromboneGameInstance.h"
-#include "Online/OnlineSessionNames.h"
+#include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/ToastSubsystem.h"
 #include "UI/UserWidgets/Common/CommonButtonBaseExtension.h"
 #include "Utilities/TromboneStatics.h"
@@ -131,43 +130,62 @@ void UPlayModePopup::HandleInputMethodChanged(const ECommonInputType NewInputTyp
 
 void UPlayModePopup::HandleCreateSessionClicked()
 {
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!Sessions)
 	{
-		const UTromboneConfig* Config = UTromboneConfig::Get();
-		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
+		return;
+	}
 
-		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
-		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_MAPNAME, Config->DefaultInGameMap.ToString(), EOnlineDataAdvertisementType::ViaOnlineService));
+	// A created room is hidden and found only by its code, which EasySession generates with the project's Join Code Length.
+	FEasySessionHostParams HostParams;
+	HostParams.InitialMapName = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
+	HostParams.bHidden = true;
+	HostParams.bUseJoinCode = true;
+	HostParams.CustomSettings.Add(UTromboneStatics::InGameMapSettingKey, UTromboneConfig::Get()->DefaultInGameMap.ToString());
 
-		const FEasyMatchmakingParams Param = FEasyMatchmakingParams(HostParams);
+	// Creating a room is not a matchmaking run, so the main menu's matchmaking events do not cover it.
+	// The overlay and the failure toast are shown here instead.
+	const TWeakObjectPtr<APlayerController> WeakPC = GetOwningPlayer();
+	UTromboneStatics::ShowLoadingOverlay(WeakPC.Get());
 
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, 0, EEasyMatchmakingMode::CreateOnly);
+	Sessions->CreateSession(HostParams, FEasySessionCompleteDelegate::CreateWeakLambda(Sessions, [Sessions, WeakPC](EEasySessionResult Result, const FString& ErrorMessage)
+	{
+		if (Result == EEasySessionResult::Success)
+		{
+			// The code goes to the clipboard as soon as the room exists, so the host can paste it to friends.
+			UTromboneStatics::CopyRoomCodeToClipboard(Sessions);
+
+			if (UAppearanceSubsystem* AppearanceSubsystem = Sessions->GetGameInstance()->GetSubsystem<UAppearanceSubsystem>())
+			{
+				AppearanceSubsystem->ResetColors();
+			}
+			return;
+		}
+
+		// TODO : 로컬라이징
+		UTromboneStatics::ShowToast(Sessions->GetWorld(), UTromboneStatics::MakeToastRequest(FText::FromString(TEXT("Matchmaking failed."))));
+		UTromboneStatics::PopOverlay(WeakPC.Get());
 	}));
 }
 
 void UPlayModePopup::HandleQuickJoinClicked()
 {
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!Sessions)
 	{
-		const UTromboneConfig* Config = UTromboneConfig::Get();
-		const FString RoomCode = UTromboneStatics::GenerateRandomRoomCode(Config->RoomCodeLength);
+		return;
+	}
 
-		FEasyHostParams HostParams = FEasyHostParams();
-		HostParams.StartingLevel = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
-		HostParams.bHidden = true;
-		HostParams.ExtraSessionSettings.Add(FEasySessionSetting(SETTING_LOBBYCODE, RoomCode, EOnlineDataAdvertisementType::ViaOnlineService));
+	// Joins an open room whose match has not started, or hosts one when there is none.
+	// EasySession makes the hosted room public, so the next player's quick join finds it.
+	FEasyMatchmakingParams Params;
+	Params.Search.MinOpenSlots = 1;
+	Params.Search.bIncludeInProgressSessions = false;
+	Params.bAllowHostFallback = true;
+	Params.Host.InitialMapName = UTromboneFunctionLibrary::GetMapPathByMapTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MatchMenu);
+	Params.Host.bUseJoinCode = true;
 
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		Param.HostParams = HostParams;
-		Param.MinSlotsRequired = 1;
-
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, 0, EEasyMatchmakingMode::Default);
-	}));
+	Sessions->StartMatchmaking(Params);
 }
 
 void UPlayModePopup::HandleJoinCodeClicked()
@@ -198,16 +216,18 @@ void UPlayModePopup::HandleJoinClicked()
 		return;
 	}
 
-	UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this);
-
-	MatchmakingManager->CreateMatchmakingPolicy(FOnCreateMatchmakingPolicyComplete::CreateLambda([this](UEasyMatchmakingPolicy* MatchmakingPolicy)
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!Sessions)
 	{
-		const FString LobbyCode = ET_Code->GetText().ToString().ToUpper();
-		FEasyMatchmakingParams Param = FEasyMatchmakingParams();
-		Param.MinSlotsRequired = 1;
-		Param.ExtraQuerySettings.Add(FEasyQuerySetting(SETTING_LOBBYCODE, LobbyCode, EOnlineComparisonOp::Equals));
+		return;
+	}
 
-		MatchmakingPolicy->StartMatchmaking(NAME_GameSession, Param, static_cast<int32>(EEasyMatchmakingFlags::NoHost), EEasyMatchmakingMode::Default);
-	}));
+	// The code search also returns the hidden room it belongs to. EasySession compares the code in upper case.
+	FEasyMatchmakingParams Params;
+	Params.Search.JoinCode = ET_Code->GetText().ToString();
+	Params.Search.MinOpenSlots = 1;
+	Params.bAllowHostFallback = false;
+
+	Sessions->StartMatchmaking(Params);
 }
 

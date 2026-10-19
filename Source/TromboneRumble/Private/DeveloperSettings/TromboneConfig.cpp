@@ -5,7 +5,6 @@
 
 UTromboneConfig::UTromboneConfig()
 	: CharacterSkinColors( {FLinearColor::Red}),
-	RoomCodeLength(5), 
 	DefaultInGameMap(TromboneGamePlayTags::Trombone_Maps_InGame_OrchestraStage), 
 	LobbyGameStartDelaySeconds(5),
 	LobbyRagdollGetUpDelaySeconds(5),

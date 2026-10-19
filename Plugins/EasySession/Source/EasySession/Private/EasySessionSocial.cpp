@@ -1,0 +1,315 @@
+// Copyright (c) 2026 Langerak. Licensed under the MIT License.
+
+#include "EasySessionSocial.h"
+
+#include "EasySession.h"
+#include "EasySessionConfig.h"
+#include "EasySessionMessages.h"
+#include "EasySessionSubsystem.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
+#include "Interfaces/OnlineExternalUIInterface.h"
+#include "Interfaces/OnlineFriendsInterface.h"
+#include "Interfaces/OnlineIdentityInterface.h"
+#include "Interfaces/OnlinePresenceInterface.h"
+#include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
+
+FEasySessionSocial::~FEasySessionSocial()
+{
+	Shutdown();
+}
+
+void FEasySessionSocial::BindInviteDelegates()
+{
+	const IOnlineSessionPtr Sessions = Online::GetSessionInterface(GetWorld());
+	if (!Sessions.IsValid() || InviteAcceptedHandle.IsValid())
+	{
+		return;
+	}
+
+	InviteAcceptedHandle = Sessions->AddOnSessionUserInviteAcceptedDelegate_Handle(
+		FOnSessionUserInviteAcceptedDelegate::CreateRaw(this, &FEasySessionSocial::HandleSessionUserInviteAccepted));
+}
+
+void FEasySessionSocial::Shutdown()
+{
+	const IOnlineSessionPtr Sessions = Online::GetSessionInterface(GetWorld());
+	if (Sessions.IsValid())
+	{
+		if (InviteAcceptedHandle.IsValid())
+		{
+			Sessions->ClearOnSessionUserInviteAcceptedDelegate_Handle(InviteAcceptedHandle);
+		}
+	}
+
+	InviteAcceptedHandle.Reset();
+}
+
+EEasySessionResult FEasySessionSocial::SendInviteToFriend(const FEasySessionFriend& Friend, FName SessionName)
+{
+	const IOnlineSessionPtr Sessions = Online::GetSessionInterface(GetWorld());
+	if (!Sessions.IsValid())
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("SendSessionInviteToFriend: there is no online subsystem to send through."));
+		return EEasySessionResult::NoOnlineSubsystem;
+	}
+
+	if (!Friend.IsValid())
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("SendSessionInviteToFriend: the friend to invite is not a friend Read Easy Friends returned."));
+		return EEasySessionResult::InvalidParams;
+	}
+
+	if (Sessions->GetNamedSession(SessionName) == nullptr)
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("SendSessionInviteToFriend: there is no %s to invite to."), *SessionName.ToString());
+		return EEasySessionResult::NoSessionExists;
+	}
+
+	if (!Sessions->SendSessionInviteToFriend(0, SessionName, *Friend.NativeId.GetUniqueNetId()))
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("SendSessionInviteToFriend was refused. The online subsystem may not support invites (e.g. NULL/LAN)."));
+		return EEasySessionResult::NotSupportedByService;
+	}
+
+	UE_LOG(LogEasySession, Log, TEXT("%s invite sent to '%s'."), SessionName == NAME_PartySession ? TEXT("Party") : TEXT("Session"), *Friend.DisplayName);
+	return EEasySessionResult::Success;
+}
+
+EEasySessionResult FEasySessionSocial::ShowInviteUI(FName SessionName) const
+{
+	const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld());
+	const IOnlineSessionPtr Sessions = OnlineSub ? OnlineSub->GetSessionInterface() : nullptr;
+	if (!Sessions.IsValid() || Sessions->GetNamedSession(SessionName) == nullptr)
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("ShowInviteUI: there is no %s to invite to."), *SessionName.ToString());
+		return EEasySessionResult::NoSessionExists;
+	}
+
+	const IOnlineExternalUIPtr ExternalUI = OnlineSub->GetExternalUIInterface();
+
+	if (!ExternalUI.IsValid() || !ExternalUI->ShowInviteUI(0, SessionName))
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("ShowInviteUI is not supported by the current online subsystem (e.g. NULL/LAN)."));
+		return EEasySessionResult::NotSupportedByService;
+	}
+
+	return EEasySessionResult::Success;
+}
+
+EEasySessionResult FEasySessionSocial::ShowProfileUI(const FUniqueNetIdPtr& TargetId) const
+{
+	if (!TargetId.IsValid())
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("ShowProfileUI: the player to show has no online id."));
+		return EEasySessionResult::InvalidParams;
+	}
+
+	const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld());
+	const IOnlineExternalUIPtr ExternalUI = OnlineSub ? OnlineSub->GetExternalUIInterface() : nullptr;
+	const IOnlineIdentityPtr Identity = OnlineSub ? OnlineSub->GetIdentityInterface() : nullptr;
+	const FUniqueNetIdPtr LocalId = Identity.IsValid() ? Identity->GetUniquePlayerId(0) : nullptr;
+
+	if (!ExternalUI.IsValid() || !LocalId.IsValid() || !ExternalUI->ShowProfileUI(*LocalId, *TargetId, FOnProfileUIClosedDelegate()))
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("ShowProfileUI is not supported by the current online subsystem (e.g. NULL/LAN)."));
+		return EEasySessionResult::NotSupportedByService;
+	}
+
+	return EEasySessionResult::Success;
+}
+
+void FEasySessionSocial::ReadFriends(FEasyFriendsCompleteDelegate OnComplete) const
+{
+	const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld());
+	const IOnlineFriendsPtr FriendsInterface = OnlineSub ? OnlineSub->GetFriendsInterface() : nullptr;
+	if (!FriendsInterface.IsValid())
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("%s"), EasySession::NoFriendsListMessage);
+		OnComplete.ExecuteIfBound(EEasySessionResult::NotSupportedByService, EasySession::NoFriendsListMessage, {});
+		return;
+	}
+
+	UE_LOG(LogEasySession, Log, TEXT("Reading the friends list."));
+
+	// The completion delegate is bound weakly to the subsystem and reads the world from it, because Deinitialize destroys this object first.
+	// Steam fires the completion delegate for a refused read too, so the return value is not checked.
+	UEasySessionSubsystem* OwnerSubsystem = &Owner;
+	FriendsInterface->ReadFriendsList(0, EFriendsLists::ToString(EFriendsLists::Default), FOnReadFriendsListComplete::CreateWeakLambda(OwnerSubsystem,
+		[OwnerSubsystem, UserDelegate = MoveTemp(OnComplete)](int32 LocalUserNum, bool bWasSuccessful, const FString& ListName, const FString& ErrorStr)
+		{
+			if (!bWasSuccessful)
+			{
+				UserDelegate.ExecuteIfBound(EEasySessionResult::UnknownFailure, ErrorStr, {});
+				return;
+			}
+
+			const UWorld* World = OwnerSubsystem->GetGameInstance() ? OwnerSubsystem->GetGameInstance()->GetWorld() : nullptr;
+			const IOnlineSubsystem* CallbackOnlineSub = Online::GetSubsystem(World);
+			const IOnlineFriendsPtr CallbackFriendsInterface = CallbackOnlineSub ? CallbackOnlineSub->GetFriendsInterface() : nullptr;
+			TArray<TSharedRef<FOnlineFriend>> FriendList;
+			if (CallbackFriendsInterface.IsValid())
+			{
+				CallbackFriendsInterface->GetFriendsList(LocalUserNum, ListName, FriendList);
+			}
+
+			TArray<FEasySessionFriend> Friends;
+			Friends.Reserve(FriendList.Num());
+			for (const TSharedRef<FOnlineFriend>& OnlineFriend : FriendList)
+			{
+				const FOnlineUserPresence& Presence = OnlineFriend->GetPresence();
+				FEasySessionFriend& Friend = Friends.AddDefaulted_GetRef();
+				Friend.DisplayName = OnlineFriend->GetDisplayName();
+				Friend.bIsOnline = Presence.bIsOnline;
+				Friend.bIsPlayingThisGame = Presence.bIsPlayingThisGame;
+				// Steam reports the lobby a friend is in through presence, so no request to the online subsystem is needed.
+				// It sets an id even when the friend is in no lobby, so the id itself is checked too.
+				Friend.bIsInLobby = Presence.bIsPlayingThisGame && Presence.SessionId.IsValid() && Presence.SessionId->IsValid();
+				Friend.NativeId = FUniqueNetIdRepl(OnlineFriend->GetUserId());
+			}
+			SortFriends(Friends);
+
+			UE_LOG(LogEasySession, Log, TEXT("Friends list read: %d friend(s)."), Friends.Num());
+			UserDelegate.ExecuteIfBound(EEasySessionResult::Success, FString(), Friends);
+		}));
+}
+
+bool FEasySessionSocial::HasFriendsList(const UWorld* World)
+{
+	const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(World);
+	return OnlineSub != nullptr && OnlineSub->GetFriendsInterface().IsValid();
+}
+
+bool FEasySessionSocial::FriendComesFirst(const FEasySessionFriend& A, const FEasySessionFriend& B)
+{
+	const int32 RankA = A.bIsInLobby ? 3 : (A.bIsPlayingThisGame ? 2 : (A.bIsOnline ? 1 : 0));
+	const int32 RankB = B.bIsInLobby ? 3 : (B.bIsPlayingThisGame ? 2 : (B.bIsOnline ? 1 : 0));
+	if (RankA != RankB)
+	{
+		return RankA > RankB;
+	}
+	return A.DisplayName.Compare(B.DisplayName, ESearchCase::IgnoreCase) < 0;
+}
+
+void FEasySessionSocial::SortFriends(TArray<FEasySessionFriend>& Friends)
+{
+	Friends.StableSort(&FEasySessionSocial::FriendComesFirst);
+}
+
+void FEasySessionSocial::ReportInvitedJoinResult(UEasySessionSubsystem& Owner, const FEasySessionSearchResult& Session, EEasySessionResult Result, const FString& ErrorMessage)
+{
+	if (Result == EEasySessionResult::Success)
+	{
+		return;
+	}
+
+	// An invite carries no password, so the game asks the player and joins again with one.
+	if (Result == EEasySessionResult::PasswordRequired)
+	{
+		UE_LOG(LogEasySession, Log, TEXT("The invited session '%s' needs a password from this player."), *Session.SessionDisplayName);
+		Owner.OnInvitePasswordRequired.Broadcast(Session);
+		return;
+	}
+
+	Owner.OnSessionFailure.Broadcast(FString::Printf(TEXT("Joining the invited session failed: %s"), *ErrorMessage));
+}
+
+void FEasySessionSocial::HandleSessionUserInviteAccepted(const bool bWasSuccessful, const int32 ControllerId, FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult)
+{
+	if (!bWasSuccessful || !InviteResult.IsValid())
+	{
+		UE_LOG(LogEasySession, Warning, TEXT("An invite was accepted but its session data is not valid."));
+		return;
+	}
+
+	const FEasySessionSearchResult Session = FEasySessionSearchResult::FromNative(InviteResult);
+	UE_LOG(LogEasySession, Log, TEXT("Invite accepted for session '%s'."), *Session.SessionDisplayName);
+	Owner.OnSessionInviteAccepted.Broadcast(Session);
+
+	if (!GetDefault<UEasySessionConfig>()->bAutoJoinAcceptedInvites)
+	{
+		return;
+	}
+
+	// The invite event carries no session name, so the advertised session type tells the two kinds apart.
+	if (Session.SessionType == EEasySessionType::PartySession)
+	{
+		JoinInvitedParty(Session);
+		return;
+	}
+
+	// One click in the overlay must not destroy the session this player is in, unless the project allows it.
+	if (Owner.IsInSession() && !GetDefault<UEasySessionConfig>()->bAcceptInvitesWhileInSession)
+	{
+		const FString Reason = TEXT("Not joining the invited session: this player is already in one, and Accept Invites While In Session is disabled.");
+		UE_LOG(LogEasySession, Warning, TEXT("%s"), *Reason);
+		Owner.OnSessionFailure.Broadcast(Reason);
+		return;
+	}
+
+	if (!CancelMatchmakingForInvite())
+	{
+		return;
+	}
+
+	// The game did not call Join Easy Session for this join, so no node pin receives its result and the events report it instead.
+	UEasySessionSubsystem* OwnerSub = &Owner;
+	Owner.JoinSession(Session, FString(), FString(), FEasySessionCompleteDelegate::CreateWeakLambda(OwnerSub,
+		[OwnerSub, Session](EEasySessionResult Result, const FString& ErrorMessage)
+		{
+			ReportInvitedJoinResult(*OwnerSub, Session, Result, ErrorMessage);
+		}));
+}
+
+void FEasySessionSocial::JoinInvitedParty(const FEasySessionSearchResult& Party)
+{
+	// A party lives outside game sessions, and one click must not end the match this player is in, so the game decides.
+	if (Owner.IsInSession())
+	{
+		UE_LOG(LogEasySession, Log, TEXT("Not joining the invited party during a game session. Call Leave Easy Session, then Join Easy Session with the invite's session."));
+		return;
+	}
+
+	if (!CancelMatchmakingForInvite())
+	{
+		return;
+	}
+
+	// The queue runs the leave first, so the join finds this player in no party.
+	if (Owner.IsInSession(EEasySessionType::PartySession))
+	{
+		Owner.LeaveSession(EEasySessionType::PartySession);
+	}
+
+	// The game did not call Join Easy Session for this join, so no node pin receives its result and OnSessionFailure reports it instead.
+	UEasySessionSubsystem* OwnerSub = &Owner;
+	Owner.JoinSession(Party, FString(), FString(), FEasySessionCompleteDelegate::CreateWeakLambda(OwnerSub,
+		[OwnerSub](EEasySessionResult Result, const FString& ErrorMessage)
+		{
+			if (Result != EEasySessionResult::Success)
+			{
+				OwnerSub->OnSessionFailure.Broadcast(FString::Printf(TEXT("Joining the invited party failed: %s"), *ErrorMessage));
+			}
+		}));
+}
+
+bool FEasySessionSocial::CancelMatchmakingForInvite()
+{
+	Owner.CancelMatchmaking();
+	if (!Owner.IsMatchmakingRunning())
+	{
+		return true;
+	}
+
+	// The run ignored the cancel, and it ends with this player in the session it joins or hosts.
+	const FString Reason = TEXT("Matchmaking is already joining or hosting a session, so the invite was not joined. Accept the invite again to join it.");
+	UE_LOG(LogEasySession, Warning, TEXT("%s"), *Reason);
+	Owner.OnSessionFailure.Broadcast(Reason);
+	return false;
+}
+
+UWorld* FEasySessionSocial::GetWorld() const
+{
+	return Owner.GetGameInstance() ? Owner.GetGameInstance()->GetWorld() : nullptr;
+}

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Engine/GameInstance.h"
+#include "EasySessionGameInstance.h"
 #include "Utilities/Defines.h"
 #include "TromboneGameInstance.generated.h"
 
@@ -12,7 +12,7 @@ class UAkComponent;
 class UAkAudioEvent;
 
 UCLASS(Abstract)
-class TROMBONERUMBLE_API UTromboneGameInstance : public UGameInstance
+class TROMBONERUMBLE_API UTromboneGameInstance : public UEasySessionGameInstance
 {
 	GENERATED_BODY()
     
@@ -37,9 +37,6 @@ protected:
     
 private:
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", Categories = "OnlineSession"))
-    bool bConnectionWasLost = false;
-    
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UAkComponent> GlobalBGMComponent;
     
@@ -67,10 +64,4 @@ public:
     FText GetTutorialUIText(const FString& Key) const;
     
     // ~ End Getter & Setter
-    
-public:
-    
-    //~ Begin UGameInstance Interface
-    virtual TSubclassOf<UOnlineSession> GetOnlineSessionClass() override;
-    //~ End UGameInstance Interface
 };

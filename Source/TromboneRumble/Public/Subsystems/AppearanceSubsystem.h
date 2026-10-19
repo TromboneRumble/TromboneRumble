@@ -4,7 +4,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "AppearanceSubsystem.generated.h"
 
-enum class EEasyMatchmakingCompleteResult : uint8;
+enum class EEasySessionResult : uint8;
 
 /* 
  * Managing player’s unique skin color
@@ -28,9 +28,9 @@ public:
 	
 protected:
 	
-	/** Called when matchmaking is complete. */
+	/** Called when matchmaking is complete. A run that ended hosting a new room starts with every color free. */
 	UFUNCTION()
-	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
+	void HandleMatchmakingComplete(EEasySessionResult Result, const FString& ErrorMessage);
 	
 private:
 	

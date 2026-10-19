@@ -7,7 +7,7 @@
 #include "MainMenuWidget.generated.h"
 
 class UCommonButtonBase;
-enum class EEasyMatchmakingCompleteResult : uint8;
+enum class EEasySessionResult : uint8;
 
 UCLASS()
 class TROMBONERUMBLE_API UMainMenuWidget : public UBaseMenuWidget
@@ -59,10 +59,12 @@ private:
 	UFUNCTION()
 	void HandleMatchmakingStarted();
 	UFUNCTION()
-	void HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result);
-	UFUNCTION()
+	void HandleMatchmakingComplete(EEasySessionResult Result, const FString& ErrorMessage);
 	void HandleMatchmakingCanceled();
 	//~ End Matchmaking Callbacks
+
+	/** Shows why the last session ended, once, when the menu opens after a lost connection or a kick. */
+	void ShowPendingDisconnectToast();
 
 	/** Displays the tutorial popup */
 	void ShowTutorialPopup() const;

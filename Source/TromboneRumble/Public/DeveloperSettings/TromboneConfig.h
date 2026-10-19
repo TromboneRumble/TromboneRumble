@@ -109,10 +109,6 @@ public:
 	
 public:
 	
-	/** Length of the room code. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|MatchMenu")
-	int32 RoomCodeLength;
-
 	/**
 	 * InGame map that is displayed by default when a session is created. Host can change this in the match menu.
 	 */

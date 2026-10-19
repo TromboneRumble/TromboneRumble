@@ -2,9 +2,8 @@
 
 #include "UI/UserWidgets/MatchMenu/MatchMenuWidget.h"
 #include "CommonButtonBase.h"
-#include "EasyOnlineSession.h"
-#include "EasyReservationManager.h"
 #include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Framework/GameState/MatchMenuGameState.h"
@@ -143,9 +142,8 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 		return;
 	}
 	
-	UEasyReservationManager* ReservationManager = UEasyReservationManager::Get(this);
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	if (!ReservationManager || !OnlineSession)
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!Sessions)
 	{
 		LOG_WITH_CURRENT_CONTEXT(Error, TEXT("Session systems missing. Cannot start the match"));
 		return;
@@ -154,24 +152,25 @@ void UMatchMenuWidget::HandleStartButtonClicked()
 	SetUIEnabled(false);
 	bIsStarted = true;
 	
-	// Confirm the current member list so the lobby starts with exactly these players
-	if (ReservationManager->IsReservationHost())
-	{
-		const TArray<FEasyReservation> Reservations = ReservationManager->CopyRegisteredReservations();
-		ReservationManager->SetHostReservations(Reservations);
-	}
-	
-	// Start online session
-	FEasySessionSettings UpdatedSettings;
-	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
+	// The players here keep their reservations through the map change, and a started match without join-in-progress refuses anyone new
+	FEasySessionSettings UpdatedSettings = Sessions->GetSessionSettings();
 	UpdatedSettings.bAllowJoinInProgress = false;
-	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
-	OnlineSession->StartOnlineSession(NAME_GameSession);
+	Sessions->UpdateSession(UpdatedSettings);
 	
 	// Travel to the picked lobby, or the default one if the game state is unreachable
 	const FGameplayTag SelectedMap = CachedMatchMenuGS.IsValid() ? CachedMatchMenuGS->GetSelectedLobbyMap() : FGameplayTag();
 	const FGameplayTag TargetMapTag = SelectedMap.IsValid() ? SelectedMap : TromboneGamePlayTags::Trombone_Maps_Lobby_OrchestraStage;
-	UEasyStatics::ServerTravelToLevel(this, UTromboneFunctionLibrary::GetMapPathByMapTag(TargetMapTag));
+	const FString TargetMapPath = UTromboneFunctionLibrary::GetMapPathByMapTag(TargetMapTag);
+	
+	// Requests run in order on later ticks, so the travel waits for the start to finish
+	Sessions->StartSession(FEasySessionCompleteDelegate::CreateWeakLambda(Sessions, [Sessions, TargetMapPath](EEasySessionResult Result, const FString& ErrorMessage)
+	{
+		if (Result != EEasySessionResult::Success)
+		{
+			LOG_WITH_CURRENT_CONTEXT(Warning, FString::Printf(TEXT("Starting the match failed (%s). Traveling anyway"), *ErrorMessage));
+		}
+		Sessions->ServerTravel(TargetMapPath);
+	}));
 }
 
 void UMatchMenuWidget::HandleBackButtonClicked()
@@ -183,17 +182,14 @@ void UMatchMenuWidget::HandleBackButtonClicked()
 	
 	SetUIEnabled(false);
 	
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	const bool bRequested = OnlineSession && OnlineSession->DestroySession(NAME_GameSession,
-		FOnDestroySessionCompleteDelegate::CreateWeakLambda(this, [this](FName /*SessionName*/, bool /*bSuccess*/)
-		{
-			UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
-		}));
-	
-	if (!bRequested)
+	// Leaving destroys the session and loads the Game Default Map, the main menu. A leaving host sends every player back too
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!Sessions)
 	{
 		UTromboneStatics::OpenLevel(this, ELevelType::MainMenu);
+		return;
 	}
+	Sessions->LeaveSession();
 }
 
 void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection RotatorDir)
@@ -203,8 +199,8 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 		return;
 	}
 	
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	if (!OnlineSession)
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!Sessions)
 	{
 		return;
 	}
@@ -216,11 +212,10 @@ void UMatchMenuWidget::HandleOnRotatedMatchType(int32 Value, ERotatorDirection R
 	}
 	
 	// Custom rooms stay out of the public search list
-	FEasySessionSettings UpdatedSettings;
-	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
+	FEasySessionSettings UpdatedSettings = Sessions->GetSessionSettings();
 	UpdatedSettings.bHidden = NewMatchType != EMatchType::Public;
 	
-	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
+	Sessions->UpdateSession(UpdatedSettings);
 }
 
 void UMatchMenuWidget::HandleOnRotatedMap(int32 Value, ERotatorDirection RotatorDir)
@@ -238,16 +233,15 @@ void UMatchMenuWidget::HandleOnRotatedMap(int32 Value, ERotatorDirection Rotator
 
 	// The session advertises the in-game map so searching players see what they would play
 	const FGameplayTag InGameTag = UTromboneFunctionLibrary::LobbyToInGameTag(SelectedLobbyTag);
-	UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this);
-	if (!InGameTag.IsValid() || !OnlineSession)
+	UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this);
+	if (!InGameTag.IsValid() || !Sessions)
 	{
 		return;
 	}
 
-	FEasySessionSettings UpdatedSettings;
-	OnlineSession->GetSessionSettings(NAME_GameSession, UpdatedSettings);
-	UpdatedSettings.MapName = InGameTag.ToString();
-	OnlineSession->UpdateSession(NAME_GameSession, UpdatedSettings, true);
+	FEasySessionSettings UpdatedSettings = Sessions->GetSessionSettings();
+	UpdatedSettings.CustomSettings.Add(UTromboneStatics::InGameMapSettingKey, InGameTag.ToString());
+	Sessions->UpdateSession(UpdatedSettings);
 }
 
 void UMatchMenuWidget::SetUIEnabled(const bool bEnabled)

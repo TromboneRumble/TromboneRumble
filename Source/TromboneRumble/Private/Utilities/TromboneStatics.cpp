@@ -1,8 +1,8 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Utilities/TromboneStatics.h"
-#include "EasyOnlineSession.h"
-#include "EasySessions.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "NativeGameplayTags.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
@@ -26,39 +26,32 @@ static TAutoConsoleVariable<int32> CVarMinPlayersToStart(
 	DefaultMinPlayersToStart,
 	TEXT("The minimum number of players required for a host to start a game from the Match menu. If set to 1, the host can start the game alone."));
 
-FString UTromboneStatics::GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy)
-{
-	const FString Chars = TEXT("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
-	FString RandomCode;
-	for (int32 i = 0; i < CodeLength; ++i)
-	{
-		RandomCode += Chars[FMath::RandRange(0, Chars.Len() - 1)];
-	}
-	
-	if (bClipboardCopy)
-	{
-		FPlatformApplicationMisc::ClipboardCopy(*RandomCode);
-	}
-	
-	return RandomCode;
-}
+const FString UTromboneStatics::InGameMapSettingKey = TEXT("MAPNAME");
 
 bool UTromboneStatics::CopyRoomCodeToClipboard(const UObject* WorldContextObject)
 {
-	if (GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	const UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(WorldContextObject);
+	const FString Code = Sessions ? Sessions->GetJoinCode() : FString();
+	if (Code.IsEmpty())
 	{
-		if (const UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(WorldContextObject))
-		{
-			FString Code;
-			if (OnlineSession->GetSessionSetting(NAME_GameSession, SETTING_LOBBYCODE, Code))
-			{
-				FPlatformApplicationMisc::ClipboardCopy(*Code);
-				return true;
-			}
-		}
+		return false;
 	}
-	
-	return false;
+
+	FPlatformApplicationMisc::ClipboardCopy(*Code);
+	return true;
+}
+
+FGameplayTag UTromboneStatics::GetCurrentInGameMap(const UObject* WorldContextObject, const FGameplayTag& Default)
+{
+	const UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(WorldContextObject);
+	if (!Sessions)
+	{
+		return Default;
+	}
+
+	const FString MapName = Sessions->GetSessionSettings().CustomSettings.FindRef(InGameMapSettingKey);
+	const FGameplayTag MapTag = MapName.IsEmpty() ? FGameplayTag() : FGameplayTag::RequestGameplayTag(FName(*MapName), false);
+	return MapTag.IsValid() ? MapTag : Default;
 }
 
 int32 UTromboneStatics::GetMinPlayersToStart()

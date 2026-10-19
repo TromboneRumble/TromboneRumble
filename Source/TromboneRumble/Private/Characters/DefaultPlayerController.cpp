@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/DefaultPlayerController.h"
-#include "EasyOnlineSession.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "Components/ActorComponents/LobbyCameraComponent.h"
 #include "Framework/GameMode/InGameMode.h"
 #include "Subsystems/ResultSceneSubsystem.h"
@@ -69,10 +70,10 @@ void ADefaultPlayerController::Client_RequestTravelToResultLevelAndLeaveSession_
 
 void ADefaultPlayerController::LeaveSessionAndTravelToResultLevel()
 {
-	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+	if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
 	{
 		// 완료가 늦게 올 수 있다. 그 사이 컨트롤러가 사라졌다면 실행되지 않아야 한다
-		OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateWeakLambda(this, [this](FName /*SessionName*/, bool /*bSuccess*/)
+		Sessions->DestroySession(FEasySessionCompleteDelegate::CreateWeakLambda(this, [this](EEasySessionResult /*Result*/, const FString& /*ErrorMessage*/)
 		{
 			if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
 			{

@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/UserWidgets/InGame/InGameResultWidget.h"
-#include "EasyOnlineSession.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "Components/TextBlock.h"
 #include "Actors/ResultScene/ResultCutsceneDirector.h"
 #include "Components/Button.h"
@@ -227,9 +228,10 @@ void UInGameResultWidget::HandleExitButtonClicked()
 		Director->StopBGM();
 	}
 	
-	if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+	// The result level has no session left, and leaving still takes the player to the Game Default Map, the main menu
+	if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
 	{
-		OnlineSession->LeaveGameSession();
+		Sessions->LeaveSession();
 	}
 }
 

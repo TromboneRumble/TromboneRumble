@@ -4,9 +4,8 @@
 #include "Actors/Gimmick/GimmickManager.h"
 #include "Subsystems/RhythmSubsystem.h"
 #include "Framework/InGameState.h"
-#include "EasyOnlineSession.h"
-#include "EasySessionTypes.h"
 #include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "Characters/DefaultPlayerController.h"
 #include "Subsystems/ResultSceneSubsystem.h"
 
@@ -87,7 +86,7 @@ int32 AInGameMode::GetExpectedPlayerCount() const
 	}
 
 	// 세션이 없으면 0이 온다. 그대로 쓰면 종료 조건이 항상 참이 되고 호스트 자가 트리거는 반대로 안 걸린다.
-	const int32 SessionCount = UEasyStatics::GetCurrentGameSessionPlayerCount(this);
+	const int32 SessionCount = UEasySessionStatics::GetEasyPlayerCount(this);
 	return SessionCount > 0 ? SessionCount : GetWorld()->GetNumPlayerControllers();
 }
 
@@ -147,9 +146,9 @@ void AInGameMode::TryTravelToResultLevel()
 	// WeakLambda라야 월드가 먼저 사라졌을 때 실행되지 않고, EndPlay의 ClearAllTimersForObject에도 잡힌다
 	GetWorldTimerManager().SetTimer(TimerHandle_TravelToResultLevel, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
-		if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+		if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
 		{
-			OnlineSession->DestroySession(NAME_GameSession, FOnDestroySessionCompleteDelegate::CreateWeakLambda(this, [this](FName /*SessionName*/, bool /*bSuccess*/)
+			Sessions->DestroySession(FEasySessionCompleteDelegate::CreateWeakLambda(this, [this](EEasySessionResult /*Result*/, const FString& /*ErrorMessage*/)
 			{
 				if (const UResultSceneSubsystem* ResultSubsystem = GetGameInstance()->GetSubsystem<UResultSceneSubsystem>())
 				{

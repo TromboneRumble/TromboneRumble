@@ -1,12 +1,14 @@
-// Copyright (C) 2026 biksari studio. All Rights Reserved.
+﻿// Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "UI/UserWidgets/MainMenu/MainMenuWidget.h"
 #include "CommonButtonBase.h"
-#include "EasyMatchmakingManager.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "TimerManager.h"
 #include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/Defines.h"
@@ -32,21 +34,21 @@ void UMainMenuWidget::NativeOnActivated()
 	Super::NativeOnActivated();
 
 	// Bound on activate and removed on deactivate. The stack reuses this instance
-	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
 	{
-		MatchmakingManager->OnMatchmakingStarted().AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
-		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
-		MatchmakingManager->OnMatchmakingCanceled().AddDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+		Sessions->OnMatchmakingStarted.AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		Sessions->OnMatchmakingComplete.AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
 	}
+
+	ShowPendingDisconnectToast();
 }
 
 void UMainMenuWidget::NativeOnDeactivated()
 {
-	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
 	{
-		MatchmakingManager->OnMatchmakingStarted().RemoveDynamic(this, &ThisClass::HandleMatchmakingStarted);
-		MatchmakingManager->OnMatchmakingComplete().RemoveDynamic(this, &ThisClass::HandleMatchmakingComplete);
-		MatchmakingManager->OnMatchmakingCanceled().RemoveDynamic(this, &ThisClass::HandleMatchmakingCanceled);
+		Sessions->OnMatchmakingStarted.RemoveDynamic(this, &ThisClass::HandleMatchmakingStarted);
+		Sessions->OnMatchmakingComplete.RemoveDynamic(this, &ThisClass::HandleMatchmakingComplete);
 	}
 
 	Super::NativeOnDeactivated();
@@ -57,9 +59,16 @@ void UMainMenuWidget::HandleMatchmakingStarted()
 	UTromboneStatics::ShowLoadingOverlay(GetOwningPlayer());
 }
 
-void UMainMenuWidget::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
+void UMainMenuWidget::HandleMatchmakingComplete(EEasySessionResult Result, const FString& ErrorMessage)
 {
-	if (Result == EEasyMatchmakingCompleteResult::Failure || Result == EEasyMatchmakingCompleteResult::NoResults)
+	// A cancel arrives as the run's result, not as an event of its own.
+	if (Result == EEasySessionResult::Canceled)
+	{
+		HandleMatchmakingCanceled();
+		return;
+	}
+
+	if (Result != EEasySessionResult::Success)
 	{
 		// TODO : 로컬라이징
 		const FText ToastMessage = FText::FromString(TEXT("Matchmaking failed."));
@@ -78,6 +87,25 @@ void UMainMenuWidget::HandleMatchmakingCanceled()
 		const FText ToastMessage = GI->GetCommonUIText("Matchmaking_Cancel");
 		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
 	}
+}
+
+void UMainMenuWidget::ShowPendingDisconnectToast()
+{
+	// The menu activates while its map is still loading, and the toast subsystem clears every toast once the load finishes.
+	// The reason is read and shown on the next tick, after that clear.
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
+	{
+		// EasySession records why a session ended before it returns the player here, and hands the record out once.
+		// The reason text it carries is not localized yet, so the toast keeps the message the game showed before.
+		const FEasyDisconnectInfo Info = UEasySessionStatics::ConsumePendingEasyDisconnectInfo(this);
+		if (Info.Reason == EEasyDisconnectReason::None)
+		{
+			return;
+		}
+
+		// TODO : 로컬라이징
+		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(FText::FromString(TEXT("서버와 연결이 끊겼습니다."))));
+	}));
 }
 
 void UMainMenuWidget::Init()

@@ -1,15 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Framework/TromboneGameInstance.h"
-#include "EasyOnlineSession.h"
 #include "AkGameplayStatics.h"
-#include "EasyConfig.h"
-
-TSubclassOf<UOnlineSession> UTromboneGameInstance::GetOnlineSessionClass()
-{
-	const UEasyConfig* Config = UEasyConfig::Get();
-	return Config->OnlineSessionClass;
-}
 
 void UTromboneGameInstance::PlayMenuBGM()
 {

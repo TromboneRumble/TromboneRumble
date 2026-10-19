@@ -1,5 +1,6 @@
 #include "UI/UserWidgets/Popup/EscapePopup.h"
-#include "EasyOnlineSession.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "Actors/ResetCollider.h"
 #include "Characters/DefaultTromboneCharacter.h"
 #include "Components/ActorComponents/ClientToServerRelayComponent.h"
@@ -85,9 +86,9 @@ void UEscapePopup::HandleDisconnectButtonClicked() const
 
 	Params.LeftCallback = [this]()
 	{
-		if (UEasyOnlineSession* OnlineSession = UEasyOnlineSession::Get(this))
+		if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
 		{
-			OnlineSession->LeaveGameSession();
+			Sessions->LeaveSession();
 		}
 	};
 

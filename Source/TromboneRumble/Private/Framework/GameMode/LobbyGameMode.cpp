@@ -10,6 +10,7 @@
 #include "Framework/DefaultPlayerState.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
+#include "Utilities/TromboneStatics.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
@@ -95,17 +96,17 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
 		
 		const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
-		UEasyStatics::ServerTravelToLevel(this, MainMenuMapName);
+		UEasySessionStatics::ServerTravelEasySession(this, MainMenuMapName);
 	}
 	else
 	{
 		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Restarting lobby"));
 
-		const FGameplayTag InGameTag = UEasyStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
+		const FGameplayTag InGameTag = UTromboneStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
 		const FGameplayTag LobbyCategory = FGameplayTag::RequestGameplayTag(FName(*TromboneGamePlayTags::LobbyPath), false);
 		const FGameplayTag LobbyTag = UTromboneFunctionLibrary::GetSiblingMapTag(InGameTag, LobbyCategory);
 		const FString LobbyMapName = GameStateSubsystem->GetLevelStringFromTag(LobbyTag);
-		UEasyStatics::ServerTravelToLevel(this, LobbyMapName);
+		UEasySessionStatics::ServerTravelEasySession(this, LobbyMapName);
 	}
 }
 
@@ -119,7 +120,7 @@ void ALobbyGameMode::TravelToInGame()
 		return;
 	}
 
-	const FGameplayTag InGameTag = UEasyStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
+	const FGameplayTag InGameTag = UTromboneStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
 	const FString InGameMapName = GameStateSubsystem->GetLevelStringFromTag(InGameTag);
-	UEasyStatics::ServerTravelToLevel(this, InGameMapName);
+	UEasySessionStatics::ServerTravelEasySession(this, InGameMapName);
 }

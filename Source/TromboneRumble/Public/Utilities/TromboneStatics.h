@@ -32,6 +32,15 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "TromboneStatics|Utils", meta = (WorldContext = "WorldContextObject"))
 	static bool CopyRoomCodeToClipboard(const UObject* WorldContextObject);
+
+	/**
+	 * @return The in-game map the current session advertises, or Default when the session advertises none.
+	 *         The host writes it when it creates the session and whenever the match menu picks a map.
+	 */
+	static FGameplayTag GetCurrentInGameMap(const UObject* WorldContextObject, const FGameplayTag& Default);
+
+	/** Custom session setting key holding the in-game map tag of the session. */
+	static const FString InGameMapSettingKey;
 	
 	/** Opens a level */
 	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|Game", meta = (WorldContext = "WorldContextObject"))
@@ -93,10 +102,6 @@ public:
 	static bool PopOverlay(const APlayerController* PlayerController);
 	
 public:
-	
-	/** @return Randomly generated room code of specified length. 
-	* If bClipboardCopy is true, the generated code will also be copied to the clipboard. */
-	static FString GenerateRandomRoomCode(const int32 CodeLength, const bool bClipboardCopy = true);
 	
 	/** @return The root UI layout widget
 	 *  @see URootUI

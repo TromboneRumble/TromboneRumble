@@ -1,6 +1,8 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Framework/GameState/MatchMenuGameState.h"
+#include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "Net/UnrealNetwork.h"
@@ -136,6 +138,15 @@ void AMatchMenuGameState::PostInitializeComponents()
 			if (DefaultLobby.IsValid())
 			{
 				SelectedLobbyMapTag = DefaultLobby;
+			}
+		}
+
+		// The match type starts as the session is: a created room is hidden, and a room quick join hosted is public
+		if (const UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
+		{
+			if (Sessions->IsInSession())
+			{
+				CurrentMatchType = Sessions->GetSessionSettings().bHidden ? EMatchType::Custom : EMatchType::Public;
 			}
 		}
 	}

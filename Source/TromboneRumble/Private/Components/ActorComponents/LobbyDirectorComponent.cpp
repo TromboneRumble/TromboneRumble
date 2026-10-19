@@ -1,7 +1,6 @@
 // Copyright (C) 2026 biksari studio. All Rights Reserved.
 
 #include "Components/ActorComponents/LobbyDirectorComponent.h"
-#include "EasySessionStatics.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Characters/TromboneCharacterBase.h"
 #include "Components/ActorComponents/TromboneRagdollComponent.h"
@@ -16,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/GameDataSubsystem.h"
 #include "Utilities/DebugHelper.h"
+#include "Utilities/TromboneStatics.h"
 
 ULobbyDirectorComponent::ULobbyDirectorComponent()
 {
@@ -95,7 +95,7 @@ void ULobbyDirectorComponent::HandleAllPlayersReady()
 		return;
 	}
 
-	const FGameplayTag InGameMapTag = UEasyStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
+	const FGameplayTag InGameMapTag = UTromboneStatics::GetCurrentInGameMap(this, UTromboneConfig::Get()->DefaultInGameMap);
 	const FGameplayTag SelectedSong = UTromboneFunctionLibrary::PickRandomSongForMap(InGameMapTag);
 	LobbyGameState->SetSelectedSongTag(SelectedSong);
 

@@ -128,7 +128,7 @@ void UVoiceChatSubsystem::BeginLocalTalk()
 {
 	if (bMicTestActive) return;
 	// First-use registration: the OSS voice engine's OwningUserIndex must be set before
-	// StartLocalVoiceProcessing can succeed. EasySessions + Steam login flow does not
+	// StartLocalVoiceProcessing can succeed. EasySession + Steam login flow does not
 	// trigger this automatically, so we do it lazily here.
 	EnsureLocalTalkerRegistered();
 	ApplyNetworkedVoice(true);

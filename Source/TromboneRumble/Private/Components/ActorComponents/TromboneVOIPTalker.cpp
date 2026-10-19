@@ -43,7 +43,7 @@ void UTromboneVOIPTalker::RegisterTalker(APlayerState* InPlayerState)
 	//
 	// Why: In Steam OSS this usually happens automatically via
 	//   FOnlineSessionSteam::RegisterPlayer -> RegisterVoice -> VoiceInt->RegisterRemoteTalker.
-	// In the NULL OSS + EasySessions LAN path (our -nosteam -tr_lan test config), that chain
+	// In the NULL OSS + EasySession LAN path (our -nosteam -tr_lan test config), that chain
 	// can be skipped depending on join timing — which leaves every remote PS unknown to the
 	// listener's voice interface, causing inbound voice packets to be silently dropped and
 	// UVOIPTalker::OnTalkingBegin never firing.

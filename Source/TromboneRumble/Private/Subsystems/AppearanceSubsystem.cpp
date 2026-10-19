@@ -1,6 +1,5 @@
 #include "Subsystems/AppearanceSubsystem.h"
-#include "EasyMatchmakingManager.h"
-#include "EasySessionTypes.h"
+#include "EasySessionSubsystem.h"
 #include "DeveloperSettings/TromboneConfig.h"
 
 void UAppearanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -10,9 +9,10 @@ void UAppearanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	AvailableSkinColors = UTromboneConfig::Get()->CharacterSkinColors;
 	UsedSkinColors.Empty();
 	
-	if (UEasyMatchmakingManager* MatchmakingManager = UEasyMatchmakingManager::Get(this))
+	// The session subsystem initializes first, so its event exists to bind to.
+	if (UEasySessionSubsystem* Sessions = Collection.InitializeDependency<UEasySessionSubsystem>())
 	{
-		MatchmakingManager->OnMatchmakingComplete().AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
+		Sessions->OnMatchmakingComplete.AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
 	}
 }
 
@@ -44,9 +44,10 @@ void UAppearanceSubsystem::ReleaseColor(const FLinearColor& Color)
 	UsedSkinColors.Remove(Color);
 }
 
-void UAppearanceSubsystem::HandleMatchmakingComplete(const FName SessionName, const EEasyMatchmakingCompleteResult Result)
+void UAppearanceSubsystem::HandleMatchmakingComplete(EEasySessionResult Result, const FString& ErrorMessage)
 {
-	if (Result == EEasyMatchmakingCompleteResult::SessionCreated)
+	const UEasySessionSubsystem* Sessions = GetGameInstance()->GetSubsystem<UEasySessionSubsystem>();
+	if (Result == EEasySessionResult::Success && Sessions && Sessions->IsHost())
 	{
 		ResetColors();
 	}
