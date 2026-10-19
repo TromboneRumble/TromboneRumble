@@ -62,4 +62,9 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Base,		"Trombone.UI.Layer.Base");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Popup,		"Trombone.UI.Layer.Popup");
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Overlay,	"Trombone.UI.Layer.Overlay");
+
+	// Toast notices
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_ConnectionLost,	"Trombone.UI.Notice.ConnectionLost");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_EveryoneLeft,		"Trombone.UI.Notice.EveryoneLeft");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_LobbyRestarted,	"Trombone.UI.Notice.LobbyRestarted");
 }

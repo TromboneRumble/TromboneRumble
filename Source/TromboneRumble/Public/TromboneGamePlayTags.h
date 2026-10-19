@@ -71,6 +71,11 @@ namespace TromboneGamePlayTags
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Base);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Popup);
 	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Layer_Overlay);
+
+	// Toast notices. The tag name is the key of the notice text in ST_Common
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Notice_ConnectionLost);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Notice_EveryoneLeft);
+	TROMBONERUMBLE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Trombone_UI_Notice_LobbyRestarted);
 	
 	/** Strings */
 	const FString ProjectName = TEXT("Trombone");

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/UIData.h"
+#include "GameplayTagContainer.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "ToastSubsystem.generated.h"
 
@@ -27,6 +28,12 @@ public:
 	
 	/** Show a toast message with the given request data. */
 	void ShowToast(const FToastRequest& InRequest);
+
+	/** Show the toast of a notice now. Its text is the ST_Common entry whose key is the notice tag's name. */
+	void ShowNotice(const FGameplayTag& Notice);
+
+	/** Show the toast of a notice once the next map finished loading, for a travel that starts now. */
+	void ShowNoticeAfterTravel(const FGameplayTag& Notice);
 	
 	/** Return a toast widget to the pool */
 	void ReturnToPool(UToastItemWidget* ToastWidget);
@@ -63,6 +70,9 @@ private:
 	TArray<TObjectPtr<UToastItemWidget>> ToastPool;
 	
 	TQueue<FToastRequest> ToastQueue;
+
+	/** Notices waiting for the next map. Kept through the transition map of a seamless travel. */
+	TArray<FGameplayTag> NoticesAfterTravel;
 	
 	/** Queue or override */
 	EToastSystemPolicy ToastPolicy;

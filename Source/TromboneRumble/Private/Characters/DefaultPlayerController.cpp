@@ -6,6 +6,7 @@
 #include "Components/ActorComponents/LobbyCameraComponent.h"
 #include "Framework/GameMode/InGameMode.h"
 #include "Subsystems/ResultSceneSubsystem.h"
+#include "Subsystems/ToastSubsystem.h"
 
 ADefaultPlayerController::ADefaultPlayerController()
 {
@@ -52,6 +53,14 @@ void ADefaultPlayerController::Server_ReportClientTravelToResultLevelAndLeaveSes
 	if (AInGameMode* Gm = GetWorld()->GetAuthGameMode<AInGameMode>())
 	{
 		Gm->OnClientTravelToResultLevelAndLeaveSession();
+	}
+}
+
+void ADefaultPlayerController::Client_ShowNoticeAfterTravel_Implementation(FGameplayTag Notice)
+{
+	if (UToastSubsystem* Toasts = UToastSubsystem::Get(this))
+	{
+		Toasts->ShowNoticeAfterTravel(Notice);
 	}
 }
 

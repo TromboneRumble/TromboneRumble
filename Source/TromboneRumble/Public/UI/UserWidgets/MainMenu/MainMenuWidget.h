@@ -63,9 +63,6 @@ private:
 	void HandleMatchmakingCanceled();
 	//~ End Matchmaking Callbacks
 
-	/** Shows why the last session ended, once, when the menu opens after a lost connection or a kick. */
-	void ShowPendingDisconnectToast();
-
 	/** Displays the tutorial popup */
 	void ShowTutorialPopup() const;
 

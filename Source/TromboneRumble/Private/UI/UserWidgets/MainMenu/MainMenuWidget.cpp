@@ -8,7 +8,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
-#include "TimerManager.h"
 #include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/Defines.h"
@@ -39,8 +38,6 @@ void UMainMenuWidget::NativeOnActivated()
 		Sessions->OnMatchmakingStarted.AddDynamic(this, &ThisClass::HandleMatchmakingStarted);
 		Sessions->OnMatchmakingComplete.AddDynamic(this, &ThisClass::HandleMatchmakingComplete);
 	}
-
-	ShowPendingDisconnectToast();
 }
 
 void UMainMenuWidget::NativeOnDeactivated()
@@ -89,24 +86,6 @@ void UMainMenuWidget::HandleMatchmakingCanceled()
 	}
 }
 
-void UMainMenuWidget::ShowPendingDisconnectToast()
-{
-	// The menu activates while its map is still loading, and the toast subsystem clears every toast once the load finishes.
-	// The reason is read and shown on the next tick, after that clear.
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
-	{
-		// EasySession records why a session ended before it returns the player here, and hands the record out once.
-		// The reason text it carries is not localized yet, so the toast keeps the message the game showed before.
-		const FEasyDisconnectInfo Info = UEasySessionStatics::ConsumePendingEasyDisconnectInfo(this);
-		if (Info.Reason == EEasyDisconnectReason::None)
-		{
-			return;
-		}
-
-		// TODO : 로컬라이징
-		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(FText::FromString(TEXT("서버와 연결이 끊겼습니다."))));
-	}));
-}
 
 void UMainMenuWidget::Init()
 {

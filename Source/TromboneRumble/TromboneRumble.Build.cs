@@ -29,6 +29,7 @@ public class TromboneRumble : ModuleRules
 			"CommonInput",
 			"ApplicationCore",
 			"EasySession",
+			"EngineSettings",
 			"RHI",
 			"MovieScene",
 			"LevelSequence",

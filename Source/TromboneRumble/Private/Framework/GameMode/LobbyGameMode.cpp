@@ -2,11 +2,13 @@
 
 #include "Framework/GameMode/LobbyGameMode.h"
 #include "EasySessionStatics.h"
+#include "EasySessionSubsystem.h"
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Components/ActorComponents/LobbyDirectorComponent.h"
 #include "Components/ActorComponents/PlayerReadyCheckComponent.h"
+#include "Characters/DefaultPlayerController.h"
 #include "Framework/DefaultPlayerState.h"
 #include "Subsystems/GameStateSubsystem.h"
 #include "Utilities/DebugHelper.h"
@@ -91,12 +93,26 @@ void ALobbyGameMode::Logout(AController* ExitedPlayer)
 		return;
 	}
 
+	// The player who left is still in the controller list here, and gets no notice
+	const FGameplayTag Notice = RemainingPlayers < 2 ? TromboneGamePlayTags::Trombone_UI_Notice_EveryoneLeft : TromboneGamePlayTags::Trombone_UI_Notice_LobbyRestarted;
+	for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+	{
+		ADefaultPlayerController* PC = Cast<ADefaultPlayerController>(It->Get());
+		if (PC && PC != ExitedPlayer)
+		{
+			PC->Client_ShowNoticeAfterTravel(Notice);
+		}
+	}
+
 	if (RemainingPlayers < 2)
 	{
 		LOG_WITH_CURRENT_CONTEXT(Warning, TEXT("Player left in lobby. Returning to Main Menu."));
 		
-		const FString MainMenuMapName = GameStateSubsystem->GetLevelStringFromTag(TromboneGamePlayTags::Trombone_Maps_OutGame_MainMenu);
-		UEasySessionStatics::ServerTravelEasySession(this, MainMenuMapName);
+		// Ends the session too, so the host can create a new room from the main menu.
+		if (UEasySessionSubsystem* Sessions = UEasySessionStatics::GetEasySessionSubsystem(this))
+		{
+			Sessions->LeaveSession();
+		}
 	}
 	else
 	{

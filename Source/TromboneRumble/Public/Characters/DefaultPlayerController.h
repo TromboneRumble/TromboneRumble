@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameplayTagContainer.h"
 #include "Utilities/Defines.h"
 #include "DefaultPlayerController.generated.h"
 
@@ -106,6 +107,10 @@ public:
 	
 	UFUNCTION(Client, Reliable)
 	void Client_RequestTravelToResultLevelAndLeaveSession();
+
+	/** Show a notice once this player's next map finished loading. The server calls it right before it starts the travel. */
+	UFUNCTION(Client, Reliable)
+	void Client_ShowNoticeAfterTravel(FGameplayTag Notice);
 
 protected:
 
