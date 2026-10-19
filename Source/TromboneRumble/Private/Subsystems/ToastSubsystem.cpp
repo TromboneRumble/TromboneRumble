@@ -88,6 +88,12 @@ void UToastSubsystem::ReturnToPool(UToastItemWidget* ToastWidget)
 
 void UToastSubsystem::OnPostLoadMap(UWorld* NewWorld)
 {
+	// PostLoadMapWithWorld reaches every game instance in the process, as in PIE with several players
+	if (NewWorld && NewWorld->GetGameInstance() != GetGameInstance())
+	{
+		return;
+	}
+
 	ClearToastPool();
 
 	// A seamless travel loads the transition map first, and the notices belong to the map after it

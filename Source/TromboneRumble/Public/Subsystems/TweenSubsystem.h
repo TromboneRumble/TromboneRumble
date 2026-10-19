@@ -50,8 +50,8 @@ private:
 	
 	float GetEasedAlpha(const float Alpha, const ETweenCurveType CurveType) const;
 	
-	/** Clear tweens when world is changed */
-	void OnWorldCleanUp(UWorld* InWorld);
+	/** Stops the tweens of widgets in a world that is being cleaned up. */
+	void OnWorldCleanUp(UWorld* InWorld, bool bSessionEnded, bool bCleanupResources);
 
 private:
 

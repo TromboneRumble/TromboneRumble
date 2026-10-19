@@ -2,6 +2,7 @@
 
 #include "Subsystems/TweenSubsystem.h"
 #include "Blueprint/UserWidget.h"
+#include "Engine/World.h"
 
 void UTweenSubsystem::DoTween(UUserWidget* InWidget, const FVector2D InTargetScale, const float InDuration, const ETweenCurveType InCurveType, const FSimpleDelegate& InCompletionDelegate)
 {
@@ -50,21 +51,25 @@ float UTweenSubsystem::GetEasedAlpha(const float Alpha, const ETweenCurveType Cu
 	}
 }
 
-void UTweenSubsystem::OnWorldCleanUp(UWorld* InWorld)
+void UTweenSubsystem::OnWorldCleanUp(UWorld* InWorld, bool bSessionEnded, bool bCleanupResources)
 {
-	ActiveTweens.Empty();
+	// Only the tweens of widgets in the world being cleaned up stop, so a tween started for the next map or in another game instance keeps running.
+	ActiveTweens.RemoveAll([InWorld](const FTweenRuntimeInfo& Tween)
+	{
+		return !Tween.TargetWidget.IsValid() || Tween.TargetWidget->GetWorld() == InWorld;
+	});
 }
 
 void UTweenSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	
-	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &ThisClass::OnWorldCleanUp);
+	FWorldDelegates::OnWorldCleanup.AddUObject(this, &ThisClass::OnWorldCleanUp);
 }
 
 void UTweenSubsystem::Deinitialize()
 {
-	FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
+	FWorldDelegates::OnWorldCleanup.RemoveAll(this);
 	ActiveTweens.Empty();
 	
 	Super::Deinitialize();
