@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Defines.h"
-#include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/Common/RootUI.h"
@@ -10,10 +9,10 @@
 
 class UFadeWidget;
 class ULoadingOverlayWidget;
-struct FToastRequest;
 class UTwoButtonPopup;
 class URootUI;
 enum class ELevelType : uint8;
+enum class EEasySessionResult : uint8;
 
 /**
  *  Utility class for static functions in Trombone Rumble Project.
@@ -39,6 +38,9 @@ public:
 	 */
 	static FGameplayTag GetCurrentInGameMap(const UObject* WorldContextObject, const FGameplayTag& Default);
 
+	/** @return The notice that tells the player why a matchmaking run ended without a session. */
+	static FGameplayTag GetMatchmakingFailureNotice(EEasySessionResult Result);
+
 	/** Custom session setting key holding the in-game map tag of the session. */
 	static const FString InGameMapSettingKey;
 	
@@ -60,22 +62,6 @@ public:
 	static float GetServerWorldTime(const UObject* WorldContextObject);
 
 public:
-
-	/**
-	 * Creates FToastRequest with given parameters
-	 *
-	 * @return Created toast request data structure
-	 */
-	UFUNCTION(BlueprintPure, Category = "TromboneStatics|UI", meta = (DisplayName = "Make Toast Request", ReturnDisplayName = "Request"))
-	static FToastRequest MakeToastRequest(const FText& Message, EToastPosition Position = EToastPosition::BottomCenter, float DisplayDuration = 2.0f);
-
-	/**
-	 * Displays a toast message with given FToastRequest
-	 *
-	 * @return Whether toast was successfully displayed or not
-	 */
-	UFUNCTION(BlueprintCallable, Category = "TromboneStatics|UI", meta = (WorldContext = "WorldContextObject"))
-	static bool ShowToast(const UObject* WorldContextObject, FToastRequest Request);
 
 	/**
 	 * Shows a loading overlay

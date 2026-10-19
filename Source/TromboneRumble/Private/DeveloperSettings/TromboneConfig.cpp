@@ -1,5 +1,4 @@
 #include "DeveloperSettings/TromboneConfig.h"
-#include "Data/UIData.h"
 #include "TromboneGamePlayTags.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 
@@ -8,7 +7,6 @@ UTromboneConfig::UTromboneConfig()
 	DefaultInGameMap(TromboneGamePlayTags::Trombone_Maps_InGame_OrchestraStage), 
 	LobbyGameStartDelaySeconds(5),
 	LobbyRagdollGetUpDelaySeconds(5),
-	ToastSystemPolicy(EToastSystemPolicy::Queue),
 	IntervalAfterQuestCompletion(1.5f), 
 	TutorialStartDelay(1.0f),
 	PerformanceWidgetUpdateInterval(0.5f)

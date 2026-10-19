@@ -10,7 +10,6 @@
 #include "TromboneGamePlayTags.h"
 #include "BlueprintFunctionLibraries/TromboneFunctionLibrary.h"
 #include "Components/EditableText.h"
-#include "Data/UIData.h"
 #include "DeveloperSettings/TromboneConfig.h"
 #include "Framework/TromboneGameInstance.h"
 #include "Subsystems/AppearanceSubsystem.h"
@@ -162,8 +161,7 @@ void UPlayModePopup::HandleCreateSessionClicked()
 			return;
 		}
 
-		// TODO : 로컬라이징
-		UTromboneStatics::ShowToast(Sessions->GetWorld(), UTromboneStatics::MakeToastRequest(FText::FromString(TEXT("Matchmaking failed."))));
+		UToastSubsystem::ShowToast(Sessions, TromboneGamePlayTags::Trombone_UI_Notice_CreateRoomFailed);
 		UTromboneStatics::PopOverlay(WeakPC.Get());
 	}));
 }
@@ -201,18 +199,7 @@ void UPlayModePopup::HandleJoinClicked()
 {
 	if (!ET_Code || ET_Code->GetText().IsEmpty())
 	{
-		UToastSubsystem* ToastSubsystem = GetGameInstance()->GetSubsystem<UToastSubsystem>();
-		const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance());
-
-		if (!ToastSubsystem || !GI)
-		{
-			return;
-		}
-
-		const FText EmptyLobbyCodeWarningText = GI->GetCommonUIText(TEXT("Common_EnterLobbyCode"));
-		const FToastRequest Request(EmptyLobbyCodeWarningText);
-		ToastSubsystem->ShowToast(Request);
-
+		UToastSubsystem::ShowToast(this, TromboneGamePlayTags::Trombone_UI_Notice_EnterRoomCode);
 		return;
 	}
 

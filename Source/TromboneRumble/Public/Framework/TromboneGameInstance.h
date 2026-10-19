@@ -24,6 +24,10 @@ public:
     UFUNCTION(BlueprintCallable)
     void StopMenuBGM();
 
+    //~ Begin UGameInstance interface
+    virtual void Init() override;
+    //~ End UGameInstance interface
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSoftObjectPtr<UDataTable> RhythmSongDataTableSoft;
 
@@ -36,6 +40,9 @@ protected:
     TSoftObjectPtr<UStringTable> TutorialStringTable;
     
 private:
+
+    /** Queues the connection lost notice when EasySession recorded why the last session ended. */
+    void QueueConnectionLostNotice();
 
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UAkComponent> GlobalBGMComponent;

@@ -64,7 +64,15 @@ namespace TromboneGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Layer_Overlay,	"Trombone.UI.Layer.Overlay");
 
 	// Toast notices
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_ConnectionLost,	"Trombone.UI.Notice.ConnectionLost");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_EveryoneLeft,		"Trombone.UI.Notice.EveryoneLeft");
-	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_LobbyRestarted,	"Trombone.UI.Notice.LobbyRestarted");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_ConnectionLost,		"Trombone.UI.Notice.ConnectionLost");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_EveryoneLeft,			"Trombone.UI.Notice.EveryoneLeft");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_LobbyRestarted,		"Trombone.UI.Notice.LobbyRestarted");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_MatchmakingCanceled,	"Trombone.UI.Notice.MatchmakingCanceled");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_MatchmakingFailed,	"Trombone.UI.Notice.MatchmakingFailed");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_RoomNotFound,			"Trombone.UI.Notice.RoomNotFound");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_RoomFull,				"Trombone.UI.Notice.RoomFull");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_RoomUnavailable,		"Trombone.UI.Notice.RoomUnavailable");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_CreateRoomFailed,		"Trombone.UI.Notice.CreateRoomFailed");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_EnterRoomCode,		"Trombone.UI.Notice.EnterRoomCode");
+	UE_DEFINE_GAMEPLAY_TAG(Trombone_UI_Notice_RoomCodeCopied,		"Trombone.UI.Notice.RoomCodeCopied");
 }

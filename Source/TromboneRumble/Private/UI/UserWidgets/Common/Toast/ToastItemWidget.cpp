@@ -4,13 +4,6 @@
 #include "Subsystems/ToastSubsystem.h"
 #include "Subsystems/TweenSubsystem.h"
 
-UToastItemWidget::UToastItemWidget()
-	: AnimInDuration(0.15f)
-	, AnimOutDuration(0.15f)
-	, ToastDisplayDuration(2.0f)
-{
-}
-
 void UToastItemWidget::InitializeToast(const FToastRequest& Request, const FSimpleDelegate& InToastFinishedCallback)
 {
 	OnToastFinishedCallback = InToastFinishedCallback;

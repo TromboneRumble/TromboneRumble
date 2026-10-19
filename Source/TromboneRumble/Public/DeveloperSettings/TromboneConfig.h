@@ -11,10 +11,7 @@
 #include "UI/UserWidgets/Settings/SettingPopup.h"
 #include "TromboneConfig.generated.h"
 
-enum class EToastSystemPolicy : uint8;
 class URootUI;
-class UToastItemWidget;
-class UToastContainerWidget;
 class AInstrumentBase;
 enum class EWeaponType : uint8;
 class UMaterialInterface;
@@ -87,14 +84,6 @@ public:
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Overlay")
 	TSoftClassPtr<UCommonActivatableWidget> FadeWidgetClass;
 
-	/** Toast container widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Toast")
-	TSoftClassPtr<UToastContainerWidget> ToastContainerWidgetClass;
-	
-	/** Simple toast widget class. */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "UI|Toast")
-	TSoftClassPtr<UToastItemWidget> SimpleToastWidgetClass;
-
 public:
 	
 	/** Skin color randomly assigned to a character in-game */
@@ -124,12 +113,6 @@ public:
 	/** Time in seconds for the lobby get-up countdown when all players is ragdoll */
 	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Lobby")
 	int32 LobbyRagdollGetUpDelaySeconds;
-	
-public:
-	
-	/** Toast system policy for the entire game */
-	UPROPERTY(Config, NoClear, EditAnywhere, BlueprintReadOnly, Category = "Gameplay|UI")
-	EToastSystemPolicy ToastSystemPolicy;
 	
 public:
 	

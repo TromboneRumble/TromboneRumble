@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
-#include "Data/UIData.h"
+#include "Data/ToastData.h"
 #include "ToastItemWidget.generated.h"
 
 UCLASS()
@@ -13,9 +13,6 @@ class TROMBONERUMBLE_API UToastItemWidget : public UCommonUserWidget
 	GENERATED_BODY()
 	
 public:
-	
-	/** Default constructor */
-	UToastItemWidget();
 	
 	/** Initialize the toast widget with the given request data. This will also play the open tween. */
 	void InitializeToast(const FToastRequest& Request, const FSimpleDelegate& InToastFinishedCallback = FSimpleDelegate());
@@ -35,10 +32,10 @@ protected:
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Toast|Animation")
-	float AnimInDuration;
+	float AnimInDuration = 0.15f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Toast|Animation")
-	float AnimOutDuration;
+	float AnimOutDuration = 0.15f;
 	
 private:
 	
@@ -50,7 +47,7 @@ private:
 	
 	FTimerHandle TimerHandle_StartCloseTween;
 	FSimpleDelegate OnToastFinishedCallback;
-	float ToastDisplayDuration;
+	float ToastDisplayDuration = 2.0f;
 	
 public:
 	

@@ -58,10 +58,7 @@ void ADefaultPlayerController::Server_ReportClientTravelToResultLevelAndLeaveSes
 
 void ADefaultPlayerController::Client_ShowNoticeAfterTravel_Implementation(FGameplayTag Notice)
 {
-	if (UToastSubsystem* Toasts = UToastSubsystem::Get(this))
-	{
-		Toasts->ShowNoticeAfterTravel(Notice);
-	}
+	UToastSubsystem::ShowToastAfterTravel(this, Notice);
 }
 
 void ADefaultPlayerController::Client_RequestTravelToResultLevelAndLeaveSession_Implementation()

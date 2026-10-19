@@ -9,7 +9,6 @@
 #include "GameFramework/GameStateBase.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet/GameplayStatics.h"
-#include "Subsystems/ToastSubsystem.h"
 #include "Subsystems/TromboneUISubsystem.h"
 #include "UI/UserWidgets/Common/RootUI.h"
 #include "UI/UserWidgets/Common/FadeWidget.h"
@@ -52,6 +51,18 @@ FGameplayTag UTromboneStatics::GetCurrentInGameMap(const UObject* WorldContextOb
 	const FString MapName = Sessions->GetSessionSettings().CustomSettings.FindRef(InGameMapSettingKey);
 	const FGameplayTag MapTag = MapName.IsEmpty() ? FGameplayTag() : FGameplayTag::RequestGameplayTag(FName(*MapName), false);
 	return MapTag.IsValid() ? MapTag : Default;
+}
+
+FGameplayTag UTromboneStatics::GetMatchmakingFailureNotice(const EEasySessionResult Result)
+{
+	switch (Result)
+	{
+	case EEasySessionResult::Canceled:			return TromboneGamePlayTags::Trombone_UI_Notice_MatchmakingCanceled;
+	case EEasySessionResult::NoSessionsFound:	return TromboneGamePlayTags::Trombone_UI_Notice_RoomNotFound;
+	case EEasySessionResult::JoinSessionFull:	return TromboneGamePlayTags::Trombone_UI_Notice_RoomFull;
+	case EEasySessionResult::JoinRefused:		return TromboneGamePlayTags::Trombone_UI_Notice_RoomUnavailable;
+	default:									return TromboneGamePlayTags::Trombone_UI_Notice_MatchmakingFailed;
+	}
 }
 
 int32 UTromboneStatics::GetMinPlayersToStart()
@@ -136,26 +147,6 @@ void UTromboneStatics::OpenLevel(const UObject* WorldContextObject, const ELevel
 	
 	const FString URL = FPackageName::ObjectPathToPackageName(MapPath);
 	UGameplayStatics::OpenLevel(WorldContextObject, FName(*URL), bAbsolute);
-}
-
-FToastRequest UTromboneStatics::MakeToastRequest(const FText& Message, const EToastPosition Position, const float DisplayDuration)
-{
-	return FToastRequest(Message, Position, DisplayDuration);
-}
-
-bool UTromboneStatics::ShowToast(const UObject* WorldContextObject, const FToastRequest Request)
-{
-	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
-	{
-		if (UToastSubsystem* ToastSys = World->GetGameInstance()->GetSubsystem<UToastSubsystem>())
-		{
-			ToastSys->ShowToast(Request);
-			
-			return true;
-		}
-	}
-	
-	return false;
 }
 
 UCommonActivatableWidget* UTromboneStatics::ShowLoadingOverlay(const APlayerController* PlayerController)

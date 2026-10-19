@@ -8,6 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/AppearanceSubsystem.h"
 #include "Subsystems/SaveManagerSubsystem.h"
+#include "Subsystems/ToastSubsystem.h"
 #include "UI/UserWidgets/Popup/PlayModePopup.h"
 #include "UI/UserWidgets/Popup/TwoButtonPopup.h"
 #include "Utilities/Defines.h"
@@ -58,32 +59,14 @@ void UMainMenuWidget::HandleMatchmakingStarted()
 
 void UMainMenuWidget::HandleMatchmakingComplete(EEasySessionResult Result, const FString& ErrorMessage)
 {
-	// A cancel arrives as the run's result, not as an event of its own.
-	if (Result == EEasySessionResult::Canceled)
+	// A successful run travels on, and a cancel arrives as the run's result rather than as an event of its own.
+	if (Result == EEasySessionResult::Success)
 	{
-		HandleMatchmakingCanceled();
 		return;
 	}
 
-	if (Result != EEasySessionResult::Success)
-	{
-		// TODO : 로컬라이징
-		const FText ToastMessage = FText::FromString(TEXT("Matchmaking failed."));
-		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
-
-		UTromboneStatics::PopOverlay(GetOwningPlayer());
-	}
-}
-
-void UMainMenuWidget::HandleMatchmakingCanceled()
-{
 	UTromboneStatics::PopOverlay(GetOwningPlayer());
-
-	if (const UTromboneGameInstance* GI = GetGameInstance<UTromboneGameInstance>())
-	{
-		const FText ToastMessage = GI->GetCommonUIText("Matchmaking_Cancel");
-		UTromboneStatics::ShowToast(GetWorld(), UTromboneStatics::MakeToastRequest(ToastMessage));
-	}
+	UToastSubsystem::ShowToast(this, UTromboneStatics::GetMatchmakingFailureNotice(Result));
 }
 
 

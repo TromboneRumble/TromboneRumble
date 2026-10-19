@@ -60,7 +60,6 @@ private:
 	void HandleMatchmakingStarted();
 	UFUNCTION()
 	void HandleMatchmakingComplete(EEasySessionResult Result, const FString& ErrorMessage);
-	void HandleMatchmakingCanceled();
 	//~ End Matchmaking Callbacks
 
 	/** Displays the tutorial popup */

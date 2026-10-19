@@ -2,6 +2,9 @@
 
 #include "Framework/TromboneGameInstance.h"
 #include "AkGameplayStatics.h"
+#include "EasySessionSubsystem.h"
+#include "TromboneGamePlayTags.h"
+#include "Subsystems/ToastSubsystem.h"
 
 void UTromboneGameInstance::PlayMenuBGM()
 {
@@ -29,6 +32,26 @@ void UTromboneGameInstance::StopMenuBGM()
         
 		bIsMenuMusicPlaying = false;
 		CurrentMenuBGMType = EMenuBGMType::None;
+	}
+}
+
+void UTromboneGameInstance::Init()
+{
+	Super::Init();
+
+	if (UToastSubsystem* Toasts = GetSubsystem<UToastSubsystem>())
+	{
+		Toasts->OnCollectToastsAfterTravel.AddUObject(this, &ThisClass::QueueConnectionLostNotice);
+	}
+}
+
+void UTromboneGameInstance::QueueConnectionLostNotice()
+{
+	// EasySession records why a session ended before it sends the player to the menu, and hands the record out once
+	UEasySessionSubsystem* Sessions = GetSubsystem<UEasySessionSubsystem>();
+	if (Sessions && Sessions->ConsumePendingDisconnectInfo().Reason != EEasyDisconnectReason::None)
+	{
+		UToastSubsystem::ShowToastAfterTravel(this, TromboneGamePlayTags::Trombone_UI_Notice_ConnectionLost);
 	}
 }
 

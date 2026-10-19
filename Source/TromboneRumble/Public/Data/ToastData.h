@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UIData.generated.h"
+#include "ToastData.generated.h"
 
 UENUM(BlueprintType)
 enum class EToastPosition : uint8

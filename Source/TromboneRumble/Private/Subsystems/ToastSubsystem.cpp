@@ -2,11 +2,8 @@
 
 #include "Subsystems/ToastSubsystem.h"
 #include "CommonUserWidget.h"
-#include "EasySessionStatics.h"
 #include "GameMapsSettings.h"
-#include "TromboneGamePlayTags.h"
-#include "DeveloperSettings/TromboneConfig.h"
-#include "Framework/TromboneGameInstance.h"
+#include "DeveloperSettings/ToastSettings.h"
 #include "UI/UserWidgets/Common/Toast/ToastItemWidget.h"
 #include "UI/UserWidgets/Common/Toast/ToastContainerWidget.h"
 
@@ -20,10 +17,31 @@ namespace
 	}
 }
 
-UToastSubsystem::UToastSubsystem()
-	: ToastPolicy(EToastSystemPolicy::Queue),
-	  bIsToastShowing(false)
+void UToastSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
+	Super::Initialize(Collection);
+	
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &ThisClass::OnPostLoadMap);
+	
+	const UToastSettings* Settings = GetDefault<UToastSettings>();
+	if (!Settings->ContainerWidgetClass.IsNull())
+	{
+		ToastContainerClass = Settings->ContainerWidgetClass.LoadSynchronous();
+	}
+	
+	if (!Settings->ItemWidgetClass.IsNull())
+	{
+		SimpleToastItemClass = Settings->ItemWidgetClass.LoadSynchronous();
+	}
+	
+	ToastPolicy = Settings->Policy;
+}
+
+void UToastSubsystem::Deinitialize()
+{
+	ClearToastPool();
+	
+	Super::Deinitialize();
 }
 
 UToastSubsystem* UToastSubsystem::Get(const UObject* WorldContextObject)
@@ -44,9 +62,61 @@ UToastSubsystem* UToastSubsystem::Get(const UObject* WorldContextObject)
 	return nullptr;
 }
 
-void UToastSubsystem::ShowToast(const FToastRequest& InRequest)
+void UToastSubsystem::ShowToast(const UObject* WorldContextObject, const FGameplayTag Notice)
 {
-	ToastQueue.Enqueue(InRequest);
+	if (UToastSubsystem* Toasts = Get(WorldContextObject))
+	{
+		Toasts->QueueToast(Notice);
+	}
+}
+
+void UToastSubsystem::ShowToastAfterTravel(const UObject* WorldContextObject, const FGameplayTag& Notice)
+{
+	if (UToastSubsystem* Toasts = Get(WorldContextObject))
+	{
+		Toasts->ToastsAfterTravel.AddUnique(Notice);
+	}
+}
+
+void UToastSubsystem::ReturnToPool(UToastItemWidget* ToastWidget)
+{
+	if (ToastWidget && !ToastPool.Contains(ToastWidget))
+	{
+		ToastPool.Push(ToastWidget);
+	}
+}
+
+void UToastSubsystem::OnPostLoadMap(UWorld* NewWorld)
+{
+	ClearToastPool();
+
+	// A seamless travel loads the transition map first, and the notices belong to the map after it
+	if (!NewWorld || IsTransitionMap(NewWorld))
+	{
+		return;
+	}
+
+	OnCollectToastsAfterTravel.Broadcast();
+
+	for (const FGameplayTag& Notice : ToastsAfterTravel)
+	{
+		QueueToast(Notice);
+	}
+	ToastsAfterTravel.Reset();
+}
+
+void UToastSubsystem::QueueToast(const FGameplayTag& Notice)
+{
+	const UToastSettings* Settings = GetDefault<UToastSettings>();
+	if (Settings->NoticeStringTable.IsNull())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Notice String Table is not set in Toast Settings, so notice %s is not shown."), *Notice.ToString());
+		return;
+	}
+
+	const FName TableId(*Settings->NoticeStringTable.ToSoftObjectPath().GetAssetPathString());
+	const FText Message = FText::FromStringTable(TableId, Notice.GetTagName().ToString());
+	ToastQueue.Enqueue(FToastRequest(Message, Settings->Position, Settings->DisplayDuration));
 	
 	if (ToastPolicy == EToastSystemPolicy::Override && bIsToastShowing && ToastContainer)
 	{
@@ -66,24 +136,17 @@ void UToastSubsystem::ShowToast(const FToastRequest& InRequest)
 	}
 }
 
-UToastItemWidget* UToastSubsystem::GetOrCreateToastWidget()
+void UToastSubsystem::ProcessNextToast()
 {
-	if (ToastPool.Num() > 0)
+	FToastRequest NextRequest;
+	if (ToastQueue.Dequeue(NextRequest))
 	{
-		UToastItemWidget* Widget = ToastPool.Pop();
-		if (IsValid(Widget)) 
-		{
-			return Widget;
-		}
+		ProcessNextToastInternal(NextRequest);
 	}
-	
-	if (SimpleToastItemClass)
+	else
 	{
-		return CreateWidget<UToastItemWidget>(GetWorld(), SimpleToastItemClass);
+		bIsToastShowing = false;
 	}
-	
-	UE_LOG(LogTemp, Error, TEXT("SimpleToastItemClass is not set in UToastSubsystem. Please check your UTromboneConfig settings."));
-	return nullptr;
 }
 
 void UToastSubsystem::ProcessNextToastInternal(const FToastRequest& InRequest)
@@ -107,53 +170,24 @@ void UToastSubsystem::ProcessNextToastInternal(const FToastRequest& InRequest)
 	}
 }
 
-void UToastSubsystem::ProcessNextToast()
+UToastItemWidget* UToastSubsystem::GetOrCreateToastWidget()
 {
-	FToastRequest NextRequest;
-	if (ToastQueue.Dequeue(NextRequest))
+	if (ToastPool.Num() > 0)
 	{
-		ProcessNextToastInternal(NextRequest);
+		UToastItemWidget* Widget = ToastPool.Pop();
+		if (IsValid(Widget)) 
+		{
+			return Widget;
+		}
 	}
-	else
+	
+	if (SimpleToastItemClass)
 	{
-		bIsToastShowing = false;
+		return CreateWidget<UToastItemWidget>(GetWorld(), SimpleToastItemClass);
 	}
-}
-
-void UToastSubsystem::ShowNotice(const FGameplayTag& Notice)
-{
-	if (const UTromboneGameInstance* GI = Cast<UTromboneGameInstance>(GetGameInstance()))
-	{	
-		ShowToast(FToastRequest(GI->GetCommonUIText(Notice.GetTagName().ToString())));
-	}
-}
-
-void UToastSubsystem::ShowNoticeAfterTravel(const FGameplayTag& Notice)
-{
-	NoticesAfterTravel.AddUnique(Notice);
-}
-
-void UToastSubsystem::OnPostLoadMap(UWorld* NewWorld)
-{
-	ClearToastPool();
-
-	// A seamless travel loads the transition map first, and the notices belong to the map after it
-	if (!NewWorld || IsTransitionMap(NewWorld))
-	{
-		return;
-	}
-
-	// EasySession records why a session ended before it sends the player to the menu, and hands the record out once
-	if (UEasySessionStatics::ConsumePendingEasyDisconnectInfo(this).Reason != EEasyDisconnectReason::None)
-	{
-		NoticesAfterTravel.AddUnique(TromboneGamePlayTags::Trombone_UI_Notice_ConnectionLost);
-	}
-
-	for (const FGameplayTag& Notice : NoticesAfterTravel)
-	{
-		ShowNotice(Notice);
-	}
-	NoticesAfterTravel.Reset();
+	
+	UE_LOG(LogTemp, Error, TEXT("Item Widget Class is not set. Please check Toast Settings in Project Settings."));
+	return nullptr;
 }
 
 void UToastSubsystem::ClearToastPool()
@@ -168,41 +202,4 @@ void UToastSubsystem::ClearToastPool()
     
 	bIsToastShowing = false;
 	ToastQueue.Empty();
-}
-
-void UToastSubsystem::ReturnToPool(UToastItemWidget* ToastWidget)
-{
-	if (ToastWidget && !ToastPool.Contains(ToastWidget))
-	{
-		ToastPool.Push(ToastWidget);
-	}
-}
-
-void UToastSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-	Super::Initialize(Collection);
-	
-	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &ThisClass::OnPostLoadMap);
-	
-	if (const UTromboneConfig* Config = UTromboneConfig::Get())
-	{
-		if (!Config->ToastContainerWidgetClass.IsNull())
-		{
-			ToastContainerClass = Config->ToastContainerWidgetClass.LoadSynchronous();
-		}
-		
-		if (!Config->SimpleToastWidgetClass.IsNull())
-		{
-			SimpleToastItemClass = Config->SimpleToastWidgetClass.LoadSynchronous();
-		}
-		
-		ToastPolicy = Config->ToastSystemPolicy;
-	}
-}
-
-void UToastSubsystem::Deinitialize()
-{
-	ClearToastPool();
-	
-	Super::Deinitialize();
 }

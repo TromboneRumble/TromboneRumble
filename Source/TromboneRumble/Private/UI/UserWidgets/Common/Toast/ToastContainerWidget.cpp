@@ -3,7 +3,7 @@
 #include "UI/UserWidgets/Common/Toast/ToastContainerWidget.h"
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
-#include "Data/UIData.h"
+#include "Data/ToastData.h"
 
 void UToastContainerWidget::AddToastItem(UUserWidget* InToastItem, const EToastPosition InPosition)
 {

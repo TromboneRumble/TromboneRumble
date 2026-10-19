@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
-#include "Data/UIData.h"
+#include "Data/ToastData.h"
 #include "ToastContainerWidget.generated.h"
 
 class UOverlay;
