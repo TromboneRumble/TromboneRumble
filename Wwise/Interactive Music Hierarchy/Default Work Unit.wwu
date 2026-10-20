@@ -14101,7 +14101,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-11</Value>
+												<Value>-5</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -22478,11 +22478,6 @@
 										<Property Name="EndPosition" Type="Real64" Value="488000"/>
 										<Property Name="Tempo" Type="Real64" Value="144"/>
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-6</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -33953,7 +33948,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-6</Value>
+												<Value>4</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -41611,7 +41606,7 @@
 												<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>-11</Value>
+														<Value>-5</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
@@ -48656,11 +48651,6 @@
 												<Property Name="EndPosition" Type="Real64" Value="488000"/>
 												<Property Name="Tempo" Type="Real64" Value="144"/>
 												<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-6</Value>
-													</ValueList>
-												</Property>
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
@@ -59651,7 +59641,7 @@
 												<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>-6</Value>
+														<Value>4</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
@@ -73462,7 +73452,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-6</Value>
+												<Value>1</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -84927,7 +84917,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-12</Value>
+												<Value>-6</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -94718,7 +94708,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-6</Value>
+												<Value>-8</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -104076,7 +104066,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-2</Value>
+												<Value>-10</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -115283,7 +115273,7 @@
 										<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-2</Value>
+												<Value>-7</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>

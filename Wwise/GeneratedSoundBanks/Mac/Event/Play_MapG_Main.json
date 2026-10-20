@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{2F5E6B7E-1F64-48E3-A954-94248F70CD72}",
     "Language": "SFX",
-    "Hash": "{471C06B7-5E75-2C09-569F-B3776E611864}",
+    "Hash": "{0651EA05-461F-0A26-A518-B24635FCFA6A}",
     "ObjectPath": "Play_MapG_Main",
     "ShortName": "Play_MapG_Main",
     "Path": "Event/Play_MapG_Main.bnk",
@@ -113,6 +113,6 @@
     ]
    }
   ],
-  "FileHash": "{9DED92FD-45F3-DD1A-2307-9BE3F71F91E7}"
+  "FileHash": "{64A20412-3A0D-52CF-35F0-7ABF1A809BCC}"
  }
 }

@@ -6,52 +6,48 @@
 				<SoundcasterSession Name="Test" ID="{B8CE04C6-33B9-4E65-80FA-7D87A37FDCA0}">
 					<ModuleList>
 						<Module>
-							<ObjectRef Name="Map_C_Main" ID="{0CC37F78-CB2E-4890-9CAA-26477900D4C6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_H_Main" ID="{A812D059-0E24-43EC-AEED-E4950BE62E14}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="0" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="SnowField_Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_C_Main" ID="{0CC37F78-CB2E-4890-9CAA-26477900D4C6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="0" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Map_G_Main" ID="{7422AA68-0ADC-4287-9DF9-FBA5E5D9E59E}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_B_Easy" ID="{6006FCCB-2D40-4F56-BF72-439A8D420E59}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="0" Y="2"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="SnowField_Ambience" ID="{4E376D44-6045-4094-BD8E-213C14E82EED}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_G_Main" ID="{7422AA68-0ADC-4287-9DF9-FBA5E5D9E59E}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="1" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="BBIK_T" ID="{71E97829-1B45-4CD1-9D32-C6D2A3E4CD79}" WorkUnitID="{1B1ABD49-3469-4224-8684-1644704D9B7D}"/>
+							<ObjectRef Name="Map_B" ID="{3AE454D3-86B2-4E15-A6DC-0A12ABFE1E66}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="1" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Map_H_Main" ID="{A812D059-0E24-43EC-AEED-E4950BE62E14}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_A_Easy" ID="{F7BE12A1-47E6-4FC4-8517-0D28E023FC16}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="1" Y="2"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Map_C_Main" ID="{0CC37F78-CB2E-4890-9CAA-26477900D4C6}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_F_Main" ID="{1B9835F3-988B-4D83-B9C3-324D52DE1054}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="2" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Light_On" ID="{D7D27667-5DC3-43A8-B98E-2B5375EF065F}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<ObjectRef Name="Map_A" ID="{56D00CE1-E69E-44AF-8DF1-E169B7ACBEC8}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="2" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Rhythm_Perfect" ID="{7CE4C3F1-EDB6-49C3-B19A-A7616A0E30D9}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
-							<Position X="2" Y="2"/>
-						</Module>
-						<Module>
-							<ObjectRef Name="Map_D_Main" ID="{4164615D-C0C0-4880-9EB1-230F406015BC}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<ObjectRef Name="Map_E_Main" ID="{9FA8D455-1A53-46FC-B5AB-2BA3C94D6292}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="3" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Player_Pain" ID="{C9CC8817-B64F-45D8-A29B-C8BA3B6212D9}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
+							<ObjectRef Name="Map_C_Easy" ID="{0AAF8E79-081C-4182-9EC1-123C1425475E}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
 							<Position X="3" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Rhythm_Good" ID="{C602313A-8A33-4AAD-8C53-D8B69F2C2EF1}" WorkUnitID="{5836E293-EAFE-41D5-B9A9-DFC3E453A37E}"/>
-							<Position X="3" Y="2"/>
+							<ObjectRef Name="Map_D_Main" ID="{4164615D-C0C0-4880-9EB1-230F406015BC}" WorkUnitID="{054A9403-E9D6-4D1D-A4C2-976801427E9B}"/>
+							<Position X="4" Y="0"/>
 						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
@@ -73,7 +69,7 @@
 						<CurrentSwitchRef Name="Level1" ID="{D0E85CFC-CCB7-4255-BB1B-F697BA0166BC}"/>
 						<CurrentSwitchRef Name="Off" ID="{18A66267-44C9-4121-9C05-0085F4699085}"/>
 						<CurrentSwitchRef Name="Fabric" ID="{8E0A828E-734C-48E7-AE60-394AF357E24B}"/>
-						<CurrentSwitchRef Name="SW_V" ID="{B701C5A7-2C88-4D45-8938-97DFA3AC98AE}"/>
+						<CurrentSwitchRef Name="SW_C" ID="{020477EC-CB00-409F-8904-420A04B4E3D8}"/>
 						<CurrentSwitchRef Name="Combo_Off" ID="{304E0349-B689-4754-ABC4-4355EA3A4F6D}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>

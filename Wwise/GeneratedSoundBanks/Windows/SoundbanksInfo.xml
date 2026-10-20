@@ -66,7 +66,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{DFE685E7-F9DC-0EF8-6A4B-6E5918F90A63}">
+		<SoundBank Id="198411524" Type="Event" GUID="{741F3F80-E2E3-4D58-8CAC-851203DC644D}" Language="SFX" Hash="{1F454729-D9FF-6D55-A851-E80044B5D258}">
 			<ObjectPath>Play_MapD_Main</ObjectPath>
 			<ShortName>Play_MapD_Main</ShortName>
 			<Path>Event/Play_MapD_Main.bnk</Path>
@@ -438,7 +438,7 @@
 				<Event Id="674166051" Name="Stop_Host_Speaking" ObjectPath="\Events\Default Work Unit\Ambience\Stop_Host_Speaking" GUID="{9B0C6089-856C-4594-BE83-AD833C97ACEF}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{C3CE2364-374E-47B5-CF5C-E9A821115548}">
+		<SoundBank Id="739894178" Type="Event" GUID="{37CD142C-53D0-4802-A405-6601BBB804B1}" Language="SFX" Hash="{47570DAB-B90C-9F6D-4E30-53EEA3456E53}">
 			<ObjectPath>Play_MapF_Main</ObjectPath>
 			<ShortName>Play_MapF_Main</ShortName>
 			<Path>Event/Play_MapF_Main.bnk</Path>
@@ -485,7 +485,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="772478594" Type="Event" GUID="{CF76B634-FCD1-48D0-8700-EA68AE5402DC}" Language="SFX" Hash="{566B18BA-3538-B50C-2BF2-A43AE6B1FCB5}">
+		<SoundBank Id="772478594" Type="Event" GUID="{CF76B634-FCD1-48D0-8700-EA68AE5402DC}" Language="SFX" Hash="{0651B717-6ECA-BBDC-7E89-333305102E9D}">
 			<ObjectPath>Play_MapA_Easy_Main</ObjectPath>
 			<ShortName>Play_MapA_Easy_Main</ShortName>
 			<Path>Event/Play_MapA_Easy_Main.bnk</Path>
@@ -652,7 +652,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{1B6B8EE1-3128-68A9-2027-97EBF94CD739}">
+		<SoundBank Id="911001902" Type="Event" GUID="{0C62FBF4-4CDC-46F0-87D5-13053E7E1DB4}" Language="SFX" Hash="{78242803-0DB7-7FBA-FD54-72CF7222AB89}">
 			<ObjectPath>Play_MapB_Main</ObjectPath>
 			<ShortName>Play_MapB_Main</ShortName>
 			<Path>Event/Play_MapB_Main.bnk</Path>
@@ -778,7 +778,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{70F0A2EA-BFEB-15F0-28B4-5E5F257C114F}">
+		<SoundBank Id="967033451" Type="Event" GUID="{7699882F-9ACF-4571-872E-794BC91CB66C}" Language="SFX" Hash="{BF979F00-1534-06D6-ADAF-7949AC8B4A8C}">
 			<ObjectPath>Play_MapA_Main</ObjectPath>
 			<ShortName>Play_MapA_Main</ShortName>
 			<Path>Event/Play_MapA_Main.bnk</Path>
@@ -885,7 +885,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1101510959" Type="Event" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" Language="SFX" Hash="{C4D566BC-C9F2-7A50-C1CB-7FAE6E54600A}">
+		<SoundBank Id="1101510959" Type="Event" GUID="{D6AF3987-8B11-432C-895F-748662D075CA}" Language="SFX" Hash="{73E57629-E999-43D7-DAD4-F148D25128ED}">
 			<ObjectPath>Play_MapE_Main</ObjectPath>
 			<ShortName>Play_MapE_Main</ShortName>
 			<Path>Event/Play_MapE_Main.bnk</Path>
@@ -1164,7 +1164,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{A5A179EA-F54E-4A19-4B5B-5B73120ED431}">
+		<SoundBank Id="1297263081" Type="Event" GUID="{53F9899E-CC11-4622-84BA-C537EC0CB1EC}" Language="SFX" Hash="{210EE0A1-E9AE-7F47-C331-68C55EADB81F}">
 			<ObjectPath>Play_MapC_Main</ObjectPath>
 			<ShortName>Play_MapC_Main</ShortName>
 			<Path>Event/Play_MapC_Main.bnk</Path>
@@ -3209,7 +3209,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="2848021508" Type="Event" GUID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}" Language="SFX" Hash="{E7CC695E-1C83-B6A9-63CE-97383962712D}">
+		<SoundBank Id="2848021508" Type="Event" GUID="{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}" Language="SFX" Hash="{03B480C3-58D3-B6A6-601A-7D71D3EDF441}">
 			<ObjectPath>Play_MapC_Easy_Main</ObjectPath>
 			<ShortName>Play_MapC_Easy_Main</ShortName>
 			<Path>Event/Play_MapC_Easy_Main.bnk</Path>
@@ -3256,7 +3256,7 @@
 				</SwitchGroup>
 			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="2850152613" Type="Event" GUID="{8196F37A-0DB6-42AE-9826-3BC96A93FB02}" Language="SFX" Hash="{F82BD6B0-3E4D-6407-8810-A46C3CD5E14E}">
+		<SoundBank Id="2850152613" Type="Event" GUID="{8196F37A-0DB6-42AE-9826-3BC96A93FB02}" Language="SFX" Hash="{8BE399F9-6C6C-D38C-0AC6-703AFAA39A46}">
 			<ObjectPath>Play_MapB_Easy_Main</ObjectPath>
 			<ShortName>Play_MapB_Easy_Main</ShortName>
 			<Path>Event/Play_MapB_Easy_Main.bnk</Path>
@@ -4182,7 +4182,7 @@
 				<GameParameter Id="1751273511" Name="RTPC_Space" ObjectPath="\Game Parameters\Default Work Unit\RTPC_Space" GUID="{F8682A97-82BF-4329-A9D5-AB0A62D24823}"/>
 			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{471C06B7-5E75-2C09-569F-B3776E611864}">
+		<SoundBank Id="3494894253" Type="Event" GUID="{2F5E6B7E-1F64-48E3-A954-94248F70CD72}" Language="SFX" Hash="{0651EA05-461F-0A26-A518-B24635FCFA6A}">
 			<ObjectPath>Play_MapG_Main</ObjectPath>
 			<ShortName>Play_MapG_Main</ShortName>
 			<Path>Event/Play_MapG_Main.bnk</Path>
@@ -4371,7 +4371,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3672321512" Type="Event" GUID="{EA540656-0E52-4B7F-B457-778EBF0BA927}" Language="SFX" Hash="{DD0A609E-6B79-ECDA-885D-37BEE6DB81F2}">
+		<SoundBank Id="3672321512" Type="Event" GUID="{EA540656-0E52-4B7F-B457-778EBF0BA927}" Language="SFX" Hash="{4B9E5268-846B-C9AF-80B7-AB4C7F95A46C}">
 			<ObjectPath>Play_MapH_Main</ObjectPath>
 			<ShortName>Play_MapH_Main</ShortName>
 			<Path>Event/Play_MapH_Main.bnk</Path>
@@ -4669,5 +4669,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{B3F2CB87-66BB-6485-D388-FC4D18739F21}</FileHash>
+	<FileHash>{A7CF732A-91CE-03D1-FCDC-406683E1143C}</FileHash>
 </SoundBanksInfo>

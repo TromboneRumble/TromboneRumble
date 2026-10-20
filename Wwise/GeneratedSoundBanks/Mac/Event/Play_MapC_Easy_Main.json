@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F5498CF2-52A5-4F8A-B1CD-8A77B883F484}",
     "Language": "SFX",
-    "Hash": "{E7CC695E-1C83-B6A9-63CE-97383962712D}",
+    "Hash": "{03B480C3-58D3-B6A6-601A-7D71D3EDF441}",
     "ObjectPath": "Play_MapC_Easy_Main",
     "ShortName": "Play_MapC_Easy_Main",
     "Path": "Event/Play_MapC_Easy_Main.bnk",
@@ -113,6 +113,6 @@
     ]
    }
   ],
-  "FileHash": "{7BCC304B-C399-B235-5912-3F819D0351AC}"
+  "FileHash": "{5CFFB2E5-D4FE-E14A-F065-D455816AD9C7}"
  }
 }

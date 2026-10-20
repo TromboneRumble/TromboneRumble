@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3672321512" Type="Event" GUID="{EA540656-0E52-4B7F-B457-778EBF0BA927}" Language="SFX" Hash="{DD0A609E-6B79-ECDA-885D-37BEE6DB81F2}">
+		<SoundBank Id="3672321512" Type="Event" GUID="{EA540656-0E52-4B7F-B457-778EBF0BA927}" Language="SFX" Hash="{4B9E5268-846B-C9AF-80B7-AB4C7F95A46C}">
 			<ObjectPath>Play_MapH_Main</ObjectPath>
 			<ShortName>Play_MapH_Main</ShortName>
 			<Path>Event/Play_MapH_Main.bnk</Path>
@@ -49,5 +49,5 @@
 			</SwitchGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{9C7F2D79-AD6E-A6A2-DE50-3B0340FA0B5F}</FileHash>
+	<FileHash>{D4B05826-3434-7199-380C-74F6965DD98B}</FileHash>
 </SoundBanksInfo>
