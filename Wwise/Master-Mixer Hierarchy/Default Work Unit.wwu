@@ -246,6 +246,41 @@
 									</RTPC>
 								</Local>
 							</Reference>
+							<Reference>
+								<Local>
+									<RTPC Name="" ID="{870EEFE6-64F7-45FB-A4D8-B0469CC91D0C}" ShortID="32164907">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="BusVolume"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="RTPC_MasterVolume" ID="{B27D731F-8A64-4DA0-B718-3CCB1E9C55E2}" WorkUnitID="{627DFC7B-FAF9-435B-AEBC-A0C3069919AB}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{B96962D1-008C-4613-9D91-B9574703EFC0}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="3"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>-200</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>100</XPos>
+																<YPos>0</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</Local>
+							</Reference>
 						</ObjectList>
 					</ObjectLists>
 				</Bus>
