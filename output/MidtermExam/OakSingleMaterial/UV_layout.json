@@ -1,0 +1,30 @@
+{
+  "source_mesh": "/Game/Arts/Environment/JazzBar/Oak/SM_Move_Oak.SM_Move_Oak",
+  "size": [
+    2048,
+    2048
+  ],
+  "uv_origin": "top-left",
+  "slot_regions_pixels": {
+    "0": [
+      24,
+      24,
+      1000,
+      2024
+    ],
+    "1": [
+      1048,
+      24,
+      2024,
+      1000
+    ],
+    "2": [
+      1048,
+      1048,
+      2024,
+      2024
+    ]
+  },
+  "source_to_obj_position": "(x,y,z) -> (x,z,-y)",
+  "note": "Original mesh unchanged. New UV0 requires this companion mesh or equivalent UV remap."
+}

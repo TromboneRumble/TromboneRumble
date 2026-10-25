@@ -1,0 +1,3 @@
+newmtl M_Opaque_Midterm_Oak
+Kd 1 1 1
+map_Kd T_Oak_SingleMaterial_BaseColor.png
