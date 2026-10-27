@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="915173079" Type="Event" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" Language="SFX" Hash="{C4AECF57-71EE-148A-E3E2-CA76B659DFAD}">
+		<SoundBank Id="915173079" Type="Event" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" Language="SFX" Hash="{63BE0C88-2A1E-DB91-374B-BFB1349EABDE}">
 			<ObjectPath>Play_Port_Landing</ObjectPath>
 			<ShortName>Play_Port_Landing</ShortName>
 			<Path>Event/Play_Port_Landing.bnk</Path>
@@ -23,7 +23,7 @@
 				</ShareSets>
 			</Plugins>
 			<Events>
-				<Event Id="915173079" Name="Play_Port_Landing" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Port_Landing" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="2.1247292" DurationMax="2.2502916">
+				<Event Id="915173079" Name="Play_Port_Landing" ObjectPath="\Events\Default Work Unit\Object_SFX\Play_Port_Landing" GUID="{4512AF6F-537C-427D-B50F-4283DB66F59B}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="2.1247292" DurationMax="2.2502916">
 					<MediaRefs>
 						<MediaRef Id="42152457"/>
 						<MediaRef Id="650737698"/>
@@ -37,5 +37,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{3CB1A60E-BD30-05D4-5544-99817FEACA4E}</FileHash>
+	<FileHash>{1FC48012-A687-6DB0-AB29-39A1E90EBD81}</FileHash>
 </SoundBanksInfo>

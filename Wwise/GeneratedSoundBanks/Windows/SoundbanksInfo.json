@@ -1524,7 +1524,7 @@
     "Type": "Event",
     "GUID": "{4512AF6F-537C-427D-B50F-4283DB66F59B}",
     "Language": "SFX",
-    "Hash": "{C4AECF57-71EE-148A-E3E2-CA76B659DFAD}",
+    "Hash": "{63BE0C88-2A1E-DB91-374B-BFB1349EABDE}",
     "ObjectPath": "Play_Port_Landing",
     "ShortName": "Play_Port_Landing",
     "Path": "Event/Play_Port_Landing.bnk",
@@ -1566,7 +1566,7 @@
       "Name": "Play_Port_Landing",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Landing",
       "GUID": "{4512AF6F-537C-427D-B50F-4283DB66F59B}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "2.1247292",
       "DurationMax": "2.2502916",
@@ -6733,7 +6733,7 @@
     "Type": "Event",
     "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
     "Language": "SFX",
-    "Hash": "{31CDB14A-C33C-7B01-D6C6-314877D72424}",
+    "Hash": "{F9AC6E4B-F179-C7D3-2E8C-902FFF4B795D}",
     "ObjectPath": "Play_Port_Flying",
     "ShortName": "Play_Port_Flying",
     "Path": "Event/Play_Port_Flying.bnk",
@@ -6775,7 +6775,7 @@
       "Name": "Play_Port_Flying",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Flying",
       "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "3.0706666",
       "DurationMax": "3.1829584",
@@ -9834,6 +9834,6 @@
     ]
    }
   ],
-  "FileHash": "{AB94D2A7-8579-0EDB-A265-7FAAD5A97DF0}"
+  "FileHash": "{DFC00A69-5798-0C9A-58CE-42D704D023FC}"
  }
 }
