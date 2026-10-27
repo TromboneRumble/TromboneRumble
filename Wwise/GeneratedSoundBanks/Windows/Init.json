@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{97A4592A-F4B4-3CBF-E177-F06554B04557}",
+    "Hash": "{03F8ECCF-4753-86F7-BDC0-9267ACB4DB89}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -77,6 +77,19 @@
      }
     ],
     "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D85C00A8-5B08-4755-8BB5-1F120EF7EA00}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
+     },
      {
       "Id": "356551040",
       "Name": "Map_A_Reverb",
@@ -770,6 +783,6 @@
     ]
    }
   ],
-  "FileHash": "{E395446B-6656-B3A4-386B-735A242D4CA3}"
+  "FileHash": "{F55EC6BC-503D-8E85-41F8-23BBB8F4B356}"
  }
 }

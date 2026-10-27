@@ -129,6 +129,43 @@
     ]
    },
    {
+    "Id": "140992219",
+    "Type": "Bus",
+    "GUID": "{D85C00A8-5B08-4755-8BB5-1F120EF7EA00}",
+    "Language": "SFX",
+    "Hash": "{AE35191A-F20C-0F90-0006-296B990EC06C}",
+    "ObjectPath": "Map_D_Reverb",
+    "ShortName": "Map_D_Reverb",
+    "Path": "Bus/Map_D_Reverb.bnk",
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3701691487",
+       "Name": "Hall_Large_Bright",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large_Bright",
+       "GUID": "{CB602948-2D1D-4977-A8D5-378184293E80}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      }
+     ]
+    },
+    "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D85C00A8-5B08-4755-8BB5-1F120EF7EA00}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
     "Id": "198411524",
     "Type": "Event",
     "GUID": "{741F3F80-E2E3-4D58-8CAC-851203DC644D}",
@@ -3117,7 +3154,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{F2695F39-87D0-1F50-38A3-F5AE33D5B525}",
+    "Hash": "{A2765E2A-0CB7-5EE5-B6E7-8D6287C2C986}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -3184,6 +3221,19 @@
      }
     ],
     "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D85C00A8-5B08-4755-8BB5-1F120EF7EA00}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3701691487"
+        }
+       ]
+      }
+     },
      {
       "Id": "356551040",
       "Name": "Map_A_Reverb",
@@ -9788,6 +9838,6 @@
     ]
    }
   ],
-  "FileHash": "{4BC6823B-3187-E7E1-139D-AD7E1F8D32B3}"
+  "FileHash": "{569ED253-AF7B-A162-330E-04D0D5F94359}"
  }
 }
