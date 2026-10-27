@@ -63,9 +63,28 @@
 |---|---|---|
 | Opaque | `SM_Oak_ME` / `M_Opaque_Oak_ME` | 적용됨. 최종 영상 가시성·노드 캡처 확인 필요 |
 | Translucent | `Midterm_BeerSurface` / `MI_Translucent_Midterm_Beer` | 적용됨. 최종 영상 가시성·노드 캡처 확인 필요 |
-| Masked | 없음 | 미완료. 별도 Static/Skeletal Mesh 오브젝트에 직접 적용해야 함 |
+| Masked | `Midterm_RadioNote_01_Single`–`Midterm_RadioNote_12_Double` / `MI_Masked_RadioNote_Single`, `MI_Masked_RadioNote_Double` | 일반 StaticMeshActor 12개에 직접 적용됨. 1–5초에 순차적으로 떠오르는 음악 음표. 최종 영상 가시성·노드 캡처 확인 필요 |
 
-다음 작업은 Masked용 일반 메시 오브젝트를 배치하고, 머터리얼의 Opacity Mask가 실제로 일부 표면을 잘라 내는 모습이 최종 카메라에 보이도록 구성하는 것이다. 기존 자작 Masked를 재사용할 수 있으나 Niagara 전용 입력에 의존하는 부분은 일반 메시에서도 작동하도록 확인해야 한다. 현재 Niagara 연출은 유지할 수 있다.
+음표는 라디오가 아직 배치되지 않아 첫 카메라에서 보이는 임시 위치에 두었다. 아웃라이너 폴더는 `Midterm_Cinematic/RadioNotes`이다. 12개의 일반 메시가 약 0.27초 간격으로 한 지점에서 나타나 좌우로 흔들리며 위로 이동하고, 등장·종료 시 크기가 변한다. 1초 이전과 5초 이후에는 모두 숨겨진다. `Midterm_RadioNotes_Origin`을 옮기거나 회전하면 음표와 상승 경로가 함께 움직이므로 라디오를 배치한 뒤 이 원점을 라디오 출구 위치로 옮기면 된다. 원점에는 Sequencer 위치 트랙이 없다. 메시·텍스처·머터리얼 에셋은 모두 `/Game/Arts/Environment/JazzBar/MidtermExam`에 있다. `M_Masked_RadioNote`는 Default Lit / Masked / Two Sided이며 `NoteColor`를 Base Color에, `NoteTexture`의 Alpha에서 `MaskThreshold`로 경계를 조절한 값을 Opacity Mask에 연결한다.
+
+2026-10-28 사용자의 수정 요청에 따라 음표 배치 과정에서 변경했던 세 카메라의 고정 노출과 카메라 2·3의 Sequencer Transform 기본값을 작업 전 기록으로 복구했다. 강제 EV100 -3 설정은 제거했다. 세 카메라 컷이 기존 위치·방향으로 평가되는 것을 검사했고, 다른 기믹의 Sequencer 채널과 음표 머터리얼은 변경하지 않았다. 실제 에디터 Sequencer 재생에서 1초 이전 0개, 구간 중 3–6개 동시 표시, 5초 이후 0개를 확인했다. 원점을 이동하고 시간을 다시 평가해도 음표 경로가 함께 이동하는 것을 검증했다. 맵과 시퀀스는 저장했다.
+
+## 음표 Masked의 조절 파라미터
+
+`MI_Masked_RadioNote_Single` 또는 `MI_Masked_RadioNote_Double`을 열어 해당 항목의 체크박스를 켜고 값을 조절한다. 같은 인스턴스를 사용하는 음표에 함께 반영된다.
+
+| 파라미터 | 기본값 | 역할 |
+|---|---|---|
+| `NoteTexture` | 음표 종류별 PNG | 단일·연결 음표의 알파 텍스처 선택 |
+| `NoteColor` | 기존 색상 | 음표 표면 색상 |
+| `NoteScale` | 1 | 메시 평면 내부의 음표 크기. 0.6이면 60% 크기이며 메시의 이동 경로는 그대로다. 과도하게 확대하면 평면 밖의 모양이 잘릴 수 있다. |
+| `NoteRotationDegrees` | 0 | 중앙 기준 회전 각도(도). 30이면 시계 방향 30도. 자동 회전 속도는 아니다. |
+| `MaskThreshold` | 0.333 | 알파 경계의 잘림 기준. 높이면 더 불투명한 부분만 남는다. 반투명도 조절이 아니며 음표 가장자리의 변화다. |
+| `NoteRoughness` | 0.5 | 표면 거칠기. 0은 매끈하고 1은 거칠다. |
+
+그래프는 UV 크기·회전, Alpha 경계, 색상·거칠기의 역할별 위치로 정리했고 각 노드에 역할 설명을 추가했다. 회전 노드의 Time 입력은 각도 파라미터를 사용하므로 시간에 따라 자동으로 회전하지 않는다. UV를 0~1 범위로 제한해 축소·회전할 때 음표가 반복되지 않게 했다. 마스크는 `Alpha - Clamp(MaskThreshold, 0.01, 0.99) + 기존 Clip Value`를 사용하므로 기본값에서는 기존 Alpha 판정과 같다.
+
+검증: 임시 Unlit 마스크 렌더에서 두 음표 모두 기본값의 RGBA 픽셀이 이전 구성과 완전히 같았다. 0.6배 크기, 30도 회전, 경계 기준 0.15·0.85의 결과 차이를 확인했다. 실제 Default Lit 머터리얼과 두 인스턴스를 컴파일·저장했고, 두 인스턴스의 기본값 상속을 확인했다. 맵·시퀀스·텍스처·메시 파일 해시와 카메라 상태는 이 파라미터 작업 전후 동일했다.
 
 
 
