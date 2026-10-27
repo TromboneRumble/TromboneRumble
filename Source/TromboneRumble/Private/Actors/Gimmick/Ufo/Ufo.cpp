@@ -232,8 +232,13 @@ void AUfo::UpdateMotion(const float Now)
 		bBeamVFXCut = true;
 		BeamVFXComponent->DeactivateImmediate();
 
-		// The sound runs longer than any beam, so it fades out with the end of the fold
-		StopLaserSound(LaserFadeOutDuration);
+		// The loop runs longer than any beam, so its stop event ends it with the end of the fold.
+		// Without a stop event the loop keeps its playing ID, and EndPlay stops it
+		if (LaserLoopStopEvent && LaserPlayingID != AK_INVALID_PLAYING_ID)
+		{
+			UAkGameplayStatics::PostEvent(LaserLoopStopEvent, this, 0, FOnAkPostEventCallback());
+			LaserPlayingID = AK_INVALID_PLAYING_ID;
+		}
 	}
 
 	const FVector BodyScale(
@@ -251,6 +256,10 @@ void AUfo::SetBeamVFXOn(const bool bOn)
 	if (!bOn)
 	{
 		BeamVFXComponent->Deactivate();
+		if (LaserOffSound)
+		{
+			UAkGameplayStatics::PostEvent(LaserOffSound, this, 0, FOnAkPostEventCallback());
+		}
 		return;
 	}
 
@@ -263,20 +272,23 @@ void AUfo::SetBeamVFXOn(const bool bOn)
 	BeamVFXComponent->SetRelativeScale3D(FVector(1.f, 1.f, ZScale));
 	BeamVFXComponent->Activate();
 
-	if (LaserSound)
+	if (LaserOnSound)
 	{
-		LaserPlayingID = UAkGameplayStatics::PostEvent(LaserSound, this, 0, FOnAkPostEventCallback());
+		UAkGameplayStatics::PostEvent(LaserOnSound, this, 0, FOnAkPostEventCallback());
+	}
+	if (LaserLoopSound)
+	{
+		LaserPlayingID = UAkGameplayStatics::PostEvent(LaserLoopSound, this, 0, FOnAkPostEventCallback());
 	}
 }
 
-void AUfo::StopLaserSound(const float FadeOutDuration)
+void AUfo::StopLaserSound()
 {
 	if (LaserPlayingID == AK_INVALID_PLAYING_ID) return;
 
 	if (IWwiseSoundEngineAPI* SoundEngine = IWwiseSoundEngineAPI::Get())
 	{
-		const AkTimeMs FadeOutMs = FMath::RoundToInt(FadeOutDuration * 1000.f);
-		SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, LaserPlayingID, FadeOutMs);
+		SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Stop, LaserPlayingID, 0);
 	}
 	LaserPlayingID = AK_INVALID_PLAYING_ID;
 }
@@ -351,8 +363,8 @@ void AUfo::Tick(const float DeltaSeconds)
 
 void AUfo::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	// Removed before the fold ended, for example when the round ends. Wwise would keep playing the beam sound after the UFO is gone
-	StopLaserSound(0.f);
+	// Removed before the fold ended, for example when the round ends. Wwise would keep playing the beam loop after the UFO is gone
+	StopLaserSound();
 
 	// Destroyed early, for example when the round ends. Let go of everyone
 	if (HasAuthority())
