@@ -10,19 +10,19 @@
     "Type": "Event",
     "GUID": "{8C5F9346-129D-401D-9506-D41F75340669}",
     "Language": "SFX",
-    "Hash": "{24E65511-D0CE-F13A-115A-3832642C022F}",
+    "Hash": "{3066DF55-F6EA-8EB9-C8B9-DEB7A5E7BFAC}",
     "ObjectPath": "Play_UFO_LaserOn",
     "ShortName": "Play_UFO_LaserOn",
     "Path": "Event/Play_UFO_LaserOn.bnk",
     "Media": [
      {
-      "Id": "503514366",
+      "Id": "341680134",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
       "ShortName": "UFO LOOP.wav",
-      "Path": "Media/503514366.wem",
-      "CachePath": "SFX/UFO LOOP_818F3B66.wem"
+      "Path": "Media/341680134.wem",
+      "CachePath": "SFX/UFO LOOP_FBC78EF0.wem"
      }
     ],
     "Events": [
@@ -32,12 +32,10 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_LaserOn",
       "GUID": "{8C5F9346-129D-401D-9506-D41F75340669}",
       "MaxAttenuation": "3000",
-      "DurationType": "OneShot",
-      "DurationMin": "4.4966664",
-      "DurationMax": "4.4966664",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
-        "Id": "503514366"
+        "Id": "341680134"
        }
       ]
      }
@@ -52,6 +50,6 @@
     ]
    }
   ],
-  "FileHash": "{75BBCB5B-1F1E-2C11-8FC1-0A079C8DABC2}"
+  "FileHash": "{9D451E29-51CB-BD83-BBA1-CA560BFBE63F}"
  }
 }

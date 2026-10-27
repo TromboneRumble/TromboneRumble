@@ -8679,19 +8679,19 @@
     "Type": "Event",
     "GUID": "{6E7447D6-A8B8-48DB-A31E-D50EA5061442}",
     "Language": "SFX",
-    "Hash": "{F3BBF275-AD6F-3836-7E34-7B327E282071}",
+    "Hash": "{278ADB17-1BA8-A811-2F82-A20A77F4EC3E}",
     "ObjectPath": "Play_BlackHole_StaticOn",
     "ShortName": "Play_BlackHole_StaticOn",
     "Path": "Event/Play_BlackHole_StaticOn.bnk",
     "Media": [
      {
-      "Id": "1042388455",
+      "Id": "575029133",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
       "ShortName": "BlackHole Loop.wav",
-      "Path": "Media/1042388455.wem",
-      "CachePath": "SFX/BlackHole Loop_818F3B66.wem"
+      "Path": "Media/575029133.wem",
+      "CachePath": "SFX/BlackHole Loop_FBC78EF0.wem"
      }
     ],
     "Events": [
@@ -8701,12 +8701,10 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\BlackHole\\Play_BlackHole_StaticOn",
       "GUID": "{6E7447D6-A8B8-48DB-A31E-D50EA5061442}",
       "MaxAttenuation": "3000",
-      "DurationType": "OneShot",
-      "DurationMin": "6.565292",
-      "DurationMax": "6.565292",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
-        "Id": "1042388455"
+        "Id": "575029133"
        }
       ]
      }
@@ -8806,19 +8804,19 @@
     "Type": "Event",
     "GUID": "{8C5F9346-129D-401D-9506-D41F75340669}",
     "Language": "SFX",
-    "Hash": "{24E65511-D0CE-F13A-115A-3832642C022F}",
+    "Hash": "{3066DF55-F6EA-8EB9-C8B9-DEB7A5E7BFAC}",
     "ObjectPath": "Play_UFO_LaserOn",
     "ShortName": "Play_UFO_LaserOn",
     "Path": "Event/Play_UFO_LaserOn.bnk",
     "Media": [
      {
-      "Id": "503514366",
+      "Id": "341680134",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
       "ShortName": "UFO LOOP.wav",
-      "Path": "Media/503514366.wem",
-      "CachePath": "SFX/UFO LOOP_818F3B66.wem"
+      "Path": "Media/341680134.wem",
+      "CachePath": "SFX/UFO LOOP_FBC78EF0.wem"
      }
     ],
     "Events": [
@@ -8828,12 +8826,10 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\UFO\\Play_UFO_LaserOn",
       "GUID": "{8C5F9346-129D-401D-9506-D41F75340669}",
       "MaxAttenuation": "3000",
-      "DurationType": "OneShot",
-      "DurationMin": "4.4966664",
-      "DurationMax": "4.4966664",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
-        "Id": "503514366"
+        "Id": "341680134"
        }
       ]
      }
@@ -9838,6 +9834,6 @@
     ]
    }
   ],
-  "FileHash": "{569ED253-AF7B-A162-330E-04D0D5F94359}"
+  "FileHash": "{B76EA5B3-89E4-3F17-5D1F-AE50AFFE6551}"
  }
 }

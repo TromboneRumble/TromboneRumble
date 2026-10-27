@@ -4123,21 +4123,21 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{F3BBF275-AD6F-3836-7E34-7B327E282071}">
+		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{278ADB17-1BA8-A811-2F82-A20A77F4EC3E}">
 			<ObjectPath>Play_BlackHole_StaticOn</ObjectPath>
 			<ShortName>Play_BlackHole_StaticOn</ShortName>
 			<Path>Event/Play_BlackHole_StaticOn.bnk</Path>
 			<Media>
-				<File Id="1042388455" Language="SFX" Streaming="false" Location="Loose">
+				<File Id="575029133" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>BlackHole Loop.wav</ShortName>
-					<Path>Media/1042388455.wem</Path>
-					<CachePath>SFX/BlackHole Loop_818F3B66.wem</CachePath>
+					<Path>Media/575029133.wem</Path>
+					<CachePath>SFX/BlackHole Loop_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3404172405" Name="Play_BlackHole_StaticOn" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOn" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="6.565292" DurationMax="6.565292">
+				<Event Id="3404172405" Name="Play_BlackHole_StaticOn" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOn" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" MaxAttenuation="3000" DurationType="Infinite">
 					<MediaRefs>
-						<MediaRef Id="1042388455"/>
+						<MediaRef Id="575029133"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -4186,21 +4186,21 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3488722653" Type="Event" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" Language="SFX" Hash="{24E65511-D0CE-F13A-115A-3832642C022F}">
+		<SoundBank Id="3488722653" Type="Event" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" Language="SFX" Hash="{3066DF55-F6EA-8EB9-C8B9-DEB7A5E7BFAC}">
 			<ObjectPath>Play_UFO_LaserOn</ObjectPath>
 			<ShortName>Play_UFO_LaserOn</ShortName>
 			<Path>Event/Play_UFO_LaserOn.bnk</Path>
 			<Media>
-				<File Id="503514366" Language="SFX" Streaming="false" Location="Loose">
+				<File Id="341680134" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>UFO LOOP.wav</ShortName>
-					<Path>Media/503514366.wem</Path>
-					<CachePath>SFX/UFO LOOP_818F3B66.wem</CachePath>
+					<Path>Media/341680134.wem</Path>
+					<CachePath>SFX/UFO LOOP_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3488722653" Name="Play_UFO_LaserOn" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOn" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="4.4966664" DurationMax="4.4966664">
+				<Event Id="3488722653" Name="Play_UFO_LaserOn" ObjectPath="\Events\Default Work Unit\Object_SFX\UFO\Play_UFO_LaserOn" GUID="{8C5F9346-129D-401D-9506-D41F75340669}" MaxAttenuation="3000" DurationType="Infinite">
 					<MediaRefs>
-						<MediaRef Id="503514366"/>
+						<MediaRef Id="341680134"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -4695,5 +4695,5 @@
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{3107BEF7-4514-33F9-A754-BFA0C332F83F}</FileHash>
+	<FileHash>{B20DCB9A-546E-65F9-4A4C-D40363B78241}</FileHash>
 </SoundBanksInfo>
