@@ -79,6 +79,9 @@ protected:
 	UPROPERTY()
 	TMap<EGraphicsOptionType, UOptionCycleRowWidget*> CreatedWidgets;
 
+	/** Resolution labels of the data table that the monitor supports. RefreshUI adds the current resolution to a copy when it is not one of them. */
+	TArray<FText> BaseResolutionOptions;
+
 private:
 	void BuildOptions();
 	
