@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{03F8ECCF-4753-86F7-BDC0-9267ACB4DB89}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{245B4792-3CCF-1933-CFA8-9FEF656E99FF}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
 				<ShareSets>
+					<Plugin Id="1706684651" Name="Plate_Medium" ObjectPath="\Effects\Factory Effects\RoomVerb\Plates\Plate_Medium" GUID="{33384D0C-6ACB-4E3D-AC82-73AAB3AE1CA5}" LibName="Wwise RoomVerb" LibId="7733251"/>
 					<Plugin Id="3701691487" Name="Hall_Large_Bright" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large_Bright" GUID="{CB602948-2D1D-4977-A8D5-378184293E80}" LibName="Wwise RoomVerb" LibId="7733251"/>
 				</ShareSets>
 				<AudioDevices>
@@ -25,7 +26,7 @@
 				<AuxBus Id="140992219" Name="Map_D_Reverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\Map_D_Reverb" GUID="{D85C00A8-5B08-4755-8BB5-1F120EF7EA00}">
 					<PluginRefs>
 						<ShareSets>
-							<PluginRef Id="3701691487"/>
+							<PluginRef Id="1706684651"/>
 						</ShareSets>
 					</PluginRefs>
 				</AuxBus>
@@ -224,5 +225,5 @@
 			</AcousticTextures>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{33C402FE-797B-1C71-6F98-13213D09EA33}</FileHash>
+	<FileHash>{647EE9AB-7838-6717-F25F-8DFAA9CF502F}</FileHash>
 </SoundBanksInfo>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{278ADB17-1BA8-A811-2F82-A20A77F4EC3E}">
+		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{F9A50F5F-02FA-2944-9F01-07973485082F}">
 			<ObjectPath>Play_BlackHole_StaticOn</ObjectPath>
 			<ShortName>Play_BlackHole_StaticOn</ShortName>
 			<Path>Event/Play_BlackHole_StaticOn.bnk</Path>
@@ -24,5 +24,5 @@
 			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{57C3AEAD-3C52-18A8-D1C4-0CB671F5FBE8}</FileHash>
+	<FileHash>{C24446D6-22F7-ABAE-589B-0B0CE2B72B43}</FileHash>
 </SoundBanksInfo>

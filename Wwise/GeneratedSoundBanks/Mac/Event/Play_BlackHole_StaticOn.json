@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6E7447D6-A8B8-48DB-A31E-D50EA5061442}",
     "Language": "SFX",
-    "Hash": "{278ADB17-1BA8-A811-2F82-A20A77F4EC3E}",
+    "Hash": "{F9A50F5F-02FA-2944-9F01-07973485082F}",
     "ObjectPath": "Play_BlackHole_StaticOn",
     "ShortName": "Play_BlackHole_StaticOn",
     "Path": "Event/Play_BlackHole_StaticOn.bnk",
@@ -50,6 +50,6 @@
     ]
    }
   ],
-  "FileHash": "{7ED6178E-F92B-83F3-6BB2-B4C6799DBE91}"
+  "FileHash": "{C2D826EB-EFAF-8508-5C0F-A04881AD2662}"
  }
 }

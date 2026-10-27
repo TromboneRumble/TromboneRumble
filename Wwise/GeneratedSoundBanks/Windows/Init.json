@@ -10,12 +10,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{03F8ECCF-4753-86F7-BDC0-9267ACB4DB89}",
+    "Hash": "{245B4792-3CCF-1933-CFA8-9FEF656E99FF}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "1706684651",
+       "Name": "Plate_Medium",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Plates\\Plate_Medium",
+       "GUID": "{33384D0C-6ACB-4E3D-AC82-73AAB3AE1CA5}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
       {
        "Id": "3701691487",
        "Name": "Hall_Large_Bright",
@@ -85,7 +93,7 @@
       "PluginRefs": {
        "ShareSets": [
         {
-         "Id": "3701691487"
+         "Id": "1706684651"
         }
        ]
       }
@@ -783,6 +791,6 @@
     ]
    }
   ],
-  "FileHash": "{F55EC6BC-503D-8E85-41F8-23BBB8F4B356}"
+  "FileHash": "{839B59E4-37B8-CD0A-C098-8F1C0E7E453A}"
  }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3680363658" Type="Bus" GUID="{D5A808DA-7F35-4969-B38F-D60D48877094}" Language="SFX" Hash="{F746726F-AACF-3ED6-AFED-23BAC3AD830E}">
+		<SoundBank Id="3680363658" Type="Bus" GUID="{D5A808DA-7F35-4969-B38F-D60D48877094}" Language="SFX" Hash="{85FBCDCC-ECF1-B20E-613F-AEAE87AE965F}">
 			<ObjectPath>Map_C_Reverb</ObjectPath>
 			<ShortName>Map_C_Reverb</ShortName>
 			<Path>Bus/Map_C_Reverb.bnk</Path>
@@ -21,5 +21,5 @@
 			</AuxBusses>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F4225134-8ABC-7090-3D1C-297FEB6899F1}</FileHash>
+	<FileHash>{A866362A-D2AC-E389-3546-BDA6ECD385C7}</FileHash>
 </SoundBanksInfo>

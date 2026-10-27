@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1120556439" Type="Event" GUID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}" Language="SFX" Hash="{9C429522-54C2-81B3-6C39-D5CDCCC971E6}">
+		<SoundBank Id="1120556439" Type="Event" GUID="{2D584B53-ECC2-48A6-8353-2A7CB5436F58}" Language="SFX" Hash="{6E4537F4-DB46-4E5F-46B7-049A05F2D542}">
 			<ObjectPath>Play_BlackHole_OFF</ObjectPath>
 			<ShortName>Play_BlackHole_OFF</ShortName>
 			<Path>Event/Play_BlackHole_OFF.bnk</Path>
@@ -24,5 +24,5 @@
 			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{57BE953E-2015-667E-D254-CB7C3FDEF3E3}</FileHash>
+	<FileHash>{E98EC09D-7356-B74F-F7F4-9B3D18D53E0C}</FileHash>
 </SoundBanksInfo>

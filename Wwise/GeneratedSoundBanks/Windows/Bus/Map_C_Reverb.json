@@ -10,7 +10,7 @@
     "Type": "Bus",
     "GUID": "{D5A808DA-7F35-4969-B38F-D60D48877094}",
     "Language": "SFX",
-    "Hash": "{F746726F-AACF-3ED6-AFED-23BAC3AD830E}",
+    "Hash": "{85FBCDCC-ECF1-B20E-613F-AEAE87AE965F}",
     "ObjectPath": "Map_C_Reverb",
     "ShortName": "Map_C_Reverb",
     "Path": "Bus/Map_C_Reverb.bnk",
@@ -43,6 +43,6 @@
     ]
    }
   ],
-  "FileHash": "{BD6DEDBA-7F1F-5401-54B0-A950E99BBE32}"
+  "FileHash": "{55AA5283-D025-C8A5-6F68-FA6D6DEC0D90}"
  }
 }

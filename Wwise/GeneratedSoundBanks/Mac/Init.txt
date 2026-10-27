@@ -33,6 +33,7 @@ Auxiliary Bus	ID	Name			Wwise Object Path	Notes
 	3680363658	Map_C_Reverb			\Default Work Unit\Master Audio Bus\Map_C_Reverb	
 
 Effect plug-ins	ID	Name	Type				Notes
+	1706684651	Plate_Medium	Wwise RoomVerb			
 	3701691487	Hall_Large_Bright	Wwise RoomVerb			
 
 Audio Devices	ID	Name	Type				Notes

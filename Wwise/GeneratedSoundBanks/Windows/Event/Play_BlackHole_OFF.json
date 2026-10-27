@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{2D584B53-ECC2-48A6-8353-2A7CB5436F58}",
     "Language": "SFX",
-    "Hash": "{9C429522-54C2-81B3-6C39-D5CDCCC971E6}",
+    "Hash": "{6E4537F4-DB46-4E5F-46B7-049A05F2D542}",
     "ObjectPath": "Play_BlackHole_OFF",
     "ShortName": "Play_BlackHole_OFF",
     "Path": "Event/Play_BlackHole_OFF.bnk",
@@ -52,6 +52,6 @@
     ]
    }
   ],
-  "FileHash": "{C43C895B-0EEF-FB15-E0B6-62C7F44B99A9}"
+  "FileHash": "{5587EDA5-C2C6-AD94-C9D1-83F7A4B2D8AF}"
  }
 }
