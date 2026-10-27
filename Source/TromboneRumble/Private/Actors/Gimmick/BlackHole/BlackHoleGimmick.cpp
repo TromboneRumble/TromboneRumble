@@ -247,6 +247,7 @@ void ABlackHoleGimmick::PlayStateEffects(const EBlackHoleState PreviousState)
 			HoleVFXComponent->Activate(true);
 		}
 		PostSound(ActiveSound);
+		PostSound(LoopSound);
 		break;
 
 	case EBlackHoleState::Collapse:
@@ -264,16 +265,23 @@ void ABlackHoleGimmick::PlayStateEffects(const EBlackHoleState PreviousState)
 			HoleVFXComponent->Deactivate();
 		}
 
-		// 전조/등장음이 루프여도 남지 않게 끊고 나서 방출음을 낸다
-		if (AkComponent)
-		{
-			AkComponent->Stop();
-		}
-
-		// 붕괴에서 넘어온 경우만 방출이다. 라운드 종료로 꺼질 때는 소리 없이 사라진다
+		// 붕괴에서 넘어온 경우만 방출이다. 반복음은 정지 이벤트가 줄여 가며 끄고, 정지 이벤트가 없으면 남지 않게 바로 끊는다
 		if (PreviousState == EBlackHoleState::Collapse)
 		{
+			if (LoopStopEvent)
+			{
+				PostSound(LoopStopEvent);
+			}
+			else if (AkComponent)
+			{
+				AkComponent->Stop();
+			}
 			PostSound(BurstSound);
+		}
+		// 라운드 종료로 꺼질 때는 소리 없이 사라진다. 전조음이나 반복음이 남지 않게 바로 끊는다
+		else if (AkComponent)
+		{
+			AkComponent->Stop();
 		}
 		break;
 	}

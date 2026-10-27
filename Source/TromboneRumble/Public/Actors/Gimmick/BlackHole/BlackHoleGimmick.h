@@ -179,8 +179,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "등장 사운드"))
 	TObjectPtr<UAkAudioEvent> ActiveSound;
 
-	/** The instant the collapse throws everything out. */
-	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "방출 사운드"))
+	/** Starts together with the effect and loops until the loop stop event ends it at the burst. */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "반복 사운드"))
+	TObjectPtr<UAkAudioEvent> LoopSound;
+
+	/** Plays at the burst and ends the loop sound. */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "반복 정지 이벤트"))
+	TObjectPtr<UAkAudioEvent> LoopStopEvent;
+
+	/** The instant the collapse throws everything out and the hole fades away. */
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole|Sound", meta = (DisplayName = "소멸 사운드"))
 	TObjectPtr<UAkAudioEvent> BurstSound;
 
 	/** 예고가 시작될 때 위치 없이 모든 플레이어 화면에서 똑같이 재생되는 경보 사운드. 블랙홀 위치에서 나는 전조 사운드와 따로 재생된다 */

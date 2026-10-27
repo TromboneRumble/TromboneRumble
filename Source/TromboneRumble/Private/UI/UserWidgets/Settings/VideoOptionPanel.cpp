@@ -7,6 +7,25 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/UserWidgets/Settings/SubWidgets/OptionCycleRowWidget.h"
 
+namespace
+{
+	// "1920x1080" or "1920 x 1080". Zero when the label is not a resolution
+	FIntPoint ParseResolutionLabel(const FText& Label)
+	{
+		FString Left, Right;
+		if (Label.ToString().Replace(TEXT(" "), TEXT("")).Split(TEXT("x"), &Left, &Right))
+		{
+			return FIntPoint(FCString::Atoi(*Left), FCString::Atoi(*Right));
+		}
+		return FIntPoint::ZeroValue;
+	}
+
+	int32 FindResolutionLabel(const TArray<FText>& Labels, const FIntPoint& Resolution)
+	{
+		return Labels.IndexOfByPredicate([&Resolution](const FText& Label) { return ParseResolutionLabel(Label) == Resolution; });
+	}
+}
+
 UWidget* UVideoOptionPanel::GetFirstFocusRow() const
 {
 	// Rows are built dynamically from the data table; use container order for a stable first focus
@@ -83,23 +102,37 @@ void UVideoOptionPanel::RefreshUI()
 
 	if (CreatedWidgets.Contains(EGraphicsOptionType::Resolution))
 	{
+		UOptionCycleRowWidget* ResWidget = CreatedWidgets[EGraphicsOptionType::Resolution];
 		const FIntPoint CurrentRes = VideoSettings->GetScreenResolution();
-		const FString CurrentResStr = FString::Printf(TEXT("%dx%d"), CurrentRes.X, CurrentRes.Y);
-    
-		const TArray<FText>& ResOptions = CreatedWidgets[EGraphicsOptionType::Resolution]->GetOptions();
-		int32 TargetIdx = -1;
 
-		for (int32 i = 0; i < ResOptions.Num(); ++i)
+		// A window can be any size, and the engine stores the size of a resized window as the resolution.
+		// The row has to show that size, or it shows another one, the panel counts as changed, and applying writes that one
+		TArray<FText> ResOptions = BaseResolutionOptions;
+		if (CurrentRes.X > 0 && CurrentRes.Y > 0 && FindResolutionLabel(ResOptions, CurrentRes) == INDEX_NONE)
 		{
-			FString OptionStr = ResOptions[i].ToString().Replace(TEXT(" "), TEXT(""));
-			if (OptionStr.Equals(CurrentResStr))
+			ResOptions.Add(FText::FromString(FString::Printf(TEXT("%dx%d"), CurrentRes.X, CurrentRes.Y)));
+			ResOptions.Sort([](const FText& A, const FText& B)
 			{
-				TargetIdx = i;
-				break;
-			}
+				const FIntPoint ResA = ParseResolutionLabel(A);
+				const FIntPoint ResB = ParseResolutionLabel(B);
+				return ResA.X != ResB.X ? ResA.X < ResB.X : ResA.Y < ResB.Y;
+			});
 		}
-		
-		CreatedWidgets[EGraphicsOptionType::Resolution]->SetSelectedIndex(TargetIdx != -1 ? TargetIdx : 0);
+
+		// Rebuilding the rotator resets its selection, so only when the labels changed
+		const TArray<FText>& ShownOptions = ResWidget->GetOptions();
+		bool bOptionsChanged = ShownOptions.Num() != ResOptions.Num();
+		for (int32 i = 0; !bOptionsChanged && i < ResOptions.Num(); ++i)
+		{
+			bOptionsChanged = !ShownOptions[i].EqualTo(ResOptions[i]);
+		}
+		if (bOptionsChanged)
+		{
+			ResWidget->SetOptions(ResOptions);
+		}
+
+		const int32 TargetIdx = FindResolutionLabel(ResOptions, CurrentRes);
+		ResWidget->SetSelectedIndex(TargetIdx != INDEX_NONE ? TargetIdx : 0);
 	}
 	
 	if (CreatedWidgets.Contains(EGraphicsOptionType::VSync))
@@ -347,6 +380,11 @@ void UVideoOptionPanel::BuildOptions()
 				}
 			}
 			
+			if (Row->OptionType == EGraphicsOptionType::Resolution)
+			{
+				BaseResolutionOptions = Labels;
+			}
+
 			NewWidget->ForceInit(Row->DisplayName, Labels, StartIndex);
 			VB_OptionContainer->AddChild(NewWidget);
 			

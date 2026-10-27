@@ -92,13 +92,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "멀어지는 사운드"))
 	TObjectPtr<UAkAudioEvent> GoneSound;
 
-	/** 광선이 펼쳐질 때 켜지고, 광선이 다 접히면 줄어들며 꺼지는 사운드 */
-	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 사운드"))
-	TObjectPtr<UAkAudioEvent> LaserSound;
+	/** 광선이 펼쳐지기 시작할 때 한 번 재생되는 사운드 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 켜짐 사운드"))
+	TObjectPtr<UAkAudioEvent> LaserOnSound;
 
-	/** 광선이 다 접힌 뒤 광선 사운드가 줄어들며 꺼지는 시간 (초) */
-	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 사운드 페이드아웃 시간", ClampMin = "0.0", Units = "s"))
-	float LaserFadeOutDuration = 0.3f;
+	/** 광선이 펼쳐지기 시작할 때부터 반복 재생되는 사운드. 광선 반복 정지 이벤트가 끈다 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 반복 사운드"))
+	TObjectPtr<UAkAudioEvent> LaserLoopSound;
+
+	/** 광선이 접히기 시작할 때 한 번 재생되는 사운드 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 꺼짐 사운드"))
+	TObjectPtr<UAkAudioEvent> LaserOffSound;
+
+	/** 광선이 다 접히면 재생되어 광선 반복 사운드를 끄는 이벤트 */
+	UPROPERTY(EditDefaultsOnly, Category = "Ufo|Audio", meta = (DisplayName = "광선 반복 정지 이벤트"))
+	TObjectPtr<UAkAudioEvent> LaserLoopStopEvent;
 
 private:
 
@@ -121,12 +129,8 @@ private:
 	/** Turn the beam on and off, catch players, and start the leave once nobody hangs from the UFO. Server only. */
 	void UpdateServer(float Now);
 
-	/**
-	 * Stop the beam sound if it is playing.
-	 *
-	 * @param FadeOutDuration Seconds the sound takes to fade out.
-	 */
-	void StopLaserSound(float FadeOutDuration);
+	/** Stop the beam loop at once if it is playing. */
+	void StopLaserSound();
 
 	/** @return Direction along the line, flat on the ground. */
 	FVector GetTravelDirection() const;
@@ -180,7 +184,7 @@ private:
 	/** Has the departure sound played on this machine. */
 	bool bGoneSoundPlayed = false;
 
-	/** Playing ID of the beam sound on this machine. 0 when it is not playing. */
+	/** Playing ID of the beam loop on this machine. 0 when it is not playing. */
 	int32 LaserPlayingID = 0;
 
 	/** Players the beam holds right now. Server only. */
