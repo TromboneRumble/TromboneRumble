@@ -10,12 +10,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{F2695F39-87D0-1F50-38A3-F5AE33D5B525}",
+    "Hash": "{8D211AC2-A544-FC65-2689-9347724E8582}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "1706684651",
+       "Name": "Plate_Medium",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Plates\\Plate_Medium",
+       "GUID": "{33384D0C-6ACB-4E3D-AC82-73AAB3AE1CA5}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
       {
        "Id": "3701691487",
        "Name": "Hall_Large_Bright",
@@ -77,6 +85,19 @@
      }
     ],
     "AuxBusses": [
+     {
+      "Id": "140992219",
+      "Name": "Map_D_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Map_D_Reverb",
+      "GUID": "{D85C00A8-5B08-4755-8BB5-1F120EF7EA00}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "1706684651"
+        }
+       ]
+      }
+     },
      {
       "Id": "356551040",
       "Name": "Map_A_Reverb",
@@ -770,6 +791,6 @@
     ]
    }
   ],
-  "FileHash": "{14738492-A18D-2297-A401-8116F44BF3BA}"
+  "FileHash": "{29A26B2F-90EC-4BAF-21CC-A7E2BF776B28}"
  }
 }

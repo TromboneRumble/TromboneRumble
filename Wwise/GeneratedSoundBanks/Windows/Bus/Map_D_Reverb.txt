@@ -1,0 +1,6 @@
+Auxiliary Bus	ID	Name			Wwise Object Path	Notes
+	140992219	Map_D_Reverb			\Default Work Unit\Master Audio Bus\Map_D_Reverb	
+
+Effect plug-ins	ID	Name	Type				Notes
+	1706684651	Plate_Medium	Wwise RoomVerb			
+

@@ -781,12 +781,12 @@
 										<Property Name="Filter3Freq" Type="Real32" Value="8440"/>
 										<Property Name="Filter3Gain" Type="Real32" Value="-3"/>
 										<Property Name="HFDamping" Type="Real32" Value="2.3"/>
-										<Property Name="PreDelay" Type="Real32" Value="20"/>
+										<Property Name="PreDelay" Type="Real32" Value="14"/>
 										<Property Name="Quality" Type="int32" Value="14"/>
 										<Property Name="ReverbLevel" Type="Real32" Value="-23"/>
 										<Property Name="RoomShape" Type="Real32" Value="55"/>
 										<Property Name="RoomSize" Type="Real32" Value="15"/>
-										<Property Name="StereoWidth" Type="Real32" Value="152"/>
+										<Property Name="StereoWidth" Type="Real32" Value="135"/>
 									</PropertyList>
 								</Effect>
 								<Effect Name="Hall_Medium_Bright" ID="{3C3845B2-C76E-4634-9108-83FA43A5A7BC}" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
@@ -1160,16 +1160,16 @@
 							<ChildrenList>
 								<Effect Name="Plate_Medium" ID="{33384D0C-6ACB-4E3D-AC82-73AAB3AE1CA5}" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
 									<PropertyList>
-										<Property Name="DecayTime" Type="Real32" Value="1.9"/>
+										<Property Name="DecayTime" Type="Real32" Value="2.2"/>
 										<Property Name="Density" Type="Real32" Value="60"/>
 										<Property Name="Diffusion" Type="Real32" Value="74"/>
 										<Property Name="ERLevel" Type="Real32" Value="-22"/>
-										<Property Name="ERPattern" Type="int32" Value="19"/>
+										<Property Name="ERPattern" Type="int32" Value="16"/>
 										<Property Name="Filter1Freq" Type="Real32" Value="590"/>
 										<Property Name="Filter1Gain" Type="Real32" Value="-2.5"/>
 										<Property Name="Filter2Freq" Type="Real32" Value="780"/>
 										<Property Name="HFDamping" Type="Real32" Value="3.05"/>
-										<Property Name="PreDelay" Type="Real32" Value="20"/>
+										<Property Name="PreDelay" Type="Real32" Value="0"/>
 										<Property Name="Quality" Type="int32" Value="10"/>
 										<Property Name="ReverbLevel" Type="Real32" Value="-22"/>
 										<Property Name="RoomShape" Type="Real32" Value="0"/>

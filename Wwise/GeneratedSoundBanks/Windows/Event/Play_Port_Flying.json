@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
     "Language": "SFX",
-    "Hash": "{31CDB14A-C33C-7B01-D6C6-314877D72424}",
+    "Hash": "{F9AC6E4B-F179-C7D3-2E8C-902FFF4B795D}",
     "ObjectPath": "Play_Port_Flying",
     "ShortName": "Play_Port_Flying",
     "Path": "Event/Play_Port_Flying.bnk",
@@ -52,7 +52,7 @@
       "Name": "Play_Port_Flying",
       "ObjectPath": "\\Events\\Default Work Unit\\Object_SFX\\Play_Port_Flying",
       "GUID": "{669815C8-B2F6-46FE-BA58-2B2F94892743}",
-      "MaxAttenuation": "1000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
       "DurationMin": "3.0706666",
       "DurationMax": "3.1829584",
@@ -75,6 +75,6 @@
     ]
    }
   ],
-  "FileHash": "{13AD8E9B-E676-0AC8-331A-B0C1EC02C503}"
+  "FileHash": "{DC7FDF8E-6D36-9226-9AF3-8C30DAEFD649}"
  }
 }

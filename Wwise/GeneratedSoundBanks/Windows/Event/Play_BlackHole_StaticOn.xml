@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{F3BBF275-AD6F-3836-7E34-7B327E282071}">
+		<SoundBank Id="3404172405" Type="Event" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" Language="SFX" Hash="{F9A50F5F-02FA-2944-9F01-07973485082F}">
 			<ObjectPath>Play_BlackHole_StaticOn</ObjectPath>
 			<ShortName>Play_BlackHole_StaticOn</ShortName>
 			<Path>Event/Play_BlackHole_StaticOn.bnk</Path>
 			<Media>
-				<File Id="1042388455" Language="SFX" Streaming="false" Location="Loose">
+				<File Id="575029133" Language="SFX" Streaming="false" Location="Loose">
 					<ShortName>BlackHole Loop.wav</ShortName>
-					<Path>Media/1042388455.wem</Path>
-					<CachePath>SFX/BlackHole Loop_818F3B66.wem</CachePath>
+					<Path>Media/575029133.wem</Path>
+					<CachePath>SFX/BlackHole Loop_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
-				<Event Id="3404172405" Name="Play_BlackHole_StaticOn" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOn" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" MaxAttenuation="3000" DurationType="OneShot" DurationMin="6.565292" DurationMax="6.565292">
+				<Event Id="3404172405" Name="Play_BlackHole_StaticOn" ObjectPath="\Events\Default Work Unit\Object_SFX\BlackHole\Play_BlackHole_StaticOn" GUID="{6E7447D6-A8B8-48DB-A31E-D50EA5061442}" MaxAttenuation="3000" DurationType="Infinite">
 					<MediaRefs>
-						<MediaRef Id="1042388455"/>
+						<MediaRef Id="575029133"/>
 					</MediaRefs>
 				</Event>
 			</Events>
@@ -24,5 +24,5 @@
 			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{EADDE8EB-82C2-8401-868E-D9BAF6948F58}</FileHash>
+	<FileHash>{5D54950C-99C0-8FB0-8486-05B7D0989F68}</FileHash>
 </SoundBanksInfo>
