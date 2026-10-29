@@ -23,8 +23,9 @@ struct FRagdollNetState
 	UPROPERTY()
 	FQuat PelvisRotation = FQuat::Identity;
 
+	/** In radians per second. FVector_NetQuantize would round it to whole radians, so it keeps two decimal places. */
 	UPROPERTY()
-	FVector_NetQuantize PelvisAngularVelocity = FVector::ZeroVector;
+	FVector_NetQuantize100 PelvisAngularVelocity = FVector::ZeroVector;
 
 	/** Server world time when this state was captured. */
 	UPROPERTY()
