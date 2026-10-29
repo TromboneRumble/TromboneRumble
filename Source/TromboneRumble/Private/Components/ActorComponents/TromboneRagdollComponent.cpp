@@ -264,26 +264,7 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 
 		OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
-		/** 래그돌 동안 이동 리플리케이션을 끈다.
-		 *  켜 두면 Simulated Proxy에 이동 업데이트가 도착할 때마다 CMC가 캡슐을 서버 위치로 되돌려 로컬 캡슐 스냅을 무효화하고,
-		 *  캡슐 위치 차이로 bJustTeleported = true가 되면 TeleportPhysics 이동이 된다.
-		 *  메시는 캡슐에 부착된 자식이므로 부모가 움직이면 자식의 트랜스폼도 업데이트 되고 텔레포트 타입도 그대로 전달된다.
-		 *  이때 UpdateKinematicBonesToAnim(PhysAnim.cpp)에서는 TeleportPhysics면 시뮬레이션 중인 래그돌 바디도 강제로 위치를 변경해버린다.
-		 *  이 변경되는 위치는 지난 프레임의 애니메이션 포즈(래그돌 중엔 갱신이 안 된 Stale 데이터)인지라 메시가 튀는 현상이 발생한다.
-		 *
-		 *  래그돌 위치 동기화는 이 컴포넌트의 골반 동기화가, 기상 위치는 GetUpLocation이 담당하므로 이동 리플리케이션은 래그돌 동안 불필요하다.
-		 */
-		OwnerCharacter->SetReplicateMovement(false);
-		
-		/** 서버에서 원격 클라이언트가 조종하는 캐릭터는 서버 이동 패킷이 올 때만 애니메이션을 틱하는데,
-		 * ([ACharacter::PossessedBy]에서 bOnlyAllowAutonomousTickPose가 true로 설정. 엔진 단에서의 서버 연산 최적화)
-		 * 래그돌/기상 애니메이션 재생 중에는 클라이언트가 MOVE_None이라 이동 패킷을 안 보내기 때문에
-		 * 서버에서 해당 캐릭터의 애니메이션 업데이트가 멈춰 기상 몽타주가 0초 시점에서 T포즈가 보여진다.
-		 * 래그돌 중에는 일반 컴포넌트 틱으로 애니메이션이 연산되도록 한다.
-		 */
-		OwnerMesh->bOnlyAllowAutonomousTickPose = false;
-		
+
 		OwnerMesh->SetSimulatePhysics(true);
 		OwnerMesh->SetEnableGravity(true);
 		OwnerMesh->SetAllBodiesPhysicsBlendWeight(1.0f);
@@ -307,8 +288,13 @@ void UTromboneRagdollComponent::OnRep_IsRagdoll()
 		}
 		
 		const FRotator TargetCapsuleRotation(0.0f, TargetYaw, 0.0f);
+
+		// TeleportPhysics로 옮기면 텔레포트가 붙어 있는 메시까지 전달되어, 아직 시뮬레이션 중인 래그돌 바디가 강제로 옮겨진다.
+		// 서버에서 다른 플레이어가 일어나는 순간 몸이 튀므로 None으로 옮기고, 바디는 아래에서 골반 기준으로 직접 옮긴다.
 		OwnerCharacter->SetActorLocationAndRotation(GetUpLocation, TargetCapsuleRotation, false, nullptr, ETeleportType::None);
 
+		// 클라의 몸은 서버 골반과 다른 곳에 누워 있을 수 있어서, 블렌드 전에 포즈는 그대로 두고 몸 전체를 옮겨 골반 XY를 기상 위치에 
+		// 맞춘다. Z는 캡슐 중심 높이라서 맞추지 않는다.
 		const FBodyInstance* PelvisBody = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis);
 		const FBodyInstance* RootBody = OwnerMesh->GetBodyInstance();
 		if (PelvisBody && RootBody)
@@ -387,16 +373,6 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
-
-	if (OwnerCharacter->HasAuthority())
-	{
-		OwnerCharacter->SetReplicateMovement(true);
-
-		if (OwnerCharacter->GetRemoteRole() == ROLE_AutonomousProxy && OwnerCharacter->GetNetConnection() != nullptr)
-		{
-			OwnerMesh->bOnlyAllowAutonomousTickPose = true;
-		}
-	}
 
 	OnRagdollPhysicsEnabled.Broadcast();
 }
