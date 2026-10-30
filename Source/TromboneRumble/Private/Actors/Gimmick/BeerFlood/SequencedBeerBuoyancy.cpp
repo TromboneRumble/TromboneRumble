@@ -2,8 +2,14 @@
 
 #include "Actors/Gimmick/BeerFlood/SequencedBeerBuoyancy.h"
 #include "Components/ActorComponents/FloatableComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "EngineUtils.h"
 #include "Subsystems/WorldSubsystem/FloatableSubsystem.h"
+
+namespace
+{
+	const FName StableUntilWetTag(TEXT("Midterm_StableUntilWet"));
+}
 
 ASequencedBeerBuoyancy::ASequencedBeerBuoyancy()
 {
@@ -18,6 +24,17 @@ void ASequencedBeerBuoyancy::BeginPlay()
 	// Supply the height before the existing components apply their physics forces.
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
+		// Opt-in props retain their placed pose while the room is dry. Other
+		// floatable props keep their existing physics behaviour.
+		if (It->ActorHasTag(StableUntilWetTag))
+		{
+			if (UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(It->GetRootComponent()))
+			{
+				Primitive->SetMobility(EComponentMobility::Movable);
+				Primitive->SetSimulatePhysics(false);
+			}
+		}
+
 		TInlineComponentArray<UFloatableComponent*> Floatables;
 		It->GetComponents(Floatables);
 		for (UFloatableComponent* Component : Floatables)
@@ -35,7 +52,24 @@ void ASequencedBeerBuoyancy::Tick(const float DeltaSeconds)
 
 	if (IsValid(WaterSurface) && WaterSurface->GetActorLocation().Z > DrySurfaceZ + 0.01f)
 	{
-		Floatables->SetWaterLevel(WaterSurface->GetActorLocation().Z);
+		const float WaterZ = WaterSurface->GetActorLocation().Z;
+		Floatables->SetWaterLevel(WaterZ);
+		for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+		{
+			if (!It->ActorHasTag(StableUntilWetTag)) continue;
+			UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(It->GetRootComponent());
+			if (!Primitive) continue;
+
+			// Release after water reaches the lower body, rather than releasing
+			// into dry furniture contacts when only the feet first get wet.
+			const float ReleaseWaterZ = Primitive->Bounds.Origin.Z - Primitive->Bounds.BoxExtent.Z * 0.25f;
+			if (WaterZ >= ReleaseWaterZ)
+			{
+				Primitive->SetSimulatePhysics(true);
+				Primitive->WakeAllRigidBodies();
+				It->Tags.Remove(StableUntilWetTag);
+			}
+		}
 		bSupplyingWater = true;
 	}
 	else if (bSupplyingWater)
