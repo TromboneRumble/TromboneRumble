@@ -243,21 +243,21 @@ private:
 	/** @return true if the front of the pelvis is facing toward the sky, otherwise false. */
 	bool IsFacingUp() const;
 
-	void Server_ComputeGetUpTransform();
+	void ComputeGetUpLocation();
 
-	void Server_UpdateRagdollTransform();
+	void CaptureServerPelvisState();
 
 	/** @return Whether the pelvis is up in the air. */
 	bool IsPelvisAirborne() const;
 
 	/** Snaps the body back to the target once the pelvis has stayed too far below it for too long. */
-	void Client_RecoverFromGroundPenetration(float DeltaTime, const FVector& CurrentPelvisLoc, const FVector& TargetPelvisLoc, const FQuat& CurrentPelvisRot, const FQuat& TargetPelvisRot);
+	void RecoverFromGroundPenetration(float DeltaTime, const FVector& CurrentPelvisLoc, const FVector& TargetPelvisLoc, const FQuat& CurrentPelvisRot, const FQuat& TargetPelvisRot);
 
 	/** Moves the whole body at once so that the pelvis lands on the target location and rotation.
 	 *  How the arms and legs sit against each other is left as it was. */
 	void SnapRagdollToTarget(const FVector& TargetPelvisLoc, const FQuat& TargetPelvisRot, const FVector& CurrentPelvisLoc, const FQuat& CurrentPelvisRot);
 	
-	void Client_InterpolateRagdollVelocity(float DeltaTime);
+	void FollowServerPelvis(float DeltaTime);
 
 private:
 	

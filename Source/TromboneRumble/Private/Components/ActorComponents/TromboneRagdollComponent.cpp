@@ -109,12 +109,12 @@ void UTromboneRagdollComponent::TickComponent(const float DeltaTime, const ELeve
 		if (TimeSinceLastNetUpdate >= 1.0f / PacketsPerSecond)
 		{
 			TimeSinceLastNetUpdate = 0.0f;
-			Server_UpdateRagdollTransform();
+			CaptureServerPelvisState();
 		}
 	}
 	else if (!bIsBlendingOut)
 	{
-		Client_InterpolateRagdollVelocity(DeltaTime);
+		FollowServerPelvis(DeltaTime);
 	}
 
 	if (bIsBlendingOut)
@@ -200,7 +200,7 @@ void UTromboneRagdollComponent::StopRagdoll()
 		return;
 	}
 
-	Server_ComputeGetUpTransform();
+	ComputeGetUpLocation();
 	
 	RagdollRestingTime = 0.0f;
 
@@ -210,7 +210,7 @@ void UTromboneRagdollComponent::StopRagdoll()
 	OwnerCharacter->ForceNetUpdate();
 }
 
-void UTromboneRagdollComponent::Server_ComputeGetUpTransform()
+void UTromboneRagdollComponent::ComputeGetUpLocation()
 {
 	const FVector PelvisLocation = OwnerMesh->GetSocketLocation(TromboneBones::Pelvis);
 
@@ -230,7 +230,7 @@ void UTromboneRagdollComponent::Server_ComputeGetUpTransform()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Server_ComputeGetUpTransform] Failed to find ground for capsule placement after ragdoll. Using pelvis location(%s) as fallback."), *PelvisLocation.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::ComputeGetUpLocation] Failed to find ground for capsule placement after ragdoll. Using pelvis location(%s) as fallback."), *PelvisLocation.ToString());
 	}
 
 	GetUpLocation = TargetCapsuleLocation;
@@ -372,7 +372,7 @@ void UTromboneRagdollComponent::UnapplyRagdoll()
 	OwnerMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OwnerMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	OwnerMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, -90.0f, 0.0f));
+	OwnerMesh->SetRelativeLocationAndRotation(OwnerCharacter->GetBaseTranslationOffset(), OwnerCharacter->GetBaseRotationOffset());
 
 	OnRagdollPhysicsEnabled.Broadcast();
 }
@@ -395,7 +395,7 @@ bool UTromboneRagdollComponent::IsRagdollResting() const
 	return PelvisVelocity.SizeSquared() < FMath::Square(RestSpeedThreshold);
 }
 
-void UTromboneRagdollComponent::Server_UpdateRagdollTransform()
+void UTromboneRagdollComponent::CaptureServerPelvisState()
 {
 	if (!OwnerCharacter->HasAuthority())
 	{
@@ -446,18 +446,18 @@ bool UTromboneRagdollComponent::IsPelvisAirborne() const
 		QueryParams);
 }
 
-void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float DeltaTime)
+void UTromboneRagdollComponent::FollowServerPelvis(const float DeltaTime)
 {
     if (!OwnerMesh)
     {
-	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolatePelvisVelocity] SkeletalMeshComponent is NULL"));
+	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::FollowServerPelvis] SkeletalMeshComponent is NULL"));
     	return;
     }
 	
     const FBodyInstance* PelvisBody = OwnerMesh->GetBodyInstance(TromboneBones::Pelvis);
     if (!PelvisBody)
     {
-	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::Client_InterpolatePelvisVelocity] Pelvis BodyInstance is NULL"));
+	    UE_LOG(LogTemp, Warning, TEXT("[RagdollComponent::FollowServerPelvis] Pelvis BodyInstance is NULL"));
     	return;
     }
 
@@ -498,7 +498,8 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
 	const bool bAirborne = IsPelvisAirborne();
 
 	// 중력가속도(등가속 운동) 반영 (measurement switch)
-	if (World && bAirborne && IsSyncFeatureEnabled(ERagdollSyncFeature::GravityTerm))
+	// UFO 빔이나 블랙홀처럼 메시 중력을 끈 동안에는 떨어지지 않으므로 더하지 않는다.
+	if (World && bAirborne && PelvisBody->bEnableGravity && IsSyncFeatureEnabled(ERagdollSyncFeature::GravityTerm))
 	{
 		TargetPelvisLoc.Z += 0.5f * World->GetGravityZ() * PacketAge * PacketAge;
 	}
@@ -536,7 +537,7 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
         return;
     }
 
-    Client_RecoverFromGroundPenetration(DeltaTime, CurrentPelvisLoc, TargetPelvisLoc, CurrentPelvisRot, TargetPelvisRot);
+    RecoverFromGroundPenetration(DeltaTime, CurrentPelvisLoc, TargetPelvisLoc, CurrentPelvisRot, TargetPelvisRot);
 
     FVector PositionCorrection = (TargetPelvisLoc - CurrentPelvisLoc) * TrackingIntensity;
     PositionCorrection = PositionCorrection.GetClampedToMaxSize(MaxCorrectionSpeed);
@@ -582,7 +583,7 @@ void UTromboneRagdollComponent::Client_InterpolateRagdollVelocity(const float De
     OwnerMesh->SetPhysicsAngularVelocityInRadians(NewAngularVelocity, false, TromboneBones::Pelvis);
 }
 
-void UTromboneRagdollComponent::Client_RecoverFromGroundPenetration(const float DeltaTime, const FVector& CurrentPelvisLoc, const FVector& TargetPelvisLoc,
+void UTromboneRagdollComponent::RecoverFromGroundPenetration(const float DeltaTime, const FVector& CurrentPelvisLoc, const FVector& TargetPelvisLoc,
 	const FQuat& CurrentPelvisRot, const FQuat& TargetPelvisRot)
 {
 	const float PenetrationDepth = TargetPelvisLoc.Z - CurrentPelvisLoc.Z;
